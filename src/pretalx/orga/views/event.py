@@ -680,8 +680,8 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
             t.limit_events.add(event)
 
         logdata = {}
-        for f in form_list:
-            logdata.update({k: v for k, v in f.cleaned_data.items()})
+        for form in form_list:
+            logdata.update(form.cleaned_data)
         with scope(event=event):
             event.log_action(
                 "pretalx.event.create",

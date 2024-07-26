@@ -43,7 +43,7 @@ class EventStartpage(EventPageMixin, TemplateView):
     def submit_qs(self):
         params = [
             (key, self.request.GET.get(key))
-            for key in ["track", "submission_type", "access_code"]
+            for key in ("track", "submission_type", "access_code")
             if self.request.GET.get(key) is not None
         ]
         return f"?{urlencode(params)}" if params else ""

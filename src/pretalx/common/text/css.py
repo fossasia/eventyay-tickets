@@ -107,7 +107,7 @@ acceptable_css_properties = {
 def validate_key(*, key, style):
     if key in acceptable_css_properties:
         return
-    if key.split("-")[0] in ["background", "border", "margin", "padding"]:
+    if key.split("-")[0] in ("background", "border", "margin", "padding"):
         for value in style[key].split(" "):
             if value not in acceptable_css_keywords and not valid_css_values.match(
                 value

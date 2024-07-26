@@ -164,7 +164,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         if not data:
             return data
         data = data.lower()
-        if data in [urlparse(settings.SITE_URL).hostname, settings.SITE_URL]:
+        if data in (urlparse(settings.SITE_URL).hostname, settings.SITE_URL):
             raise ValidationError(
                 _("Please do not choose the default domain as custom event domain.")
             )

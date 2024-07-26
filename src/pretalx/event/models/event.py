@@ -483,7 +483,7 @@ class Event(PretalxModel):
 
     @cached_property
     def plugin_locales(self) -> list:
-        return sorted(list(self.named_plugin_locales.keys()))
+        return sorted(self.named_plugin_locales.keys())
 
     @cached_property
     def cache(self):

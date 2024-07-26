@@ -488,7 +488,7 @@ def choice_question(event):
             question_required=QuestionRequired.OPTIONAL,
             position=9,
         )
-        for answer in ["very", "incredibly", "omggreen"]:
+        for answer in ("very", "incredibly", "omggreen"):
             AnswerOption.objects.create(question=question, answer=answer)
     return question
 
@@ -515,7 +515,7 @@ def multiple_choice_question(event):
             question_required=QuestionRequired.OPTIONAL,
             position=10,
         )
-        for answer in ["yellow", "blue", "black"]:
+        for answer in ("yellow", "blue", "black"):
             AnswerOption.objects.create(question=question, answer=answer)
     return question
 

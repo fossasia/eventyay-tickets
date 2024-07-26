@@ -263,13 +263,13 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
             self.build_review(reviewer, submission, positive=False)
 
         all_talks = sorted(
-            list(self.event.submissions.filter(submission_type__name="Talk")),
-            key=lambda x: x.median_score,
+            self.event.submissions.filter(submission_type__name="Talk"),
+            key=lambda talk: talk.median_score,
             reverse=True,
         )
         all_workshops = sorted(
-            list(self.event.submissions.filter(submission_type__name="Workshop")),
-            key=lambda x: x.median_score,
+            self.event.submissions.filter(submission_type__name="Workshop"),
+            key=lambda talk: talk.median_score,
             reverse=True,
         )
 

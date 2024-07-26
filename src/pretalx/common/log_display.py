@@ -139,10 +139,10 @@ def default_activitylog_object_link(sender: Event, activitylog: ActivityLog, **k
     if isinstance(activitylog.content_object, Submission):
         url = activitylog.content_object.orga_urls.base
         link_text = escape(activitylog.content_object.title)
-        if activitylog.content_object.state in [
+        if activitylog.content_object.state in (
             SubmissionStates.ACCEPTED,
             SubmissionStates.CONFIRMED,
-        ]:
+        ):
             text = _n("Session", "Sessions", 1)
         else:
             text = _n("Proposal", "Proposals", 1)

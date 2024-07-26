@@ -127,7 +127,7 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                 )
                 doc = BeautifulSoup(preview_text, "lxml")
                 for link in doc.findAll("a"):
-                    if link.attrs.get("href") in [None, "", "http://", "https://"]:
+                    if link.attrs.get("href") in (None, "", "http://", "https://"):
                         raise forms.ValidationError(
                             _(
                                 "You have an empty link in your email, labeled “{text}”!"

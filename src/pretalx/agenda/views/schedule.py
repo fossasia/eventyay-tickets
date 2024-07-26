@@ -123,7 +123,7 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         if request.headers.get("If-None-Match") == etag:
             return HttpResponseNotModified()
         headers = {"ETag": etag}
-        if file_type not in ["application/json", "text/xml"]:
+        if file_type not in ("application/json", "text/xml"):
             headers["Content-Disposition"] = (
                 f'attachment; filename="{safe_filename(file_name)}"'
             )
@@ -158,7 +158,7 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
         """
         )
         output_format = request.GET.get("format", "table")
-        if output_format not in ["list", "table"]:
+        if output_format not in ("list", "table"):
             output_format = "table"
         try:
             result = draw_ascii_schedule(data, output_format=output_format)
@@ -210,10 +210,10 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
 
     @context
     def exporters(self):
-        return list(
+        return [
             exporter(self.request.event)
             for _, exporter in register_data_exporters.send(self.request.event)
-        )
+        ]
 
     @context
     def show_talk_list(self):

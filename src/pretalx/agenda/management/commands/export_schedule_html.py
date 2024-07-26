@@ -45,7 +45,7 @@ def find_assets(html):
     for asset in soup.find_all(["script", "img"]):
         yield asset.attrs["src"]
     for asset in soup.find_all(["link"]):
-        if asset.attrs["rel"][0] in ["icon", "stylesheet"]:
+        if asset.attrs["rel"][0] in ("icon", "stylesheet"):
             yield asset.attrs["href"]
 
 
@@ -152,7 +152,7 @@ def export_event(event, destination):
         fake_admin(event) as get,
     ):
         logging.info("Collecting URLs for export")
-        urls = [*event_urls(event)]
+        urls = list(event_urls(event))
         assets = set()
 
         logging.info(f"Exporting {len(urls)} pages")

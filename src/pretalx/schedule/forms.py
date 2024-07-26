@@ -66,7 +66,7 @@ class AvailabilitiesFormMixin(forms.Form):
         self.event = event
         self.resolution = kwargs.pop("resolution", None)
         self.limit_to_rooms = limit_to_rooms
-        initial = kwargs.pop("initial", dict())
+        initial = kwargs.pop("initial", {})
         initial_instance = kwargs["instance"]
         initial["availabilities"] = self._serialize(self.event, initial_instance)
         if not isinstance(self, forms.BaseModelForm):

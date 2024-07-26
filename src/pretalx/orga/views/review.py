@@ -271,7 +271,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
         total = {"accept": 0, "reject": 0, "error": 0}
         pending = self.get_pending(request)
         for key, value in request.POST.items():
-            if not key.startswith("s-") or value not in ["accept", "reject"]:
+            if not key.startswith("s-") or value not in ("accept", "reject"):
                 continue
             code = key.strip("s-")
             try:

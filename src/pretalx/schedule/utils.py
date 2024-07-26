@@ -4,7 +4,7 @@ def guess_schedule_version(event):
 
     version = event.current_schedule.version
     prefix = ""
-    for separator in [",", ".", "-", "_"]:
+    for separator in (",", ".", "-", "_"):
         if separator in version:
             prefix, version = version.rsplit(separator, maxsplit=1)
             break

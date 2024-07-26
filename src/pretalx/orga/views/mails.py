@@ -483,7 +483,7 @@ class TemplateList(EventPermissionRequired, TemplateView):
         )
         pks = [
             template.pk if template else None
-            for template in [accept, ack, reject, update, remind]
+            for template in (accept, ack, reject, update, remind)
         ]
         result["other"] = [
             MailTemplateForm(
