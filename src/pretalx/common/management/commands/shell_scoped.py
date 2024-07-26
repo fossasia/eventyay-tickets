@@ -15,8 +15,8 @@ class Command(BaseCommand):  # pragma: no cover
     def create_parser(self, *args, **kwargs):
         parser = super().create_parser(*args, **kwargs)
 
-        def parse_args(args):
-            return parser.parse_known_args(args)[0]
+        def parse_args(arguments):
+            return parser.parse_known_args(arguments)[0]
 
         parser.parse_args = parse_args
         return parser

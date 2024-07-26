@@ -23,25 +23,25 @@ def gravatar_cache(person_id: int):
         )
         return
 
-    r = get(
+    response = get(
         f"https://www.gravatar.com/avatar/{user.gravatar_parameter}?s=512",
         timeout=10,
     )
 
     logger.info(
-        f"gravatar returned http {r.status_code} when getting avatar for user {user.name}"
+        f"gravatar returned http {response.status_code} when getting avatar for user {user.name}"
     )
 
-    if 400 <= r.status_code <= 499:
+    if 400 <= response.status_code <= 499:
         # avatar not found.
         user.get_gravatar = False
         user.save()
         return
-    elif r.status_code != 200:
+    elif response.status_code != 200:
         return
 
     with NamedTemporaryFile(delete=True) as tmp_img:
-        for chunk in r:
+        for chunk in response:
             tmp_img.write(chunk)
         tmp_img.flush()
 

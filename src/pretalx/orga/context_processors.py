@@ -61,12 +61,14 @@ def orga_events(request):
     ):
         child_session_key = f"child_session_{request.event.pk}"
         child_session = request.session.get(child_session_key)
-        s = SessionStore()
-        if not child_session or not s.exists(child_session):
-            s[f"pretalx_event_access_{request.event.pk}"] = request.session.session_key
-            s.create()
-            context["new_session"] = s.session_key
-            request.session[child_session_key] = s.session_key
+        store = SessionStore()
+        if not child_session or not store.exists(child_session):
+            store[f"pretalx_event_access_{request.event.pk}"] = (
+                request.session.session_key
+            )
+            store.create()
+            context["new_session"] = store.session_key
+            request.session[child_session_key] = store.session_key
             request.session["event_access"] = True
         else:
             context["new_session"] = child_session

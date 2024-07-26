@@ -149,9 +149,9 @@ class SubmissionsListView(LoggedInEventPageMixin, ListView):
     @context
     def information(self):
         return [
-            i
-            for i in self.request.event.information.all()
-            if person_can_view_information(self.request.user, i)
+            info
+            for info in self.request.event.information.all()
+            if person_can_view_information(self.request.user, info)
         ]
 
     @context
@@ -329,7 +329,9 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             elif form.has_changed():
                 form.instance.submission = obj
                 form.save()
-                change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
+                change_data = {
+                    key: form.cleaned_data.get(key) for key in form.changed_data
+                }
                 change_data["id"] = form.instance.pk
                 obj.log_action(
                     "pretalx.submission.resource.update", person=self.request.user

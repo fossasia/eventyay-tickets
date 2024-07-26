@@ -50,8 +50,8 @@ class SpeakerSerializer(ModelSerializer):
         questions = kwargs.pop("questions", [])
         self.questions = (
             questions
-            if questions in ["all", ["all"]]
-            else [q for q in questions if q.isnumeric()]
+            if questions in ("all", ["all"])
+            else [question for question in questions if question.isnumeric()]
         )
         super().__init__(*args, **kwargs)
 

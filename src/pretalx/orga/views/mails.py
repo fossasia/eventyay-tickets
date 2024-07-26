@@ -356,13 +356,13 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             for locale in self.request.event.locales:
                 with language(locale):
                     context_dict = TolerantDict()
-                    for k, v in form.get_valid_placeholders().items():
-                        context_dict[k] = (
-                            '<span class="placeholder" title="{}">{}</span>'.format(
-                                _(
+                    for key, value in form.get_valid_placeholders().items():
+                        context_dict[key] = (
+                            '<span class="placeholder" title="{title}">{content}</span>'.format(
+                                title=_(
                                     "This value will be replaced based on dynamic parameters."
                                 ),
-                                v.render_sample(self.request.event),
+                                content=value.render_sample(self.request.event),
                             )
                         )
 
@@ -379,7 +379,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                         "html": preview_text,
                     }
                     # Very rough method to deduplicate recipients, but good enough for a preview
-                    self.mail_count = len({str(r) for r in result})
+                    self.mail_count = len({str(res) for res in result})
             return self.get(self.request, *self.args, **self.kwargs)
 
         result = form.save()

@@ -216,11 +216,16 @@ class SpeakerProfileForm(
     @cached_property
     def user_fields(self):
         if self.user and not self.essential_only:
-            return [f for f in self.USER_FIELDS if f != "email" or self.with_email]
+            return [
+                field
+                for field in self.USER_FIELDS
+                if field != "email" or self.with_email
+            ]
         return [
-            f
-            for f in self.USER_FIELDS
-            if f not in self.FIRST_TIME_EXCLUDE and (f != "email" or self.with_email)
+            field
+            for field in self.USER_FIELDS
+            if field not in self.FIRST_TIME_EXCLUDE
+            and (field != "email" or self.with_email)
         ]
 
     def clean_email(self):

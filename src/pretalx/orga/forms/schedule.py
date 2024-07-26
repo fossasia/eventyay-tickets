@@ -203,7 +203,7 @@ class ScheduleExportForm(ExportForm):
         return [tag.tag for tag in obj.tags.all()] or None
 
     def _get_resources_value(self, obj):
-        return [r.url for r in obj.active_resources if r.url]
+        return [resource.url for resource in obj.active_resources if resource.url]
 
 
 class ScheduleRoomForm(I18nFormMixin, forms.Form):
@@ -236,6 +236,6 @@ class ScheduleVersionForm(forms.Form):
         self.event = event
         super().__init__(*args, **kwargs)
         self.fields["version"].choices = [
-            (s.version, s.version)
-            for s in self.event.schedules.filter(version__isnull=False)
+            (schedule.version, schedule.version)
+            for schedule in self.event.schedules.filter(version__isnull=False)
         ]

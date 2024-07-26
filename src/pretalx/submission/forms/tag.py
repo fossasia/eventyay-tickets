@@ -17,7 +17,7 @@ class TagForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         qs = self.event.tags.all()
         if self.instance and self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
-        if any(str(s.tag) == str(tag) for s in qs):
+        if any(str(tag_obj.tag) == str(tag) for tag_obj in qs):
             raise forms.ValidationError(_("You already have a tag by this name!"))
         return tag
 

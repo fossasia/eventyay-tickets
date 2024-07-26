@@ -36,7 +36,9 @@ class AvailabilitiesFormMixin(forms.Form):
             availabilities = []
 
         result = {
-            "availabilities": [a for a in availabilities if is_valid(a)],
+            "availabilities": [
+                avail for avail in availabilities if avail["end"] > avail["start"]
+            ],
             "event": {
                 "timezone": event.timezone,
                 "date_from": str(event.date_from),

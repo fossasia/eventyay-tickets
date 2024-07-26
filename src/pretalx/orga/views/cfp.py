@@ -205,7 +205,9 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             elif form.has_changed():
                 form.instance.question = obj
                 form.save()
-                change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
+                change_data = {
+                    key: form.cleaned_data.get(key) for key in form.changed_data
+                }
                 change_data["id"] = form.instance.pk
                 obj.log_action(
                     "pretalx.question.option.update",
@@ -222,7 +224,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         for form in extra_forms:
             form.instance.question = obj
             form.save()
-            change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
+            change_data = {key: form.cleaned_data.get(key) for key in form.changed_data}
             change_data["id"] = form.instance.pk
             obj.log_action(
                 "pretalx.question.option.create",
@@ -735,11 +737,11 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
     permission_required = "orga.edit_cfp"
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["current_configuration"] = (
-            self.request.event.cfp_flow.get_editor_config(json_compat=True)
+        ctx = super().get_context_data(**kwargs)
+        ctx["current_configuration"] = self.request.event.cfp_flow.get_editor_config(
+            json_compat=True
         )
-        context["event_configuration"] = {
+        ctx["event_configuration"] = {
             "header_pattern": self.request.event.display_settings["header_pattern"]
             or "bg-primary",
             "header_image": (
@@ -753,9 +755,7 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
             "primary_color": self.request.event.get_primary_color(),
             "locales": self.request.event.locales,
         }
-        site_name = dict(settings.CONFIG.items("site")).get("name")
-        context["site_name"] = site_name
-        return context
+        return ctx
 
     def post(self, request, *args, **kwargs):
         try:

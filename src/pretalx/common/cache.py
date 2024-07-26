@@ -56,14 +56,14 @@ class NamespacedCache:
     def get_many(self, keys: list[str]) -> dict[str, str]:
         values = self.cache.get_many([self._prefix_key(key) for key in keys])
         newvalues = {}
-        for k, v in values.items():
-            newvalues[self._strip_prefix(k)] = v
+        for key, value in values.items():
+            newvalues[self._strip_prefix(key)] = value
         return newvalues
 
     def set_many(self, values: dict[str, str], timeout=300):
         newvalues = {}
-        for k, v in values.items():
-            newvalues[self._prefix_key(k)] = v
+        for key, value in values.items():
+            newvalues[self._prefix_key(key)] = value
         return self.cache.set_many(newvalues, timeout)
 
     def delete(self, key: str):  # NOQA

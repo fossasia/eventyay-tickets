@@ -322,20 +322,20 @@ class QuestionFieldsMixin:
             return field
         return None
 
-    def save_questions(self, k, v):
+    def save_questions(self, key, value):
         """Receives a key and value from cleaned_data."""
         from pretalx.submission.models import Answer, QuestionTarget
 
-        field = self.fields[k]
+        field = self.fields[key]
         if field.answer:
             # We already have a cached answer object, so we don't
             # have to create a new one
-            if v == "" or v is None or v is False:
+            if value == "" or value is None or value is False:
                 field.answer.delete()
             else:
-                self._save_to_answer(field, field.answer, v)
+                self._save_to_answer(field, field.answer, value)
                 field.answer.save()
-        elif v != "" and v is not None and v is not False:
+        elif value != "" and value is not None and value is not False:
             answer = Answer(
                 review=(
                     self.review
@@ -354,12 +354,12 @@ class QuestionFieldsMixin:
                 ),
                 question=field.question,
             )
-            self._save_to_answer(field, answer, v)
+            self._save_to_answer(field, answer, value)
             answer.save()
 
     def _save_to_answer(self, field, answer, value):
         if isinstance(field, forms.ModelMultipleChoiceField):
-            answstr = ", ".join([str(o) for o in value])
+            answstr = ", ".join([str(option) for option in value])
             if not answer.pk:
                 answer.save()
             else:
@@ -481,11 +481,5 @@ class HierarkeyMixin:
 
     def get_new_filename(self, name: str) -> str:
         nonce = get_random_string(length=8)
-        return "{}-{}/{}/{}.{}.{}".format(
-            self.obj._meta.model_name,
-            self.attribute_name,
-            self.obj.pk,
-            name,
-            nonce,
-            name.split(".")[-1],
-        )
+        suffix = name.split(".")[-1]
+        return f"{self.obj._meta.model_name}-{self.attribute_name}/{self.obj.pk}/{name}.{nonce}.{suffix}"

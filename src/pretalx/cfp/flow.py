@@ -61,14 +61,15 @@ def cfp_session(request):
     request.session.modified = True
     if "cfp" not in request.session or not request.session["cfp"]:
         request.session["cfp"] = {}
+    session_data = request.session["cfp"]
     key = request.resolver_match.kwargs["tmpid"]
-    if key not in request.session["cfp"]:
-        request.session["cfp"][key] = {
+    if key not in session_data:
+        session_data[key] = {
             "data": {},
             "initial": {},
             "files": {},
         }
-    return request.session["cfp"][key]
+    return session_data[key]
 
 
 class BaseCfPStep:
@@ -120,9 +121,9 @@ class BaseCfPStep:
             return prev.get_step_url(request, query={"draft": False})
 
     def get_next_url(self, request):
-        n = self.get_next_applicable(request)
-        if n:
-            return n.get_step_url(request)
+        next_step = self.get_next_applicable(request)
+        if next_step:
+            return next_step.get_step_url(request)
 
     def get_step_url(self, request, query=None):
         kwargs = request.resolver_match.kwargs

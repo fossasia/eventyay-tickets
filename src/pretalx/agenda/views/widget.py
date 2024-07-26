@@ -207,8 +207,8 @@ def widget_script(request, event):
         widget_file = "agenda/js/pretalx-schedule.js"
     else:
         widget_file = "agenda/js/pretalx-schedule.min.js"
-    f = finders.find(widget_file)
-    with open(f, encoding="utf-8") as fp:
+    file_path = finders.find(widget_file)
+    with open(file_path, encoding="utf-8") as fp:
         code = fp.read()
     data = code.encode()
     return HttpResponse(data, content_type="text/javascript")

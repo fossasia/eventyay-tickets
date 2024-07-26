@@ -182,6 +182,19 @@ class DirectionForm(forms.Form):
         required=False,
     )
 
+class ReviewAssignmentForm(forms.Form):
+    def __init__(self, *args, event=None, **kwargs):
+        self.event = event
+        self.reviewers = (
+            User.objects.filter(teams__in=self.event.teams.filter(is_reviewer=True))
+            .order_by("name")
+            .distinct()
+        ).prefetch_related("assigned_reviews")
+        self.submissions = self.event.submissions.order_by("title").prefetch_related(
+            "assigned_reviewers"
+        )
+        super().__init__(*args, **kwargs)
+
 
 class ReviewerForProposalForm(forms.ModelForm):
     def __init__(self, *args, reviewers=None, **kwargs):
@@ -220,6 +233,23 @@ class ProposalForReviewerForm(forms.ModelForm):
             initial=list(initial),
             required=False,
         )
+        super().__init__(*args, **kwargs)
+
+
+class ReviewerForProposalForm(ReviewAssignmentForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        review_choices = [(reviewer.id, reviewer.name) for reviewer in self.reviewers]
+        for submission in self.submissions:
+            self.fields[submission.code] = forms.MultipleChoiceField(
+                choices=review_choices,
+                widget=forms.SelectMultiple(attrs={"class": "select2"}),
+                initial=list(
+                    submission.assigned_reviewers.values_list("id", flat=True)
+                ),
+                label=submission.title,
+                required=False,
+            )
 
     def save(self, *args, **kwargs):
         # No calling 'super().save()' here – it would potentially update a user's code!
@@ -230,10 +260,23 @@ class ProposalForReviewerForm(forms.ModelForm):
                 instance = User.objects.get(code=new_code)
             instance.assigned_reviews.set(self.cleaned_data["assigned_reviews"])
 
-    class Meta:
-        model = User
-        fields = ["code"]
-        widgets = {"code": forms.HiddenInput()}
+
+class ProposalForReviewerForm(ReviewAssignmentForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        submission_choices = [(sub.id, sub.title) for sub in self.submissions]
+        for reviewer in self.reviewers:
+            self.fields[reviewer.code] = forms.MultipleChoiceField(
+                choices=submission_choices,
+                widget=forms.SelectMultiple(attrs={"class": "select2"}),
+                initial=list(reviewer.assigned_reviews.values_list("id", flat=True)),
+                label=reviewer.name,
+                required=False,
+            )
+
+    def save(self, *args, **kwargs):
+        for reviewer in self.reviewers:
+            reviewer.assigned_reviews.set(self.cleaned_data[reviewer.code])
 
 
 class ReviewExportForm(ExportForm):
@@ -395,7 +438,9 @@ class ReviewAssignImportForm(DirectionForm):
 
     def _get_submission(self, text):
         if not self._submissions_cache:
-            self._submissions_cache = {s.code: s for s in self.event.submissions.all()}
+            self._submissions_cache = {
+                sub.code: sub for sub in self.event.submissions.all()
+            }
         try:
             return self._submissions_cache[text.strip().upper()]
         except Exception:
@@ -418,13 +463,13 @@ class ReviewAssignImportForm(DirectionForm):
         if direction == "reviewer":
             # keys should be users, values should be lists of proposals
             new_uploaded_data = {
-                self._get_user(key): [self._get_submission(v) for v in value]
+                self._get_user(key): [self._get_submission(val) for val in value]
                 for key, value in uploaded_data.items()
             }
         else:
             # keys should be proposals, values should be lists of users
             new_uploaded_data = {
-                self._get_submission(key): [self._get_user(v) for v in value]
+                self._get_submission(key): [self._get_user(val) for val in value]
                 for key, value in uploaded_data.items()
             }
 

@@ -79,9 +79,9 @@ class GeneralView(TemplateView):
         if self.request.user.is_anonymous:
             events.filter(is_public=True)
         return [
-            e
-            for e in events
-            if e.is_public or self.request.user.has_perm("cfp.view_event", e)
+            event
+            for event in events
+            if event.is_public or self.request.user.has_perm("cfp.view_event", event)
         ]
 
     def get_context_data(self, **kwargs):

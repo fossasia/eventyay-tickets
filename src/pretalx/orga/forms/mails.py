@@ -39,7 +39,9 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                 continue
             for lang in value.data.values():
                 used_placeholders |= {
-                    v[1] for v in string.Formatter().parse(lang) if v[1]
+                    element[1]
+                    for element in string.Formatter().parse(lang)
+                    if element[1]
                 }
         return used_placeholders - valid_placeholders
 
@@ -110,7 +112,7 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                 )
             )
         if warnings:
-            warnings = ", ".join("{" + w + "}" for w in warnings)
+            warnings = ", ".join("{" + warning + "}" for warning in warnings)
             raise forms.ValidationError(str(_("Unknown placeholder!")) + " " + warnings)
 
         for locale in self.event.locales:
@@ -193,7 +195,11 @@ class MailDetailForm(ReadOnlyFlag, forms.ModelForm):
         obj = super().save(*args, **kwargs)
         if self.has_changed() and "to" in self.changed_data:
             addresses = list(
-                {a.strip().lower() for a in (obj.to or "").split(",") if a.strip()}
+                {
+                    address.strip().lower()
+                    for address in (obj.to or "").split(",")
+                    if address.strip()
+                }
             )
             found_addresses = []
             for address in addresses:
@@ -452,7 +458,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         for user, user_mails in mails_by_user.items():
             # Deduplicate emails: we don't want speakers to receive the same
             # email twice, just because they have multiple submissions.
-            mail_dict = {m.subject + m.text: m for m in user_mails}
+            mail_dict = {mail.subject + mail.text: mail for mail in user_mails}
             # Now we can create the emails and add the speakers to them
             for mail in mail_dict.values():
                 mail.save()

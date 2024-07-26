@@ -683,14 +683,14 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
             can_change_submissions=True,
         ).exists()
         if not has_control_rights:
-            t = Team.objects.create(
+            team = Team.objects.create(
                 organiser=event.organiser,
                 name=_(f"Team {event.name}"),
                 can_change_event_settings=True,
                 can_change_submissions=True,
             )
-            t.members.add(self.request.user)
-            t.limit_events.add(event)
+            team.members.add(self.request.user)
+            team.limit_events.add(event)
 
         logdata = {}
         for form in form_list:
