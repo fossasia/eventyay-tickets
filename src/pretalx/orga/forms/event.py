@@ -460,7 +460,7 @@ class MailSettingsForm(
             "localhost",
             "localhost.localdomain",
         ]
-        if not uses_encryption and not data.get("smtp_host") in localhost_names:
+        if not uses_encryption and data.get("smtp_host") not in localhost_names:
             self.add_error(
                 "smtp_host",
                 ValidationError(

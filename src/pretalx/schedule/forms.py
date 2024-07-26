@@ -123,7 +123,7 @@ class AvailabilitiesFormMixin(forms.Form):
             raise forms.ValidationError(message)
         rawavail.pop("id", None)
         rawavail.pop("allDay", None)
-        if not set(rawavail.keys()) == {"start", "end"}:
+        if set(rawavail.keys()) != {"start", "end"}:
             raise forms.ValidationError(message)
 
         try:

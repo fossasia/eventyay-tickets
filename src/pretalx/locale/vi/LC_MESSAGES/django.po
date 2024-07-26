@@ -7524,3 +7524,9 @@ msgstr ""
 msgctxt "proposal status"
 msgid "not accepted"
 msgstr ""
+
+msgid "minutes"
+msgstr ""
+
+msgid "Hidden rooms"
+msgstr ""

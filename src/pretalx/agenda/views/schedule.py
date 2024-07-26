@@ -31,8 +31,8 @@ logger = logging.getLogger(__name__)
 class ScheduleMixin:
     @cached_property
     def version(self):
-        if "version" in self.kwargs:
-            return unquote(self.kwargs["version"])
+        if version := self.kwargs.get("version"):
+            return unquote(version)
         return None
 
     def get_object(self):
@@ -49,8 +49,8 @@ class ScheduleMixin:
         return self.get_object()
 
     def dispatch(self, request, *args, **kwargs):
-        if "version" in request.GET:
-            kwargs["version"] = request.GET["version"]
+        if version := request.GET.get("version"):
+            kwargs["version"] = version
             return HttpResponsePermanentRedirect(
                 reverse(
                     f"agenda:versioned-{request.resolver_match.url_name}",

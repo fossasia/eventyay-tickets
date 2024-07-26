@@ -964,12 +964,7 @@ class Event(PretalxModel):
         old_position = old_phase.position if old_phase else -1
         future_phases = future_phases.filter(position__gt=old_position)
         next_phase = future_phases.order_by("position").first()
-        if not (
-            next_phase
-            and (
-                (next_phase.start and next_phase.start <= _now) or not next_phase.start
-            )
-        ):
+        if not next_phase or not next_phase.start or next_phase.start > _now:
             return old_phase
         next_phase.activate()
         return next_phase

@@ -352,10 +352,13 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
 
     def get_valid_placeholders(self, ignore_data=False):
         kwargs = ["event", "user", "submission", "slot"]
-        if getattr(self, "cleaned_data", None) and not ignore_data:
-            if self.cleaned_data.get("speakers"):
-                kwargs.remove("submission")
-                kwargs.remove("slot")
+        if (
+            getattr(self, "cleaned_data", None)
+            and not ignore_data
+            and self.cleaned_data.get("speakers")
+        ):
+            kwargs.remove("submission")
+            kwargs.remove("slot")
         return get_available_placeholders(event=self.event, kwargs=kwargs)
 
     def get_recipients(self):

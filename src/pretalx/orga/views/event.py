@@ -594,16 +594,18 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
         )
 
     def render(self, form=None, **kwargs):
-        if self.steps.current != "initial":
-            if self.get_cleaned_data_for_step("initial") is None:
-                return self.render_goto_step("initial")
+        if (
+            self.steps.current != "initial"
+            and self.get_cleaned_data_for_step("initial") is None
+        ):
+            return self.render_goto_step("initial")
         if self.steps.current == "timeline":
             fdata = self.get_cleaned_data_for_step("basics")
             year = now().year % 100
             if (
                 fdata
-                and not str(year) in fdata["slug"]
-                and not str(year + 1) in fdata["slug"]
+                and str(year) not in fdata["slug"]
+                and str(year + 1) not in fdata["slug"]
             ):
                 messages.warning(
                     self.request,

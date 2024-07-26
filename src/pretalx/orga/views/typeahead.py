@@ -76,10 +76,8 @@ def nav_typeahead(request):
 
     show_user = (
         not query
-        or (
-            query and request.user.email and query.lower() in request.user.email.lower()
-        )
-        or (query and request.user.name and query.lower() in request.user.name.lower())
+        or (request.user.email and query.lower() in request.user.email.lower())
+        or (request.user.name and query.lower() in request.user.name.lower())
     )
 
     qs_orga = Organiser.objects.filter(

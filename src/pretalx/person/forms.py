@@ -226,20 +226,20 @@ class SpeakerProfileForm(
 
     def clean(self):
         data = super().clean()
-        if self.event.cfp.require_avatar:
-            if (
-                not data.get("avatar")
-                and not data.get("get_gravatar")
-                and not (self.user and self.user.has_avatar)
-            ):
-                self.add_error(
-                    "avatar",
-                    forms.ValidationError(
-                        _(
-                            "Please provide a profile picture or allow us to load your picture from gravatar!"
-                        )
-                    ),
-                )
+        if (
+            self.event.cfp.require_avatar
+            and not data.get("avatar")
+            and not data.get("get_gravatar")
+            and not (self.user and self.user.has_avatar)
+        ):
+            self.add_error(
+                "avatar",
+                forms.ValidationError(
+                    _(
+                        "Please provide a profile picture or allow us to load your picture from gravatar!"
+                    )
+                ),
+            )
         return data
 
     def save(self, **kwargs):
@@ -313,7 +313,7 @@ class LoginInfoForm(forms.ModelForm):
     def clean(self):
         data = super().clean()
         password = self.cleaned_data.get("password")
-        if password and not password == self.cleaned_data.get("password_repeat"):
+        if password and password != self.cleaned_data.get("password_repeat"):
             self.add_error(
                 "password_repeat", ValidationError(phrases.base.passwords_differ)
             )
