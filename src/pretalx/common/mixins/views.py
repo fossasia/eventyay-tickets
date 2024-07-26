@@ -386,9 +386,9 @@ class ActionConfirmMixin:
     @property
     def additional_actions(self):
         # Actions can be links or buttons, and should be a list of dicts:
-        # label, color, icon (optional)
-        # links: href
-        # buttons: name, value
+        # optional attributes: label, color, icon
+        # links additionally have href
+        # buttons additionall have name, value
         return []
 
     @property
