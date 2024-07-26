@@ -263,7 +263,7 @@ class SensibleBackWizardMixin:
         step button, save data instead. The rest of this is copied from
         WizardView. We want to save data when hitting "back"!
         """
-        wizard_goto_step = self.request.POST.get("wizard_goto_step", None)
+        wizard_goto_step = self.request.POST.get("wizard_goto_step")
         management_form = ManagementForm(self.request.POST, prefix=self.prefix)
         if not management_form.is_valid():
             raise ValidationError(

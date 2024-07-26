@@ -59,7 +59,8 @@ def update_check():
             "public": Event.objects.filter(is_public=True).count(),
         },
         "plugins": [
-            {"name": p.module, "version": p.version} for p in get_all_plugins()
+            {"name": plugin.module, "version": plugin.version}
+            for plugin in get_all_plugins()
         ],
     }
     try:

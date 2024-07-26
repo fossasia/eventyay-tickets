@@ -52,7 +52,7 @@ urlpatterns = [
                 # Old widget URL. Keep at least until end of 2024. Will still be used in
                 # a lot of old websites, so possibly just keep it forever.
                 re_path(
-                    r"^schedule/widget/v2.[a-z]{2}.js$",
+                    "^schedule/widget/v2.[a-z]{2}.js$",
                     widget.widget_script,
                     name="widget.script.legacy",
                 ),

@@ -124,17 +124,17 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
         removal. Can't use super() because we need to patch in the
         .png.fp object for some unholy (and possibly buggy) reason.
         """
-        f = super().to_python(data)
-        if f is None or f.name.endswith(".svg"):
-            return f
+        field = super().to_python(data)
+        if field is None or field.name.endswith(".svg"):
+            return field
 
         # We need to get a file object for Pillow. We might have a path or we might
         # have to read the data into memory.
-        if hasattr(data, "temporary_file_path"):
+        if getattr(data, "temporary_file_path", None):
             with open(data.temporary_file_path(), "rb") as temp_fp:
                 file = BytesIO(temp_fp.read())
         else:
-            if hasattr(data, "read"):
+            if getattr(data, "read", None):
                 file = BytesIO(data.read())
             else:
                 file = BytesIO(data["content"])
@@ -147,10 +147,10 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
             image.verify()
 
             # Annotating so subclasses can reuse it for their own validation
-            f.image = image
+            field.image = image
             # Pillow doesn't detect the MIME type of all formats. In those
             # cases, content_type will be None.
-            f.content_type = Image.MIME.get(image.format)
+            field.content_type = Image.MIME.get(image.format)
         except Exception as exc:
             # Pillow doesn't recognize it as an image.
             raise ValidationError(
@@ -159,11 +159,11 @@ class ImageField(ExtensionFileInput, SizeFileInput, FileField):
                     "image or a corrupted image."
                 )
             ) from exc
-        if hasattr(f, "seek") and callable(f.seek):
-            f.seek(0)
+        if getattr(field, "seek", None) and callable(field.seek):
+            field.seek(0)
 
         image.fp = file
-        if hasattr(image, "png"):  # Yeah, idk what's up with this
+        if getattr(image, "png", None):  # Yeah, idk what's up with this
             image.png.fp = file
 
         stream = BytesIO()

@@ -384,7 +384,6 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
                     answer = question.answers.filter(submission=submission).first()
                     if not answer or not answer.is_answered:
                         missing.append(question)
-                        continue
             elif question.target == QuestionTarget.SPEAKER:
                 answer = question.answers.filter(person=person).first()
                 if not answer or not answer.is_answered:

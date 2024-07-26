@@ -55,8 +55,7 @@ class SubmissionCard(Flowable):
     def coord(self, x, y, unit=1):
         """http://stackoverflow.com/questions/4726011/wrap-text-in-a-table-
         reportlab Helper class to help position flowables in Canvas objects."""
-        x, y = x * unit, self.height - y * unit
-        return x, y
+        return x * unit, self.height - y * unit
 
     def render_paragraph(self, paragraph, gap=2):
         _, height = paragraph.wrapOn(self.canv, self.width - 30 * mm, 50 * mm)

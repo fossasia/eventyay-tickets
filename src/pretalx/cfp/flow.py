@@ -570,8 +570,6 @@ class CfPFlow:
     request, for the CfP editor, it will contain all steps.
     """
 
-    event = None
-
     def __init__(self, event):
         self.event = event
         data = event.cfp.settings["flow"]

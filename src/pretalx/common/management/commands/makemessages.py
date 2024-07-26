@@ -79,8 +79,6 @@ class Command(Parent):
         frontend_path = base_path / "frontend/schedule-editor"
         locales = [locale.name for locale in locale_path.iterdir() if locale.is_dir()]
 
-        # env = os.environ.copy()
-        # env["PRETALX_LOCALES"] = ",".join(locales)
         subprocess.run(
             "npm run i18n:extract", check=True, shell=True, cwd=frontend_path
         )
