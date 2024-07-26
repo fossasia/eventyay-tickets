@@ -57,6 +57,16 @@ def i18n_string(data, locales):
     return LazyI18nString(data)
 
 
+def serialize_value(value):
+    if getattr(value, "pk", None):
+        return value.pk
+    if getattr(value, "__iter__", None):
+        return [serialize_value(element) for element in value]
+    if getattr(value, "serialize", None):
+        return value.serialize()
+    return str(value)
+
+
 def cfp_session(request):
     request.session.modified = True
     if "cfp" not in request.session or not request.session["cfp"]:
@@ -233,15 +243,6 @@ class FormFlowStep(TemplateFlowStep):
         return redirect(next_url) if next_url else None
 
     def set_data(self, data):
-        def serialize_value(value):
-            if getattr(value, "pk", None):
-                return value.pk
-            if getattr(value, "__iter__", None):
-                return [serialize_value(v) for v in value]
-            if getattr(value, "serialize", None):
-                return value.serialize()
-            return str(value)
-
         self.cfp_session["data"][self.identifier] = json.loads(
             json.dumps(
                 {
@@ -311,20 +312,6 @@ class InfoStep(GenericFlowStep, FormFlowStep):
     form_class = InfoForm
     priority = 0
 
-    @property
-    def label(self):
-        return phrases.base.general
-
-    @property
-    def _title(self):
-        return _("Hey, nice to meet you!")
-
-    @property
-    def _text(self):
-        return _(
-            "We’re glad that you want to contribute to our event with your proposal. Let’s get started, this won’t take long."
-        )
-
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
         result["access_code"] = getattr(self.request, "access_code", None)
@@ -387,6 +374,20 @@ class InfoStep(GenericFlowStep, FormFlowStep):
 
         request.submission = submission
 
+    @property
+    def label(self):
+        return phrases.base.general
+
+    @property
+    def _title(self):
+        return _("Hey, nice to meet you!")
+
+    @property
+    def _text(self):
+        return _(
+            "We’re glad that you want to contribute to our event with your proposal. Let’s get started, this won’t take long."
+        )
+
 
 class QuestionsStep(GenericFlowStep, FormFlowStep):
     identifier = "questions"
@@ -394,20 +395,6 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
     form_class = QuestionsForm
     template_name = "cfp/event/submission_questions.html"
     priority = 25
-
-    @property
-    def label(self):
-        return phrases.cfp.questions
-
-    @property
-    def _title(self):
-        return _("Tell us more!")
-
-    @property
-    def _text(self):
-        return _(
-            "Before we can save your proposal, we have some more questions for you."
-        )
 
     def is_applicable(self, request):
         self.request = request
@@ -451,6 +438,20 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
         form.is_valid()
         form.save()
 
+    @property
+    def label(self):
+        return phrases.cfp.questions
+
+    @property
+    def _title(self):
+        return _("Tell us more!")
+
+    @property
+    def _text(self):
+        return _(
+            "Before we can save your proposal, we have some more questions for you."
+        )
+
 
 class UserStep(GenericFlowStep, FormFlowStep):
     identifier = "user"
@@ -458,22 +459,6 @@ class UserStep(GenericFlowStep, FormFlowStep):
     form_class = UserForm
     template_name = "cfp/event/submission_user.html"
     priority = 49
-
-    @property
-    def label(self):
-        return _("Account")
-
-    @property
-    def _title(self):
-        return _(
-            "That’s it about your proposal! We now just need a way to contact you."
-        )
-
-    @property
-    def _text(self):
-        return _(
-            "To create your proposal, you need an account on this page. This not only gives us a way to contact you, it also gives you the possibility to edit your proposal or to view its current state."
-        )
 
     def is_applicable(self, request):
         return not request.user.is_authenticated
@@ -495,6 +480,22 @@ class UserStep(GenericFlowStep, FormFlowStep):
             request, request.user, backend="django.contrib.auth.backends.ModelBackend"
         )
 
+    @property
+    def label(self):
+        return _("Account")
+
+    @property
+    def _title(self):
+        return _(
+            "That’s it about your proposal! We now just need a way to contact you."
+        )
+
+    @property
+    def _text(self):
+        return _(
+            "To create your proposal, you need an account on this page. This not only gives us a way to contact you, it also gives you the possibility to edit your proposal or to view its current state."
+        )
+
 
 class ProfileStep(GenericFlowStep, FormFlowStep):
     identifier = "profile"
@@ -502,20 +503,6 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
     form_class = SpeakerProfileForm
     template_name = "cfp/event/submission_profile.html"
     priority = 75
-
-    @property
-    def label(self):
-        return _("Profile")
-
-    @property
-    def _title(self):
-        return _("Tell us something about yourself!")
-
-    @property
-    def _text(self):
-        return _(
-            "This information will be publicly displayed next to your session - you can always edit for as long as proposals are still open."
-        )
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
@@ -545,6 +532,20 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
         form.is_valid()
         form.user = request.user
         form.save()
+
+    @property
+    def label(self):
+        return _("Profile")
+
+    @property
+    def _title(self):
+        return _("Tell us something about yourself!")
+
+    @property
+    def _text(self):
+        return _(
+            "This information will be publicly displayed next to your session - you can always edit for as long as proposals are still open."
+        )
 
 
 DEFAULT_STEPS = (
@@ -589,10 +590,6 @@ class CfPFlow:
             if previous_step:
                 previous_step._next = step
             previous_step = step
-
-    @property
-    def steps(self):
-        return list(self.steps_dict.values())
 
     def get_config(self, data, json_compat=False):
         if isinstance(data, str) and data:
@@ -656,6 +653,19 @@ class CfPFlow:
             steps = json.loads(json.dumps(steps, cls=I18nJSONEncoder))
         return steps
 
+    def get_config_json(self):
+        return json.dumps(self.config, cls=I18nJSONEncoder)
+
+    def save_config(self, data):
+        if isinstance(data, list) or (isinstance(data, dict) and "steps" not in data):
+            data = {"steps": data}
+        data = self.get_config(data, json_compat=True)
+        self.event.cfp.settings["flow"] = data
+        self.event.cfp.save()
+
+    def reset(self):
+        self.save_config(None)
+
     def _get_step_config_from_data(self, data):
         step_config = {}
         locales = self.event.locales
@@ -681,15 +691,6 @@ class CfPFlow:
             step_config["fields"].append(field)
         return step_config
 
-    def get_config_json(self):
-        return json.dumps(self.config, cls=I18nJSONEncoder)
-
-    def save_config(self, data):
-        if isinstance(data, list) or (isinstance(data, dict) and "steps" not in data):
-            data = {"steps": data}
-        data = self.get_config(data, json_compat=True)
-        self.event.cfp.settings["flow"] = data
-        self.event.cfp.save()
-
-    def reset(self):
-        self.save_config(None)
+    @property
+    def steps(self):
+        return list(self.steps_dict.values())

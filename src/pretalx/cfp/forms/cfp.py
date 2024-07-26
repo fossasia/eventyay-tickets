@@ -9,6 +9,17 @@ class CfPFormMixin:
     before all other forms changing help_text behaviour.
     """
 
+    def __init__(self, *args, field_configuration=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.field_configuration = field_configuration
+        if self.field_configuration:
+            self.field_configuration = {
+                field_data["key"]: field_data for field_data in field_configuration
+            }
+            for field_data in self.field_configuration:
+                if field_data in self.fields:
+                    self._update_cfp_texts(field_data)
+
     def _update_cfp_texts(self, field_name):
         field = self.fields.get(field_name)
         if not field or not self.field_configuration:
@@ -23,14 +34,3 @@ class CfPFormMixin:
             )
         if field_data.get("label"):
             field.label = field_data["label"]
-
-    def __init__(self, *args, field_configuration=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.field_configuration = field_configuration
-        if self.field_configuration:
-            self.field_configuration = {
-                field_data["key"]: field_data for field_data in field_configuration
-            }
-            for field_data in self.field_configuration:
-                if field_data in self.fields:
-                    self._update_cfp_texts(field_data)

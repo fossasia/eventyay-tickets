@@ -60,6 +60,19 @@ class SubmissionSerializer(I18nAwareModelSerializer):
 
     speaker_serializer_class = SubmitterSerializer
 
+    def __init__(self, *args, **kwargs):
+        self.can_view_speakers = kwargs.pop("can_view_speakers", False)
+        self.event = kwargs.pop("event", None)
+        questions = kwargs.pop("questions", [])
+        self.questions = (
+            questions
+            if questions == "all"
+            else [question for question in questions if question]
+        )
+        super().__init__(*args, **kwargs)
+        for field in ("title", "abstract", "description"):
+            setattr(self, f"get_{field}", partial(self.get_attribute, attribute=field))
+
     @staticmethod
     def get_duration(obj):
         return obj.get_duration()
@@ -97,17 +110,6 @@ class SubmissionSerializer(I18nAwareModelSerializer):
         if self.questions not in ("all", ["all"]):
             queryset = queryset.filter(question__in=self.questions)
         return AnswerSerializer(queryset, many=True).data
-
-    def __init__(self, *args, **kwargs):
-        self.can_view_speakers = kwargs.pop("can_view_speakers", False)
-        self.event = kwargs.pop("event", None)
-        questions = kwargs.pop("questions", [])
-        self.questions = (
-            questions if questions == "all" else [q for q in questions if q]
-        )
-        super().__init__(*args, **kwargs)
-        for field in ("title", "abstract", "description"):
-            setattr(self, f"get_{field}", partial(self.get_attribute, attribute=field))
 
     class Meta:
         model = Submission

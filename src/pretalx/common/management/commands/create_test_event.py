@@ -16,6 +16,14 @@ from pretalx.schedule.models import Room
 from pretalx.submission.models import Review, Submission, SubmissionType, Track
 
 
+def schedule_slot(submission, time, room):
+    slot = submission.slots.first()
+    slot.start = time
+    slot.end = time + dt.timedelta(minutes=submission.submission_type.default_duration)
+    slot.room = room
+    slot.save()
+
+
 class Command(BaseCommand):
     help = "Create a test event"
 
@@ -312,25 +320,12 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
         talk_room, workshop_room = self.event.rooms.all()
         current_time = self.event.datetime_from + dt.timedelta(hours=9)
 
-        def schedule_slot(submission, time, room):
-            slot = submission.slots.first()
-            slot.start = time
-            slot.end = time + dt.timedelta(
-                minutes=submission.submission_type.default_duration
-            )
-            slot.room = room
-            slot.save()
-
-        def build_block():
-            nonlocal current_time
-            schedule_slot(next(workshops), current_time, workshop_room)
-            for _ in range(3):
-                schedule_slot(next(talks), current_time, talk_room)
-                current_time += dt.timedelta(minutes=30)
-
         for _ in range(3):
             for _ in range(3):
-                build_block()
+                schedule_slot(next(workshops), current_time, workshop_room)
+                for _ in range(3):
+                    schedule_slot(next(talks), current_time, talk_room)
+                    current_time += dt.timedelta(minutes=30)
                 current_time += dt.timedelta(minutes=60)
             current_time += dt.timedelta(hours=16, minutes=30)
         self.event.wip_schedule.freeze("v1.0")
