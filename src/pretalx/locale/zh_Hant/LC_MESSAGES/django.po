@@ -1084,8 +1084,9 @@ msgid ""
 "You can discard your draft proposal here. You cannot undo this - if you are "
 "just uncertain if you can or should submit your proposal, please contact the "
 "organiser instead."
-msgstr "您可以在此放棄您的提案草案。您無法撤銷此操作 - "
-"如果您不確定是否可以或應該提交提案，請聯絡組織者。"
+msgstr ""
+"您可以在此放棄您的提案草案。您無法撤銷此操作 - 如果您不確定是否可以或應該提交"
+"提案，請聯絡組織者。"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:227
 #: pretalx/orga/templates/orga/mails/outbox_form.html:106

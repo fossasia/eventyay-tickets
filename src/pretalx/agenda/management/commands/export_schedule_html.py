@@ -115,7 +115,7 @@ def dump_content(destination, path, getter):
         path = path + "index.html"
 
     path = (Path(destination) / path.lstrip("/")).resolve()
-    if not Path(destination) in path.parents:
+    if Path(destination) not in path.parents:
         raise CommandError("Path traversal detected, aborting.")
     path.parent.mkdir(parents=True, exist_ok=True)
 

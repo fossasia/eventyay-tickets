@@ -103,9 +103,7 @@ def test_user_can_see_correct_events(
 
     if test_user == "speaker":
         assert response.status_code == 404, response.status_code
-    elif test_user == "orga":
-        assert response.status_code == 200
-    elif test_user == "superuser":
+    elif test_user == "orga" or test_user == "superuser":
         assert response.status_code == 200
     else:
         current_url = response.redirect_chain[-1][0]

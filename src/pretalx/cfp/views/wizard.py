@@ -37,9 +37,9 @@ class SubmitWizard(EventPageMixin, View):
     def dispatch(self, request, *args, **kwargs):
         self.event = self.request.event
         request.access_code = None
-        if "access_code" in request.GET:
+        if access_code := request.GET.get("access_code"):
             access_code = request.event.submitter_access_codes.filter(
-                code__iexact=request.GET["access_code"]
+                code__iexact=access_code
             ).first()
             if access_code and access_code.is_valid:
                 request.access_code = access_code

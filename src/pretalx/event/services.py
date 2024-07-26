@@ -38,34 +38,34 @@ def task_periodic_event_services(event_slug):
     _now = now()
     with scope(event=event):
         event.build_initial_data()  # Make sure the required mail templates are there
-        if not event.settings.sent_mail_event_created:
-            if (
-                dt.timedelta(0)
-                <= (_now - event.log_entries.last().timestamp)
-                <= dt.timedelta(days=1)
-            ):
-                event.send_orga_mail(event.settings.mail_text_event_created)
-                event.settings.sent_mail_event_created = True
+        if not event.settings.sent_mail_event_created and (
+            dt.timedelta(0)
+            <= (_now - event.log_entries.last().timestamp)
+            <= dt.timedelta(days=1)
+        ):
+            event.send_orga_mail(event.settings.mail_text_event_created)
+            event.settings.sent_mail_event_created = True
 
-        if not event.settings.sent_mail_cfp_closed and event.cfp.deadline:
-            if dt.timedelta(0) <= (_now - event.cfp.deadline) <= dt.timedelta(days=1):
-                event.send_orga_mail(event.settings.mail_text_cfp_closed)
-                event.settings.sent_mail_cfp_closed = True
+        if (
+            not event.settings.sent_mail_cfp_closed
+            and event.cfp.deadline
+            and dt.timedelta(0) <= (_now - event.cfp.deadline) <= dt.timedelta(days=1)
+        ):
+            event.send_orga_mail(event.settings.mail_text_cfp_closed)
+            event.settings.sent_mail_cfp_closed = True
 
-        if not event.settings.sent_mail_event_over:
-            if (
+        if (
+            not event.settings.sent_mail_event_over
+            and (
                 (_now.date() - dt.timedelta(days=3))
                 <= event.date_to
                 <= (_now.date() - dt.timedelta(days=1))
-            ):
-                if (
-                    event.current_schedule
-                    and event.current_schedule.talks.filter(is_visible=True).count()
-                ):
-                    event.send_orga_mail(
-                        event.settings.mail_text_event_over, stats=True
-                    )
-                    event.settings.sent_mail_event_over = True
+            )
+            and event.current_schedule
+            and event.current_schedule.talks.filter(is_visible=True).count()
+        ):
+            event.send_orga_mail(event.settings.mail_text_event_over, stats=True)
+            event.settings.sent_mail_event_over = True
 
 
 @app.task()

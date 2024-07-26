@@ -269,7 +269,7 @@ class SubmissionDraftDiscardView(
 
     def get_object(self):
         submission = super().get_object()
-        if not submission.state == SubmissionStates.DRAFT:
+        if submission.state != SubmissionStates.DRAFT:
             raise Http404()
         return submission
 
