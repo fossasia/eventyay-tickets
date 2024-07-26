@@ -500,6 +500,14 @@ class Event(PretalxModel):
             return []
         return self.plugins.split(",")
 
+    @cached_property
+    def available_plugins(self):
+        return {
+            plugin.module: plugin
+            for plugin in get_all_plugins(self)
+            if not plugin.name.startswith(".") and getattr(plugin, "visible", True)
+        }
+
     def set_plugins(self, modules: list) -> None:
         """
         This method is not @plugin_list.setter to make the side effects more visible.
@@ -507,21 +515,16 @@ class Event(PretalxModel):
         uninstalled() on all plugins that are not active anymore.
         """
         plugins_active = set(self.plugin_list)
-        plugins_available = {
-            p.module: p
-            for p in get_all_plugins(self)
-            if not p.name.startswith(".") and getattr(p, "visible", True)
-        }
 
-        enable = set(modules) & (set(plugins_available) - plugins_active)
+        enable = set(modules) & (set(self.available_plugins) - plugins_active)
         disable = plugins_active - set(modules)
 
         for module in enable:
-            if hasattr(plugins_available[module].app, "installed"):
-                plugins_available[module].app.installed(self)
+            if hasattr(self.available_plugins[module].app, "installed"):
+                self.available_plugins[module].app.installed(self)
         for module in disable:
-            if hasattr(plugins_available[module].app, "uninstalled"):
-                plugins_available[module].app.uninstalled(self)
+            if hasattr(self.available_plugins[module].app, "uninstalled"):
+                self.available_plugins[module].app.uninstalled(self)
 
         self.plugins = ",".join(modules)
 

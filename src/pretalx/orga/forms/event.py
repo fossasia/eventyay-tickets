@@ -31,6 +31,16 @@ from pretalx.submission.models import ReviewPhase, ReviewScore, ReviewScoreCateg
 ENCRYPTED_PASSWORD_PLACEHOLDER = "*******"
 
 
+def make_naive(moment):
+    return dt.datetime(
+        year=moment.year,
+        month=moment.month,
+        day=moment.day,
+        hour=moment.hour,
+        minute=moment.minute,
+    )
+
+
 class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
     locales = forms.MultipleChoiceField(
         label=_("Active languages"),
@@ -299,15 +309,6 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         ).first()
         if not first_slot:
             return
-
-        def make_naive(moment):
-            return dt.datetime(
-                year=moment.year,
-                month=moment.month,
-                day=moment.day,
-                hour=moment.hour,
-                minute=moment.minute,
-            )
 
         old_start = make_naive(first_slot.start.astimezone(old_instance.tz))
         new_start = make_naive(first_slot.start.astimezone(self.instance.tz))

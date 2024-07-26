@@ -240,6 +240,10 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
         )
 
 
+def talk_sort_key(talk):
+    return (talk.start, talk.submission.title if talk.submission else "")
+
+
 class ScheduleNoJsView(ScheduleView):
     template_name = "agenda/schedule_nojs.html"
 
@@ -253,9 +257,7 @@ class ScheduleNoJsView(ScheduleView):
         for date in data:
             rooms = date.pop("rooms")
             talks = [talk for room in rooms for talk in room.get("talks", [])]
-            talks.sort(
-                key=lambda x: (x.start, x.submission.title if x.submission else "")
-            )
+            talks.sort(key=talk_sort_key)
             date["talks"] = talks
         return {"data": list(data)}
 

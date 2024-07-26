@@ -25,9 +25,6 @@ class AvailabilitiesFormMixin(forms.Form):
     )
 
     def _serialize(self, event, instance):
-        def is_valid(availability):
-            return availability["end"] > availability["start"]
-
         if instance:
             availabilities = AvailabilitySerializer(
                 instance.availabilities.all(), many=True
