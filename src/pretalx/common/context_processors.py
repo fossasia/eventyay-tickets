@@ -53,8 +53,6 @@ def locale_context(request):
 
 
 def messages(request):
-    from pretalx.common.text.phrases import phrases
-
     return {"phrases": phrases}
 
 

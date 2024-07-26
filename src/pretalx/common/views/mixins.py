@@ -9,7 +9,6 @@ from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import CharField, Q
 from django.db.models.functions import Lower
-from django.forms import ValidationError
 from django.http import FileResponse, Http404
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
@@ -266,7 +265,7 @@ class SensibleBackWizardMixin:
         wizard_goto_step = self.request.POST.get("wizard_goto_step")
         management_form = ManagementForm(self.request.POST, prefix=self.prefix)
         if not management_form.is_valid():
-            raise ValidationError(
+            raise forms.ValidationError(
                 _("ManagementForm data is missing or has been tampered with."),
                 code="missing_management_form",
             )

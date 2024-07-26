@@ -1,4 +1,5 @@
 import urllib
+from contextlib import suppress
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied, SuspiciousOperation
@@ -16,10 +17,10 @@ def handle_500(request):
             content_type="text/html",
         )
     context = {}
-    try:  # This should never fail, but can't be too cautious in error views
+    with suppress(
+        Exception
+    ):  # This should never fail, but can't be too cautious in error views
         context["request_path"] = urllib.parse.quote(request.path)
-    except Exception:  # pragma: no cover
-        pass
     return HttpResponseServerError(template.render(context))
 
 
