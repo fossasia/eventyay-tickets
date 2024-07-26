@@ -212,7 +212,7 @@ class Event(PretalxModel):
         null=True,
         blank=True,
         validators=[
-            RegexValidator(r"#([0-9A-Fa-f]{3}){1,2}"),
+            RegexValidator("#([0-9A-Fa-f]{3}){1,2}"),
         ],
         verbose_name=_("Main event colour"),
         help_text=_(

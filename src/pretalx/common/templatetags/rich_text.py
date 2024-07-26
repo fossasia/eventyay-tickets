@@ -96,7 +96,7 @@ NO_LINKS_CLEANER = bleach.Cleaner(
 )
 
 
-STRIKETHROUGH_RE = r"(~{2})(.+?)(~{2})"
+STRIKETHROUGH_RE = "(~{2})(.+?)(~{2})"
 
 
 class StrikeThroughExtension(markdown.Extension):
