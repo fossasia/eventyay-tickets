@@ -248,7 +248,6 @@ class SpeakerProfileForm(
             if user_attribute == "avatar":
                 if value is False:
                     self.user.avatar = None
-                    # self.user.avatar = getattr(self.user, "avatar") or None  # Don't unset avatar in
                 elif value:
                     self.user.avatar = value
             elif value is None and user_attribute == "get_gravatar":

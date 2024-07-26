@@ -102,10 +102,6 @@ def nav_typeahead(request):
         full_events = request.user.get_events_for_permission(
             can_change_submissions=True
         )
-        # review_events = request.user.get_events_for_permission(
-        #     is_reviewer=True, can_change_submissions=False
-        # )
-        # review_events = set(review_events) - set(full_submission_permissions)
         # We'll exclude review events entirely for now, as they have extra challenges:
         # users may be restricted from seeing speaker names by review settings, or
         # limited to seeing submissions in specific tracks.
