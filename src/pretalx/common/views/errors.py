@@ -35,7 +35,7 @@ def error_view(status_code):
     }
     exception = exceptions[status_code]
 
-    def error_view(request, *args, **kwargs):
+    def error_view_function(request, *args, **kwargs):
         raise exception
 
-    return error_view
+    return error_view_function

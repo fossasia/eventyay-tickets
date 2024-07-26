@@ -90,7 +90,7 @@ class Sortable:
         return list(secondary_sort_config.get(key, []) or [])
 
     def _sort_queryset(self, qs, fields):
-        fields = [k for k in fields if k]
+        fields = [key for key in fields if key]
         # If the model does not have a Meta.ordering, we need to add a
         # final sort key to make sure the sorting is stable.
         if not qs.model._meta.ordering and "pk" not in fields and "-pk" not in fields:

@@ -54,9 +54,9 @@ class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
             initial = question.default_answer
             if target_object:
                 answers = [
-                    a
-                    for a in target_object.answers.all()
-                    if a.question_id == question.id
+                    answer
+                    for answer in target_object.answers.all()
+                    if answer.question_id == question.id
                 ]
                 if answers:
                     initial_object = answers[0]
@@ -93,5 +93,5 @@ class QuestionsForm(CfPFormMixin, QuestionFieldsMixin, forms.Form):
         ]
 
     def save(self):
-        for k, v in self.cleaned_data.items():
-            self.save_questions(k, v)
+        for key, value in self.cleaned_data.items():
+            self.save_questions(key, value)

@@ -142,7 +142,7 @@ class CfP(PretalxModel):
         ]
         if skip_attributes:
             clonable_attributes = [
-                a for a in clonable_attributes if a not in skip_attributes
+                attr for attr in clonable_attributes if attr not in skip_attributes
             ]
         for field in clonable_attributes:
             setattr(self, field, getattr(other_cfp, field))

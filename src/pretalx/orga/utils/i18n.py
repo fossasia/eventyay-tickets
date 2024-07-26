@@ -143,8 +143,10 @@ JS_REGEX = re.compile(r"(?<!\w)(" + "|".join(date_conversion_to_moment.keys()) +
 
 
 def get_javascript_format(format_name):
-    f = get_format(format_name)[0]
-    return JS_REGEX.sub(lambda x: date_conversion_to_moment[x.group()], f)
+    format_value = get_format(format_name)[0]
+    return JS_REGEX.sub(
+        lambda regex: date_conversion_to_moment[regex.group()], format_value
+    )
 
 
 def get_moment_locale(locale=None):

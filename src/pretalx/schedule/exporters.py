@@ -66,8 +66,8 @@ class ScheduleData(BaseExporter):
                 "rooms": {},
             }
             for index, current_date in enumerate(
-                event.datetime_from + dt.timedelta(days=i)
-                for i in range((event.date_to - event.date_from).days + 1)
+                event.datetime_from + dt.timedelta(days=days)
+                for days in range((event.date_to - event.date_from).days + 1)
             )
         }
 
@@ -100,9 +100,9 @@ class ScheduleData(BaseExporter):
             if not day_data["last_end"] or talk.local_end > day_data["last_end"]:
                 day_data["last_end"] = talk.local_end
 
-        for d in data.values():
-            d["rooms"] = sorted(
-                d["rooms"].values(),
+        for day in data.values():
+            day["rooms"] = sorted(
+                day["rooms"].values(),
                 key=lambda room: (
                     room["position"] if room["position"] is not None else room["id"]
                 ),

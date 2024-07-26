@@ -100,8 +100,8 @@ Feel free to look around, but don\'t be alarmed if something doesn\'t quite make
                     name=self.fake.catch_phrase().split()[0],
                     color=self.fake.hex_color(),
                 )
-            event.cfp.headline = "DemoCon submissions are {}!".format(
-                "open" if end_stage == "cfp" else "closed"
+            event.cfp.headline = "DemoCon submissions are {state}!".format(
+                state="open" if end_stage == "cfp" else "closed"
             )
             track_text = "\n".join(f"- {track.name}" for track in event.tracks.all())
             event.cfp.text = f"""This is the Call for Participation for DemoCon!\n\n{intro}\n\n
@@ -126,7 +126,11 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
 
     def build_room(self):
         name = " ".join(
-            [a for a in re.split(r"([A-Z][a-z]*\d*)", self.fake.color_name()) if a]
+            [
+                clr
+                for clr in re.split(r"([A-Z][a-z]*\d*)", self.fake.color_name())
+                if clr
+            ]
         )
         return Room.objects.create(
             event=self.event, name=f"{name} Room", position=self.fake.random_digit()

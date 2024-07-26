@@ -24,11 +24,12 @@ def move_submission(code, new_event, copy=False):
     new_event = Event.objects.get(slug__iexact=new_event)
 
     speaker_questions = {
-        str(q.question): q for q in new_event.questions.all().filter(target="speaker")
+        str(question.question): question
+        for question in new_event.questions.all().filter(target="speaker")
     }
     submission_questions = {
-        str(q.question): q
-        for q in new_event.questions.all().filter(target="submission")
+        str(question.question): question
+        for question in new_event.questions.all().filter(target="submission")
     }
 
     if copy:

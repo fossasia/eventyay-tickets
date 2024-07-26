@@ -685,7 +685,7 @@ class Schedule(PretalxModel):
                     }
                 )
         tracks.discard(None)
-        tracks = sorted(list(tracks), key=lambda x: x.position or 0)
+        tracks = sorted(tracks, key=lambda track: track.position or 0)
         result["tracks"] = [
             {
                 "id": track.id,

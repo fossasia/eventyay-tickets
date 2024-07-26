@@ -7,14 +7,14 @@ register = template.Library()
 def url_replace(request, *pairs):
     dict_ = request.GET.copy()
     key = None
-    for p in pairs:
+    for pair in pairs:
         if key is None:
-            key = p
+            key = pair
         else:
-            if p == "":
+            if pair == "":
                 if key in dict_:
                     del dict_[key]
             else:
-                dict_[key] = str(p)
+                dict_[key] = str(pair)
             key = None
     return dict_.urlencode(safe="[]")

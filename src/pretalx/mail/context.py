@@ -45,7 +45,7 @@ def get_all_reviews(submission):
     reviews = submission.reviews.all().filter(text__isnull=False)
     if not reviews:
         return ""
-    texts = [r.text.strip() for r in reviews if r.text.strip()]
+    texts = [review.text.strip() for review in reviews if review.text.strip()]
     if not texts:
         return ""
     return "\n\n--------------\n\n".join(texts)

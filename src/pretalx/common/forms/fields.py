@@ -79,7 +79,7 @@ class ExtensionFileInput:
 
     def __init__(self, *args, **kwargs):
         extensions = kwargs.pop("extensions")
-        self.extensions = [i.lower() for i in extensions]
+        self.extensions = [ext.lower() for ext in extensions]
         super().__init__(*args, **kwargs)
 
     def validate(self, value):

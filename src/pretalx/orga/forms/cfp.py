@@ -210,12 +210,12 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             options = json.loads(content)
             if not isinstance(options, list):
                 raise Exception(_("JSON file does not contain a list."))
-            if not all(isinstance(o, dict) for o in options):
+            if not all(isinstance(opt, dict) for opt in options):
                 raise Exception(_("JSON file does not contain a list of objects."))
-            return [LazyI18nString(data=o) for o in options]
+            return [LazyI18nString(data=opt) for opt in options]
         except Exception:
             options = content.split("\n")
-            return [o.strip() for o in options if o.strip()]
+            return [opt.strip() for opt in options if opt.strip()]
 
     def clean(self):
         deadline = self.cleaned_data["deadline"]
@@ -263,8 +263,8 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         if not use_i18n:
             # Monolangual i18n strings with strings aren't equal, so we're normalising.
             with override(instance.event.locale):
-                existing_options = [str(o) for o in existing_options]
-                options = [str(o) for o in options]
+                existing_options = [str(opt) for opt in existing_options]
+                options = [str(opt) for opt in options]
         new_options = []
         for option in options:
             if option not in existing_options:
@@ -329,7 +329,7 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         qs = self.event.submission_types.all()
         if self.instance and self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
-        if any(str(s.name) == str(name) for s in qs):
+        if any(str(stype.name) == str(name) for stype in qs):
             raise forms.ValidationError(
                 _("You already have a session type by this name!")
             )
@@ -364,7 +364,7 @@ class TrackForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         qs = self.event.tracks.all()
         if self.instance and self.instance.pk:
             qs = qs.exclude(pk=self.instance.pk)
-        if any(str(s.name) == str(name) for s in qs):
+        if any(str(track.name) == str(name) for track in qs):
             raise forms.ValidationError(_("You already have a track by this name!"))
         return name
 

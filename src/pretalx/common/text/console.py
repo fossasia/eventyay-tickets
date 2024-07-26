@@ -53,10 +53,9 @@ def print_line(string, box=False, bold=False, color=None, size=None):
     if color:
         string = f"{color}{string}{RESET}"
     if box:
-        if size:
-            if text_length + 2 < size:
-                string += " " * (size - text_length - 2)
-                alt_string += " " * (size - text_length - 2)
+        if size and text_length + 2 < size:
+            string += " " * (size - text_length - 2)
+            alt_string += " " * (size - text_length - 2)
         string = f"┃ {string} ┃"
         alt_string = f"| {alt_string} |"
     try:
@@ -75,7 +74,7 @@ def log_initial(*, debug, config_files, db_name, db_backend, log_dir, plugins):
         if os.geteuid() == 0:
             print_line("You are running pretalx as root, why?", bold=True)
 
-    # (text, bold)
+    # text, bold
     lines = [
         (f"pretalx v{__version__}", True),
         (f'Settings:  {", ".join(config_files)}', False),
@@ -105,7 +104,7 @@ def log_initial(*, debug, config_files, db_name, db_backend, log_dir, plugins):
     image[-1] += " " * (img_width - len(image[-1]))
     image += [" " * img_width for _ in repeat(None, (len(lines) - len(image)))]
 
-    lines = [(f"{image[n]}  {line[0]}", line[1]) for n, line in enumerate(lines)]
+    lines = [(f"{image[no]}  {line[0]}", line[1]) for no, line in enumerate(lines)]
 
     size = max(len(line[0]) for line in lines) + 4
     start_box(size)

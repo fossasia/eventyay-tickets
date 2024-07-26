@@ -146,10 +146,10 @@ class Team(PretalxModel):
         """A set of all permissions this team has, as strings."""
         attribs = dir(self)
         return {
-            a
-            for a in attribs
-            if (a.startswith("can_") or a.startswith("is_"))
-            and getattr(self, a, False) is True
+            attr
+            for attr in attribs
+            if (attr.startswith("can_") or attr.startswith("is_"))
+            and getattr(self, attr, False) is True
         }
 
     class orga_urls(EventUrls):

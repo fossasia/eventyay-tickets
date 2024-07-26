@@ -120,8 +120,8 @@ def dump_content(destination, path, getter):
         raise CommandError("Path traversal detected, aborting.")
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(path, "wb") as f:
-        f.write(content)
+    with open(path, "wb") as output_file:
+        output_file.write(content)
     return content
 
 
@@ -141,8 +141,8 @@ def get_mediastatic_content(url):
     ):
         raise FileNotFoundError()
 
-    with open(local_path, "rb") as f:
-        return f.read()
+    with open(local_path, "rb") as media_file:
+        return media_file.read()
 
 
 def export_event(event, destination):

@@ -77,10 +77,9 @@ class SimpleFunctionalMailTextPlaceholder(BaseMailTextPlaceholder):
         return self._is_visible
 
     def render(self, context):
-        return self._func(**{k: context[k] for k in self._args})
+        return self._func(**{key: context[key] for key in self._args})
 
     def render_sample(self, event):
         if callable(self._sample):
             return self._sample(event)
-        else:
-            return self._sample
+        return self._sample

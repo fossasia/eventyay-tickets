@@ -139,7 +139,10 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
                     review = reviews[0]
                     submission.current_score = review.score
                     if self.independent_categories:
-                        mapping = {s.category_id: s.value for s in review.scores.all()}
+                        mapping = {
+                            score.category_id: score.value
+                            for score in review.scores.all()
+                        }
                         result = []
                         for category in self.independent_categories:
                             result.append(mapping.get(category.pk))

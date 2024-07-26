@@ -713,7 +713,7 @@ class Submission(GenerateCode, PretalxModel):
             "0",
         ]  # compatibility with imported frab data
         base = len(charset)
-        table = {char: i for i, char in enumerate(charset)}
+        table = {char: cp for cp, char in enumerate(charset)}
 
         intval = 0
         for char in self.code:
@@ -783,12 +783,16 @@ class Submission(GenerateCode, PretalxModel):
 
     @cached_property
     def median_score(self):
-        scores = [r.score for r in self.reviews.all() if r.score is not None]
+        scores = [
+            review.score for review in self.reviews.all() if review.score is not None
+        ]
         return statistics.median(scores) if scores else None
 
     @cached_property
     def mean_score(self):
-        scores = [r.score for r in self.reviews.all() if r.score is not None]
+        scores = [
+            review.score for review in self.reviews.all() if review.score is not None
+        ]
         return round(statistics.fmean(scores), 1) if scores else None
 
     @cached_property

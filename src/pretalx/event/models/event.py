@@ -315,7 +315,8 @@ class Event(PretalxModel):
     plugins = models.TextField(null=True, blank=True, verbose_name=_("Plugins"))
 
     template_names = [
-        f"{t}_template" for t in ("accept", "ack", "reject", "update", "question")
+        f"{template}_template"
+        for template in ("accept", "ack", "reject", "update", "question")
     ]
     HEADER_PATTERN_CHOICES = (
         ("", _("Plain")),
@@ -464,7 +465,7 @@ class Event(PretalxModel):
     @cached_property
     def named_content_locales(self) -> list:
         locale_names = dict(self.available_content_locales)
-        return [(a, locale_names[a]) for a in self.content_locales]
+        return [(code, locale_names[code]) for code in self.content_locales]
 
     @cached_property
     def named_plugin_locales(self) -> list:
@@ -614,7 +615,7 @@ class Event(PretalxModel):
             from pretalx.submission.models import ReviewPhase
 
             cfp_deadline = self.cfp.deadline
-            r = ReviewPhase.objects.create(
+            rp = ReviewPhase.objects.create(
                 event=self,
                 name=_("Review"),
                 start=cfp_deadline,
@@ -625,7 +626,7 @@ class Event(PretalxModel):
             ReviewPhase.objects.create(
                 event=self,
                 name=_("Selection"),
-                start=r.end,
+                start=rp.end,
                 is_active=False,
                 position=1,
                 can_review=False,
@@ -688,7 +689,7 @@ class Event(PretalxModel):
         ]
         if skip_attributes:
             clonable_attributes = [
-                a for a in clonable_attributes if a not in skip_attributes
+                attr for attr in clonable_attributes if attr not in skip_attributes
             ]
         for attribute in clonable_attributes:
             setattr(self, attribute, getattr(other_event, attribute))
@@ -793,12 +794,12 @@ class Event(PretalxModel):
                 score.category = score_category
                 score.save()
 
-        for s in other_event.settings._objects.all():
-            if s.value.startswith("file://"):
+        for sett in other_event.settings._objects.all():
+            if sett.value.startswith("file://"):
                 continue
-            s.object = self
-            s.pk = None
-            s.save()
+            sett.object = self
+            sett.pk = None
+            sett.save()
         self.settings.flush()
         self.cfp.copy_data_from(other_event.cfp, skip_attributes=skip_attributes)
         event_copy_data.send(

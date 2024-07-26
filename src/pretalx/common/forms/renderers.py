@@ -26,8 +26,8 @@ def render_label(
         attrs=mark_safe(flatatt(attrs)) if attrs else "",
         opt=(
             mark_safe(
-                '<br><span class="optional">{}</span>'.format(
-                    pgettext("form field", "Optional")
+                '<br><span class="optional">{opt}</span>'.format(
+                    opt=pgettext("form field", "Optional")
                 )
             )
             if optional

@@ -200,7 +200,7 @@ class ReviewAssignmentForm(forms.Form):
 class ReviewerForProposalForm(ReviewAssignmentForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        review_choices = [(r.id, r.name) for r in self.reviewers]
+        review_choices = [(reviewer.id, reviewer.name) for reviewer in self.reviewers]
         for submission in self.submissions:
             self.fields[submission.code] = forms.MultipleChoiceField(
                 choices=review_choices,
@@ -220,7 +220,7 @@ class ReviewerForProposalForm(ReviewAssignmentForm):
 class ProposalForReviewerForm(ReviewAssignmentForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        submission_choices = [(s.id, s.title) for s in self.submissions]
+        submission_choices = [(sub.id, sub.title) for sub in self.submissions]
         for reviewer in self.reviewers:
             self.fields[reviewer.code] = forms.MultipleChoiceField(
                 choices=submission_choices,
@@ -397,7 +397,9 @@ class ReviewAssignImportForm(DirectionForm):
 
     def _get_submission(self, text):
         if not self._submissions_cache:
-            self._submissions_cache = {s.code: s for s in self.event.submissions.all()}
+            self._submissions_cache = {
+                sub.code: sub for sub in self.event.submissions.all()
+            }
         try:
             return self._submissions_cache[text.strip().upper()]
         except Exception:
@@ -420,13 +422,13 @@ class ReviewAssignImportForm(DirectionForm):
         if direction == "reviewer":
             # keys should be users, values should be lists of proposals
             new_uploaded_data = {
-                self._get_user(key): [self._get_submission(v) for v in value]
+                self._get_user(key): [self._get_submission(val) for val in value]
                 for key, value in uploaded_data.items()
             }
         else:
             # keys should be proposals, values should be lists of users
             new_uploaded_data = {
-                self._get_submission(key): [self._get_user(v) for v in value]
+                self._get_submission(key): [self._get_user(val) for val in value]
                 for key, value in uploaded_data.items()
             }
 
