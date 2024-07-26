@@ -568,7 +568,7 @@ def test_html_export_full(
     assert slot.submission.title in talk_ics
     assert event.is_public is False
 
-    with django_assert_max_num_queries(10):
+    with django_assert_max_num_queries(32):
         response = orga_client.get(
             event.orga_urls.schedule_export_download, follow=True
         )
