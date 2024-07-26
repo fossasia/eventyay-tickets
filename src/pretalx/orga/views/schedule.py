@@ -101,11 +101,11 @@ class ScheduleExportView(EventPermissionRequired, FormView):
 
     @context
     def exporters(self):
-        return list(
+        return [
             exporter(self.request.event)
             for _, exporter in register_data_exporters.send(self.request.event)
             if exporter.group != "speaker"
-        )
+        ]
 
     def form_valid(self, form):
         result = form.export_data()

@@ -55,10 +55,8 @@ class Availability(PretalxModel):
         are the same.
         """
         return all(
-            [
-                getattr(self, attribute, None) == getattr(other, attribute, None)
-                for attribute in ["person", "room", "start", "end"]
-            ]
+            getattr(self, attribute, None) == getattr(other, attribute, None)
+            for attribute in ("person", "room", "start", "end")
         )
 
     @cached_property

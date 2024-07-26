@@ -122,7 +122,7 @@ class MailTemplate(PretalxModel):
             users = None
 
         with override(locale):
-            context_kwargs = context_kwargs or dict()
+            context_kwargs = context_kwargs or {}
             context_kwargs["event"] = event or self.event
             default_context = get_mail_context(**context_kwargs)
             default_context.update(context or {})

@@ -839,9 +839,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
         )
         return json.dumps(
             sorted(
-                list(
-                    {"label": label, "value": value} for label, value in counter.items()
-                ),
+                [{"label": label, "value": value} for label, value in counter.items()],
                 key=itemgetter("label"),
             )
         )
@@ -856,9 +854,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
         )
         return json.dumps(
             sorted(
-                list(
-                    {"label": label, "value": value} for label, value in counter.items()
-                ),
+                [{"label": label, "value": value} for label, value in counter.items()],
                 key=itemgetter("label"),
             )
         )
@@ -874,10 +870,10 @@ class SubmissionStats(PermissionRequired, TemplateView):
             )
             return json.dumps(
                 sorted(
-                    list(
+                    [
                         {"label": label, "value": value}
                         for label, value in counter.items()
-                    ),
+                    ],
                     key=itemgetter("label"),
                 )
             )
@@ -916,9 +912,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
         )
         return json.dumps(
             sorted(
-                list(
-                    {"label": label, "value": value} for label, value in counter.items()
-                ),
+                [{"label": label, "value": value} for label, value in counter.items()],
                 key=itemgetter("label"),
             )
         )
@@ -933,9 +927,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
         )
         return json.dumps(
             sorted(
-                list(
-                    {"label": label, "value": value} for label, value in counter.items()
-                ),
+                [{"label": label, "value": value} for label, value in counter.items()],
                 key=itemgetter("label"),
             )
         )
@@ -951,10 +943,10 @@ class SubmissionStats(PermissionRequired, TemplateView):
             )
             return json.dumps(
                 sorted(
-                    list(
+                    [
                         {"label": label, "value": value}
                         for label, value in counter.items()
-                    ),
+                    ],
                     key=itemgetter("label"),
                 )
             )

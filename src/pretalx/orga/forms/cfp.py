@@ -230,10 +230,7 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                     )
                 ),
             )
-        if (
-            question_required == QuestionRequired.OPTIONAL
-            or question_required == QuestionRequired.REQUIRED
-        ):
+        if question_required in (QuestionRequired.OPTIONAL, QuestionRequired.REQUIRED):
             self.cleaned_data["deadline"] = None
         options = self.cleaned_data.get("options")
         options_replace = self.cleaned_data.get("options_replace")
@@ -539,7 +536,7 @@ class QuestionFilterForm(forms.Form):
         result["missing_answers"] = question.missing_answers(
             filter_speakers=speakers, filter_talks=talks
         )
-        if question.variant in [QuestionVariant.CHOICES, QuestionVariant.MULTIPLE]:
+        if question.variant in (QuestionVariant.CHOICES, QuestionVariant.MULTIPLE):
             grouped_answers = (
                 answers.order_by("options")
                 .values("options", "options__answer")

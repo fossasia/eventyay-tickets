@@ -46,7 +46,7 @@ class ActionFromUrl:
     @context
     @cached_property
     def action(self):
-        if not any(_id in self.kwargs for _id in ["pk", "code"]):
+        if not any(_id in self.kwargs for _id in ("pk", "code")):
             if self._check_permission(
                 self.create_permission_required or self.write_permission_required
             ):

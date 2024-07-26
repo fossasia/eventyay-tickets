@@ -73,7 +73,7 @@ class Schedule(PretalxModel):
         """
         from pretalx.schedule.models import TalkSlot
 
-        if name in ["wip", "latest"]:
+        if name in ("wip", "latest"):
             raise Exception(f'Cannot use reserved name "{name}" for schedule version.')
         if self.version:
             raise Exception(

@@ -9,7 +9,7 @@ def filesize(size: str):
         size = int(size)
     except Exception:
         return ""
-    for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:  # Future proof 10/10
+    for unit in ("", "K", "M", "G", "T", "P", "E", "Z"):  # Future proof 10/10
         if abs(size) < 1024:
             return f"{size:3.1f}{unit}B"
         size /= 1024
