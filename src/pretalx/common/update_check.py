@@ -67,6 +67,7 @@ def update_check():
         response = requests.post(
             "https://pretalx.com/.update_check/",
             json=check_payload,
+            timeout=30,
         )
     except requests.RequestException:  # pragma: no cover
         gs.settings.set("update_check_last", now())
