@@ -1,11 +1,10 @@
 from django.urls import include, path
 from django.views.generic.base import RedirectView
 
-from pretalx.orga.views import cards
-
-from .views import (
+from pretalx.orga.views import (
     admin,
     auth,
+    cards,
     cfp,
     dashboard,
     event,

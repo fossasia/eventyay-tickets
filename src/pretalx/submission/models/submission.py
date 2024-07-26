@@ -7,7 +7,6 @@ from django.conf import settings
 from django.db.models import JSONField
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import Q
 from django.db.models.fields.files import FieldFile
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
@@ -803,10 +802,14 @@ class Submission(GenerateCode, PretalxModel):
     @cached_property
     def active_resources(self):
         return self.resources.filter(
-            Q(  # either the resource exists
-                ~Q(resource="") & Q(resource__isnull=False) & ~Q(resource="None")
+            models.Q(  # either the resource exists
+                ~models.Q(resource="")
+                & models.Q(resource__isnull=False)
+                & ~models.Q(resource="None")
             )
-            | Q(Q(link__isnull=False) & ~Q(link=""))  # or the link exists
+            | models.Q(
+                models.Q(link__isnull=False) & ~models.Q(link="")
+            )  # or the link exists
         ).order_by("link")
 
     @property

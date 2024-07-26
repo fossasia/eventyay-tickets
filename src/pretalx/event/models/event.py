@@ -878,7 +878,7 @@ class Event(PretalxModel):
     def teams(self):
         """Returns all :class:`~pretalx.event.models.organiser.Team` objects
         that concern this event."""
-        from .organiser import Team
+        from pretalx.event.models.organiser import Team
 
         return Team.objects.filter(
             models.Q(limit_events__in=[self]) | models.Q(all_events=True),
