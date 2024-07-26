@@ -95,6 +95,19 @@ NO_LINKS_CLEANER = bleach.Cleaner(
     strip=True,
 )
 
+
+STRIKETHROUGH_RE = "(~{2})(.+?)(~{2})"
+
+
+class StrikeThroughExtension(markdown.Extension):
+    def extendMarkdown(self, md):
+        md.inlinePatterns.register(
+            markdown.inlinepatterns.SimpleTagPattern(STRIKETHROUGH_RE, "del"),
+            "strikethrough",
+            200,
+        )
+
+
 md = markdown.Markdown(
     extensions=[
         "markdown.extensions.nl2br",
