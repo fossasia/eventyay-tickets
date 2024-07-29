@@ -2362,6 +2362,46 @@ Your {organizer} team"""))
         ),
         'serializer_class': I18nURLField,
     },
+    'schedule_link': {
+        'default': None,
+        'type': str,
+        'form_class': forms.URLField,
+        'serializer_class': serializers.URLField,
+        'form_kwargs': dict(
+            label=_("Schedule URL"),
+            help_text=_("This should point to your session schedule."),
+        ),
+    },
+    'session_link': {
+        'default': None,
+        'type': str,
+        'form_class': forms.URLField,
+        'serializer_class': serializers.URLField,
+        'form_kwargs': dict(
+            label=_("Session URL"),
+            help_text=_("This should point to your session list."),
+        ),
+    },
+    'speaker_link': {
+        'default': None,
+        'type': str,
+        'form_class': forms.URLField,
+        'serializer_class': serializers.URLField,
+        'form_kwargs': dict(
+            label=_("Speaker URL"),
+            help_text=_("This should point to your speakers."),
+        ),
+    },
+    'video_link': {
+        'default': None,
+        'type': str,
+        'form_class': forms.URLField,
+        'serializer_class': serializers.URLField,
+        'form_kwargs': dict(
+            label=_("Video URL"),
+            help_text=_("This should point to your Video URL."),
+        ),
+    },
     'seating_choice': {
         'default': 'True',
         'form_class': forms.BooleanField,

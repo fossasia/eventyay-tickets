@@ -36,7 +36,7 @@
 }
 
 .page-header-links-outside > div.header-part {
-  padding-bottom: 15px;
+  padding-bottom: 5px;
 }
 
 .page-header.logo-large {
@@ -98,4 +98,9 @@ h2.content-header {
 
 .alert-margin {
   margin-top: 20px;
+}
+
+.ticket-active {
+    background: $btn-primary-bg;
+    color: #FFFFFF !important;
 }

@@ -27,20 +27,29 @@
     <main aria-label="{% if show_cart %}{% trans "Your cart, general information, add products to your cart" %}{% else %}{% trans "General information, add products to your cart" %}{% endif %}">
         <nav id="schedule-nav"{% if with_margin %} class="p-3"{% endif %}>
             <div class="navigation">
-                <a href="{% setting_values TALK_URL %}/{{ev.slug}}/schedule" class="header-nav btn btn-outline-success">
-                    <i class="fa fa-calendar"></i> {% translate "Schedule" %}
-                </a>
-                {% if request.event.display_settings.schedule_display != "list" %}
-                    <a href="{% setting_values TALK_URL %}/{{ev.slug}}/talk" class="header-nav btn btn-outline-success">
+                {% if request.event.settings.schedule_link %}
+                    <a href="{{ request.event.settings.schedule_link }}" target="_blank" class="header-nav btn btn-outline-success">
+                        <i class="fa fa-calendar"></i> {% translate "Schedule" %}
+                    </a>
+                {% endif %}
+                {% if request.event.settings.session_link %}
+                    <a href="{{ request.event.settings.session_link }}" target="_blank" class="header-nav btn btn-outline-success">
                         <i class="fa fa-comments-o"></i> {% translate "Sessions" %}
                     </a>
                 {% endif %}
-                <a href="{% setting_values TALK_URL %}/{{ev.slug}}/speaker" class="header-nav btn btn-outline-success">
+                {% if request.event.settings.speaker_link %}
+                <a href="{{ request.event.settings.speaker_link }}" target="_blank" class="header-nav btn btn-outline-success">
                     <i class="fa fa-group"></i> {% translate "Speakers" %}
                 </a>
-                <a href="{% setting_values VIDEO_URL %}" class="header-nav btn btn-outline-success">
+                {% endif %}
+                <a href="" target="_blank" class="header-nav btn btn-outline-success ticket-active">
+                    <i class="fa fa-group"></i> {% translate "Tickets" %}
+                </a>
+                {% if request.event.settings.video_link %}
+                <a href="{{ request.event.settings.video_link }}" target="_blank" class="header-nav btn btn-outline-success">
                     <i class="fa fa-video-camera"></i> {% translate "Videos" %}
                 </a>
+                {% endif %}
             </div>
         </nav>
     {% if show_cart %}
