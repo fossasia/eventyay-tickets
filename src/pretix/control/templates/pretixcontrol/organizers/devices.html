@@ -42,6 +42,7 @@
                 </thead>
                 <tbody>
                 {% for d in devices %}
+                {% if not d.revoked %}
                     <tr {% if d.revoked %}class="text-muted"{% endif %}>
                         <td>
                             {{ d.device_id }}
@@ -103,6 +104,7 @@
                                     class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
                         </td>
                     </tr>
+                {% endif %}
                 {% endfor %}
                 </tbody>
             </table>
