@@ -2399,7 +2399,7 @@ Your {organizer} team"""))
         'serializer_class': serializers.URLField,
         'form_kwargs': dict(
             label=_("Video URL"),
-            help_text=_("This should point to your Video URL."),
+            help_text=_("This should point to your Video Live URL."),
         ),
     },
     'seating_choice': {
