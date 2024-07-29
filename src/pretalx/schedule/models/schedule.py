@@ -664,6 +664,7 @@ class Schedule(PretalxModel):
                         "duration": talk.submission.get_duration(),
                         "updated": talk.updated.isoformat(),
                         "state": talk.submission.state if all_talks else None,
+                        "do_not_record": talk.submission.do_not_record
                     }
                 )
             else:
