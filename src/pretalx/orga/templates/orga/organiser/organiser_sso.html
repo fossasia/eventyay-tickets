@@ -1,0 +1,27 @@
+{% load bootstrap4 %}
+{% load i18n %}
+{% load rules %}
+
+{% block content %}
+    <form method="post">
+      <fieldset>
+        <legend>{% translate "SSO with Eventyay-ticket" %}</legend>
+        {% csrf_token %}
+        {% bootstrap_field sso_client_form.client_id layout='event' %}
+        {% bootstrap_field sso_client_form.secret layout='event' %}
+        <div class="submit-group panel">
+            <span></span>
+            <span>
+                <button type="submit" class="btn btn-success" name="form" value="sso_client">
+                    <i class="fa fa-check"></i>
+                    {% translate "Save" %}
+                </button>
+                <button type="submit" class="btn btn-danger" name="form" value="remove_sso_client">
+                    <i class="fa fa-check"></i>
+                    {% translate "Remove key" %}
+                </button>
+            </span>
+        </div>
+      </fieldset>
+    </form>
+{% endblock %}

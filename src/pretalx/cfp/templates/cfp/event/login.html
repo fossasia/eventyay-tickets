@@ -8,15 +8,14 @@
     <h2>{% translate "Welcome back!" %}</h2>
     <p>
         {% blocktranslate trimmed %}
-            You do not need an account to view the event, or submit feedback, or receive
-            schedule updates. You’ll only need an account if you participate in the
-            event as speaker or as an organiser.
+            If you already created a proposal for a different event on this server, you can re-use your account to log in for this event.
         {% endblocktranslate %}
     </p>
     <p>
         {% blocktranslate trimmed %}
-            If you already created a proposal for a different event on this server, you can re-use your account
-            to log in for this event.
+            You do not need an account to view the event, submit feedback, or receive schedule updates.
+            An account is only necessary if you want to create your own personalized schedule,
+            or if you are participating in the event as a speaker or organizer.
         {% endblocktranslate %}
     </p>
     {% include "common/auth.html" %}

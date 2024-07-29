@@ -697,8 +697,10 @@ else:
     )
 
 # Below is configuration for SSO using eventyay-ticket
-EVENTYAY_TICKET_BASE_PATH = os.getenv("EVENTYAY_TICKET_BASE_PATH",
-                                      "https://tickets-dev.eventyay.com")
+
+EVENTYAY_TICKET_BASE_PATH = config.get("urls", "eventyay-ticket",
+                                       fallback="https://tickets-dev.eventyay.com")
+
 SITE_ID = 1
 # for now, customer must verified their email at eventyay-ticket, so this check not required
 ACCOUNT_EMAIL_VERIFICATION = 'none'

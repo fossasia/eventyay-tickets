@@ -28,14 +28,16 @@
                 {% translate "Log in" %}
             </button>
         {% endif %}
-        {% socialapp_exists 'eventyay' as eventyay_exists %}
-        {% if eventyay_exists %}
-          {% if not no_buttons %}
-            <div class="text-center">
-                <a class="btn btn-lg btn-primary btn-block mt-3" href="{% provider_login_url 'eventyay' %}">
-                    {% translate "Login with Eventyay-ticket" %}
-                </a>
-            </div>
+        {% if request.event and request.event.organiser and request.event.organiser.slug %}
+          {% socialapp_exists request.event.organiser.slug as eventyay_exists %}
+          {% if eventyay_exists %}
+            {% if not no_buttons %}
+              <div class="text-center">
+                  <a class="btn btn-lg btn-primary btn-block mt-3" href="{% provider_login_url request.event.organiser.slug %}">
+                      {% translate "Login with Eventyay-ticket" %}
+                  </a>
+              </div>
+            {% endif %}
           {% endif %}
         {% endif %}
         {% if password_reset_link or request.event %}
