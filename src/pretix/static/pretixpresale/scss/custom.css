@@ -22,13 +22,44 @@
 #schedule-nav {
     margin: 16px 0px;
     .header-nav {
-        color: #2185d0;
         border-color: #2185d0;
         border: 1px solid;
         font-size: 16px;
         font-weight: normal;
         border-radius: 0;
     }
+    .navigation {
+        display: flex;
+        .navigation-button {
+            margin-right: 8px;
+        }
+        .video-link {
+            margin-left: auto;
+        }
+        a:hover {
+            color: #fff;
+            background-color: #2185d0;
+        }
+        .popover-content {
+            .options {
+                color: #2185d0;
+                border-color: #2185d0;
+                border: 1px solid;
+                font-size: 16px;
+                font-weight: normal;
+                border-radius: 0;
+            }
+            .options:hover {
+                color: #fff;
+                background-color: #2185d0;
+            }
+            div:first-child {
+                margin-bottom: 8px;
+            }
+        }
+        
+    }
+    
 }
 
 .page-header-links{
