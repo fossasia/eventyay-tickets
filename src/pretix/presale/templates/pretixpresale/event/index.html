@@ -46,8 +46,8 @@
                     <i class="fa fa-group"></i> {% translate "Tickets" %}
                 </a>
                 {% if request.event.settings.video_link %}
-                <a href="{{ request.event.settings.video_link }}" target="_blank" class="header-nav btn btn-outline-success">
-                    <i class="fa fa-video-camera"></i> {% translate "Videos" %}
+                <a href="{{ request.event.settings.video_link }}" target="_blank" class="header-nav btn btn-outline-success join-event">
+                    <i class="fa fa-video-camera"></i> {% translate "Join online event" %}
                 </a>
                 {% endif %}
             </div>
