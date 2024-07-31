@@ -133,6 +133,11 @@
             <section>
                 {% html_signal "pretalx.agenda.signals.html_below_session_pages" sender=request.event request=request submission=submission %}
             </section>
+            {% if submission_tags %}
+              {% for tag_item in submission_tags %}
+                  <span class="submission_tag" onclick="#" style="background-color: {{ tag_item.color }}; color: {{ tag_item.contrast_color }};">{{ tag_item.tag }}</span>
+              {% endfor %}
+            {% endif %}
         </div>
     </div>
     {% if not hide_speaker_links %}

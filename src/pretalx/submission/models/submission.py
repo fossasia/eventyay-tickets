@@ -337,6 +337,16 @@ class Submission(GenerateCode, PretalxModel):
             return self.submission_type.default_duration
         return self.duration
 
+    def get_tag(self):
+        tags = []
+        for tag in self.tags.all():
+            tags.append({
+                'id': tag.id,
+                'tag': tag.tag,
+                'color': tag.color
+            })
+        return tags
+
     def update_duration(self):
         """Apply the submission's duration to its currently scheduled.
 

@@ -53,6 +53,16 @@ class TalkView(PermissionRequired, TemplateView):
     def get_permission_object(self):
         return self.submission
 
+    def get_contrast_color(self, bg_color):
+        if not bg_color:
+            return ''
+        bg_color = bg_color.lstrip('#')
+        r = int(bg_color[0:2], 16)
+        g = int(bg_color[2:4], 16)
+        b = int(bg_color[4:6], 16)
+        brightness = (r * 299 + g * 587 + b * 114) / 1000
+        return 'black' if brightness > 128 else 'white'
+
     @cached_property
     def recording(self):
         for __, response in register_recording_provider.send_robust(self.request.event):
@@ -93,6 +103,9 @@ class TalkView(PermissionRequired, TemplateView):
             .order_by("start")
             .select_related("room")
         )
+        ctx["submission_tags"] = self.submission.tags.all()
+        for tag_item in ctx['submission_tags']:
+            tag_item.contrast_color = self.get_contrast_color(tag_item.color)
         result = []
         other_slots = (
             schedule.talks.exclude(submission_id=self.submission.pk).filter(
