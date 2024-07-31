@@ -5,12 +5,12 @@ $(function () {
         html: true,
         content: `<div data-name="popover-content">
                             <div class="options">
-                                <a href="/${organizerName}/${eventSlug}" target="_self" class="btn btn-outline-success ticket-active">
+                                <a href="/${organizerName}/${eventSlug}" target="_self" class="btn btn-outline-success">
                                     <i class="fa fa-ticket"></i> ${window.gettext('Tickets')}
                                 </a>
                             </div>
                             <div class="options">
-                                <a href="/${organizerName}/account" target="_self" class="btn btn-outline-success ticket-active">
+                                <a href="/${organizerName}/account" target="_self" class="btn btn-outline-success">
                                     <i class="fa fa-shopping-cart"></i> ${window.gettext('My Orders')}
                                 </a>
                             </div>

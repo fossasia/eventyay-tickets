@@ -21,7 +21,7 @@
     {% compress js %}
         <script type="text/javascript" src="{% static "pretixpresale/js/ui/popover.js" %}"></script>
     {% endcompress %}
-    {{ request.event.organizer.name|json_script:"organizer_name" }}
+    {{ request.event.organizer.slug|json_script:"organizer_name" }}
     {{ request.event.slug|json_script:"event_slug" }}
 {% endblock %}
 {% block content %}
@@ -56,7 +56,7 @@
                     </div>
                 {% endif %}
                 <div class="navigation-button">
-                    <a target="_blank" class="header-nav btn btn-outline-success ticket-active" data-toggle="popover">
+                    <a target="_blank" class="header-nav btn btn-outline-success" data-toggle="popover">
                         <i class="fa fa-ticket"></i> {% translate "Tickets" %}
                     </a>
                 </div>
