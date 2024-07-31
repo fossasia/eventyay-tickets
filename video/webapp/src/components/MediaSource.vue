@@ -174,13 +174,13 @@ export default {
 			// Construct the mute parameter based on the input
 			const muteParam = mute ? 'mute=1' : 'mute=0';
 			// Return the complete YouTube URL with the provided video ID, autoplay, and mute parameters
-			return `https://www.youtube-nocookie.com/embed/${ytid}?${autoplayParam}rel=0&showinfo=0&${muteParam}`;
+			return `https://www.youtube-nocookie.com/embed/${ytid}?${autoplayParam}?enablejsapi=1&modestbranding=1&loop=1&controls=0&disablekb=1&rel=0&showinfo=0&playlist=${ytid}&${muteParam}`;
 		},
 		// Added method to get the language iframe URL
 		getLanguageIframeUrl(languageUrl) {
 			// Checks if the languageUrl is not provided the retun null
 			if (!languageUrl) return null;
-			return `https://www.youtube.com/embed/${languageUrl}?enablejsapi=1&autoplay=1&modestbranding=1&loop=1&controls=0&disablekb=1&languageUrl=${languageUrl}`;
+			return `https://www.youtube-nocookie.com/embed/${languageUrl}?enablejsapi=1&autoplay=1&modestbranding=1&loop=1&controls=0&disablekb=1&rel=0&showinfo=0&playlist=${languageUrl}`;
 		}
 	}
 }
