@@ -364,7 +364,6 @@ def get_best_name(position_or_address, parts=False):
 @receiver(register_mail_placeholders, dispatch_uid="pretixbase_register_mail_placeholders")
 def base_placeholders(sender, **kwargs):
     from pretix.multidomain.urlreverse import build_absolute_uri
-    from django.apps import apps 
 
     ph = [
         SimpleFunctionalMailTextPlaceholder(
@@ -472,6 +471,7 @@ def base_placeholders(sender, **kwargs):
             ), lambda event: build_absolute_uri(
                 event,
                 'pretixvideo:event.join', kwargs={
+                    'organizer': event.organizer.slug,
                     'order': 'F8VVL',
                     'secret': '6zzjnumtsx136ddy',
                 }
