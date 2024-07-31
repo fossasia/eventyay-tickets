@@ -83,6 +83,7 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 
     def save_user(self, request, sociallogin, form=None):
         try:
+            sociallogin.user.code = sociallogin.account.extra_data.get('sub')
             user = super().save_user(request, sociallogin, form)
         except IntegrityError as e:
             # bypass the error if the user with this email created in eventyay-talk
