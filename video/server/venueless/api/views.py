@@ -1,13 +1,18 @@
+import json
 import logging
 from contextlib import suppress
 from urllib.parse import urlparse
+import jwt
 
 from asgiref.sync import async_to_sync
 from django.core import exceptions
 from django.db import transaction
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
+from django.views import View
 from rest_framework import viewsets
+from rest_framework.authentication import get_authorization_header
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -104,6 +109,60 @@ class WorldThemeView(APIView):
             logger.error("error happened when trying to get theme data of world: %s", kwargs["world_id"])
             return Response("error happened when trying to get theme data of world: " + kwargs["world_id"], status=503)
 
+
+class UserFavouriteView(APIView):
+
+    permission_classes = []
+
+    @staticmethod
+    def post(request, *args, **kwargs) -> JsonResponse:
+        """
+        Handle POST requests to add talks to the user's favourite list.
+        Being called by eventyay-talk, authenticate by bearer token.
+        """
+        try:
+            talk_list = json.loads(request.body.decode())
+            user_code = UserFavouriteView.get_uid_from_token(request, kwargs["world_id"])
+            user = User.objects.get(token_id=user_code)
+            if not user_code or not user:
+                # user not created yet, no error should be returned
+                logger.error("User not found for adding favourite talks.")
+                return JsonResponse([], safe=False, status=200)
+            if user.client_state is None:
+                # If it's None, create a new dictionary with schedule.favs field
+                user.client_state = {
+                    'schedule': {
+                        'favs': talk_list
+                    }
+                }
+            else:
+                # If client_state is not None, check if 'schedule' field exists
+                if 'schedule' not in user.client_state:
+                    # If 'schedule' field doesn't exist, create it
+                    user.client_state['schedule'] = {'favs': talk_list}
+                else:
+                    # If 'schedule' field exists, update the 'favs' field
+                    user.client_state['schedule']['favs'] = talk_list
+            user.save()
+            return JsonResponse(talk_list, safe=False, status=200)
+        except Exception as e:
+            logger.error("error happened when trying to add fav talks: %s", kwargs["world_id"])
+            logger.error(e)
+            # Since this is called from background so no error should be returned
+            return JsonResponse([], safe=False, status=200)
+
+    @staticmethod
+    def get_uid_from_token(request, world_id):
+        world = get_object_or_404(World, id=world_id)
+        auth_header = get_authorization_header(request).split()
+        if auth_header and auth_header[0].lower() == b'bearer':
+            if len(auth_header) == 1:
+                raise exceptions.AuthenticationFailed('Invalid token header. No credentials provided.')
+            elif len(auth_header) > 2:
+                raise exceptions.AuthenticationFailed(
+                    'Invalid token header. Token string should not contain spaces.')
+        token_decode = world.decode_token(token=auth_header[1])
+        return token_decode.get("uid")
 
 
 def get_domain(path):

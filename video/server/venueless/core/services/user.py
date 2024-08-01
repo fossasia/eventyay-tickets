@@ -1,4 +1,8 @@
+import json
+import jwt
 import operator
+import datetime as dt
+import requests
 from collections import namedtuple
 from datetime import timedelta
 from functools import reduce
@@ -8,13 +12,14 @@ from channels.layers import get_channel_layer
 from django.core.paginator import InvalidPage, Paginator
 from django.db.models import Q
 from django.db.transaction import atomic
+from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 
 from ...live.channels import GROUP_USER
 from ..models import AuditLog
 from ..models.auth import User
 from ..models.room import AnonymousInvite
-from ..models.world import WorldView
+from ..models.world import WorldView, World
 from ..permissions import Permission
 
 
@@ -294,6 +299,9 @@ def update_user(
         ):
             user.client_state = data.get("client_state")
             save_fields.append("client_state")
+            # Call talk component to update favs talks
+            if user.token_id is not None:
+                update_fav_talks(user.token_id, data["client_state"], world_id)
 
         if save_fields:
             user.save(update_fields=save_fields)
@@ -306,6 +314,41 @@ def update_user(
         else user
     )
 
+
+def update_fav_talks(user_token_id, talks, world_id):
+    try:
+        talk_list = talks.get('schedule').get('favs')
+        world = get_object_or_404(World, id=world_id)
+        jwt_config = world.config.get("JWT_secrets")
+        if not jwt_config:
+            return
+        talk_token = get_user_video_token(user_token_id,jwt_config[0])
+
+        talk_config = world.config.get("pretalx")
+        if not talk_config:
+            return
+        talk_url = talk_config.get('domain') + "/api/events/" + talk_config.get('event') + "/favourite-talk/"
+        header = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {talk_token}"
+        }
+        requests.post(talk_url, data=json.dumps(talk_list), headers=header)
+    except World.DoesNotExist or Exception:
+        pass
+
+
+def get_user_video_token(user_code, video_settings):
+    iat = dt.datetime.utcnow()
+    exp = iat + dt.timedelta(days=30)
+    payload = {
+        "iss": video_settings.get('issuer'),
+        "aud": video_settings.get('audience'),
+        "exp": exp,
+        "iat": iat,
+        "uid": user_code,
+    }
+    token = jwt.encode(payload, video_settings.get('secret'), algorithm="HS256")
+    return token
 
 def start_view(user: User, delete=False):
     # The majority of WorldView that go "abandoned" (i.e. ``end`` is never set) are likely caused by server
