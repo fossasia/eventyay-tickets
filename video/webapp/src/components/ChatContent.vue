@@ -40,55 +40,16 @@ export async function contentToPlainText (content) {
 }
 
 const generateHTML = (input) => {
-  if (!input) return
-  return markdownIt.renderInline(input)
+	if (!input) return
+	return markdownIt.renderInline(input)
 }
 
 export default {
-  functional: true,
-  props: {
-    content: String
-  },
-  data() {
-    return {
-      selectedUser: null
-    }
-  },
-  methods: {
-    showUserModal(user) {
-      this.selectedUser = user
-      this.$modal.show('user-modal')
-    },
-    closeUserModal() {
-      this.$modal.hide('user-modal')
-    }
-  },
-  render(createElement, ctx) {
-    const parts = ctx.props.content.split(mentionRegex)
-    const content = parts.map(string => {
-      if (string.match(mentionRegex)) {
-        const user = ctx.parent.$store.state.chat.usersLookup[string.slice(1)]
-        if (user) {
-          return { user }
-        }
-      }
-      return { html: generateHTML(string) }
-    })
-    return content.map(part => {
-      if (part.user) {
-        return createElement('span', {
-          class: 'mention',
-          on: {
-            click: () => ctx.parent.showUserModal(part.user)
-          }
-        }, getUserName(part.user))
-      }
-      return createElement('span', { domProps: { innerHTML: part.html } })
-    })
-  },
-  components: {
-    'user-modal': {
-      template: `
+	functional: true,
+	components: {
+		props: ['selectedUser'],
+		'user-modal': {
+			template: `
         <modal name="user-modal" height="auto" @before-close="closeUserModal">
           <div class="modal-content">
             <h3>User Information</h3>
@@ -99,13 +60,52 @@ export default {
           </div>
         </modal>
       `,
-      props: ['selectedUser'],
-      methods: {
-        closeUserModal() {
-          this.$emit('close')
-        }
-      }
-    }
-  }
+			methods: {
+				closeUserModal () {
+					this.$emit('close')
+				}
+			}
+		}
+	},
+	props: {
+		content: String
+	},
+	data () {
+		return {
+			selectedUser: null
+		}
+	},
+	methods: {
+		showUserModal (user) {
+			this.selectedUser = user
+			this.$modal.show('user-modal')
+		},
+		closeUserModal () {
+			this.$modal.hide('user-modal')
+		}
+	},
+	render (createElement, ctx) {
+		const parts = ctx.props.content.split(mentionRegex)
+		const content = parts.map(string => {
+			if (string.match(mentionRegex)) {
+				const user = ctx.parent.$store.state.chat.usersLookup[string.slice(1)]
+				if (user) {
+					return { user }
+				}
+			}
+			return { html: generateHTML(string) }
+		})
+		return content.map(part => {
+			if (part.user) {
+				return createElement('span', {
+					class: 'mention',
+					on: {
+						click: () => ctx.parent.showUserModal(part.user)
+					}
+				}, getUserName(part.user))
+			}
+			return createElement('span', { domProps: { innerHTML: part.html } })
+		})
+	}
 }
 </script>
