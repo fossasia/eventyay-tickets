@@ -81,6 +81,10 @@ class VenuelessSettingsForm(SettingsForm):
         required=False,
         widget=I18nMarkdownTextarea,
     )
+    venueless_talk_schedule_url = forms.URLField(
+        label=_("Eventyay schedule URL"),
+        required=False,
+    )
 
     def __init__(self, *args, **kwargs):
         event = kwargs['obj']
@@ -190,7 +194,7 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
 
         baseurl = self.request.event.settings.venueless_url
         if kwargs.get("view_schedule") == 'True':
-            baseurl += '/schedule'
+            return redirect(self.request.event.settings.venueless_talk_schedule_url)
         if '{token}' in baseurl:
             # Hidden feature to support other kinds of installations
             return redirect(baseurl.format(token=token))
