@@ -363,6 +363,7 @@ def get_best_name(position_or_address, parts=False):
 @receiver(register_mail_placeholders, dispatch_uid="pretixbase_register_mail_placeholders")
 def base_placeholders(sender, **kwargs):
     from pretix.multidomain.urlreverse import build_absolute_uri
+    from pretix.multidomain.urlreverse import build_join_video_url
 
     ph = [
         SimpleFunctionalMailTextPlaceholder(
@@ -581,7 +582,14 @@ def base_placeholders(sender, **kwargs):
             _('John Doe'),
         ),
     ]
-
+    if 'pretix_venueless' in sender.get_plugins():
+        ph.append(SimpleFunctionalMailTextPlaceholder(
+            'join_online_event', ['order', 'event'], lambda order, event: build_join_video_url(
+                event, order
+            ), lambda order, event: build_join_video_url(
+                event, order
+            ),
+        ),)
     name_scheme = PERSON_NAME_SCHEMES[sender.settings.name_scheme]
     for f, l, w in name_scheme['fields']:
         if f == 'full_name':
