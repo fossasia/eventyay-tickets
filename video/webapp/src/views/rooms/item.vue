@@ -8,7 +8,7 @@
 			reactions-bar(:expanded="true", @expand="activeStageTool = 'reaction'")
 			//- reactions-bar(:expanded="activeStageTool === 'reaction'", @expand="activeStageTool = 'reaction'")
 			// Added dropdown menu for audio translations near the reactions bar
-			AudioTranslationDropdown(:languages="languages", @languageChanged="handleLanguageChange")
+			AudioTranslationDropdown(v-if="languages.length > 1", :languages="languages", @languageChanged="handleLanguageChange")
 	media-source-placeholder(v-else-if="modules['call.bigbluebutton'] || modules['call.zoom']")
 	roulette(v-else-if="modules['networking.roulette'] && $features.enabled('roulette')", :module="modules['networking.roulette']", :room="room")
 	landing-page(v-else-if="modules['page.landing']", :module="modules['page.landing']")
