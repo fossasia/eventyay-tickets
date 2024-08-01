@@ -69,6 +69,20 @@ export default {
 			}
 		}
 	},
+	watch: {
+		async 'autocomplete.search' (search) {
+			// TODO debounce?
+			if (!this.autocomplete) return
+			if (this.autocomplete.type === 'mention') {
+				const { results } = await api.call('user.list.search', {search_term: search, page: 1, include_banned: false})
+				this.autocomplete.options = results
+				// if (results.length === 1) {
+				// 	this.autocomplete.selected = 0
+				// 	this.handleMention()
+				// }
+			}
+		}
+	},
 	mounted () {
 		this.quill = new Quill(this.$refs.editor, {
 			debug: ENV_DEVELOPMENT ? 'info' : 'warn',
@@ -108,20 +122,6 @@ export default {
 			this.quill.setContents(nativeToOps(this.message.content?.body))
 			if (this.message.content?.files?.length > 0) {
 				this.files = this.message.content.files
-			}
-		}
-	},
-	watch: {
-		async 'autocomplete.search' (search) {
-			// TODO debounce?
-			if (!this.autocomplete) return
-			if (this.autocomplete.type === 'mention') {
-				const { results } = await api.call('user.list.search', {search_term: search, page: 1, include_banned: false})
-				this.autocomplete.options = results
-				// if (results.length === 1) {
-				// 	this.autocomplete.selected = 0
-				// 	this.handleMention()
-				// }
 			}
 		}
 	},

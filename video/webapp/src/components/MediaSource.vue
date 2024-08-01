@@ -70,7 +70,7 @@ export default {
 				this.initializeIframe(false)
 			}
 		},
-		youtubeTransUrl(youtubeTransUrl) {
+		youtubeTransUrl (youtubeTransUrl) {
 			if (!this.room) {
 				return
 			}
@@ -84,14 +84,14 @@ export default {
 			return
 		}
 		this.initializeIframe(false)
-		this.$root.$on('languageChanged', this.handleLanguageChange);
+		this.$root.$on('languageChanged', this.handleLanguageChange)
 	},
 	beforeDestroy () {
 		this.iframe?.remove()
 		if (api.socketState !== 'open') return
 		// TODO move to store?
 		if (this.room) api.call('room.leave', {room: this.room.id})
-		this.$root.$off('languageChanged', this.handleLanguageChange);
+		this.$root.$off('languageChanged', this.handleLanguageChange)
 	},
 	methods: {
 		async initializeIframe (mute) {
@@ -160,27 +160,27 @@ export default {
 			}
 			return true
 		},
-		handleLanguageChange(languageUrl) {
-			this.languageAudioUrl = languageUrl; // Set the audio source to the selected language URL
-			const mute = !!languageUrl; // Mute if language URL is present, otherwise unmute
-			this.destroyIframe();
-			this.initializeIframe(mute); // Initialize iframe with the appropriate mute state
+		handleLanguageChange (languageUrl) {
+			this.languageAudioUrl = languageUrl // Set the audio source to the selected language URL
+			const mute = !!languageUrl // Mute if language URL is present, otherwise unmute
+			this.destroyIframe()
+			this.initializeIframe(mute) // Initialize iframe with the appropriate mute state
 			// Set the language iframe URL when language changes
-			this.languageIframeUrl = this.getLanguageIframeUrl(languageUrl);
+			this.languageIframeUrl = this.getLanguageIframeUrl(languageUrl)
 		},
-		getYoutubeUrl(ytid, autoplay, mute) {
+		getYoutubeUrl (ytid, autoplay, mute) {
 			// Construct the autoplay parameter based on the input
-			const autoplayParam = autoplay ? 'autoplay=1&' : '';
+			const autoplayParam = autoplay ? 'autoplay=1&' : ''
 			// Construct the mute parameter based on the input
-			const muteParam = mute ? 'mute=1' : 'mute=0';
+			const muteParam = mute ? 'mute=1' : 'mute=0'
 			// Return the complete YouTube URL with the provided video ID, autoplay, and mute parameters
-			return `https://www.youtube-nocookie.com/embed/${ytid}?${autoplayParam}?enablejsapi=1&modestbranding=1&loop=1&controls=0&disablekb=1&rel=0&showinfo=0&playlist=${ytid}&${muteParam}`;
+			return `https://www.youtube-nocookie.com/embed/${ytid}?${autoplayParam}?enablejsapi=1&modestbranding=1&loop=1&controls=0&disablekb=1&rel=0&showinfo=0&playlist=${ytid}&${muteParam}`
 		},
 		// Added method to get the language iframe URL
-		getLanguageIframeUrl(languageUrl) {
+		getLanguageIframeUrl (languageUrl) {
 			// Checks if the languageUrl is not provided the retun null
 			if (!languageUrl) return null;
-			return `https://www.youtube-nocookie.com/embed/${languageUrl}?enablejsapi=1&autoplay=1&modestbranding=1&loop=1&controls=0&disablekb=1&rel=0&showinfo=0&playlist=${languageUrl}`;
+			return `https://www.youtube-nocookie.com/embed/${languageUrl}?enablejsapi=1&autoplay=1&modestbranding=1&loop=1&controls=0&disablekb=1&rel=0&showinfo=0&playlist=${languageUrl}`
 		}
 	}
 }
