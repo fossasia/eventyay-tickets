@@ -151,14 +151,14 @@ def build_absolute_uri(obj, urlname, kwargs=None):
 def build_join_video_url(event, order):
     # Get list order position id
     order_item_ids = [position.item_id for position in order.positions.all()]
-    # Get position_id allow for join video online
-    common_item_id = next((item for item in order_item_ids if item in event.settings.venueless_items), None)
-    # Get position object
-    position = order.positions.filter(item_id=common_item_id).first()
     # Check if video allow all positions
     if event.settings.venueless_all_items:
+        position = order.positions.first()
         return generate_token_url(event, order, position)
     else:
+        common_item_id = next((item for item in order_item_ids if item in event.settings.venueless_items), None)
+        # Get position object
+        position = order.positions.filter(item_id=common_item_id).first()
         # Check if any item in order item is allowed to join
         if any(item in event.settings.venueless_items for item in order_item_ids):
             return generate_token_url(event, order, position)
