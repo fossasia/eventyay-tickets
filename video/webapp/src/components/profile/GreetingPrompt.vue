@@ -29,6 +29,10 @@ prompt.c-profile-greeting-prompt(:allowCancel="false")
 			h1 {{ $t('profile/GreetingPrompt:step-avatar:heading') }}
 			p {{ $t('profile/GreetingPrompt:step-avatar:text') }}
 			change-avatar(ref="step", v-model="profile.avatar", :profile="profile", @blockSave="blockSave = $event")
+		.step-display-language(v-else-if="activeStep === 'displayLanguage'")
+			h2 {{ $t('preferences/index:interface-language:header') }}
+			p {{ $t('preferences/index:interface-language:description') }}
+			bunt-select#select-interface-language(name="interface-language", v-model="interfaceLanguage", :options="languages", option-value="code", option-label="nativeLabel")
 		.step-additional-fields(v-else-if="activeStep === 'additionalFields'")
 			h1 {{ $t('profile/GreetingPrompt:step-fields:heading') }}
 			p {{ $t('profile/GreetingPrompt:step-fields:text') }}
@@ -42,6 +46,8 @@ prompt.c-profile-greeting-prompt(:allowCancel="false")
 import { mapState } from 'vuex'
 import { required } from 'buntpapier/src/vuelidate/validators'
 import api from 'lib/api'
+import config from 'config'
+import { locales } from 'locales'
 import Prompt from 'components/Prompt'
 import ChangeAvatar from './ChangeAvatar'
 import ChangeAdditionalFields from './ChangeAdditionalFields'
@@ -57,6 +63,7 @@ export default {
 			processingStep: false,
 			blockSave: false,
 			saving: false,
+			interfaceLanguage: this.$i18n.resolvedLanguage,
 		}
 	},
 	validations () {
@@ -74,6 +81,7 @@ export default {
 		steps () {
 			const steps = [
 				'displayName',
+				'displayLanguage',
 				'avatar'
 			]
 			if (this.world?.social_logins?.length) steps.unshift('connectSocial')
@@ -85,6 +93,10 @@ export default {
 		},
 		nextStep () {
 			return this.steps[this.steps.indexOf(this.activeStep) + 1]
+		},
+		languages () {
+			if (!config.locales?.length) return null
+			return locales.filter(locale => config.locales.includes(locale.code))
 		}
 	},
 	async created () {
@@ -132,6 +144,8 @@ export default {
 			}
 			this.profile.greeted = true // override even if explicitly set to false by server
 			await this.$store.dispatch('updateUser', {profile: this.profile})
+			localStorage.userLanguage = this.interfaceLanguage
+			await this.$store.dispatch('updateUserLocale', this.interfaceLanguage)
 			// TODO error handling
 			this.$emit('close')
 		}
@@ -154,7 +168,7 @@ export default {
 			margin: 0 0 8px 0
 			width: 360px
 			white-space: pre-wrap
-		.step-connect-social, .step-display-name, .step-avatar, .step-additional-fields
+		.step-connect-social, .step-display-name, .step-avatar, .step-display-language, .step-additional-fields
 			display: flex
 			flex-direction: column
 			align-items: center

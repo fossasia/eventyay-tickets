@@ -14,7 +14,7 @@ if (ENV_DEVELOPMENT || !window.venueless) {
 			feedback: `${httpProtocol}//${hostname}:8443/_feedback/`,
 		},
 		defaultLocale: 'en',
-		locales: ['en', 'de', 'pt_BR'],
+		locales: ['en', 'de', 'pt_BR', 'ar', 'fr', 'es', 'uk', 'ru'],
 		theme: {
 			logo: {
 				url: "/eventyay-video-logo.svg",
