@@ -442,10 +442,9 @@ class Login2FAView(TemplateView):
 
 
 def ComponentsView(request):
-    parent_directory = '/home/abhigawande/Downloads/fossasia'
-    # Construct the path to the eventyay-talk directory
+    current_directory = os.getcwd()
+    parent_directory = os.path.abspath(os.path.join(current_directory, os.pardir))
     eventyay_talk_path = os.path.join(parent_directory, 'eventyay-talk')
-    # Check if the eventyay-talk directory exists
     is_eventyay_talk_installed = os.path.isdir(eventyay_talk_path)
     context = {
         'is_eventyay_talk_installed': is_eventyay_talk_installed,

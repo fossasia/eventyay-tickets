@@ -17,7 +17,7 @@
 
             {% if is_eventyay_talk_installed %}
                 <p>
-                    <a href="http://127.0.0.1:8000/eventyay-talk" class="btn btn-primary">
+                    <a href="{{ request.scheme }}://{{ request.get_host }}/eventyay-talk" class="btn btn-primary">
                         {% trans "Go to Eventyay-Talk" %}
                     </a>
                 </p>
