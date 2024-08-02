@@ -108,6 +108,10 @@ table td.numeric-left {
   position: absolute;
   background: white;
 }
+.export-break {
+  height: 1px;
+  background: #B0B0B0;
+}
 .export-qrcode:hover .export-qrcode-image,
 .qrcode:hover .qrcode-image {
   display: block;

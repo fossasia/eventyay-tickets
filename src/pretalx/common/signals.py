@@ -202,6 +202,8 @@ than expected.
 """
 
 register_data_exporters = EventPluginSignal()
+
+register_my_data_exporters = EventPluginSignal()
 """
 This signal is sent out to get all known data exporters. Receivers should return a
 subclass of pretalx.common.exporter.BaseExporter

@@ -20,10 +20,11 @@ from django.views.generic import TemplateView
 from django_context_decorator import context
 
 from pretalx.common.mixins.views import EventPermissionRequired
-from pretalx.common.signals import register_data_exporters
+from pretalx.common.signals import register_data_exporters, register_my_data_exporters
 from pretalx.common.utils import safe_filename
 from pretalx.schedule.ascii import draw_ascii_schedule
 from pretalx.schedule.exporters import ScheduleData
+from pretalx.submission.models.submission import SubmissionFavourite
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +94,8 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         exporter = (
             exporter[len("export.") :] if exporter.startswith("export.") else exporter
         )
-        responses = register_data_exporters.send(request.event)
+        responses = (register_data_exporters.send(request.event)
+                     + register_my_data_exporters.send(request.event))
         for __, response in responses:
             ex = response(request.event)
             if ex.identifier == exporter:
@@ -111,6 +113,12 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
             activate(request.event.locale)
 
         exporter.schedule = self.schedule
+        if "-my" in exporter.identifier and self.request.user.id is None:
+            return HttpResponseRedirect(self.request.event.urls.login)
+        favs_talks = SubmissionFavourite.objects.filter(user=self.request.user.id)
+        if favs_talks.exists():
+            exporter.talk_ids = favs_talks[0].talk_list
+
         exporter.is_orga = getattr(self.request, "is_orga", False)
 
         try:
@@ -212,6 +220,13 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
         return list(
             exporter(self.request.event)
             for _, exporter in register_data_exporters.send(self.request.event)
+        )
+
+    @context
+    def my_exporters(self):
+        return list(
+            exporter(self.request.event)
+            for _, exporter in register_my_data_exporters.send(self.request.event)
         )
 
     @context

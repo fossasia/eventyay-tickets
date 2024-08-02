@@ -45,6 +45,25 @@
                             {% endif %}
                         </a></li>
                     {% endif %}{% endfor %}
+                    <div class="export-break" style="grid-area: slice-08-07-00-00 / 1 / slice-08-08-00-00;"></div>
+                    {% for exporter in my_exporters %}{% if exporter.public %}
+                        <li><a class="dropdown-item" href="{{ exporter.urls.base }}">
+                            {% if exporter.icon|slice:":3" == "fa-" %}
+                                <span class="fa {{ exporter.icon }} export-icon"></span>
+                            {% else %}
+                                <span class="export-icon">{{ exporter.icon }}</span>
+                            {% endif %}
+                            {{ exporter.verbose_name }}
+                            {% if exporter.show_qrcode %}
+                                <span class="export-qrcode">
+                                    <div class="btn btn-default btn-sm">
+                                        <i class="fa fa-qrcode"></i>
+                                    </div>
+                                    <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
+                                </span>
+                            {% endif %}
+                        </a></li>
+                    {% endif %}{% endfor %}
                 </ul>
             </details>
         {% endif %}

@@ -1,6 +1,6 @@
 from django.dispatch import receiver
 
-from pretalx.common.signals import EventPluginSignal, register_data_exporters
+from pretalx.common.signals import EventPluginSignal, register_data_exporters, register_my_data_exporters
 
 schedule_release = EventPluginSignal()
 """
@@ -22,11 +22,25 @@ def register_ical_exporter(sender, **kwargs):
     return ICalExporter
 
 
+@receiver(register_my_data_exporters, dispatch_uid="exporter_builtin_my_ical")
+def register_my_ical_exporter(sender, **kwargs):
+    from .exporters import MyICalExporter
+
+    return MyICalExporter
+
+
 @receiver(register_data_exporters, dispatch_uid="exporter_builtin_xml")
 def register_xml_exporter(sender, **kwargs):
     from .exporters import FrabXmlExporter
 
     return FrabXmlExporter
+
+
+@receiver(register_my_data_exporters, dispatch_uid="exporter_builtin_my_xml")
+def register_my_xml_exporter(sender, **kwargs):
+    from .exporters import MyFrabXmlExporter
+
+    return MyFrabXmlExporter
 
 
 @receiver(register_data_exporters, dispatch_uid="exporter_builtin_xcal")
@@ -36,8 +50,23 @@ def register_xcal_exporter(sender, **kwargs):
     return FrabXCalExporter
 
 
+@receiver(register_my_data_exporters, dispatch_uid="exporter_builtin_my_xcal")
+def register_my_xcal_exporter(sender, **kwargs):
+    from .exporters import MyFrabXCalExporter
+
+    return MyFrabXCalExporter
+
+
 @receiver(register_data_exporters, dispatch_uid="exporter_builtin_json")
 def register_json_exporter(sender, **kwargs):
     from .exporters import FrabJsonExporter
 
     return FrabJsonExporter
+
+
+@receiver(register_my_data_exporters, dispatch_uid="exporter_builtin_my_json")
+def register_my_json_exporter(sender, **kwargs):
+    from .exporters import MyFrabJsonExporter
+
+    return MyFrabJsonExporter
+
