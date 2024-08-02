@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-05-03 14:00+0000\n"
-"PO-Revision-Date: 2024-04-29 16:55+0000\n"
-"Last-Translator: bristow <git@frayssinet.org>\n"
+"PO-Revision-Date: 2024-08-02 14:25+0000\n"
+"Last-Translator: Lucie Anglade <lucie@courtbouillon.org>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.18.2\n"
+"X-Generator: Weblate 5.6.2\n"
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
@@ -515,10 +515,8 @@ msgid "No"
 msgstr "Non"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:44
-#, fuzzy
-#| msgid "Accept invitation?"
 msgid "Accept invitation"
-msgstr "Accepter l'invitation ?"
+msgstr "Accepter l'invitation"
 
 #: pretalx/cfp/templates/cfp/event/login.html:5
 msgid "Login"
@@ -1002,10 +1000,8 @@ msgstr ""
 "envois de moins de 16 Mo."
 
 #: pretalx/cfp/templates/includes/submission_resources_form.html:48
-#, fuzzy
-#| msgid "This proposal has no file uploads yet."
 msgid "This proposal has no resources yet."
-msgstr "Aucun fichier n'a été joint à cette proposition pour l'instant."
+msgstr "Aucune ressource n'est associée à cette proposition pour l'instant."
 
 #: pretalx/cfp/templates/includes/submission_resources_form.html:68
 #: pretalx/cfp/templates/includes/submission_resources_form.html:80
@@ -1166,13 +1162,12 @@ msgstr "Vos mots de passe ne correspondent pas."
 #: pretalx/common/log_display.py:28
 #, python-brace-format
 msgid "The event {name} ({slug}) by {organiser} was deleted."
-msgstr ""
+msgstr "L’évènement {name} ({slug}) par {organiser} a été supprimé."
 
 #: pretalx/common/log_display.py:29
-#, fuzzy, python-brace-format
-#| msgid "The proposal was deleted."
+#, python-brace-format
 msgid "The organiser {name} was deleted."
-msgstr "La proposition a été supprimée."
+msgstr "L’organisateur {name} a été supprimé."
 
 #: pretalx/common/log_display.py:50
 msgid "The CfP has been modified."
@@ -1223,10 +1218,8 @@ msgid "The invitation to the review team was sent."
 msgstr "L'invitation dans l'équipe d'évaluateurs a été envoyée."
 
 #: pretalx/common/log_display.py:64
-#, fuzzy
-#| msgid "An email was sent."
 msgid "An email was created."
-msgstr "Un courriel a été envoyé."
+msgstr "Un courriel a été créé."
 
 #: pretalx/common/log_display.py:65
 msgid "A pending email was deleted."
@@ -1445,10 +1438,8 @@ msgid "Answer to question"
 msgstr "Réponse à la question"
 
 #: pretalx/common/log_display.py:166 pretalx/orga/templates/orga/base.html:219
-#, fuzzy
-#| msgid "All proposals"
 msgid "Call for Proposals"
-msgstr "Toutes les propositions"
+msgstr "Appel à propositions"
 
 #: pretalx/common/log_display.py:169
 msgid "Mail template"
@@ -1854,16 +1845,16 @@ msgid "Delete"
 msgstr "Supprimer"
 
 #: pretalx/common/text/phrases.py:57
-#, fuzzy
-#| msgid "Account deletion"
 msgid "Confirm deletion"
-msgstr "Suppression du compte"
+msgstr "Confirmer la suppression"
 
 #: pretalx/common/text/phrases.py:59
 msgid ""
 "Please make sure that this is the item you want to delete. This action "
 "cannot be undone!"
 msgstr ""
+"Veuillez-vous assurer que c’est bien l’élément que vous voulez supprimer. "
+"Cette action est irréversible !"
 
 #: pretalx/common/text/phrases.py:62
 msgid "Your changes have been saved."
@@ -1888,7 +1879,7 @@ msgstr ""
 msgid "We had trouble saving your input – Please see below for details."
 msgstr ""
 "Nous avons des difficultés à enregistrer votre entrée – plus de détails à ce "
-"sujet sont disponible ci-dessous. 🠯"
+"sujet sont disponible ci-dessous."
 
 #: pretalx/common/text/phrases.py:73
 msgid "You do not have permission to perform this action."
@@ -2065,10 +2056,8 @@ msgstr ""
 "Les développeurs de pretalx"
 
 #: pretalx/common/update_check.py:143 pretalx/common/update_check.py:150
-#, fuzzy
-#| msgid "Plugins"
 msgid "Plugin"
-msgstr "Plugins"
+msgstr "Plugin"
 
 #: pretalx/common/views/generic.py:139
 msgid "Sorry, you are not allowed to reorder this list."
@@ -2729,16 +2718,13 @@ msgstr ""
 "dans la version actuelle du planning."
 
 #: pretalx/mail/context.py:281
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "- Your session “Title” will take place at {time} in Room 101.\n"
-#| "- Your session “Other Title” has been moved to {time2} in Room 102."
+#, python-brace-format
 msgid ""
 "- Your session “Title” will take place at {time} in Room 101.\n"
 "- Your session “Other Title” will take place at {time2} in Room 102."
 msgstr ""
 "- Votre session “Titre” prendra place à {time} en salle 101.\n"
-"- Votre session “Autre Titre” a été déplacée à {time2} en salle 102."
+"- Votre session “Autre Titre” prendra place à {time2} en salle 102."
 
 #: pretalx/mail/context.py:284
 msgid "A list of time and place for this user’s publicly visible sessions."
@@ -3772,10 +3758,8 @@ msgid "Replace current assignments"
 msgstr "Remplacer les affectations actuelles"
 
 #: pretalx/orga/forms/review.py:369
-#, fuzzy
-#| msgid "Replace current assignments"
 msgid "Keep current assignments"
-msgstr "Remplacer les affectations actuelles"
+msgstr "Garder les affectations actuelles"
 
 #: pretalx/orga/forms/review.py:373
 msgid ""
@@ -7005,10 +6989,8 @@ msgid "Score category"
 msgstr "Catégorie de score"
 
 #: pretalx/orga/views/event.py:380
-#, fuzzy
-#| msgid "Review phases"
 msgid "Review phase"
-msgstr "Phases d'évaluation"
+msgstr "Phase d'évaluation"
 
 #: pretalx/orga/views/event.py:431
 #, python-format
@@ -7092,16 +7074,12 @@ msgid "Do you really want to send {count} mails?"
 msgstr "Voulez-vous vraiment envoyer {count} courriels ?"
 
 #: pretalx/orga/views/mails.py:121
-#, fuzzy
-#| msgid ""
-#| "This mail either does not exist or cannot be discarded because it was "
-#| "sent already."
 msgid ""
 "This mail either does not exist or cannot be sent because it was sent "
 "already."
 msgstr ""
 "Soit ce courriel n'existe pas, soit il a déjà été envoyé et ne peut donc pas "
-"être supprimé."
+"être envoyé."
 
 #: pretalx/orga/views/mails.py:126
 msgid "This mail had been sent already."
@@ -7198,10 +7176,8 @@ msgid "The settings have been saved."
 msgstr "Les paramètres ont été sauvés."
 
 #: pretalx/orga/views/organiser.py:113
-#, fuzzy
-#| msgid "Team members"
 msgid "Team member"
-msgstr "Membres de l'équipe"
+msgstr "Membre de l'équipe"
 
 #: pretalx/orga/views/organiser.py:128
 msgid "The member was removed from the team."
@@ -7220,10 +7196,8 @@ msgid "Resend invitation"
 msgstr "Renvoyer l'invitation"
 
 #: pretalx/orga/views/organiser.py:169
-#, fuzzy
-#| msgid "Do you really want to delete this user?"
 msgid "Are you sure you want to resend the invitation to this user?"
-msgstr "Voulez-vous vraiment supprimer cet utilisateur ?"
+msgstr "Voulez-vous vraiment renvoyer l’invitation à cet utilisateur ?"
 
 #: pretalx/orga/views/organiser.py:182
 msgid "The team invitation was sent again."
@@ -7289,10 +7263,8 @@ msgid "Nice, you have no proposals left to review!"
 msgstr "Cool, vous n'avez plus de propositions à évaluer !"
 
 #: pretalx/orga/views/review.py:667
-#, fuzzy
-#| msgid "for reviewers"
 msgid "Your review"
-msgstr "pour les évaluateurs"
+msgstr "Votre évaluation"
 
 #: pretalx/orga/views/review.py:674
 msgid "The review has been deleted."
@@ -7835,7 +7807,7 @@ msgstr "Fin"
 
 #: pretalx/schedule/models/slot.py:66
 msgid "When the talk ends, if it is currently scheduled"
-msgstr "Fin de l'intervention, si elle est éjà planifiée"
+msgstr "Fin de l'intervention, si elle est déjà planifiée"
 
 #: pretalx/schedule/phrases.py:9
 msgctxt "Schedule/program of the conference"
@@ -8473,15 +8445,13 @@ msgstr ""
 "dans l'état {new_state}."
 
 #: pretalx/submission/models/submission.py:483
-#, fuzzy
-#| msgid "per proposal"
 msgid "New proposal"
-msgstr "par proposition"
+msgstr "Nouvelle proposition"
 
 #: pretalx/submission/models/submission.py:772
 #, python-brace-format
 msgid "{title_in_quotes} by {list_of_speakers}"
-msgstr ""
+msgstr "{title_in_quotes} par {list_of_speakers}"
 
 #: pretalx/submission/models/tag.py:29
 msgid "Show tag publicly"
