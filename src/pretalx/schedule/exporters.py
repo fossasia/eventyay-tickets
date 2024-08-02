@@ -369,7 +369,7 @@ class ICalExporter(BaseExporter):
             .order_by("start")
         )
         for talk in talks:
-            if talk.submission.code not in self.talk_ids:
+            if talk.submission and talk.submission.code not in self.talk_ids:
                 continue
             talk.build_ical(cal, creation_time=creation_time, netloc=netloc)
 
