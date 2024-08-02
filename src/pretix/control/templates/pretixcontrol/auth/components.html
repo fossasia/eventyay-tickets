@@ -7,25 +7,56 @@
 <div class="container">
     <div class="form-wrapper">
         <div class="form-signin">
-            <h3>{% trans "COMPONENTS-PAGE.." %}</h3>
-            <h2>{% trans "THIS IS THE EVENTYAY-COMPONENTS PAGE" %}</h2>
+            <h2>{% trans "Manage Eventyay Components" %}</h2>
             <p>
                 {% blocktrans trimmed with a_attr="href='https://eventyay.com'" %}
-                    This is a self-hosted installation of <a {{ a_attr }}>eventyay, your open source event solution.</a>.
+                    Welcome to the Eventyay Components page. This is a self-hosted installation of <a {{ a_attr }}>eventyay</a>, your open-source event management solution.
                 {% endblocktrans %}
             </p>
 
-            {% if is_eventyay_talk_installed %}
-                <p>
-                    <a href="{{ request.scheme }}://{{ request.get_host }}/eventyay-talk" class="btn btn-primary">
-                        {% trans "Go to Eventyay-Talk" %}
-                    </a>
-                </p>
-            {% else %}
-                <p>
-                    {% trans "Eventyay-Talk is not installed." %}
-                </p>
-            {% endif %}
+            <p>
+                {% trans "Here, you can manage various components available for your Eventyay installation. Components extend the functionality of your platform and provide additional features." %}
+            </p>
+
+            <h4>{% trans "Available Components:" %}</h4>
+            <ul>
+                <li>
+                    <strong>{% trans "Eventyay-Talk" %}</strong>: 
+                    {% trans "An integrated solution for virtual conferences, webinars, and online events." %}
+                    {% if is_eventyay_talk_installed %}
+                        <p>
+                            <a href="{{ eventyay_talk_url }}" class="btn btn-primary">
+                                {% trans "Go to Eventyay-Talk" %}
+                            </a>
+                        </p>
+                    {% else %}
+                        <p>
+                            {% trans "Eventyay-Talk is not currently installed." %}
+                            <a href="{{ eventyay_talk_install_url }}" class="btn btn-primary">
+                                {% trans "Install Eventyay-Talk" %}
+                            </a>
+                        </p>
+                    {% endif %}
+                </li>
+                <li>
+                    <strong>{% trans "Eventyay-Video" %}</strong>:
+                    {% trans "A component for integrating video content into your events, allowing for live streaming and video playback." %}
+                    <p>
+                        <a href="#" class="btn btn-primary">
+                            {% trans "Learn More" %}
+                        </a>
+                    </p>
+                </li>
+            </ul>
+
+            <h4>{% trans "How to Activate Components:" %}</h4>
+            <p>
+                {% trans "To activate a component, click on the 'Install' button if the component is not installed. Once installed, use the 'Go to' button to access the component's functionalities." %}
+            </p>
+            <p>
+                {% trans "For more detailed instructions and documentation, please visit our" %}
+                <a href="https://docs.eventyay.com" target="_blank">{% trans "official documentation" %}</a>.
+            </p>
         </div>
     </div>
 </div>
