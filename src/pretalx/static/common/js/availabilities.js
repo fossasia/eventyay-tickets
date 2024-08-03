@@ -56,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function() {
         })
       }
     }
-    console.log(events)
     let localeData = document.querySelector("#calendar-locale")
     const locale = localeData ? localeData.dataset.locale : "en"
     const calendar = new FullCalendar.Calendar(editor[0], {

@@ -8,7 +8,6 @@ $(() => {
   })
 
   $("[data-event-typeahead]").each(function() {
-        console.log("got here")
     var $container = $(this)
     var $query = $(this).find("[data-typeahead-query]").length
       ? $(this).find("[data-typeahead-query]")

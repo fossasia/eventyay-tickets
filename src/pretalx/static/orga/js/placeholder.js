@@ -12,7 +12,6 @@ const makePlaceholderInactive = (placeholder) => {
 
 const updateVisiblePlaceholders = () => {
     const speakerCount = $('#id_speakers').val().length;
-    console.log('speakerCount', speakerCount);
     if (speakerCount === 0) {
         makePlaceholderActive(document.querySelector('#placeholder-submission'))
         makePlaceholderActive(document.querySelector('#placeholder-slot'))
@@ -30,7 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('textarea[id^="id_text_"], input[id^="id_subject"]').forEach((input) => {
         input.addEventListener('focus', function() {
             lastFocusedInput = this;
-            console.log('lastFocusedInput set to', lastFocusedInput);
         })
     })
 
