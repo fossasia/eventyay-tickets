@@ -5,6 +5,7 @@ from decimal import Decimal
 from itertools import groupby
 from smtplib import SMTPResponseException
 
+# from django.apps import apps
 from django.conf import settings
 from django.core.mail.backends.smtp import EmailBackend
 from django.db.models import Count
@@ -461,6 +462,22 @@ def base_placeholders(sender, **kwargs):
                 }
             ),
         ),
+        SimpleFunctionalMailTextPlaceholder(
+            'join_online_event', ['event', 'order'], lambda event, order: build_absolute_uri(
+                event,
+                'pretixvideo:event.join', kwargs={
+                    'order': order.code,
+                    'secret': order.secret,
+                }
+            ), lambda event: build_absolute_uri(
+                event,
+                'pretixvideo:event.join', kwargs={
+                    'organizer': event.organizer.slug,
+                    'order': 'F8VVL',
+                    'secret': '6zzjnumtsx136ddy',
+                }
+            ),
+        ),  
         SimpleFunctionalMailTextPlaceholder(
             'url', ['event', 'position'], lambda event, position: build_absolute_uri(
                 event,
