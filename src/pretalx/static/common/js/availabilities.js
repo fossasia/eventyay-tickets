@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
         minute: "2-digit",
         omitZeroMinute: false,
         hour12: false,
-      },    
+      },
       scrollTime: "09:00:00",
       selectable: editable,
       editable: editable,

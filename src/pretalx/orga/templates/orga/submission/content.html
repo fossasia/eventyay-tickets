@@ -11,6 +11,7 @@
     {% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
     {% has_perm 'orga.view_all_reviews' request.user request.event as can_view_all_reviews %}
     <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
+    <script defer src="{% static "vendored/purify.min.js" %}"></script>
     {% compress js %}
         <script defer src="{% static "js/jquery.formset.js" %}"></script>
         <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
