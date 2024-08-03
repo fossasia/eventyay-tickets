@@ -19,7 +19,6 @@ document.querySelector("#id_basics-slug").addEventListener("input", ev => {
 document.querySelector("#id_basics-slug").addEventListener("input", ev => {
     const value = document.querySelector("#id_basics-slug").value
     if (value.length > 30) {
-        console.log("making visible")
         document.querySelector("#slug-length-warning").classList.remove("d-none")
     } else {
         document.querySelector("#slug-length-warning").classList.add("d-none")

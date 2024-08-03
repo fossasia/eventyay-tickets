@@ -46,7 +46,6 @@ $(function () {
 
         if (gravatarSelected) {
             $fileInput.val('');
-            console.log($image.data('gravatar'));
             setImage("https://www.gravatar.com/avatar/" + $image.data('gravatar') + '?s=512');
             $resetCheckbox.prop('checked', true);
         } else if ($image.data('avatar')) {
