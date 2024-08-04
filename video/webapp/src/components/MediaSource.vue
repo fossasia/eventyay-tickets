@@ -114,7 +114,10 @@ export default {
 						break
 					}
 					case 'livestream.youtube': {
-						iframeUrl = this.getYoutubeUrl(this.module.config.ytid, this.autoplay, mute)
+						iframeUrl = this.getYoutubeUrl(this.module.config.ytid, this.autoplay, mute, this.module.config.hideControls,
+							this.module.config.noRelated, this.module.config.autoStart, this.module.config.showinfo, this.module.config.disableKb,
+							this.module.config.loop, this.module.config.modestBranding, this.module.config.enablePrivacyEnhancedMode
+						)
 						break
 					}
 				}
@@ -168,19 +171,41 @@ export default {
 			// Set the language iframe URL when language changes
 			this.languageIframeUrl = this.getLanguageIframeUrl(languageUrl)
 		},
-		getYoutubeUrl (ytid, autoplay, mute) {
-			// Construct the autoplay parameter based on the input
-			const autoplayParam = autoplay ? 'autoplay=1&' : ''
-			// Construct the mute parameter based on the input
-			const muteParam = mute ? 'mute=1' : 'mute=0'
-			// Return the complete YouTube URL with the provided video ID, autoplay, and mute parameters
-			return `https://www.youtube-nocookie.com/embed/${ytid}?${autoplayParam}?enablejsapi=1&modestbranding=1&loop=1&controls=0&disablekb=1&rel=0&showinfo=0&playlist=${ytid}&${muteParam}`
+		getYoutubeUrl(ytid, autoplay, mute, hideControls, noRelated, autoStart, showinfo, disableKb, loop, modestBranding, enablePrivacyEnhancedMode) {
+			const params = new URLSearchParams({
+				autoplay: autoplay ? '1' : '0',
+				mute: mute ? '1' : '0',
+				controls: hideControls ? '0' : '1',
+				rel: noRelated ? '0' : '1',
+				start: autoStart ? '1' : '0',
+				showinfo: showinfo ? '0' : '1',
+				disablekb: disableKb ? '1' : '0',
+				loop: loop ? '1' : '0',
+				modestbranding: modestBranding ? '1' : '0',
+				playlist: ytid,
+			});
+
+			const domain = enablePrivacyEnhancedMode ? 'www.youtube-nocookie.com' : 'www.youtube.com';
+			return `https://${domain}/embed/${ytid}?${params}`;
 		},
 		// Added method to get the language iframe URL
-		getLanguageIframeUrl (languageUrl) {
+		getLanguageIframeUrl(languageUrl, enablePrivacyEnhancedMode) {
 			// Checks if the languageUrl is not provided the retun null
 			if (!languageUrl) return null;
-			return `https://www.youtube-nocookie.com/embed/${languageUrl}?enablejsapi=1&autoplay=1&modestbranding=1&loop=1&controls=0&disablekb=1&rel=0&showinfo=0&playlist=${languageUrl}`
+			const params = new URLSearchParams({
+				enablejsapi: '1',
+				autoplay: '1',
+				modestbranding: '1',
+				loop: '1',
+				controls: '0',
+				disablekb: '1',
+				rel: '0',
+				showinfo: '0',
+				playlist: languageUrl,
+			});
+
+			const domain = enablePrivacyEnhancedMode ? 'www.youtube-nocookie.com' : 'www.youtube.com';
+			return `https://${domain}/embed/${languageUrl}?${params}`;
 		}
 	}
 }

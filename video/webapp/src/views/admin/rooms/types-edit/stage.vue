@@ -22,6 +22,16 @@
 			bunt-input(name="youtube_id" v-model="entry.youtube_id" label="YouTube Video ID")
 			bunt-icon-button(@click="deleteLanguageUrl(index)") delete-outline
 		bunt-button(@click="addLanguageUrl") + Add Language and Youtube ID
+		// Switch button for no-cookies domain
+		.bunt-switch-container
+			bunt-switch(name="enablePrivacyEnhancedMode", v-model="enablePrivacyEnhancedMode", label="Enable No-Cookies")
+			bunt-switch(name="loop", v-model="loop", label="Loop")
+			bunt-switch(name="autoStart", v-model="autoStart", label=" Enable Autostart")
+			bunt-switch(name="modestBranding", v-model="modestBranding", label=" Enable Modest Branding")
+			bunt-switch(name="hideControls", v-model="hideControls", label="Enable Hide Controls")
+			bunt-switch(name="noRelated", v-model="noRelated", label=" Enable No Related info")
+			bunt-switch(name="disableKb", v-model="disableKb", label="Enable Keyboard Controls")
+			bunt-switch(name="showInfo", v-model="showInfo", label="Enable No Show Info")
 	bunt-input(v-else-if="modules['livestream.iframe']", name="iframe-player", v-model="modules['livestream.iframe'].config.url", label="Iframe player url", hint="iframe player should be autoplaying and support resizing to small sizes for background playing")
 	sidebar-addons(v-bind="$props")
 </template>
@@ -74,7 +84,104 @@ export default {
 				this.b_streamSource = value
 				STREAM_SOURCE_OPTIONS.map(option => option.module).forEach(module => this.removeModule(module))
 				this.addModule(STREAM_SOURCE_OPTIONS.find(option => option.id === value).module)
+			}
+		},
+		enablePrivacyEnhancedMode: {
+			get () {
+				return !!this.modules['livestream.youtube'].config.enablePrivacyEnhancedMode
 			},
+			set (value) {
+				if (value) {
+					this.$set(this.modules['livestream.youtube'].config, 'enablePrivacyEnhancedMode', true)
+				} else {
+					this.$delete(this.modules['livestream.youtube'].config, 'enablePrivacyEnhancedMode')
+				}
+			}
+		},
+		loop: {
+			get () {
+
+				return !!this.modules['livestream.youtube'].config.loop
+			},
+			set (value) {
+				if (value) {
+					this.$set(this.modules['livestream.youtube'].config, 'loop', true)
+				} else {
+					this.$delete(this.modules['livestream.youtube'].config, 'loop')
+				}
+			}
+		},
+		autoStart: {
+			get () {
+				return !!this.modules['livestream.youtube'].config.autoStart
+			},
+			set (value) {
+				if (value) {
+					this.$set(this.modules['livestream.youtube'].config, 'autoStart', true)
+				} else {
+					this.$delete(this.modules['livestream.youtube'].config, 'autoStart')
+				}
+			}
+		},
+		modestBranding: {
+			get () {
+				return !!this.modules['livestream.youtube'].config.modestBranding
+			},
+			set (value) {
+				if (value) {
+					this.$set(this.modules['livestream.youtube'].config, 'modestBranding', true)
+				} else {
+					this.$delete(this.modules['livestream.youtube'].config, 'modestBranding')
+				}
+			}
+		},
+		hideControls: {
+			get () {
+				return !!this.modules['livestream.youtube'].config.hideControls
+			},
+			set (value) {
+				if (value) {
+					this.$set(this.modules['livestream.youtube'].config, 'hideControls', true)
+				} else {
+					this.$delete(this.modules['livestream.youtube'].config, 'hideControls')
+				}
+			}
+		},
+		noRelated: {
+			get () {
+				return !!this.modules['livestream.youtube'].config.noRelated
+			},
+			set (value) {
+				if (value) {
+					this.$set(this.modules['livestream.youtube'].config, 'noRelated', true)
+				} else {
+					this.$delete(this.modules['livestream.youtube'].config, 'noRelated')
+				}
+			}
+		},
+		disableKb: {
+			get () {
+				return !!this.modules['livestream.youtube'].config.disableKb
+			},
+			set (value) {
+				if (value) {
+					this.$set(this.modules['livestream.youtube'].config, 'disableKb', true)
+				} else {
+					this.$delete(this.modules['livestream.youtube'].config, 'disableKb')
+				}
+			}
+		},
+		showInfo: {
+			get () {
+				return !!this.modules['livestream.youtube'].config.showInfo
+			},
+			set (value) {
+				if (value) {
+					this.$set(this.modules['livestream.youtube'].config, 'showInfo', true)
+				} else {
+					this.$delete(this.modules['livestream.youtube'].config, 'showInfo')
+				}
+			}
 		}
 	},
 	created () {
@@ -119,4 +226,6 @@ export default {
 }
 </script>
 <style lang="stylus">
+.bunt-switch-container
+	margin-top: 16px
 </style>
