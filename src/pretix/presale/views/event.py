@@ -1,18 +1,21 @@
 import calendar
+import jwt
 import sys
+import datetime as dt
 from collections import defaultdict
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 from importlib import import_module
+import logging
 
 import isoweek
 import pytz
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.db.models import (
-    Count, Exists, IntegerField, OuterRef, Prefetch, Value,
+    Count, Exists, IntegerField, OuterRef, Prefetch, Value, Q
 )
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.decorators import method_decorator
 from django.utils.formats import get_format
@@ -24,7 +27,7 @@ from django.views.generic import TemplateView
 
 from pretix.base.channels import get_all_sales_channels
 from pretix.base.models import (
-    ItemVariation, Quota, SeatCategoryMapping, Voucher,
+    ItemVariation, Quota, SeatCategoryMapping, Voucher, Order
 )
 from pretix.base.models.event import SubEvent
 from pretix.base.models.items import (
@@ -39,6 +42,7 @@ from pretix.presale.views.organizer import (
     EventListMixin, add_subevents_for_days, days_for_template,
     filter_qs_by_attr, weeks_for_template,
 )
+from pretix.multidomain.urlreverse import build_absolute_uri
 
 from ...helpers.formats.en.formats import WEEK_FORMAT
 from . import (
@@ -47,6 +51,8 @@ from . import (
 )
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+
+logger = logging.getLogger(__name__)
 
 
 def item_group_by_category(items):
@@ -615,3 +621,107 @@ class EventAuth(View):
 
         request.session['pretix_event_access_{}'.format(request.event.pk)] = parent
         return redirect(eventreverse(request.event, 'presale:event.index'))
+
+@method_decorator(allow_frame_if_namespaced, 'dispatch')
+@method_decorator(iframe_entry_view_wrapper, 'dispatch')
+class JoinOnlineVideoView(EventViewMixin, View):
+    def get(self, request, *args, **kwargs):
+        # First check if video plugin is installed and values is set
+        if ('pretix_venueless' not in self.request.event.get_plugins()
+                or not self.request.event.settings.venueless_url
+                or not self.request.event.settings.venueless_issuer
+                or not self.request.event.settings.venueless_audience
+                or not self.request.event.settings.venueless_secret):
+            logger.error("Video Online configuration is not available for this event.")
+            raise PermissionDenied(_('Please go back and try again.'))
+
+        # Validate if customer allow to join this online video
+        is_allowed, order_position, order = self.validate_access(request, *args, **kwargs)
+        if not is_allowed:
+            # Show popup
+            return HttpResponse(status=403, content='user_not_allowed')
+
+        return JsonResponse({
+            "redirect_url": self.generate_token_url(request, order_position, order)
+        }, status=200)
+
+    def validate_access(self, request, *args, **kwargs):
+        if not self.request.customer:
+            # Customer not logged in yet
+            return False, None, None
+        else:
+            # Get all orders of customer which belong to this event
+            order_list = (Order.objects.filter(Q(event=self.request.event)
+                                      & (Q(customer=self.request.customer) | Q(email__iexact=self.request.customer.email)))
+                  .select_related('event').order_by('-datetime'))
+            # Check qs is empty
+            if not order_list:
+                # no order placed yet
+                return False, None, None
+            else:
+                # Check if Event allow all ticket type to join
+                if self.request.event.settings.venueless_all_items:
+                    return True, None, order_list[0]
+                list_allow_ticket_type = self.request.event.settings.venueless_items
+                if not list_allow_ticket_type:
+                    # no ticket allow to join
+                    return False, None, None
+                # check if ticket type is in list_allow_ticket_type
+                for order in order_list:
+                    order_positions = list(order.positions.all())
+                    for order_position in order_positions:
+                        if order_position.item_id in list_allow_ticket_type:
+                            return True, order_position, order
+                return False, None, None
+
+    def generate_token_url(self, request, order_position, order):
+        if not order_position:
+            order_position = order.positions.first()
+
+        profile = {
+            'fields': {}
+        }
+        if order_position.attendee_name:
+            profile['display_name'] = order_position.attendee_name
+        if order_position.company:
+            profile['fields']['company'] = order_position.company
+
+        for a in order_position.answers.filter(question_id__in=self.request.event.settings.venueless_questions).select_related('question'):
+            profile['fields'][a.question.identifier] = a.answer
+
+        uid_token = self.request.customer.identifier if self.request.customer else order_position.pseudonymization_id
+        iat = dt.datetime.utcnow()
+        exp = iat + dt.timedelta(days=30)
+
+        payload = {
+            "iss": self.request.event.settings.venueless_issuer,
+            "aud": self.request.event.settings.venueless_audience,
+            "exp": exp,
+            "iat": iat,
+            "uid": uid_token,
+            "profile": profile,
+            "traits": list(
+                {
+                    'eventyay-video-event-{}'.format(request.event.slug),
+                    'eventyay-video-subevent-{}'.format(order_position.subevent_id),
+                    'eventyay-video-item-{}'.format(order_position.item_id),
+                    'eventyay-video-variation-{}'.format(order_position.variation_id),
+                    'eventyay-video-category-{}'.format(order_position.item.category_id),
+                } | {
+                    'eventyay-video-item-{}'.format(p.item_id)
+                    for p in order_position.addons.all()
+                } | {
+                    'eventyay-video-variation-{}'.format(p.variation_id)
+                    for p in order_position.addons.all() if p.variation_id
+                } | {
+                    'eventyay-video-category-{}'.format(p.item.category_id)
+                    for p in order_position.addons.all() if p.item.category_id
+                }
+            )
+        }
+
+        token = jwt.encode(
+            payload, self.request.event.settings.venueless_secret, algorithm="HS256"
+        )
+        baseurl = self.request.event.settings.venueless_url
+        return '{}/#token={}'.format(baseurl, token).replace("//#", "/#")
