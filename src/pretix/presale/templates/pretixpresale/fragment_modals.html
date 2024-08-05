@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load eventurl %}
 <div id="ajaxerr">
 </div>
 <div id="popupmodal" hidden aria-live="polite">
@@ -36,6 +37,32 @@
             <h3></h3>
             <p class="text"></p>
             <p class="status">{% trans "If the process continues for an extended period, feel free to reach out to us." %}</p>
+        </div>
+    </div>
+</div>
+<div id="join-video-popupmodal" hidden aria-live="polite">
+    <div class="modal-card">
+        <div class="modal-card-content-join">
+            <div>
+                <h3>
+                    {% trans "This is a ticketed only event. To access Wikimania Katowice, you must use the ticket link in your confirmation email." %}
+                </h3>
+                <p class="text">
+                    {% trans "Lost the email?" %}
+                    <a id="resend_link" class="btn btn-default" href='/{{request.organizer.slug}}/{{event.slug}}/resend'>
+                        {% trans "Resend the email" %}
+                    </a>
+                </p>
+                <p class="text">
+                    {% trans "Created an account for Wikimania Katowice before?" %}
+                    <a id="login_link" class="btn btn-default" href='{% eventurl request.organizer "presale:organizer.customer.login" %}'>
+                        {% trans "Log back in here" %}
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="join-online-close">
+            <button id="join-online-close-button" class="btn btn-default join-online-close-button">Close</button>
         </div>
     </div>
 </div>
