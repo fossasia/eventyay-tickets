@@ -79,8 +79,17 @@ class ExtensionFileInput:
 
     def __init__(self, *args, **kwargs):
         extensions = kwargs.pop("extensions")
-        self.extensions = [ext.lower() for ext in extensions]
+        self.extensions = sorted([ext.lower() for ext in extensions])
         super().__init__(*args, **kwargs)
+        self.original_help_text = (
+            getattr(self, "original_help_text", "") or self.help_text
+        )
+        self.added_help_text = (getattr(self, "added_help_text", "") + " ").strip() + _(
+            _("Allowed filetypes: {extensions}").format(
+                extensions=", ".join(self.extensions)
+            )
+        )
+        self.help_text = self.original_help_text + " " + self.added_help_text
 
     def validate(self, value):
         super().validate(value)

@@ -191,12 +191,13 @@ class SpeakerProfileForm(
                 {field: getattr(self.user, field) for field in self.user_fields}
             )
         for field in self.user_fields:
-            field_class = (
-                self.Meta.field_classes.get(field)
-                or User._meta.get_field(field).formfield
+            field_class = self.Meta.field_classes.get(
+                field, User._meta.get_field(field).formfield
             )
             self.fields[field] = field_class(
-                initial=initial.get(field), disabled=read_only
+                initial=initial.get(field),
+                disabled=read_only,
+                help_text=User._meta.get_field(field).help_text,
             )
             if self.Meta.widgets.get(field):
                 self.fields[field].widget = self.Meta.widgets.get(field)()
@@ -284,6 +285,9 @@ class SpeakerProfileForm(
             "biography": MarkdownWidget,
             "avatar_source": MarkdownWidget,
             "avatar_license": MarkdownWidget,
+        }
+        field_classes = {
+            "avatar": ImageField,
         }
         request_require = {"biography", "availabilities"}
 
