@@ -1,3 +1,6 @@
+import logging
+import datetime
+import jwt
 from urllib.parse import urljoin, urlsplit
 
 from django.conf import settings
@@ -8,6 +11,7 @@ from pretix.base.models import Event, Organizer
 
 from .models import KnownDomain
 
+logger = logging.getLogger(__name__)
 
 def get_event_domain(event, fallback=False, return_info=False):
     assert isinstance(event, Event)
@@ -142,3 +146,78 @@ def build_absolute_uri(obj, urlname, kwargs=None):
     if '://' in reversedurl:
         return reversedurl
     return urljoin(settings.SITE_URL, reversedurl)
+
+
+def build_join_video_url(event, order):
+    # Get list order position id
+    order_item_ids = [position.item_id for position in order.positions.all()]
+    # Check if video allow all positions
+    if event.settings.venueless_all_items:
+        position = order.positions.first()
+        return generate_token_url(event, order, position)
+    else:
+        common_item_id = next((item for item in order_item_ids if item in event.settings.venueless_items), None)
+        # Get position object
+        position = order.positions.filter(item_id=common_item_id).first()
+        # Check if any item in order item is allowed to join
+        if any(item in event.settings.venueless_items for item in order_item_ids):
+            return generate_token_url(event, order, position)
+        else:
+            logger.error('order %s does not have any item that is allowed to join the event' % order.code)
+            return ''
+
+
+def generate_token_url(event, order, position):
+    # If customer has account, use customer code to generate token
+    if order.customer:
+        video_url = generate_token(event, order.customer.identifier, position)
+    else:
+        # else user position Id to generate token
+        video_url = generate_token(event, None, position)
+    return '<a href="{}" class="button">Join online event</a>'.format(video_url)
+
+
+def generate_token(event, customer_code, position):
+    iat = datetime.datetime.utcnow()
+    exp = iat + datetime.timedelta(days=30)
+    profile = {
+        'fields': {}
+    }
+    if position.attendee_name:
+        profile['display_name'] = position.attendee_name
+    if position.company:
+        profile['fields']['company'] = position.company
+
+    for a in position.answers.filter(question_id__in=event.settings.venueless_questions).select_related(
+            'question'):
+        profile['fields'][a.question.identifier] = a.answer
+    payload = {
+        "iss": event.settings.venueless_issuer,
+        "aud": event.settings.venueless_audience,
+        "exp": exp,
+        "iat": iat,
+        "uid": customer_code if customer_code else position.pseudonymization_id,
+        "profile": profile,
+        "traits": list(
+            {
+                'eventyay-video-event-{}'.format(event.slug),
+                'eventyay-video-subevent-{}'.format(position.subevent_id),
+                'eventyay-video-item-{}'.format(position.item_id),
+                'eventyay-video-variation-{}'.format(position.variation_id),
+                'eventyay-video-category-{}'.format(position.item.category_id),
+            } | {
+                'eventyay-video-item-{}'.format(p.item_id)
+                for p in position.addons.all()
+            } | {
+                'eventyay-video-variation-{}'.format(p.variation_id)
+                for p in position.addons.all() if p.variation_id
+            } | {
+                'eventyay-video-category-{}'.format(p.item.category_id)
+                for p in position.addons.all() if p.item.category_id
+            }
+        )
+    }
+    token = jwt.encode(
+        payload, event.settings.venueless_secret, algorithm="HS256"
+    )
+    return '{}/#token={}'.format(event.settings.venueless_url, token).replace("//#", "/#")

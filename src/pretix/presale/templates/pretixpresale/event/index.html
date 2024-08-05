@@ -6,6 +6,8 @@
 {% load thumb %}
 {% load eventsignal %}
 {% load rich_text %}
+{% load compress %}
+{% load static %}
 
 {% block custom_header %}
     {{ block.super }}
@@ -16,6 +18,11 @@
     {% else %}
         <meta property="og:url" content="{% abseventurl request.event "presale:event.index" %}" />
     {% endif %}
+    {% compress js %}
+        <script type="text/javascript" src="{% static "pretixpresale/js/ui/popover.js" %}"></script>
+    {% endcompress %}
+    {{ request.event.organizer.slug|json_script:"organizer_name" }}
+    {{ request.event.slug|json_script:"event_slug" }}
 {% endblock %}
 {% block content %}
 
@@ -25,6 +32,43 @@
         </script>
     {% endautoescape %}
     <main aria-label="{% if show_cart %}{% trans "Your cart, general information, add products to your cart" %}{% else %}{% trans "General information, add products to your cart" %}{% endif %}">
+        <nav id="schedule-nav"{% if with_margin %} class="p-3"{% endif %}>
+            <div class="navigation">
+                {% if request.event.settings.schedule_link %}
+                    <div class="navigation-button">
+                        <a href="{{ request.event.settings.schedule_link }}" target="_blank" class="header-nav btn btn-outline-success">
+                            <i class="fa fa-calendar"></i> {% translate "Schedule" %}
+                        </a>
+                    </div>
+                {% endif %}
+                {% if request.event.settings.session_link %}
+                    <div class="navigation-button">
+                        <a href="{{ request.event.settings.session_link }}" target="_blank" class="header-nav btn btn-outline-success">
+                            <i class="fa fa-comments-o"></i> {% translate "Sessions" %}
+                        </a>
+                    </div>
+                {% endif %}
+                {% if request.event.settings.speaker_link %}
+                    <div class="navigation-button">
+                        <a href="{{ request.event.settings.speaker_link }}" target="_blank" class="header-nav btn btn-outline-success">
+                            <i class="fa fa-group"></i> {% translate "Speakers" %}
+                        </a>
+                    </div>
+                {% endif %}
+                <div class="navigation-button">
+                    <a target="_blank" class="header-nav btn btn-outline-success" data-toggle="popover">
+                        <i class="fa fa-ticket"></i> {% translate "Tickets" %}
+                    </a>
+                </div>
+                {% if request.event.settings.video_link %}
+                    <div class="video-link">
+                        <a href="{{ request.event.settings.video_link }}" target="_blank" class="header-nav btn btn-outline-success join-event">
+                            <i class="fa fa-video-camera"></i> {% translate "Join online event" %}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </nav>
     {% if show_cart %}
         <details class="panel panel-primary cart" open>
             <summary class="panel-heading">
