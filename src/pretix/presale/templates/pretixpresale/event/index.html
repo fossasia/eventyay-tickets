@@ -20,6 +20,7 @@
     {% endif %}
     {% compress js %}
         <script type="text/javascript" src="{% static "pretixpresale/js/ui/popover.js" %}"></script>
+        <script type="text/javascript" src="{% static "pretixpresale/js/ui/join-video-event.js" %}"></script>
     {% endcompress %}
     {{ request.event.organizer.slug|json_script:"organizer_name" }}
     {{ request.event.slug|json_script:"event_slug" }}
@@ -62,7 +63,8 @@
                 </div>
                 {% if request.event.settings.video_link %}
                     <div class="video-link">
-                        <a href="{{ request.event.settings.video_link }}" target="_blank" class="header-nav btn btn-outline-success join-event">
+                        <a join-event-link class="header-nav btn btn-outline-success join-event"
+                            href='{% eventurl request.event "presale:event.onlinevideo.join" %}'>
                             <i class="fa fa-video-camera"></i> {% translate "Join online event" %}
                         </a>
                     </div>

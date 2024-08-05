@@ -88,7 +88,7 @@ body.loading .container {
     font-size: 120px;
     color: $brand-primary;
 }
-#loadingmodal, #ajaxerr, #popupmodal {
+#loadingmodal, #ajaxerr, #popupmodal, #join-video-popupmodal {
     position: fixed;
     top: 0;
     left: 0;
@@ -134,10 +134,22 @@ body.loading .container {
                 margin-top: 0;
             }
         }
+        .modal-card-content-join {
+            text-align: left;
+            h3 {
+                margin-top: 0;
+            }
+        }
+        .join-online-close {
+            display: flex;
+            .join-online-close-button {
+                margin-left: auto;
+            }
+        }
     }
 }
 @media (max-width: 700px) {
-    #loadingmodal, #ajaxerr, #popupmodal {
+    #loadingmodal, #ajaxerr, #popupmodal, #join-video-popupmodal {
         .modal-card {
             .modal-card-icon {
                 float: none;
@@ -157,7 +169,7 @@ body.loading .container {
     background: rgba(236, 236, 236, .9);
 }
 
-.loading #loadingmodal, .ajaxerr #ajaxerr, .has-popup #popupmodal {
+.loading #loadingmodal, .ajaxerr #ajaxerr, .has-popup #popupmodal, .has-join-popup #join-video-popupmodal {
     opacity: 1;
     visibility: visible;
     transition: opacity .5s ease-in-out;
