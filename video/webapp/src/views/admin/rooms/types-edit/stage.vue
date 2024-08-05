@@ -26,7 +26,6 @@
 		.bunt-switch-container
 			bunt-switch(name="enablePrivacyEnhancedMode", v-model="enablePrivacyEnhancedMode", label="Enable No-Cookies")
 			bunt-switch(name="loop", v-model="loop", label="Loop")
-			bunt-switch(name="autoStart", v-model="autoStart", label=" Enable Autostart")
 			bunt-switch(name="modestBranding", v-model="modestBranding", label=" Enable Modest Branding")
 			bunt-switch(name="hideControls", v-model="hideControls", label="Enable Hide Controls")
 			bunt-switch(name="noRelated", v-model="noRelated", label=" Enable No Related info")
@@ -108,18 +107,6 @@ export default {
 					this.$set(this.modules['livestream.youtube'].config, 'loop', true)
 				} else {
 					this.$delete(this.modules['livestream.youtube'].config, 'loop')
-				}
-			}
-		},
-		autoStart: {
-			get () {
-				return !!this.modules['livestream.youtube'].config.autoStart
-			},
-			set (value) {
-				if (value) {
-					this.$set(this.modules['livestream.youtube'].config, 'autoStart', true)
-				} else {
-					this.$delete(this.modules['livestream.youtube'].config, 'autoStart')
 				}
 			}
 		},
