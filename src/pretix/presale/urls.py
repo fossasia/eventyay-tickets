@@ -32,6 +32,7 @@ frame_wrapped_urls = [
         name='event.checkout'),
     url(r'^redeem/?$', pretix.presale.views.cart.RedeemView.as_view(),
         name='event.redeem'),
+    url(r'^online-video/join$', pretix.presale.views.event.JoinOnlineVideoView.as_view(), name='event.onlinevideo.join'),
     url(r'^seatingframe/$', pretix.presale.views.event.SeatingPlanView.as_view(),
         name='event.seatingplan'),
     url(r'^(?P<subevent>[0-9]+)/seatingframe/$', pretix.presale.views.event.SeatingPlanView.as_view(),
