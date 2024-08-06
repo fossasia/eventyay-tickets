@@ -4,6 +4,7 @@ Release Notes
 =============
 
 - :release:`2024.2.0 <2024-08-06>`
+- :bug:`orga` The markdown preview posed a security vulnerability by allowing speakers and organisers to include unsafe JavaScript. This JavaScript would only be executed when accessing the preview, i.e. when a speaker or organiser opened to proposal page (not attendees or the public). Thanks to Jorian Woltjer for reporting this issue.
 - :feature:`api` The submission API now has a filter for the ``is_featured`` field.
 - :feature:`cfp,1761` In the CfP submission multi-step form, the tab title now reflects the proposal title, to make it easier to work on multiple proposal submissions at the same time.
 - :bug:`orga:speaker,1768` When filtering the speaker list by only accepted/confirmed speakers, the listed proposal count would be incorrect (inflated).
