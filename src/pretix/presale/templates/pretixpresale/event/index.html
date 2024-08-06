@@ -37,21 +37,21 @@
             <div class="navigation">
                 {% if request.event.settings.schedule_link %}
                     <div class="navigation-button">
-                        <a href="{{ request.event.settings.schedule_link }}" target="_blank" class="header-nav btn btn-outline-success">
+                        <a href="{{ request.event.settings.schedule_link }}" class="header-nav btn btn-outline-success">
                             <i class="fa fa-calendar"></i> {% translate "Schedule" %}
                         </a>
                     </div>
                 {% endif %}
                 {% if request.event.settings.session_link %}
                     <div class="navigation-button">
-                        <a href="{{ request.event.settings.session_link }}" target="_blank" class="header-nav btn btn-outline-success">
+                        <a href="{{ request.event.settings.session_link }}" class="header-nav btn btn-outline-success">
                             <i class="fa fa-comments-o"></i> {% translate "Sessions" %}
                         </a>
                     </div>
                 {% endif %}
                 {% if request.event.settings.speaker_link %}
                     <div class="navigation-button">
-                        <a href="{{ request.event.settings.speaker_link }}" target="_blank" class="header-nav btn btn-outline-success">
+                        <a href="{{ request.event.settings.speaker_link }}" class="header-nav btn btn-outline-success">
                             <i class="fa fa-group"></i> {% translate "Speakers" %}
                         </a>
                     </div>
