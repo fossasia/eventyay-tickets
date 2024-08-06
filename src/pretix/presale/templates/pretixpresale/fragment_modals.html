@@ -45,18 +45,19 @@
         <div class="modal-card-content-join">
             <div>
                 <h3>
-                    {% trans "This is a ticketed only event. To access Wikimania Katowice, you must use the ticket link in your confirmation email." %}
+                    {% trans "This is a ticketed event. Please check your email for your unique ticketed link to join." %}
                 </h3>
                 <p class="text">
-                    {% trans "Lost the email?" %}
+                    {% trans "Lost your ticket?" %}
                     <a id="resend_link" class="btn btn-default" href='/{{request.organizer.slug}}/{{event.slug}}/resend'>
                         {% trans "Resend the email" %}
                     </a>
+                    {% trans "to receive it here." %}
                 </p>
                 <p class="text">
-                    {% trans "Created an account for Wikimania Katowice before?" %}
+                    {% trans "Haven’t got a ticket yet?" %}
                     <a id="login_link" class="btn btn-default" href='{% eventurl request.organizer "presale:organizer.customer.login" %}'>
-                        {% trans "Log back in here" %}
+                        {% trans "Register here" %}
                     </a>
                 </p>
             </div>
