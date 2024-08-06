@@ -3,7 +3,6 @@
 Release Notes
 =============
 
-- :bug:`common` _VITE_IGNORE -> VITE_IGNORE: django settings variable can't start with _.
 - :feature:`api` The submission API now has a filter for the ``is_featured`` field.
 - :feature:`cfp,1761` In the CfP submission multi-step form, the tab title now reflects the proposal title, to make it easier to work on multiple proposal submissions at the same time.
 - :bug:`orga:speaker,1768` When filtering the speaker list by only accepted/confirmed speakers, the listed proposal count would be incorrect (inflated).
