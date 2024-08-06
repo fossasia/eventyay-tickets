@@ -8,7 +8,7 @@ from pretix.base.models import Organizer, Event, Order, Customer
 
 
 class Command(BaseCommand):
-    help = 'Create SocialApp entries for Eventyay-ticket Provider'
+    help = 'Create customer account for all orders with email address.'
 
     def add_arguments(self, parser):
         parser.add_argument('--organizer-slug', type=str, help='Organizer Slug')
