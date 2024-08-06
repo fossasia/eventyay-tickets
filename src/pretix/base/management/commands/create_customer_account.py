@@ -3,10 +3,8 @@ import sys
 from django.core.management.base import BaseCommand
 from django_scopes import scopes_disabled
 
-from pretix.base.forms.questions import NamePartsFormField
 from pretix.base.i18n import get_language_without_region
 from pretix.base.models import Organizer, Event, Order, Customer
-from pretix.base.settings import PERSON_NAME_SCHEMES
 
 
 class Command(BaseCommand):
