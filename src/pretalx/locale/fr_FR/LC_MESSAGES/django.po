@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-05-03 14:00+0000\n"
-"PO-Revision-Date: 2024-08-02 14:25+0000\n"
+"PO-Revision-Date: 2024-08-06 08:55+0000\n"
 "Last-Translator: Lucie Anglade <lucie@courtbouillon.org>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -3709,7 +3709,7 @@ msgstr "Intervenants confirmés"
 #: pretalx/orga/forms/cfp.py:497
 #: pretalx/orga/templates/orga/mails/_mail_editor.html:21
 msgid "Recipients"
-msgstr "Desinataires"
+msgstr "Destinataires"
 
 #: pretalx/orga/forms/cfp.py:565
 msgid "If you select no question, all questions will be used."
