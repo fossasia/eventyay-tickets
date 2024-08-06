@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-08-06 12:08+0000\n"
-"PO-Revision-Date: 2024-08-06 12:07+0000\n"
+"PO-Revision-Date: 2024-08-06 12:13+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_Formal\n"
@@ -1408,7 +1408,7 @@ msgstr "Bitte keine Dateien größer als {size} hochladen!"
 #: pretalx/common/forms/fields.py:91
 #, python-brace-format
 msgid "Allowed filetypes: {extensions}"
-msgstr ""
+msgstr "Erlaubte Dateiarten: {extensions}"
 
 #: pretalx/common/forms/fields.py:106
 #, python-brace-format
@@ -1486,8 +1486,6 @@ msgstr "Sie haben {count} Wörter geschrieben."
 
 #: pretalx/common/forms/renderers.py:30
 #: pretalx/orga/templates/orga/mails/compose_session_mail_form.html:43
-#, fuzzy
-#| msgid "Optional"
 msgctxt "form field"
 msgid "Optional"
 msgstr "Optional"
@@ -2136,8 +2134,6 @@ msgstr "Sprachen"
 
 #: pretalx/common/plugins.py:15
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:20
-#, fuzzy
-#| msgid "Other"
 msgctxt "category of items"
 msgid "Other"
 msgstr "Sonstige"
@@ -3080,12 +3076,10 @@ msgstr "Schreiben Sie den Vortragenden, was sie erwartet"
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:14
 #: pretalx/orga/templates/orga/organiser/list.html:25
 #: pretalx/orga/views/event.py:727
-#, fuzzy
-#| msgid "Event"
 msgid "Event"
 msgid_plural "Events"
 msgstr[0] "Veranstaltung"
-msgstr[1] "Veranstaltung"
+msgstr[1] "Veranstaltungen"
 
 #: pretalx/event/stages.py:102
 msgid "Provide a point of contact for the speakers"
@@ -6012,13 +6006,11 @@ msgid "New team"
 msgstr "Team anlegen"
 
 #: pretalx/orga/templates/orga/organiser/list.html:33
-#, fuzzy
-#| msgid "Team"
 msgctxt "number of teams"
 msgid "Team"
 msgid_plural "Teams"
 msgstr[0] "Team"
-msgstr[1] "Team"
+msgstr[1] "Teams"
 
 #: pretalx/orga/templates/orga/organiser/list.html:45
 msgid "There are no organisers you can edit."
@@ -7077,8 +7069,6 @@ msgid "Anonymisation"
 msgstr "Anonymisierung"
 
 #: pretalx/orga/templates/orga/submission/base.html:83
-#, fuzzy
-#| msgid "Send mail to speakers"
 msgid "Send email to speakers"
 msgstr "E-Mail an Vortragende"
 
@@ -7851,16 +7841,12 @@ msgid "The team was removed."
 msgstr "Das Team wurde entfernt."
 
 #: pretalx/orga/views/organiser.py:161
-#, fuzzy
-#| msgid "Accept invitation"
 msgid "Retract invitation"
-msgstr "Einladung annehmen"
+msgstr "Einladung zurückziehen"
 
 #: pretalx/orga/views/organiser.py:162
-#, fuzzy
-#| msgid "Are you sure you want to resend the invitation to this user?"
 msgid "Are you sure you want to retract the invitation to this user?"
-msgstr "Möchten Sie diese Einladung wirklich erneut verschicken?"
+msgstr "Möchtest du diese Einladung wirklich zurückziehen?"
 
 #: pretalx/orga/views/organiser.py:173
 msgid "The team invitation was retracted."
