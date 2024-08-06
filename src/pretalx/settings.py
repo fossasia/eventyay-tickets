@@ -585,7 +585,7 @@ STORAGES = {
 VITE_DEV_SERVER_PORT = 8080
 VITE_DEV_SERVER = f"http://localhost:{VITE_DEV_SERVER_PORT}"
 VITE_DEV_MODE = DEBUG
-_VITE_IGNORE = False  # Used to ignore `collectstatic`/`rebuild`
+VITE_IGNORE = False  # Used to ignore `collectstatic`/`rebuild`
 
 
 ## EXTERNAL APP SETTINGS
