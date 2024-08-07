@@ -167,6 +167,10 @@ body.loading .container {
             h3 {
                 margin-top: 0;
             }
+            .btn-link {
+              box-shadow: 0px 0px 0px 1px $btn-primary-border inset;
+              box-sizing: border-box;
+            }
         }
         .join-online-close {
             display: flex;
@@ -174,6 +178,10 @@ body.loading .container {
                 margin-left: auto;
             }
         }
+    }
+
+    .join-online-video {
+        max-width: 1000px !important;
     }
 }
 @media (max-width: 700px) {
