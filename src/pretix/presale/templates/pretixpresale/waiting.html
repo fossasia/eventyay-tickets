@@ -14,16 +14,18 @@
     {% endcompress %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="refresh" content="10">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <i class="fa fa-cog big-rotating-icon" aria-hidden="true"></i>
+        <i class="fas fa-spinner big-rotating-icon" aria-hidden="true"></i>
 
-        <h1>{% trans "We are processing your request …" %}</h1>
+        <h1>{% trans "Processing Your Request" %}</h1>
 
         <p>
             {% trans "If this takes longer than a few minutes, please contact us." %}
         </p>
     </div>
 </body>
+
 </html>
