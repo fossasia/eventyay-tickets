@@ -29,8 +29,9 @@ transition(name="sidebar")
 						.name(v-html="$emojify(stage.room.name)")
 						.buffer
 						template(v-if="stage.room.users")
-							i.mdi.mdi-account-group.icon-viewer
-							.name(v-html="stage.room.users")
+							.room-attendee
+								i.mdi.mdi-account-group.icon-viewer
+								.name(v-html="stage.room.users")
 						.notifications(v-if="stage.notifications") {{ stage.notifications }}
 			.group-title#chats-title(v-if="roomsByType.videoChat.length || roomsByType.textChat.length || hasPermission('world:rooms.create.chat') || hasPermission('world:rooms.create.bbb')")
 				span {{ $t('RoomsSidebar:channels-headline:text') }}
@@ -507,6 +508,8 @@ export default {
 		.mdi
 			font-size: 24px
 			line-height: 1
+	.room-attendee
+		display: flex
 #app:not(.override-sidebar-collapse) .c-rooms-sidebar
 	+below('l')
 		position: fixed
