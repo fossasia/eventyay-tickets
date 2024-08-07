@@ -102,8 +102,8 @@ export default {
 			if (this.modules['livestream.youtube'] && this.modules['livestream.youtube'].config.languageUrls) {
 				this.languages = this.modules['livestream.youtube'].config.languageUrls;
 			}
-			if (!this.languages.find(lang => lang.language === 'Default')) {
-				this.languages.unshift({language: 'Default', url: ``});
+			if (!this.languages.find(lang => lang.language === 'Original')) {
+				this.languages.unshift({language: 'Original', url: ``});
 			}
 		}
 	}
