@@ -872,7 +872,7 @@ $(function () {
     moment.locale($("body").attr("data-datetimelocale"));
 });
 
-$(document).ready(function () {
+$(function () {
    $('form[method=post]').filter(function () {
        return $(this).find("button:not([type=button]), input[type=submit]").length > 0;
    }).areYouSure( {'message': gettext('You have unsaved changes!')});

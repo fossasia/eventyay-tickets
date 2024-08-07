@@ -1,7 +1,6 @@
 {% load compress %}
 {% load static %}
 {% load i18n %}
-{% load hijack_tags %}
 {% load statici18n %}
 {% load eventsignal %}
 {% load eventurl %}
@@ -21,7 +20,7 @@
             <script src="{% statici18n request.LANGUAGE_CODE %}" async></script>
         {% endif %}
 		{% compress js %}
-            <script type="text/javascript" src="{% static "jquery/js/jquery-2.1.1.min.js" %}"></script>
+            <script type="text/javascript" src="{% static "jquery/js/jquery-3.7.1.min.js" %}"></script>
             <script type="text/javascript" src="{% static "js/jquery.formset.js" %}"></script>
             <script type="text/javascript" src="{% static "typeahead/typeahead.bundle.js" %}"></script>
             <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.js" %}"></script>
@@ -333,7 +332,7 @@
                     </ul>
                 </div>
             {% endif %}
-            {% if request|is_hijacked %}
+            {% if request.user.is_hijacked %}
                 <div class="impersonate-warning">
                     <span class="fa fa-user-secret"></span>
                     {% blocktrans with user=request.user%}You are currently working on behalf of {{ user }}.{% endblocktrans %}
