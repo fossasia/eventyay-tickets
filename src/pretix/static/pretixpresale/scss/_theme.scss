@@ -94,17 +94,13 @@ h2.content-header {
   .page-header .loginbox {
     padding-top: 0;
   }
+
+  .join-event {
+    float: right;
+  }
 }
 
 .alert-margin {
   margin-top: 20px;
 }
 
-.ticket-active {
-    background: $btn-primary-bg;
-    color: #FFFFFF !important;
-}
-
-.join-event {
-    float: right;
-}
