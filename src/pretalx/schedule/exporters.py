@@ -114,7 +114,7 @@ class ScheduleData(BaseExporter):
 
 class FrabXmlExporter(ScheduleData):
     identifier = "schedule.xml"
-    verbose_name = "XML (frab compatible)"
+    verbose_name = "Sessions XML"
     public = True
     show_qrcode = True
     favs_retrieve = False
@@ -147,13 +147,13 @@ class FrabXmlExporter(ScheduleData):
 
 class MyFrabXmlExporter(FrabXmlExporter):
     identifier = "schedule-my.xml"
-    verbose_name = "My XML (frab compatible)"
+    verbose_name = "My ⭐ Sessions XML"
     favs_retrieve = True
 
 
 class FrabXCalExporter(ScheduleData):
     identifier = "schedule.xcal"
-    verbose_name = "XCal (frab compatible)"
+    verbose_name = "Sessions XCAL"
     public = True
     favs_retrieve = False
     talk_ids = []
@@ -178,13 +178,13 @@ class FrabXCalExporter(ScheduleData):
 
 class MyFrabXCalExporter(FrabXCalExporter):
     identifier = "schedule-my.xcal"
-    verbose_name = "My XCal (frab compatible)"
+    verbose_name = "My ⭐ Sessions XCAL"
     favs_retrieve = True
 
 
 class FrabJsonExporter(ScheduleData):
     identifier = "schedule.json"
-    verbose_name = "JSON (frab compatible)"
+    verbose_name = "Sessions JSON"
     public = True
     favs_retrieve = False
     talk_ids = []
@@ -338,13 +338,13 @@ class FrabJsonExporter(ScheduleData):
 
 class MyFrabJsonExporter(FrabJsonExporter):
     identifier = "schedule-my.json"
-    verbose_name = "My JSON (frab compatible)"
+    verbose_name = "My ⭐ Sessions JSON"
     favs_retrieve = True
 
 
 class ICalExporter(BaseExporter):
     identifier = "schedule.ics"
-    verbose_name = "iCal"
+    verbose_name = "Sessions iCal"
     public = True
     show_qrcode = True
     favs_retrieve = False
@@ -378,5 +378,5 @@ class ICalExporter(BaseExporter):
 
 class MyICalExporter(ICalExporter):
     identifier = "schedule-my.ics"
-    verbose_name = "My iCal"
+    verbose_name = "My ⭐ Sessions iCal"
     favs_retrieve = True

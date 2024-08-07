@@ -1,6 +1,6 @@
-from io import StringIO
+import base64
+from io import StringIO, BytesIO
 from urllib.parse import quote
-from xml.etree import ElementTree as ET
 
 import qrcode
 import qrcode.image.svg
@@ -94,10 +94,27 @@ class BaseExporter:
         base = "{self.event.urls.export}{self.quoted_identifier}"
 
     def get_qrcode(self):
-        image = qrcode.make(
-            self.urls.base.full(), image_factory=qrcode.image.svg.SvgImage
+        # Generate QR code
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=5,
+            border=4,
         )
-        return mark_safe(ET.tostring(image.get_image()).decode())
+        qr.add_data(self.urls.base.full())
+        qr.make(fit=True)
+
+        # Create an image from the QR Code instance
+        img = qr.make_image(fill_color="black", back_color="white")
+        # Convert the image to a data URL
+        buffer = BytesIO()
+        img.save(buffer, format="PNG")
+        img_str = base64.b64encode(buffer.getvalue()).decode()
+
+        # Use the data URL in an HTML img tag
+        html_img = f'<img src="data:image/png;base64,{img_str}" alt="QR Code"/>'
+
+        return mark_safe(html_img)
 
 
 class CSVExporterMixin:
