@@ -41,23 +41,38 @@
     </div>
 </div>
 <div id="join-video-popupmodal" hidden aria-live="polite">
-    <div class="modal-card">
+    <div class="modal-card join-online-video">
         <div class="modal-card-content-join">
             <div>
                 <h3>
-                    {% trans "This is a ticketed event. Please check your email for your unique ticketed link to join." %}
+                    {% trans "This is a ticketed event. If you ordered a ticket as a guest user, you don't have an account but can still access the ticket using the secret link in your ticket confirmation email. On the tickets page there is also a link to join online sessions." %}
+                </h3>
+                <h3>
+                    {% trans "As a ticket holder please also check your email for the unique link to join online sessions." %}
                 </h3>
                 <p class="text">
-                    {% trans "Lost your ticket?" %}
-                    <a id="resend_link" class="btn btn-default" href='/{{request.organizer.slug}}/{{event.slug}}/resend'>
+                    {% trans "Can't find your ticket?" %}
+                    <a class="btn btn-link" href='/{{request.organizer.slug}}/{{event.slug}}/resend'>
                         {% trans "Resend the email" %}
                     </a>
-                    {% trans "to receive it here." %}
+                    {% trans "to receive it." %}
                 </p>
                 <p class="text">
-                    {% trans "Haven’t got a ticket yet?" %}
-                    <a id="login_link" class="btn btn-default" href='{% eventurl request.organizer "presale:organizer.customer.login" %}'>
-                        {% trans "Register here" %}
+                    {% trans "Want to order a ticket?" %}
+                    <a class="btn btn-link" href='/{{request.organizer.slug}}/{{event.slug}}'>
+                        {% trans "Get a ticket here" %}
+                    </a>
+                </p>
+                <p class="text">
+                    {% trans "Want to create a Wikimania Katowice account?" %}
+                    <a class="btn btn-link" href='{% eventurl request.organizer "presale:organizer.customer.register" %}'>
+                        {% trans "Sign up here" %}
+                    </a>
+                </p>
+                <p class="text">
+                    {% trans "Already have a Wikimania Katowice account?" %}
+                    <a class="btn btn-link" href='{% eventurl request.organizer "presale:organizer.customer.login" %}'>
+                        {% trans "Login here" %}
                     </a>
                 </p>
             </div>
