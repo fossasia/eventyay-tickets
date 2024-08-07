@@ -174,7 +174,7 @@ def generate_token_url(event, order, position):
     else:
         # else user position Id to generate token
         video_url = generate_token(event, None, position)
-    return '<a href="{}" class="button">Join online event</a>'.format(video_url)
+    return video_url
 
 
 def generate_token(event, customer_code, position):
