@@ -14,6 +14,17 @@
         <i class="fa fa-key"></i>
         {{ phrases.base.password_reset_heading }}
       </button>
+      {% if user.is_active %}
+        <button class="btn btn-danger btn-sm ml-2 mr-2" type="submit" name="action" value="deactivate">
+          <i class="fa fa-ban"></i>
+          {% translate "Deactivate account" %}
+        </button>
+      {% else %}
+        <button class="btn btn-success btn-sm ml-2 mr-2" type="submit" name="action" value="activate">
+          <i class="fa fa-check"></i>
+          {% translate "Activate account" %}
+        </button>
+      {% endif %}
       <a href="delete" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
     </form>
   </h2>
