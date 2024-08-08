@@ -7,6 +7,7 @@ import RoomManager from 'views/rooms/manage'
 import Channel from 'views/channels/item'
 import Schedule from 'views/schedule'
 import Talk from 'views/schedule/talks/item'
+import Session from 'views/schedule/sessions'
 import Speakers from 'views/schedule/speakers'
 import Speaker from 'views/schedule/speakers/item'
 import Exhibitor from 'views/exhibitors/item'
@@ -86,6 +87,11 @@ const routes = [{
 		path: '/schedule/talks/:talkId',
 		name: 'schedule:talk',
 		component: Talk,
+		props: true
+	}, {
+		path: '/sessions',
+		name: 'schedule:sessions',
+		component: Session,
 		props: true
 	}, {
 		path: '/schedule/speakers',

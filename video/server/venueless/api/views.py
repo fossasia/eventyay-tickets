@@ -3,6 +3,7 @@ import logging
 from contextlib import suppress
 from urllib.parse import urlparse
 import jwt
+import requests
 
 from asgiref.sync import async_to_sync
 from django.core import exceptions
@@ -163,6 +164,33 @@ class UserFavouriteView(APIView):
                     'Invalid token header. Token string should not contain spaces.')
         token_decode = world.decode_token(token=auth_header[1])
         return token_decode.get("uid")
+
+
+class ExportView(APIView):
+
+    permission_classes = []
+
+    @staticmethod
+    def get(request, *args, **kwargs):
+        export_type = request.GET.get('export_type', 'json')
+        world = get_object_or_404(World, id=kwargs["world_id"])
+        talk_config = world.config.get("pretalx")
+        user = User.objects.filter(token_id=request.user)
+        talk_base_url = talk_config.get('domain') + "/" + talk_config.get('event') + "/schedule/export/"
+        export_endpoint = 'schedule.' + export_type
+        talk_url = talk_base_url + export_endpoint
+        if 'my' in export_type and user:
+            user_state = user.first().client_state
+            if user_state and user_state.get('schedule') and user_state.get('schedule').get('favs'):
+                talk_list = user_state.get('schedule').get('favs')
+                talk_list_str = ','.join(talk_list)
+                export_endpoint = 'schedule-my.' + export_type.replace('my','')
+                talk_url = talk_base_url + export_endpoint + "?talks=" + talk_list_str
+        header = {
+            "Content-Type": "application/json"
+        }
+        response = requests.get(talk_url, headers=header)
+        return Response(response.content.decode("utf-8"))
 
 
 def get_domain(path):

@@ -12,6 +12,14 @@
 				icon="star"
 				@click="toggleFavFilter"
 				:class="{active: filter.type === 'fav'}") {{favs.length}}
+			.export.dropdown
+				bunt-progress-circular.export-spinner(v-if="isExporting", size="small")
+				custom-dropdown(name="calendar-add1"
+					v-model="selectedExporter"
+					:options="exportType"
+					label="Add to Calendar"
+					@input="makeExport")
+				
 		bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay.toISOString()", ref="tabs", v-scrollbar.x="")
 			bunt-tab(v-for="day in days", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
 		.scroll-parent(ref="scrollParent", v-scrollbar.x.y="")
@@ -55,22 +63,67 @@ import moment from 'lib/timetravelMoment'
 import TimezoneChanger from 'components/TimezoneChanger'
 import scheduleProvidesMixin from 'components/mixins/schedule-provides'
 import Prompt from 'components/Prompt'
+import api from 'lib/api'
+import config from 'config'
+import CustomDropdown from 'views/schedule/export-select'
+
+const exportTypeSet = [
+	{
+		"id": "ics",
+		"label": "Session ICal"
+	},
+	{
+		"id": "json",
+		"label": "Session JSON"
+	},
+	{
+		"id": "xcal",
+		"label": "Session XCal"
+	},
+	{
+		"id": "xml",
+		"label": "Session XML"
+	},
+	{
+		"id": "myics",
+		"label": "My ⭐ Sessions ICal"
+	},
+	{
+		"id": "myjson",
+		"label": "My ⭐ Sessions JSON"
+	},
+	{
+		"id": "myxcal",
+		"label": "My ⭐ Sessions XCal"
+	},
+	{
+		"id": "myxml",
+		"label": "My ⭐ Sessions XML"
+	},
+]
 
 export default {
-	components: { LinearSchedule, GridSchedule, TimezoneChanger, Prompt },
+	components: { LinearSchedule, GridSchedule, TimezoneChanger, Prompt, CustomDropdown },
 	mixins: [scheduleProvidesMixin],
 	data () {
 		return {
 			tracksFilter: {},
 			open: false,
 			moment,
-			currentDay: moment().startOf('day')
+			currentDay: moment().startOf('day'),
+			selectedExporter: null,
+			exportOptions: [],
+			isExporting: false,
+			error: null
 		}
 	},
 	computed: {
 		...mapState(['now']),
 		...mapState('schedule', ['schedule', 'errorLoading', 'filter']),
 		...mapGetters('schedule', ['days', 'rooms', 'sessions', 'favs']),
+		exportType () {
+			return exportTypeSet
+		}
 	},
 	watch: {
 		tracksFilter: {
@@ -112,6 +165,34 @@ export default {
 			} else {
 				this.$store.dispatch('schedule/filter', {type: 'fav'})
 			}
+		},
+		async makeExport() {
+			try {
+				this.isExporting = true;
+				const url = config.api.base + 'export-talk?export_type=' + this.selectedExporter.id
+				const authHeader = api._config.token ? `Bearer ${api._config.token}` : (api._config.clientId ? `Client ${api._config.clientId}` : null)
+				const result = await fetch(url, {
+							method: 'GET',
+							headers: {
+								Accept: 'application/json',
+								Authorization: authHeader,
+							}
+						}).then(response => response.json())
+				var a = document.createElement("a");
+				document.body.appendChild(a);
+				const blob = new Blob([result], {type: "octet/stream"}),
+				download_url = window.URL.createObjectURL(blob);
+				a.href = download_url;
+				a.download = "schedule-" + this.selectedExporter.id + '.' + this.selectedExporter.id.replace('my','');
+				a.click();
+				window.URL.revokeObjectURL(download_url);
+				a.remove()
+				this.isExporting = false;
+			} catch (error) {
+				this.isExporting = false;
+				this.error = error
+				console.log(error)
+			}
 		}
 	}
 }
@@ -140,6 +221,8 @@ export default {
 		.bunt-scrollbar-rail-wrapper-x
 			+below('m')
 				display: none
+	.filter-actions
+		display: flex
 	.error
 		flex: auto
 		display: flex
@@ -174,4 +257,15 @@ export default {
 		margin: 16px 8px
 		&.active
 			border: 2px solid #f9a557
+	.export.dropdown
+		display: flex
+		margin-left: auto
+		padding-right: 40px !important
+		.bunt-progress-circular
+			width: 20px
+			height: 20px
+		.export-spinner
+			padding-top: 22px !important
+			margin-right: 10px
+
 </style>
