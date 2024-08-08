@@ -669,7 +669,8 @@ class Schedule(PretalxModel):
                         "state": talk.submission.state if all_talks else None,
                         "fav_count": count_fav_talk(talk.submission.code) if talk.submission else 0,
                         "do_not_record": talk.submission.do_not_record,
-                        "tags": talk.submission.get_tag()
+                        "tags": talk.submission.get_tag(),
+                        "session_type": talk.submission.submission_type.name,
                     }
                 )
             else:
