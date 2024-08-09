@@ -25756,8 +25756,5 @@ msgstr "Συνεδρίες"
 msgid "Speakers"
 msgstr "Ηχεία"
 
-msgid "Tickets"
-msgstr "Εισιτήρια"
-
 msgid "Join online event"
 msgstr "Λάβετε μέρος στην εκδήλωση στο διαδίκτυο"

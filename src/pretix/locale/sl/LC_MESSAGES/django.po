@@ -21926,8 +21926,5 @@ msgstr "Seje"
 msgid "Speakers"
 msgstr "Zvočniki"
 
-msgid "Tickets"
-msgstr "Vstopnice"
-
 msgid "Join online event"
 msgstr "Pridruži se spletnemu dogodku"

@@ -25927,8 +25927,5 @@ msgstr "Oturumlar"
 msgid "Speakers"
 msgstr "Konuşmacılar"
 
-msgid "Tickets"
-msgstr "Biletler"
-
 msgid "Join online event"
 msgstr "Çevrimiçi etkinliğe katıl"

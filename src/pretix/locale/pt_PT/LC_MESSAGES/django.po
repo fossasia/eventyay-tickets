@@ -24089,8 +24089,5 @@ msgstr "Sessões"
 msgid "Speakers"
 msgstr "Oradores"
 
-msgid "Tickets"
-msgstr "Ingressos"
-
 msgid "Join online event"
 msgstr "Participe do evento online"

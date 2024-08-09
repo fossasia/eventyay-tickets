@@ -24688,8 +24688,5 @@ msgstr "Sessies"
 msgid "Speakers"
 msgstr "Sprekers"
 
-msgid "Tickets"
-msgstr "Kaartjes"
-
 msgid "Join online event"
 msgstr "Doe mee aan het online evenement"

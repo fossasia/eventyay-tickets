@@ -10568,14 +10568,6 @@ msgstr ""
 msgid "Payment"
 msgstr "Betalning"
 
-#: pretix/control/navigation.py:52 pretix/control/views/event.py:1365
-#: pretix/control/views/event.py:1367 pretix/control/views/event.py:1398
-#: pretix/control/views/event.py:1403
-#: pretix/presale/templates/pretixpresale/organizers/index.html:133
-#: pretix/presale/templates/pretixpresale/organizers/index.html:135
-msgid "Tickets"
-msgstr ""
-
 #: pretix/control/navigation.py:68
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:3
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:5

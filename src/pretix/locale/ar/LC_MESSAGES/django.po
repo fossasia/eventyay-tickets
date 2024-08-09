@@ -24399,8 +24399,5 @@ msgstr "الجلسات"
 msgid "Speakers"
 msgstr "المتحدثون"
 
-msgid "Tickets"
-msgstr "التذاكر"
-
 msgid "Join online event"
 msgstr "انضم إلى الحدث عبر الإنترنت"

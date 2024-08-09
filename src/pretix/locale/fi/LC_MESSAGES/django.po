@@ -21328,8 +21328,5 @@ msgstr "Istunnot"
 msgid "Speakers"
 msgstr "Kaiuttimet"
 
-msgid "Tickets"
-msgstr "Liput"
-
 msgid "Join online event"
 msgstr "Liity verkkotapahtumaan"

@@ -24225,8 +24225,5 @@ msgstr "会话"
 msgid "Speakers"
 msgstr "演讲者"
 
-msgid "Tickets"
-msgstr "门票"
-
 msgid "Join online event"
 msgstr "加入在线活动"

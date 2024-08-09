@@ -21052,8 +21052,5 @@ msgstr ""
 msgid "Speakers"
 msgstr ""
 
-msgid "Tickets"
-msgstr ""
-
 msgid "Join online event"
 msgstr ""

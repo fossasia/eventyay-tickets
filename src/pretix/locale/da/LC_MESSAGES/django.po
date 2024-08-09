@@ -24700,8 +24700,5 @@ msgstr "Sessioner"
 msgid "Speakers"
 msgstr "Højttalere"
 
-msgid "Tickets"
-msgstr "Billetter"
-
 msgid "Join online event"
 msgstr "Deltag i online begivenhed"
