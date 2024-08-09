@@ -19,7 +19,7 @@ CATEGORY_LABELS = {
 def get_all_plugins(event=None):
     """Return the PretalxPluginMeta classes of all plugins found in the
     installed Django apps, sorted by name. If an event is provided, only
-    plugins active for that event are returned."""
+    plugins available for that event are returned."""
     plugins = []
     for app in apps.get_app_configs():
         if getattr(app, "PretalxPluginMeta", None):
@@ -42,9 +42,7 @@ def get_all_plugins(event=None):
 
 
 def plugin_group_key(plugin):
-    return getattr(plugin, "category", "OTHER"), str(plugin.name).lower().replace(
-        "pretalx ", ""
-    )
+    return getattr(plugin, "category", "OTHER")
 
 
 def plugin_sort_key(plugin):
