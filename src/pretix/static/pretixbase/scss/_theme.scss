@@ -118,6 +118,7 @@
 .alert-success, .alert-danger, .alert-info, .alert-warning, .alert-legal {
   position: relative;
   padding-left: 65px;
+  margin-top: 10px;
 
   &::before {
     color: white;
