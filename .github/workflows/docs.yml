@@ -33,8 +33,21 @@ jobs:
       - name: Spellcheck docs
         run: make spelling
         working-directory: ./doc
-      - name:
-        run: '[ ! -s _build/spelling/output.txt ]'
+      - name: Put spelling errors into summary file
+        run: |
+          if [ -z "$(find _build -type f -name '*.spelling')" ]; then
+              echo "No spelling errors found."
+              exit 0
+          fi
+          echo "## Spellcheck results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          for file in $(find _build -type f -name "*.spelling"); do
+            sed 's/^/- /' < $file >> $GITHUB_STEP_SUMMARY
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+        working-directory: ./doc
+      - name: Fail if there were spelling errors
+        run: '! find _build -type f -name "*.spelling" | grep -q .'
         working-directory: ./doc
 
   linkcheck:
