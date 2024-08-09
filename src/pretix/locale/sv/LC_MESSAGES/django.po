@@ -22063,3 +22063,18 @@ msgstr ""
 
 #~ msgid "Tickets on sale"
 #~ msgstr "Biljetter till försäljning"
+
+msgid "Schedule"
+msgstr "Schema"
+
+msgid "Sessions"
+msgstr "Sessioner"
+
+msgid "Speakers"
+msgstr "Högtalare"
+
+msgid "Tickets"
+msgstr "Biljetter"
+
+msgid "Join online event"
+msgstr "Gå med onlineevenemang"

@@ -22073,3 +22073,18 @@ msgstr ""
 #~ msgstr ""
 #~ "Możliwe tylko przy prowadzeniu muldunku z użyciem pretixdroid 1.8 lub "
 #~ "nowszego albo pretixdesk 0.2 lub nowszego."
+
+msgid "Schedule"
+msgstr "Harmonogram"
+
+msgid "Sessions"
+msgstr "Sesje"
+
+msgid "Speakers"
+msgstr "Głośniki"
+
+msgid "Tickets"
+msgstr "Bilety"
+
+msgid "Join online event"
+msgstr "Dołącz do wydarzenia online"

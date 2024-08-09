@@ -26649,3 +26649,18 @@ msgstr ""
 #, fuzzy
 #~ msgid "Failed to send mails to the following users: {}"
 #~ msgstr "Echec de l'envoi de mail au utilisateurs suivants: {}"
+
+msgid "Schedule"
+msgstr "Calendrier"
+
+msgid "Sessions"
+msgstr "Séances"
+
+msgid "Speakers"
+msgstr "Intervenantes"
+
+msgid "Tickets"
+msgstr "Billets"
+
+msgid "Join online event"
+msgstr "Participez à l'événement en ligne"

@@ -25962,3 +25962,18 @@ msgstr ""
 #~ msgstr ""
 #~ "No hemos podido encontrar un usuario a partir de los datos que ha "
 #~ "ingresado."
+
+msgid "Schedule"
+msgstr "Cronograma"
+
+msgid "Sessions"
+msgstr "Sesiones"
+
+msgid "Speakers"
+msgstr "Oradoras"
+
+msgid "Tickets"
+msgstr "Entradas"
+
+msgid "Join online event"
+msgstr "Únase al evento en línea"

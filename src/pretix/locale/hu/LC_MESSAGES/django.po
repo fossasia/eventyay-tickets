@@ -21242,3 +21242,18 @@ msgstr ""
 
 #~ msgid "Sale soon"
 #~ msgstr "Hamarosan kapható"
+
+msgid "Schedule"
+msgstr "Menetrend"
+
+msgid "Sessions"
+msgstr "Munkamenetek"
+
+msgid "Speakers"
+msgstr "Hangszórók"
+
+msgid "Tickets"
+msgstr "Jegyek"
+
+msgid "Join online event"
+msgstr "Csatlakozz az online eseményhez"

@@ -24678,3 +24678,18 @@ msgstr "Kosovo"
 
 #~ msgid "The order has already been refunded."
 #~ msgstr "De bestelling is al terugbetaald."
+
+msgid "Schedule"
+msgstr "Schema"
+
+msgid "Sessions"
+msgstr "Sessies"
+
+msgid "Speakers"
+msgstr "Sprekers"
+
+msgid "Tickets"
+msgstr "Kaartjes"
+
+msgid "Join online event"
+msgstr "Doe mee aan het online evenement"

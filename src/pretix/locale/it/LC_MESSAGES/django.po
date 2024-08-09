@@ -22070,3 +22070,18 @@ msgstr ""
 
 #~ msgid "Order refunded"
 #~ msgstr "Ordine rimborsato"
+
+msgid "Schedule"
+msgstr "Programma"
+
+msgid "Sessions"
+msgstr "Sessioni"
+
+msgid "Speakers"
+msgstr "Altoparlanti"
+
+msgid "Tickets"
+msgstr "Biglietti"
+
+msgid "Join online event"
+msgstr "Partecipa all'evento online"

@@ -24215,3 +24215,18 @@ msgstr ""
 
 #~ msgid "Show toolbar"
 #~ msgstr "显示工具栏"
+
+msgid "Schedule"
+msgstr "时间表"
+
+msgid "Sessions"
+msgstr "会话"
+
+msgid "Speakers"
+msgstr "演讲者"
+
+msgid "Tickets"
+msgstr "门票"
+
+msgid "Join online event"
+msgstr "加入在线活动"

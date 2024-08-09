@@ -22661,3 +22661,18 @@ msgstr ""
 #~ msgstr ""
 #~ "Ваш адрес для выставления счёта был обновлён. Пожалуйста, свяжитесь с "
 #~ "нами, если вы хотите, чтобы мы заново сгенерировали ваш счёт."
+
+msgid "Schedule"
+msgstr "Расписание"
+
+msgid "Sessions"
+msgstr "Сессии"
+
+msgid "Speakers"
+msgstr "Спикеры"
+
+msgid "Tickets"
+msgstr "Билеты"
+
+msgid "Join online event"
+msgstr "Присоединяйтесь к онлайн-мероприятию"

@@ -24690,3 +24690,18 @@ msgstr ""
 #~ msgstr ""
 #~ "Antal dage efter bestilling som en kunde har til at betale for "
 #~ "bestillingen."
+
+msgid "Schedule"
+msgstr "Skema"
+
+msgid "Sessions"
+msgstr "Sessioner"
+
+msgid "Speakers"
+msgstr "Højttalere"
+
+msgid "Tickets"
+msgstr "Billetter"
+
+msgid "Join online event"
+msgstr "Deltag i online begivenhed"

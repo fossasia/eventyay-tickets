@@ -24812,3 +24812,18 @@ msgstr "Kosovo"
 #~ msgid "This is a ticket presale system powered by <a %(a_attr)s>pretix</a>."
 #~ msgstr ""
 #~ "Dit is een ticketsysteem mogelijk gemaakt door <a %(a_attr)s>pretix</a>."
+
+msgid "Schedule"
+msgstr "Schema"
+
+msgid "Sessions"
+msgstr "Sessies"
+
+msgid "Speakers"
+msgstr "Sprekers"
+
+msgid "Tickets"
+msgstr "Kaartjes"
+
+msgid "Join online event"
+msgstr "Doe mee aan het online evenement"

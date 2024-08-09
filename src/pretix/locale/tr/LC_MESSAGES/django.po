@@ -25917,3 +25917,18 @@ msgstr ""
 #~ "Şu anda, ödenen siparişler yalnızca siparişin toplam fiyatını "
 #~ "değiştirmeyecek şekilde değiştirilebilmekte, kısmi ödemeler veya geri "
 #~ "ödemeler henüz desteklenmemektedir."
+
+msgid "Schedule"
+msgstr "Anmelden"
+
+msgid "Sessions"
+msgstr "Oturumlar"
+
+msgid "Speakers"
+msgstr "Konuşmacılar"
+
+msgid "Tickets"
+msgstr "Biletler"
+
+msgid "Join online event"
+msgstr "Çevrimiçi etkinliğe katıl"

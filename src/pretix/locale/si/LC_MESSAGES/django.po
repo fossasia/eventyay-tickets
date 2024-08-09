@@ -21040,3 +21040,18 @@ msgstr ""
 #: pretix/settings.py:765
 msgid "Kosovo"
 msgstr ""
+
+msgid "Schedule"
+msgstr ""
+
+msgid "Sessions"
+msgstr ""
+
+msgid "Speakers"
+msgstr ""
+
+msgid "Tickets"
+msgstr ""
+
+msgid "Join online event"
+msgstr ""

@@ -21163,3 +21163,18 @@ msgstr "Kosovo"
 #~| msgid "Order date"
 #~ msgid "Order status:"
 #~ msgstr "Datum objednávky"
+
+msgid "Schedule"
+msgstr "Naplánovat"
+
+msgid "Sessions"
+msgstr "Relace"
+
+msgid "Speakers"
+msgstr "Reproduktory"
+
+msgid "Tickets"
+msgstr "Vstupenky"
+
+msgid "Join online event"
+msgstr "Připojte se k online události"

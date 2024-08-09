@@ -25746,3 +25746,18 @@ msgstr ""
 
 #~ msgid "<strong>incl.</strong> %(rate)s%% %(name)s"
 #~ msgstr "<strong>συμπ.</strong> %(rate)s%% %(name)s"
+
+msgid "Schedule"
+msgstr "Πρόγραμμα"
+
+msgid "Sessions"
+msgstr "Συνεδρίες"
+
+msgid "Speakers"
+msgstr "Ηχεία"
+
+msgid "Tickets"
+msgstr "Εισιτήρια"
+
+msgid "Join online event"
+msgstr "Λάβετε μέρος στην εκδήλωση στο διαδίκτυο"

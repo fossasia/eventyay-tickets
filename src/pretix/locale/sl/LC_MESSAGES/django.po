@@ -21916,3 +21916,18 @@ msgstr "Kosovo"
 #~ msgstr ""
 #~ "To bo delovalo le, če se prijavite s pretixdroidom 1.8 ali novejšim ali "
 #~ "pretixdeskom 0.2 ali novejšim."
+
+msgid "Schedule"
+msgstr "Razpored"
+
+msgid "Sessions"
+msgstr "Seje"
+
+msgid "Speakers"
+msgstr "Zvočniki"
+
+msgid "Tickets"
+msgstr "Vstopnice"
+
+msgid "Join online event"
+msgstr "Pridruži se spletnemu dogodku"

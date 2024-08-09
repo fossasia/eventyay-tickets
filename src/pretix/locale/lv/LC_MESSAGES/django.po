@@ -22574,3 +22574,18 @@ msgstr ""
 #~ msgstr ""
 #~ "Jūsu rēķina adrese ir atjaunināta. Lūdzu, sazinieties ar mums, ja jums ir "
 #~ "nepieciešams, lai mēs atjaunotu jūsu rēķinu."
+
+msgid "Schedule"
+msgstr "Grafiks"
+
+msgid "Sessions"
+msgstr "Sesijas"
+
+msgid "Speakers"
+msgstr "Skaļruņi"
+
+msgid "Tickets"
+msgstr "Biļetes"
+
+msgid "Join online event"
+msgstr "Pievienojieties tiešsaistes pasākumam"
