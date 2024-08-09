@@ -35,6 +35,10 @@ jobs:
         working-directory: ./doc
       - name: Put spelling errors into summary file
         run: |
+          if [ -z "$(find _build -type f -name '*.spelling')" ]; then
+              echo "No spelling errors found."
+              exit 0
+          fi
           echo "## Spellcheck results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           for file in $(find _build -type f -name "*.spelling"); do
