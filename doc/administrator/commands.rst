@@ -121,7 +121,7 @@ especially useful for automating invocations of this command. For the first
 phase (creation of a superuser), set the environment variables
 ``DJANGO_SUPERUSER_EMAIL`` and ``DJANGO_SUPERUSER_PASSWORD`` (`see also the
 documentation of the non-interactive mode of the corresponding Django command
-<https://docs.djangoproject.com/en/4.2/ref/django-admin/#createsuperuser>`_).
+<https://docs.djangoproject.com/en/stable/ref/django-admin/#createsuperuser>`_).
 For the second phase (creation of an organiser), set the environment variables
 ``PRETALX_INIT_ORGANISER_NAME`` and ``PRETALX_INIT_ORGANISER_SLUG``.
 
