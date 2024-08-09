@@ -25646,3 +25646,15 @@ msgstr "Kosovo"
 
 #~ msgid "Restricition by time"
 #~ msgstr "Zeitliche Beschränkung"
+
+msgid "Schedule"
+msgstr "Zeitplan"
+
+msgid "Sessions"
+msgstr "Sitzungen"
+
+msgid "Speakers"
+msgstr "Lautsprecher"
+
+msgid "Join online event"
+msgstr "Nehmen Sie an der Online-Veranstaltung teil"

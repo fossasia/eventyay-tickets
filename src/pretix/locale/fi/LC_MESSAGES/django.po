@@ -21318,3 +21318,15 @@ msgstr ""
 
 #~ msgid "We strongly suggest to use a dark shade of red."
 #~ msgstr "Suosittelemme vahvasti tummaa punaisen sävyä."
+
+msgid "Schedule"
+msgstr "Ajoittaa"
+
+msgid "Sessions"
+msgstr "Istunnot"
+
+msgid "Speakers"
+msgstr "Kaiuttimet"
+
+msgid "Join online event"
+msgstr "Liity verkkotapahtumaan"

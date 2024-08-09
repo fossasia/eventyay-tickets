@@ -38,34 +38,34 @@
                 {% if request.event.settings.schedule_link %}
                     <div class="navigation-button">
                         <a href="{{ request.event.settings.schedule_link }}" class="header-nav btn btn-outline-success">
-                            <i class="fa fa-calendar"></i> {% translate "Schedule" %}
+                            <i class="fa fa-calendar"></i> {% trans "Schedule" %}
                         </a>
                     </div>
                 {% endif %}
                 {% if request.event.settings.session_link %}
                     <div class="navigation-button">
                         <a href="{{ request.event.settings.session_link }}" class="header-nav btn btn-outline-success">
-                            <i class="fa fa-comments-o"></i> {% translate "Sessions" %}
+                            <i class="fa fa-comments-o"></i> {% trans "Sessions" %}
                         </a>
                     </div>
                 {% endif %}
                 {% if request.event.settings.speaker_link %}
                     <div class="navigation-button">
                         <a href="{{ request.event.settings.speaker_link }}" class="header-nav btn btn-outline-success">
-                            <i class="fa fa-group"></i> {% translate "Speakers" %}
+                            <i class="fa fa-group"></i> {% trans "Speakers" %}
                         </a>
                     </div>
                 {% endif %}
                 <div class="navigation-button">
                     <a target="_blank" class="header-nav btn btn-outline-success" data-toggle="popover">
-                        <i class="fa fa-ticket"></i> {% translate "Tickets" %}
+                        <i class="fa fa-ticket"></i> {% trans "Tickets" %}
                     </a>
                 </div>
                 {% if request.event.settings.video_link %}
                     <div class="video-link">
                         <a join-event-link class="header-nav btn btn-outline-success join-event"
                             href='{% eventurl request.event "presale:event.onlinevideo.join" %}'>
-                            <i class="fa fa-video-camera"></i> {% translate "Join online event" %}
+                            <i class="fa fa-video-camera"></i> {% trans "Join online event" %}
                         </a>
                     </div>
                 {% endif %}

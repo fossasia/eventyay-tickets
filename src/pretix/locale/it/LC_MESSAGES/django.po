@@ -10554,14 +10554,6 @@ msgstr ""
 msgid "Payment"
 msgstr "Pagamento"
 
-#: pretix/control/navigation.py:52 pretix/control/views/event.py:1365
-#: pretix/control/views/event.py:1367 pretix/control/views/event.py:1398
-#: pretix/control/views/event.py:1403
-#: pretix/presale/templates/pretixpresale/organizers/index.html:133
-#: pretix/presale/templates/pretixpresale/organizers/index.html:135
-msgid "Tickets"
-msgstr ""
-
 #: pretix/control/navigation.py:68
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:3
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:5
@@ -22070,3 +22062,18 @@ msgstr ""
 
 #~ msgid "Order refunded"
 #~ msgstr "Ordine rimborsato"
+
+msgid "Schedule"
+msgstr "Programma"
+
+msgid "Sessions"
+msgstr "Sessioni"
+
+msgid "Speakers"
+msgstr "Altoparlanti"
+
+msgid "Tickets"
+msgstr "Biglietti"
+
+msgid "Join online event"
+msgstr "Partecipa all'evento online"

@@ -24079,3 +24079,15 @@ msgstr "Kosovo"
 
 #~ msgid "Full access"
 #~ msgstr "Acesso total"
+
+msgid "Schedule"
+msgstr "Agendar"
+
+msgid "Sessions"
+msgstr "Sessões"
+
+msgid "Speakers"
+msgstr "Oradores"
+
+msgid "Join online event"
+msgstr "Participe do evento online"

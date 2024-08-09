@@ -11987,14 +11987,6 @@ msgstr "General"
 msgid "Payment"
 msgstr "Pago"
 
-#: pretix/control/navigation.py:52 pretix/control/views/event.py:1365
-#: pretix/control/views/event.py:1367 pretix/control/views/event.py:1398
-#: pretix/control/views/event.py:1403
-#: pretix/presale/templates/pretixpresale/organizers/index.html:133
-#: pretix/presale/templates/pretixpresale/organizers/index.html:135
-msgid "Tickets"
-msgstr "Tickets"
-
 #: pretix/control/navigation.py:68
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:3
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:5
@@ -25962,3 +25954,18 @@ msgstr ""
 #~ msgstr ""
 #~ "No hemos podido encontrar un usuario a partir de los datos que ha "
 #~ "ingresado."
+
+msgid "Schedule"
+msgstr "Cronograma"
+
+msgid "Sessions"
+msgstr "Sesiones"
+
+msgid "Speakers"
+msgstr "Oradoras"
+
+msgid "Tickets"
+msgstr "Entradas"
+
+msgid "Join online event"
+msgstr "Únase al evento en línea"
