@@ -53,6 +53,7 @@ informations
 installable
 integrations
 iterable
+Jorian
 libffi
 lightbox
 linters
@@ -96,3 +97,4 @@ Venueless
 virtualenv
 Weblate
 wip
+Woltjer
