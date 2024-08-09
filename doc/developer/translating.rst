@@ -32,7 +32,7 @@ All translations marked as unofficial community translations will offered with
 a note of how many percent of pretalx they cover. You can see the current
 status that will be included in the next release here:
 
-.. image:: https://translate.pretalx.com/widgets/pretalx/-/pretalx/multi-auto.svg
+.. image:: https://translate.pretalx.com/widget/pretalx/pretalx/multi-auto.svg
    :target: https://translate.pretalx.com/engage/pretalx/
    :align: center
 
