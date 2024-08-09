@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :release:`2024.2.1 <2024-08-07>`
 - :bug:`orga` The plugin list was always shown as empty, even when there were plugins installed.
 - :feature:`orga` Administrators can now also deactivate user accounts, which will log out that user and won't allow them to log in again.
 - :release:`2024.2.0 <2024-08-06>`
