@@ -95,12 +95,8 @@ class BaseExporter:
         base = "{self.event.urls.export}{self.quoted_identifier}"
 
     def get_qrcode(self):
-        # Generate QR code
-        qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_L,
-            box_size=5,
-            border=4,
+        qr = qrcode.make(
+            self.urls.base.full(), image_factory=qrcode.image.svg.SvgPathFillImage
         )
         qr.add_data(self.urls.base.full())
         qr.make(fit=True)
