@@ -12189,14 +12189,6 @@ msgstr "Général"
 msgid "Payment"
 msgstr "Paiement"
 
-#: pretix/control/navigation.py:52 pretix/control/views/event.py:1365
-#: pretix/control/views/event.py:1367 pretix/control/views/event.py:1398
-#: pretix/control/views/event.py:1403
-#: pretix/presale/templates/pretixpresale/organizers/index.html:133
-#: pretix/presale/templates/pretixpresale/organizers/index.html:135
-msgid "Tickets"
-msgstr "Tickets"
-
 #: pretix/control/navigation.py:68
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:3
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:5
@@ -26649,3 +26641,18 @@ msgstr ""
 #, fuzzy
 #~ msgid "Failed to send mails to the following users: {}"
 #~ msgstr "Echec de l'envoi de mail au utilisateurs suivants: {}"
+
+msgid "Schedule"
+msgstr "Calendrier"
+
+msgid "Sessions"
+msgstr "Séances"
+
+msgid "Speakers"
+msgstr "Intervenantes"
+
+msgid "Tickets"
+msgstr "Billets"
+
+msgid "Join online event"
+msgstr "Participez à l'événement en ligne"
