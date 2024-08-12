@@ -58,7 +58,8 @@
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
-import { LinearSchedule, GridSchedule} from '@pretalx/schedule'
+import LinearSchedule from 'views/schedule/schedule-components/LinearSchedule'
+import GridSchedule from 'views/schedule/schedule-components/GridSchedule'
 import moment from 'lib/timetravelMoment'
 import TimezoneChanger from 'components/TimezoneChanger'
 import scheduleProvidesMixin from 'components/mixins/schedule-provides'
