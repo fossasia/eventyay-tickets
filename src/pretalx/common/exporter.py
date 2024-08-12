@@ -95,7 +95,7 @@ class BaseExporter:
 
     def get_qrcode(self):
         image = qrcode.make(
-            self.urls.base.full(), image_factory=qrcode.image.svg.SvgImage
+            self.urls.base.full(), image_factory=qrcode.image.svg.SvgPathFillImage
         )
         return mark_safe(ElementTree.tostring(image.get_image()).decode())
 
