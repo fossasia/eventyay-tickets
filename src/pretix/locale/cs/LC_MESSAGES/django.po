@@ -10094,14 +10094,6 @@ msgstr ""
 msgid "Payment"
 msgstr ""
 
-#: pretix/control/navigation.py:52 pretix/control/views/event.py:1365
-#: pretix/control/views/event.py:1367 pretix/control/views/event.py:1398
-#: pretix/control/views/event.py:1403
-#: pretix/presale/templates/pretixpresale/organizers/index.html:133
-#: pretix/presale/templates/pretixpresale/organizers/index.html:135
-msgid "Tickets"
-msgstr ""
-
 #: pretix/control/navigation.py:68
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:3
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:5
@@ -21163,3 +21155,18 @@ msgstr "Kosovo"
 #~| msgid "Order date"
 #~ msgid "Order status:"
 #~ msgstr "Datum objednávky"
+
+msgid "Schedule"
+msgstr "Naplánovat"
+
+msgid "Sessions"
+msgstr "Relace"
+
+msgid "Speakers"
+msgstr "Reproduktory"
+
+msgid "Tickets"
+msgstr "Vstupenky"
+
+msgid "Join online event"
+msgstr "Připojte se k online události"
