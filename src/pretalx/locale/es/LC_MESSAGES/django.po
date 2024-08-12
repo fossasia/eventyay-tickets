@@ -9218,3 +9218,9 @@ msgstr ""
 #~ msgstr ""
 #~ "Tenga en cuenta: los marcadores de posición no se sustituirán, esta es "
 #~ "una función próxima. No deje marcadores de posición en este campo."
+
+msgid "Tickets"
+msgstr "Entradas"
+
+msgid "Video"
+msgstr "Video"

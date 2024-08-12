@@ -8836,3 +8836,9 @@ msgstr ""
 
 #~ msgid "Orga area"
 #~ msgstr "主辦團隊區"
+
+msgid "Tickets"
+msgstr "门票"
+
+msgid "Video"
+msgstr "视频"

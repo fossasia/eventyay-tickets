@@ -9823,3 +9823,9 @@ msgstr "{name} ({duration} minutes)"
 #, fuzzy
 #~ msgid "No data available."
 #~ msgstr "Une mise à jour de pretalx est disponible"
+
+msgid "Tickets"
+msgstr "Billets"
+
+msgid "Video"
+msgstr "Vidéo"

@@ -8977,3 +8977,9 @@ msgstr ""
 #~ msgid "Should the sessions marked as featured be shown publicly?"
 #~ msgstr ""
 #~ "As sessões marcadas como destacadas devem ser exibidas publicamente?"
+
+msgid "Tickets"
+msgstr "Ingressos"
+
+msgid "Video"
+msgstr "Vídeo"

@@ -8926,3 +8926,9 @@ msgstr "{name} ({duration} minut)"
 #~ msgid ""
 #~ "Our sneak peek has been disabled because we have published a schedule!"
 #~ msgstr "Program byl zveřejněn a náhled byl proto vypnut!"
+
+msgid "Tickets"
+msgstr "Vstupenky"
+
+msgid "Video"
+msgstr "Video"

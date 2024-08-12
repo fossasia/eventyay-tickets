@@ -7798,3 +7798,9 @@ msgstr ""
 #~| msgid "Your account has now been deleted."
 #~ msgid "The selected page has been deleted."
 #~ msgstr "이제 계정이 삭제되었습니다."
+
+msgid "Tickets"
+msgstr "티켓"
+
+msgid "Video"
+msgstr "동영상"

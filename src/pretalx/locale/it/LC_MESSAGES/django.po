@@ -8716,3 +8716,9 @@ msgstr ""
 
 #~ msgid "No speaker matches your search."
 #~ msgstr "Nessun relatore corrisponde alla tua ricerca."
+
+msgid "Tickets"
+msgstr "Biglietti"
+
+msgid "Video"
+msgstr "Video"

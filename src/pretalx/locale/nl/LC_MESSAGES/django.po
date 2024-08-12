@@ -8488,3 +8488,9 @@ msgstr "{name} ({duration} minuten)"
 
 #~ msgid "Hidden rooms"
 #~ msgstr "Verborgen zalen"
+
+msgid "Tickets"
+msgstr "Kaartjes"
+
+msgid "Video"
+msgstr "Video"

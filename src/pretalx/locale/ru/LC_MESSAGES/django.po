@@ -7688,3 +7688,9 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+msgid "Tickets"
+msgstr "Билеты"
+
+msgid "Video"
+msgstr "Видео"

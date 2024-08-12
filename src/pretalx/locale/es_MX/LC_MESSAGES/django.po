@@ -8228,3 +8228,9 @@ msgstr ""
 
 #~ msgid "This is where it all began."
 #~ msgstr "Todo comenzó aquí."
+
+msgid "Tickets"
+msgstr "Entradas"
+
+msgid "Video"
+msgstr "Video"

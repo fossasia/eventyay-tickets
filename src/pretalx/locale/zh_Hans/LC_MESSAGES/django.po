@@ -8508,3 +8508,9 @@ msgstr ""
 #~ msgid ""
 #~ "Allow speakers to automatically include their gravatar profile image."
 #~ msgstr "允许演讲者自动包含他们的Gravatar个人资料图片。"
+
+msgid "Tickets"
+msgstr "门票"
+
+msgid "Video"
+msgstr "视频"

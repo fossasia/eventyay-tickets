@@ -9685,3 +9685,9 @@ msgstr "{name} ({duration} Minuten)"
 #~ msgstr ""
 #~ " - Den Befehl „import_schedule /path/to/schedule.xml“ nutzen, wenn Sie "
 #~ "mit einem importierten Event beginnen möchten."
+
+msgid "Tickets"
+msgstr "Tickets"
+
+msgid "Video"
+msgstr "Video"

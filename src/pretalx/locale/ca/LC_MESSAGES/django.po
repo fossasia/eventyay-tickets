@@ -7772,3 +7772,9 @@ msgstr ""
 #~| msgid "Your proposal has been withdrawn."
 #~ msgid "The order of pages has been updated."
 #~ msgstr "La vostra proposta ha estat cancel·lada."
+
+msgid "Tickets"
+msgstr "Entrades"
+
+msgid "Video"
+msgstr "Vídeo"

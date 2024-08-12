@@ -7812,3 +7812,9 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+msgid "Tickets"
+msgstr "Vstopnice"
+
+msgid "Video"
+msgstr "Video"

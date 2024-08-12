@@ -9907,3 +9907,9 @@ msgstr ""
 
 #~ msgid "No user account matches the entered credentials."
 #~ msgstr "検索条件にヒットするユーザは存在しません。"
+
+msgid "Tickets"
+msgstr "チケット"
+
+msgid "Video"
+msgstr "ビデオ"

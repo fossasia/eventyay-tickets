@@ -9071,3 +9071,9 @@ msgstr "{name} ({duration} λεπτά)"
 #~ msgstr ""
 #~ "Επιτρέψτε στα ηχεία να περιλαμβάνουν αυτόματα την εικόνα προφίλ gravatar "
 #~ "τους."
+
+msgid "Tickets"
+msgstr "Εισιτήρια"
+
+msgid "Video"
+msgstr "Βίντεο"
