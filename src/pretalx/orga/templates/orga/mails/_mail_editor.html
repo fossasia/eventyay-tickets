@@ -38,13 +38,9 @@
                 </legend>
                 {% bootstrap_field form.subject layout='event' %}
                 {% bootstrap_field form.text layout='event' %}
-                {% block skip_queue %}
-                    {% if form.skip_queue %}
-                        {% bootstrap_field form.skip_queue layout='event' %}
-                    {% endif %}
-                {% endblock %}
             </fieldset>
         </div>
+
         <div class="col col-md-2" id="placeholder-column">
             <legend>{% translate "Placeholders" %}</legend>
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.submission tag="submission" %}
@@ -53,6 +49,7 @@
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.event tag="event" %}
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.other tag="other" %}
         </div>
+
         {% block email_editor_preview %}
             {% if request.method == "POST" %}
                 <fieldset class="mt-4">
@@ -87,8 +84,17 @@
                 </fieldset>
             {% endif %}
         {% endblock %}
+
+        {% block skip_queue %}
+            {% if form.skip_queue and request.method == "POST" %}
+                <hr />
+                {% bootstrap_field form.skip_queue layout='event' %}
+            {% endif %}
+        {% endblock %}
+
         {% block email_editor_actions %}
-            <div class="submit-group mt-3"><span></span>
+            <div class="submit-group mt-3">
+                <span></span>
                 <span>
                     <button type="submit" class="btn btn-lg btn-outline-info btn-save mr-2" name="action" value="preview">
                         {% translate "Preview email" %}
