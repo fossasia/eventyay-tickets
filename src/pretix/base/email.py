@@ -466,14 +466,14 @@ def base_placeholders(sender, **kwargs):
                 event,
                 'pretixvideo:event.join', kwargs={
                     'order': order.code,
-                    'secret': order.secret,
+                    'secret': get_order_secret(order),
                 }
             ), lambda event: build_absolute_uri(
                 event,
                 'pretixvideo:event.join', kwargs={
                     'organizer': event.organizer.slug,
                     'order': 'F8VVL',
-                    'secret': '6zzjnumtsx136ddy',
+                    'secret': get_order_secret_by_order_code('F8VVL'),
                 }
             ),
         ),  
