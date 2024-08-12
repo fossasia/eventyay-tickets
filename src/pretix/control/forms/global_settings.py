@@ -165,3 +165,21 @@ class UpdateSettingsForm(SettingsForm):
     def __init__(self, *args, **kwargs):
         self.obj = GlobalSettingsObject()
         super().__init__(*args, obj=self.obj, **kwargs)
+
+
+class AdminInformationForm(SettingsForm):
+    admin_name = forms.CharField(
+        required = True,
+        label = ("Admin Name"),
+        help_text =_("Name of the Administrator.")
+    )
+    admin_email = forms.EmailField(
+        required = True,
+        label = ("Admin Email"),
+        help_text=_("Email of the Administrator.")
+    )
+
+    def __init__(self,*args,**kwargs):
+        self.obj = GlobalSettingsObject()
+        super().__init__(*args,obj=self.obj,**kwargs)
+
