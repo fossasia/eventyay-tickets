@@ -10794,14 +10794,6 @@ msgstr ""
 msgid "Payment"
 msgstr "Maksājums"
 
-#: pretix/control/navigation.py:52 pretix/control/views/event.py:1365
-#: pretix/control/views/event.py:1367 pretix/control/views/event.py:1398
-#: pretix/control/views/event.py:1403
-#: pretix/presale/templates/pretixpresale/organizers/index.html:133
-#: pretix/presale/templates/pretixpresale/organizers/index.html:135
-msgid "Tickets"
-msgstr ""
-
 #: pretix/control/navigation.py:68
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:3
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:5
@@ -22574,3 +22566,18 @@ msgstr ""
 #~ msgstr ""
 #~ "Jūsu rēķina adrese ir atjaunināta. Lūdzu, sazinieties ar mums, ja jums ir "
 #~ "nepieciešams, lai mēs atjaunotu jūsu rēķinu."
+
+msgid "Schedule"
+msgstr "Grafiks"
+
+msgid "Sessions"
+msgstr "Sesijas"
+
+msgid "Speakers"
+msgstr "Skaļruņi"
+
+msgid "Tickets"
+msgstr "Biļetes"
+
+msgid "Join online event"
+msgstr "Pievienojieties tiešsaistes pasākumam"

@@ -10123,14 +10123,6 @@ msgstr ""
 msgid "Payment"
 msgstr ""
 
-#: pretix/control/navigation.py:52 pretix/control/views/event.py:1365
-#: pretix/control/views/event.py:1367 pretix/control/views/event.py:1398
-#: pretix/control/views/event.py:1403
-#: pretix/presale/templates/pretixpresale/organizers/index.html:133
-#: pretix/presale/templates/pretixpresale/organizers/index.html:135
-msgid "Tickets"
-msgstr ""
-
 #: pretix/control/navigation.py:68
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:3
 #: pretix/control/templates/pretixcontrol/event/tax_index.html:5
@@ -21242,3 +21234,18 @@ msgstr ""
 
 #~ msgid "Sale soon"
 #~ msgstr "Hamarosan kapható"
+
+msgid "Schedule"
+msgstr "Menetrend"
+
+msgid "Sessions"
+msgstr "Munkamenetek"
+
+msgid "Speakers"
+msgstr "Hangszórók"
+
+msgid "Tickets"
+msgstr "Jegyek"
+
+msgid "Join online event"
+msgstr "Csatlakozz az online eseményhez"
