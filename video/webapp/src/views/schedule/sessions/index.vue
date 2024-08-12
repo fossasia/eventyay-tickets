@@ -43,7 +43,7 @@
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
-import { LinearSchedule, GridSchedule} from '@pretalx/schedule'
+import LinearSchedule from 'views/schedule/schedule-components/LinearSchedule'
 import moment from 'lib/timetravelMoment'
 import TimezoneChanger from 'components/TimezoneChanger'
 import scheduleProvidesMixin from 'components/mixins/schedule-provides'
@@ -88,7 +88,7 @@ const exportTypeSet = [
 ]
 
 export default {
-    components: { LinearSchedule, GridSchedule, TimezoneChanger, Prompt, CustomDropdown },
+    components: { LinearSchedule, TimezoneChanger, Prompt, CustomDropdown },
     mixins: [scheduleProvidesMixin],
     data () {
         return {

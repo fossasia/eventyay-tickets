@@ -69,7 +69,8 @@ export default {
 					end: moment.tz(session.end, rootState.userTimezone),
 					speakers: session.speakers?.map(s => getters.speakersLookup[s]),
 					track: getters.tracksLookup[session.track],
-					room: getters.roomsLookup[session.room]
+					room: getters.roomsLookup[session.room],
+					tags: session.tags
 				})
 			}
 			sessions.sort((a, b) => (
