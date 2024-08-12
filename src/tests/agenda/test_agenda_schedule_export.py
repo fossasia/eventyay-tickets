@@ -187,9 +187,9 @@ def test_schedule_frab_xcal_export(
 
 
 @pytest.mark.django_db
-def test_schedule_ical_export(slot, client, django_assert_max_num_queries):
+def test_schedule_ical_export(slot, orga_client, django_assert_max_num_queries):
     with django_assert_max_num_queries(9):
-        response = client.get(
+        response = orga_client.get(
             reverse(
                 "agenda:export.schedule.ics",
                 kwargs={"event": slot.submission.event.slug},
@@ -235,7 +235,7 @@ def test_schedule_export_nonpublic(
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "exporter",
-    ("schedule.xml", "schedule.json", "schedule.xcal", "schedule.ics", "feed"),
+    ("schedule.xml", "schedule.json", "schedule.xcal", "feed"),
 )
 def test_schedule_export_public(exporter, slot, client, django_assert_max_num_queries):
     exporter = "feed" if exporter == "feed" else f"export.{exporter}"
@@ -478,7 +478,6 @@ def test_html_export_full(
         "test/schedule/export/schedule.json",
         "test/schedule/export/schedule.xcal",
         "test/schedule/export/schedule.xml",
-        "test/schedule/export/schedule.ics",
         *[
             f"test/speaker/{speaker.code}/index.html"
             for speaker in slot.submission.speakers.all()
