@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`schedule,1794` The iCal schedule export has been made private (available only to organisers) as the utility of importing a conference's entire schedule is limited, and people were frustrated that the iCal export did not reflect any applied schedule filters.
 - :bug:`schedule,1803` The QR code for schedule exporter links was not showing up when hovering on the QR code symbol.
 - :release:`2024.2.1 <2024-08-07>`
 - :bug:`orga` The plugin list was always shown as empty, even when there were plugins installed.

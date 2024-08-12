@@ -298,7 +298,7 @@ class FrabJsonExporter(ScheduleData):
 class ICalExporter(BaseExporter):
     identifier = "schedule.ics"
     verbose_name = "iCal"
-    public = True
+    public = False
     show_qrcode = True
     icon = "fa-calendar"
     cors = "*"
