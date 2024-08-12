@@ -1320,7 +1320,7 @@ div.mail-preview {
   width: 270px;
   max-height: calc(100vh - 55px);
   overflow-y: auto;
-  position: absolute;
+  position: fixed;
   right: 0;
   padding: 0 12px;
   top: 50px;
