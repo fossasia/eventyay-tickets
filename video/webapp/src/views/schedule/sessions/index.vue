@@ -39,7 +39,7 @@
             h1 {{ $t('Tracks')}}
             template(v-for="track in schedule.tracks")
                 div.item(v-if="track")
-                    bunt-checkbox(v-model="tracksFilter[track.id]",name="track_room_views") {{track.name}}
+                    bunt-checkbox(v-model="tracksFilter[track.id]",name="track_room_views") {{ getTrackName(track) }}
 </template>
 <script>
 import { mapState, mapGetters } from 'vuex'
@@ -130,6 +130,18 @@ export default {
             const tabEl = this.$refs.tabs.$refs.tabElements.find(el => el.id === day.toISOString())
             // TODO smooth scroll, seems to not work with chrome {behavior: 'smooth', block: 'center', inline: 'center'}
             tabEl?.$el.scrollIntoView()
+        },
+        getTrackName(track) {
+            const language_track = localStorage.userLanguage;
+            if (typeof track.name === 'object' && track.name !== null) {
+                if (language_track && track.name[language_track]) {
+                    return track.name[language_track];
+                } else {
+                    return track.name.en || track.name;
+                }
+            } else {
+                return track.name;
+            }
         },
         toggleFavFilter () {
             this.tracksFilter = {}
@@ -242,3 +254,4 @@ export default {
             margin-right: 10px
 
 </style>
+    
