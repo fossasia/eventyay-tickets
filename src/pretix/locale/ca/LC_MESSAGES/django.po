@@ -23276,3 +23276,15 @@ msgstr "Kosovo"
 
 #~ msgid "Show toolbar"
 #~ msgstr "Mostra la barra d'eines"
+
+msgid "Schedule"
+msgstr "Horari"
+
+msgid "Sessions"
+msgstr "Sessions"
+
+msgid "Speakers"
+msgstr "Altaveus"
+
+msgid "Join online event"
+msgstr "Uneix-te a l'esdeveniment en línia"
