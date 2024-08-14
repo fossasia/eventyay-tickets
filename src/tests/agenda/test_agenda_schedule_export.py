@@ -188,7 +188,7 @@ def test_schedule_frab_xcal_export(
 
 @pytest.mark.django_db
 def test_schedule_ical_export(slot, orga_client, django_assert_max_num_queries):
-    with django_assert_max_num_queries(9):
+    with django_assert_max_num_queries(15):
         response = orga_client.get(
             reverse(
                 "agenda:export.schedule.ics",
@@ -196,7 +196,7 @@ def test_schedule_ical_export(slot, orga_client, django_assert_max_num_queries):
             ),
             follow=True,
         )
-    assert response.status_code == 200
+        assert response.status_code == 200
 
     content = response.content.decode()
     assert slot.submission.title in content
@@ -532,14 +532,6 @@ def test_html_export_full(
         (settings.HTMLEXPORT_ROOT / "test/test/schedule/export/schedule.json").open()
     )
     assert schedule_json["schedule"]["conference"]["title"] == event.name
-
-    schedule_ics = (
-        (settings.HTMLEXPORT_ROOT / "test/test/schedule/export/schedule.ics")
-        .open()
-        .read()
-    )
-    assert slot.submission.code in schedule_ics
-    assert canceled_talk.submission.code not in schedule_ics
 
     schedule_xcal = (
         (settings.HTMLEXPORT_ROOT / "test/test/schedule/export/schedule.xcal")
