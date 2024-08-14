@@ -30,11 +30,15 @@
     }
     .navigation {
         display: flex;
+        flex-wrap: wrap;
         .navigation-button {
             margin-right: 8px;
+            margin-bottom: 8px;
         }
-        .video-link {
-            margin-left: auto;
+        @media (min-width: 800px) {
+            .video-link {
+                margin-left: auto;
+            }
         }
         a:hover {
             color: #fff;
