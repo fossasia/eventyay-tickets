@@ -38,7 +38,7 @@ class Command(BaseCommand):
             # Get all orders email and check if they have a customer account or not
             for order in orders:
                 if order.email:
-                    customer = Customer.objects.filter(email=order.email).first()
+                    customer = Customer.objects.filter(email__iexact=order.email).first()
                     if not customer:
                         name_parts_data = {
                             "_scheme": "full",
