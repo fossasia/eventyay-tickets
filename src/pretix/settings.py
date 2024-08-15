@@ -289,7 +289,6 @@ INSTALLED_APPS = [
     'bootstrap3',
     'djangoformsetjs',
     'pretix.plugins.banktransfer',
-    'pretix.plugins.stripe',
     'pretix.plugins.paypal',
     'pretix.plugins.ticketoutputpdf',
     'pretix.plugins.sendmail',
