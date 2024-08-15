@@ -5,7 +5,7 @@ import toml
 stripe_key = os.getenv('STRIPE_KEY')
 
 # Load the pyproject.toml file
-pyproject = toml.load('../pyproject.toml')
+pyproject = toml.load('/pretix/pyproject.toml')
 
 # Iterate over the dependencies
 for i, dep in enumerate(pyproject['project']['dependencies']):
@@ -15,5 +15,5 @@ for i, dep in enumerate(pyproject['project']['dependencies']):
         break
 
 # Write the updated pyproject.toml back to file
-with open('../pyproject.toml', 'w') as f:
+with open('/pretix/pyproject.toml', 'w') as f:
     toml.dump(pyproject, f)
