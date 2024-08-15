@@ -29,7 +29,7 @@ parameter. Additionally, you can pass a scope (currently either ``read``, ``writ
 and an URL the user should be redirected to after successful or failed authorization. You also need to pass the
 ``response_type`` parameter with a value of ``code``. Example::
 
-    https://pretix.eu/api/v1/oauth/authorize?client_id=lsLi0hNL0vk53mEdYjNJxHUn1PcO1R6wVg81dLNT&response_type=code&scope=read+write&redirect_uri=https://pretalx.com
+    https://eventyay.com/api/v1/oauth/authorize?client_id=lsLi0hNL0vk53mEdYjNJxHUn1PcO1R6wVg81dLNT&response_type=code&scope=read+write&redirect_uri=https://pretalx.com
 
 To prevent CSRF attacks, you can also optionally pass a ``state`` parameter with a random string. Later, when
 redirecting back to your application, we will pass the same ``state`` parameter back to you, so you can compare if they
@@ -68,7 +68,7 @@ parameter that you used for the authorization.
    .. sourcecode:: http
 
       POST /api/v1/oauth/token HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Authorization: Basic bHNMaTBoTkwwdms1M21FZFlqTkp4SFVuMVBjTzFSNndWZzgxZExOVDplSmpzZVA0UjJMN0hMcjBiS0p1b3BmbnJtT2cyY3NDeTdYaFVVZ0FoalhUU0NhZHhRTjk3cVNvMkpPaXlWTFpQOEozaTVQd1FVdFIwNUNycG5ac2Z0bXJjdmNTbkZ1SkFmb2ZsUTdZUDRpSjZNTWFYTHIwQ0FpNlhIRFJjV1Awcg==
 
@@ -108,7 +108,7 @@ You can supply a valid access token as a ``Bearer``-type token in the ``Authoriz
    :emphasize-lines: 3
 
        GET /api/v1/organizers/ HTTP/1.1
-       Host: pretix.eu
+       Host: eventyay.com
        Authorization: Bearer i3ytqTSRWsKp16fqjekHXa4tdM4qNC
 
 Refreshing an access token
@@ -120,7 +120,7 @@ used to obtain the first access token above, but with a different set of paramet
 .. sourcecode:: http
 
   POST /api/v1/oauth/token HTTP/1.1
-  Host: pretix.eu
+  Host: eventyay.com
   Accept: application/json, text/javascript
   Authorization: Basic bHNMaTBoTkwwdms1M21FZFlqTkp4SFVuMVBjTzFSNndWZzgxZExOVDplSmpzZVA0UjJMN0hMcjBiS0p1b3BmbnJtT2cyY3NDeTdYaFVVZ0FoalhUU0NhZHhRTjk3cVNvMkpPaXlWTFpQOEozaTVQd1FVdFIwNUNycG5ac2Z0bXJjdmNTbkZ1SkFmb2ZsUTdZUDRpSjZNTWFYTHIwQ0FpNlhIRFJjV1Awcg==
 
@@ -144,7 +144,7 @@ endpoint to revoke it.
    .. sourcecode:: http
 
       POST /api/v1/oauth/revoke_token HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Authorization: Basic bHNMaTBoTkwwdms1M21FZFlqTkp4SFVuMVBjTzFSNndWZzgxZExOVDplSmpzZVA0UjJMN0hMcjBiS0p1b3BmbnJtT2cyY3NDeTdYaFVVZ0FoalhUU0NhZHhRTjk3cVNvMkpPaXlWTFpQOEozaTVQd1FVdFIwNUNycG5ac2Z0bXJjdmNTbkZ1SkFmb2ZsUTdZUDRpSjZNTWFYTHIwQ0FpNlhIRFJjV1Awcg==
 
@@ -178,7 +178,7 @@ If you need the user's meta data, you can fetch it here:
    .. sourcecode:: http
 
       GET /api/v1/me HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Authorization: Bearer i3ytqTSRWsKp16fqjekHXa4tdM4qNC
 

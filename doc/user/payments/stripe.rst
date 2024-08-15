@@ -3,7 +3,7 @@
 Stripe
 ======
 
-.. note:: If you use the Hosted version of pretix at pretix.eu, you do not need to copy API keys and create webhooks
+.. note:: If you use the Hosted version of pretix at eventyay.com, you do not need to copy API keys and create webhooks
           any more. Instead, you can just click "Connect with Stripe" in pretix and everything will connect
           automatically.
 

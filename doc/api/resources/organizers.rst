@@ -32,7 +32,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -70,7 +70,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -124,7 +124,7 @@ information about the properties.
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/settings/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example standard response**:
@@ -181,7 +181,7 @@ information about the properties.
    .. sourcecode:: http
 
       PATCH /api/v1/organizers/bigevents/settings/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 

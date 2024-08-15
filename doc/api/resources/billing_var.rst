@@ -39,7 +39,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/var/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -80,7 +80,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/var/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -115,7 +115,7 @@ Endpoints
    .. sourcecode:: http
 
       POST /api/v1/var/1/create_organizer/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
       Content-Length: 123
@@ -145,4 +145,4 @@ Endpoints
    :statuscode 401: Authentication failure
    :statuscode 404: The requested account does not exist **or** you have no permission to view this resource.
 
-.. _value-added reseller partners: https://pretix.eu/about/en/var
+.. _value-added reseller partners: https://eventyay.com/about/en/var

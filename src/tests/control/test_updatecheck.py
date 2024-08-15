@@ -66,7 +66,7 @@ def test_settings(client, user):
 @responses.activate
 def test_trigger(client, user):
     responses.add_callback(
-        responses.POST, 'https://pretix.eu/.update_check/',
+        responses.POST, 'https://eventyay.org/.update_check/',
         callback=request_callback_updatable,
         content_type='application/json',
     )

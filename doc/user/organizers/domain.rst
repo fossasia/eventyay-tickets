@@ -4,14 +4,14 @@ Using a custom domain
 =====================
 
 By default, event shops built with pretix are accessible at ``https://<domain>/<organizer>/<event>/``, where
-``<domain>`` is ``pretix.eu`` if you are using our hosted service and ``<organizer>`` and ``<event>`` are the short
+``<domain>`` is ``eventyay.com`` if you are using our hosted service and ``<organizer>`` and ``<event>`` are the short
 form versions of your organizer account name and event name, respectively.
 
 However, you are also able to use a custom domain for your ticket shops! If you work for "Awesome Party Corporation"
 and your website is ``awesomepartycorp.com``, you might want to sell your tickets at ``tickets.awesomepartycorp.com``
 and with pretix, you can do this. On this page, you find out the necessary steps to take.
 
-With the pretix.eu hosted service
+With the eventyay.com hosted service
 ---------------------------------
 
 Go to "Organizers" in the backend and select your organizer account. Then, go to "Settings" and "Custom Domain".

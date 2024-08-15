@@ -26,6 +26,6 @@ See the LICENSE file for the complete license text.
 
 This project is maintained by FOSSASIA. See the AUTHORS file for a list of all the awesome contributors of this project.
 
-.. _installation guide: https://docs.pretix.eu/en/latest/admin/installation/index.html
+.. _installation guide: https://docs.eventyay.com/en/latest/admin/installation/index.html
 .. _eventyay.com: https://eventyay.com
 .. _blog: https://blog.eventyay.com

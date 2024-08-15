@@ -31,6 +31,6 @@ like the following:
    :emphasize-lines: 3
 
    GET /api/v1/organizers/ HTTP/1.1
-   Host: pretix.eu
+   Host: eventyay.com
    Authorization: Token e1l6gq2ye72thbwkacj7jbri7a7tvxe614ojv8ybureain92ocub46t5gab5966k
 

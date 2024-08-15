@@ -7,7 +7,7 @@ this to be useful.
 
 Since we (the developers of pretix) only speak a very limited number of languages, we need help from the community
 to achieve this goal. To make translating pretix easy not only for software developers, we set up a translation
-platform at `translate.pretix.eu`_.
+platform at `translate.eventyay.com`_.
 
 Official and inofficial languages
 ---------------------------------
@@ -27,19 +27,19 @@ Incubating languages
     are currently in the process of being translated. They can not yet be selected in pretix by end users on
     production installations and are only available in development mode for testing.
 
-Please contact translate@pretix.eu if you think an incubated language should be promoted to an inofficial one or if
+Please contact translate@eventyay.com if you think an incubated language should be promoted to an inofficial one or if
 you are interested in a partnership to make your language official.
 
 The current translation status of various languages is:
 
-.. image:: https://translate.pretix.eu/widgets/pretix/-/multi-blue.svg
-   :target: https://translate.pretix.eu/engage/pretix/?utm_source=widget
+.. image:: https://translate.eventyay.com/widgets/pretix/-/multi-blue.svg
+   :target: https://translate.eventyay.com/engage/pretix/?utm_source=widget
 
 
 Using our translation platform
 ------------------------------
 
-If you visit `translate.pretix.eu`_ for the first time, it admittedly looks pretty bare.
+If you visit `translate.eventyay.com`_ for the first time, it admittedly looks pretty bare.
 
 .. image:: img/weblate1.png
    :class: screenshot
@@ -66,7 +66,7 @@ go to the `pretix project page`_ where you can select specific components.
 
    If you want to translate pretix to a new language that is not yet listed here, you are very welcome to do so!
    While you technically can add the language to the portal yourself, we ask you to drop us a short mail to
-   translate@pretix.eu so we can add it to all components at once and also make it selectable in pretix itself.
+   translate@eventyay.com so we can add it to all components at once and also make it selectable in pretix itself.
 
 .. image:: img/weblate4.png
    :class: screenshot
@@ -84,5 +84,5 @@ scroll down, there is also a "Comments" section to discuss any questions with fe
 .. image:: img/weblate6.png
    :class: screenshot
 
-.. _translate.pretix.eu: https://translate.pretix.eu
-.. _pretix project page: https://translate.pretix.eu/projects/pretix/
+.. _translate.eventyay.com: https://translate.eventyay.com
+.. _pretix project page: https://translate.eventyay.com/projects/pretix/

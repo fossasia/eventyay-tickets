@@ -111,12 +111,12 @@ G. Code quality
 
 #. Continuous Integration is set up to check that tests are passing and styling is consistent.
 
-H. Specific to pretix.eu
+H. Specific to eventyay.com
 ------------------------
 
-#. pretix.eu integrates the data stored by this plugin with its data report features.
+#. eventyay.com integrates the data stored by this plugin with its data report features.
 
-#. pretix.eu integrates this plugin in its generated privacy statements, if necessary.
+#. eventyay.com integrates this plugin in its generated privacy statements, if necessary.
 
 
 .. _isort: https://www.google.de/search?q=isort&oq=isort&aqs=chrome..69i57j0j69i59j69i60l2j69i59.599j0j4&sourceid=chrome&ie=UTF-8

@@ -91,7 +91,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -174,7 +174,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -244,7 +244,7 @@ Endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -344,7 +344,7 @@ Endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/clone/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -439,7 +439,7 @@ Endpoints
    .. sourcecode:: http
 
       PATCH /api/v1/organizers/bigevents/events/sampleconf/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -513,7 +513,7 @@ Endpoints
    .. sourcecode:: http
 
       DELETE /api/v1/organizers/bigevents/events/sampleconf/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -563,7 +563,7 @@ information about the properties.
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/settings/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example standard response**:
@@ -575,7 +575,7 @@ information about the properties.
       Content-Type: application/json
 
       {
-        "imprint_url": "https://pretix.eu",
+        "imprint_url": "https://eventyay.com",
         …
       }
 
@@ -590,7 +590,7 @@ information about the properties.
       {
         "imprint_url":
           {
-            "value": "https://pretix.eu",
+            "value": "https://eventyay.com",
             "label": "Imprint URL",
             "help_text": "This should point e.g. to a part of your website that has your contact details and legal information."
           }
@@ -621,7 +621,7 @@ information about the properties.
    .. sourcecode:: http
 
       PATCH /api/v1/organizers/bigevents/events/sampleconf/settings/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
