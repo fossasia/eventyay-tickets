@@ -118,12 +118,6 @@
                                     <td></td>
                                 </tr>
                                 <tr>
-                                    <th>{% translate "Availability" %}</th>
-                                    <td class="hide-label">{% bootstrap_field sform.cfp_ask_availabilities layout='event-inline' %}</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
                                     <th>{% translate "Notes" %}</th>
                                     <td class="hide-label">{% bootstrap_field sform.cfp_ask_notes layout='event-inline' %}</td>
                                     <td></td>
@@ -144,6 +138,39 @@
                                 <tr>
                                     <th>{% translate "Duration" %}</th>
                                     <td class="hide-label">{% bootstrap_field sform.cfp_ask_duration layout='event-inline' %}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table></div>
+                    </fieldset>
+                    <fieldset>
+                        <legend id="information">{% translate "Speaker information" %}</legend>
+                        <div class="table-responsive-sm"><table class="table offset-md-3 table-sm table-hover table-flip table-sticky" id="cfp-option-table">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th>{% translate "Minimum length" %}</th>
+                                    <th>{% translate "Maximum length" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>{% translate "Biography" %}</th>
+                                    <td class="hide-label">{% bootstrap_field sform.cfp_ask_biography layout='event-inline' %}</td>
+                                    <td>{% bootstrap_field sform.cfp_biography_min_length use_label=False layout='inline' %}</td>
+                                    <td>{% bootstrap_field sform.cfp_biography_max_length use_label=False layout='inline' %}</td>
+                                </tr>
+                                <tr>
+                                    <th>{% translate "Profile picture" %}</th>
+                                    <td class="hide-label">{% bootstrap_field sform.cfp_ask_avatar layout='event-inline' %}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>{% translate "Availability" %}</th>
+                                    <td class="hide-label">{% bootstrap_field sform.cfp_ask_availabilities layout='event-inline' %}</td>
                                     <td></td>
                                     <td></td>
                                 </tr>
