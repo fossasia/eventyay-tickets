@@ -55,6 +55,7 @@ RUN pip3 install -U \
         wheel && \
     cd /pretix && \
     python src/set_github_token.py && \
+    cat /pretix/pyproject.toml && \
     PRETIX_DOCKER_BUILD=TRUE pip3 install \
         -e ".[memcached]" \
         gunicorn django-extensions ipython && \
