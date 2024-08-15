@@ -16,7 +16,7 @@
     {% if organizer.settings.locales|length > 1 or request.organizer.settings.customer_accounts %}
         {% if organizer.settings.theme_color_background|upper != "#FFFFFF" or organizer.settings.organizer_logo_image_large %}
             <div class="container page-header-links">
-                <div class="pull-right header-part flip">
+                <div class="pull-right header-part flip header-content">
                     {% if organizer.settings.locales|length > 1 %}
                         <nav class="locales" aria-label="{% trans "select language" %}">
                             {% for l in languages %}
