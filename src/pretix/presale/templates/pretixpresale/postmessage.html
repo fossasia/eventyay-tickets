@@ -1,0 +1,31 @@
+{% load compress %}
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ settings.INSTANCE_NAME }} - Processing</title>
+    {% compress js %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script type="text/javascript" src='{% static "pretixpresale/js/popup-message.js" %}'></script>
+        <script type="text/javascript" src='{% static "jquery/js/jquery-2.1.1.min.js" %}'></script>
+    {% endcompress %}
+    {% compress css %}
+        <link rel='stylesheet' type="text/x-scss" href='{% static "pretixpresale/scss/waiting.scss" %}'/>
+    {% endcompress %}
+</head>
+<body>
+    <div class="container">
+        <i class="fa fa-cog big-rotating-icon" aria-hidden="true"></i>
+
+        <h1>{% trans "We are processing your request…" %}</h1>
+
+        {{ message|json_script:"postmessage" }}
+        <script type="text/plain" id="origin">{{ origin }}</script>
+
+        <p>
+            {% trans "If this takes longer than expected, please contact our support team." %}
+        </p>
+    </div>
+</body>
+</html>

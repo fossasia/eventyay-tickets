@@ -1,0 +1,32 @@
+{% extends "pretixpresale/event/checkout_base.html" %}
+{% load i18n %}
+{% load money %}
+{% load bootstrap3 %}
+{% load eventurl %}
+{% load rich_text %}
+{% block inner %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="card-group" id="customer">
+            {% include "pretixpresale/event/checkout_customer_login.html" %}
+            {% include "pretixpresale/event/checkout_customer_register.html" %}
+            {% if guest_allowed %}
+                {% include "pretixpresale/event/checkout_customer_guest.html" %}
+            {% endif %}
+        </div>
+        <div class="row checkout-action-row">
+            <div class="col-md-2 col-sm-4">
+                <a class="btn btn-block btn-default btn-lg"
+                        href="{{ prev_url }}">
+                    <i class="fa fa-arrow-left"></i>
+                </a>
+            </div>
+            <div class="col-md-2 col-md-offset-8 col-sm-4">
+                <button class="btn btn-block btn-primary btn-lg" type="submit">
+                    <i class="fa fa-arrow-right"></i>
+                </button>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </form>
+{% endblock %}

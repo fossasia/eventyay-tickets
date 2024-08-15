@@ -137,7 +137,8 @@
 .panel-primary .panel-heading a {
     color: white;
 }
-.checkout-button-row {
+
+.checkout-action-row {
     padding-top: 15px;
 }
 section.front-page {
@@ -158,6 +159,45 @@ section.front-page {
 #questions_group .panel-title a {
     line-height: 22px;
 }
+#questions_group .card-title a {
+    line-height: 22px;
+}
+.card-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: ceil(($font-size-base * 1.125));
+    color: inherit;
+  
+    > a,
+    > small,
+    > .small,
+    > small > a,
+    > .small > a {
+      color: inherit;
+    }
+}
+
+.card-header {
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    background-color: #ececec;
+    border: 1px solid #e5e5e5;
+    @include border-top-radius(($panel-border-radius - 1));
+  
+    > .dropdown .dropdown-toggle {
+      color: inherit;
+    }
+}
+
+.card {
+    margin: 15px;
+    border: 1px solid #e5e5e5;
+}
+
+.card-body {
+    padding: 15px;
+}
+
 @media (max-width: $screen-sm-max) {
     .page-header h1 small, h1.content-header small {
         display: block;

@@ -1,5 +1,6 @@
 from ..settings import GlobalSettingsObject_SettingsStore
 from .auth import U2FDevice, User, WebAuthnDevice
+from .customers import Customer
 from .base import CachedFile, LoggedModel, cachedfile_name
 from .checkin import Checkin, CheckinList
 from .devices import Device, Gate
@@ -20,7 +21,7 @@ from .orders import (
     AbstractPosition, CachedCombinedTicket, CachedTicket, CartPosition,
     InvoiceAddress, Order, OrderFee, OrderPayment, OrderPosition, OrderRefund,
     QuestionAnswer, RevokedTicketSecret, cachedcombinedticket_name,
-    cachedticket_name, generate_position_secret, generate_secret,
+    cachedticket_name, generate_secret,
 )
 from .organizer import (
     Organizer, Organizer_SettingsStore, Team, TeamAPIToken, TeamInvite,
