@@ -21,7 +21,7 @@ from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.notifications import render_notifications
 from pretalx.schedule.signals import schedule_release
 from pretalx.submission.models import SubmissionStates
-from pretalx.submission.models.submission import SubmissionFavourite
+from pretalx.submission.models.submission import SubmissionFavouriteDeprecated
 
 
 class Schedule(PretalxModel):
@@ -733,7 +733,7 @@ class Schedule(PretalxModel):
 def count_fav_talk(submission_code):
     # Cast talk_list to TextField for using the contains lookup
     count = (
-        SubmissionFavourite.objects.annotate(
+        SubmissionFavouriteDeprecated.objects.annotate(
             talk_list_str=Cast("talk_list", TextField())
         )
         .filter(talk_list_str__contains=str(submission_code))

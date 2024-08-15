@@ -57,6 +57,7 @@ def test_tag_serializer(tag):
 def test_submission_serializer_for_organiser(submission, orga_user, resource, tag):
     with scope(event=submission.event):
         submission.tags.add(tag)
+        submission.favourite_count = 3
         data = SubmissionOrgaSerializer(
             submission,
             event=submission.event,
@@ -88,6 +89,7 @@ def test_submission_serializer_for_organiser(submission, orga_user, resource, ta
             "resources",
             "tags",
             "tag_ids",
+            "favourite_count",
         }
         assert isinstance(data["speakers"], list)
         assert data["speakers"][0] == {

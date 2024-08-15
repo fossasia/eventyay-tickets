@@ -12,7 +12,7 @@ from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import (
     PasswordConfirmationField,
     PasswordField,
-    SizeFileField,
+    SizeFileField, ImageField,
 )
 from pretalx.common.forms.mixins import (
     I18nHelpText,

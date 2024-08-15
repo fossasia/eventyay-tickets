@@ -940,7 +940,7 @@ class Submission(GenerateCode, PretalxModel):
     send_invite.alters_data = True
 
 
-class SubmissionFavourite(models.Model):
+class SubmissionFavouriteDeprecated(models.Model):
     user = models.OneToOneField(
         to="person.User",
         related_name="submission_favorites",
@@ -953,7 +953,7 @@ class SubmissionFavourite(models.Model):
         db_table = '"submission_submission_favourites"'
 
 
-class SubmissionFavouriteSerializer(serializers.ModelSerializer):
+class SubmissionFavouriteDeprecatedSerializer(serializers.ModelSerializer):
 
     user = serializers.SlugRelatedField(slug_field="id", read_only=True)
 
@@ -962,15 +962,26 @@ class SubmissionFavouriteSerializer(serializers.ModelSerializer):
         self.user = user_id
 
     class Meta:
-        model = SubmissionFavourite
+        model = SubmissionFavouriteDeprecated
         fields = ["user", "talk_list"]
 
     def save(self, user_id, talk_code):
         with scopes_disabled():
             user = get_object_or_404(User, id=user_id)
-            submission_fav, created = SubmissionFavourite.objects.get_or_create(
+            submission_fav, created = SubmissionFavouriteDeprecated.objects.get_or_create(
                 user=user
             )
             submission_fav.talk_list = talk_code
             submission_fav.save()
             return submission_fav
+class SubmissionFavourite(PretalxModel):
+    user = models.ForeignKey(
+        to="person.User",
+        on_delete=models.CASCADE,
+        related_name="submission_favourites",
+    )
+    submission = models.ForeignKey(
+        to="submission.Submission",
+        on_delete=models.CASCADE,
+        related_name="favourites",
+    )

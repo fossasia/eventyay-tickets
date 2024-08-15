@@ -146,6 +146,7 @@ class SubmissionOrgaSerializer(SubmissionSerializer):
     tags = SerializerMethodField()
     tag_ids = SerializerMethodField()
     created = SerializerMethodField()
+    favourite_count = SerializerMethodField()
 
     speaker_serializer_class = SubmitterOrgaSerializer
 
@@ -161,6 +162,9 @@ class SubmissionOrgaSerializer(SubmissionSerializer):
     def get_tag_ids(self, obj):
         return list(obj.tags.all().values_list("id", flat=True))
 
+    def get_favourite_count(self, obj):
+        return obj.favourite_count
+
     class Meta(SubmissionSerializer.Meta):
         fields = SubmissionSerializer.Meta.fields + [
             "created",
@@ -170,6 +174,7 @@ class SubmissionOrgaSerializer(SubmissionSerializer):
             "internal_notes",
             "tags",
             "tag_ids",
+            "favourite_count",
         ]
 
 

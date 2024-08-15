@@ -27,6 +27,6 @@ urlpatterns = [
     path("auth/", obtain_auth_token),
     path("events/<event>/", include(event_router.urls)),
     path(
-        "events/<event>/favourite-talk/", submission.SubmissionFavouriteView.as_view()
+        "events/<event>/favourite-talk/", submission.SubmissionFavouriteDeprecatedView.as_view()
     ),
 ]
