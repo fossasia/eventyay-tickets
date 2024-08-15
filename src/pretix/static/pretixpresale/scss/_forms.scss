@@ -107,6 +107,25 @@ a.btn, button.btn {
   }
 }
 
+.info-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-item {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.info-label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.info-value {
+  color: #333;
+}
+
 @media(max-width: $screen-xs-max) {
   .nameparts-form-group {
     display: block;

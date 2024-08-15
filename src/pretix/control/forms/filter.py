@@ -988,6 +988,44 @@ class GiftCardFilterForm(FilterForm):
         return qs.distinct()
 
 
+class CustomerFilterForm(FilterForm):
+    orders = {
+        'email': 'email',
+        'identifier': 'identifier',
+        'name_cached': 'name_cached',
+    }
+    query = forms.CharField(
+        label=_('Search query'),
+        widget=forms.TextInput(attrs={
+            'placeholder': _('Search query'),
+            'autofocus': 'autofocus'
+        }),
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('request')
+        super().__init__(*args, **kwargs)
+
+    def filter_qs(self, qs):
+        form_data = self.cleaned_data
+
+        if form_data.get('query'):
+            query = form_data.get('query')
+            qs = qs.filter(
+                Q(email__icontains=query)
+                | Q(name_cached__icontains=query)
+                | Q(identifier__istartswith=query)
+            )
+
+            if form_data.get('ordering'):
+                qs = qs.order_by(self.get_order_by())
+            else:
+                qs = qs.order_by('-email')
+
+        return qs
+
+
 class EventFilterForm(FilterForm):
     orders = {
         'slug': 'slug',

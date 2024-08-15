@@ -29,7 +29,7 @@ from pretix.base.templatetags.money import money_filter
 from pretix.control.permissions import (
     EventPermissionRequiredMixin, OrganizerPermissionRequiredMixin,
 )
-from pretix.control.views.organizer import OrganizerDetailViewMixin
+from pretix.control.views.organizer_views import OrganizerDetailViewMixin
 from pretix.helpers.json import CustomJSONEncoder
 from pretix.plugins.banktransfer import csvimport, mt940import
 from pretix.plugins.banktransfer.models import (

@@ -32,6 +32,7 @@ from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import SingleObjectMixin
 from i18nfield.strings import LazyI18nString
 from i18nfield.utils import I18nJSONEncoder
+from pretix.base.configurations import LazyI18nStringListBase
 from pytz import timezone
 
 from pretix.base.channels import get_all_sales_channels
@@ -261,15 +262,12 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
     @cached_property
     def confirm_texts_formset(self):
         initial = [{"text": text, "ORDER": order} for order, text in
-                   enumerate(self.object.settings.get("confirm_texts", as_type=LazyI18nStringList))]
+                   enumerate(self.object.settings.get("confirm_texts", as_type=LazyI18nStringListBase))]
         return ConfirmTextFormset(self.request.POST if self.request.method == "POST" else None, event=self.object,
                                   prefix="confirm-texts", initial=initial)
 
     def save_confirm_texts_formset(self, obj):
         obj.settings.confirm_texts = LazyI18nStringList(
-            form_data['text'].data
-            for form_data in sorted((data for data in self.confirm_texts_formset.cleaned_data if data), key=operator.itemgetter("ORDER"))
-            if form_data and not form_data.get("DELETE", False)
         )
 
     @cached_property

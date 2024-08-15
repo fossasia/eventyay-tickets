@@ -4,10 +4,12 @@ import hmac
 import json
 import logging
 import string
+import uuid
 from collections import Counter
 from datetime import datetime, time, timedelta
 from decimal import Decimal
 from typing import Any, Dict, List, Union
+import secrets
 
 import dateutil
 import pycountry
@@ -15,7 +17,7 @@ import pytz
 from django.conf import settings
 from django.db import models, transaction
 from django.db.models import (
-    Case, Exists, F, Max, OuterRef, Q, Subquery, Sum, Value, When, JSONField,
+    Case, Exists, F, JSONField, Max, OuterRef, Q, Subquery, Sum, Value, When,
 )
 from django.db.models.functions import Coalesce, Greatest
 from django.db.models.signals import post_delete
@@ -38,7 +40,7 @@ from pretix.base.banlist import banned
 from pretix.base.decimal import round_decimal
 from pretix.base.email import get_email_context
 from pretix.base.i18n import language
-from pretix.base.models import User
+from pretix.base.models import Customer, User
 from pretix.base.reldate import RelativeDateWrapper
 from pretix.base.services.locking import NoLockManager
 from pretix.base.settings import PERSON_NAME_SCHEMES
@@ -53,11 +55,9 @@ logger = logging.getLogger(__name__)
 
 
 def generate_secret():
-    return get_random_string(length=16, allowed_chars=string.ascii_lowercase + string.digits)
-
-
-def generate_position_secret():
-    raise TypeError("Function no longer exists, use secret generators")
+    length = 16
+    code = secrets.token_hex(4)[:length].upper()
+    return code
 
 
 class SecureOrderQuerySet(models.QuerySet):
@@ -179,6 +179,13 @@ class Order(LockModel, LoggedModel):
         related_name="orders",
         on_delete=models.CASCADE
     )
+    customer = models.ForeignKey(
+        Customer,
+        verbose_name=_("Customer"),
+        related_name="orders",
+        null=True, blank=True,
+        on_delete=models.SET_NULL
+    )
     email = models.EmailField(
         null=True, blank=True,
         verbose_name=_('E-mail')
@@ -295,7 +302,7 @@ class Order(LockModel, LoggedModel):
     @cached_property
     @scopes_disabled()
     def count_positions(self):
-        if hasattr(self, 'pcnt'):
+        if getattr(self, 'pcnt', None) is not None:
             return self.pcnt or 0
         return self.positions.count()
 
@@ -823,7 +830,7 @@ class Order(LockModel, LoggedModel):
 
         return self._is_still_available(count_waitinglist=count_waitinglist, force=force)
 
-    def _is_still_available(self, now_dt: datetime=None, count_waitinglist=True, force=False,
+    def _is_still_available(self, now_dt=None, count_waitinglist=True, force=False,
                             check_voucher_usage=False) -> Union[bool, str]:
         error_messages = {
             'unavailable': _('The ordered product "{item}" is no longer available.'),
@@ -832,7 +839,7 @@ class Order(LockModel, LoggedModel):
             'voucher_usages': _('The voucher "{voucher}" has been used in the meantime.'),
         }
         now_dt = now_dt or now()
-        positions = self.positions.all().select_related('item', 'variation', 'seat', 'voucher')
+        positions = list(self.positions.all().select_related('item', 'variation', 'seat', 'voucher'))
         quota_cache = {}
         v_budget = {}
         v_usage = Counter()
@@ -1232,7 +1239,7 @@ class AbstractPosition(models.Model):
         # answers of other items in the same cart if the question objects have been
         # selected via prefetch_related
         if not all:
-            if hasattr(self.item, 'questions_to_ask'):
+            if getattr(self.item, 'questions_to_ask', None) is not None:
                 questions = list(copy.copy(q) for q in self.item.questions_to_ask)
             else:
                 questions = list(copy.copy(q) for q in self.item.questions.filter(ask_during_checkin=False,

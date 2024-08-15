@@ -1,0 +1,75 @@
+#top-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 240px;
+    z-index: -1;
+    display: flex;
+
+    #header-image {
+        object-fit: cover;
+        width: 100%;
+    }
+}
+
+.custom-header {
+    height: 220px;
+    align-items: flex-end;
+    display: flex;
+}
+
+#schedule-nav {
+    margin: 16px 0px;
+    .header-nav {
+        border-color: darken($btn-primary-bg, 10%) !important;
+        border: 1px solid;
+        font-size: 16px;
+        font-weight: normal;
+        border-radius: 0;
+    }
+    .navigation {
+        display: flex;
+        flex-wrap: wrap;
+        .navigation-button {
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        @media (min-width: 800px) {
+            .video-link {
+                margin-left: auto;
+            }
+        }
+        a:hover {
+            color: #fff;
+            color: darken($btn-primary-bg, 10%) !important;
+        }
+        .popover-content {
+            .options {
+                color: darken($btn-primary-bg, 10%);
+                border-color: darken($btn-primary-bg, 12%);
+                border: 1px solid;
+                font-size: 16px;
+                font-weight: normal;
+                border-radius: 0;
+            }
+            .options:hover {
+                color: #fff;
+                color: darken($btn-primary-bg, 10%) !important;
+            }
+            div:first-child {
+                margin-bottom: 8px;
+            }
+        }
+        
+    }
+    
+}
+
+.page-header-links{
+    .header-part{
+        a {
+            color: #FFFFFF !important;
+        }
+    }
+}
