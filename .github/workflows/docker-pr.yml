@@ -14,4 +14,4 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build Docker image
-        run: docker build --build-arg STRIPE_TOKEN=helloABC -t eventyay-ticket:${{ github.sha }} .
+        run: docker build --build-arg GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} -t eventyay-ticket:${{ github.sha }} .

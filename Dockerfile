@@ -36,8 +36,8 @@ RUN apt-get update && \
 ENV LC_ALL=C.UTF-8 \
     DJANGO_SETTINGS_MODULE=production_settings
 
-ARG STRIPE_TOKEN
-ENV STRIPE_KEY=$STRIPE_TOKEN
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=$GITHUB_TOKEN
 COPY deployment/docker/pretix.bash /usr/local/bin/pretix
 COPY deployment/docker/supervisord /etc/supervisord
 COPY deployment/docker/supervisord.all.conf /etc/supervisord.all.conf

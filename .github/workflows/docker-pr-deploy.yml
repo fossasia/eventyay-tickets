@@ -31,4 +31,4 @@ jobs:
           push: true
           tags: eventyay/eventyay-ticket:development
           labels: manual
-          build-args: STRIPE_TOKEN=${{ secrets.DOCKER_USERNAME }}
+          build-args: GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
