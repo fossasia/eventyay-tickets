@@ -1,8 +1,11 @@
+from django.db.models import Count
 from django.http import Http404
 from django.utils.functional import cached_property
 from django_filters import rest_framework as filters
 from django_scopes import scopes_disabled
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from pretalx.api.serializers.submission import (
     ScheduleListSerializer,
@@ -33,6 +36,9 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = SubmissionFilter
 
     def get_queryset(self):
+        base_qs = self.request.event.submissions.all().annotate(
+            favourite_count=Count("favourites")
+        )
         if self.request._request.path.endswith(
             "/talks/"
         ) or not self.request.user.has_perm(
@@ -45,12 +51,12 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
                 or not self.request.event.current_schedule
             ):
                 return Submission.objects.none()
-            return self.request.event.submissions.filter(
+            return base_qs.filter(
                 pk__in=self.request.event.current_schedule.talks.filter(
                     is_visible=True
                 ).values_list("submission_id", flat=True)
             )
-        return self.request.event.submissions.all()
+        return base_qs
 
     def get_serializer_class(self):
         if self.request.user.has_perm("orga.change_submissions", self.request.event):
@@ -76,6 +82,30 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
             questions=self.serializer_questions,
             **kwargs,
         )
+
+    @action(detail=False, methods=["GET"])
+    def favourites(self, request):
+        if not request.user.is_authenticated:
+            raise Http404
+        return Response(
+            [
+                sub.code
+                for sub in Submission.objects.filter(
+                    favourites__in=[request.user], event=request.event
+                )
+            ]
+        )
+
+    @action(detail=True, methods=["POST", "DELETE"])
+    def favourite(self, request, **kwargs):
+        if not request.user.is_authenticated:
+            raise Http404
+        submission = self.get_object()
+        if request.method == "POST":
+            submission.save_favourite(request.user)
+        elif request.method == "DELETE":
+            submission.remove_favourite(request.user)
+        return Response({})
 
 
 class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
