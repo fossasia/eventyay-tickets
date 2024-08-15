@@ -13,7 +13,7 @@ maintainers = [
 ]
 
 dependencies = [
-    "PyJWT~=2.8.0",
+    "PyJWT",
 ]
 
 [project.urls]
