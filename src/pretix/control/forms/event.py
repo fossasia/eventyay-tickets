@@ -1496,6 +1496,6 @@ class BaseEventFooterLink(I18nFormSetMixin, forms.BaseInlineFormSet):
 EventFooterLink = inlineformset_factory(
     Event, EventFooterLinkModel,
     EventFooterLinkForm,
-    formset=EventFooterLink,
+    formset=BaseEventFooterLink,
     can_order=False, can_delete=True, extra=0
 )
