@@ -23288,3 +23288,9 @@ msgstr "Altaveus"
 
 msgid "Join online event"
 msgstr "Uneix-te a l'esdeveniment en línia"
+
+msgid "My Orders"
+msgstr "Les meves comandes"
+
+msgid "Logout"
+msgstr "Tancar sessió"

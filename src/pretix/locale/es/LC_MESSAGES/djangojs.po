@@ -860,3 +860,15 @@ msgstr "Diciembre"
 
 #~ msgid "QR Code"
 #~ msgstr "Código QR"
+
+msgid "Tickets"
+msgstr "Entradas"
+
+msgid "My Orders"
+msgstr "Mis pedidos"
+
+msgid "Account"
+msgstr "Cuenta"
+
+msgid "Logout"
+msgstr "Cerrar sesión"
