@@ -347,11 +347,9 @@ class FavedICalExporter(BaseExporter):
             return None
 
         netloc = urlparse(settings.SITE_URL).netloc
-        submissions = (
-            request.event.submissions.filter(favourites__user__in=[request.user])
-            .select_related("room")
-            .prefetch_related("speakers")
-        )
+        submissions = request.event.submissions.filter(
+            favourites__user__in=[request.user]
+        ).prefetch_related("speakers", "slots", "slots__room")
 
         cal = vobject.iCalendar()
         cal.add("prodid").value = f"-//pretalx//{netloc}//{request.event.slug}//faved"
