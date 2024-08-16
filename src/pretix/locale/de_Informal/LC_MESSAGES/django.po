@@ -25607,6 +25607,3 @@ msgstr "Nehmen Sie an der Online-Veranstaltung teil"
 
 msgid "My Orders"
 msgstr "Meine Bestellungen"
-
-msgid "Logout"
-msgstr "Abmelden"
