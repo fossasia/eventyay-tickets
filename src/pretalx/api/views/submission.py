@@ -57,6 +57,10 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = "code__iexact"
     search_fields = ("title", "speakers__name")
     filterset_class = SubmissionFilter
+    permission_map = {
+        "favourite": "agenda.view_schedule",
+        "favourite_object": "agenda.view_submission",
+    }
 
     def get_queryset(self):
         base_qs = self.request.event.submissions.all().annotate(
