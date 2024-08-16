@@ -22,6 +22,13 @@ def register_ical_exporter(sender, **kwargs):
     return ICalExporter
 
 
+@receiver(register_data_exporters, dispatch_uid="exporter_builtin_faved_ical")
+def register_faved_ical_exporter(sender, **kwargs):
+    from pretalx.schedule.exporters import FavedICalExporter
+
+    return FavedICalExporter
+
+
 @receiver(register_data_exporters, dispatch_uid="exporter_builtin_xml")
 def register_xml_exporter(sender, **kwargs):
     from pretalx.schedule.exporters import FrabXmlExporter

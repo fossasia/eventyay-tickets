@@ -4,8 +4,10 @@ from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
 
 import vobject
+from django.conf import settings
 from django.template.loader import get_template
 from django.utils.functional import cached_property
+from django.utils.translation import gettext_lazy as _
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx import __version__
@@ -297,7 +299,7 @@ class FrabJsonExporter(ScheduleData):
 
 class ICalExporter(BaseExporter):
     identifier = "schedule.ics"
-    verbose_name = "iCal"
+    verbose_name = _("iCal (full event)")
     public = False
     show_qrcode = True
     icon = "fa-calendar"
@@ -323,3 +325,40 @@ class ICalExporter(BaseExporter):
             talk.build_ical(cal, creation_time=creation_time, netloc=netloc)
 
         return f"{self.event.slug}.ics", "text/calendar", cal.serialize()
+
+
+class FavedICalExporter(BaseExporter):
+    identifier = "faved.ics"
+    verbose_name = _("iCal (your starred sessions)")
+    public = False
+    show_qrcode = False
+    icon = "fa-calendar"
+    cors = "*"
+
+    def is_public(self, request, **kwargs):
+        return (
+            "agenda" in request.resolver_match.namespaces
+            and request.user.is_authenticated
+            and request.user.has_perm("agenda.view_schedule")
+        )
+
+    def render(self, request, **kwargs):
+        if not request.user.is_authenticated:
+            return None
+
+        netloc = urlparse(settings.SITE_URL).netloc
+        submissions = (
+            request.event.submissions.filter(favourites__user__in=[request.user])
+            .select_related("room")
+            .prefetch_related("speakers")
+        )
+
+        cal = vobject.iCalendar()
+        cal.add("prodid").value = f"-//pretalx//{netloc}//{request.event.slug}//faved"
+
+        for submission in submissions:
+            for slot in submission.slots.filter(
+                schedule=request.event.current_schedule
+            ):
+                slot.build_ical(cal)
+        return f"{self.event.slug}-favs.ics", "text/calendar", cal.serialize()

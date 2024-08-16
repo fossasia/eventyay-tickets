@@ -21,7 +21,7 @@ from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
-from pretalx.common.signals import register_data_exporters
+from pretalx.agenda.views.utils import find_schedule_exporter, get_schedule_exporters
 from pretalx.common.text.path import safe_filename
 from pretalx.common.views.mixins import EventPermissionRequired
 from pretalx.schedule.ascii import draw_ascii_schedule
@@ -95,11 +95,7 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         exporter = (
             exporter[len("export.") :] if exporter.startswith("export.") else exporter
         )
-        responses = register_data_exporters.send(request.event)
-        for __, response in responses:
-            ex = response(request.event)
-            if ex.identifier == exporter and (ex.public or request.is_orga):
-                return ex
+        return find_schedule_exporter(request, exporter)
 
     def get(self, request, *args, **kwargs):
         exporter = self.get_exporter(request)
@@ -115,7 +111,7 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         exporter.is_orga = getattr(self.request, "is_orga", False)
 
         try:
-            file_name, file_type, data = exporter.render()
+            file_name, file_type, data = exporter.render(request=request)
             etag = hashlib.sha1(str(data).encode()).hexdigest()
         except Exception:
             logger.exception(
@@ -212,10 +208,7 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
 
     @context
     def exporters(self):
-        return [
-            exporter(self.request.event)
-            for _, exporter in register_data_exporters.send(self.request.event)
-        ]
+        return get_schedule_exporters(self.request)
 
     @context
     def show_talk_list(self):

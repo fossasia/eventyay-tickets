@@ -22,8 +22,8 @@ from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.agenda.management.commands.export_schedule_html import get_export_zip_path
 from pretalx.agenda.tasks import export_schedule_html
+from pretalx.agenda.views.utils import get_schedule_exporters
 from pretalx.common.language import get_current_language_information
-from pretalx.common.signals import register_data_exporters
 from pretalx.common.text.path import safe_filename
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView, OrderModelView
@@ -103,8 +103,8 @@ class ScheduleExportView(EventPermissionRequired, FormView):
     @context
     def exporters(self):
         return [
-            exporter(self.request.event)
-            for _, exporter in register_data_exporters.send(self.request.event)
+            exporter
+            for exporter in get_schedule_exporters(self.request)
             if exporter.group != "speaker"
         ]
 

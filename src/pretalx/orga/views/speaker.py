@@ -10,8 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, FormView, ListView, View
 from django_context_decorator import context
 
+from pretalx.agenda.views.utils import get_schedule_exporters
 from pretalx.common.exceptions import SendMailException
-from pretalx.common.signals import register_data_exporters
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
@@ -358,8 +358,8 @@ class SpeakerExport(EventPermissionRequired, FormView):
     @context
     def exporters(self):
         return [
-            exporter(self.request.event)
-            for _, exporter in register_data_exporters.send(self.request.event)
+            exporter
+            for exporter in get_schedule_exporters(self.request)
             if exporter.group == "speaker"
         ]
 

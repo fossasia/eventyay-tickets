@@ -91,6 +91,9 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
     def favourites(self, request, **kwargs):
         if not request.user.is_authenticated:
             raise Http404
+        # Return ical file if accept header is set to text/calendar
+        if request.accepted_renderer.format == "ics":
+            return self.favourites_ical(request)
         return Response(
             [
                 sub.code
