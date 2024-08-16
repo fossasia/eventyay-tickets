@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`schedule` For logged in users, pretalx will now save the list of starred/favourited talks, so that you can sync the starred talks across devices.
 - :feature:`schedule` If a talk won't be recorded, this will now be shown in the schedule, rather than just on the individual talk pages.
 - :feature:`schedule,1794` The iCal schedule export has been made private (available only to organisers) as the utility of importing a conference's entire schedule is limited, and people were frustrated that the iCal export did not reflect any applied schedule filters.
 - :bug:`schedule,1803` The QR code for schedule exporter links was not showing up when hovering on the QR code symbol.
