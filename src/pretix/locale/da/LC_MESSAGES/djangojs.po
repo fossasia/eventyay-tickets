@@ -856,3 +856,15 @@ msgstr "December"
 
 #~ msgid "QR Code"
 #~ msgstr "QR-kode"
+
+msgid "Tickets"
+msgstr "Billetter"
+
+msgid "My Orders"
+msgstr "Mine ordrer"
+
+msgid "Account"
+msgstr "Konto"
+
+msgid "Logout"
+msgstr "Log ud"

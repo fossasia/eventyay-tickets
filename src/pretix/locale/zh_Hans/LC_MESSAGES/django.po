@@ -24227,3 +24227,9 @@ msgstr "演讲者"
 
 msgid "Join online event"
 msgstr "加入在线活动"
+
+msgid "My Orders"
+msgstr "我的订单"
+
+msgid "Logout"
+msgstr "退出登录"

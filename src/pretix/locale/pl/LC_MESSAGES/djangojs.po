@@ -852,3 +852,15 @@ msgstr "Grudzień"
 
 #~ msgid "Ja"
 #~ msgstr "Tak"
+
+msgid "Tickets"
+msgstr "Bilety"
+
+msgid "My Orders"
+msgstr "Moje zamówienia"
+
+msgid "Account"
+msgstr "Konto"
+
+msgid "Logout"
+msgstr "Wyloguj się"

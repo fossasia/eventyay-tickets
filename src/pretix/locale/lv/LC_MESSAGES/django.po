@@ -22581,3 +22581,9 @@ msgstr "Biļetes"
 
 msgid "Join online event"
 msgstr "Pievienojieties tiešsaistes pasākumam"
+
+msgid "My Orders"
+msgstr "Mani pasūtījumi"
+
+msgid "Logout"
+msgstr "Izrakstīties"

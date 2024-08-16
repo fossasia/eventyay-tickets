@@ -749,3 +749,15 @@ msgstr ""
 #: pretix/static/pretixpresale/js/widget/widget.js:72
 msgid "December"
 msgstr ""
+
+msgid "Tickets"
+msgstr "Entrades"
+
+msgid "My Orders"
+msgstr "Les meves comandes"
+
+msgid "Account"
+msgstr "Compte"
+
+msgid "Logout"
+msgstr "Tancar sessió"
