@@ -24401,3 +24401,9 @@ msgstr "المتحدثون"
 
 msgid "Join online event"
 msgstr "انضم إلى الحدث عبر الإنترنت"
+
+msgid "My Orders"
+msgstr "طلباتي"
+
+msgid "Logout"
+msgstr "تسجيل الخروج"

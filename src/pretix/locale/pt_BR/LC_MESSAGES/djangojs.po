@@ -857,3 +857,15 @@ msgstr ""
 
 #~ msgid "QR Code"
 #~ msgstr "QR Code"
+
+msgid "Tickets"
+msgstr "Entradas"
+
+msgid "My Orders"
+msgstr "Mis pedidos"
+
+msgid "Account"
+msgstr "Cuenta"
+
+msgid "Logout"
+msgstr "Cerrar sesión"

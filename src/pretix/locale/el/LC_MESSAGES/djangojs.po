@@ -850,3 +850,15 @@ msgstr "Δεκέμβριος"
 #~ msgstr ""
 #~ "<a href=\"https://pretix.eu\" target=\"_blank\" "
 #~ "rel=\"noopener\">εισιτήρια εκδηλώσεων powered by pretix</a>"
+
+msgid "Tickets"
+msgstr "Εισιτήρια"
+
+msgid "My Orders"
+msgstr "Οι παραγγελίες μου"
+
+msgid "Account"
+msgstr "Λογαριασμός"
+
+msgid "Logout"
+msgstr "Αποσύνδεση"

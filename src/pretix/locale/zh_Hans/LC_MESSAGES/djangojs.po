@@ -844,3 +844,15 @@ msgstr "十二月"
 
 #~ msgid "Ja"
 #~ msgstr "是"
+
+msgid "Tickets"
+msgstr "门票"
+
+msgid "My Orders"
+msgstr "我的订单"
+
+msgid "Account"
+msgstr "账户"
+
+msgid "Logout"
+msgstr "退出登录"

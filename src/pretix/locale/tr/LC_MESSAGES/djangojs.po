@@ -849,3 +849,15 @@ msgstr ""
 #~ "İsteğiniz sunucuda sıraya alındı ve şimdi işlenecek. Bu işlem iki "
 #~ "dakikadan uzun sürerse lütfen bizimle iletişime geçin veya tarayıcınıza "
 #~ "geri dönün ve tekrar deneyin."
+
+msgid "Tickets"
+msgstr "Biletler"
+
+msgid "My Orders"
+msgstr "Siparişlerim"
+
+msgid "Account"
+msgstr "Hesap"
+
+msgid "Logout"
+msgstr "Çıkış Yap"
