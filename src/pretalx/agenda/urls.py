@@ -56,6 +56,11 @@ urlpatterns = [
                     widget.widget_script,
                     name="widget.script.legacy",
                 ),
+                path(
+                    "schedule/widget/messages.js",
+                    schedule.schedule_messages,
+                    name="widget.messages",
+                ),
                 *get_schedule_urls("schedule"),
                 *get_schedule_urls("schedule/v/<version>", "versioned-"),
                 path("sneak/", featured.sneakpeek_redirect, name="oldsneak"),
