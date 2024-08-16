@@ -208,7 +208,7 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
 
     @context
     def exporters(self):
-        return get_schedule_exporters(self.request)
+        return get_schedule_exporters(self.request, require_public=True)
 
     @context
     def show_talk_list(self):

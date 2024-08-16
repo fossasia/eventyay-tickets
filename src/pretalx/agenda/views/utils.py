@@ -1,7 +1,7 @@
 from pretalx.common.signals import register_data_exporters
 
 
-def get_schedule_exporters(request):
+def get_schedule_exporters(request, require_public=False):
     exporters = [
         exporter(request.event)
         for _, exporter in register_data_exporters.send(request.event)
@@ -15,7 +15,7 @@ def get_schedule_exporters(request):
                     result.append(exporter)
             except Exception:
                 pass
-        elif exporter.public or request.is_orga:
+        elif exporter.public or (not require_public and request.is_orga):
             result.append(exporter)
     return result
 

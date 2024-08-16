@@ -339,7 +339,7 @@ class FavedICalExporter(BaseExporter):
         return (
             "agenda" in request.resolver_match.namespaces
             and request.user.is_authenticated
-            and request.user.has_perm("agenda.view_schedule")
+            and request.user.has_perm("agenda.view_schedule", request.event)
         )
 
     def render(self, request, **kwargs):
