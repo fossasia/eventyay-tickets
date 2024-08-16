@@ -10,6 +10,16 @@
     {% compress js %}
         <script defer src="{% static 'common/js/tabbed.js' %}"></script>
     {% endcompress %}
+    <script>
+        const PRETALX_MESSAGES = {
+            {% if request.user.is_anonymous %}
+                not_logged_in: "{% translate "You're currently not logged in, so your favourited talks can't be saved." %}",
+            {% else %}
+                not_loaded: "{% translate "Your favourites could not be loaded from the server, but they are stored locally in your browser." %}",
+                not_saved: "{% translate "Your favourites could not be saved on the server, but they are stored locally in your browser." %}",
+            {% endif %}
+        }
+    </script>
 {% endblock %}
 
 {% block agenda_content %}
