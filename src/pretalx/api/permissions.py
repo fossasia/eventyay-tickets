@@ -6,10 +6,10 @@ class ApiPermission(BasePermission):
     def get_permission_object(self, view, obj, request, detail=False):
         if func := getattr(view, "get_permission_object", None):
             return func()
-        return obj or self.request.event
+        return obj or request.event
 
     def has_permission(self, request, view):
-        return self._has_permission(view, getattr(request, "event", None), request)
+        return self._has_permission(view, None, request)
 
     def has_object_permission(self, request, view, obj):
         return self._has_permission(view, obj, request)
@@ -19,7 +19,13 @@ class ApiPermission(BasePermission):
         if not event:  # Only true for root API view
             return True
 
-        permission_object = self.get_permission_object(view, obj, request)
+        permission_object = self.get_permission_object(
+            view, obj, request, detail=view.detail
+        )
+        if permission_map := getattr(view, "permission_map", None):
+            suffix = "_object" if obj else ""
+            if permission_required := permission_map.get(f"{view.action}{suffix}"):
+                return request.user.has_perm(permission_required, permission_object)
 
         if request.method in SAFE_METHODS:
             read_permission = getattr(view, "read_permission_required", None)
