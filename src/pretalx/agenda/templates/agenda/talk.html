@@ -18,6 +18,7 @@
 {% endblock %}
 
 {% block agenda_custom_header %}
+    <script id="pretalx-messages" data-logged-in="{% if request.user.is_anonymous %}false{% else %}true{% endif %}" src="{{ request.event.urls.schedule }}widget/messages.js"></script>
     {% compress js %}
         <script src="{% static "agenda/js/favourite.js" %}" async></script>
         <script src="{% static "common/js/lightbox.js" %}"></script>
