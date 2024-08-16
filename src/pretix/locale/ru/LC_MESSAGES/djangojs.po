@@ -838,3 +838,15 @@ msgstr "декабрь"
 #~| msgid "Others"
 #~ msgid "the"
 #~ msgstr "Другие"
+
+msgid "Tickets"
+msgstr "Билеты"
+
+msgid "My Orders"
+msgstr "Мои заказы"
+
+msgid "Account"
+msgstr "Аккаунт"
+
+msgid "Logout"
+msgstr "Выйти"

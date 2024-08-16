@@ -22070,3 +22070,9 @@ msgstr "Biljetter"
 
 msgid "Join online event"
 msgstr "Gå med onlineevenemang"
+
+msgid "My Orders"
+msgstr "Mina beställningar"
+
+msgid "Logout"
+msgstr "Logga ut"

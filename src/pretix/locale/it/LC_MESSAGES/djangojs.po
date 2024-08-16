@@ -825,3 +825,15 @@ msgstr "Dicembre"
 #~| msgid "Others"
 #~ msgid "the"
 #~ msgstr "Altri"
+
+msgid "Tickets"
+msgstr "Biglietti"
+
+msgid "My Orders"
+msgstr "I miei ordini"
+
+msgid "Account"
+msgstr "Account"
+
+msgid "Logout"
+msgstr "Disconnettersi"

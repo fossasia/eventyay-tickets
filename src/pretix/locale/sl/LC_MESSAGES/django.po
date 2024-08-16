@@ -21928,3 +21928,9 @@ msgstr "Zvočniki"
 
 msgid "Join online event"
 msgstr "Pridruži se spletnemu dogodku"
+
+msgid "My Orders"
+msgstr "Moja naročila"
+
+msgid "Logout"
+msgstr "Odjava"

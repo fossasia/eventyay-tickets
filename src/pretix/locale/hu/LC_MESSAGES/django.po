@@ -21249,3 +21249,9 @@ msgstr "Jegyek"
 
 msgid "Join online event"
 msgstr "Csatlakozz az online eseményhez"
+
+msgid "My Orders"
+msgstr "Rendeléseim"
+
+msgid "Logout"
+msgstr "Kijelentkezés"

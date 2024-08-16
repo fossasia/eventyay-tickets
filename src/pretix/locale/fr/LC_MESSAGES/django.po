@@ -26656,3 +26656,9 @@ msgstr "Billets"
 
 msgid "Join online event"
 msgstr "Participez à l'événement en ligne"
+
+msgid "My Orders"
+msgstr "Mes commandes"
+
+msgid "Logout"
+msgstr "Se déconnecter"

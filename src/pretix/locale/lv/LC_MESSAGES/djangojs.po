@@ -848,3 +848,15 @@ msgstr "Decembris"
 #~ msgstr ""
 #~ "<a href=\"https://eventyay.com\" target=\"_blank\" rel=\"noopener\">pretix "
 #~ "atbalstīta pasākuma biļešu pārdošana </a>"
+
+msgid "Tickets"
+msgstr "Biļetes"
+
+msgid "My Orders"
+msgstr "Mani pasūtījumi"
+
+msgid "Account"
+msgstr "Konts"
+
+msgid "Logout"
+msgstr "Izrakstīties"

@@ -834,3 +834,15 @@ msgstr "December"
 
 #~ msgid "QR Code"
 #~ msgstr "QR-code"
+
+msgid "Tickets"
+msgstr "Kaartjes"
+
+msgid "My Orders"
+msgstr "Mijn bestellingen"
+
+msgid "Account"
+msgstr "Account"
+
+msgid "Logout"
+msgstr "Uitloggen"

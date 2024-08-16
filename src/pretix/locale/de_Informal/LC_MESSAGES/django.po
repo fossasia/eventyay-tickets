@@ -25604,3 +25604,6 @@ msgstr "Lautsprecher"
 
 msgid "Join online event"
 msgstr "Nehmen Sie an der Online-Veranstaltung teil"
+
+msgid "My Orders"
+msgstr "Meine Bestellungen"

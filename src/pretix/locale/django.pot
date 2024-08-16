@@ -21051,3 +21051,9 @@ msgstr ""
 
 msgid "Join online event"
 msgstr ""
+
+msgid "My Orders"
+msgstr ""
+
+msgid "Logout"
+msgstr ""

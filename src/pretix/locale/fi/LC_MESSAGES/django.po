@@ -21330,3 +21330,9 @@ msgstr "Kaiuttimet"
 
 msgid "Join online event"
 msgstr "Liity verkkotapahtumaan"
+
+msgid "My Orders"
+msgstr "Tilaukseni"
+
+msgid "Logout"
+msgstr "Kirjaudu ulos"

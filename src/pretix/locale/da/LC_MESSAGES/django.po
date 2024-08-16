@@ -24702,3 +24702,9 @@ msgstr "Højttalere"
 
 msgid "Join online event"
 msgstr "Deltag i online begivenhed"
+
+msgid "My Orders"
+msgstr "Mine ordrer"
+
+msgid "Logout"
+msgstr "Log ud"

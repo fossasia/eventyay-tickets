@@ -22668,3 +22668,9 @@ msgstr "Билеты"
 
 msgid "Join online event"
 msgstr "Присоединяйтесь к онлайн-мероприятию"
+
+msgid "My Orders"
+msgstr "Мои заказы"
+
+msgid "Logout"
+msgstr "Выйти"

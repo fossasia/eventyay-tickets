@@ -25969,3 +25969,9 @@ msgstr "Entradas"
 
 msgid "Join online event"
 msgstr "Únase al evento en línea"
+
+msgid "My Orders"
+msgstr "Mis pedidos"
+
+msgid "Logout"
+msgstr "Cerrar sesión"

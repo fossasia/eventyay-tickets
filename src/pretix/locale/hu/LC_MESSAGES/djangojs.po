@@ -829,3 +829,15 @@ msgstr "December"
 #~| msgid "Others"
 #~ msgid "the"
 #~ msgstr "Egyéb"
+
+msgid "Tickets"
+msgstr "Jegyek"
+
+msgid "My Orders"
+msgstr "Rendeléseim"
+
+msgid "Account"
+msgstr "Fiók"
+
+msgid "Logout"
+msgstr "Kijelentkezés"

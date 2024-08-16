@@ -790,3 +790,15 @@ msgstr "Joulukuu"
 #~| msgid "Others"
 #~ msgid "the"
 #~ msgstr "Muut"
+
+msgid "Tickets"
+msgstr "Liput"
+
+msgid "My Orders"
+msgstr "Tilaukseni"
+
+msgid "Account"
+msgstr "Tili"
+
+msgid "Logout"
+msgstr "Kirjaudu ulos"

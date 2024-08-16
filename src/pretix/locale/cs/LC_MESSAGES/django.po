@@ -21170,3 +21170,9 @@ msgstr "Vstupenky"
 
 msgid "Join online event"
 msgstr "Připojte se k online události"
+
+msgid "My Orders"
+msgstr "Moje objednávky"
+
+msgid "Logout"
+msgstr "Odhlásit se"

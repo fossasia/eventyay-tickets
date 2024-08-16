@@ -24091,3 +24091,9 @@ msgstr "Oradores"
 
 msgid "Join online event"
 msgstr "Participe do evento online"
+
+msgid "My Orders"
+msgstr "Minhas encomendas"
+
+msgid "Logout"
+msgstr "Encerrar sessão"
