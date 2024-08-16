@@ -1,4 +1,5 @@
 import hashlib
+import json
 import logging
 import textwrap
 from contextlib import suppress
@@ -16,6 +17,7 @@ from django.urls import resolve, reverse
 from django.utils.functional import cached_property
 from django.utils.translation import activate
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
@@ -221,6 +223,27 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
             self.request.path.endswith("/talk/")
             or self.request.event.display_settings["schedule"] == "list"
         )
+
+
+@cache_page(60 * 60 * 24)
+def schedule_messages(request, **kwargs):
+    """This view is cached for a day, as it is small and non-critical, but loaded synchronously."""
+    strings = {
+        "favs_not_logged_in": _(
+            "You're currently not logged in, so your favourited talks can't be saved."
+        ),
+        "favs_not_loaded": _(
+            "Your favourites could not be loaded from the server, but they are stored locally in your browser."
+        ),
+        "favs_not_saved": _(
+            "Your favourites could not be saved on the server, but they are stored locally in your browser."
+        ),
+    }
+    strings = {key: str(value) for key, value in strings.items()}
+    return HttpResponse(
+        f"const PRETALX_MESSAGES = {json.dumps(strings)};",
+        content_type="application/javascript",
+    )
 
 
 def talk_sort_key(talk):
