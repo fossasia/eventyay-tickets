@@ -854,3 +854,15 @@ msgstr "Décembre"
 
 #~ msgid "QR Code"
 #~ msgstr "QR Code"
+
+msgid "Tickets"
+msgstr "Billets"
+
+msgid "My Orders"
+msgstr "Mes commandes"
+
+msgid "Account"
+msgstr "Compte"
+
+msgid "Logout"
+msgstr "Se déconnecter"

@@ -25758,3 +25758,9 @@ msgstr "Ηχεία"
 
 msgid "Join online event"
 msgstr "Λάβετε μέρος στην εκδήλωση στο διαδίκτυο"
+
+msgid "My Orders"
+msgstr "Οι παραγγελίες μου"
+
+msgid "Logout"
+msgstr "Αποσύνδεση"

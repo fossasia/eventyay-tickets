@@ -21052,3 +21052,9 @@ msgstr "Bilety"
 
 msgid "Join online event"
 msgstr "Dołącz do wydarzenia online"
+
+msgid "My Orders"
+msgstr "Moje zamówienia"
+
+msgid "Logout"
+msgstr "Wyloguj się"

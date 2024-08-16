@@ -25929,3 +25929,9 @@ msgstr "Konuşmacılar"
 
 msgid "Join online event"
 msgstr "Çevrimiçi etkinliğe katıl"
+
+msgid "My Orders"
+msgstr "Siparişlerim"
+
+msgid "Logout"
+msgstr "Çıkış Yap"

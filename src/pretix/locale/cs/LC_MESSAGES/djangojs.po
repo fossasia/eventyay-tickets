@@ -755,3 +755,15 @@ msgstr "Listopad"
 #: pretix/static/pretixpresale/js/widget/widget.js:72
 msgid "December"
 msgstr "Prosinec"
+
+msgid "Tickets"
+msgstr "Vstupenky"
+
+msgid "My Orders"
+msgstr "Moje objednávky"
+
+msgid "Account"
+msgstr "Účet"
+
+msgid "Logout"
+msgstr "Odhlásit se"

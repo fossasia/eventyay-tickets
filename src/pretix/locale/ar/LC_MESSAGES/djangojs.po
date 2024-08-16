@@ -839,3 +839,15 @@ msgstr "ديسمبر"
 #~ msgstr ""
 #~ "الحدث التذاكر مدعوم من <a href=\"https://pretix.eu\" target=\"_blank\" "
 #~ "rel=\"noopener\">pretix</a>"
+
+msgid "Tickets"
+msgstr "تذاكر"
+
+msgid "My Orders"
+msgstr "طلباتي"
+
+msgid "Account"
+msgstr "حسابي"
+
+msgid "Logout"
+msgstr "تسجيل الخروج"
