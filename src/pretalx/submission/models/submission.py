@@ -927,6 +927,12 @@ class Submission(GenerateCode, PretalxModel):
 
     send_invite.alters_data = True
 
+    def add_favourite(self, user):
+        SubmissionFavourite.objects.get_or_create(user=user, submission=self)
+
+    def remove_favourite(self, user):
+        SubmissionFavourite.objects.filter(user=user, submission=self).delete()
+
 
 class SubmissionFavourite(PretalxModel):
     user = models.ForeignKey(
@@ -939,3 +945,4 @@ class SubmissionFavourite(PretalxModel):
         on_delete=models.CASCADE,
         related_name="favourites",
     )
+    objects = ScopedManager(event="submission__event")

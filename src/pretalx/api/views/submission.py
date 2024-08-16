@@ -88,14 +88,14 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
         )
 
     @action(detail=False, methods=["GET"])
-    def favourites(self, request):
+    def favourites(self, request, **kwargs):
         if not request.user.is_authenticated:
             raise Http404
         return Response(
             [
                 sub.code
                 for sub in Submission.objects.filter(
-                    favourites__in=[request.user], event=request.event
+                    favourites__user__in=[request.user], event=request.event
                 )
             ]
         )
@@ -106,7 +106,7 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
             raise Http404
         submission = self.get_object()
         if request.method == "POST":
-            submission.save_favourite(request.user)
+            submission.add_favourite(request.user)
         elif request.method == "DELETE":
             submission.remove_favourite(request.user)
         return Response({})
