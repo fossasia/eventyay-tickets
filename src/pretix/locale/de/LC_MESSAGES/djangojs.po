@@ -884,3 +884,15 @@ msgstr "Dezember"
 #~ msgstr ""
 #~ "Workshop 1\n"
 #~ "Workshop 2"
+
+msgid "Tickets"
+msgstr "Tickets"
+
+msgid "My Orders"
+msgstr "Meine Bestellungen"
+
+msgid "Account"
+msgstr "Konto"
+
+msgid "Logout"
+msgstr "Abmelden"

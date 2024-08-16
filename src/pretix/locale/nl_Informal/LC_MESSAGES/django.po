@@ -24690,3 +24690,9 @@ msgstr "Sprekers"
 
 msgid "Join online event"
 msgstr "Doe mee aan het online evenement"
+
+msgid "My Orders"
+msgstr "Mijn bestellingen"
+
+msgid "Logout"
+msgstr "Afmelden"

@@ -22077,3 +22077,9 @@ msgstr "Biglietti"
 
 msgid "Join online event"
 msgstr "Partecipa all'evento online"
+
+msgid "My Orders"
+msgstr "I miei ordini"
+
+msgid "Logout"
+msgstr "Disconnettersi"

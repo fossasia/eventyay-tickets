@@ -842,3 +842,15 @@ msgstr "December"
 #~ msgstr ""
 #~ "<a href=\"https://pretix.eu\" target=\"_blank\" rel=\"noopener\">event "
 #~ "ticketing powered by pretix</a>"
+
+msgid "Tickets"
+msgstr "Vstopnice"
+
+msgid "My Orders"
+msgstr "Moja naročila"
+
+msgid "Account"
+msgstr "Račun"
+
+msgid "Logout"
+msgstr "Odjava"
