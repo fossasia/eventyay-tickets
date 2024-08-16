@@ -71,7 +71,11 @@ def event_speaker_urls(event):
 
 def event_exporter_urls(event):
     for _, exporter in register_data_exporters.send(event):
-        if exporter.public:
+        # Skip exporters that are not public, and also skip exporters
+        # that dynamically determine if they are public, as we won't
+        # be able to serve dynamic content, and the risk of data leakage
+        # is too high.
+        if not hasattr(exporter, "is_public") and exporter.public:
             yield exporter(event).urls.base
 
 
@@ -85,6 +89,7 @@ def schedule_version_urls(event):
 def event_urls(event):
     yield event.urls.base
     yield event.urls.schedule
+    yield event.urls.schedule + "widget/messages.js"
     yield event.urls.schedule_nojs
     yield event.urls.schedule_widget_data
     yield from schedule_version_urls(event)

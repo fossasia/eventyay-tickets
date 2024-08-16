@@ -47,7 +47,12 @@ class BaseExporter:
     @property
     def public(self) -> bool:
         """Return True if the exported data should be publicly available once
-        the event is public, False otherwise."""
+        the event is public, False otherwise.
+
+        If you need additional data to decide, you can instead implement the
+        ``is_public(self, request, **kwargs)`` method, which overrides this
+        property.
+        """
         raise NotImplementedError()  # NOQA
 
     @property
@@ -81,7 +86,7 @@ class BaseExporter:
         """
         return "submission"
 
-    def render(self, **kwargs) -> tuple[str, str, str]:
+    def render(self, request, **kwargs) -> tuple[str, str, str]:
         """Render the exported file and return a tuple consisting of a file
         name, a file type and file content."""
         raise NotImplementedError()  # NOQA
