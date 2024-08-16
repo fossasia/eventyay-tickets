@@ -1,35 +1,33 @@
 let isFaved = false
 let eventSlug = null
 let submissionId = null
+let favButton = null
+let loggedIn = false
+let apiBaseUrl = null
+let setupRun = false
 
-// add argument "initial" defaulting to false
-const updateButton = (initial = false) => {
-    const favButton = document.getElementById('fav-button')
-    favButton.classList.remove('d-none')
-
-    if (isFaved && favButton.querySelector('.fa-star').classList.contains('d-none')) {
-        // Make the star rotate after appearing
-        favButton.querySelector('.fa-star-o').classList.add('d-none')
-        favButton.querySelector('.fa-star').classList.remove('d-none')
-        if (!initial) {
-            favButton.querySelector('.fa-star').classList.add('fa-spin')
-            setTimeout(() => {
-                favButton.querySelector('.fa-star').classList.remove('fa-spin')
-            }, 400)
-        }
-    } else if (!isFaved && favButton.querySelector('.fa-star-o').classList.contains('d-none')) {
-        favButton.querySelector('.fa-star').classList.add('d-none')
-        favButton.querySelector('.fa-star-o').classList.remove('d-none')
-        if (!initial) {
-            favButton.querySelector('.fa-star-o').classList.add('fa-spin')
-            setTimeout(() => {
-                favButton.querySelector('.fa-star-o').classList.remove('fa-spin')
-            }, 400)
-        }
-    }
+const spinStar = (star) => {
+    star.classList.add('fa-spin')
+    setTimeout(() => {
+        star.classList.remove('fa-spin')
+    }, 400)
 }
 
-const loadFavs = () => {
+const updateButton = (initial = false) => {
+    // if "initial" is true, the star isn't animated
+    if (isFaved && !favButton.querySelector('.fa-star').classList.contains('d-none')) return
+    if (!isFaved && !favButton.querySelector('.fa-star-o').classList.contains('d-none')) return
+
+    let active = '.fa-star'
+    let inactive = '.fa-star'
+
+    isFaved ? inactive = '.fa-star-o' : active = '.fa-star-o'
+    favButton.querySelector(active).classList.remove('d-none')
+    favButton.querySelector(inactive).classList.add('d-none')
+    if (!initial) spinStar(favButton.querySelector(active))
+}
+
+const loadLocalFavs = () => {
     const data = localStorage.getItem(`${eventSlug}_favs`)
     let favs = []
 	if (data) {
@@ -42,12 +40,30 @@ const loadFavs = () => {
     return favs
 }
 
-const loadIsFaved = () => {
-    return loadFavs().includes(submissionId)
+const apiFetch = async (path, method) => {
+    const headers = {'Content-Type': 'application/json'}
+    if (method === 'POST' || method === 'DELETE') {
+        headers['X-CSRFToken'] = document.cookie.split('pretalx_csrftoken=').pop().split(';').shift()
+    }
+    const response = await fetch(apiBaseUrl + path, {
+        method,
+        headers,
+        credentials: 'same-origin',
+    })
+    return response.json()
 }
 
-const saveIsFaved = () => {
-    let favs = loadFavs()
+const loadIsFaved = async () => {
+    if (loggedIn) {
+        return await apiFetch(`submissions/favourites/`, 'GET').then(data => {
+            return data.includes(submissionId)
+        }).catch(() => {return loadLocalFavs().includes(submissionId)})
+    }
+    return loadLocalFavs().includes(submissionId)
+}
+
+const saveLocalFavs = () => {
+    let favs = loadLocalFavs()
     if (isFaved && !favs.includes(submissionId)) {
         favs.push(submissionId)
     } else if (!isFaved && favs.includes(submissionId)) {
@@ -56,20 +72,32 @@ const saveIsFaved = () => {
     localStorage.setItem(`${eventSlug}_favs`, JSON.stringify(favs))
 }
 
-const toggleFavs = () => {
-    isFaved = loadIsFaved()
+const toggleFavState = async () => {
     isFaved = !isFaved
-    saveIsFaved()
+    saveLocalFavs()
     updateButton()
+    if (loggedIn) {
+        await apiFetch(`submissions/${submissionId}/favourite/`, isFaved ? 'POST' : 'DELETE').catch()
+    }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const favButton = document.getElementById('fav-button')
-    favButton.addEventListener('click', toggleFavs)
-
+const pageSetup = async () => {
+    setupRun = true
+    console.log('running page setup')
     eventSlug = window.location.pathname.split('/')[1]
     submissionId = window.location.pathname.split('/')[3]
+    loggedIn = document.querySelector('#pretalx-messages').dataset.loggedIn === 'true'
+    apiBaseUrl = window.location.origin + '/api/events/' + eventSlug + '/'
 
-    isFaved = loadIsFaved()
+    isFaved = await loadIsFaved()
+    favButton = document.getElementById('fav-button')
+    favButton.addEventListener('click', toggleFavState)
+    favButton.classList.remove('d-none')
     updateButton(true)
-})
+
+    if (loggedIn) saveLocalFavs()
+}
+
+document.addEventListener('DOMContentLoaded', pageSetup)
+if (document.readyState === 'complete') pageSetup()
+setTimeout(() => { if (!setupRun) pageSetup() }, 500)
