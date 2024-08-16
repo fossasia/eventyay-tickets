@@ -37,6 +37,7 @@ embeddable
 env
 ETags
 favicon
+favourited
 filesystem
 frab
 frontend
