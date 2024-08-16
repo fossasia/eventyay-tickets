@@ -8,7 +8,7 @@ github_token = os.getenv('GITHUB_TOKEN')
 pyproject = toml.load('/pretix/pyproject.toml')
 
 # If github_token is None, remove the eventyay-stripe dependency
-if github_token is None:
+if not github_token:
     pyproject['project']['dependencies'] = [dep for dep in pyproject['project']['dependencies'] if not dep.startswith('eventyay-stripe')]
 else:
     # Iterate over the dependencies
