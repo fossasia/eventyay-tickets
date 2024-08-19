@@ -22,7 +22,7 @@ from pretalx.common.mixins.forms import (
     ReadOnlyFlag,
     RequestRequire,
 )
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.forms import AvailabilitiesFormMixin
 from pretalx.submission.models import Question

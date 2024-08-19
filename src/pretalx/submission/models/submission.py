@@ -21,7 +21,7 @@ from rest_framework import serializers
 from pretalx.common.choices import Choices
 from pretalx.common.exceptions import SubmissionError
 from pretalx.common.mixins.models import GenerateCode, PretalxModel
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import path_with_hash
 from pretalx.mail.models import MailTemplate, QueuedMail

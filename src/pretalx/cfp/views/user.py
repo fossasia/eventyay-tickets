@@ -28,7 +28,7 @@ from rest_framework.authtoken.models import Token
 from pretalx.cfp.forms.submissions import SubmissionInvitationForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
 from pretalx.common.middleware.event import get_login_redirect
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.common.views import is_form_bound
 from pretalx.common.exceptions import SendMailException
 from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm

@@ -8,7 +8,7 @@ from django.utils import translation
 from django.utils.formats import get_format
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.agenda import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.cfp.signals import footer_link, html_head
 from pretalx.common.models.settings import GlobalSettings
 from pretalx.orga.utils.i18n import get_javascript_format, get_moment_locale

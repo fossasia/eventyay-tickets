@@ -20,7 +20,7 @@ from pretalx.common.forms.utils import (
     get_help_text,
     validate_field_length,
 )
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.submission.models.cfp import default_fields
 

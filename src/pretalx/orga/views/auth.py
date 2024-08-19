@@ -11,7 +11,7 @@ from django.utils.timezone import now
 from django.views.generic import FormView
 
 from pretalx.cfp.forms.auth import RecoverForm, ResetForm
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.common.views import GenericLoginView, GenericResetView
 from pretalx.person.models import User
 

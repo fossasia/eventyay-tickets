@@ -10,7 +10,7 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 
 from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import ReadOnlyFlag
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.orga.forms.export import ExportForm
 from pretalx.person.models import User
 from pretalx.submission.models import Question, Review, Submission

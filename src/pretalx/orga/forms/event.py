@@ -22,7 +22,7 @@ from pretalx.common.mixins.forms import (
     JsonSubfieldMixin,
     ReadOnlyFlag,
 )
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.event.models.event import Event
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
 from pretalx.schedule.models import Availability, TalkSlot

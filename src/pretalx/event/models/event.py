@@ -21,7 +21,7 @@ from pretalx.common.language import LANGUAGE_NAMES
 from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.models import TIMEZONE_CHOICES
 from pretalx.common.models.settings import hierarkey
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.common.plugins import get_all_plugins
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import daterange, path_with_hash
