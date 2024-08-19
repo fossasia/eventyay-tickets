@@ -1,10 +1,10 @@
 .. _`rest-oauth`:
 
-OAuth authentication / "Connect with pretix"
+OAuth authentication / "Connect with eventyay-ticket"
 ============================================
 
-In addition to static tokens, pretix supports `OAuth2`_-based authentication starting with
-pretix 1.16. This allows you to put a "Connect with pretix" button into your website or tool
+In addition to static tokens, eventyay-ticket supports `OAuth2`_-based authentication starting with
+eventyay-ticket 1.16. This allows you to put a "Connect with eventyay-ticket" button into your website or tool
 that allows the user to easily set up a connection between the two systems.
 
 If you haven't worked with OAuth before, have a look at the `OAuth2 Simplified`_ tutorial.
@@ -12,8 +12,8 @@ If you haven't worked with OAuth before, have a look at the `OAuth2 Simplified`_
 Registering an application
 --------------------------
 
-To use OAuth, you need to register your application with the pretix instance you want to connect to.
-In order to do this, log in to your pretix account and go to your user settings. Click on "Authorized applications"
+To use OAuth, you need to register your application with the eventyay-ticket instance you want to connect to.
+In order to do this, log in to your eventyay-ticket account and go to your user settings. Click on "Authorized applications"
 first and then on "Manage your own apps". From there, you can "Create a new application".
 
 You should fill in a descriptive name of your application that allows users to recognize who you are. You also need to
@@ -29,7 +29,7 @@ parameter. Additionally, you can pass a scope (currently either ``read``, ``writ
 and an URL the user should be redirected to after successful or failed authorization. You also need to pass the
 ``response_type`` parameter with a value of ``code``. Example::
 
-    https://eventyay.com/api/v1/oauth/authorize?client_id=lsLi0hNL0vk53mEdYjNJxHUn1PcO1R6wVg81dLNT&response_type=code&scope=read+write&redirect_uri=https://pretalx.com
+    https://eventyay.com/api/v1/oauth/authorize?client_id=lsLi0hNL0vk53mEdYjNJxHUn1PcO1R6wVg81dLNT&response_type=code&scope=read+write&redirect_uri=https://eventyay.com
 
 To prevent CSRF attacks, you can also optionally pass a ``state`` parameter with a random string. Later, when
 redirecting back to your application, we will pass the same ``state`` parameter back to you, so you can compare if they
@@ -162,7 +162,7 @@ endpoint to revoke it.
    :statuscode 401: Authentication failure
 
 If you want to revoke your client secret, you can generate a new one in the list of your managed applications in the
-pretix user interface.
+eventyay-ticket user interface.
 
 Fetching the user profile
 -------------------------
