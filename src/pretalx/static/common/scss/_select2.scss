@@ -1,0 +1,114 @@
+.select2-textbox {
+  .form-group .select2-container--default .select2-selection--multiple,
+  .form-group .select2-container--default .select2-selection {
+    height: auto;
+    .select2-selection__rendered {
+      overflow: hidden;
+      height: auto;
+      display: flex;
+      flex-wrap: wrap;
+      .select2-selection__choice {
+        height: 28px;
+      }
+    }
+    .select2-search.select2-search--inline {
+      width: 20px;
+    }
+  }
+}
+.form-group,
+.score-group {
+  .select2-container--default {
+    width: 100% !important;
+    .select2-selection--multiple,
+    .select2-selection {
+      border: 1px solid #ced4da;
+      height: 38px;
+      width: 100% !important;
+      overflow-y: hidden;
+    }
+    .select2-selection--single {
+      .select2-selection__arrow {
+        height: 36px;
+      }
+      .select2-selection__rendered {
+        line-height: 36px;
+        color: #495057;
+      }
+    }
+    .select2-selection--multiple {
+      .select2-selection__choice {
+        background-color: white;
+      }
+      .select2-selection__choice__remove {
+        border-right: none;
+        padding: 0 7px;
+      }
+    }
+    &.select2-container--focus {
+      .select2-selection,
+      .select2-selection--multiple {
+        box-shadow: 0 0 0 1px rgba(58, 165, 124, 0.25);
+        border-color: #89d6b8;
+      }
+    }
+    .select2-selection--clearable {
+      button.select2-selection__clear {
+        margin-top: 4px;
+        color: var(--color-danger);
+      }
+    }
+  }
+  .select2-container {
+    .select2-search--inline {
+      width: calc(100% - 20px);
+      .select2-search__field {
+        height: auto;
+        margin-left: 12px;
+        font-size: 1rem;
+        font-family: Muli;
+      }
+    }
+    .select2-selection--multiple {
+      display: flex;
+
+      .select2-selection__rendered {
+        display: inline-flex;
+        margin-bottom: 0;
+        max-width: 100%;
+        min-height: 32px;
+
+        &::after {
+          content: "";
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          border-top: 5px solid #6c757d;
+          border-left: 5px solid transparent;
+          border-right: 5px solid transparent;
+        }
+      }
+    }
+    .select2-selection--single .select2-selection__rendered {
+      padding-left: 18px;
+    }
+  }
+  .selection--multiple .select2-selection__rendered {
+    display: inline;
+    vertical-align: top;
+  }
+}
+.form-group.row .select2 textarea::placeholder {
+  color: white;
+}
+.select2-search input[type="search"] {
+  border-radius: 4px;
+  &:focus,
+  &:focus-visible {
+    /* on search fields, focus-visible applies when on other fields focus applies, so we copy :focus rules here */
+    box-shadow: 0 0 0 1px rgba(58, 165, 124, 0.25);
+    border-color: #89d6b8;
+    outline: 0;
+  }
+}
