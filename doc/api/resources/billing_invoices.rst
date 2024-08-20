@@ -33,7 +33,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/billing_invoices/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -73,7 +73,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/billing_invoices/R2019002/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -109,7 +109,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/billing_invoices/R2019002/download/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:

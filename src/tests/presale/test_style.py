@@ -93,40 +93,40 @@ class StyleTest(TestCase):
         assert self.event.settings.presale_css_file == fname
 
     @override_settings(
-        MEDIA_URL="https://usercontent.pretix.space/media/",
-        SITE_URL="https://pretix.eu"
+        MEDIA_URL="https://usercontent.eventyay.com/media/",
+        SITE_URL="https://eventyay.com"
     )
     def test_seperate_media_domain(self):
         self.event.settings.primary_color = "#34c34c"
         regenerate_css.apply(args=(self.event.pk,))
         self.event.settings.flush()
         with open(os.path.join(settings.MEDIA_ROOT, self.event.settings.presale_css_file), 'r') as c:
-            assert 'https://pretix.eu/static/' in c.read()
+            assert 'https://eventyay.com/static/' in c.read()
 
     @override_settings(
-        MEDIA_URL="https://usercontent.pretix.space/media/",
-        SITE_URL="https://pretix.eu"
+        MEDIA_URL="https://usercontent.eventyay.com/media/",
+        SITE_URL="https://eventyay.com"
     )
     def test_seperate_media_domain_and_organizer_domain(self):
-        KnownDomain.objects.create(domainname="test.pretix.eu", organizer=self.orga)
+        KnownDomain.objects.create(domainname="test.eventyay.com", organizer=self.orga)
 
         self.event.settings.primary_color = "#34c34c"
         regenerate_css.apply(args=(self.event.pk,))
         self.event.settings.flush()
         with open(os.path.join(settings.MEDIA_ROOT, self.event.settings.presale_css_file), 'r') as c:
-            assert 'https://test.pretix.eu/static/' in c.read()
+            assert 'https://test.eventyay.com/static/' in c.read()
 
     @override_settings(
         STATIC_URL="https://static.pretix.files/static/",
-        MEDIA_URL="https://usercontent.pretix.space/media/",
-        SITE_URL="https://pretix.eu"
+        MEDIA_URL="https://usercontent.eventyay.com/media/",
+        SITE_URL="https://eventyay.com"
     )
     def test_seperate_media_domain_and_static_domain(self):
-        KnownDomain.objects.create(domainname="test.pretix.eu", organizer=self.orga)
+        KnownDomain.objects.create(domainname="test.eventyay.com", organizer=self.orga)
 
         self.event.settings.primary_color = "#34c34c"
         regenerate_css.apply(args=(self.event.pk,))
         self.event.settings.flush()
         with open(os.path.join(settings.MEDIA_ROOT, self.event.settings.presale_css_file), 'r') as c:
             assert 'https://static.pretix.files/static/' in c.read()
-            assert 'https://test.pretix.eu/static/' not in c.read()
+            assert 'https://test.eventyay.com/static/' not in c.read()

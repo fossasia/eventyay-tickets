@@ -13,7 +13,7 @@ Fetch host URLs
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/webinars/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -27,11 +27,11 @@ Fetch host URLs
       [
         {
           "name": "Webinar B – Sept. 8th, 2020",
-          "hosturl": "http://pretix.eu/demo/museum/webinar/host/a9aded3d7bd4df60/30611a34f9fee5d3/"
+          "hosturl": "http://eventyay.com/demo/museum/webinar/host/a9aded3d7bd4df60/30611a34f9fee5d3/"
         },
         {
           "name": "Webinar A – Sept. 8, 2020",
-          "hosturl": "http://pretix.eu/demo/museum/webinar/host/e714x7d4a4a36a04/b9cc444665xxx757/"
+          "hosturl": "http://eventyay.com/demo/museum/webinar/host/e714x7d4a4a36a04/b9cc444665xxx757/"
         }
       ]
 

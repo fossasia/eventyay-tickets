@@ -13,4 +13,4 @@ on this page as well as for additional ones.
 To get an overview of the officially supported payment methods and their pros and cons, head to the `pretix website`_.
 On these pages, you get more information on how to configure :ref:`stripe`, :ref:`paypal`, and :ref:`banktransfer`.
 
-.. _pretix website: https://pretix.eu/about/en/features/payment
+.. _pretix website: https://eventyay.com/about/en/features/payment

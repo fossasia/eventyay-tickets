@@ -35,7 +35,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/democon/badgelayouts/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -78,7 +78,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/democon/badgelayouts/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -114,7 +114,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/democon/badgeitems/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:

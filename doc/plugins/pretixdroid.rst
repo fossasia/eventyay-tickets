@@ -29,7 +29,7 @@ uses to communicate with the pretix server.
    .. sourcecode:: http
 
       POST /pretixdroid/api/demoorga/democon/redeem/?key=ABCDEF HTTP/1.1
-      Host: demo.pretix.eu
+      Host: demo.eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/x-www-form-urlencoded
 
@@ -194,7 +194,7 @@ uses to communicate with the pretix server.
    .. sourcecode:: http
 
       GET /pretixdroid/api/demoorga/democon/search/?key=ABCDEF&query=Peter HTTP/1.1
-      Host: demo.pretix.eu
+      Host: demo.eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -238,7 +238,7 @@ uses to communicate with the pretix server.
    .. sourcecode:: http
 
       GET /pretixdroid/api/demoorga/democon/download/?key=ABCDEF HTTP/1.1
-      Host: demo.pretix.eu
+      Host: demo.eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -301,7 +301,7 @@ uses to communicate with the pretix server.
    .. sourcecode:: http
 
       GET /pretixdroid/api/demoorga/democon/status/?key=ABCDEF HTTP/1.1
-      Host: demo.pretix.eu
+      Host: demo.eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -321,7 +321,7 @@ uses to communicate with the pretix server.
           "date_from": "2016-12-27T17:00:00Z",
           "date_to": "2016-12-30T18:00:00Z",
           "timezone": "UTC",
-          "url": "https://demo.pretix.eu/demoorga/democon/",
+          "url": "https://demo.eventyay.com/demoorga/democon/",
           "organizer": {
             "name": "Demo Organizer",
             "slug": "demoorga"

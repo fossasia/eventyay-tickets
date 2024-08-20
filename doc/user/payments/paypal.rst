@@ -59,7 +59,7 @@ webhooks. To create one, scroll a bit down and click "Add Webhook".
 .. image:: img/paypal7.png
    :class: screenshot
 
-Then, enter the webhook URL that you find on the pretix settings page. If you use pretix Hosted, this is always ``https://pretix.eu/_paypal/webhook/``.
+Then, enter the webhook URL that you find on the pretix settings page. If you use pretix Hosted, this is always ``https://eventyay.com/_paypal/webhook/``.
 Tick the box "All events" and save.
 
 .. image:: img/paypal8.png

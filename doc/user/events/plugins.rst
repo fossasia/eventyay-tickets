@@ -10,11 +10,11 @@ even more functionality by going to "Settings" → "Plugins" and enable more of 
    :class: screenshot
 
 For each plugin, you will find a short description as well as an Enable/Disable button. The pretix website has
-`an overview`_ of available plugins and more details of them. If you are on the pretix.eu hosted service, look for
+`an overview`_ of available plugins and more details of them. If you are on the eventyay.com hosted service, look for
 the "pretix Hosted" badge in the plugin list to learn which ones are supported there.
 
 If you are running pretix on your own server, refer to the installation manual of your installation type to learn
 how to install additional plugins (:ref:`manual <manual_plugininstall>` or :ref:`Docker <docker_plugininstall>`).
 
-.. _an overview: https://pretix.eu/about/en/plugins
+.. _an overview: https://eventyay.com/about/en/plugins
 

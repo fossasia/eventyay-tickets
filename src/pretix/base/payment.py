@@ -303,7 +303,7 @@ class BasePaymentProvider:
                  help_text=_('We recommend to enable this if you want your users to pay the payment fees of your '
                              'payment provider. <a href="{docs_url}" target="_blank" rel="noopener">Click here '
                              'for detailed information on what this does.</a> Don\'t forget to set the correct fees '
-                             'above!').format(docs_url='https://docs.pretix.eu/en/latest/user/payments/fees.html'),
+                             'above!').format(docs_url='https://docs.eventyay.com/en/latest/user/payments/fees.html'),
                  required=False
              )),
             ('_restricted_countries',

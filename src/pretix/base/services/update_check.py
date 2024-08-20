@@ -62,7 +62,7 @@ def update_check():
         ]
     }
     try:
-        r = requests.post('https://pretix.eu/.update_check/', json=check_payload)
+        r = requests.post('https://eventyay.org/.update_check/', json=check_payload)
         gs.settings.set('update_check_last', now())
         if r.status_code != 200:
             gs.settings.set('update_check_result', {
@@ -94,8 +94,8 @@ def send_update_notification_email():
             gettext_noop(
                 'Hi!\n\nAn update is available for pretix or for one of the plugins you installed in your '
                 'pretix installation. Please click on the following link for more information:\n\n {url} \n\n'
-                'You can always find information on the latest updates on the pretix.eu blog:\n\n'
-                'https://pretix.eu/about/en/blog/'
+                'You can always find information on the latest updates on the eventyay.com blog:\n\n'
+                'https://eventyay.com/about/en/blog/'
                 '\n\nBest,\n\nyour pretix developers'
             )
         ),
