@@ -190,7 +190,7 @@ export default {
 				}
 			})
 			// remove gap at the end of the schedule
-			if (compactedSlices[compactedSlices.length - 1].gap) compactedSlices.pop()
+			if (compactedSlices && compactedSlices[compactedSlices.length - 1]?.gap) compactedSlices.pop()
 			return compactedSlices
 		},
 		visibleTimeslices () {
