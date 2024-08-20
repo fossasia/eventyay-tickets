@@ -3,6 +3,7 @@ import datetime as dt
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import logout
+from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
