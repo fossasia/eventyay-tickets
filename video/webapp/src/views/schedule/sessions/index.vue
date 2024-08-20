@@ -2,13 +2,19 @@
 .c-schedule
     template(v-if="schedule")
         div.filter-actions
-            bunt-button.bunt-ripple-ink(@click="open=true",
-                icon="filter-outline"
-                :class="{active: filter.type === 'track'}" ) {{ $t('Filter') }}
+            app-dropdown(v-for="item in filter", className="schedule")
+                template(slot="toggler")
+                    span {{item.title}}
+                    app-dropdown-content(className="schedule")
+                        app-dropdown-item(v-for="track in item.data", :key="track.value")
+                            .checkbox-line(:style="{'--track-color': track.color}")
+                                bunt-checkbox.checkbox-text(type="checkbox", :label="track.label", name="track_room_views", v-model="track.selected", :value="track.value") {{ getTrackName(track) }}
             bunt-button.bunt-ripple-ink(v-if="favs",
                 icon="star"
-                @click="toggleFavFilter"
-                :class="{active: filter.type === 'fav'}") {{favs.length}}
+                @click="onlyFavs = !onlyFavs; if (onlyFavs) resetFiltered()"
+                :class="onlyFavs ? ['active'] : []") {{favs.length}}
+
+            bunt-button.bunt-ripple-ink(@click="resetAllFiltered", icon="filter-off")
             .export.dropdown
                 bunt-progress-circular.export-spinner(v-if="isExporting", size="small")
                 custom-dropdown(name="calendar-add1"
@@ -34,16 +40,12 @@
         .mdi.mdi-alert-octagon
         h1 {{ $t('schedule/index:scheduleLoadingError') }}
     bunt-progress-circular(v-else, size="huge", :page="true")
-    prompt.c-filter-prompt(v-if="open", @close="open=false", name="filter-prompt")
-        .prompt-content
-            h1 {{ $t('Tracks')}}
-            template(v-for="track in schedule.tracks")
-                div.item(v-if="track")
-                    bunt-checkbox(v-model="tracksFilter[track.id]",name="track_room_views") {{ getTrackName(track) }}
 </template>
 <script>
+import _ from 'lodash'
 import { mapState, mapGetters } from 'vuex'
 import LinearSchedule from 'views/schedule/schedule-components/LinearSchedule'
+import GridSchedule from 'views/schedule/schedule-components/GridSchedule'
 import moment from 'lib/timetravelMoment'
 import TimezoneChanger from 'components/TimezoneChanger'
 import scheduleProvidesMixin from 'components/mixins/schedule-provides'
@@ -51,7 +53,9 @@ import Prompt from 'components/Prompt'
 import api from 'lib/api'
 import config from 'config'
 import CustomDropdown from 'views/schedule/export-select'
-
+import AppDropdown from 'components/AppDropdown.vue'
+import AppDropdownContent from 'components/AppDropdownContent.vue'
+import AppDropdownItem from 'components/AppDropdownItem.vue'
 const exportTypeSet = [
     {
         "id": "ics",
@@ -87,33 +91,117 @@ const exportTypeSet = [
     },
 ]
 
+const defaultFilter = {
+    tracks: {
+        refKey: 'track',
+        data: [],
+        title: 'Tracks'
+    },
+    rooms: {
+        refKey: 'room',
+        data: [],
+        title: 'Rooms'
+    },
+    types: {
+        refKey: 'session_type',
+        data: [],
+        title: 'Types'
+    }
+}
+
 export default {
-    components: { LinearSchedule, TimezoneChanger, Prompt, CustomDropdown },
+    name: 'Schedule',
+    components: { LinearSchedule, GridSchedule, TimezoneChanger, Prompt, CustomDropdown, AppDropdown, AppDropdownContent, AppDropdownItem },
     mixins: [scheduleProvidesMixin],
     data () {
         return {
             tracksFilter: {},
-            open: false,
             moment,
             currentDay: moment().startOf('day'),
             selectedExporter: null,
             exportOptions: [],
             isExporting: false,
-            error: null
+            error: null,
+            defaultFilter: defaultFilter,
+            onlyFavs: false
         }
     },
     computed: {
         ...mapState(['now']),
-        ...mapState('schedule', ['schedule', 'errorLoading', 'filter']),
+        ...mapState('schedule', ['schedule', 'errorLoading']),
         ...mapGetters('schedule', ['days', 'rooms', 'sessions', 'favs']),
         exportType () {
             return exportTypeSet
+        },
+        filteredTracks () {
+            let results = null
+            let self = this
+            this.onlyFavs = false
+            Object.keys(this.filter).forEach(key => {
+                const refKey = this.filter[key].refKey
+                const selectedIds = this.filter[key].data.filter(t => t.selected).map(t => t.value)
+                let founds = null
+                if (selectedIds.length) {
+                    if (results && results.length) {
+                        founds = self.schedule.talks.filter(t => selectedIds.includes(t[refKey]) && results && results.includes(t.id))?.map(i => i.id) || []
+                    } else {
+                        founds = self.schedule.talks.filter(t => {return selectedIds.includes(t[refKey])})?.map(i => i.id) || []
+                    }
+                    results = founds
+                }
+            })
+            return results
+        },
+        tracksLookup () {
+            if (!this.schedule) return {}
+            return this.schedule.tracks.reduce((acc, t) => { acc[t.id] = t; return acc }, {})
+        },
+        roomsLookup () {
+            if (!this.schedule) return {}
+            return this.schedule.rooms.reduce((acc, room) => { acc[room.id] = room; return acc }, {})
+        },
+        speakersLookup () {
+            if (!this.schedule) return {}
+            return this.schedule.speakers.reduce((acc, s) => { acc[s.code] = s; return acc }, {})
+        },
+        sessions () {
+            const sessions = []
+            const filter = this.filteredTracks
+            for (const session of this.schedule.talks.filter(s => s.start)) {
+                if (this.onlyFavs && !this.favs.includes(session.code)) continue
+                if (filter && !filter.includes(session.id)) continue
+                sessions.push({
+                    id: session.code,
+                    title: session.title,
+                    abstract: session.abstract,
+                    start: moment.tz(session.start, this.currentTimezone),
+                    end: moment.tz(session.end, this.currentTimezone),
+                    speakers: session.speakers?.map(s => this.speakersLookup[s]),
+                    track: this.tracksLookup[session.track],
+                    room: this.roomsLookup[session.room],
+                    fav_count: session.fav_count,
+                    do_not_record: session.do_not_record,
+                    tags: session.tags,
+                    session_type: session.session_type
+                })
+            }
+            sessions.sort((a, b) => a.start.diff(b.start))
+            return sessions
+        },
+        rooms() {
+            return _.uniqBy(this.sessions, 'room.id').map(s => s.room)
+        },
+        filter() {
+            const filter = this.defaultFilter
+            filter.tracks.data = this.schedule.tracks.map(t => { t.value = t.id; t.label = t.name; return t })
+            filter.rooms.data = this.schedule.rooms.map(t => { t.value = t.id; t.label = t.name; return t })
+            filter.types.data = this.schedule.session_type.map(t => { t.value = t.session_type; t.label = t.session_type; return t })
+            return filter
         }
     },
     watch: {
         tracksFilter: {
             handler: function (newValue) {
-                if (!this.open) return
                 const arr = Object.keys(newValue).filter(key => newValue[key])
                 this.$store.dispatch('schedule/filter', {type: 'track', tracks: arr})
             },
@@ -139,6 +227,8 @@ export default {
                 } else {
                     return track.name.en || track.name;
                 }
+            } else if (track.session_type && track.session_type !== null) {
+                return track.session_type;
             } else {
                 return track.name;
             }
@@ -178,11 +268,37 @@ export default {
                 this.error = error
                 console.log(error)
             }
+        },
+        resetAllFiltered () {
+            this.resetFiltered()
+            this.onlyFavs = false
+        },
+        resetFiltered () {
+            Object.keys(this.filter).forEach(key => {
+                this.filter[key].data.forEach(t => {
+                    if (t.selected) {
+                        t.selected = false
+                    }
+                })
+            })
         }
     }
 }
 </script>
 <style lang="stylus">
+@media (max-width: 480px)
+    .filter-actions
+        flex-direction: column
+        .app-drop-down
+            width: 90px
+            margin-bottom: 8px
+    .c-schedule 
+        .bunt-ripple-ink
+            margin: 12px 0 20px 15px !important;
+        .export.dropdown
+            padding-right: 0
+            margin-left: 15px !important
+
 .c-schedule
     display: flex
     flex-direction: column
@@ -245,13 +361,11 @@ export default {
     .export.dropdown
         display: flex
         margin-left: auto
-        padding-right: 40px !important
+        padding-right: 40px
         .bunt-progress-circular
             width: 20px
             height: 20px
         .export-spinner
             padding-top: 22px !important
             margin-right: 10px
-
 </style>
-    

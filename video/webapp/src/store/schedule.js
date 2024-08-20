@@ -47,6 +47,10 @@ export default {
 			if (!state.schedule) return {}
 			return state.schedule.speakers.reduce((acc, s) => { acc[s.code] = s; return acc }, {})
 		},
+		sessionTypeLookup (state) {
+			if (!state.schedule) return {}
+			return state.schedule.session_type.reduce((acc, s) => { acc[s.code] = s; return acc }, {})
+		},
 		sessions (state, getters, rootState) {
 			if (!state.schedule) return
 			const sessions = []
@@ -70,7 +74,8 @@ export default {
 					speakers: session.speakers?.map(s => getters.speakersLookup[s]),
 					track: getters.tracksLookup[session.track],
 					room: getters.roomsLookup[session.room],
-					tags: session.tags
+					tags: session.tags,
+					session_type: session.session_type
 				})
 			}
 			sessions.sort((a, b) => (
@@ -117,6 +122,9 @@ export default {
 				}
 			}
 			return rooms
+		},
+		schedule (state) {
+			return state.schedule
 		}
 	},
 	actions: {
@@ -127,6 +135,13 @@ export default {
 			// console.log(version.results[0].version)
 			try {
 				state.schedule = await (await fetch(getters.pretalxScheduleUrl)).json()
+				state.schedule.session_type = state.schedule.talks.reduce((acc, current) => {
+					const isDuplicate = acc.some(item => item.session_type === current.session_type);
+					if (!isDuplicate) {
+					  acc.push(current);
+					}
+					return acc;
+				  }, []);
 			} catch (error) {
 				state.errorLoading = error
 			}
