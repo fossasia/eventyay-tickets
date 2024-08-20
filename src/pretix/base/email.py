@@ -2,6 +2,8 @@ import inspect
 import logging
 from datetime import timedelta
 from decimal import Decimal
+from email import policy
+from email.parser import BytesParser
 from itertools import groupby
 from smtplib import SMTPResponseException
 
@@ -60,13 +62,26 @@ class SendGridEmail():
 
 
     def send_messages(self, emails):
-        print("======================== send mess grid")
         for email in emails:
+            html_content = None
+            try:
+                message_context = email.message().as_bytes(linesep="\r\n")
+                msg = BytesParser(policy=policy.default).parsebytes(message_context)
+                for part in msg.walk():
+                    content_type = part.get_content_type()
+                    content_disposition = str(part.get("Content-Disposition"))
+
+                    if content_type == "text/html" and "attachment" not in content_disposition:
+                        html_content = part.get_payload(decode=True).decode(part.get_content_charset())
+                        break  # Found the HTML content, no need to continue
+            except Exception as e:
+                logger.error('Error happened when trying to parse mail template: %s' % e)
+                html_content = email.body
             message = Mail(
                 from_email=email.from_email,
                 to_emails=email.to,
                 subject=email.subject,
-                html_content=email.body)
+                html_content=html_content)
             sg = SendGridAPIClient(self.api_key)
             bcc = []
             for mail in email.bcc:
@@ -74,9 +89,9 @@ class SendGridEmail():
             message.bcc = bcc
             attachments = []
             for attachment in email.attachments:
-                
+
                 attachments.append(self.build_attachment(attachment))
-                
+
             message.attachment = attachments
             sg.send(message)
 
@@ -585,11 +600,12 @@ def base_placeholders(sender, **kwargs):
     if 'pretix_venueless' in sender.get_plugins():
         ph.append(SimpleFunctionalMailTextPlaceholder(
             'join_online_event', ['order', 'event'], lambda order, event: build_join_video_url(
-                event, order
-            ), lambda order, event: build_join_video_url(
-                event, order
-            ),
-        ),)
+                event=event, order=order
+            ), 'https://sample-wikimania-live.eventyay.com/#token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.'
+               'eyJpc3MiOiJldmVudHlheSIsImF1ZCI6ImF1ZGllbmNVfkuiZXhwIjoxNzI1NjkzMDkyLCJpYXQiOjE3MjMxMDEw'
+               'OTIsInVpZCI6IjRKRDJGRzMiLCJwcm9maWxlIjp7ImZpZWxkcyI6e319LCJ0cmFpdHMiOlsiZXZlbnR5YXktdmlkZ'
+               'W8tc3ViZXZlbnQtTm9uZSIsImV2ZW50eWF5LXZpZGVvLWl0ZW0tMiIsImV2ZW50eWF5LXZpZGVvLWNhdGVnb3J5LTEi',
+        ), )
     name_scheme = PERSON_NAME_SCHEMES[sender.settings.name_scheme]
     for f, l, w in name_scheme['fields']:
         if f == 'full_name':
