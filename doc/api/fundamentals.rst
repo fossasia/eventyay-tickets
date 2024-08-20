@@ -76,7 +76,7 @@ the form of:
 
     {
         "count": 117,
-        "next": "https://pretix.eu/api/v1/organizers/?page=2",
+        "next": "https://eventyay.com/api/v1/organizers/?page=2",
         "previous": null,
         "results": […],
     }
@@ -240,7 +240,7 @@ you will first need to make a separate request to our file upload endpoint:
 .. sourcecode:: http
 
    POST /api/v1/upload HTTP/1.1
-   Host: pretix.eu
+   Host: eventyay.com
    Authorization: Token e1l6gq2ye72thbwkacj7jbri7a7tvxe614ojv8ybureain92ocub46t5gab5966k
    Content-Type: image/png
    Content-Disposition: attachment; filename="logo.png"
@@ -266,7 +266,7 @@ be used using the same authorization method and user that was used to upload the
 .. sourcecode:: http
 
    PATCH /api/v1/organizers/test/events/test/items/3/ HTTP/1.1
-   Host: pretix.eu
+   Host: eventyay.com
    Content-Type: application/json
 
    {

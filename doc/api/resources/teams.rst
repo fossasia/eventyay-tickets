@@ -95,7 +95,7 @@ Team endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/teams/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -137,7 +137,7 @@ Team endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/teams/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -172,7 +172,7 @@ Team endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/teams/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -218,7 +218,7 @@ Team endpoints
    .. sourcecode:: http
 
       PATCH /api/v1/organizers/bigevents/teams/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
       Content-Length: 94
@@ -260,7 +260,7 @@ Team endpoints
    .. sourcecode:: http
 
       DELETE /api/v1/organizers/bigevents/teams/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -287,7 +287,7 @@ Team member endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/teams/1/members/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -329,7 +329,7 @@ Team member endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/teams/1/members/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -364,7 +364,7 @@ Team member endpoints
    .. sourcecode:: http
 
       DELETE /api/v1/organizers/bigevents/teams/1/members/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
 
    **Example response**:
 
@@ -392,7 +392,7 @@ Team invite endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/teams/1/invites/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -432,7 +432,7 @@ Team invite endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/teams/1/invites/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -466,7 +466,7 @@ Team invite endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/teams/1/invites/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
       Content-Length: 94
@@ -504,7 +504,7 @@ Team invite endpoints
    .. sourcecode:: http
 
       DELETE /api/v1/organizers/bigevents/teams/1/invites/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
 
    **Example response**:
 
@@ -532,7 +532,7 @@ Team API token endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/teams/1/tokens/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -573,7 +573,7 @@ Team API token endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/teams/1/tokens/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -607,7 +607,7 @@ Team API token endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/teams/1/tokens/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
       Content-Length: 94
@@ -647,7 +647,7 @@ Team API token endpoints
    .. sourcecode:: http
 
       DELETE /api/v1/organizers/bigevents/teams/1/tokens/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
 
    **Example response**:
 

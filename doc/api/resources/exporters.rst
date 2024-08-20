@@ -30,7 +30,7 @@ Listing available exporters
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/exporters/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -93,7 +93,7 @@ Listing available exporters
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/exporters/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -165,7 +165,7 @@ endpoints:
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/exporters/orderlist/run/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -182,7 +182,7 @@ endpoints:
       Content-Type: application/json
 
       {
-        "download": "https://pretix.eu/api/v1/organizers/bigevents/events/sampleconf/orderlist/download/29891ede-196f-4942-9e26-d055a36e98b8/3f279f13-c198-4137-b49b-9b360ce9fcce/"
+        "download": "https://eventyay.com/api/v1/organizers/bigevents/events/sampleconf/orderlist/download/29891ede-196f-4942-9e26-d055a36e98b8/3f279f13-c198-4137-b49b-9b360ce9fcce/"
       }
 
    :param organizer: The ``slug`` field of the organizer to fetch

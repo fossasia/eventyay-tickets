@@ -9,7 +9,7 @@ some extra steps. Installation works similar to normal pretix plugins, but invol
 Buying the license
 ------------------
 
-To obtain a license, please get in touch at sales@pretix.eu. Please let us know how many tickets you roughly intend
+To obtain a license, please get in touch at sales@eventyay.com. Please let us know how many tickets you roughly intend
 to sell per year and how many servers you want to use the plugin on. We recommend having a look at our `price list`_
 first.
 
@@ -81,4 +81,4 @@ You can now use that image ``mypretix`` instead of ``pretix/standalone:stable`` 
 service file. Be sure to re-build your custom image after you pulled ``pretix/standalone`` if you want to perform an
 update to a new version of pretix.
 
-.. _price list: https://pretix.eu/about/en/pricing
+.. _price list: https://eventyay.com/about/en/pricing

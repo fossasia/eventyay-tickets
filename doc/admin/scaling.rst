@@ -20,7 +20,7 @@ and what you should think of.
    and helped building, scaling and load-testing pretix installations at any scale and we're looking
    forward to work with you on fine-tuning your system. If you intend to sell **more than a thousand
    tickets in a very short amount of time**, we highly recommend reaching out and at least talking this
-   through. Just get in touch at sales@pretix.eu!
+   through. Just get in touch at sales@eventyay.com!
 
 Scaling reasons
 ---------------
@@ -87,7 +87,7 @@ them from a different URL <config-urls>`.
 
    If you expect *really high traffic* for your very popular event, you might want to do some rate limiting on this layer, or,
    if you want to ensure a fair and robust first-come-first-served experience and prefer letting users wait over showing them
-   errors, consider a queuing solution. We're happy to provide you with such systems, just get in touch at sales@pretix.eu.
+   errors, consider a queuing solution. We're happy to provide you with such systems, just get in touch at sales@eventyay.com.
 
 pretix-web
 """"""""""
@@ -156,7 +156,7 @@ on each of the other servers.
 
 Since we use Django's file storage mechanism internally, you can in theory also use a object-storage solution like Amazon S3, Ceph, or Minio to store these files, although we currently do not expose this through pretix' configuration file and this would require you to ship your own variant of ``pretix/settings.py`` and reference it through the ``DJANGO_SETTINGS_MODULE`` environment variable.
 
-At pretix.eu, we use a custom-built `object storage cluster`_.
+At eventyay.com, we use a custom-built `object storage cluster`_.
 
 SQL database
 """"""""""""
@@ -233,4 +233,4 @@ throughput. If you want to use pretix for an event with 10,000+ tickets that are
 within minutes, please get in touch to discuss possible solutions. We'll work something out for you!
 
 
-.. _object storage cluster: https://behind.pretix.eu/2018/03/20/high-available-cdn/
+.. _object storage cluster: https://behind.eventyay.com/2018/03/20/high-available-cdn/

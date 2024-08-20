@@ -37,7 +37,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/democon/ticketlayouts/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -80,7 +80,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/democon/ticketlayouts/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -116,7 +116,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/democon/ticketlayoutitems/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:

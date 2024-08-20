@@ -11,7 +11,7 @@ a new device, users can specify a list of events the device is allowed to access
 device is created, users will be presented initialization instructions, consisting of an URL
 and an initialization token. They will also be shown as a QR code with the following contents::
 
-   {"handshake_version": 1, "url": "https://pretix.eu", "token": "kpp4jn8g2ynzonp6"}
+   {"handshake_version": 1, "url": "https://eventyay.com", "token": "kpp4jn8g2ynzonp6"}
 
 Your application should be able to scan a QR code of this type, or allow to enter the URL and the
 initialization token manually. The handshake version is not used for manual initialization. When a
@@ -25,7 +25,7 @@ as well as the type of underlying hardware. Example:
 .. sourcecode:: http
 
    POST /api/v1/device/initialize HTTP/1.1
-   Host: pretix.eu
+   Host: eventyay.com
    Content-Type: application/json
 
    {
@@ -79,7 +79,7 @@ like the following:
    :emphasize-lines: 3
 
    GET /api/v1/organizers/ HTTP/1.1
-   Host: pretix.eu
+   Host: eventyay.com
    Authorization: Device 1kcsh572fonm3hawalrncam4l1gktr2rzx25a22l8g9hx108o9oi0rztpcvwnfnd
 
 Updating the software version
@@ -91,7 +91,7 @@ following endpoint:
 .. sourcecode:: http
 
    POST /api/v1/device/update HTTP/1.1
-   Host: pretix.eu
+   Host: eventyay.com
    Content-Type: application/json
    Authorization: Device 1kcsh572fonm3hawalrncam4l1gktr2rzx25a22l8g9hx108o9oi0rztpcvwnfnd
 
@@ -113,7 +113,7 @@ The old API key will be invalid immediately. A request for a new key looks like 
 .. sourcecode:: http
 
    POST /api/v1/device/roll HTTP/1.1
-   Host: pretix.eu
+   Host: eventyay.com
    Authorization: Device 1kcsh572fonm3hawalrncam4l1gktr2rzx25a22l8g9hx108o9oi0rztpcvwnfnd
 
 The response will look like the response to the initialization request.
@@ -127,7 +127,7 @@ invalidate your API key. There is no way to reverse this operation.
 .. sourcecode:: http
 
    POST /api/v1/device/revoke HTTP/1.1
-   Host: pretix.eu
+   Host: eventyay.com
    Authorization: Device 1kcsh572fonm3hawalrncam4l1gktr2rzx25a22l8g9hx108o9oi0rztpcvwnfnd
 
 This can also be done by the user through the web interface.
@@ -157,7 +157,7 @@ invalidate your API key. There is no way to reverse this operation.
 .. sourcecode:: http
 
    POST /api/v1/device/revoke HTTP/1.1
-   Host: pretix.eu
+   Host: eventyay.com
    Authorization: Device 1kcsh572fonm3hawalrncam4l1gktr2rzx25a22l8g9hx108o9oi0rztpcvwnfnd
 
 This can also be done by the user through the web interface.
@@ -174,7 +174,7 @@ query parameters:
 .. sourcecode:: http
 
    GET /api/v1/device/eventselection?current_event=democon&current_subevent=42&current_checkinlist=542 HTTP/1.1
-   Host: pretix.eu
+   Host: eventyay.com
    Authorization: Device 1kcsh572fonm3hawalrncam4l1gktr2rzx25a22l8g9hx108o9oi0rztpcvwnfnd
 
 You can get three response codes:

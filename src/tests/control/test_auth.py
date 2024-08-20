@@ -119,7 +119,7 @@ class LoginFormTest(TestCase):
         response = self.client.get('/control/login')
         self.assertEqual(response.status_code, 200)
         assert b'Form' in response.content
-        assert b'pretix.eu User' in response.content
+        assert b'eventyay.com User' in response.content
         assert b'Request' not in response.content
 
     def test_form_backend(self):
@@ -342,7 +342,7 @@ class Login2FAFormTest(TestCase):
         m.setattr("webauthn.WebAuthnAssertionResponse.verify", fail)
         d = U2FDevice.objects.create(
             user=self.user, name='test',
-            json_data='{"appId": "https://local.pretix.eu", "keyHandle": '
+            json_data='{"appId": "https://local.eventyay.com", "keyHandle": '
                       '"j9Rkpon1J5U3eDQMM8YqAvwEapt-m87V8qdCaImiAqmvTJ'
                       '-sBvnACIKKM6J_RVXF4jPtY0LGyjbHi14sxsoC5g", "publ'
                       'icKey": "BP5KRLUGvcHbqkCc7eJNXZ9caVXLSk4wjsq'
@@ -364,7 +364,7 @@ class Login2FAFormTest(TestCase):
 
         d = U2FDevice.objects.create(
             user=self.user, name='test',
-            json_data='{"appId": "https://local.pretix.eu", "keyHandle": '
+            json_data='{"appId": "https://local.eventyay.com", "keyHandle": '
                       '"j9Rkpon1J5U3eDQMM8YqAvwEapt-m87V8qdCaImiAqmvTJ'
                       '-sBvnACIKKM6J_RVXF4jPtY0LGyjbHi14sxsoC5g", "publ'
                       'icKey": "BP5KRLUGvcHbqkCc7eJNXZ9caVXLSk4wjsq'

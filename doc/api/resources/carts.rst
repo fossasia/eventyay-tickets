@@ -59,7 +59,7 @@ Cart position endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/cartpositions/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -111,7 +111,7 @@ Cart position endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/cartpositions/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -202,7 +202,7 @@ Cart position endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/cartpositions/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -252,7 +252,7 @@ Cart position endpoints
    .. sourcecode:: http
 
       DELETE /api/v1/organizers/bigevents/events/sampleconf/cartpositions/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:

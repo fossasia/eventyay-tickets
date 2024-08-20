@@ -50,7 +50,7 @@ def test_update_check_disabled():
     gs.settings.update_check_perform = False
 
     responses.add_callback(
-        responses.POST, 'https://pretix.eu/.update_check/',
+        responses.POST, 'https://eventyay.org/.update_check/',
         callback=request_callback_disallowed,
         content_type='application/json',
     )
@@ -61,7 +61,7 @@ def test_update_check_disabled():
 @responses.activate
 def test_update_check_sent_no_updates():
     responses.add_callback(
-        responses.POST, 'https://pretix.eu/.update_check/',
+        responses.POST, 'https://eventyay.org/.update_check/',
         callback=request_callback_not_updatable,
         content_type='application/json',
     )
@@ -76,7 +76,7 @@ def test_update_check_sent_no_updates():
 @responses.activate
 def test_update_check_sent_updates():
     responses.add_callback(
-        responses.POST, 'https://pretix.eu/.update_check/',
+        responses.POST, 'https://eventyay.org/.update_check/',
         callback=request_callback_updatable,
         content_type='application/json',
     )
@@ -94,7 +94,7 @@ def test_update_check_mail_sent():
     gs.settings.update_check_email = 'test@example.org'
 
     responses.add_callback(
-        responses.POST, 'https://pretix.eu/.update_check/',
+        responses.POST, 'https://eventyay.org/.update_check/',
         callback=request_callback_updatable,
         content_type='application/json',
     )
@@ -113,7 +113,7 @@ def test_update_check_mail_sent_only_after_change():
 
     with responses.RequestsMock() as rsps:
         rsps.add_callback(
-            responses.POST, 'https://pretix.eu/.update_check/',
+            responses.POST, 'https://eventyay.org/.update_check/',
             callback=request_callback_updatable,
             content_type='application/json',
         )
@@ -126,7 +126,7 @@ def test_update_check_mail_sent_only_after_change():
 
     with responses.RequestsMock() as rsps:
         rsps.add_callback(
-            responses.POST, 'https://pretix.eu/.update_check/',
+            responses.POST, 'https://eventyay.org/.update_check/',
             callback=request_callback_not_updatable,
             content_type='application/json',
         )
@@ -136,7 +136,7 @@ def test_update_check_mail_sent_only_after_change():
 
     with responses.RequestsMock() as rsps:
         rsps.add_callback(
-            responses.POST, 'https://pretix.eu/.update_check/',
+            responses.POST, 'https://eventyay.org/.update_check/',
             callback=request_callback_updatable,
             content_type='application/json',
         )
@@ -178,7 +178,7 @@ def test_result_table_empty():
 @pytest.mark.django_db
 def test_result_table_up2date():
     responses.add_callback(
-        responses.POST, 'https://pretix.eu/.update_check/',
+        responses.POST, 'https://eventyay.org/.update_check/',
         callback=request_callback_not_updatable,
         content_type='application/json',
     )

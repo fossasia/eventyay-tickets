@@ -179,7 +179,7 @@ def test_wle_create_success(token_client, organizer, event, item, quota):
     w = create_wle(
         token_client, organizer, event,
         data={
-            'email': 'testdummy@pretix.eu',
+            'email': 'test@eventyay.com',
             'item': item.pk,
             'variation': None,
             'locale': 'en',
@@ -187,7 +187,7 @@ def test_wle_create_success(token_client, organizer, event, item, quota):
         },
         expected_failure=False
     )
-    assert w.email == "testdummy@pretix.eu"
+    assert w.email == "test@eventyay.com"
     assert w.item == item
     assert w.variation is None
     assert w.locale == 'en'
@@ -208,7 +208,7 @@ def test_wle_require_fields(token_client, organizer, event, item, quota):
     create_wle(
         token_client, organizer, event,
         data={
-            'email': 'testdummy@pretix.eu',
+            'email': 'test@eventyay.com',
             'variation': None,
             'locale': 'en',
             'subevent': None
@@ -220,7 +220,7 @@ def test_wle_require_fields(token_client, organizer, event, item, quota):
     create_wle(
         token_client, organizer, event,
         data={
-            'email': 'testdummy@pretix.eu',
+            'email': 'test@eventyay.com',
             'item': item.pk,
             'variation': None,
             'locale': 'en',
@@ -232,7 +232,7 @@ def test_wle_require_fields(token_client, organizer, event, item, quota):
     create_wle(
         token_client, organizer, event,
         data={
-            'email': 'testdummy@pretix.eu',
+            'email': 'test@eventyay.com',
             'item': item.pk,
             'variation': v.pk,
             'locale': 'en',
@@ -249,7 +249,7 @@ def test_wle_create_available(token_client, organizer, event, item, quota):
     create_wle(
         token_client, organizer, event,
         data={
-            'email': 'testdummy@pretix.eu',
+            'email': 'test@eventyay.com',
             'item': item.pk,
             'variation': None,
             'locale': 'en',
@@ -264,7 +264,7 @@ def test_wle_create_duplicate(token_client, organizer, event, item, quota):
     create_wle(
         token_client, organizer, event,
         data={
-            'email': 'testdummy@pretix.eu',
+            'email': 'test@eventyay.com',
             'item': item.pk,
             'variation': None,
             'locale': 'en',
@@ -275,7 +275,7 @@ def test_wle_create_duplicate(token_client, organizer, event, item, quota):
     create_wle(
         token_client, organizer, event,
         data={
-            'email': 'testdummy@pretix.eu',
+            'email': 'test@eventyay.com',
             'item': item.pk,
             'variation': None,
             'locale': 'en',
@@ -302,11 +302,11 @@ def test_wle_change_email(token_client, organizer, event, item, wle, quota):
     change_wle(
         token_client, organizer, event, wle,
         data={
-            'email': 'foo@pretix.eu',
+            'email': 'foo@eventyay.com',
         },
         expected_failure=False
     )
-    assert wle.email == 'foo@pretix.eu'
+    assert wle.email == 'foo@eventyay.com'
 
 
 @pytest.mark.django_db
@@ -318,7 +318,7 @@ def test_wle_change_assigned(token_client, organizer, event, item, wle, quota):
     change_wle(
         token_client, organizer, event, wle,
         data={
-            'email': 'foo@pretix.eu',
+            'email': 'foo@eventyay.com',
         },
         expected_failure=True
     )
@@ -396,7 +396,7 @@ def test_wle_change_subevent_of_wrong_event(token_client, organizer, event, item
 @pytest.mark.django_db
 def test_wle_change_to_duplicate(token_client, organizer, event, item, wle, quota):
     wle.pk = None
-    wle.email = 'foo@pretix.eu'
+    wle.email = 'foo@eventyay.com'
     wle.save()
     change_wle(
         token_client, organizer, event, wle,

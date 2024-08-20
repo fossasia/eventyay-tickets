@@ -10,19 +10,19 @@ slightly from the standard Django system.
 The reason for the complicated URL handling is that pretix supports custom subdomains for
 single organizers. In this example we will use an event organizer with the slug ``bigorg``
 that manages an awesome conference with the slug ``awesomecon``. If pretix is installed
-on pretix.eu, this event is available by default at ``https://pretix.eu/bigorg/awesomecon/``
-and the admin panel is available at ``https://pretix.eu/control/event/bigorg/awesomecon/``.
+on eventyay.com, this event is available by default at ``https://eventyay.com/bigorg/awesomecon/``
+and the admin panel is available at ``https://eventyay.com/control/event/bigorg/awesomecon/``.
 
 If the organizer now configures a custom domain like ``tickets.bigorg.com``, his event will
 from now on be available on ``https://tickets.bigorg.com/awesomecon/``. The former URL at
-``pretix.eu`` will redirect there. However, the admin panel will still only be available
-on ``pretix.eu`` for convenience and security reasons.
+``eventyay.com`` will redirect there. However, the admin panel will still only be available
+on ``eventyay.com`` for convenience and security reasons.
 
 URL routing
 -----------
 
 The hard part about implementing this URL routing in Django is that
-``https://pretix.eu/bigorg/awesomecon/`` contains two parameters of nearly arbitrary content
+``https://eventyay.com/bigorg/awesomecon/`` contains two parameters of nearly arbitrary content
 and ``https://tickets.bigorg.com/awesomecon/`` contains only one. The only robust way to do
 this is by having *separate* URL configuration for those two cases. In pretix, we call the
 former our ``maindomain`` config and the latter our ``subdomain`` config. For pretix's core

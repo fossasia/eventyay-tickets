@@ -48,7 +48,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/waitinglistentries/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -102,7 +102,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/waitinglistentries/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -140,7 +140,7 @@ Endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/waitinglistentries/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
       Content-Length: 408
@@ -194,7 +194,7 @@ Endpoints
    .. sourcecode:: http
 
       PATCH /api/v1/organizers/bigevents/events/sampleconf/waitinglistentries/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
       Content-Length: 408
@@ -241,7 +241,7 @@ Endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/waitinglistentries/1/send_voucher/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
       Content-Length: 0
@@ -271,7 +271,7 @@ Endpoints
    .. sourcecode:: http
 
       DELETE /api/v1/organizers/bigevents/events/sampleconf/waitinglistentries/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:

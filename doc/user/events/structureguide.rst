@@ -200,7 +200,7 @@ booked.
 .. note::
 
     This option is currently only available on pretix Hosted. If you are interested in using it with pretix Enterprise,
-    please contact sales@pretix.eu.
+    please contact sales@eventyay.com.
 
 
 Use case: Discounted packages
