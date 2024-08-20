@@ -65,7 +65,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/checkinlists/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -122,7 +122,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/checkinlists/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -167,7 +167,7 @@ Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/checkinlists/1/status/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -234,7 +234,7 @@ Endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/checkinlists/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -295,7 +295,7 @@ Endpoints
    .. sourcecode:: http
 
       PATCH /api/v1/organizers/bigevents/events/sampleconf/checkinlists/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
       Content-Length: 94
@@ -345,7 +345,7 @@ Endpoints
    .. sourcecode:: http
 
       DELETE /api/v1/organizers/bigevents/events/sampleconf/checkinlist/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -384,7 +384,7 @@ Order position endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/checkinlists/1/positions/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -438,7 +438,7 @@ Order position endpoints
             "downloads": [
               {
                 "output": "pdf",
-                "url": "https://pretix.eu/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/"
+                "url": "https://eventyay.com/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/"
               }
             ]
           }
@@ -501,7 +501,7 @@ Order position endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/checkinlists/1/positions/23442/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -550,7 +550,7 @@ Order position endpoints
         "downloads": [
           {
             "output": "pdf",
-            "url": "https://pretix.eu/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/"
+            "url": "https://eventyay.com/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/"
           }
         ]
       }
@@ -597,7 +597,7 @@ Order position endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/checkinlists/1/positions/234/redeem/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
       {

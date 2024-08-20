@@ -3,7 +3,7 @@
 Rate limiting
 =============
 
-.. note:: This page only applies to the pretix Hosted service at pretix.eu. APIs of custom pretix installations do not
+.. note:: This page only applies to the pretix Hosted service at eventyay.com. APIs of custom pretix installations do not
           enforce any rate limiting by default.
 
 All authenticated requests to pretix' API are rate limited. If you exceed the limits, you will receive a response
@@ -27,5 +27,5 @@ Authentication method                 Rate limit
 Session authentication                *Not an officially supported authentication method for external access*
 ===================================== =================================================================================
 
-If you require a higher rate limit, please get in touch at support@pretix.eu and tell us about your use case, we are
+If you require a higher rate limit, please get in touch at support@eventyay.com and tell us about your use case, we are
 sure we can work something out.

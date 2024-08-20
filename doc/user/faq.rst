@@ -18,8 +18,8 @@ transactions which legally may not be tampered with and needs to be kept on reco
 countries. In this case, you can just disable the shop by clicking the first square on your event
 dashboard.
 
-If you are using the hosted service at pretix.eu and want to get rid of an event that you only used for testing, contact
-us at support@pretix.eu and we can remove it for you.
+If you are using the hosted service at eventyay.com and want to get rid of an event that you only used for testing, contact
+us at support@eventyay.com and we can remove it for you.
 
 Why doesn't my product show up in the ticket shop?
 --------------------------------------------------

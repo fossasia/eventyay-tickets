@@ -10,7 +10,7 @@ solution with many things readily set-up, look at :ref:`dockersmallscale`.
 
 .. warning:: Even though we try to make it straightforward to run pretix, it still requires some Linux experience to
              get it right. If you're not feeling comfortable managing a Linux server, check out our hosting and service
-             offers at `pretix.eu`_.
+             offers at `eventyay.com`_.
 
 We tested this guide on the Linux distribution **Debian 10.0** but it should work very similar on other
 modern distributions, especially on all systemd-based ones.
@@ -307,7 +307,7 @@ example::
 .. _Postfix: https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-16-04
 .. _nginx: https://botleg.com/stories/https-with-lets-encrypt-and-nginx/
 .. _Let's Encrypt: https://letsencrypt.org/
-.. _pretix.eu: https://pretix.eu/
+.. _eventyay.com: https://eventyay.com/
 .. _MySQL: https://dev.mysql.com/doc/refman/5.7/en/linux-installation-apt-repo.html
 .. _PostgreSQL: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-20-04
 .. _redis: https://blog.programster.org/debian-8-install-redis-server/

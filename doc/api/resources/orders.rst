@@ -264,7 +264,7 @@ List of all orders
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/orders/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -286,7 +286,7 @@ List of all orders
             "status": "p",
             "testmode": false,
             "secret": "k24fiuwvu8kxz3y1",
-            "url": "https://test.pretix.eu/dummy/dummy/order/ABC12/k24fiuwvu8kxz3y1/",
+            "url": "https://test.eventyay.com/dummy/dummy/order/ABC12/k24fiuwvu8kxz3y1/",
             "email": "tester@example.org",
             "phone": "+491234567",
             "locale": "en",
@@ -365,7 +365,7 @@ List of all orders
                 "downloads": [
                   {
                     "output": "pdf",
-                    "url": "https://pretix.eu/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/"
+                    "url": "https://eventyay.com/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/"
                   }
                 ]
               }
@@ -373,7 +373,7 @@ List of all orders
             "downloads": [
               {
                 "output": "pdf",
-                "url": "https://pretix.eu/api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/download/pdf/"
+                "url": "https://eventyay.com/api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/download/pdf/"
               }
             ],
             "payments": [
@@ -438,7 +438,7 @@ Fetching individual orders
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -454,7 +454,7 @@ Fetching individual orders
         "status": "p",
         "testmode": false,
         "secret": "k24fiuwvu8kxz3y1",
-        "url": "https://test.pretix.eu/dummy/dummy/order/ABC12/k24fiuwvu8kxz3y1/",
+        "url": "https://test.eventyay.com/dummy/dummy/order/ABC12/k24fiuwvu8kxz3y1/",
         "email": "tester@example.org",
         "phone": "+491234567",
         "locale": "en",
@@ -533,7 +533,7 @@ Fetching individual orders
             "downloads": [
               {
                 "output": "pdf",
-                "url": "https://pretix.eu/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/"
+                "url": "https://eventyay.com/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/"
               }
             ]
           }
@@ -541,7 +541,7 @@ Fetching individual orders
         "downloads": [
           {
             "output": "pdf",
-            "url": "https://pretix.eu/api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/download/pdf/"
+            "url": "https://eventyay.com/api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/download/pdf/"
           }
         ],
         "payments": [
@@ -588,7 +588,7 @@ Order ticket download
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/download/pdf/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -638,7 +638,7 @@ Updating order fields
    .. sourcecode:: http
 
       PATCH /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -680,7 +680,7 @@ Generating new secrets
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/regenerate_secrets/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -714,7 +714,7 @@ Deleting orders
    .. sourcecode:: http
 
       DELETE /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -881,7 +881,7 @@ Creating orders
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -968,7 +968,7 @@ Order state operations
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/mark_paid/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -1012,7 +1012,7 @@ Order state operations
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/mark_canceled/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: text/json
 
@@ -1054,7 +1054,7 @@ Order state operations
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/reactivate/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -1089,7 +1089,7 @@ Order state operations
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/mark_pending/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -1124,7 +1124,7 @@ Order state operations
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/mark_expired/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -1167,7 +1167,7 @@ Order state operations
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/extend/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: text/json
 
@@ -1209,7 +1209,7 @@ Order state operations
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/approve/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -1246,7 +1246,7 @@ Order state operations
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/deny/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: text/json
 
@@ -1292,7 +1292,7 @@ Generating invoices
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/create_invoice/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
 
@@ -1332,7 +1332,7 @@ Sending e-mails
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/resend_link/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
 
@@ -1369,7 +1369,7 @@ List of all order positions
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/orderpositions/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -1427,7 +1427,7 @@ List of all order positions
             "downloads": [
               {
                 "output": "pdf",
-                "url": "https://pretix.eu/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/"
+                "url": "https://eventyay.com/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/"
               }
             ]
           }
@@ -1480,7 +1480,7 @@ Fetching individual positions
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -1533,7 +1533,7 @@ Fetching individual positions
         "downloads": [
           {
             "output": "pdf",
-            "url": "https://pretix.eu/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/"
+            "url": "https://eventyay.com/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/"
           }
         ]
       }
@@ -1573,7 +1573,7 @@ Order position ticket download
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -1636,7 +1636,7 @@ Manipulating individual positions
    .. sourcecode:: http
 
       PATCH /api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -1672,7 +1672,7 @@ Manipulating individual positions
    .. sourcecode:: http
 
       DELETE /api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -1712,7 +1712,7 @@ Order payment endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/payments/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -1759,7 +1759,7 @@ Order payment endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/payments/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -1799,7 +1799,7 @@ Order payment endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/payments/1/confirm/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -1841,7 +1841,7 @@ Order payment endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/payments/1/cancel/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
 
@@ -1879,7 +1879,7 @@ Order payment endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/payments/1/refund/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -1929,7 +1929,7 @@ Order payment endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/payments/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -1983,7 +1983,7 @@ Order refund endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/refunds/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -2031,7 +2031,7 @@ Order refund endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/refunds/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -2075,7 +2075,7 @@ Order refund endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/refunds/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -2130,7 +2130,7 @@ Order refund endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/refunds/1/done/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -2166,7 +2166,7 @@ Order refund endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/refunds/1/done/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -2205,7 +2205,7 @@ Order refund endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/orders/ABC12/refunds/1/cancel/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -2250,7 +2250,7 @@ With some non-default ticket secret generation methods, a list of revoked ticket
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/revokedsecrets/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:

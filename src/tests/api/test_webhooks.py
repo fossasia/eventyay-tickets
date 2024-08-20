@@ -131,13 +131,13 @@ def test_hook_patch_url(token_client, organizer, event, webhook):
     resp = token_client.patch(
         '/api/v1/organizers/{}/webhooks/{}/'.format(organizer.slug, webhook.pk),
         {
-            'target_url': 'https://pretix.eu'
+            'target_url': 'https://eventyay.com'
         },
         format='json'
     )
     assert resp.status_code == 200
     webhook.refresh_from_db()
-    assert webhook.target_url == "https://pretix.eu"
+    assert webhook.target_url == "https://eventyay.com"
     with scopes_disabled():
         assert webhook.limit_events.count() == 1
         assert set(webhook.listeners.values_list('action_type', flat=True)) == {'pretix.event.order.placed',

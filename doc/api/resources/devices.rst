@@ -45,7 +45,7 @@ Device endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/devices/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -97,7 +97,7 @@ Device endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/devices/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -142,7 +142,7 @@ Device endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/devices/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
 
@@ -192,7 +192,7 @@ Device endpoints
    .. sourcecode:: http
 
       PATCH /api/v1/organizers/bigevents/devices/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
       Content-Length: 94

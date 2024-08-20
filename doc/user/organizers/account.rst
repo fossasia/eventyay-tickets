@@ -32,12 +32,12 @@ account such as its name and display settings for the public profile page of the
 
 .. tip::
 
-   The profile page will be shown as ``https://pretix.eu/slug/`` where ``slug`` is to be replaced by the short form of
-   the organizer name that you entered during account creation and ``pretix.eu`` is to be replaced by your
+   The profile page will be shown as ``https://eventyay.com/slug/`` where ``slug`` is to be replaced by the short form of
+   the organizer name that you entered during account creation and ``eventyay.com`` is to be replaced by your
    installation's domain name if you are not using our hosted service.
 
    Instead, you can also use a custom domain for the profile page and your events, for example
    ``https://tickets.example.com/`` if ``example.com`` is a domain that you own.  Head to :ref:`custom_domain` to learn
    more.
 
-.. _Get started: https://pretix.eu/about/en/setup
+.. _Get started: https://eventyay.com/about/en/setup

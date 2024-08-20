@@ -25,7 +25,7 @@ calculated automatically.
 .. sourcecode:: http
 
     POST /api/v1/organizers/democon/events/3vjrh/orders/ HTTP/1.1
-    Host: test.pretix.eu
+    Host: test.eventyay.com
     Accept: application/json, text/javascript
     Content-Type: application/json
     Authorization: …
@@ -100,19 +100,19 @@ The user will be redirected back to your page instead of pretix' order confirmat
 **regardless of whether it was successful or not**. Make sure you use our API to check if the payment actually
 worked! Your final URL could look like this::
 
-    https://test.pretix.eu/democon/3vjrh/order/NSLEZ/ujbrnsjzbq4dzhck/pay/123/?return_url=https%3A%2F%2Fexample.org%2Forder%2Freturn%3Ftx_id%3D1234
+    https://test.eventyay.com/democon/3vjrh/order/NSLEZ/ujbrnsjzbq4dzhck/pay/123/?return_url=https%3A%2F%2Fexample.org%2Forder%2Freturn%3Ftx_id%3D1234
 
 You can also embed this page in an ``<iframe>`` instead. Note, however, that this causes problems with some payment
 methods such as PayPal which do not allow being opened in an iframe. pretix can partly work around these issues by
 opening a new window, but will only to so if you also append an ``iframe=1`` parameter to the URL::
 
-    https://test.pretix.eu/democon/3vjrh/order/NSLEZ/ujbrnsjzbq4dzhck/pay/123/?return_url=https%3A%2F%2Fexample.org%2Forder%2Freturn%3Ftx_id%3D1234&iframe=1
+    https://test.eventyay.com/democon/3vjrh/order/NSLEZ/ujbrnsjzbq4dzhck/pay/123/?return_url=https%3A%2F%2Fexample.org%2Forder%2Freturn%3Ftx_id%3D1234&iframe=1
 
 If you did **not** pass a payment method since you want us to ask the user which payment method they want to use, you
 need to construct the URL from the ``url`` attribute of the order and the sub-path ``pay/change```. For example, you
 would end up with the following URL::
 
-    https://test.pretix.eu/democon/3vjrh/order/NSLEZ/ujbrnsjzbq4dzhck/pay/change
+    https://test.eventyay.com/democon/3vjrh/order/NSLEZ/ujbrnsjzbq4dzhck/pay/change
 
 Of course, you can also use the ``iframe`` and ``return_url`` parameters here.
 

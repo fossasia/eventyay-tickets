@@ -302,7 +302,7 @@ images_config = {
 }
 
 linkcheck_ignore = [
-    r'http://localhost.*', r'.*yourdomain.*', r'https://en.wikipedia.org', 'https://pretix.eu/',
+    r'http://localhost.*', r'.*yourdomain.*', r'https://en.wikipedia.org', 'https://eventyay.com/',
 ]
 
 # -- Options for Spelling output ------------------------------------------

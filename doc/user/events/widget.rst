@@ -18,17 +18,17 @@ and then click "Generate widget code".
 You will obtain two code snippets that look *roughly* like the following. The first should be embedded into the
 ``<head>`` part of your website, if possible. If this inconvenient, you can put it in the ``<body>`` part as well::
 
-    <link rel="stylesheet" type="text/css" href="https://pretix.eu/demo/democon/widget/v1.css">
-    <script type="text/javascript" src="https://pretix.eu/widget/v1.en.js" async></script>
+    <link rel="stylesheet" type="text/css" href="https://eventyay.com/demo/democon/widget/v1.css">
+    <script type="text/javascript" src="https://eventyay.com/widget/v1.en.js" async></script>
 
 The second snippet should be embedded at the position where the widget should show up::
 
-    <pretix-widget event="https://pretix.eu/demo/democon/"></pretix-widget>
+    <pretix-widget event="https://eventyay.com/demo/democon/"></pretix-widget>
     <noscript>
        <div class="pretix-widget">
             <div class="pretix-widget-info-message">
                 JavaScript is disabled in your browser. To access our ticket shop without JavaScript,
-                please <a target="_blank" href="https://pretix.eu/demo/democon/">click here</a>.
+                please <a target="_blank" href="https://eventyay.com/demo/democon/">click here</a>.
             </div>
         </div>
     </noscript>
@@ -51,13 +51,13 @@ Your embedded widget could look like the following:
 
 .. raw:: html
 
-    <link rel="stylesheet" type="text/css" href="https://pretix.eu/demo/democon/widget/v1.css">
-    <script type="text/javascript" src="https://pretix.eu/widget/v1.en.js" async></script>
-    <pretix-widget event="https://pretix.eu/demo/democon/"></pretix-widget>
+    <link rel="stylesheet" type="text/css" href="https://eventyay.com/demo/democon/widget/v1.css">
+    <script type="text/javascript" src="https://eventyay.com/widget/v1.en.js" async></script>
+    <pretix-widget event="https://eventyay.com/demo/democon/"></pretix-widget>
     <noscript>
        <div class="pretix-widget">
             <div class="pretix-widget-info-message">
-                JavaScript is disabled in your browser. To access our ticket shop without javascript, please <a target="_blank" href="https://pretix.eu/demo/democon/">click here</a>.
+                JavaScript is disabled in your browser. To access our ticket shop without javascript, please <a target="_blank" href="https://eventyay.com/demo/democon/">click here</a>.
             </div>
         </div>
     </noscript>
@@ -86,7 +86,7 @@ By default, the checkout process will open in a new tab in your customer's brows
 website. If you confident to have a good reason for not using SSL, you can override this behavior with the
 ``skip-ssl-check`` attribute::
 
-   <pretix-widget event="https://pretix.eu/demo/democon/" skip-ssl-check></pretix-widget>
+   <pretix-widget event="https://eventyay.com/demo/democon/" skip-ssl-check></pretix-widget>
 
 Always open a new tab
 ---------------------
@@ -94,7 +94,7 @@ Always open a new tab
 If you want the checkout process to always open a new tab regardless of screen size, you can pass the ``disable-iframe``
 attribute::
 
-   <pretix-widget event="https://pretix.eu/demo/democon/" disable-iframe></pretix-widget>
+   <pretix-widget event="https://eventyay.com/demo/democon/" disable-iframe></pretix-widget>
 
 
 Pre-selecting a voucher
@@ -102,18 +102,18 @@ Pre-selecting a voucher
 
 You can pre-select a voucher for the widget with the ``voucher`` attribute::
 
-   <pretix-widget event="https://pretix.eu/demo/democon/" voucher="ABCDE123456"></pretix-widget>
+   <pretix-widget event="https://eventyay.com/demo/democon/" voucher="ABCDE123456"></pretix-widget>
 
 This way, the widget will only show products that can be bought with the voucher and prices according to the
 voucher's settings.
 
 .. raw:: html
 
-    <pretix-widget event="https://pretix.eu/demo/democon/" voucher="ABCDE123456"></pretix-widget>
+    <pretix-widget event="https://eventyay.com/demo/democon/" voucher="ABCDE123456"></pretix-widget>
     <noscript>
        <div class="pretix-widget">
             <div class="pretix-widget-info-message">
-                JavaScript is disabled in your browser. To access our ticket shop without javascript, please <a target="_blank" href="https://pretix.eu/demo/democon/">click here</a>.
+                JavaScript is disabled in your browser. To access our ticket shop without javascript, please <a target="_blank" href="https://eventyay.com/demo/democon/">click here</a>.
             </div>
         </div>
     </noscript>
@@ -123,36 +123,36 @@ Disabling the voucher input
 
 If you want to disable voucher input in the widget, you can pass the ``disable-vouchers`` attribute::
 
-   <pretix-widget event="https://pretix.eu/demo/democon/" disable-vouchers></pretix-widget>
+   <pretix-widget event="https://eventyay.com/demo/democon/" disable-vouchers></pretix-widget>
 
 Filtering products
 ------------------
 
 You can filter the products shown in the widget by passing in a list of product IDs::
 
-   <pretix-widget event="https://pretix.eu/demo/democon/" items="23,42"></pretix-widget>
+   <pretix-widget event="https://eventyay.com/demo/democon/" items="23,42"></pretix-widget>
 
 Alternatively, you can select one or more categories to be shown::
 
-   <pretix-widget event="https://pretix.eu/demo/democon/" categories="12,25"></pretix-widget>
+   <pretix-widget event="https://eventyay.com/demo/democon/" categories="12,25"></pretix-widget>
 
 Multi-event selection
 ---------------------
 
 If you want to embed multiple events in a single widget, you can do so. If it's multiple dates of an event series, just leave off the ``series`` attribute::
 
-   <pretix-widget event="https://pretix.eu/demo/series/"></pretix-widget>
+   <pretix-widget event="https://eventyay.com/demo/series/"></pretix-widget>
 
 If you want to include all your public events, you can just reference your organizer::
 
-   <pretix-widget event="https://pretix.eu/demo/"></pretix-widget>
+   <pretix-widget event="https://eventyay.com/demo/"></pretix-widget>
 
 There is an optional ``style`` parameter that let's you choose between a monthly calendar view, a week view and a list
 view. If you do not set it, the choice will be taken from your organizer settings::
 
-   <pretix-widget event="https://pretix.eu/demo/series/" style="list"></pretix-widget>
-   <pretix-widget event="https://pretix.eu/demo/series/" style="calendar"></pretix-widget>
-   <pretix-widget event="https://pretix.eu/demo/series/" style="week"></pretix-widget>
+   <pretix-widget event="https://eventyay.com/demo/series/" style="list"></pretix-widget>
+   <pretix-widget event="https://eventyay.com/demo/series/" style="calendar"></pretix-widget>
+   <pretix-widget event="https://eventyay.com/demo/series/" style="week"></pretix-widget>
 
 If you have more than 100 events, the system might refuse to show a list view and always show a calendar for performance
 reasons instead.
@@ -161,11 +161,11 @@ You can see an example here:
 
 .. raw:: html
 
-    <pretix-widget event="https://pretix.eu/demo/series/" style="calendar"></pretix-widget>
+    <pretix-widget event="https://eventyay.com/demo/series/" style="calendar"></pretix-widget>
     <noscript>
        <div class="pretix-widget">
             <div class="pretix-widget-info-message">
-                JavaScript is disabled in your browser. To access our ticket shop without javascript, please <a target="_blank" href="https://pretix.eu/demo/series/">click here</a>.
+                JavaScript is disabled in your browser. To access our ticket shop without javascript, please <a target="_blank" href="https://eventyay.com/demo/series/">click here</a>.
             </div>
         </div>
     </noscript>
@@ -173,7 +173,7 @@ You can see an example here:
 You can filter events by meta data attributes. You can create those attributes in your order profile and set their values in both event and series date
 settings. For example, if you set up a meta data property called "Promoted" that you set to "Yes" on some events, you can pass a filter like this::
 
-   <pretix-widget event="https://pretix.eu/demo/series/" style="list" filter="attr[Promoted]=Yes"></pretix-widget>
+   <pretix-widget event="https://eventyay.com/demo/series/" style="list" filter="attr[Promoted]=Yes"></pretix-widget>
 
 pretix Button
 -------------
@@ -184,11 +184,11 @@ You can try out this behavior here:
 
 .. raw:: html
 
-    <pretix-button event="https://pretix.eu/demo/democon/" items="item_6424=1">Buy ticket!</pretix-button>
+    <pretix-button event="https://eventyay.com/demo/democon/" items="item_6424=1">Buy ticket!</pretix-button>
     <noscript>
        <div class="pretix-widget">
             <div class="pretix-widget-info-message">
-                JavaScript is disabled in your browser. To access our ticket shop without javascript, please <a target="_blank" href="https://pretix.eu/demo/democon/">click here</a>.
+                JavaScript is disabled in your browser. To access our ticket shop without javascript, please <a target="_blank" href="https://eventyay.com/demo/democon/">click here</a>.
             </div>
         </div>
     </noscript>
@@ -197,7 +197,7 @@ You can try out this behavior here:
 You can embed the pretix Button just like the pretix Widget. Just like above, first embed the CSS and JavaScript
 resources. Then, instead of the ``pretix-widget`` tag, use the ``pretix-button`` tag::
 
-    <pretix-button event="https://pretix.eu/demo/democon/" items="item_6424=1">
+    <pretix-button event="https://eventyay.com/demo/democon/" items="item_6424=1">
         Buy ticket!
     </pretix-button>
 
@@ -277,7 +277,7 @@ If you display the widget in a restricted area of your website and you want to p
 with known user data to save your users some typing and increase conversions, you can pass additional data attributes
 with that information::
 
-    <pretix-widget event="https://pretix.eu/demo/democon/"
+    <pretix-widget event="https://eventyay.com/demo/democon/"
         data-attendee-name-given-name="John"
         data-attendee-name-family-name="Doe"
         data-invoice-address-name-given-name="John"

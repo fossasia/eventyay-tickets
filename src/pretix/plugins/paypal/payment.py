@@ -80,7 +80,7 @@ class Paypal(BasePaymentProvider):
                      min_length=80,
                      help_text=_('<a target="_blank" rel="noopener" href="{docs_url}">{text}</a>').format(
                          text=_('Click here for a tutorial on how to obtain the required keys'),
-                         docs_url='https://docs.pretix.eu/en/latest/user/payments/paypal.html'
+                         docs_url='https://docs.eventyay.com/en/latest/user/payments/paypal.html'
                      )
                  )),
                 ('secret',

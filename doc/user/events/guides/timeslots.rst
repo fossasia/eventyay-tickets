@@ -91,4 +91,4 @@ Now, download our `Android or Desktop app`_ and register it to your account. The
 time slots, but it does not matter, you can select any one of them and then select your newly created check-in list.
 That's it, you're good to go!
 
-.. _Android or Desktop app: https://pretix.eu/about/en/scan
+.. _Android or Desktop app: https://eventyay.com/about/en/scan

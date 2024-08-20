@@ -22,7 +22,7 @@ API (see below). pretix currently only supports tokens signed with ``HMAC-SHA256
 whatever JSON you'd like to pass on based on the same variables, for example::
 
     {
-        "iss": "pretix.eu",
+        "iss": "eventyay.com",
         "aud": "webinars.example.com",
         "user": {
             "id": "{order_code}-{positionid}",
@@ -119,7 +119,7 @@ API Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/digitalcontents/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -171,7 +171,7 @@ API Endpoints
    .. sourcecode:: http
 
       GET /api/v1/organizers/bigevents/events/sampleconf/digitalcontents/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
@@ -216,7 +216,7 @@ API Endpoints
    .. sourcecode:: http
 
       POST /api/v1/organizers/bigevents/events/sampleconf/digitalcontents/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
       Content-Length: 166
@@ -283,7 +283,7 @@ API Endpoints
    .. sourcecode:: http
 
       PATCH /api/v1/organizers/bigevents/events/sampleconf/digitalcontents/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
       Content-Type: application/json
       Content-Length: 34
@@ -336,7 +336,7 @@ API Endpoints
    .. sourcecode:: http
 
       DELETE /api/v1/organizers/bigevents/events/sampleconf/digitalcontents/1/ HTTP/1.1
-      Host: pretix.eu
+      Host: eventyay.com
       Accept: application/json, text/javascript
 
    **Example response**:
