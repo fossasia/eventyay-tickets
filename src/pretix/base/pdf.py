@@ -6,6 +6,7 @@ import os
 import subprocess
 import tempfile
 import uuid
+import json
 from collections import OrderedDict
 from functools import partial
 from io import BytesIO
@@ -552,11 +553,11 @@ class Renderer:
 
     def _draw_barcodearea(self, canvas: Canvas, op: OrderPosition, o: dict):
         content = o.get('content', 'secret')
-        if content == 'secret':
-            content = op.secret
-        elif content == 'pseudonymization_id':
-            content = op.pseudonymization_id
-
+        content_dict = {
+                'ticket': op.secret,
+                'lead': op.pseudonymization_id
+        }
+        content = json.dumps(content_dict)
         level = 'H'
         if len(content) > 32:
             level = 'M'
