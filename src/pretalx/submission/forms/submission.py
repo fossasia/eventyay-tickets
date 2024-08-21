@@ -400,6 +400,7 @@ class SubmissionFilterForm(forms.Form):
     ):
         if question and (answer or option):
             if option:
+                option = option.pk if hasattr(option, "pk") else option
                 answers = Answer.objects.filter(
                     submission_id=OuterRef("pk"),
                     question_id=question,
