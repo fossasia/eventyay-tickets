@@ -66,6 +66,12 @@
             {% if filter_form.track %}{% bootstrap_field filter_form.track %}{% endif %}
             {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}
             {% if filter_form.content_locale %}{% bootstrap_field filter_form.content_locale %}{% endif %}
+            {# These fields are hidden, but included to keep question search intact #}
+            {% if request.GET.question %} <input type="hidden" name="question" value="{{ request.GET.question }}"> {% endif %}
+            {% if request.GET.answer__options %} <input type="hidden" name="answer__options" value="{{ request.GET.answer__options }}"> {% endif %}
+            {% if request.GET.answer %} <input type="hidden" name="answer" value="{{ request.GET.answer }}"> {% endif %}
+            {% if request.GET.unanswered %} <input type="hidden" name="unanswered" value="{{ request.GET.unanswered }}"> {% endif %}
+
             <button class="btn btn-success" type="submit">{% translate "Search" %}</button>
         </form>
         {% if filter_form.is_valid and filter_form.cleaned_data.question %}

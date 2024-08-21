@@ -3,12 +3,10 @@
 Release Notes
 =============
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+- :bug:`orga:submission` When organisers filtered the session list by specific question answers, adding search terms or filters would reset the question filter.
+- :feature:`schedule,1002` Logged-in users can now download an iCal file with their starred talks.
+- :feature:`schedule` For logged in users, pretalx will now save the list of starred/favourited talks, so that you can sync the starred talks across devices.
+- :feature:`schedule` If a talk won't be recorded, this will now be shown in the schedule, rather than just on the individual talk pages.
 - :feature:`schedule,1794` The iCal schedule export has been made private (available only to organisers) as the utility of importing a conference's entire schedule is limited, and people were frustrated that the iCal export did not reflect any applied schedule filters.
 - :bug:`schedule,1803` The QR code for schedule exporter links was not showing up when hovering on the QR code symbol.
 - :release:`2024.2.1 <2024-08-07>`
@@ -18,29 +16,17 @@ Release Notes
 - :bug:`orga` The markdown preview posed a security vulnerability by allowing speakers and organisers to include unsafe JavaScript. This JavaScript would only be executed when accessing the preview, i.e. when a speaker or organiser opened to proposal page (not attendees or the public). Thanks to Jorian Woltjer for reporting this issue.
 - :feature:`api` The submission API now has a filter for the ``is_featured`` field.
 - :feature:`cfp,1761` In the CfP submission multi-step form, the tab title now reflects the proposal title, to make it easier to work on multiple proposal submissions at the same time.
-=======
->>>>>>> f8d800d83 (Fix proposal count in filtered speaker list)
 - :bug:`orga:speaker,1768` When filtering the speaker list by only accepted/confirmed speakers, the listed proposal count would be incorrect (inflated).
 - :feature:`cfp,1574` pretalx now supports the ``~~`` strikethrough syntax in Markdown.
 - :bug:`orga:schedule,1702` Sessions starting at exactly midnight of the first day of the event would not show up in the schedule editor (but could be scheduled there by dropping them on the day heading).
 - :feature:`orga:schedule,1730` The schedule editor now allows you to schedule talks that are only "pending accepted" (i.e. the speaker has not yet received the acceptance email), so that organisers can try out how their schedule would look with a given number of tentatively accepted proposals.
-=======
->>>>>>> 06d76a0bd (Add new user list for administrators)
-=======
 - :feature:`orga:schedule` The schedule editor now allows you to schedule talks that are only "pending accepted" (i.e. the speaker has not yet received the acceptance email), so that organisers can try out how their schedule would look with a given number of tentatively accepted proposals.
->>>>>>> febf47ce8 (Small fixes to #1732)
-=======
 - :bug:`orga:schedule,1702` Sessions starting at exactly midnight of the first day of the event would not show up in the schedule editor (but could be scheduled there by dropping them on the day heading).
 - :feature:`orga:schedule,1730` The schedule editor now allows you to schedule talks that are only "pending accepted" (i.e. the speaker has not yet received the acceptance email), so that organisers can try out how their schedule would look with a given number of tentatively accepted proposals.
->>>>>>> 9451c6e19 (Fix invisible sessions at midnight on the first day)
 - :feature:`orga` Administrators (i.e. instance owners) can now search a list of all users, which includes their teams and permissions, and links to trigger account deletion and password resets.
 - :bug:`orga:review` Assigning reviewers could lead to incorrect assignments when browsers cached the form, but new reviewers were added to the team, shifting the overall order of input fields.
 - :feature:`cfp` Choice and multiple choice questions now use a drop-down with typeahead (search for options) when they have a lot of options.
-=======
->>>>>>> 2f90329a3 (Show image preview to organisers)
-=======
 - :feature:`cfp` Choice and multiple choice questions now use a drop-down with typeahead (search for options) when they have a lot of options.
->>>>>>> c326d2761 (Add typeahead to questions with many options)
 - :feature:`orga,1079` All images in forms in the organiser area now include a preview of the saved image, and open a lightbox instead of the image file when clicked.
 - :announcement:`admin` We now recommend that you use a virtualenv instead of the ``pip --user`` installation method, and have updated our install and upgrade documentation accordingly.
 - :bug:`orga` While organisers could reorder questions, and the order was saved and used in the frontend, the new order was not shown in the organiser backend.
