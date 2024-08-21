@@ -335,7 +335,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
             )
             if self.filter_question:
                 self.filter_option = self.filter_question.options.filter(
-                    pk=initial.get("option")
+                    pk=initial.get("answer__options")
                 ).first()
                 self.filter_answer = initial.get("answer")
                 self.filter_unanswered = initial.get("unanswered")
@@ -421,7 +421,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
     def clean_question(self):
         return getattr(self, "filter_question", None)
 
-    def clean_option(self):
+    def clean_answer__options(self):
         return getattr(self, "filter_option", None)
 
     def clean_answer(self):

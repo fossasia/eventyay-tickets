@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`orga:email` When sending an email to only speakers with a specific question answer, emails would instead be generated (and placed in the outbox, not sent!) to all speakers.
 - :bug:`orga:submission` When organisers filtered the session list by specific question answers, adding search terms or filters would reset the question filter.
 - :feature:`schedule,1002` Logged-in users can now download an iCal file with their starred talks.
 - :feature:`schedule` For logged in users, pretalx will now save the list of starred/favourited talks, so that you can sync the starred talks across devices.
