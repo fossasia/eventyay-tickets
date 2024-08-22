@@ -48,14 +48,14 @@ export default {
 		value: [Delta, Object],
 		label: String
 	},
-	data () {
+	data() {
 		return {
 			quill: null,
 			uploading: false,
 		}
 	},
 	computed: {},
-	mounted () {
+	mounted() {
 		Quill.register('themes/bunt', BuntTheme, false)
 		Quill.register(VideoResponsive)
 		Quill.register(fullWidthFormat)
@@ -109,15 +109,15 @@ export default {
 		this.quill.on('selection-change', this.onSelectionchange)
 		this.quill.on('text-change', this.onTextchange)
 	},
-	destroyed () {
+	destroyed() {
 		this.quill.off('selection-change', this.onSelectionchange)
 		this.quill.off('text-change', this.onTextchange)
 	},
 	methods: {
-		onTextchange (delta, oldContents, source) {
+		onTextchange(delta, oldContents, source) {
 			this.$emit('input', this.quill.getContents())
 		},
-		onSelectionchange (range, oldRange, source) {
+		onSelectionchange(range, oldRange, source) {
 			if (range === null && oldRange !== null) {
 				this.$refs.outline.blur()
 			} else if (range !== null && oldRange === null) {

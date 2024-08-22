@@ -14,12 +14,12 @@ export default {
 	props: {
 		room: Object
 	},
-	data () {
+	data() {
 		return {
 			linkCache
 		}
 	},
-	async created () {
+	async created() {
 		if (!linkCache || linkCache.room !== this.room) {
 			const { url } = await api.call('room.invite.anonymous.link', {room: this.room.id})
 			linkCache = {

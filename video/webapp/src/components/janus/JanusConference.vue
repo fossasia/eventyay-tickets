@@ -166,7 +166,7 @@ export default {
 			default: 'normal'
 		},
 	},
-	data () {
+	data() {
 		return {
 			// State machines
 			connectionState: 'disconnected', // disconnected, connecting, connected, failed
@@ -237,13 +237,13 @@ export default {
 	computed: {
 		...mapState(['user']),
 
-		sortedParticipants () {
+		sortedParticipants() {
 			return this.participants.slice().sort((a, b) => a.venueless_user && b.venueless_user ? a.venueless_user.profile.display_name.localeCompare(b.venueless_user.profile.display_name) : 1)
 		},
-		sortedFeeds () {
+		sortedFeeds() {
 			return this.feeds.slice().sort((a, b) => a.venueless_user && b.venueless_user ? a.venueless_user.profile.display_name.localeCompare(b.venueless_user.profile.display_name) : 1)
 		},
-		gridStyle () {
+		gridStyle() {
 			return {
 				'--video-width': `${this.layout.width}px`,
 				'--video-height': `${this.layout.height}px`,
@@ -251,14 +251,14 @@ export default {
 		},
 	},
 	watch: {
-		feeds () {
+		feeds() {
 			this.onResize()
 		},
-		videoPublishingState () {
+		videoPublishingState() {
 			this.onResize()
 		}
 	},
-	destroyed () {
+	destroyed() {
 		if (this.janus) {
 			this.cleanup()
 		}
@@ -266,7 +266,7 @@ export default {
 			window.clearTimeout(this.connectionRetryTimeout)
 		}
 	},
-	mounted () {
+	mounted() {
 		LOG_ENTRIES.splice(0, LOG_ENTRIES.length)
 		if (this.janus) {
 			this.cleanup()
@@ -278,12 +278,12 @@ export default {
 		}, 10000)
 	},
 	methods: {
-		collectTrace () {
+		collectTrace() {
 			// Yes, passing a function to a component is an antipattern in Vue, but I'm worried about the performance
 			// penalty on Vue computing reactivity on our log which might get large.
 			return LOG_ENTRIES
 		},
-		cleanup () {
+		cleanup() {
 			this.janus.destroy({cleanupHandles: true})
 			this.connectionState = 'disconnected'
 			this.audioReceivingState = 'pending'
@@ -299,7 +299,7 @@ export default {
 			this.ourStream = null
 			this.ourScreenShareStream = null
 		},
-		onResize () {
+		onResize() {
 			const bbox = this.$refs.container.getBoundingClientRect()
 			this.layout = calculateLayout(
 				this.size === 'tiny' ? bbox.width : bbox.width - 16 * 2,
@@ -309,10 +309,10 @@ export default {
 				this.size === 'tiny' ? 0 : 8,
 			)
 		},
-		requestFullscreen (el) {
+		requestFullscreen(el) {
 			document.querySelector(el).requestFullscreen()
 		},
-		closeDevicePrompt () {
+		closeDevicePrompt() {
 			this.showDevicePrompt = false
 			if (this.videoOutput !== (localStorage.videoOutput !== 'false')) {
 				this.videoOutput = (localStorage.videoOutput !== 'false')
@@ -334,7 +334,7 @@ export default {
 				this.$refs.mixedAudio.setSinkId(localStorage.audioOutput || '')
 			}
 		},
-		async showUserCard (event, user) {
+		async showUserCard(event, user) {
 			this.selectedUser = user
 			await this.$nextTick()
 			const target = event.target.closest('.user, .participant')
@@ -354,7 +354,7 @@ export default {
 				}]
 			})
 		},
-		toggleScreenShare () {
+		toggleScreenShare() {
 			if (this.screensharingState === 'published') {
 				this.screensharingState = 'unpublishing'
 				this.screensharePluginHandle.send({message: {request: 'unpublish'}})
@@ -475,11 +475,11 @@ export default {
 					})
 			}
 		},
-		toggleVideo () {
+		toggleVideo() {
 			this.videoRequested = !this.videoRequested
 			this.publishOwnVideo()
 		},
-		disableAllVideo () {
+		disableAllVideo() {
 			this.videoRequested = false
 			localStorage.videoOutput = false
 
@@ -491,7 +491,7 @@ export default {
 			this.videoOutput = (localStorage.videoOutput !== 'false')
 			this.publishOwnVideo()
 		},
-		toggleMute () {
+		toggleMute() {
 			if (this.audioPluginHandle == null) {
 				return
 			}
@@ -505,7 +505,7 @@ export default {
 			}
 			this.knownMuteState = this.audioPluginHandle.isAudioMuted()
 		},
-		publishOwnVideo () {
+		publishOwnVideo() {
 			const media = {
 				audioRecv: false,
 				videoRecv: false,
@@ -555,7 +555,7 @@ export default {
 					},
 				})
 		},
-		publishOwnAudio () {
+		publishOwnAudio() {
 			const media = {video: false}
 			if (localStorage.audioInput) {
 				media.audio = {deviceId: localStorage.audioInput}
@@ -576,7 +576,7 @@ export default {
 				},
 			})
 		},
-		publishOwnScreenshareFeed () {
+		publishOwnScreenshareFeed() {
 			// TODO: framerate? default of 3 is pretty low
 			// TODO: currently, the "local" screenshare stream isn't handled specially, but also shown as a remote feed. This
 			// should probably be changed, since this causes an echo when a tab is shared with audio
@@ -599,7 +599,7 @@ export default {
 					},
 				})
 		},
-		subscribeRemoteVideo (id, display, audio, video) {
+		subscribeRemoteVideo(id, display, audio, video) {
 			if (!this.videoOutput && !id.includes('_screenshare_')) {
 				return
 			}
@@ -725,7 +725,7 @@ export default {
 				}
 			})
 		},
-		onJanusConnected () {
+		onJanusConnected() {
 			// Roughly based on https://janus.conf.meetecho.com/audiobridgetest.js
 			this.janus.attach(
 				{
@@ -916,7 +916,7 @@ export default {
 					},
 				})
 		},
-		connectVideoroom () {
+		connectVideoroom() {
 			// Roughly based on https://janus.conf.meetecho.com/videoroomtest.js
 			this.janus.attach(
 				{
@@ -1102,7 +1102,7 @@ export default {
 					},
 				})
 		},
-		onJanusInitialized () {
+		onJanusInitialized() {
 			this.connectionState = 'connecting'
 			Janus.trace = (t) => log('janus', 'trace', t)
 			Janus.debug = (t) => log('janus', 'debug', t)
@@ -1126,7 +1126,7 @@ export default {
 				},
 			})
 		},
-		initJanus () {
+		initJanus() {
 			this.connectionState = 'connecting'
 			Janus.init({
 				debug: 'all', // todo: conditional
@@ -1136,7 +1136,7 @@ export default {
 				})
 			})
 		},
-		async fetchUser (feed) {
+		async fetchUser(feed) {
 			const uid = feed.rfid || feed.id
 			let user = this.userCache[uid]
 			if (!user) {

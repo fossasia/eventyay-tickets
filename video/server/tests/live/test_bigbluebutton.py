@@ -137,7 +137,10 @@ async def test_bbb_down(bbb_room):
         async with world_communicator(named=True) as c:
             await c.send_json_to(["bbb.room_url", 123, {"room": str(bbb_room.id)}])
 
-            m.get(re.compile(r"^https://video1.pretix.eu/bigbluebutton.*$"), status=500)
+            m.get(
+                re.compile(r"^https://video1.pretix.eu/bigbluebutton.*$"),
+                status=500,
+            )
 
             response = await c.receive_json_from()
             assert response[0] == "error"

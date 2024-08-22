@@ -13,7 +13,11 @@ class Migration(migrations.Migration):
             model_name="user",
             name="moderation_state",
             field=models.CharField(
-                choices=[("", "None"), ("silenced", "Silenced"), ("banned", "Banned")],
+                choices=[
+                    ("", "None"),
+                    ("silenced", "Silenced"),
+                    ("banned", "Banned"),
+                ],
                 default="",
                 max_length=8,
             ),

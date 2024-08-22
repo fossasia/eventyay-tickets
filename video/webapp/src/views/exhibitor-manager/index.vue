@@ -18,7 +18,7 @@ import api from 'lib/api'
 
 export default {
 	components: {},
-	data () {
+	data() {
 		return {
 			exhibitors: []
 		}
@@ -26,10 +26,10 @@ export default {
 	computed: {
 		...mapGetters(['hasPermission']),
 	},
-	async created () {
+	async created() {
 		this.exhibitors = (await api.call('exhibition.list.all', {})).exhibitors // TODO: get exhibitions based on permission
 	},
-	mounted () {
+	mounted() {
 		this.$nextTick(() => {
 		})
 	},

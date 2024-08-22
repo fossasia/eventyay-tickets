@@ -16,16 +16,16 @@ export default {
 	props: {
 		room: Object
 	},
-	data () {
+	data() {
 		return {
 			exhibitors: null
 		}
 	},
 	computed: {},
-	async created () {
+	async created() {
 		this.exhibitors = (await api.call('exhibition.list', {room: this.room.id})).exhibitors
 	},
-	mounted () {
+	mounted() {
 		this.$nextTick(() => {
 		})
 	},

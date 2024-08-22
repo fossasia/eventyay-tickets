@@ -43,7 +43,7 @@ export default {
 			default: false
 		}
 	},
-	data () {
+	data() {
 		return {
 			typeComponents: {
 				stage: Stage,
@@ -61,17 +61,17 @@ export default {
 		}
 	},
 	computed: {
-		modules () {
+		modules() {
 			return this.config?.module_config.reduce((acc, module) => {
 				acc[module.type] = module
 				return acc
 			}, {})
 		},
-		inferredType () {
+		inferredType() {
 			return inferType(this.config)
 		}
 	},
-	validations () {
+	validations() {
 		const config = {
 			name: {
 				required: required('name is required')
@@ -89,7 +89,7 @@ export default {
 		return { config }
 	},
 	methods: {
-		async save () {
+		async save() {
 			this.error = null
 			this.$v.$touch()
 			if (this.$v.$invalid) return

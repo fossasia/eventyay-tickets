@@ -5,8 +5,8 @@ const TRANSLITERATIONS = {
 	ß: 'ss'
 }
 
-export function phonyMatcher (searchTerm) {
-	function normalize (value) {
+export function phonyMatcher(searchTerm) {
+	function normalize(value) {
 		return value
 			.replace(/[äöüß]/g, (char) => TRANSLITERATIONS[char])
 			.replace(/[\s_\-,;.:/\\]+/g, ' ') // compact whitespace and separators

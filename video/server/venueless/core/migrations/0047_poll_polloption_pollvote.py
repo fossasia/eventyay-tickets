@@ -38,7 +38,10 @@ class Migration(migrations.Migration):
                 (
                     "poll_type",
                     models.CharField(
-                        choices=[("choice", "Choice"), ("multi", "Multi Choice")],
+                        choices=[
+                            ("choice", "Choice"),
+                            ("multi", "Multi Choice"),
+                        ],
                         default="choice",
                         max_length=6,
                     ),

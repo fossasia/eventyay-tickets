@@ -182,7 +182,11 @@ def convert(io, timezone=None):
             "url": "URL",
         },
         mandatory_fields=["Title", "Start", "End", "Room ID"],
-        methods={"start": to_event_iso, "end": to_event_iso, "speakers": to_list},
+        methods={
+            "start": to_event_iso,
+            "end": to_event_iso,
+            "speakers": to_list,
+        },
     )
     validate_data(result)
     return json.dumps(result, indent=4)

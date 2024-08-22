@@ -27,7 +27,8 @@ class QuestionModule(BaseModule):
 
     @command("ask")
     @room_action(
-        permission_required=Permission.ROOM_QUESTION_ASK, module_required="question"
+        permission_required=Permission.ROOM_QUESTION_ASK,
+        module_required="question",
     )
     async def ask_question(self, body):
         if not self.module_config.get("active", False):
@@ -39,9 +40,11 @@ class QuestionModule(BaseModule):
             content=body.get("content"),
             sender=self.consumer.user,
             room=self.room,
-            state=Question.States.MOD_QUEUE
-            if requires_moderation
-            else Question.States.VISIBLE,
+            state=(
+                Question.States.MOD_QUEUE
+                if requires_moderation
+                else Question.States.VISIBLE
+            ),
         )
 
         await self.consumer.send_success({"question": question})
@@ -121,7 +124,8 @@ class QuestionModule(BaseModule):
 
     @command("vote")
     @room_action(
-        permission_required=Permission.ROOM_QUESTION_VOTE, module_required="question"
+        permission_required=Permission.ROOM_QUESTION_VOTE,
+        module_required="question",
     )
     async def vote(self, body):
         if not self.module_config.get("active", False):

@@ -71,7 +71,7 @@ export default {
 	props: {
 		posterId: String
 	},
-	data () {
+	data() {
 		return {
 			poster: null,
 			pdfLoadFailed: false,
@@ -81,29 +81,29 @@ export default {
 		}
 	},
 	computed: {
-		presentationRoom () {
+		presentationRoom() {
 			if (!this.poster?.presentation_room_id) return
 			return this.$store.state.rooms.find(room => room.id === this.poster.presentation_room_id)
 		},
-		parentRoom () {
+		parentRoom() {
 			if (!this.poster?.parent_room_id) return
 			return this.$store.state.rooms.find(room => room.id === this.poster.parent_room_id)
 		},
-		posterModule () {
+		posterModule() {
 			return this.parentRoom?.modules?.find(module => module.type === 'poster.native')
 		},
-		session () {
+		session() {
 			if (!this.poster?.schedule_session || !this.$store.getters['schedule/sessions']) return
 			return this.$store.getters['schedule/sessions'].find(session => session.id === this.poster.schedule_session)
 		},
-		categoriesLookup () {
+		categoriesLookup() {
 			if (!this.posterModule?.config.categories) return {}
 			return this.posterModule.config.categories.reduce((acc, category) => {
 				acc[category.id] = category
 				return acc
 			}, {})
 		},
-		tagsLookup () {
+		tagsLookup() {
 			if (!this.posterModule?.config.tags) return {}
 			return this.posterModule.config.tags.reduce((acc, tag) => {
 				acc[tag.id] = tag
@@ -112,19 +112,19 @@ export default {
 		},
 	},
 	watch: {
-		async activeTab () {
+		async activeTab() {
 			if (this.activeTab === 'poster') {
 				await this.$nextTick()
 				this.renderPdf()
 			}
 		}
 	},
-	async created () {
+	async created() {
 		this.poster = await api.call('poster.get', {poster: this.posterId})
 		this.renderPdf()
 	},
 	methods: {
-		async renderPdf () {
+		async renderPdf() {
 			this.pdfLoadFailed = false
 			await this.$nextTick()
 			try {
@@ -145,7 +145,7 @@ export default {
 				this.pdfLoadFailed = true
 			}
 		},
-		async like () {
+		async like() {
 			// TODO error handling
 			if (this.poster.has_voted) {
 				await api.call('poster.unvote', {poster: this.poster.id})
@@ -157,7 +157,7 @@ export default {
 				this.poster.has_voted = true
 			}
 		},
-		async showUserCard (event, user) {
+		async showUserCard(event, user) {
 			this.selectedUser = user
 			await this.$nextTick()
 			const target = event.target.closest('.presenter')

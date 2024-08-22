@@ -30,13 +30,13 @@ export default {
 		},
 		tooltipOptions: Object
 	},
-	data () {
+	data() {
 		return {
 			showTooltip: false
 		}
 	},
 	methods: {
-		iconClass () {
+		iconClass() {
 			if (this.$slots.default[0].tag) return
 			return iconHelper.getClass(this.$slots.default[0].text)
 		}

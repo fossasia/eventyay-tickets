@@ -23,7 +23,7 @@ export default {
 	props: {
 		roomId: String
 	},
-	data () {
+	data() {
 		return {
 			fullscreen: false,
 			themedBackground: true,
@@ -33,16 +33,16 @@ export default {
 	},
 	computed: {
 		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'user', 'world', 'rooms']),
-		errorMessage () {
+		errorMessage() {
 			return this.fatalConnectionError?.code || this.fatalError?.message
 		},
-		room () {
+		room() {
 			return this.rooms?.find(room => room.id === this.$route.params.roomId) || this.rooms?.[0]
 		},
-		config () {
+		config() {
 			return this.user?.profile ?? {}
 		},
-		style () {
+		style() {
 			return {
 				'--scale': this.scale.toFixed(1),
 				'--clr-standalone-bg': this.config.background_color ?? 'var(--clr-primary)',
@@ -51,24 +51,24 @@ export default {
 		}
 	},
 	watch: {
-		room (newRoom, oldRoom) {
+		room(newRoom, oldRoom) {
 			if (newRoom === oldRoom) return
 			this.$store.dispatch('changeRoom', this.room)
 		}
 	},
-	created () {
+	created() {
 		this.$store.dispatch('changeRoom', this.room)
 		this.fullscreen = this.$route.query.fullscreen ?? (!this.$route.name.endsWith('chat') && !this.$route.name.endsWith('anonymous'))
 	},
-	mounted () {
+	mounted() {
 		window.addEventListener('resize', this.computeScale)
 		this.computeScale()
 	},
-	beforeDestroy () {
+	beforeDestroy() {
 		window.removeEventListener('resize', this.computeScale)
 	},
 	methods: {
-		computeScale () {
+		computeScale() {
 			if (!this.fullscreen) return
 			const width = document.body.offsetWidth
 			const height = document.body.offsetHeight

@@ -239,9 +239,11 @@ class BBBService:
             record=config.get("record", False),
             voice_bridge=config.get("voice_bridge", None),
             prefer_server=config.get("prefer_server", None),
-            guest_policy="ASK_MODERATOR"
-            if config.get("waiting_room", False)
-            else "ALWAYS_ACCEPT",
+            guest_policy=(
+                "ASK_MODERATOR"
+                if config.get("waiting_room", False)
+                else "ALWAYS_ACCEPT"
+            ),
         )
         create_url = get_url("create", create_params, server.url, server.secret)
 
@@ -273,14 +275,18 @@ class BBBService:
                 "meetingID": create_params["meetingID"],
                 "fullName": escape_name(user.profile.get("display_name", "")),
                 "userID": str(user.pk),
-                "password": create_params["moderatorPW"]
-                if moderator
-                else create_params["attendeePW"],
+                "password": (
+                    create_params["moderatorPW"]
+                    if moderator
+                    else create_params["attendeePW"]
+                ),
                 "joinViaHtml5": "true",
                 **avatar,
-                "guest": "true"
-                if not moderator and config.get("waiting_room", False)
-                else "false",
+                "guest": (
+                    "true"
+                    if not moderator and config.get("waiting_room", False)
+                    else "false"
+                ),
                 "userdata-bbb_custom_style_url": scheme
                 + self.world.domain
                 + reverse("live:css.bbb"),
@@ -387,7 +393,8 @@ class BBBService:
                             # Work around an upstream bug
                             if "///" in url_video:
                                 url_video = url_video.replace(
-                                    "///", f"//{urlparse(recordings_url).hostname}/"
+                                    "///",
+                                    f"//{urlparse(recordings_url).hostname}/",
                                 )
                         if (
                             not url_presentation

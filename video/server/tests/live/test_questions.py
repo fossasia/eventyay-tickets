@@ -64,7 +64,9 @@ async def test_ask_question_when_not_active(inactive_questions_room):
 async def test_ask_question(questions_room, world):
     async with world_communicator(room=questions_room) as c:
         async with world_communicator(
-            room=questions_room, token=get_token(world, ["moderator"]), first=False
+            room=questions_room,
+            token=get_token(world, ["moderator"]),
+            first=False,
         ) as c_mod:
             await c.send_json_to(
                 [

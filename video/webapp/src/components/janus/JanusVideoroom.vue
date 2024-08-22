@@ -158,7 +158,7 @@ export default {
 			default: 'normal'
 		},
 	},
-	data () {
+	data() {
 		return {
 			// State machines
 			connectionState: 'disconnected', // disconnected, connecting, connected, failed
@@ -223,7 +223,7 @@ export default {
 	computed: {
 		...mapState(['user']),
 
-		gridStyle () {
+		gridStyle() {
 			return {
 				'--video-width': `${this.layout.width}px`,
 				'--video-height': `${this.layout.height}px`,
@@ -231,11 +231,11 @@ export default {
 		},
 	},
 	watch: {
-		feeds () {
+		feeds() {
 			this.onResize()
 		}
 	},
-	destroyed () {
+	destroyed() {
 		if (this.janus) {
 			this.cleanup()
 		}
@@ -246,7 +246,7 @@ export default {
 			window.clearInterval(this.soundMeterInterval)
 		}
 	},
-	mounted () {
+	mounted() {
 		LOG_ENTRIES.splice(0, LOG_ENTRIES.length)
 		if (this.janus) {
 			this.cleanup()
@@ -263,12 +263,12 @@ export default {
 		}, 200)
 	},
 	methods: {
-		collectTrace () {
+		collectTrace() {
 			// Yes, passing a function to a component is an antipattern in Vue, but I'm worried about the performance
 			// penalty on Vue computing reactivity on our log which might get large.
 			return LOG_ENTRIES
 		},
-		cleanup () {
+		cleanup() {
 			this.janus.destroy({cleanupHandles: true})
 			this.connectionState = 'disconnected'
 			this.publishingState = 'unpublished'
@@ -284,7 +284,7 @@ export default {
 			}
 			this.soundMeters = {}
 		},
-		onResize () {
+		onResize() {
 			const bbox = this.$refs.container.getBoundingClientRect()
 			this.layout = calculateLayout(
 				this.size === 'tiny' ? bbox.width : bbox.width - 16 * 2,
@@ -294,10 +294,10 @@ export default {
 				this.size === 'tiny' ? 0 : 8,
 			)
 		},
-		requestFullscreen (el) {
+		requestFullscreen(el) {
 			document.querySelector(el).requestFullscreen()
 		},
-		closeDevicePrompt () {
+		closeDevicePrompt() {
 			this.showDevicePrompt = false
 			if (this.videoOutput !== (localStorage.videoOutput !== 'false')) {
 				// it's probably possible to do this without a full reconnect, but it's probably hard
@@ -314,7 +314,7 @@ export default {
 				}
 			}
 		},
-		async showUserCard (event, user) {
+		async showUserCard(event, user) {
 			this.selectedUser = user
 			await this.$nextTick()
 			const target = event.target.closest('.user')
@@ -334,7 +334,7 @@ export default {
 				}]
 			})
 		},
-		toggleScreenShare () {
+		toggleScreenShare() {
 			if (this.screensharingState === 'published') {
 				this.screensharingState = 'unpublishing'
 				this.screensharePluginHandle.send({message: {request: 'unpublish'}})
@@ -455,12 +455,12 @@ export default {
 					})
 			}
 		},
-		toggleVideo () {
+		toggleVideo() {
 			this.videoRequested = !this.videoRequested
 			localStorage.videoRequested = this.videoRequested
 			this.publishOwnFeed()
 		},
-		disableVideo () {
+		disableVideo() {
 			this.videoRequested = false
 			localStorage.videoRequested = false
 			if (this.videoOutput) {
@@ -471,7 +471,7 @@ export default {
 				this.publishOwnFeed()
 			}
 		},
-		toggleMute () {
+		toggleMute() {
 			if (this.mainPluginHandle == null) {
 				return
 			}
@@ -483,7 +483,7 @@ export default {
 			}
 			this.knownMuteState = this.mainPluginHandle.isAudioMuted()
 		},
-		publishOwnFeed () {
+		publishOwnFeed() {
 			const media = {
 				audioRecv: false,
 				videoRecv: false,
@@ -539,7 +539,7 @@ export default {
 					},
 				})
 		},
-		publishOwnScreenshareFeed () {
+		publishOwnScreenshareFeed() {
 			// TODO: framerate? default of 3 is pretty low
 			// TODO: currently, the "local" screenshare stream isn't handled specially, but also shown as a remote feed. This
 			// should probably be changed, since this causes an echo when a tab is shared with audio
@@ -562,7 +562,7 @@ export default {
 					},
 				})
 		},
-		onNewRemoteFeed (id, display, audio, video) {
+		onNewRemoteFeed(id, display, audio, video) {
 			// A new feed has been published, create a new plugin handle and attach to it as a subscriber
 			let remoteFeed = null
 			this.janus.attach({
@@ -691,7 +691,7 @@ export default {
 				},
 			})
 		},
-		onJanusConnected () {
+		onJanusConnected() {
 			// Roughly based on https://janus.conf.meetecho.com/videoroomtest.js
 			this.janus.attach(
 				{
@@ -890,7 +890,7 @@ export default {
 					},
 				})
 		},
-		initSoundMeter (stream, refname) {
+		initSoundMeter(stream, refname) {
 			const atracks = stream.getAudioTracks()
 			if (!atracks || atracks.length === 0) {
 				return
@@ -906,7 +906,7 @@ export default {
 				// do not fail visibly, it is a nice-to-have feature
 			}
 		},
-		onJanusInitialized () {
+		onJanusInitialized() {
 			this.connectionState = 'connecting'
 			Janus.trace = (t) => log('janus', 'trace', t)
 			Janus.debug = (t) => log('janus', 'debug', t)
@@ -930,7 +930,7 @@ export default {
 				},
 			})
 		},
-		initJanus () {
+		initJanus() {
 			this.connectionState = 'connecting'
 			Janus.init({
 				debug: 'all', // todo: conditional
@@ -940,7 +940,7 @@ export default {
 				})
 			})
 		},
-		async fetchUser (feed) {
+		async fetchUser(feed) {
 			feed.venueless_user = await api.call('januscall.identify', {id: feed.rfid})
 			const rfindex = this.feeds.findIndex((rf) => rf.rfid === feed.rfid)
 			this.$set(this.feeds, rfindex, feed) // force reactivity

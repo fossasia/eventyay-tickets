@@ -20,7 +20,7 @@ export default {
 	},
 	computed: {
 		...mapState(['world']),
-		fields () {
+		fields() {
 			return this.world?.profile_fields
 		}
 	}

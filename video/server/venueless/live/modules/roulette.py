@@ -29,7 +29,10 @@ class RouletteModule(BaseModule):
 
         self.used = True
         request, room_id, recent_pairs = await roulette_request(
-            self.consumer.user, self.room, self.consumer.socket_id, self.module_config
+            self.consumer.user,
+            self.room,
+            self.consumer.socket_id,
+            self.module_config,
         )
         if room_id:
             await self.consumer.send_success(

@@ -152,7 +152,7 @@ async def test_config_get(world):
             "iframe_blockers": {"default": {"enabled": False, "policy_url": None}},
             "title": "Unsere tolle Online-Konferenz",
             "locale": "en",
-            "dateLocale": "en-ie",
+            "date_locale": "en-ie",
             "videoPlayer": None,
             "timezone": "Europe/Berlin",
             "connection_limit": 2,
@@ -189,7 +189,11 @@ async def test_config_get(world):
 async def test_config_patch(world):
     async with world_communicator(token=get_token(world, ["admin"])) as c1:
         await c1.send_json_to(
-            ["world.config.patch", 123, {"title": "Foo", "social_logins": ["gravatar"]}]
+            [
+                "world.config.patch",
+                123,
+                {"title": "Foo", "social_logins": ["gravatar"]},
+            ]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
@@ -199,7 +203,11 @@ async def test_config_patch(world):
         await c1.receive_json_from()
 
         await c1.send_json_to(
-            ["world.config.patch", 123, {"title": "Foo", "social_logins": ["unknown"]}]
+            [
+                "world.config.patch",
+                123,
+                {"title": "Foo", "social_logins": ["unknown"]},
+            ]
         )
         response = await c1.receive_json_from()
         assert response[0] == "error"

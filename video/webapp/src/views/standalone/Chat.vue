@@ -14,14 +14,14 @@ export default {
 	},
 	computed: {
 		...mapState('chat', ['channel', 'members', 'usersLookup', 'timeline', 'fetchingMessages']),
-		module () {
+		module() {
 			return this.room.modules.find(module => module.type === 'chat.native')
 		},
-		filteredTimeline () {
+		filteredTimeline() {
 			return this.timeline.filter(message => message.event_type !== 'channel.member' && message.content.type !== 'deleted' && !message.replaces).reverse()
 		},
 	},
-	created () {
+	created() {
 		this.$store.dispatch('chat/subscribe', {channel: this.module.channel_id, config: this.module.config})
 	}
 }

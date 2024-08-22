@@ -33,7 +33,7 @@ export default {
 	props: {
 		roomId: String
 	},
-	data () {
+	data() {
 		return {
 			error: null,
 			config: null,
@@ -44,11 +44,11 @@ export default {
 		}
 	},
 	computed: {
-		inferredType () {
+		inferredType() {
 			return inferType(this.config)
 		}
 	},
-	async created () {
+	async created() {
 		try {
 			this.config = await api.call('room.config.get', {room: this.roomId})
 		} catch (error) {
@@ -57,7 +57,7 @@ export default {
 		}
 	},
 	methods: {
-		async deleteRoom () {
+		async deleteRoom() {
 			if (this.deletingRoomName !== this.config.name) return
 			this.deleting = true
 			this.deleteError = null

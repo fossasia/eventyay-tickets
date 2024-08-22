@@ -50,7 +50,8 @@ class Migration(migrations.Migration):
                 (
                     "world",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.PROTECT, to="core.World"
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to="core.World",
                     ),
                 ),
             ],

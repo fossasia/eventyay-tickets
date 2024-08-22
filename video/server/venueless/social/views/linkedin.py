@@ -18,7 +18,9 @@ logger = logging.getLogger(__name__)
 def start_view(request):
     try:
         data = loads(
-            request.GET.get("token"), salt="venueless.social.start", max_age=600
+            request.GET.get("token"),
+            salt="venueless.social.start",
+            max_age=600,
         )
     except BadSignature:
         return HttpResponse("Invalid request token", status=403)
@@ -120,9 +122,11 @@ def return_view(request):
         user,
         "linkedin",
         name=d["localizedFirstName"] + " " + d["localizedLastName"],
-        url=("https://www.linkedin.com/in/" + d["vanityName"])
-        if "vanityName" in d
-        else None,
+        url=(
+            ("https://www.linkedin.com/in/" + d["vanityName"])
+            if "vanityName" in d
+            else None
+        ),
         **kwargs,
     )
 

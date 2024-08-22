@@ -44,7 +44,10 @@ class ChatEvent(models.Model):
     edited = models.DateTimeField(null=True)
     event_type = models.CharField(max_length=200)
     replaces = models.ForeignKey(
-        to="ChatEvent", related_name="replaced_by", null=True, on_delete=models.CASCADE
+        to="ChatEvent",
+        related_name="replaced_by",
+        null=True,
+        on_delete=models.CASCADE,
     )
     sender = models.ForeignKey(
         "User",
@@ -86,6 +89,7 @@ class ChatEventReaction(models.Model):
         related_name="reactions",
     )
 
+
 class ChatEventNotification(models.Model):
     recipient = models.ForeignKey(
         "User",
@@ -104,6 +108,7 @@ class ChatEventNotification(models.Model):
 
     def __str__(self):
         return f"Notification for {self.recipient} in event {self.chat_event}"
+
 
 class Membership(models.Model):
     channel = models.ForeignKey(

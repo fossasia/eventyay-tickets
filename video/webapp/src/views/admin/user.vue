@@ -49,7 +49,7 @@ export default {
 	props: {
 		userId: String
 	},
-	data () {
+	data() {
 		return {
 			user: null,
 			userAction: null,
@@ -74,23 +74,23 @@ export default {
 			ownUser: 'user'
 		}),
 	},
-	async created () {
+	async created() {
 		this.user = await api.call('user.fetch', {id: this.userId})
 	},
 	methods: {
-		async openDM () {
+		async openDM() {
 			// TODO loading indicator
 			await this.$store.dispatch('chat/openDirectMessage', {users: [this.user]})
 		},
-		async startCall () {
+		async startCall() {
 			const channel = await this.$store.dispatch('chat/openDirectMessage', {users: [this.user]})
 			await this.$store.dispatch('chat/startCall', {channel})
 		},
-		async completedUserAction () {
+		async completedUserAction() {
 			this.userAction = null
 			this.user = await api.call('user.fetch', {id: this.userId})
 		},
-		async uploadAvatar () {
+		async uploadAvatar() {
 			this.savingAvatar = true
 			await this.$refs.avatar.update()
 			await this.$store.dispatch('adminUpdateUser', {profile: Object.assign({}, this.user.profile, {avatar: this.user.profile.avatar}), id: this.user.id})
@@ -98,7 +98,7 @@ export default {
 			this.savingAvatar = false
 			this.edit = false
 		},
-		async save () {
+		async save() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			this.saving = true

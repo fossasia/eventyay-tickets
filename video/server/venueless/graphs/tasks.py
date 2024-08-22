@@ -228,7 +228,9 @@ def generate_room_views(world, input=None):
                 adds = defaultdict(set)
                 for v in views:
                     bucket = v["start"].replace(
-                        second=0, microsecond=0, minute=v["start"].minute // 5 * 5
+                        second=0,
+                        microsecond=0,
+                        minute=v["start"].minute // 5 * 5,
                     )
                     while bucket < end and (not v["end"] or bucket < v["end"]):
                         adds[bucket].add(v["user"])
@@ -309,9 +311,11 @@ def generate_session_views(world, input=None):
             ws.append(
                 [
                     pretalx_uni18n(talk["title"]),
-                    room_cache[talk["room"]].name
-                    if talk["room"] in room_cache
-                    else "?",
+                    (
+                        room_cache[talk["room"]].name
+                        if talk["room"] in room_cache
+                        else "?"
+                    ),
                     talk_start.astimezone(tz).date(),
                     talk_start.astimezone(tz).time(),
                     talk_end.astimezone(tz).date(),
@@ -607,7 +611,10 @@ def generate_attendee_session_list(world, input=None):
             sum_views = min(
                 sum(
                     (
-                        min(v.end or min(now(), v.start + timedelta(hours=3)), talk_end)
+                        min(
+                            v.end or min(now(), v.start + timedelta(hours=3)),
+                            talk_end,
+                        )
                         - max(v.start, talk_start)
                         for v in u.room_views_for_talk
                     ),

@@ -79,9 +79,9 @@ class Exhibitor(models.Model):
             social_media_links=social_media_links,
             staff=staff,
             room_id=str(self.room_id),
-            highlighted_room_id=str(self.highlighted_room_id)
-            if self.highlighted_room_id
-            else None,
+            highlighted_room_id=(
+                str(self.highlighted_room_id) if self.highlighted_room_id else None
+            ),
         )
 
     def serialize_short(self):
@@ -196,9 +196,9 @@ class ContactRequest(models.Model):
             exhibitor=self.exhibitor.serialize_short(),
             user=self.user.serialize_public() if self.user else None,
             state=self.state,
-            answered_by=self.answered_by.serialize_public()
-            if self.answered_by
-            else None,
+            answered_by=(
+                self.answered_by.serialize_public() if self.answered_by else None
+            ),
             timestamp=self.timestamp.isoformat() if self.timestamp else None,
         )
 

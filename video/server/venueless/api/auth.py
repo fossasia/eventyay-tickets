@@ -59,7 +59,8 @@ class ApiAccessRequiredPermission(permissions.BasePermission):
         if isinstance(request.user, AnonymousUser):
             return False
         return request.world.has_permission_implicit(
-            traits=request.auth.get("traits"), permissions=[Permission.WORLD_API]
+            traits=request.auth.get("traits"),
+            permissions=[Permission.WORLD_API],
         )
 
 

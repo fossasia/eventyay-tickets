@@ -30,7 +30,11 @@ class ZoomModule(BaseModule):
         data = signing.dumps(
             {
                 "mn": int(
-                    re.sub("[^0-9]", "", self.module_config.get("meeting_number") or "")
+                    re.sub(
+                        "[^0-9]",
+                        "",
+                        self.module_config.get("meeting_number") or "",
+                    )
                 ),
                 "pw": self.module_config.get("password"),
                 "un": self.consumer.user.profile.get("display_name"),

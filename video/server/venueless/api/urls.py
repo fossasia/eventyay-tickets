@@ -12,6 +12,9 @@ urlpatterns = [
     re_path("worlds/(?P<world_id>[^/]+)/delete_user/?$", views.delete_user),
     path("worlds/<str:world_id>/", include(world_router.urls)),
     path("worlds/<str:world_id>/theme", views.WorldThemeView.as_view()),
-    path("worlds/<str:world_id>/favourite-talk/", views.UserFavouriteView.as_view()),
+    path(
+        "worlds/<str:world_id>/favourite-talk/",
+        views.UserFavouriteView.as_view(),
+    ),
     path("worlds/<str:world_id>/export-talk", views.ExportView.as_view()),
 ]

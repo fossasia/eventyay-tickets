@@ -24,14 +24,14 @@ export default {
 			default: false
 		}
 	},
-	data () {
+	data() {
 		return {
 			theme
 		}
 	},
 	computed: {
 		...mapState(['user', 'world']),
-		isAnonymous () {
+		isAnonymous() {
 			return Object.keys(this.user.profile).length === 0
 		},
 	}

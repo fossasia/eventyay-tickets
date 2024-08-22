@@ -33,7 +33,11 @@ class StreamingServer(models.Model):
         )
 
         token = jwt.encode(
-            {"name": n, "iat": iat, "exp": iat + datetime.timedelta(days=days)},
+            {
+                "name": n,
+                "iat": iat,
+                "exp": iat + datetime.timedelta(days=days),
+            },
             self.token_secret,
             algorithm="HS256",
         )

@@ -240,7 +240,6 @@ async def test_update_user():
 @pytest.mark.asyncio
 @pytest.mark.django_db
 async def test_wrong_user_command():
-
     async with world_communicator() as c:
         await c.send_json_to(["authenticate", {"client_id": 4}])
         response = await c.receive_json_from()
@@ -658,7 +657,10 @@ async def test_delete_user(world):
             response = await c_admin.receive_json_from()
             assert response[0] == "error"
 
-            assert ["connection.reload", {}] == await c_user.receive_json_from()
+            assert [
+                "connection.reload",
+                {},
+            ] == await c_user.receive_json_from()
             assert {"type": "websocket.close"} == await c_user.receive_output(timeout=3)
 
         # New connect will be an entirely new user
@@ -690,7 +692,10 @@ async def test_ban_user(world):
             response = await c_admin.receive_json_from()
             assert response[0] == "error"
 
-            assert ["connection.reload", {}] == await c_user.receive_json_from()
+            assert [
+                "connection.reload",
+                {},
+            ] == await c_user.receive_json_from()
             assert {"type": "websocket.close"} == await c_user.receive_output(timeout=3)
 
         async with world_communicator() as c_user:

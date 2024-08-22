@@ -29,12 +29,12 @@ export default {
 	props: {
 		speakerId: String
 	},
-	data () {
+	data() {
 		return {
 			speaker: null
 		}
 	},
-	provide () {
+	provide() {
 		return {
 			generateSessionLinkUrl: this.generateSessionLinkUrl
 		}
@@ -42,16 +42,16 @@ export default {
 	computed: {
 		...mapState('schedule', ['schedule']),
 		...mapGetters('schedule', ['sessionsLookup', 'favs']),
-		sessions () {
+		sessions() {
 			if (this.speaker.submissions) {
 				return this.speaker.submissions
 					.map(submission => this.sessionsLookup[submission])
-					.filter(session => session !== undefined);
+					.filter(session => session !== undefined)
 			}
 			return this.$store.getters['schedule/sessions'].filter(session => session.speakers.includes(this.speaker))
 		}
 	},
-	async created () {
+	async created() {
 		// TODO error handling
 		if (this.$store.getters['schedule/pretalxApiBaseUrl']) {
 			this.speaker = await (await fetch(`${this.$store.getters['schedule/pretalxApiBaseUrl']}/speakers/${this.speakerId}/`)).json()
@@ -62,9 +62,9 @@ export default {
 			}, { immediate: true })
 		}
 	},
-	mounted () {},
+	mounted() {},
 	methods: {
-		generateSessionLinkUrl (sessionData) {
+		generateSessionLinkUrl(sessionData) {
 			return `/schedule/talks/${sessionData.session.id}`
 		}
 	}

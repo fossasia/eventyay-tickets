@@ -21,7 +21,7 @@ export default {
 			default: false
 		}
 	},
-	data () {
+	data() {
 		return {
 			hasLoaded: false
 		}
@@ -29,7 +29,7 @@ export default {
 	computed: {
 		...mapState('poll', ['polls']),
 		...mapGetters(['hasPermission']),
-		sortedPolls () {
+		sortedPolls() {
 			if (!this.polls) return
 			let polls
 			if (this.isManaging) {
@@ -45,7 +45,7 @@ export default {
 		}
 	},
 	watch: {
-		sortedPolls () {
+		sortedPolls() {
 			// HACK suppress firing event on `poll.list`
 			if (this.hasLoaded) {
 				this.$emit('change')

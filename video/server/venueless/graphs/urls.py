@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     re_path(
-        "attendance.(?P<type>(svg|png|pdf))$", views.RoomAttendanceGraphView.as_view()
+        "attendance.(?P<type>(svg|png|pdf))$",
+        views.RoomAttendanceGraphView.as_view(),
     ),
 ]

@@ -22,7 +22,7 @@ export default {
 	components: { UploadUrlInput, SidebarAddons },
 	mixins: [mixin],
 	computed: {
-		module () {
+		module() {
 			return this.modules['call.bigbluebutton']
 		}
 	}

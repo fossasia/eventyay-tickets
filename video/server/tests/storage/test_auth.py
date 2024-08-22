@@ -18,7 +18,9 @@ def test_invalid_token_header(client, world):
     )
     assert r.status_code == 403
     r = client.post(
-        "/storage/upload/", HTTP_AUTHORIZATION="Bearer foo bar", HTTP_HOST="localhost"
+        "/storage/upload/",
+        HTTP_AUTHORIZATION="Bearer foo bar",
+        HTTP_HOST="localhost",
     )
     assert r.status_code == 403
 
@@ -38,7 +40,9 @@ def test_invalid_token(client, world):
     }
     token = jwt.encode(payload, config["secret"] + "aaaa", algorithm="HS256")
     r = client.post(
-        "/storage/upload/", HTTP_AUTHORIZATION="Bearer " + token, HTTP_HOST="localhost"
+        "/storage/upload/",
+        HTTP_AUTHORIZATION="Bearer " + token,
+        HTTP_HOST="localhost",
     )
     assert r.status_code == 403
 
@@ -58,7 +62,9 @@ def test_expired_token(client, world):
     }
     token = jwt.encode(payload, config["secret"], algorithm="HS256")
     r = client.post(
-        "/storage/upload/", HTTP_AUTHORIZATION="Bearer " + token, HTTP_HOST="localhost"
+        "/storage/upload/",
+        HTTP_AUTHORIZATION="Bearer " + token,
+        HTTP_HOST="localhost",
     )
     assert r.status_code == 403
 
@@ -82,7 +88,9 @@ def test_no_permission(client, world):
     world.rooms.all().delete()
     token = jwt.encode(payload, config["secret"], algorithm="HS256")
     r = client.post(
-        "/storage/upload/", HTTP_AUTHORIZATION="Bearer " + token, HTTP_HOST="localhost"
+        "/storage/upload/",
+        HTTP_AUTHORIZATION="Bearer " + token,
+        HTTP_HOST="localhost",
     )
     assert r.status_code == 403
 
@@ -91,7 +99,9 @@ def test_no_permission(client, world):
 def test_client_id(client, world, chat_room):
     token = str(uuid.uuid4())
     r = client.post(
-        "/storage/upload/", HTTP_AUTHORIZATION="Client " + token, HTTP_HOST="localhost"
+        "/storage/upload/",
+        HTTP_AUTHORIZATION="Client " + token,
+        HTTP_HOST="localhost",
     )
     assert r.status_code == 400
 
@@ -111,6 +121,8 @@ def test_admin_token(client, world):
     }
     token = jwt.encode(payload, config["secret"], algorithm="HS256")
     r = client.post(
-        "/storage/upload/", HTTP_AUTHORIZATION="Bearer " + token, HTTP_HOST="localhost"
+        "/storage/upload/",
+        HTTP_AUTHORIZATION="Bearer " + token,
+        HTTP_HOST="localhost",
     )
     assert r.status_code == 400

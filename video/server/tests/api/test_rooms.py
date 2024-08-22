@@ -12,7 +12,8 @@ from venueless.routing import application
 @pytest.mark.django_db
 def test_room_list(client, world):
     r = client.get(
-        "/api/v1/worlds/sample/rooms/", HTTP_AUTHORIZATION=get_token_header(world)
+        "/api/v1/worlds/sample/rooms/",
+        HTTP_AUTHORIZATION=get_token_header(world),
     )
     assert r.status_code == 200
     assert r.data["count"] == 8

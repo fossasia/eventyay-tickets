@@ -6,7 +6,7 @@ import config from 'config'
 
 import { normal as normalBlend } from 'color-blend'
 
-const blend = function (background, foreground) {
+const blend = function(background, foreground) {
 	const { r, g, b, a } = normalBlend({
 		r: background.red(),
 		g: background.green(),
@@ -23,7 +23,7 @@ const blend = function (background, foreground) {
 
 // returns first color with enough (>=4.5) contrast or failing that, the color with the highest contrast
 // on background, alpha gets blended
-const firstReadable = function (colors, background = '#FFF', threshold = 4.5) {
+const firstReadable = function(colors, background = '#FFF', threshold = 4.5) {
 	background = Color(background)
 	let best
 	let bestContrast = 0
@@ -113,7 +113,7 @@ for (const [key, value] of Object.entries(colors)) {
 export default themeConfig
 export { themeVariables, colors, DEFAULT_COLORS, DEFAULT_LOGO, DEFAULT_IDENTICONS }
 
-export function computeForegroundColor (bgColor) {
+export function computeForegroundColor(bgColor) {
 	return firstReadable([CLR_PRIMARY_TEXT.LIGHT, CLR_PRIMARY_TEXT.DARK], bgColor)
 }
 
@@ -123,7 +123,10 @@ export function computeForegroundSidebarColor(colors) {
 		sidebar: colors.sidebar,
 		bbb_background: colors.bbb_background,
 	}
-	const sbColors = Object.keys(DEFAULT_COLORS).reduce((acc, key) => (acc[key] = Color((configColors ?? DEFAULT_COLORS)[key]), acc), {})
+	const sbColors = Object.keys(DEFAULT_COLORS).reduce((acc, key) => {
+		acc[key] = Color((configColors ?? DEFAULT_COLORS)[key])
+		return acc
+	}, {})
 	sbColors.primaryDarken15 = sbColors.primary.darken(0.15)
 	sbColors.primaryDarken20 = sbColors.primary.darken(0.20)
 	sbColors.primaryAlpha60 = sbColors.primary.alpha(0.6)
@@ -141,7 +144,6 @@ export function computeForegroundSidebarColor(colors) {
 	sbColors.sidebarActiveFg = firstReadable([CLR_PRIMARY_TEXT.LIGHT, CLR_PRIMARY_TEXT.DARK], sbColors.sidebar)
 	sbColors.sidebarHoverBg = firstReadable(['rgba(0, 0, 0, 0.12)', 'rgba(255, 255, 255, 0.3)'], sbColors.sidebar)
 	sbColors.sidebarHoverFg = firstReadable([CLR_PRIMARY_TEXT.LIGHT, CLR_PRIMARY_TEXT.DARK], sbColors.sidebar)
-
 
 	for (const [key, value] of Object.entries(sbColors)) {
 		themeVariables[`--clr-${kebabCase(key)}`] = value.string()

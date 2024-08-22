@@ -56,7 +56,7 @@ export default {
 			required: true
 		}
 	},
-	data () {
+	data() {
 		return {
 			toggleView: false,
 			loading: false,
@@ -70,19 +70,19 @@ export default {
 	computed: {
 		...mapState(['user', 'world']),
 		...mapGetters(['hasPermission']),
-		showProfile () {
+		showProfile() {
 			if (!this.$mq.below.s) return true
 			return this.toggleView
 		},
-		showList () {
+		showList() {
 			if (!this.$mq.below.s) return true
 			return !this.toggleView
 		},
-		isBlocked () {
+		isBlocked() {
 			if (!this.blockedUsers) return
 			return this.blockedUsers.some(user => user.id === this.selectedUser.id)
 		},
-		userStates () {
+		userStates() {
 			const states = []
 			if (this.isBlocked) {
 				states.push(this.$t('User:state:blocked'))
@@ -93,28 +93,28 @@ export default {
 			return states
 		}
 	},
-	async created () {
+	async created() {
 		this.blockedUsers = (await api.call('user.list.blocked')).users
 	},
 	methods: {
-		async updateProfile () {
+		async updateProfile() {
 			this.loading = true
 			this.userAction = null
 			this.blockedUsers = (await api.call('user.list.blocked')).users
 			this.selectedUser = await api.call('user.fetch', {id: this.selectedUser.id})
 			this.loading = false
 		},
-		async selectUser (user) {
+		async selectUser(user) {
 			this.loading = true
 			this.toggleView = !this.toggleView
 			this.selectedUser = user
 			this.exhibitors = (await api.call('exhibition.get.staffed_by_user', {user_id: user.id})).exhibitors
 			this.loading = false
 		},
-		async openDM () {
+		async openDM() {
 			await this.$store.dispatch('chat/openDirectMessage', {users: [this.selectedUser]})
 		},
-		async startCall () {
+		async startCall() {
 			const channel = await this.$store.dispatch('chat/openDirectMessage', {users: [this.selectedUser]})
 			await this.$store.dispatch('chat/startCall', {channel})
 		}

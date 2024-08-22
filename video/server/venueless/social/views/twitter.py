@@ -18,7 +18,9 @@ logger = logging.getLogger(__name__)
 def start_view(request):
     try:
         data = loads(
-            request.GET.get("token"), salt="venueless.social.start", max_age=600
+            request.GET.get("token"),
+            salt="venueless.social.start",
+            max_age=600,
         )
     except BadSignature:
         return HttpResponse("Invalid request token", status=403)

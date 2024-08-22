@@ -33,7 +33,7 @@ export default {
 			default: false
 		}
 	},
-	data () {
+	data() {
 		return {
 			question: '',
 			showAskingForm: false,
@@ -43,7 +43,7 @@ export default {
 	computed: {
 		...mapState('question', ['questions']),
 		...mapGetters(['hasPermission']),
-		sortedQuestions () {
+		sortedQuestions() {
 			if (!this.questions) return
 			let questions
 			if (this.isManaging || !this.hasPermission('room:question.moderate')) {
@@ -61,7 +61,7 @@ export default {
 		}
 	},
 	watch: {
-		sortedPolls () {
+		sortedPolls() {
 			// HACK suppress firing event on `question.list`
 			if (this.hasLoaded) {
 				this.$emit('change')
@@ -71,7 +71,7 @@ export default {
 		}
 	},
 	methods: {
-		async submitQuestion () {
+		async submitQuestion() {
 			await this.$store.dispatch('question/submitQuestion', this.question) // TODO error handling
 			this.question = ''
 			this.showAskingForm = false

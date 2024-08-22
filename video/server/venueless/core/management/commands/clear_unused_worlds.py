@@ -37,9 +37,11 @@ class Command(BaseCommand):
                 ChatEvent.objects.filter(channel__world=world).aggregate(
                     m=Max("timestamp")
                 )["m"],
-                pytz.UTC.localize(datetime.combine(planned_end, time(0)))
-                if planned_end
-                else None,
+                (
+                    pytz.UTC.localize(datetime.combine(planned_end, time(0)))
+                    if planned_end
+                    else None
+                ),
             ]
             checks = [c for c in checks if c]
             if checks and max(checks) > cutoff:

@@ -15,7 +15,7 @@ import { required, url } from 'lib/validators'
 
 export default {
 	components: { Prompt },
-	data () {
+	data() {
 		return {
 			name: '',
 			url: '',
@@ -34,7 +34,7 @@ export default {
 		}
 	},
 	methods: {
-		async create () {
+		async create() {
 			this.error = null
 			this.$v.$touch()
 			if (this.$v.$invalid) return

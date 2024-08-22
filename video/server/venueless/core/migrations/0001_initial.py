@@ -82,12 +82,16 @@ class Migration(migrations.Migration):
                 (
                     "world",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="core.World"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="core.World",
                     ),
                 ),
             ],
             options={
-                "unique_together": {("client_id", "world"), ("token_id", "world")},
+                "unique_together": {
+                    ("client_id", "world"),
+                    ("token_id", "world"),
+                },
             },
         ),
         migrations.CreateModel(
@@ -113,8 +117,14 @@ class Migration(migrations.Migration):
                 ),
                 ("name", models.CharField(max_length=300)),
                 ("description", models.TextField(blank=True, null=True)),
-                ("picture", models.FileField(blank=True, null=True, upload_to="")),
-                ("import_id", models.CharField(blank=True, max_length=100, null=True)),
+                (
+                    "picture",
+                    models.FileField(blank=True, null=True, upload_to=""),
+                ),
+                (
+                    "import_id",
+                    models.CharField(blank=True, max_length=100, null=True),
+                ),
                 (
                     "world",
                     models.ForeignKey(
@@ -128,7 +138,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="ChatEvent",
             fields=[
-                ("id", models.BigIntegerField(primary_key=True, serialize=False)),
+                (
+                    "id",
+                    models.BigIntegerField(primary_key=True, serialize=False),
+                ),
                 ("timestamp", models.DateTimeField(auto_now_add=True)),
                 ("event_type", models.CharField(max_length=200)),
                 ("content", django.contrib.postgres.fields.jsonb.JSONField()),

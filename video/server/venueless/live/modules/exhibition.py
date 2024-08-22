@@ -33,7 +33,8 @@ class ExhibitionModule(BaseModule):
     @command("list.all")
     async def list_all(self, body):
         if not await self.consumer.world.has_permission_async(
-            user=self.consumer.user, permission=Permission.WORLD_ROOMS_CREATE_EXHIBITION
+            user=self.consumer.user,
+            permission=Permission.WORLD_ROOMS_CREATE_EXHIBITION,
         ):
             exhibitors = await self.service.get_all_exhibitors(
                 staff_includes_user=self.consumer.user
@@ -57,7 +58,10 @@ class ExhibitionModule(BaseModule):
                 )(user_id)
                 await self.consumer.channel_layer.group_send(
                     GROUP_USER.format(id=str(user_id)),
-                    {"type": "exhibition.exhibition_data_update", "data": data},
+                    {
+                        "type": "exhibition.exhibition_data_update",
+                        "data": data,
+                    },
                 )
             await self.consumer.send_success({})
 
@@ -68,7 +72,8 @@ class ExhibitionModule(BaseModule):
             staff += await self.service.get_staff(exhibitor_id=body["id"])
 
         if await self.consumer.world.has_permission_async(
-            user=self.consumer.user, permission=Permission.WORLD_ROOMS_CREATE_EXHIBITION
+            user=self.consumer.user,
+            permission=Permission.WORLD_ROOMS_CREATE_EXHIBITION,
         ):
             exclude_fields = set()
         elif self.consumer.user.id in staff:
@@ -119,7 +124,8 @@ class ExhibitionModule(BaseModule):
     @command("get")
     async def get(self, body):
         exhibitor = await self.service.get_exhibitor(
-            exhibitor_id=body["exhibitor"], track_view_for_user=self.consumer.user
+            exhibitor_id=body["exhibitor"],
+            track_view_for_user=self.consumer.user,
         )
         if not exhibitor:
             await self.consumer.send_error("exhibition.unknown_exhibitor")
@@ -175,7 +181,8 @@ class ExhibitionModule(BaseModule):
     async def contact_accept(self, body):
         channel = body["channel"]
         request = await self.service.accept(
-            contact_request_id=body["contact_request"], staff=self.consumer.user
+            contact_request_id=body["contact_request"],
+            staff=self.consumer.user,
         )
         if not request:
             await self.consumer.send_error("exhibition.unknown_contact_request")
@@ -196,7 +203,10 @@ class ExhibitionModule(BaseModule):
         for user_id in staff:
             await self.consumer.channel_layer.group_send(
                 GROUP_USER.format(id=str(user_id)),
-                {"type": "exhibition.contact_close", "contact_request": request},
+                {
+                    "type": "exhibition.contact_close",
+                    "contact_request": request,
+                },
             )
 
     @event("contact_request")

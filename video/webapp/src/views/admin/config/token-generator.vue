@@ -17,7 +17,7 @@ import { DEFAULT_COLORS, DEFAULT_LOGO } from 'theme'
 import { required, integer } from 'vuelidate/lib/validators'
 
 export default {
-	data () {
+	data() {
 		return {
 			traits: [],
 			number: 1,
@@ -36,7 +36,7 @@ export default {
 			required
 		}
 	},
-	async created () {
+	async created() {
 		// TODO: Force reloading if world.updated is received from the server
 		try {
 			this.config = await api.call('world.config.get')
@@ -51,10 +51,10 @@ export default {
 		}
 	},
 	methods: {
-		set_traits (t) {
+		set_traits(t) {
 			this.traits = t.split(',').map((i) => i.trim())
 		},
-		async save () {
+		async save() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 

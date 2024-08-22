@@ -264,7 +264,8 @@ def mirror_conftool_file(world, url, password, nonce, preview=False):
                     images[0].save(o, format="PNG")
                     o.seek(0)
                     psf.file.save(
-                        f"poster_{contenthash}_preview.png", ContentFile(o.getvalue())
+                        f"poster_{contenthash}_preview.png",
+                        ContentFile(o.getvalue()),
                     )
                 except Exception:
                     psf.delete()
@@ -303,7 +304,8 @@ def create_posters_from_conftool(
     for paper in root.xpath("paper"):
         try:
             poster = Poster.objects.get(
-                world=world, import_id=f"conftool/{paper.xpath('paperID')[0].text}"
+                world=world,
+                import_id=f"conftool/{paper.xpath('paperID')[0].text}",
             )
         except Poster.DoesNotExist:
             poster = Poster(
@@ -353,7 +355,11 @@ def create_posters_from_conftool(
                     categories = m["config"].get("categories", [])
                     if category_id not in [tt["id"] for tt in categories]:
                         categories.append(
-                            {"id": category_id, "label": category_name, "color": ""}
+                            {
+                                "id": category_id,
+                                "label": category_name,
+                                "color": "",
+                            }
                         )
                     m["config"]["categories"] = categories
 

@@ -995,4 +995,3 @@ async def test_notification_sync_read_state_across_clients(world):
         response = await c2.receive_json_from()
         assert response[0] == "authenticated"
         assert response[1]["chat.notification_counts"] == {}
-        

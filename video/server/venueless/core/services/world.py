@@ -15,10 +15,7 @@ from rest_framework import serializers
 
 from venueless.core.models import AuditLog, Channel, Room, World
 from venueless.core.models.auth import ShortToken
-from venueless.core.models.room import (
-    RoomConfigSerializer,
-    RoomView
-)
+from venueless.core.models.room import RoomConfigSerializer, RoomView
 from venueless.core.permissions import Permission
 
 
@@ -30,8 +27,8 @@ class WorldConfigSerializer(serializers.Serializer):
     pretalx = serializers.DictField()
     title = serializers.CharField()
     locale = serializers.CharField()
-    dateLocale = serializers.CharField()
-    videoPlayer = serializers.DictField(allow_null=True)
+    date_locale = serializers.CharField()
+    video_player = serializers.DictField(allow_null=True)
     timezone = serializers.ChoiceField(choices=[(a, a) for a in common_timezones])
     connection_limit = serializers.IntegerField(allow_null=True)
     available_permissions = serializers.SerializerMethodField("_available_permissions")
@@ -190,7 +187,8 @@ def get_world_config_for_user(world, user):
             "profile_fields": world.config.get("profile_fields", []),
             "social_logins": world.config.get("social_logins", []),
             "iframe_blockers": world.config.get(
-                "iframe_blockers", {"default": {"enabled": False, "policy_url": None}}
+                "iframe_blockers",
+                {"default": {"enabled": False, "policy_url": None}},
             ),
             "onsite_traits": world.config.get("onsite_traits", []),
         },
@@ -256,7 +254,8 @@ async def create_room(world, data, creator):
             user=creator, permission=Permission.WORLD_ROOMS_CREATE_CHAT
         ):
             raise ValidationError(
-                "This user is not allowed to create a room of this type.", code="denied"
+                "This user is not allowed to create a room of this type.",
+                code="denied",
             )
         m = [m for m in data.get("modules", []) if m["type"] == "chat.native"][0]
         m["config"] = {"volatile": m.get("config", {}).get("volatile", False)}
@@ -265,7 +264,8 @@ async def create_room(world, data, creator):
             user=creator, permission=Permission.WORLD_ROOMS_CREATE_BBB
         ):
             raise ValidationError(
-                "This user is not allowed to create a room of this type.", code="denied"
+                "This user is not allowed to create a room of this type.",
+                code="denied",
             )
         m = [m for m in data.get("modules", []) if m["type"] == "call.bigbluebutton"][0]
         m["config"] = world.config.get("bbb_defaults", {})
@@ -275,7 +275,8 @@ async def create_room(world, data, creator):
             user=creator, permission=Permission.WORLD_ROOMS_CREATE_STAGE
         ):
             raise ValidationError(
-                "This user is not allowed to create a room of this type.", code="denied"
+                "This user is not allowed to create a room of this type.",
+                code="denied",
             )
         m = [m for m in data.get("modules", []) if m["type"] == "livestream.native"][0]
         m["config"] = {"hls_url": m.get("config", {}).get("hls_url", "")}
@@ -284,7 +285,8 @@ async def create_room(world, data, creator):
             user=creator, permission=Permission.ROOM_UPDATE
         ):
             raise ValidationError(
-                "This user is not allowed to create a room of this type.", code="denied"
+                "This user is not allowed to create a room of this type.",
+                code="denied",
             )
     else:
         raise ValidationError(
@@ -310,7 +312,10 @@ async def create_room(world, data, creator):
         f"world.{world.id}", {"type": "room.create", "room": str(room.id)}
     )
 
-    return {"room": str(room.id), "channel": str(channel.id) if channel else None}
+    return {
+        "room": str(room.id),
+        "channel": str(channel.id) if channel else None,
+    }
 
 
 async def get_room_config_for_user(room: str, world_id: str, user):
@@ -371,14 +376,14 @@ def _config_serializer(world, *args, **kwargs):
             "theme": world.config.get("theme", {}),
             "title": world.title,
             "locale": world.locale,
-            "dateLocale": world.config.get("dateLocale", "en-ie"),
+            "date_locale": world.config.get("date_locale", "en-ie"),
             "roles": world.roles,
             "bbb_defaults": bbb_defaults,
             "track_exhibitor_views": world.config.get("track_exhibitor_views", True),
             "track_room_views": world.config.get("track_room_views", True),
             "track_world_views": world.config.get("track_world_views", False),
             "pretalx": world.config.get("pretalx", {}),
-            "videoPlayer": world.config.get("videoPlayer"),
+            "video_player": world.config.get("video_player"),
             "timezone": world.timezone,
             "trait_grants": world.trait_grants,
             "connection_limit": world.config.get("connection_limit", 0),
@@ -388,7 +393,8 @@ def _config_serializer(world, *args, **kwargs):
             "conftool_url": world.config.get("conftool_url", ""),
             "conftool_password": world.config.get("conftool_password", ""),
             "iframe_blockers": world.config.get(
-                "iframe_blockers", {"default": {"enabled": False, "policy_url": None}}
+                "iframe_blockers",
+                {"default": {"enabled": False, "policy_url": None}},
             ),
         },
         *args,

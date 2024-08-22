@@ -26,13 +26,15 @@ class Migration(migrations.Migration):
                 (
                     "url_input",
                     models.CharField(
-                        default="rtmp://server/app/{name}?token={token}", max_length=300
+                        default="rtmp://server/app/{name}?token={token}",
+                        max_length=300,
                     ),
                 ),
                 (
                     "url_output",
                     models.CharField(
-                        default="https://server/hls/{name}.m3u8", max_length=300
+                        default="https://server/hls/{name}.m3u8",
+                        max_length=300,
                     ),
                 ),
             ],

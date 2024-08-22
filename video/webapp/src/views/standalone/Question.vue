@@ -22,10 +22,10 @@ export default {
 	computed: {
 		...mapState('chat', ['usersLookup']),
 		...mapGetters('question', ['pinnedQuestion']),
-		sender () {
+		sender() {
 			return this.usersLookup[this.pinnedQuestion.sender]
 		},
-		senderDisplayName () {
+		senderDisplayName() {
 			return this.sender.profile?.display_name ?? this.pinnedQuestion.sender
 		},
 	},
@@ -33,7 +33,7 @@ export default {
 		pinnedQuestion: 'fetchSender'
 	},
 	methods: {
-		fetchSender () {
+		fetchSender() {
 			this.$store.dispatch('chat/fetchUsers', [this.pinnedQuestion.sender])
 		}
 	}

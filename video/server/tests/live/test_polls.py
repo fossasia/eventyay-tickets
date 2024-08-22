@@ -205,8 +205,16 @@ async def test_poll_lifecycle(questions_room, world):
                     "timestamp": poll["timestamp"],
                     "is_pinned": False,
                     "options": [
-                        {"content": "blue", "order": 1, "id": poll["options"][0]["id"]},
-                        {"content": "red", "order": 2, "id": poll["options"][1]["id"]},
+                        {
+                            "content": "blue",
+                            "order": 1,
+                            "id": poll["options"][0]["id"],
+                        },
+                        {
+                            "content": "red",
+                            "order": 2,
+                            "id": poll["options"][1]["id"],
+                        },
                     ],
                     "results": {
                         poll["options"][0]["id"]: 0,
@@ -286,8 +294,16 @@ async def test_poll_lifecycle(questions_room, world):
                     "timestamp": poll["timestamp"],
                     "is_pinned": False,
                     "options": [
-                        {"content": "blue", "order": 1, "id": poll["options"][0]["id"]},
-                        {"content": "red", "order": 2, "id": poll["options"][1]["id"]},
+                        {
+                            "content": "blue",
+                            "order": 1,
+                            "id": poll["options"][0]["id"],
+                        },
+                        {
+                            "content": "red",
+                            "order": 2,
+                            "id": poll["options"][1]["id"],
+                        },
                     ],
                     "results": {
                         poll["options"][0]["id"]: 1,
@@ -316,8 +332,16 @@ async def test_poll_lifecycle(questions_room, world):
                 "timestamp": poll["timestamp"],
                 "is_pinned": False,
                 "options": [
-                    {"content": "blue", "order": 1, "id": poll["options"][0]["id"]},
-                    {"content": "red", "order": 2, "id": poll["options"][1]["id"]},
+                    {
+                        "content": "blue",
+                        "order": 1,
+                        "id": poll["options"][0]["id"],
+                    },
+                    {
+                        "content": "red",
+                        "order": 2,
+                        "id": poll["options"][1]["id"],
+                    },
                 ],
                 "results": {
                     poll["options"][0]["id"]: 1,

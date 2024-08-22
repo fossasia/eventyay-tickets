@@ -43,7 +43,7 @@ export default {
 	props: {
 		user: Object,
 	},
-	data () {
+	data() {
 		return {
 			blockedUsers: null,
 			showMoreActions: false,
@@ -58,11 +58,11 @@ export default {
 			world: 'world'
 		}),
 		...mapGetters(['hasPermission']),
-		isBlocked () {
+		isBlocked() {
 			if (!this.blockedUsers) return
 			return this.blockedUsers.some(user => user.id === this.user.id)
 		},
-		userStates () {
+		userStates() {
 			const states = []
 			if (this.isBlocked) {
 				states.push('blocked')
@@ -73,17 +73,17 @@ export default {
 			return states
 		}
 	},
-	async created () {
+	async created() {
 		this.onlineStatus = (await api.call('user.online_status', {ids: [this.user.id]}))[this.user.id]
 		this.blockedUsers = (await api.call('user.list.blocked')).users
 	},
 	methods: {
 		getUserName,
-		async openDM () {
+		async openDM() {
 			// TODO loading indicator
 			await this.$store.dispatch('chat/openDirectMessage', {users: [this.user]})
 		},
-		async startCall () {
+		async startCall() {
 			const channel = await this.$store.dispatch('chat/openDirectMessage', {users: [this.user]})
 			await this.$store.dispatch('chat/startCall', {channel})
 		}

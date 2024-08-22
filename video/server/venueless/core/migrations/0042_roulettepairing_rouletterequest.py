@@ -25,7 +25,8 @@ class Migration(migrations.Migration):
                 (
                     "room",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="core.room"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="core.room",
                     ),
                 ),
                 (
@@ -60,13 +61,15 @@ class Migration(migrations.Migration):
                 (
                     "room",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="core.room"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="core.room",
                     ),
                 ),
                 (
                     "user",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="core.user"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="core.user",
                     ),
                 ),
             ],

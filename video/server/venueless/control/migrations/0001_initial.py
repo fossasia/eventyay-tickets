@@ -19,7 +19,10 @@ class Migration(migrations.Migration):
             fields=[
                 ("id", models.BigAutoField(primary_key=True, serialize=False)),
                 ("object_id", models.JSONField()),
-                ("datetime", models.DateTimeField(auto_now_add=True, db_index=True)),
+                (
+                    "datetime",
+                    models.DateTimeField(auto_now_add=True, db_index=True),
+                ),
                 ("action_type", models.CharField(max_length=255)),
                 ("data", models.JSONField()),
                 (

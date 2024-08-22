@@ -50,7 +50,10 @@ class WorldModule(BaseModule):
     async def push_schedule_update(self, body):
         await self.consumer.world.refresh_from_db_if_outdated(allowed_age=0)
         await self.consumer.send_json(
-            ["world.schedule.updated", self.consumer.world.config.get("pretalx", {})]
+            [
+                "world.schedule.updated",
+                self.consumer.world.config.get("pretalx", {}),
+            ]
         )
 
     @event("user_count_change")
@@ -81,7 +84,7 @@ class WorldModule(BaseModule):
         if s.is_valid():
             config_fields = (
                 "theme",
-                "dateLocale",
+                "date_locale",
                 "connection_limit",
                 "bbb_defaults",
                 "pretalx",
@@ -96,7 +99,13 @@ class WorldModule(BaseModule):
                 "iframe_blockers",
                 "social_logins",
             )
-            model_fields = ("title", "locale", "timezone", "roles", "trait_grants")
+            model_fields = (
+                "title",
+                "locale",
+                "timezone",
+                "roles",
+                "trait_grants",
+            )
             update_fields = set()
 
             for f in model_fields:

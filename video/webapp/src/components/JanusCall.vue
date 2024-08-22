@@ -24,7 +24,7 @@ export default {
 		},
 		background: Boolean
 	},
-	data () {
+	data() {
 		return {
 			server: null,
 			token: null,
@@ -37,7 +37,7 @@ export default {
 	},
 	computed: {
 	},
-	async created () {
+	async created() {
 		this.loading = true
 		this.error = null
 		try {

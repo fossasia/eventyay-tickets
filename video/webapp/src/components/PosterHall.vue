@@ -54,7 +54,7 @@ import RichTextContent from 'components/RichTextContent'
 import { getIconByFileEnding } from 'lib/filetypes'
 import { phonyMatcher } from 'lib/search'
 
-function matchesFilter (filter, poster) {
+function matchesFilter(filter, poster) {
 	let field = filter.field
 	if (field === 'tag') field = 'tags'
 	if (Array.isArray(poster[field])) {
@@ -69,7 +69,7 @@ export default {
 	props: {
 		room: Object
 	},
-	data () {
+	data() {
 		return {
 			posters: null,
 			search: '',
@@ -79,24 +79,24 @@ export default {
 		}
 	},
 	computed: {
-		posterModule () {
+		posterModule() {
 			return this.room.modules.find(module => module.type === 'poster.native')
 		},
-		categoriesLookup () {
+		categoriesLookup() {
 			if (!this.posterModule.config.categories) return {}
 			return this.posterModule.config.categories.reduce((acc, category) => {
 				acc[category.id] = category
 				return acc
 			}, {})
 		},
-		tagsLookup () {
+		tagsLookup() {
 			if (!this.posterModule.config.tags) return {}
 			return this.posterModule.config.tags.reduce((acc, tag) => {
 				acc[tag.id] = tag
 				return acc
 			}, {})
 		},
-		filteredPosters () {
+		filteredPosters() {
 			const singleSearch = (searchTerm) => {
 				const matchesSearch = phonyMatcher(searchTerm)
 				return this.posters.filter(poster =>
@@ -107,7 +107,7 @@ export default {
 			}
 			return intersection(this.posters.filter(poster => this.filters.every(filter => matchesFilter(filter, poster))), ...this.search.trim().toLowerCase().split(' ').map(singleSearch))
 		},
-		categorizedFilteredPosters () {
+		categorizedFilteredPosters() {
 			if (!this.posterModule.config.categories) return {'': this.filteredPosters}
 			// prefill configured categories to enforce order, null/'' category is first, unknown categories are at the end, by order of poster appearance
 			const categorizedPosters = {
@@ -125,7 +125,7 @@ export default {
 			// remove empty categories
 			return Object.fromEntries(Object.entries(categorizedPosters).filter(([key, value]) => value.length > 0))
 		},
-		categories () {
+		categories() {
 			return Object.entries(this.categorizedFilteredPosters).map(([key, value]) => {
 				return {
 					name: key === '' ? this.$t('PosterHall:categories-filter:uncategorized') : (this.categoriesLookup[key] ? this.categoriesLookup[key].label : key),
@@ -134,7 +134,7 @@ export default {
 				}
 			}).filter(filter => filter.count).sort((a, b) => b.count - a.count)
 		},
-		tags () {
+		tags() {
 			const tags = {}
 
 			for (const poster of this.filteredPosters) {
@@ -151,7 +151,7 @@ export default {
 				}
 			}).filter(filter => filter.count).sort((a, b) => b.count !== a.count ? b.count - a.count : a.name.localeCompare(b.name))
 		},
-		flatCategorizedFilteredPosters () {
+		flatCategorizedFilteredPosters() {
 			// hack categories into a flat list with posters for the virtual scroller
 			const flatCategorizedFilteredPosters = []
 			for (const [category, posters] of Object.entries(this.categorizedFilteredPosters)) {
@@ -161,11 +161,11 @@ export default {
 			return flatCategorizedFilteredPosters
 		}
 	},
-	async created () {
+	async created() {
 		this.posters = (await api.call('poster.list', {room: this.room.id}))
 	},
 	methods: {
-		toggleFilter (filter) {
+		toggleFilter(filter) {
 			const index = this.filters.findIndex(f => f.field === filter.field && f.value === filter.value)
 			if (index >= 0) {
 				this.filters.splice(index, 1)
@@ -173,7 +173,7 @@ export default {
 				this.filters.push(filter)
 			}
 		},
-		removeFilter (filter) {
+		removeFilter(filter) {
 			this.filters = this.filters.filter(f => f !== filter)
 		}
 	}

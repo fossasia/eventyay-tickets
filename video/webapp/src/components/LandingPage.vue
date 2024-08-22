@@ -62,7 +62,7 @@ export default {
 	props: {
 		module: Object
 	},
-	data () {
+	data() {
 		return {
 			moment,
 			sponsors: null,
@@ -73,11 +73,11 @@ export default {
 		...mapState(['now', 'rooms']),
 		...mapState('schedule', ['schedule']),
 		...mapGetters('schedule', ['sessions', 'favs']),
-		featuredSessions () {
+		featuredSessions() {
 			if (!this.sessions) return
 			return this.sessions.filter(session => session.featured)
 		},
-		nextSessions () {
+		nextSessions() {
 			if (!this.sessions) return
 			// current or next sessions per room
 			const sessions = []
@@ -88,14 +88,14 @@ export default {
 			}
 			return sessions
 		},
-		speakers () {
+		speakers() {
 			return this.schedule?.speakers.slice().sort((a, b) => a.name.split(' ').at(-1).localeCompare(b.name.split(' ').at(-1)))
 		},
-		hasMainContent () {
+		hasMainContent() {
 			return this.module.config.main_content?.ops?.some(op => op.insert.trim() !== '')
 		},
 	},
-	async mounted () {
+	async mounted() {
 		// TODO make this configurable?
 		const sponsorRoom = this.rooms.find(r => r.id === this.module.config.sponsor_room_id)
 		if (!sponsorRoom) return
@@ -126,7 +126,7 @@ export default {
 		this.sponsorSplide = splide
 	},
 	methods: {
-		onSponsorImageLoad (sponsorId) {
+		onSponsorImageLoad(sponsorId) {
 			this.loadedSponsorImages.push(sponsorId)
 			if (this.loadedSponsorImages.length === this.sponsors.length) {
 				this.sponsorSplide.refresh()

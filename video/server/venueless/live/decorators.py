@@ -99,14 +99,16 @@ def room_action(
                     self.module_config = module_config[0]
                 else:
                     raise ConsumerException(
-                        "room.unknown", "Room does not contain a matching module."
+                        "room.unknown",
+                        "Room does not contain a matching module.",
                     )
 
             if permission_required is not None:
                 if not getattr(self.consumer, "user", None):  # pragma: no cover
                     # Just a precaution, should never be called since MainConsumer.receive_json already checks this
                     raise ConsumerException(
-                        "protocol.unauthenticated", "No authentication provided."
+                        "protocol.unauthenticated",
+                        "No authentication provided.",
                     )
                 if not await self.consumer.world.has_permission_async(
                     user=self.consumer.user,

@@ -34,7 +34,10 @@ async def test_remote_reload():
     try:
         await sync_to_async(call_command)("connections", "force_reload", "*")
 
-        assert ["connection.reload", {}] == await communicator.receive_json_from()
+        assert [
+            "connection.reload",
+            {},
+        ] == await communicator.receive_json_from()
     finally:
         await communicator.disconnect()
 
@@ -52,6 +55,9 @@ async def test_remote_reload_staggered():
             "connections", "force_reload", "--interval", "20", "*"
         )
 
-        assert ["connection.reload", {}] == await communicator.receive_json_from()
+        assert [
+            "connection.reload",
+            {},
+        ] == await communicator.receive_json_from()
     finally:
         await communicator.disconnect()

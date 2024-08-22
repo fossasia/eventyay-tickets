@@ -13,7 +13,7 @@ import { mapState } from 'vuex'
 
 export default {
 	components: {},
-	data () {
+	data() {
 		return {
 			moment
 		}
@@ -21,21 +21,21 @@ export default {
 	computed: {
 		...mapState(['userTimezone']),
 		...mapState('schedule', ['schedule']),
-		localTimezone () {
+		localTimezone() {
 			return moment.tz.guess()
 		},
-		localTimezoneLabel () {
+		localTimezoneLabel() {
 			return moment.tz(this.localTimezone).format('Z z')
 		},
-		eventTimezone () {
+		eventTimezone() {
 			return 'America/Chicago' // this.schedule.timezone
 		},
-		eventTimezoneLabel () {
+		eventTimezoneLabel() {
 			return moment.tz(this.eventTimezone).format('Z z')
 		},
 	},
-	async created () {},
-	async mounted () {
+	async created() {},
+	async mounted() {
 		await this.$nextTick()
 	},
 	methods: {}

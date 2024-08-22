@@ -23,24 +23,24 @@ import RoomListItem from './RoomListItem'
 export default {
 	name: 'AdminRooms',
 	components: { SlickList, RoomListItem },
-	data () {
+	data() {
 		return {
 			rooms: null,
 			search: ''
 		}
 	},
 	computed: {
-		filteredRooms () {
+		filteredRooms() {
 			if (!this.rooms) return
 			if (!this.search) return this.rooms
 			return this.rooms.filter(room => room.id === this.search.trim() || fuzzysearch(this.search.toLowerCase(), room.name.toLowerCase()))
 		}
 	},
-	async created () {
+	async created() {
 		this.rooms = await api.call('room.config.list')
 	},
 	methods: {
-		async onListSort () {
+		async onListSort() {
 			this.rooms = await api.call('room.config.reorder', this.rooms.map(room => room.id))
 			// TODO error handling
 		}

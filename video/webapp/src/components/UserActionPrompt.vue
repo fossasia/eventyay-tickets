@@ -27,7 +27,7 @@ export default {
 			default: 2500
 		}
 	},
-	data () {
+	data() {
 		return {
 			loading: false,
 			error: null,
@@ -35,7 +35,7 @@ export default {
 		}
 	},
 	computed: {
-		actionLabel () {
+		actionLabel() {
 			if (this.action === 'reactivate') {
 				return this.user.moderation_state === 'banned' ? 'unban' : 'unsilence'
 			}
@@ -43,7 +43,7 @@ export default {
 		}
 	},
 	methods: {
-		async takeAction () {
+		async takeAction() {
 			this.error = null
 			this.loading = true
 			try {

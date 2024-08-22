@@ -12,14 +12,14 @@ export default {
 	props: {
 		room: Object
 	},
-	data () {
+	data() {
 		return {
 		}
 	},
 	computed: {
 		...mapState(['now']),
 		...mapGetters('schedule', ['sessions', 'favs']),
-		nextSession () {
+		nextSession() {
 			if (!this.sessions) return
 			// next session in this room
 			return this.sessions.find(session => session.room === this.room && session.start.isAfter(this.now))

@@ -26,27 +26,27 @@ export default {
 		room: Object,
 		currentSession: Object
 	},
-	data () {
+	data() {
 		return {
 			selectedSession: null
 		}
 	},
 	computed: {
-		sessions () {
+		sessions() {
 			return this.$store.getters['schedule/sessions'].filter(session => session.room === this.room)
 		}
 	},
-	created () {},
-	mounted () {
+	created() {},
+	mounted() {
 		this.$nextTick(() => {
 			this.$refs.currentSession?.[0]?.scrollIntoView()
 		})
 	},
 	methods: {
-		formatTime (value) {
+		formatTime(value) {
 			return value.format('HH:mm')
 		},
-		change () {
+		change() {
 			this.$store.dispatch('updateRoomSchedule', {room: this.room, schedule_data: {session: this.selectedSession.id}})
 			this.$emit('close')
 		}

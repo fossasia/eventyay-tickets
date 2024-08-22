@@ -40,9 +40,11 @@ class Announcement(models.Model):
         return {
             "id": str(self.id),
             "text": self.text,
-            "show_until": self.show_until.isoformat()
-            if isinstance(self.show_until, dt.datetime)
-            else self.show_until,
+            "show_until": (
+                self.show_until.isoformat()
+                if isinstance(self.show_until, dt.datetime)
+                else self.show_until
+            ),
             "state": self.state,
             "is_visible": self.is_visible,
         }

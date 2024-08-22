@@ -36,7 +36,10 @@ class Migration(migrations.Migration):
                     "tags",
                     models.JSONField(default=venueless.core.models.poster.default_text),
                 ),
-                ("category", models.CharField(blank=True, max_length=50, null=True)),
+                (
+                    "category",
+                    models.CharField(blank=True, max_length=50, null=True),
+                ),
                 ("poster_url", models.URLField(blank=True, null=True)),
                 ("poster_preview", models.URLField(blank=True, null=True)),
                 (

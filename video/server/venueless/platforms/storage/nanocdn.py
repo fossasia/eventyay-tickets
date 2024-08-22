@@ -108,7 +108,8 @@ class NanoCDNStorage(Storage):
         if "." in os.path.basename(name):
             bname, ext = os.path.basename(name).rsplit(".", 1)
             name = os.path.join(
-                os.path.dirname(name), bname + "." + sha1.hexdigest()[:14] + "." + ext
+                os.path.dirname(name),
+                bname + "." + sha1.hexdigest()[:14] + "." + ext,
             )
         else:
             name = os.path.join(

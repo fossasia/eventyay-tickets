@@ -5,11 +5,15 @@ from contextlib import suppress
 
 import asgiref
 import emoji
-
-from sentry_sdk import configure_scope
 from channels.db import database_sync_to_async
+from sentry_sdk import configure_scope
+
 from venueless.core.permissions import Permission
-from venueless.core.services.chat import ChatService, get_channel
+from venueless.core.services.chat import (
+    ChatService,
+    extract_mentioned_user_ids,
+    get_channel,
+)
 from venueless.core.services.user import get_public_users
 from venueless.core.utils.redis import aredis
 from venueless.live.channels import GROUP_CHAT, GROUP_USER
@@ -22,11 +26,6 @@ from venueless.live.decorators import (
 from venueless.live.exceptions import ConsumerException
 from venueless.live.modules.base import BaseModule
 from venueless.storage.tasks import retrieve_preview_information
-from venueless.core.services.chat import (
-    ChatService,
-    extract_mentioned_user_ids,
-    get_channel,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +69,8 @@ def channel_action(
                     self.module_config = module_config[0]
                 else:
                     raise ConsumerException(
-                        "room.unknown", "Room does not contain a matching module."
+                        "room.unknown",
+                        "Room does not contain a matching module.",
                     )
 
             if not getattr(self.consumer, "user", None):  # pragma: no cover
@@ -122,7 +122,8 @@ class ChatModule(BaseModule):
         self.users_known_to_client.clear()  # client implementation nukes cache on channel switch
         self.channels_subscribed.add(self.channel)
         await self.consumer.channel_layer.group_add(
-            GROUP_CHAT.format(channel=self.channel_id), self.consumer.channel_name
+            GROUP_CHAT.format(channel=self.channel_id),
+            self.consumer.channel_name,
         )
         await self.service.track_subscription(
             self.channel_id, self.consumer.user.id, self.consumer.socket_id
@@ -134,14 +135,17 @@ class ChatModule(BaseModule):
             "unread_pointer": await self.service.get_highest_nonmember_id_in_channel(
                 self.channel_id
             ),
-            "members": await self.service.get_channel_users(
-                self.channel,
-                include_admin_info=await self.consumer.world.has_permission_async(
-                    user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
-                ),
-            )
-            if not volatile
-            else [],
+            "members": (
+                await self.service.get_channel_users(
+                    self.channel,
+                    include_admin_info=await self.consumer.world.has_permission_async(
+                        user=self.consumer.user,
+                        permission=Permission.WORLD_USERS_MANAGE,
+                    ),
+                )
+                if not volatile
+                else []
+            ),
         }
 
     async def _unsubscribe(self, clean_volatile_membership=True):
@@ -157,7 +161,8 @@ class ChatModule(BaseModule):
             ):
                 await self._leave(volatile=True)
         await self.consumer.channel_layer.group_discard(
-            GROUP_CHAT.format(channel=self.channel_id), self.consumer.channel_name
+            GROUP_CHAT.format(channel=self.channel_id),
+            self.consumer.channel_name,
         )
 
     @command("subscribe")
@@ -174,7 +179,8 @@ class ChatModule(BaseModule):
 
     @command("join")
     @room_action(
-        permission_required=Permission.ROOM_CHAT_JOIN, module_required="chat.native"
+        permission_required=Permission.ROOM_CHAT_JOIN,
+        module_required="chat.native",
     )
     async def join(self, body):
         if not self.consumer.user.profile.get("display_name"):
@@ -261,7 +267,8 @@ class ChatModule(BaseModule):
             await self._leave(self.module_config.get("volatile", False))
             async with aredis() as redis:
                 await redis.srem(
-                    f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id)
+                    f"chat:unread.notify:{self.channel_id}",
+                    str(self.consumer.user.id),
                 )
         else:
             await self.service.hide_channel_user(self.channel_id, self.consumer.user.id)
@@ -298,7 +305,8 @@ class ChatModule(BaseModule):
             skip_membership=volatile_config,
             users_known_to_client=self.users_known_to_client,
             include_admin_info=await self.consumer.world.has_permission_async(
-                user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+                user=self.consumer.user,
+                permission=Permission.WORLD_USERS_MANAGE,
             ),
             trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
         )
@@ -313,9 +321,14 @@ class ChatModule(BaseModule):
         async with aredis() as redis:
             tr = redis.pipeline(transaction=False)
             tr.hset(
-                f"chat:read:{self.consumer.user.id}", self.channel_id, body.get("id")
+                f"chat:read:{self.consumer.user.id}",
+                self.channel_id,
+                body.get("id"),
             )
-            tr.sadd(f"chat:unread.notify:{self.channel_id}", str(self.consumer.user.id))
+            tr.sadd(
+                f"chat:unread.notify:{self.channel_id}",
+                str(self.consumer.user.id),
+            )
             await tr.execute()
         await self.service.remove_notifications(
             self.consumer.user.id, self.channel_id, body.get("id")
@@ -426,7 +439,9 @@ class ChatModule(BaseModule):
                         )
             async with aredis() as redis:
                 await redis.setex(
-                    f"chat:direct:shownall:{self.channel_id}", 3600 * 24 * 7, "true"
+                    f"chat:direct:shownall:{self.channel_id}",
+                    3600 * 24 * 7,
+                    "true",
                 )
 
         event = await self.service.create_event(
@@ -457,6 +472,7 @@ class ChatModule(BaseModule):
                             "data": {self.channel_id: event["event_id"]},
                         },
                     )
+
             async def _notify_users(users):
                 users = [u for u in users if u != str(self.consumer.user.id)]
                 await self.service.store_notification(event["event_id"], users)
@@ -638,7 +654,7 @@ class ChatModule(BaseModule):
             user_profiles_required |= extract_mentioned_user_ids(
                 data["content"].get("body", "")
             )
-            
+
         user_profiles_required -= self.users_known_to_client
         data["users"] = {}
 
@@ -647,7 +663,8 @@ class ChatModule(BaseModule):
                 self.consumer.world.id,
                 ids=list(user_profiles_required),
                 include_admin_info=await self.consumer.world.has_permission_async(
-                    user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+                    user=self.consumer.user,
+                    permission=Permission.WORLD_USERS_MANAGE,
                 ),
                 trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
             )
@@ -665,8 +682,14 @@ class ChatModule(BaseModule):
 
         hide = body.get("hide", True)
 
-        channel, created, users = await self.service.get_or_create_direct_channel(
-            user_ids=user_ids, hide=hide, hide_except=str(self.consumer.user.id)
+        (
+            channel,
+            created,
+            users,
+        ) = await self.service.get_or_create_direct_channel(
+            user_ids=user_ids,
+            hide=hide,
+            hide_except=str(self.consumer.user.id),
         )
         if not channel:
             raise ConsumerException("chat.denied")
@@ -707,7 +730,9 @@ class ChatModule(BaseModule):
             if not hide:
                 async with aredis() as redis:
                     await redis.setex(
-                        f"chat:direct:shownall:{self.channel_id}", 3600 * 24 * 7, "true"
+                        f"chat:direct:shownall:{self.channel_id}",
+                        3600 * 24 * 7,
+                        "true",
                     )
 
         reply["id"] = str(channel.id)

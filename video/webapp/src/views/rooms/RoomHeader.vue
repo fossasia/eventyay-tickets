@@ -37,7 +37,7 @@ export default {
 	props: {
 		roomId: String
 	},
-	data () {
+	data() {
 		return {
 			showRecordingsPrompt: false,
 			showQRCodePrompt: false
@@ -47,24 +47,24 @@ export default {
 		...mapGetters(['hasPermission']),
 		...mapState(['rooms']),
 		...mapGetters('schedule', ['sessions', 'currentSessionPerRoom']),
-		room () {
+		room() {
 			if (this.roomId === undefined) return this.rooms[0] // '/' is the first room
 			return this.rooms.find(room => room.id === this.roomId)
 		},
-		roomType () {
+		roomType() {
 			return inferRoomType(this.room).id
 		},
-		modules () {
+		modules() {
 			return this.room?.modules.reduce((acc, module) => {
 				acc[module.type] = module
 				return acc
 			}, {})
 		},
-		currentSession () {
+		currentSession() {
 			if (!this.$features.enabled('schedule-control')) return
 			return this.currentSessionPerRoom?.[this.room.id]?.session
 		},
-		canManage () {
+		canManage() {
 			for (const permission of PERMISSIONS_TO_MANAGE) {
 				if (this.hasPermission(permission)) return true
 			}

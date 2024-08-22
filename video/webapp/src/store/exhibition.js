@@ -10,18 +10,18 @@ export default {
 		contactRequests: [],
 	},
 	getters: {
-		openContactRequests (state) {
+		openContactRequests(state) {
 			return state.contactRequests.filter(cr => cr.state === 'open' && !cr.weDismissed)
 		}
 	},
 	mutations: {
-		setData (state, data) {
+		setData(state, data) {
 			state.staffedExhibitions = data.exhibitors
 			state.contactRequests = data.contact_requests
 		}
 	},
 	actions: {
-		async acceptContactRequest ({state, dispatch, rootState}, contactRequest) {
+		async acceptContactRequest({state, dispatch, rootState}, contactRequest) {
 			// TODO error handling
 			const channel = await dispatch('chat/openDirectMessage', {users: [contactRequest.user], hide: false}, {root: true})
 			await api.call('exhibition.contact_accept', {contact_request: contactRequest.id, channel: channel.id})
@@ -30,15 +30,15 @@ export default {
 			contactRequest.timestamp = new Date().toISOString()
 			// TODO: send greeting message
 		},
-		dismissContactRequest ({state}, contactRequest) {
+		dismissContactRequest({state}, contactRequest) {
 			// dismissing only soft-removes the contact request popup on THIS client
 			Vue.set(contactRequest, 'weDismissed', true)
 		},
-		async 'api::exhibition.exhibition_data_update' ({commit, state}, {data}) {
+		async 'api::exhibition.exhibition_data_update'({commit, state}, {data}) {
 			commit('setData', data)
 		},
 		// for staff
-		'api::exhibition.contact_request' ({state, dispatch}, data) {
+		'api::exhibition.contact_request'({state, dispatch}, data) {
 			const contactRequest = data.contact_request
 			state.contactRequests.push(contactRequest)
 			// TODO better text
@@ -50,7 +50,7 @@ export default {
 				onClick: () => dispatch('acceptContactRequest', contactRequest)
 			}, {root: true})
 		},
-		'api::exhibition.contact_request_close' ({state}, data) {
+		'api::exhibition.contact_request_close'({state}, data) {
 			const contactRequest = data.contact_request
 			const existingContactRequest = state.contactRequests.find(cb => cb.id === contactRequest.id)
 			if (!existingContactRequest) return
@@ -59,7 +59,7 @@ export default {
 			existingContactRequest.timestamp = contactRequest.timestamp
 		},
 		// for client
-		async 'api::exhibition.contact_accepted' ({dispatch}, data) {
+		async 'api::exhibition.contact_accepted'({dispatch}, data) {
 			// DM is automatically opening
 			await router.push({name: 'channel', params: {channelId: data.channel}})
 		}

@@ -7,14 +7,14 @@ const renderers = {
 	initials
 }
 
-const hashFunc = function (source) {
-	return String(source).split('').reduce(function (a, b) {
+const hashFunc = function(source) {
+	return String(source).split('').reduce(function(a, b) {
 		a = ((a << 5) - a) + b.charCodeAt(0)
 		return a & a
 	}, 0)
 }
 
-export function renderSvg (user, style) {
+export function renderSvg(user, style) {
 	const random = new Random(
 		MersenneTwister19937.seed(hashFunc(user.profile?.avatar?.identicon ?? user.profile?.identicon ?? user.id))
 	)
@@ -28,7 +28,7 @@ export function renderSvg (user, style) {
 	return renderer.renderSvg(random, user.profile, config)
 }
 
-export function renderUrl (user, style) {
+export function renderUrl(user, style) {
 	return `data:image/svg+xml;base64,${btoa(renderSvg(user, style).replace(/[\t\n]/g, ''))}`
 }
 

@@ -275,7 +275,10 @@ class ReportGenerator:
         aggs = users_with_duration.aggregate(a=Avg("total_duration"))
 
         tdata = [
-            [_("Total number of unique viewers"), str(unique_users.distinct().count())],
+            [
+                _("Total number of unique viewers"),
+                str(unique_users.distinct().count()),
+            ],
             [_("Average time spent in room"), str(aggs["a"] or 0)],
             [
                 _("Median time spent in room"),
@@ -419,7 +422,12 @@ class ReportGenerator:
         ]
 
         tdata = [
-            [_("Exhibitor"), _("Views"), _("Unique viewers"), _("Contact requests")]
+            [
+                _("Exhibitor"),
+                _("Views"),
+                _("Unique viewers"),
+                _("Contact requests"),
+            ]
         ]
 
         qs = self.world.exhibitors.annotate(
@@ -611,5 +619,7 @@ class ReportGenerator:
             imgdata.seek(0)
             w = self.pagesize[0] - 30 * mm
             return Image(
-                imgdata, width=w, height=fig.get_figheight() / fig.get_figwidth() * w
+                imgdata,
+                width=w,
+                height=fig.get_figheight() / fig.get_figwidth() * w,
             )

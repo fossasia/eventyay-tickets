@@ -13,15 +13,15 @@ const emojiRegex = EmojiRegex()
 const splitEmojiRegex = new RegExp(`(${emojiRegex.source})`, 'g')
 const startsWithEmojiRegex = new RegExp(`^${emojiRegex.source}`)
 
-export function objectToCssString (object) {
+export function objectToCssString(object) {
 	return Object.entries(object).map(([key, value]) => `${key}:${value}`).join(';')
 }
 
-export function startsWithEmoji (string) {
+export function startsWithEmoji(string) {
 	return startsWithEmojiRegex.test(string)
 }
 
-export function nativeToOps (string) {
+export function nativeToOps(string) {
 	return string.split(splitEmojiRegex).map(match => {
 		if (emojiRegex.test(match)) {
 			// slightly wasteful to test for emoji again
@@ -32,11 +32,11 @@ export function nativeToOps (string) {
 	})
 }
 
-export function getEmojiDataFromNative (native) {
+export function getEmojiDataFromNative(native) {
 	return data.emojis[_getEmojiDataFromNative(native, 'twitter', data).id]
 }
 
-export function nativeToStyle (unicodeEmoji) {
+export function nativeToStyle(unicodeEmoji) {
 	// maps multi-codepoint emoji like 🇻🇦 / \uD83C\uDDFB\uD83C\uDDE6 => 1f1fb-1f1e6.svg
 	const codepoints = Array.from(unicodeEmoji).map(c => c.codePointAt(0).toString(16))
 	let src
@@ -58,13 +58,13 @@ export function nativeToStyle (unicodeEmoji) {
 	return {'background-image': `url(${src})`}
 }
 
-export function markdownEmoji (md) {
-	function splitTextToken (text, Token) {
+export function markdownEmoji(md) {
+	function splitTextToken(text, Token) {
 		let token
 		let lastPos = 0
 		const tokens = []
 
-		text.replace(emojiRegex, function (match, offset, src) {
+		text.replace(emojiRegex, function(match, offset, src) {
 			// Add new tokens to pending list
 			if (offset > lastPos) {
 				token = new Token('text', '', 0)
@@ -86,7 +86,7 @@ export function markdownEmoji (md) {
 
 		return tokens
 	}
-	md.core.ruler.push('emoji', function emojiReplace (state) {
+	md.core.ruler.push('emoji', function emojiReplace(state) {
 		let autolinkLevel = 0
 
 		for (const blockToken of state.tokens) {
@@ -123,13 +123,13 @@ export function markdownEmoji (md) {
 const markdownIt = MarkdownIt('zero', {})
 markdownIt.use(markdownEmoji)
 
-export function emojifyString (input) {
+export function emojifyString(input) {
 	if (!input) return
 	return markdownIt.renderInline(input)
 }
 
 export const emojiPlugin = {
-	install (Vue) {
+	install(Vue) {
 		Vue.prototype.$emojify = emojifyString
 	}
 }

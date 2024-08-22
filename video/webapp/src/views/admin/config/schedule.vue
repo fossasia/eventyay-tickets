@@ -56,7 +56,7 @@ import ValidationErrorsMixin from 'components/mixins/validation-errors'
 export default {
 	components: { UploadUrlInput },
 	mixins: [ValidationErrorsMixin],
-	data () {
+	data() {
 		return {
 			uploadUrl: config.api.scheduleImport,
 			showUpload: false, // HACK we need an extra flag to show an empty file upload, since url and file use the same config field
@@ -68,7 +68,7 @@ export default {
 		}
 	},
 	computed: {
-		sourceOptions () {
+		sourceOptions() {
 			const sourceOptions = [
 				{id: null, label: 'No Schedule'},
 				{id: 'pretalx', label: 'Eventyay-talk'},
@@ -80,17 +80,17 @@ export default {
 			}
 			return sourceOptions
 		},
-		pretalxDomain () {
+		pretalxDomain() {
 			if (!this.config.pretalx.domain) return ''
 			if (this.config.pretalx.domain.endsWith('/')) return this.config.pretalx.domain
 			return this.config.pretalx.domain + '/'
 		},
-		lastPush () {
+		lastPush() {
 			if (!this.config || !this.config.pretalx || !this.config.pretalx.pushed) return
 			return moment(this.config.pretalx.pushed).format('dddd, MMMM Do YYYY, h:mm:ss a')
 		},
 		source: {
-			get () {
+			get() {
 				if (!this.config) return
 				if (this.config.pretalx.domain !== undefined) return 'pretalx'
 				if (this.config.pretalx.conftool) return 'conftool'
@@ -103,7 +103,7 @@ export default {
 				}
 				return null
 			},
-			set (value) {
+			set(value) {
 				this.showUpload = false
 				switch (value) {
 					case 'pretalx':
@@ -136,7 +136,7 @@ export default {
 			}
 		},
 	},
-	validations () {
+	validations() {
 		if (this.source === 'pretalx') {
 			return {
 				config: {
@@ -166,7 +166,7 @@ export default {
 		}
 		return {}
 	},
-	async created () {
+	async created() {
 		// TODO: Force reloading if world.updated is received from the server
 		try {
 			this.config = await api.call('world.config.get')
@@ -174,7 +174,7 @@ export default {
 			this.error = error
 			console.log(error)
 		}
-		this.$watch(() => this.config?.pretalx?.domain ? `${this.pretalxDomain}${this.config.pretalx.event}/p/eventyay-video/check` : null, async (url) => {
+		this.$watch(() => this.config?.pretalx?.domain ? `${this.pretalxDomain}${this.config.pretalx.event}/p/eventyay-video/check` : null, async(url) => {
 			this.isPretalxPluginInstalled = false
 			console.log(url)
 			if (!url || !/^https?:\/\//.test(url)) return
@@ -189,11 +189,11 @@ export default {
 			immediate: true
 		})
 	},
-	async mounted () {
+	async mounted() {
 		await this.$nextTick()
 	},
 	methods: {
-		async startPretalxConnect () {
+		async startPretalxConnect() {
 			// save pretalx config first
 			if (!await this.save()) return
 			this.connecting = true
@@ -206,7 +206,7 @@ export default {
 			const apiUrl = config.api.base.startsWith('http') ? config.api.base : (window.location.origin + config.api.base)
 			window.location = `${this.pretalxDomain}orga/event/${this.config.pretalx.event}/settings/p/eventyay-video/?url=${apiUrl}&token=${token}&returnUrl=${window.location.href}`
 		},
-		async save () {
+		async save() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return false
 			this.saving = true

@@ -11,14 +11,14 @@ const SCALE = {
 }
 
 const Plugin = {
-	install (Vue) {
-		const match = function (value, direction) {
+	install(Vue) {
+		const match = function(value, direction) {
 			if (SCALE[value]) value = SCALE[value] + (direction === 'min' ? 1 : 0) + 'px'
 			return window.matchMedia(`(${direction}-width: ${value})`).matches
 		}
-		const proxyHandler = function (direction) {
+		const proxyHandler = function(direction) {
 			return {
-				get (target, property, receiver) {
+				get(target, property, receiver) {
 					if (typeof property !== 'symbol' && property !== '_isVue') {
 						Vue.set(target, property, match(property, direction))
 					}
@@ -31,7 +31,7 @@ const Plugin = {
 			above: new Proxy({}, proxyHandler('min')),
 			below: new Proxy({}, proxyHandler('max'))
 		})
-		const updateMatches = function (object, direction) {
+		const updateMatches = function(object, direction) {
 			for (const key of Object.keys(object)) {
 				Vue.set(object, key, match(key, direction))
 			}
@@ -43,7 +43,7 @@ const Plugin = {
 
 		window.addEventListener('resize', throttleResize)
 		Object.defineProperty(Vue.prototype, '$mq', {
-			get () {
+			get() {
 				return mq
 			}
 		})

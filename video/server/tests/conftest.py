@@ -40,7 +40,9 @@ async def clear_redis():
 @pytest.fixture(autouse=True)
 async def bbb_server():
     await database_sync_to_async(BBBServer.objects.create)(
-        url="https://video1.pretix.eu/bigbluebutton/", secret="bogussecret", active=True
+        url="https://video1.pretix.eu/bigbluebutton/",
+        secret="bogussecret",
+        active=True,
     )
 
 

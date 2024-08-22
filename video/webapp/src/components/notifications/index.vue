@@ -17,7 +17,7 @@ export default {
 	props: {
 		hasBackgroundMedia: Boolean
 	},
-	data () {
+	data() {
 		return {
 		}
 	},
@@ -26,8 +26,8 @@ export default {
 		...mapGetters('exhibition', ['openContactRequests']),
 		...mapGetters('announcement', ['visibleAnnouncements'])
 	},
-	created () {},
-	mounted () {
+	created() {},
+	mounted() {
 		this.$nextTick(() => {
 		})
 	},

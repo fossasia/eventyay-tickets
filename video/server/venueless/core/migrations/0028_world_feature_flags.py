@@ -16,7 +16,8 @@ class Migration(migrations.Migration):
             model_name="world",
             name="feature_flags",
             field=django.contrib.postgres.fields.jsonb.JSONField(
-                blank=True, default=venueless.core.models.world.default_feature_flags
+                blank=True,
+                default=venueless.core.models.world.default_feature_flags,
             ),
         ),
     ]

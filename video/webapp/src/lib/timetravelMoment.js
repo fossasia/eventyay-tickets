@@ -3,7 +3,7 @@
 import config from 'config'
 delete require.cache[require.resolve('moment')]
 const moment = require('moment-timezone')
-moment.locale(config.dateLocale || 'en-ie') // use ireland for 24h clock
+moment.locale(config.date_locale || 'en-ie') // use ireland for 24h clock
 // moment.tz.setDefault('America/New_York')
 
 for (const key of Object.keys(require.cache)) {
@@ -12,10 +12,10 @@ for (const key of Object.keys(require.cache)) {
 }
 // conf the global moment instance here
 const mainMoment = require('moment')
-mainMoment.locale(config.dateLocale || 'en-ie') // use ireland for 24h clock
+mainMoment.locale(config.date_locale || 'en-ie') // use ireland for 24h clock
 if (config.timetravelTo) {
 	const timetravelTimestamp = moment(config.timetravelTo).valueOf()
-	moment.now = function () { return timetravelTimestamp }
+	moment.now = function() { return timetravelTimestamp }
 	console.warn('timetraveling to', moment()._d)
 }
 

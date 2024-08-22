@@ -1,5 +1,4 @@
 import re
-
 from contextlib import suppress
 
 from channels.db import database_sync_to_async
@@ -38,6 +37,7 @@ MENTION_RE = re.compile(
     r"@([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})"
 )
 
+
 @database_sync_to_async
 def _get_channel(**kwargs):
     return (
@@ -66,6 +66,8 @@ def extract_mentioned_user_ids(message: str) -> set:
         set: A set of mentioned user IDs extracted from the message.
     """
     return {match.group(1) for match in MENTION_RE.finditer(message)}
+
+
 class ChatService:
     def __init__(self, world):
         self.world = world
@@ -156,27 +158,33 @@ class ChatService:
     ) -> set:
         """
         Filters user IDs based on their membership or permission in a specified channel.
-    
+
         Args:
             channel (Channel): The channel to filter the users for.
             uids (list): List of user IDs to be filtered.
             include_all_permitted (bool): If True, includes all users with permission `ROOM_CHAT_READ` in the channel's room.
-    
+
         Returns:
             set: A set of user IDs that are either members of the channel or have the necessary permissions.
         """
         if not uids:
             return set()
-    
+
         if include_all_permitted:
             permitted_users = User.objects.filter(id__in=uids)
-            result = {str(u.id) for u in permitted_users if self.world.has_permission(
-                        user=u, permission=Permission.ROOM_CHAT_READ, room=channel.room)}
+            result = {
+                str(u.id)
+                for u in permitted_users
+                if self.world.has_permission(
+                    user=u,
+                    permission=Permission.ROOM_CHAT_READ,
+                    room=channel.room,
+                )
+            }
             return result
         else:
             memberships = Membership.objects.filter(channel=channel, user_id__in=uids)
             return {str(m.user_id) for m in memberships}
-    
 
     @database_sync_to_async
     def membership_is_volatile(self, channel, uid):
@@ -263,7 +271,8 @@ class ChatService:
             user_ids = user_ids - set(users_known_to_client)
         users = {
             str(u.pk): u.serialize_public(
-                include_admin_info=include_admin_info, trait_badges_map=trait_badges_map
+                include_admin_info=include_admin_info,
+                trait_badges_map=trait_badges_map,
             )
             for u in User.objects.filter(world=self.world, id__in=user_ids)
         }
@@ -361,7 +370,7 @@ class ChatService:
             chat_event=event, reaction=reaction, sender=user
         )
         return self._get_event(pk=event.pk).serialize_public()
-    
+
     def get_notification_counts(self, user_id: int) -> dict:
         """
         Retrieves the count of notifications for a given user, grouped by channel ID.
@@ -373,9 +382,12 @@ class ChatService:
             dict: A dictionary where the keys are channel IDs (as strings) and the values are the count of notifications.
         """
         notifications = ChatEventNotification.objects.filter(recipient_id=user_id)
-        notification_counts = notifications.values("chat_event__channel_id").annotate(count=Count("id"))
-        return {str(n["chat_event__channel_id"]): n["count"] for n in notification_counts}
-
+        notification_counts = notifications.values("chat_event__channel_id").annotate(
+            count=Count("id")
+        )
+        return {
+            str(n["chat_event__channel_id"]): n["count"] for n in notification_counts
+        }
 
     @database_sync_to_async
     def store_notification(self, event_id: int, user_ids: list):
@@ -394,7 +406,6 @@ class ChatService:
             for user_id in user_ids
         ]
         ChatEventNotification.objects.bulk_create(notifications)
-
 
     @database_sync_to_async
     def remove_notifications(self, user_id: int, channel_id: int, max_id: int) -> bool:
@@ -415,7 +426,6 @@ class ChatService:
             recipient_id=user_id,
         ).delete()
         return deleted_count > 0
-
 
     @database_sync_to_async
     def get_or_create_direct_channel(

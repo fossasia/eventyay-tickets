@@ -37,7 +37,7 @@ import Prompt from 'components/Prompt'
 export default {
 	name: 'AuditLog',
 	components: { Avatar, Prompt },
-	data () {
+	data() {
 		return {
 			moment,
 			detailsPrompt: null,
@@ -46,13 +46,13 @@ export default {
 		}
 	},
 	computed: {
-		filteredEntries () {
+		filteredEntries() {
 			if (!this.entries) return
 			if (!this.search) return this.entries
 			return this.entries.filter(entry => entry.user.profile.display_name.toLowerCase().indexOf(this.search.toLowerCase()) >= 0 || entry.type.toLowerCase().startsWith(this.search.toLowerCase()) || JSON.stringify(entry.data).toLowerCase().indexOf(this.search.toLowerCase()) >= 0)
 		}
 	},
-	async created () {
+	async created() {
 		this.entries = (await api.call('world.auditlog.list')).results
 	}
 }

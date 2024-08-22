@@ -9,18 +9,18 @@ export default {
 	props: {
 		text: String
 	},
-	data () {
+	data() {
 		return {
 			copied: false
 		}
 	},
 	computed: {},
-	async created () {},
-	async mounted () {
+	async created() {},
+	async mounted() {
 		await this.$nextTick()
 	},
 	methods: {
-		async copy () {
+		async copy() {
 			await navigator.clipboard.writeText(this.text)
 			this.copied = true
 			setTimeout(() => {

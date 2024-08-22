@@ -22,22 +22,22 @@ export default {
 	props: {
 		exhibitor: Object,
 	},
-	data () {
+	data() {
 		return {
 			timer: 31,
 			request: null
 		}
 	},
-	async created () {
+	async created() {
 		// TODO error handling
 		this.tickTimer()
 		this.request = (await api.call('exhibition.contact', {exhibitor: this.exhibitor.id})).contact_request
 	},
-	beforeDestroy () {
+	beforeDestroy() {
 		clearTimeout(this.ticker)
 	},
 	methods: {
-		async tickTimer () {
+		async tickTimer() {
 			if (this.timer > 0) {
 				this.timer--
 				this.ticker = setTimeout(this.tickTimer, 1000)
@@ -45,7 +45,7 @@ export default {
 				await api.call('exhibition.contact_cancel', {contact_request: this.request.id})
 			}
 		},
-		async cancel () {
+		async cancel() {
 			if (this.timer > 0) await api.call('exhibition.contact_cancel', {contact_request: this.request.id})
 			this.$emit('close')
 		},

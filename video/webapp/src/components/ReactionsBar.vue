@@ -11,7 +11,7 @@ export default {
 	props: {
 		expanded: Boolean
 	},
-	data () {
+	data() {
 		return {
 			particlePool: [],
 			freeParticles: [],
@@ -19,17 +19,17 @@ export default {
 		}
 	},
 	computed: {
-		availableReactions () {
+		availableReactions() {
 			const emoji = ['👏', '❤️', '👍', '🤣', '😮']
 			return emoji.map(e => ({emoji: e, style: nativeEmojiToStyle(e)}))
 		}
 	},
 	methods: {
-		expand () {
+		expand() {
 			if (this.expanded) return
 			this.$emit('expand')
 		},
-		react (emoji) {
+		react(emoji) {
 			this.$store.dispatch('addReaction', emoji)
 			// TODO display immediately and add own cooldown
 		}

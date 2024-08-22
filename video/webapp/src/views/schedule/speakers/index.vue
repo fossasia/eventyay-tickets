@@ -24,7 +24,7 @@ import Identicon from 'components/Identicon'
 
 export default {
 	components: { Identicon },
-	data () {
+	data() {
 		return {
 			speakers: null
 		}
@@ -33,7 +33,7 @@ export default {
 		...mapState('schedule', ['schedule']),
 		...mapGetters('schedule', ['sessions', 'sessionsLookup'])
 	},
-	async created () {
+	async created() {
 		if (this.$store.getters['schedule/pretalxApiBaseUrl']) {
 			this.speakers = (await (await fetch(`${this.$store.getters['schedule/pretalxApiBaseUrl']}/speakers/?limit=999`)).json()).results.sort((a, b) => a.name.localeCompare(b.name))
 			// const speakersToAttendee = await api.call('user.fetch', {pretalx_ids: this.speakers.map(speaker => speaker.code)})

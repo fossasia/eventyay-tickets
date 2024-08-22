@@ -19,14 +19,14 @@ export default {
 		module: String,
 		collectTrace: Function,
 	},
-	data () {
+	data() {
 		return {
 			loading: false,
 			message: '',
 		}
 	},
 	methods: {
-		async submit () {
+		async submit() {
 			this.loading = true
 			const response = await fetch(config.api.feedback, {
 				method: 'POST',

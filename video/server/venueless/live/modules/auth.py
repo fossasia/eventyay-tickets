@@ -143,15 +143,18 @@ class AuthModule(BaseModule):
         }
 
         if not await self.consumer.world.has_permission_async(
-            user=self.consumer.user, permission=Permission.WORLD_CONNECTIONS_UNLIMITED
+            user=self.consumer.user,
+            permission=Permission.WORLD_CONNECTIONS_UNLIMITED,
         ):
             await self._enforce_connection_limit()
 
         await self.consumer.channel_layer.group_add(
-            GROUP_USER.format(id=self.consumer.user.id), self.consumer.channel_name
+            GROUP_USER.format(id=self.consumer.user.id),
+            self.consumer.channel_name,
         )
         await self.consumer.channel_layer.group_add(
-            GROUP_WORLD.format(id=self.consumer.world.id), self.consumer.channel_name
+            GROUP_WORLD.format(id=self.consumer.world.id),
+            self.consumer.channel_name,
         )
 
         await ChatService(self.consumer.world).enforce_forced_joins(self.consumer.user)
@@ -348,13 +351,15 @@ class AuthModule(BaseModule):
         users = await get_public_users(
             self.consumer.world.pk,
             include_admin_info=await self.consumer.world.has_permission_async(
-                user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+                user=self.consumer.user,
+                permission=Permission.WORLD_USERS_MANAGE,
             ),
             type=body.get("type", User.UserType.PERSON),
             include_banned=not body
             or body.get("include_banned", True)
             and await self.consumer.world.has_permission_async(
-                user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+                user=self.consumer.user,
+                permission=Permission.WORLD_USERS_MANAGE,
             ),
             trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
         )
@@ -386,11 +391,13 @@ class AuthModule(BaseModule):
                 badge=badge,
                 search_fields=search_fields,
                 include_admin_info=await self.consumer.world.has_permission_async(
-                    user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+                    user=self.consumer.user,
+                    permission=Permission.WORLD_USERS_MANAGE,
                 ),
                 include_banned=body.get("include_banned", True)
                 and await self.consumer.world.has_permission_async(
-                    user=self.consumer.user, permission=Permission.WORLD_USERS_MANAGE
+                    user=self.consumer.user,
+                    permission=Permission.WORLD_USERS_MANAGE,
                 ),
                 trait_badges_map=self.consumer.world.config.get("trait_badges_map"),
             )
@@ -554,9 +561,9 @@ class AuthModule(BaseModule):
                 token_id=uid,
                 world=self.consumer.world,
                 show_publicly=False,
-                profile=body["profile"]
-                if isinstance(body.get("profile"), dict)
-                else {},
+                profile=(
+                    body["profile"] if isinstance(body.get("profile"), dict) else {}
+                ),
                 traits=[],
             )
             user.world_grants.create(world=self.consumer.world, role="__kiosk")

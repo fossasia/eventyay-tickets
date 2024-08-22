@@ -59,7 +59,7 @@ export default {
 		exhibitorId: String,
 		exhibitorProp: Object,
 	},
-	data () {
+	data() {
 		return {
 			exhibitorApi: null,
 			selectedUser: null,
@@ -71,22 +71,22 @@ export default {
 		...mapState(['user']),
 		...mapGetters(['hasPermission']),
 
-		exhibitor () {
+		exhibitor() {
 			return this.exhibitorProp ? this.exhibitorProp : this.exhibitorApi
 		},
-		bannerIsFrame () {
+		bannerIsFrame() {
 			return this.exhibitor.banner_detail && (
 				this.exhibitor.banner_detail.match('^https?://(www.)?(youtube.com/watch\\?v=|youtu.be/)([^&?]*)([&?].*)?$') ||
 				this.exhibitor.banner_detail.match('^https?://(www.)?(vimeo.com)/(.*)$')
 			)
 		},
-		bannerIsVideo () {
+		bannerIsVideo() {
 			return this.exhibitor.banner_detail && (
 				this.exhibitor.banner_detail.match('^(.*)\\.webm$') ||
 				this.exhibitor.banner_detail.match('^(.*)\\.mp4$')
 			)
 		},
-		bannerVideoSource () {
+		bannerVideoSource() {
 			const ytMatch = this.exhibitor.banner_detail.match('^https?://(www.)?(youtube.com/watch\\?v=|youtu.be/)([^&?]*)([&?].*)?$')
 			const vimeoMatch = this.exhibitor.banner_detail.match('^https?://(www.)?(vimeo.com)/(.*)$')
 			if (ytMatch) {
@@ -97,19 +97,19 @@ export default {
 			}
 			return this.exhibitor.banner_detail
 		},
-		profileLinks () {
+		profileLinks() {
 			return this.exhibitor.links.filter((l) => (l.category === 'profile')).sort((a, b) => a.sorting_priority - b.sorting_priority)
 		},
-		downloadLinks () {
+		downloadLinks() {
 			return this.exhibitor.links.filter((l) => (l.category === 'download')).sort((a, b) => a.sorting_priority - b.sorting_priority)
 		}
 	},
-	async created () {
+	async created() {
 		if (this.exhibitor) return
 		this.exhibitorApi = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
 	},
 	methods: {
-		prettifyUrl (link) {
+		prettifyUrl(link) {
 			try {
 				const url = new URL(link)
 				return url.hostname + (url.pathname !== '/' ? url.pathname : '')
@@ -117,10 +117,10 @@ export default {
 				return link
 			}
 		},
-		joinRoom () {
+		joinRoom() {
 			this.$router.push({name: 'room', params: {roomId: this.exhibitor.highlighted_room_id}})
 		},
-		async showUserCard (event, user) {
+		async showUserCard(event, user) {
 			this.selectedUser = user
 			await this.$nextTick()
 			const target = event.target.closest('.user')

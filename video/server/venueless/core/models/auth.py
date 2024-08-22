@@ -28,7 +28,9 @@ class User(VersionedModel):
     token_id = models.CharField(max_length=200, db_index=True, null=True, blank=True)
     world = models.ForeignKey(to="World", db_index=True, on_delete=models.CASCADE)
     moderation_state = models.CharField(
-        max_length=8, default=ModerationState.NONE, choices=ModerationState.choices
+        max_length=8,
+        default=ModerationState.NONE,
+        choices=ModerationState.choices,
     )
     type = models.CharField(
         max_length=8, default=UserType.PERSON, choices=UserType.choices
@@ -118,17 +120,19 @@ class User(VersionedModel):
             "profile": self.profile,
             "pretalx_id": self.pretalx_id,
             "deleted": self.deleted,
-            "badges": sorted(
-                list(
-                    {
-                        badge
-                        for trait, badge in trait_badges_map.items()
-                        if trait in self.traits
-                    }
+            "badges": (
+                sorted(
+                    list(
+                        {
+                            badge
+                            for trait, badge in trait_badges_map.items()
+                            if trait in self.traits
+                        }
+                    )
                 )
-            )
-            if trait_badges_map
-            else [],
+                if trait_badges_map
+                else []
+            ),
         }
         d["inactive"] = self.last_login is None or self.last_login < now() - timedelta(
             hours=36
@@ -257,6 +261,9 @@ class ShortToken(models.Model):
     )
     expires = models.DateTimeField()
     short_token = models.CharField(
-        db_index=True, unique=True, default=generate_short_token, max_length=150
+        db_index=True,
+        unique=True,
+        default=generate_short_token,
+        max_length=150,
     )
     long_token = models.TextField()

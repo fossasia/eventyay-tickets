@@ -9,7 +9,7 @@
 			h2 System details
 			bunt-input(v-model="config.title", label="Title", name="title", :validation="$v.config.title")
 			bunt-select(v-model="config.locale", label="Language", name="locale", :options="locales", option-value="code", option-label="nativeLabel")
-			bunt-select(v-model="config.dateLocale", label="Date locale", name="dateLocale", :options="momentLocales")
+			bunt-select(v-model="config.date_locale", label="Date locale", name="date_locale", :options="momentLocales")
 			bunt-input(v-model="config.timezone", label="Time zone", name="timezone", :validation="$v.config.timezone")
 			bunt-input(v-model="config.connection_limit", label="Connection limit", name="connection_limit", hint="Set to 0 to allow unlimited connections per user", :validation="$v.config.connection_limit")
 			template(v-if="$features.enabled('conftool')")
@@ -58,7 +58,7 @@ const momentLocaleSet = [
 
 export default {
 	mixins: [ValidationErrorsMixin],
-	data () {
+	data() {
 		return {
 			config: null,
 			hlsConfig: '',
@@ -68,10 +68,10 @@ export default {
 		}
 	},
 	computed: {
-		locales () {
+		locales() {
 			return locales
 		},
-		momentLocales () {
+		momentLocales() {
 			return momentLocaleSet
 		}
 	},
@@ -95,19 +95,19 @@ export default {
 			isJson: isJson()
 		}
 	},
-	async created () {
+	async created() {
 		// We don't use the global world object since it e.g. currently does not contain locale and timezone
 		// TODO: Force reloading if world.updated is received from the server
 		try {
 			this.config = await api.call('world.config.get')
-			this.hlsConfig = JSON.stringify(this.config.videoPlayer?.['hls.js'] || undefined, null, 2)
+			this.hlsConfig = JSON.stringify(this.config.video_player?.['hls.js'] || undefined, null, 2)
 		} catch (error) {
 			this.error = error
 			console.log(error)
 		}
 	},
 	methods: {
-		async save () {
+		async save() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			// TODO validate connection limit is a number
@@ -115,7 +115,7 @@ export default {
 			const patch = {
 				title: this.config.title,
 				locale: this.config.locale,
-				dateLocale: this.config.dateLocale,
+				date_locale: this.config.date_locale,
 				timezone: this.config.timezone,
 				connection_limit: this.config.connection_limit,
 				bbb_defaults: this.config.bbb_defaults,
@@ -128,11 +128,11 @@ export default {
 				patch.conftool_password = this.config.conftool_password
 			}
 			if (this.hlsConfig) {
-				patch.videoPlayer = {
+				patch.video_player = {
 					'hls.js': JSON.parse(this.hlsConfig)
 				}
 			} else {
-				patch.videoPlayer = null
+				patch.video_player = null
 			}
 			await api.call('world.config.patch', patch)
 			this.saving = false

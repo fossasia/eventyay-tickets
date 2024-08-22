@@ -101,7 +101,7 @@ export default {
 			default: false
 		}
 	},
-	data () {
+	data() {
 		return {
 			selected: false,
 			editing: false,
@@ -116,10 +116,10 @@ export default {
 		...mapState('chat', ['usersLookup']),
 		...mapState('poll', ['polls']),
 		...mapGetters(['hasPermission']),
-		isSystemMessage () {
+		isSystemMessage() {
 			return this.message.event_type !== 'channel.message'
 		},
-		avatarSize () {
+		avatarSize() {
 			if (this.message.event_type === 'channel.member') {
 				return 20
 			} else if (this.mode === 'standalone') {
@@ -127,13 +127,13 @@ export default {
 			}
 			return 28
 		},
-		sender () {
+		sender() {
 			return this.usersLookup[this.message.sender] || {id: this.message.sender, badges: {}}
 		},
-		senderDisplayName () {
+		senderDisplayName() {
 			return getUserName(this.sender)
 		},
-		timestamp () {
+		timestamp() {
 			const timestamp = moment(this.message.timestamp)
 			if (this.previousMessage && timestamp.isSame(this.previousMessage.timestamp, 'day')) {
 				return timestamp.format(TIME_FORMAT)
@@ -141,27 +141,27 @@ export default {
 				return timestamp.format(DATETIME_FORMAT)
 			}
 		},
-		shortTimestamp () {
+		shortTimestamp() {
 			// The timestamp below avatars can only accommodate exactly this length
 			// We don't format to HH or hh to make sure the number is the same as in timestamp above
 			return moment(this.message.timestamp).format(TIME_FORMAT).split(' ')[0]
 		},
-		mergeWithPreviousMessage () {
+		mergeWithPreviousMessage() {
 			return this.previousMessage && !this.isSystemMessage && this.previousMessage.event_type === 'channel.message' && this.previousMessage.sender === this.message.sender && moment(this.message.timestamp).diff(this.previousMessage.timestamp, 'minutes') < 15
 		},
-		mergeWithNextMessage () {
+		mergeWithNextMessage() {
 			return this.nextMessage && !this.isSystemMessage && this.nextMessage.event_type === 'channel.message' && this.nextMessage.sender === this.message.sender && moment(this.nextMessage.timestamp).diff(this.message.timestamp, 'minutes') < 15
 		},
-		poll () {
+		poll() {
 			return this.polls?.find(p => p.id === this.message.content?.poll_id)
 		}
 	},
 	methods: {
 		getUserName,
-		addReaction (emoji) {
+		addReaction(emoji) {
 			this.$store.dispatch('chat/addReaction', {message: this.message, reaction: emoji.native})
 		},
-		toggleReaction (emoji, users) {
+		toggleReaction(emoji, users) {
 			if (users.includes(this.user.id)) {
 				if (users.length === 1) {
 					this.reactionTooltip = null
@@ -171,7 +171,7 @@ export default {
 				this.$store.dispatch('chat/addReaction', {message: this.message, reaction: emoji})
 			}
 		},
-		async initReactionTooltip (event, {emoji, users}) {
+		async initReactionTooltip(event, {emoji, users}) {
 			this.reactionTooltip = {
 				emoji,
 				// TODO 'and you'
@@ -187,19 +187,19 @@ export default {
 				],
 			})
 		},
-		startEditingMessage () {
+		startEditingMessage() {
 			this.selected = false
 			this.editing = true
 		},
-		editMessage (content) {
+		editMessage(content) {
 			this.editing = false
 			this.$store.dispatch('chat/editMessage', {message: this.message, content})
 		},
-		deleteMessage () {
+		deleteMessage() {
 			this.$store.dispatch('chat/deleteMessage', this.message)
 			this.showDeletePrompt = false
 		},
-		handleMentionClick (event, user, placement) {
+		handleMentionClick(event, user, placement) {
 			this.$emit('showUserCard', event, user, placement)
 		}
 	}

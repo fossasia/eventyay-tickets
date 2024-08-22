@@ -155,9 +155,9 @@ class AppView(View):
                         "features": world.feature_flags,
                         "externalAuthUrl": world.external_auth_url,
                         "locale": world.locale,
-                        "dateLocale": world.config.get("dateLocale", "en-ie"),
+                        "date_locale": world.config.get("date_locale", "en-ie"),
                         "theme": world.config.get("theme", {}),
-                        "videoPlayer": world.config.get("videoPlayer", {}),
+                        "video_player": world.config.get("video_player", {}),
                         "mux": world.config.get("mux", {}),
                     }
                 )

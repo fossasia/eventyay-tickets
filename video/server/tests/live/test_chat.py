@@ -148,11 +148,7 @@ async def test_join_volatile_based_on_room_config(volatile_chat_room, chat_room,
         response = await c2.receive_json_from()
         assert response == [
             "chat.channels",
-            {
-                "channels": [
-                    {"id": str(chat_room.channel.id), "unread_pointer": 0}
-                ]
-            },
+            {"channels": [{"id": str(chat_room.channel.id), "unread_pointer": 0}]},
         ]
 
 
@@ -176,7 +172,10 @@ async def test_join_convert_volatile_to_persistent(volatile_chat_room, world):
             [
                 "chat.join",
                 123,
-                {"channel": str(volatile_chat_room.channel.id), "volatile": False},
+                {
+                    "channel": str(volatile_chat_room.channel.id),
+                    "volatile": False,
+                },
             ]
         )
         response = await c.receive_json_from()
@@ -208,7 +207,10 @@ async def test_join_convert_volatile_to_persistent_require_moderator(
             [
                 "chat.join",
                 123,
-                {"channel": str(volatile_chat_room.channel.id), "volatile": False},
+                {
+                    "channel": str(volatile_chat_room.channel.id),
+                    "volatile": False,
+                },
             ]
         )
         response = await c.receive_json_from()
@@ -225,7 +227,11 @@ async def test_join_without_name(chat_room):
     async with world_communicator(named=False) as c:
         await c.send_json_to(["chat.join", 123, {"channel": str(chat_room.channel.id)}])
         response = await c.receive_json_from()
-        assert response == ["error", 123, {"code": "channel.join.missing_profile"}]
+        assert response == [
+            "error",
+            123,
+            {"code": "channel.join.missing_profile"},
+        ]
 
 
 @pytest.mark.asyncio
@@ -378,7 +384,11 @@ async def test_unsupported_event_type(chat_room):
             ]
         )
         response = await c1.receive_json_from()
-        assert response == ["error", 123, {"code": "chat.unsupported_event_type"}]
+        assert response == [
+            "error",
+            123,
+            {"code": "chat.unsupported_event_type"},
+        ]
 
 
 @pytest.mark.asyncio
@@ -402,7 +412,11 @@ async def test_unsupported_content_type(chat_room):
             ]
         )
         response = await c1.receive_json_from()
-        assert response == ["error", 123, {"code": "chat.unsupported_content_type"}]
+        assert response == [
+            "error",
+            123,
+            {"code": "chat.unsupported_content_type"},
+        ]
 
 
 @pytest.mark.asyncio
@@ -444,7 +458,11 @@ async def test_send_empty(chat_room):
                 },
             ]
         )
-        assert await c1.receive_json_from() == ["error", 123, {"code": "chat.empty"}]
+        assert await c1.receive_json_from() == [
+            "error",
+            123,
+            {"code": "chat.empty"},
+        ]
 
 
 @pytest.mark.asyncio
@@ -972,7 +990,11 @@ async def test_last_disconnect_is_leave_in_volatile_channel(world, volatile_chat
         async with world_communicator(client_id=client_id) as c2:
             async with world_communicator(client_id=client_id, named=False) as c3:
                 await c1.send_json_to(
-                    ["chat.join", 123, {"channel": str(volatile_chat_room.channel.id)}]
+                    [
+                        "chat.join",
+                        123,
+                        {"channel": str(volatile_chat_room.channel.id)},
+                    ]
                 )
                 response = await c1.receive_json_from()
                 assert response == [
@@ -987,7 +1009,11 @@ async def test_last_disconnect_is_leave_in_volatile_channel(world, volatile_chat
                 ]
 
                 await c2.send_json_to(
-                    ["chat.join", 124, {"channel": str(volatile_chat_room.channel.id)}]
+                    [
+                        "chat.join",
+                        124,
+                        {"channel": str(volatile_chat_room.channel.id)},
+                    ]
                 )
                 response = await c2.receive_json_from()
                 assert response[0] == "success"
@@ -1000,7 +1026,11 @@ async def test_last_disconnect_is_leave_in_volatile_channel(world, volatile_chat
                 assert response == ["chat.channels", {"channels": []}]
 
                 await c3.send_json_to(
-                    ["chat.join", 125, {"channel": str(volatile_chat_room.channel.id)}]
+                    [
+                        "chat.join",
+                        125,
+                        {"channel": str(volatile_chat_room.channel.id)},
+                    ]
                 )
                 response = await c3.receive_json_from()
                 assert response[0] == "success"

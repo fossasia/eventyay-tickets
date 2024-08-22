@@ -128,13 +128,21 @@ async def test_reactions_room_aggregate(world, stream_room):
     async with world_communicator() as c1, world_communicator() as c2:
         await c1.send_json_to(["room.enter", 123, {"room": str(stream_room.pk)}])
         responses = [
-            r[0] for r in (await c1.receive_json_from(), await c1.receive_json_from())
+            r[0]
+            for r in (
+                await c1.receive_json_from(),
+                await c1.receive_json_from(),
+            )
         ]
         assert "world.user_count_change" in responses
         assert "success" in responses
         await c2.send_json_to(["room.enter", 123, {"room": str(stream_room.pk)}])
         responses = [
-            r[0] for r in (await c2.receive_json_from(), await c2.receive_json_from())
+            r[0]
+            for r in (
+                await c2.receive_json_from(),
+                await c2.receive_json_from(),
+            )
         ]
         assert "world.user_count_change" in responses
         assert "success" in responses
@@ -205,7 +213,11 @@ async def test_change_schedule_data_unauthorized(world, stream_room):
 
         await c2.send_json_to(["room.enter", 123, {"room": str(stream_room.pk)}])
         responses = [
-            r[0] for r in (await c2.receive_json_from(), await c2.receive_json_from())
+            r[0]
+            for r in (
+                await c2.receive_json_from(),
+                await c2.receive_json_from(),
+            )
         ]
         assert "world.user_count_change" in responses
         assert "success" in responses
@@ -259,7 +271,11 @@ async def test_config_get(world, stream_room):
 async def test_config_patch(world, stream_room):
     async with world_communicator(token=get_token(world, ["admin"])) as c1:
         await c1.send_json_to(
-            ["room.config.patch", 123, {"room": str(stream_room.pk), "name": "Foo"}]
+            [
+                "room.config.patch",
+                123,
+                {"room": str(stream_room.pk), "name": "Foo"},
+            ]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
@@ -272,14 +288,22 @@ async def test_config_patch(world, stream_room):
 async def test_config_reorder(world, chat_room, stream_room):
     async with world_communicator(token=get_token(world, ["admin"])) as c1:
         await c1.send_json_to(
-            ["room.config.reorder", 123, [str(chat_room.pk), str(stream_room.pk)]]
+            [
+                "room.config.reorder",
+                123,
+                [str(chat_room.pk), str(stream_room.pk)],
+            ]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
         assert response[2][0]["name"] == "Chat"
         assert response[2][1]["name"] == "Plenum"
         await c1.send_json_to(
-            ["room.config.reorder", 123, [str(stream_room.pk), str(chat_room.pk)]]
+            [
+                "room.config.reorder",
+                123,
+                [str(stream_room.pk), str(chat_room.pk)],
+            ]
         )
         response = await c1.receive_json_from()
         assert response[0] == "success"
@@ -312,7 +336,11 @@ async def test_change_schedule_data(world, stream_room):
         await c1.receive_json_from()  # room.viewer.added
 
         responses = [
-            r[0] for r in (await c2.receive_json_from(), await c2.receive_json_from())
+            r[0]
+            for r in (
+                await c2.receive_json_from(),
+                await c2.receive_json_from(),
+            )
         ]
         assert "world.user_count_change" in responses
         assert "success" in responses

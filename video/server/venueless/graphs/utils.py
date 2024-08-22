@@ -38,16 +38,16 @@ class PdfImage(Flowable):
             self.drawWidth = self._w * factor
             self.drawHeight = self._h * factor
 
-    def wrap(self, aW, aH):
+    def wrap(self, aw, ah):
         return self.drawWidth, self.drawHeight
 
-    def drawOn(self, canv, x, y, _sW=0):
-        if _sW > 0 and hasattr(self, "hAlign"):
+    def drawOn(self, canv, x, y, _sw=0):
+        if _sw > 0 and hasattr(self, "hAlign"):
             a = self.hAlign
             if a in ("CENTER", "CENTRE", TA_CENTER):
-                x += 0.5 * _sW
+                x += 0.5 * _sw
             elif a in ("RIGHT", TA_RIGHT):
-                x += _sW
+                x += _sw
             elif a not in ("LEFT", TA_LEFT):
                 raise ValueError("Bad hAlign value " + str(a))
 

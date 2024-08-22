@@ -16,36 +16,36 @@ export default {
 	props: {
 		src: String
 	},
-	data () {
+	data() {
 		return {
 			showingOnce: false,
 			remember: false
 		}
 	},
 	computed: {
-		domain () {
+		domain() {
 			if (typeof this.src !== 'string') return
 			return new URL(this.src).host
 		},
-		config () {
+		config() {
 			console.log(store.state.world.iframe_blockers, this.domain)
 			for (const [domain, domainConfig] of Object.entries(store.state.world.iframe_blockers)) {
 				if (this.domain === domain || this.domain.endsWith('.' + domain)) return domainConfig
 			}
 			return store.state.world.iframe_blockers.default
 		},
-		showIframe () {
+		showIframe() {
 			return this.showingOnce ||
 				store.state.unblockedIframeDomains.has(this.domain) ||
 				!this.config.enabled
 		}
 	},
-	async created () {},
-	async mounted () {
+	async created() {},
+	async mounted() {
 		await this.$nextTick()
 	},
 	methods: {
-		showOnce () {
+		showOnce() {
 			if (this.remember) {
 				store.dispatch('unblockIframeDomain', this.domain)
 			}

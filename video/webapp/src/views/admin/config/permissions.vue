@@ -56,7 +56,7 @@ import TraitGrants from './trait-grants'
 
 export default {
 	components: { TraitGrants },
-	data () {
+	data() {
 		return {
 			config: null,
 			expandedRoles: [],
@@ -70,13 +70,13 @@ export default {
 		}
 	},
 	computed: {
-		filteredRooms () {
+		filteredRooms() {
 			if (!this.rooms) return
 			if (!this.search) return this.rooms
 			return this.rooms.filter(room => room.id === this.search.trim() || fuzzysearch(this.search.toLowerCase(), room.name.toLowerCase()))
 		}
 	},
-	async created () {
+	async created() {
 		// We don't use the global world object since it e.g. currently does not contain roles etc
 		// TODO: Force reloading if world.updated is received from the server
 		try {
@@ -89,29 +89,29 @@ export default {
 		}
 	},
 	methods: {
-		roomChanged (room) {
+		roomChanged(room) {
 			if (!this.changedRoomIds.includes(room.id)) {
 				this.changedRoomIds.push(room.id)
 			}
 		},
-		toggleRole (role) {
+		toggleRole(role) {
 			if (this.expandedRoles.includes(role)) {
 				this.expandedRoles = this.expandedRoles.filter((r) => r !== role)
 			} else {
 				this.expandedRoles.push(role)
 			}
 		},
-		deleteRole (role) {
+		deleteRole(role) {
 			this.$delete(this.config.roles, role)
 		},
-		addRole () {
+		addRole() {
 			if (this.newRoleName) {
 				this.$set(this.config.roles, this.newRoleName, [])
 				this.expandedRoles.push(this.newRoleName)
 				this.newRoleName = ''
 			}
 		},
-		togglePermission (role, perm, toggle) {
+		togglePermission(role, perm, toggle) {
 			if (toggle) {
 				this.config.roles[role].push(perm)
 			} else {
@@ -119,7 +119,7 @@ export default {
 			}
 		},
 
-		async save () {
+		async save() {
 			this.saving = true
 			await api.call('world.config.patch', {
 				roles: this.config.roles,

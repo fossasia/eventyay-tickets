@@ -2,13 +2,13 @@
 import Modernizr from 'modernizr'
 import 'styles/preloader.styl'
 
-const showBrowserBlock = function () {
+const showBrowserBlock = function() {
 	document.getElementById('browser-block').style.display = 'block'
 	document.body.removeChild(document.getElementById('app'))
 }
 
 // test syntax & API features
-;(function () {
+;(function() {
 	try {
 		eval('const f=(a)=>a')
 		eval('function a(b) {for (let b;;);}')

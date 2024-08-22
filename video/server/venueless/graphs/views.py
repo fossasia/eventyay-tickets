@@ -1,6 +1,6 @@
 import io
-import re
 import logging
+import re
 from collections import Counter, defaultdict
 from datetime import timedelta
 from os.path import dirname

@@ -26,7 +26,7 @@ export default {
 		value: Object,
 		profile: Object
 	},
-	data () {
+	data() {
 		return {
 			identicon: null,
 			avatarImage: null,
@@ -35,7 +35,7 @@ export default {
 		}
 	},
 	computed: {
-		identiconUser () {
+		identiconUser() {
 			return {
 				profile: {
 					...this.profile,
@@ -46,7 +46,7 @@ export default {
 			}
 		}
 	},
-	created () {
+	created() {
 		if (!this.value) {
 			this.$emit('input', {})
 			this.identicon = uuid()
@@ -57,13 +57,13 @@ export default {
 		}
 	},
 	methods: {
-		changeIdenticon () {
+		changeIdenticon() {
 			this.fileError = null
 			this.avatarImage = null
 			this.identicon = uuid()
 			this.$emit('blockSave', false)
 		},
-		fileSelected (event) {
+		fileSelected(event) {
 			// TODO block reupload while running?
 			this.fileError = null
 			this.avatarImage = null
@@ -88,7 +88,7 @@ export default {
 				img.src = event.target.result
 			}
 		},
-		pixelsRestrictions ({minWidth, minHeight, maxWidth, maxHeight, imageWidth, imageHeight}) {
+		pixelsRestrictions({minWidth, minHeight, maxWidth, maxHeight, imageWidth, imageHeight}) {
 			return {
 				minWidth: Math.max(128, minWidth),
 				minHeight: Math.max(128, minHeight),
@@ -96,7 +96,7 @@ export default {
 				maxHeight: maxHeight,
 			}
 		},
-		update () {
+		update() {
 			return new Promise((resolve, reject) => {
 				const { canvas } = this.$refs.cropper?.getResult() || {}
 				if (!canvas) {

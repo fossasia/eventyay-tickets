@@ -1,6 +1,6 @@
 import logging
-from io import BytesIO
 import re
+from io import BytesIO
 
 from asgiref.sync import async_to_sync
 from django.core.exceptions import PermissionDenied, ValidationError

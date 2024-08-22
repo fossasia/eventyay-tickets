@@ -13,7 +13,7 @@ import { getHash, getProfile, getAvatarUrl } from 'lib/gravatar'
 
 export default {
 	components: {},
-	data () {
+	data() {
 		return {
 			email: '',
 			searchingGravatar: false,
@@ -22,7 +22,7 @@ export default {
 		}
 	},
 	methods: {
-		async connectGravatar () {
+		async connectGravatar() {
 			this.searchingGravatar = true
 			this.gravatarError = null
 			const hash = getHash(this.email)

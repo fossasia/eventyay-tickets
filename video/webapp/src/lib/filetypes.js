@@ -1,4 +1,4 @@
-export function getIconByFileEnding (url) {
+export function getIconByFileEnding(url) {
 	url = url?.toLowerCase()
 	if (/\.pdf$/.test(url)) return 'file-pdf-outline'
 	if (/\.xlsx?$/.test(url)) return 'file-excel-outline'

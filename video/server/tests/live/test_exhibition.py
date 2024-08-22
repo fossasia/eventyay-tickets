@@ -165,7 +165,10 @@ async def test_get(world, exhibition_room):
                 "highlighted_room_id": None,
                 "links": [],
                 "social_media_links": [
-                    {"display_text": "linkedin", "url": "https://www.linkedin.com/"}
+                    {
+                        "display_text": "linkedin",
+                        "url": "https://www.linkedin.com/",
+                    }
                 ],
                 "staff": [],
                 "room_id": str(exhibition_room.pk),

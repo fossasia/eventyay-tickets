@@ -41,7 +41,12 @@ async def videoroom_add_token_if_exists(server, room_data, token, audiobridge=Fa
         server.url, subprotocols=["janus-protocol"]
     ) as websocket:
         await websocket.send(
-            json.dumps({"janus": "create", "transaction": get_random_string(length=12)})
+            json.dumps(
+                {
+                    "janus": "create",
+                    "transaction": get_random_string(length=12),
+                }
+            )
         )
         resp = json.loads(await websocket.recv())
         session_id = resp["data"]["id"]
@@ -169,7 +174,12 @@ async def create_videoroom(
         server.url, subprotocols=["janus-protocol"]
     ) as websocket:
         await websocket.send(
-            json.dumps({"janus": "create", "transaction": get_random_string(length=12)})
+            json.dumps(
+                {
+                    "janus": "create",
+                    "transaction": get_random_string(length=12),
+                }
+            )
         )
         resp = json.loads(await websocket.recv())
         session_id = resp["data"]["id"]

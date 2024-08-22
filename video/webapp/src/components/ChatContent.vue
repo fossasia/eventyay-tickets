@@ -18,7 +18,7 @@ markdownIt.use(markdownEmoji)
 
 const mentionRegex = /(@[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12})/g
 
-export async function contentToPlainText (content) {
+export async function contentToPlainText(content) {
 	const parts = content.split(mentionRegex)
 	let plaintext = ''
 
@@ -61,7 +61,7 @@ export default {
         </modal>
       `,
 			methods: {
-				closeUserModal () {
+				closeUserModal() {
 					this.$emit('close')
 				}
 			}
@@ -70,21 +70,21 @@ export default {
 	props: {
 		content: String
 	},
-	data () {
+	data() {
 		return {
 			selectedUser: null
 		}
 	},
 	methods: {
-		showUserModal (user) {
+		showUserModal(user) {
 			this.selectedUser = user
 			this.$modal.show('user-modal')
 		},
-		closeUserModal () {
+		closeUserModal() {
 			this.$modal.hide('user-modal')
 		}
 	},
-	render (createElement, ctx) {
+	render(createElement, ctx) {
 		const parts = ctx.props.content.split(mentionRegex)
 		const content = parts.map(string => {
 			if (string.match(mentionRegex)) {

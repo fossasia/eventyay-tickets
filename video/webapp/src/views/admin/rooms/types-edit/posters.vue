@@ -20,17 +20,17 @@ import mixin from './mixin'
 
 export default {
 	mixins: [mixin],
-	data () {
+	data() {
 		return {
 		}
 	},
 	computed: {
-		module () {
+		module() {
 			return this.modules['poster.native']
 		}
 	},
 	methods: {
-		addCategory () {
+		addCategory() {
 			if (!this.module.config.categories) this.$set(this.module.config, 'categories', [])
 			this.module.config.categories.push({
 				new: true, // mark as new to autogenerate id
@@ -38,10 +38,10 @@ export default {
 				label: ''
 			})
 		},
-		removeCategory (category) {
+		removeCategory(category) {
 			this.module.config.categories.splice(this.module.config.categories.indexOf(category), 1)
 		},
-		addTag () {
+		addTag() {
 			if (!this.module.config.tags) this.$set(this.module.config, 'tags', [])
 			this.module.config.tags.push({
 				new: true, // mark as new to autogenerate id
@@ -50,15 +50,15 @@ export default {
 				color: ''
 			})
 		},
-		removeTag (tag) {
+		removeTag(tag) {
 			this.module.config.tags.splice(this.module.config.tags.indexOf(tag), 1)
 		},
-		generateId (item) {
+		generateId(item) {
 			if (!item.new) return
 			item.id = item.label.toLowerCase().replaceAll(' ', '-')
 		},
-		beforeSave () {
-			const stripNew = function (list) {
+		beforeSave() {
+			const stripNew = function(list) {
 				for (const item of list || []) {
 					delete item.new
 				}

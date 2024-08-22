@@ -31,7 +31,9 @@ class Migration(migrations.Migration):
             model_name="room",
             name="trait_grants",
             field=django.contrib.postgres.fields.jsonb.JSONField(
-                blank=True, default=venueless.core.models.room.default_grants, null=True
+                blank=True,
+                default=venueless.core.models.room.default_grants,
+                null=True,
             ),
         ),
         migrations.AddField(
@@ -67,7 +69,8 @@ class Migration(migrations.Migration):
             model_name="room",
             name="module_config",
             field=django.contrib.postgres.fields.jsonb.JSONField(
-                default=venueless.core.models.room.empty_module_config, null=True
+                default=venueless.core.models.room.empty_module_config,
+                null=True,
             ),
         ),
         migrations.CreateModel(

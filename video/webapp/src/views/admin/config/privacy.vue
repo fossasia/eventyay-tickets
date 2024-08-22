@@ -34,7 +34,7 @@ import ValidationErrorsMixin from 'components/mixins/validation-errors'
 export default {
 	components: { },
 	mixins: [ValidationErrorsMixin],
-	data () {
+	data() {
 		return {
 			// We do not use the global config object since we cannot rely on it being up to date (theme is only updated
 			// during application load).
@@ -53,7 +53,7 @@ export default {
 		config: {
 		}
 	},
-	async created () {
+	async created() {
 		// TODO: Force reloading if world.updated is received from the server
 		try {
 			this.config = await api.call('world.config.get')
@@ -79,7 +79,7 @@ export default {
 		}
 	},
 	methods: {
-		async save () {
+		async save() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 
@@ -96,14 +96,14 @@ export default {
 			this.saving = false
 			// TODO error handling
 		},
-		addIframeDomain () {
+		addIframeDomain() {
 			this.iframeDomains.push({
 				domain: '',
 				enabled: true,
 				policy_url: ''
 			})
 		},
-		removeIframeDomain (iframeDomain) {
+		removeIframeDomain(iframeDomain) {
 			const index = this.iframeDomains.indexOf(iframeDomain)
 			if (index < 0) return
 			this.iframeDomains.splice(index, 1)

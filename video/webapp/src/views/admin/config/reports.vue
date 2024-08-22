@@ -52,7 +52,7 @@ const time = helpers.regex('time', /^[0-9]{2}:[0-9]{2}$/)
 
 export default {
 	components: { Prompt },
-	data () {
+	data() {
 		return {
 			day_start: moment().format('YYYY-MM-DD'),
 			day_end: moment().format('YYYY-MM-DD'),
@@ -71,17 +71,17 @@ export default {
 	},
 	computed: {
 		...mapState(['world']),
-		questionRooms () {
+		questionRooms() {
 			const r = []
 			r.push(...this.$store.state.rooms.filter((room) => room.modules.filter(m => m.type === 'question').length))
 			return r
 		},
-		pollRooms () {
+		pollRooms() {
 			const r = []
 			r.push(...this.$store.state.rooms.filter((room) => room.modules.filter(m => m.type === 'poll').length))
 			return r
 		},
-		channels () {
+		channels() {
 			const r = []
 			r.push(...this.$store.state.rooms.filter((room) => room.modules.filter(m => m.type === 'chat.native').length).map((room) => {
 				return {
@@ -110,11 +110,11 @@ export default {
 			required,
 		},
 	},
-	destroyed () {
+	destroyed() {
 		window.clearTimeout(this.timeout)
 	},
 	methods: {
-		async generateViews () {
+		async generateViews() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			await this.run('views', {
@@ -122,7 +122,7 @@ export default {
 				end: this.day_end + 'T' + this.time_end,
 			})
 		},
-		async generateRoomviews () {
+		async generateRoomviews() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			await this.run('roomviews', {
@@ -130,7 +130,7 @@ export default {
 				end: this.day_end + 'T' + this.time_end,
 			})
 		},
-		async generateSessionviews () {
+		async generateSessionviews() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			await this.run('sessionviews', {
@@ -138,7 +138,7 @@ export default {
 				end: this.day_end + 'T' + this.time_end,
 			})
 		},
-		async generateSummary () {
+		async generateSummary() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 
@@ -147,7 +147,7 @@ export default {
 				end: this.day_end + 'T' + this.time_end,
 			})
 		},
-		async run (name, payload) {
+		async run(name, payload) {
 			this.running = true
 			this.error = false
 			this.task = name
@@ -160,7 +160,7 @@ export default {
 				this.running = false
 			}
 		},
-		async check () {
+		async check() {
 			try {
 				const r = await api.call('world.report.status', {
 					resultid: this.resultid
@@ -177,11 +177,11 @@ export default {
 				this.running = false
 			}
 		},
-		open () {
+		open() {
 			window.open(this.result)
 			this.clear()
 		},
-		clear () {
+		clear() {
 			this.result = null
 			this.error = false
 			this.running = false

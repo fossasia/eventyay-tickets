@@ -68,32 +68,32 @@ export default {
 		eventUrl: { default: null },
 		linkTarget: { default: '_self' },
 		generateSessionLinkUrl: {
-			default () {
+			default() {
 				return ({eventUrl, session}) => `${eventUrl}talk/${session.id}/`
 			}
 		},
 		onSessionLinkClick: {
-			default () {
+			default() {
 				return () => {}
 			}
 		}
 	},
-	data () {
+	data() {
 		return {
 			getPrettyDuration,
 			getLocalizedString
 		}
 	},
 	computed: {
-		link () {
+		link() {
 			return this.generateSessionLinkUrl({eventUrl: this.eventUrl, session: this.session})
 		},
-		style () {
+		style() {
 			return {
 				'--track-color': this.session.track?.color || 'var(--pretalx-clr-primary)'
 			}
 		},
-		startTime () {
+		startTime() {
 			// check if 12h or 24h locale
 			if (this.hasAmPm) {
 				return {
@@ -106,10 +106,10 @@ export default {
 				}
 			}
 		},
-		isLive () {
+		isLive() {
 			return moment(this.session.start).isBefore(this.now) && moment(this.session.end).isAfter(this.now)
 		},
-		abstract () {
+		abstract() {
 			try {
 				return markdownIt.renderInline(this.session.abstract)
 			} catch (error) {
@@ -120,22 +120,22 @@ export default {
 	methods: {
 		getContrastColor(bgColor) {
 			if (!bgColor) {
-				return '';
+				return ''
 			}
 
 			// Remove the hash if it's there
-			bgColor = bgColor.replace('#', '');
+			bgColor = bgColor.replace('#', '')
 
 			// Convert the color to RGB
-			var r = parseInt(bgColor.slice(0, 2), 16);
-			var g = parseInt(bgColor.slice(2, 4), 16);
-			var b = parseInt(bgColor.slice(4, 6), 16);
+			var r = parseInt(bgColor.slice(0, 2), 16)
+			var g = parseInt(bgColor.slice(2, 4), 16)
+			var b = parseInt(bgColor.slice(4, 6), 16)
 
 			// Calculate the brightness of the color
-			var brightness = (r * 299 + g * 587 + b * 114) / 1000;
+			var brightness = (r * 299 + g * 587 + b * 114) / 1000
 
 			// If the brightness is over 128, return black. Otherwise, return white
-			return brightness > 128 ? 'black' : 'white';
+			return brightness > 128 ? 'black' : 'white'
 		}
 	}
 }

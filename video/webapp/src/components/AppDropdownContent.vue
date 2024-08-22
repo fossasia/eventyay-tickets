@@ -1,6 +1,10 @@
 <template>
   <transition :name="elClass">
-    <div v-if="active" :class="elClass" @click.stop>
+    <div
+      v-if="active"
+      :class="elClass"
+      @click.stop
+    >
       <slot />
     </div>
   </transition>
@@ -10,19 +14,19 @@
 export default {
 	name: 'AppDropdownContent',
 	inject: ['sharedState'],
-  props: {
-    className: {
-      type: String,
-      default: '',
-    },
-  },
+	props: {
+		className: {
+			type: String,
+			default: '',
+		},
+	},
 	computed: {
-		active () {
+		active() {
 			return this.sharedState.active
 		},
-    elClass () {
-      return this.className ? this.className + " dropdown-content"  : 'dropdown-content'
-    },
+		elClass() {
+			return this.className ? this.className + ' dropdown-content' : 'dropdown-content'
+		},
 	},
 }
 </script>
@@ -63,7 +67,7 @@ export default {
   margin-left: 10px;
   flex: 1;
   white-space: normal;
-  overflow: hidden; 
+  overflow: hidden;
   text-overflow: ellipsis;
   text-align: left;
 }
@@ -72,7 +76,7 @@ export default {
   .dropdown-content {
     width: 70vw;
     left: 5vw;
-    right: auto; 
+    right: auto;
     max-width: calc(100% - 40px);
     min-width: 350px;
     margin-left: -20px;

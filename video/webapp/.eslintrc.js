@@ -45,6 +45,7 @@ module.exports = {
 		camelcase: 0,
 		'babel/camelcase': ['error', {properties: 'never', ignoreDestructuring: true}],
 		'no-unused-expressions': 0,
-		'babel/no-unused-expressions': 1
+		'babel/no-unused-expressions': 1,
+		'space-before-function-paren': ['error', 'never']
 	}
 }

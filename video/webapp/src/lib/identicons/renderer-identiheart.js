@@ -12,7 +12,7 @@ export const definition = {
 	}
 }
 
-export function renderSvg (random, userProfile, config) {
+export function renderSvg(random, userProfile, config) {
 	const hash = random.engine.next()
 	const primaryColor = random.pick(config.colorPalette)
 	const accentColor = random.pick(config.colorPalette)

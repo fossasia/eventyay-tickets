@@ -8,7 +8,7 @@ import mixin from './mixin'
 export default {
 	mixins: [mixin],
 	computed: {
-		module () {
+		module() {
 			const m = this.modules['networking.roulette']
 			if (!m.config) {
 				m.config = {}

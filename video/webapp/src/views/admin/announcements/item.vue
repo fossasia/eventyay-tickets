@@ -31,7 +31,7 @@ export default {
 		announcements: Array,
 		announcementId: String
 	},
-	data () {
+	data() {
 		return {
 			announcement: null,
 			saving: false,
@@ -41,20 +41,20 @@ export default {
 	},
 	computed: {
 		plainShowUntil: {
-			get () {
+			get() {
 				return this.announcement.show_until?.format('yyyy-MM-DDTHH:mm')
 			},
-			set (value) {
+			set(value) {
 				this.announcement.show_until = moment(value)
 			}
 		},
-		showUntilModifyOperator () {
+		showUntilModifyOperator() {
 			return this.shiftPressed ? '–' : '+'
 		}
 	},
 	watch: {
 		announcementId: {
-			handler () {
+			handler() {
 				if (this.announcementId === 'new') {
 					this.announcement = {
 						state: 'draft',
@@ -69,34 +69,34 @@ export default {
 			immediate: true
 		}
 	},
-	created () {
+	created() {
 		document.addEventListener('keydown', this.onGlobalKeyDown)
 		document.addEventListener('keyup', this.onGlobalKeyUp)
 	},
-	beforeDestroy () {
+	beforeDestroy() {
 		document.removeEventListener('keydown', this.onGlobalKeyDown)
 		document.removeEventListener('keyup', this.onGlobalKeyUp)
 	},
 	methods: {
-		onGlobalKeyDown (event) {
+		onGlobalKeyDown(event) {
 			if (event.key === 'Shift') {
 				this.shiftPressed = true
 			}
 		},
-		onGlobalKeyUp (event) {
+		onGlobalKeyUp(event) {
 			if (event.key === 'Shift') {
 				this.shiftPressed = false
 			}
 		},
-		modifyToShowUntil (duration, event) {
+		modifyToShowUntil(duration, event) {
 			// TODO document the shift
 			if (!this.announcement.show_until) this.announcement.show_until = moment().startOf('minute')
 			this.announcement.show_until = moment(this.announcement.show_until[this.shiftPressed ? 'subtract' : 'add'](duration))
 		},
-		clearShowUntil () {
+		clearShowUntil() {
 			this.announcement.show_until = null
 		},
-		async save () {
+		async save() {
 			this.saving = true
 			if (this.announcement.id) {
 				const { announcement } = await api.call('announcement.update', this.announcement)
@@ -112,7 +112,7 @@ export default {
 			}
 			this.saving = false
 		},
-		async progressState () {
+		async progressState() {
 			this.settingState = true
 			const { announcement } = await api.call('announcement.update', {
 				id: this.announcement.id,

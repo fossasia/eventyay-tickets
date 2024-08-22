@@ -1,6 +1,6 @@
 // from https://github.com/bevacqua/fuzzysearch/blob/master/index.js
 /* eslint no-labels: 0 */
-export default function fuzzysearch (needle, haystack) {
+export default function fuzzysearch(needle, haystack) {
 	if (!needle || !haystack) return
 	const hlen = haystack.length
 	const nlen = needle.length

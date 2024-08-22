@@ -24,7 +24,7 @@ import config from 'config'
 
 export default i18next
 
-export function localize (string) {
+export function localize(string) {
 	if (typeof string === 'string') return string
 	for (const lang of i18next.languages) {
 		if (string[lang]) return string[lang]
@@ -32,13 +32,13 @@ export function localize (string) {
 	return Object.values(string)[0]
 }
 
-export async function init (Vue) {
+export async function init(Vue) {
 	await i18next
 		// dynamic locale loader using webpack chunks
 		.use({
 			type: 'backend',
-			init (services, backendOptions, i18nextOptions) {},
-			async read (language, namespace, callback) {
+			init(services, backendOptions, i18nextOptions) {},
+			async read(language, namespace, callback) {
 				try {
 					const locale = await import(/* webpackChunkName: "locale-[request]" */ `./locales/${language}.json`)
 					callback(null, locale.default)
@@ -51,7 +51,7 @@ export async function init (Vue) {
 		.use({
 			type: 'postProcessor',
 			name: 'themeOverwrites',
-			process (value, key, options, translator) {
+			process(value, key, options, translator) {
 				return config.theme?.textOverwrites?.[key[0]] ?? value
 			}
 		})

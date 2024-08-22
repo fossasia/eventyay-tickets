@@ -28,7 +28,7 @@ export default {
 		rooms: Array,
 		favs: {
 			type: Array,
-			default () {
+			default() {
 				return []
 			}
 		},
@@ -37,7 +37,7 @@ export default {
 		scrollParent: Element,
 		sortBy: String,
 	},
-	data () {
+	data() {
 		return {
 			moment,
 			getLocalizedString,
@@ -45,7 +45,7 @@ export default {
 		}
 	},
 	computed: {
-		sessionBuckets () {
+		sessionBuckets() {
 			const buckets = {}
 			for (const session of this.sessions) {
 				const key = session.start.format()
@@ -97,7 +97,7 @@ export default {
 	watch: {
 		currentDay: 'changeDay'
 	},
-	async mounted () {
+	async mounted() {
 		await this.$nextTick()
 		this.observer = new IntersectionObserver(this.onIntersect, {
 			root: this.scrollParent,
@@ -137,18 +137,18 @@ export default {
 		}
 	},
 	methods: {
-		isProperSession (session) {
+		isProperSession(session) {
 			// breaks and such don't have ids
 			return !!session.id
 		},
-		getBucketName (date) {
+		getBucketName(date) {
 			return `bucket-${date.format('YYYY-MM-DD-HH-mm')}`
 		},
-		getOffsetTop () {
+		getOffsetTop() {
 			const rect = this.$parent.$el.getBoundingClientRect()
 			return rect.top + window.scrollY
 		},
-		changeDay (day) {
+		changeDay(day) {
 			if (this.scrolledDay === day) return
 			const dayBucket = this.sessionBuckets.find(bucket => day.isSame(bucket.date, 'day'))
 			if (!dayBucket) return
@@ -161,7 +161,7 @@ export default {
 				window.scroll({top: scrollTop})
 			}
 		},
-		onIntersect (results) {
+		onIntersect(results) {
 			const intersection = results[0]
 			const day = moment.parseZone(intersection.target.dataset.date).startOf('day')
 			if (intersection.isIntersecting) {

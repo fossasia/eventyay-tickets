@@ -41,19 +41,22 @@ class Migration(migrations.Migration):
                 (
                     "meeting_id",
                     models.CharField(
-                        default=venueless.core.models.bbb.random_key, max_length=300
+                        default=venueless.core.models.bbb.random_key,
+                        max_length=300,
                     ),
                 ),
                 (
                     "attendee_pw",
                     models.CharField(
-                        default=venueless.core.models.bbb.random_key, max_length=300
+                        default=venueless.core.models.bbb.random_key,
+                        max_length=300,
                     ),
                 ),
                 (
                     "moderator_pw",
                     models.CharField(
-                        default=venueless.core.models.bbb.random_key, max_length=300
+                        default=venueless.core.models.bbb.random_key,
+                        max_length=300,
                     ),
                 ),
                 (
@@ -68,7 +71,8 @@ class Migration(migrations.Migration):
                 (
                     "server",
                     models.ForeignKey(
-                        on_delete=django.db.models.deletion.CASCADE, to="core.BBBServer"
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="core.BBBServer",
                     ),
                 ),
                 (

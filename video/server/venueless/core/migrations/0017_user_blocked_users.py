@@ -13,7 +13,9 @@ class Migration(migrations.Migration):
             model_name="user",
             name="blocked_users",
             field=models.ManyToManyField(
-                related_name="_user_blocked_users_+", to="core.User", symmetrical=False
+                related_name="_user_blocked_users_+",
+                to="core.User",
+                symmetrical=False,
             ),
         ),
     ]

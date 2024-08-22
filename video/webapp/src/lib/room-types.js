@@ -81,7 +81,7 @@ const ROOM_TYPES = [{
 
 export default ROOM_TYPES.filter(type => !type.behindFeatureFlag || features.enabled(type.behindFeatureFlag))
 
-export function inferType (config) {
+export function inferType(config) {
 	const modules = config.module_config.reduce((acc, module) => {
 		acc[module.type] = module
 		return acc
@@ -102,6 +102,6 @@ export function inferType (config) {
 }
 
 // TODO clean up with `inferType` function
-export function inferRoomType (room) {
+export function inferRoomType(room) {
 	return inferType({module_config: room.modules})
 }

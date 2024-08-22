@@ -40,7 +40,10 @@ class RoomQuerySet(models.QuerySet):
         # Get all roles that grant view access
         roles = [
             role
-            for role, permissions in [*world.roles.items(), *SYSTEM_ROLES.items()]
+            for role, permissions in [
+                *world.roles.items(),
+                *SYSTEM_ROLES.items(),
+            ]
             if permission.value in permissions
         ]
 
@@ -217,7 +220,10 @@ def generate_short_token():
 
 class AnonymousInvite(models.Model):
     short_token = models.CharField(
-        db_index=True, unique=True, default=generate_short_token, max_length=150
+        db_index=True,
+        unique=True,
+        default=generate_short_token,
+        max_length=150,
     )
     world = models.ForeignKey(
         "World", related_name="anonymous_invites", on_delete=models.CASCADE

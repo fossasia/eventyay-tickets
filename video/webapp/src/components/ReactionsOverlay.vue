@@ -14,7 +14,7 @@ export default {
 	props: {
 		showReactionBar: Boolean,
 	},
-	data () {
+	data() {
 		return {
 			particlePool: [],
 			freeParticles: []
@@ -22,12 +22,12 @@ export default {
 	},
 	computed: {
 		...mapState(['mediaSourcePlaceholderRect', 'reactions', 'stageStreamCollapsed']),
-		direction () {
+		direction() {
 			return this.stageStreamCollapsed ? 'horizontal' : 'vertical'
 		}
 	},
 	watch: {
-		reactions () {
+		reactions() {
 			if (!this.reactions) return
 			// put all reactions in a queue and randomize to get rough averages toghether with the particle pool
 			// cap at MAX_PARTICLE_POOL and round up
@@ -46,7 +46,7 @@ export default {
 			}
 			distribute()
 		},
-		direction () {
+		direction() {
 			// reset reactions on direction change
 			for (const element of this.particlePool) {
 				element.style.left = null
@@ -55,7 +55,7 @@ export default {
 		}
 	},
 	methods: {
-		renderReaction (emoji) {
+		renderReaction(emoji) {
 			let element = this.freeParticles.pop()
 			if (!element) {
 				if (this.particlePool.length < MAX_PARTICLE_POOL) {

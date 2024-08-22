@@ -50,7 +50,7 @@ export default {
 	props: {
 		message: Object // initialize with existing message to edit
 	},
-	data () {
+	data() {
 		return {
 			files: [],
 			uploading: false,
@@ -58,7 +58,7 @@ export default {
 		}
 	},
 	computed: {
-		autocompleteCoordinates () {
+		autocompleteCoordinates() {
 			// TODO bound to right edge
 			if (!this.autocomplete?.range) return null
 			const bounds = this.quill.getBounds(this.autocomplete.range.index, this.autocomplete.range.length)
@@ -70,7 +70,7 @@ export default {
 		}
 	},
 	watch: {
-		async 'autocomplete.search' (search) {
+		async 'autocomplete.search'(search) {
 			// TODO debounce?
 			if (!this.autocomplete) return
 			if (this.autocomplete.type === 'mention') {
@@ -83,7 +83,7 @@ export default {
 			}
 		}
 	},
-	mounted () {
+	mounted() {
 		this.quill = new Quill(this.$refs.editor, {
 			debug: ENV_DEVELOPMENT ? 'info' : 'warn',
 			placeholder: this.$t('ChatInput:input:placeholder'),
@@ -126,7 +126,7 @@ export default {
 		}
 	},
 	methods: {
-		onTextChange (delta, oldDelta, source) {
+		onTextChange(delta, oldDelta, source) {
 			if (source !== 'user') return
 			const selection = this.quill.getSelection()
 			if (selection === null) return
@@ -156,37 +156,37 @@ export default {
 				this.autocomplete = null
 			}
 		},
-		onSelectionChange (range, oldRange, source) {
+		onSelectionChange(range, oldRange, source) {
 			// TODO check mentions
 		},
-		handleEnter () {
+		handleEnter() {
 			if (this.autocomplete) return this.handleMention()
 			return this.send()
 		},
-		handleTab () {
+		handleTab() {
 			if (this.autocomplete) return this.handleMention()
 			return true
 		},
-		handleArrayUp () {
+		handleArrayUp() {
 			if (!this.autocomplete) return true
 			this.autocomplete.selected = Math.max(0, this.autocomplete.selected - 1)
 		},
-		handleArrayDown () {
+		handleArrayDown() {
 			if (!this.autocomplete) return true
 			this.autocomplete.selected = Math.min(this.autocomplete.options.length - 1, this.autocomplete.selected + 1)
 		},
-		handleEscape () {
+		handleEscape() {
 			if (!this.autocomplete) return true
 			this.closeAutocomplete()
 		},
-		closeAutocomplete () {
+		closeAutocomplete() {
 			this.quill.setSelection(this.autocomplete.selection)
 			this.autocomplete = null
 		},
-		selectMention (index) {
+		selectMention(index) {
 			this.autocomplete.selected = index
 		},
-		handleMention () {
+		handleMention() {
 			if (!this.autocomplete) return
 			this.quill.deleteText(this.autocomplete.range.index, this.autocomplete.range.length)
 			const user = this.autocomplete.options[this.autocomplete.selected]
@@ -197,7 +197,7 @@ export default {
 			this.quill.setSelection(this.autocomplete.range.index + 1, 0)
 			this.autocomplete = null
 		},
-		send () {
+		send() {
 			const contents = this.quill.getContents()
 			let text = ''
 			console.log(contents)
@@ -226,7 +226,7 @@ export default {
 			}
 			this.quill.setContents([{insert: '\n'}])
 		},
-		async attachFiles (event) {
+		async attachFiles(event) {
 			const files = Array.from(event.target.files)
 			if (files.length === 0) return
 
@@ -248,13 +248,13 @@ export default {
 			this.files.push(...fileInfos)
 			this.uploading = false
 		},
-		addEmoji (emoji) {
+		addEmoji(emoji) {
 			// TODO skin color
 			const selection = this.quill.getSelection(true)
 			this.quill.updateContents(new Delta().retain(selection.index).delete(selection.length).insert({emoji: emoji.native}), 'user')
 			this.quill.setSelection(selection.index + 1, 0)
 		},
-		removeFile (file) {
+		removeFile(file) {
 			const index = this.files.indexOf(file)
 			if (index > -1) {
 				this.files.splice(index, 1)

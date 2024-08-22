@@ -2,9 +2,9 @@
 import EventEmitter from 'events'
 import ApiError from './ApiError'
 
-const defer = function () {
+const defer = function() {
 	const deferred = {}
-	deferred.promise = new Promise(function (resolve, reject) {
+	deferred.promise = new Promise(function(resolve, reject) {
 		deferred.resolve = resolve
 		deferred.reject = reject
 	})
@@ -12,7 +12,7 @@ const defer = function () {
 }
 
 class WebSocketClient extends EventEmitter {
-	constructor (url, config) {
+	constructor(url, config) {
 		super()
 		const defaultConfig = {
 			pingInterval: 10000,
@@ -26,17 +26,17 @@ class WebSocketClient extends EventEmitter {
 		this._url = url
 	}
 
-	connect () {
+	connect() {
 		this._createSocket()
 	}
 
-	close () {
+	close() {
 		this._normalClose = true
 		this._socket.close()
 		clearTimeout(this._joinTimeout)
 	}
 
-	call (name, data, opts) {
+	call(name, data, opts) {
 		const options = {
 			timeout: 15000
 		}
@@ -60,7 +60,7 @@ class WebSocketClient extends EventEmitter {
 	// ===========================================================================
 	// INTERNALS
 	// ===========================================================================
-	_createSocket () {
+	_createSocket() {
 		this._socket = new WebSocket(this._url)
 		this.socketState = 'connecting' // 'closed', 'open', 'connecting'
 		this._pingState = {
@@ -92,7 +92,7 @@ class WebSocketClient extends EventEmitter {
 		this._joinTimeout = null
 	}
 
-	_send (payload) {
+	_send(payload) {
 		this._socket.send(payload)
 		this.emit('log', {
 			direction: 'send',
@@ -100,7 +100,7 @@ class WebSocketClient extends EventEmitter {
 		})
 	}
 
-	_authenticate () {
+	_authenticate() {
 		const payload = {}
 		if (this._config.token) {
 			payload.token = this._config.token
@@ -114,7 +114,7 @@ class WebSocketClient extends EventEmitter {
 		this._send(JSON.stringify(['authenticate', payload]))
 	}
 
-	_ping (starterSocket) { // we need a ref to the socket to detect reconnects and stop the old ping loop
+	_ping(starterSocket) { // we need a ref to the socket to detect reconnects and stop the old ping loop
 		if (this._socket.readyState !== 1) return
 		const timestamp = Date.now()
 		const payload = [
@@ -131,12 +131,12 @@ class WebSocketClient extends EventEmitter {
 		}, this._config.pingInterval)
 	}
 
-	_handlePingTimeout () {
+	_handlePingTimeout() {
 		this._socket.close()
 		this.emit('closed')
 	}
 
-	_processMessage (rawMessage) {
+	_processMessage(rawMessage) {
 		const message = JSON.parse(rawMessage.data)
 
 		const actionHandlers = {
@@ -158,20 +158,20 @@ class WebSocketClient extends EventEmitter {
 	}
 
 	// request - response promise matching
-	_createRequest (callback) {
+	_createRequest(callback) {
 		const id = this._nextRequestIndex++
 		const deferred = defer()
 		this._openRequests[id] = { deferred, callback }
 		return { id, promise: deferred.promise }
 	}
 
-	_popPendingRequest (id) {
+	_popPendingRequest(id) {
 		const req = this._openRequests[id]
 		this._openRequests[id] = undefined
 		return req
 	}
 
-	_handleError (message) {
+	_handleError(message) {
 		const req = this._popPendingRequest(message[1])
 		if (req === null || req === undefined) {
 			this.emit('error', message[message.length - 1])
@@ -180,7 +180,7 @@ class WebSocketClient extends EventEmitter {
 		}
 	}
 
-	_handleCallSuccess (message) {
+	_handleCallSuccess(message) {
 		const req = this._popPendingRequest(message[1])
 		if (req === null || req === undefined) {
 			this.emit('warning', `no saved request with id: ${message[1]}`)
@@ -193,17 +193,17 @@ class WebSocketClient extends EventEmitter {
 		}
 	}
 
-	_handleReload (message) {
+	_handleReload(message) {
 		this.close()
 		location.reload()
 	}
 
-	_handlePong (message) {
+	_handlePong(message) {
 		this.emit('pong')
 		this._pingState.latestPong = Date.now()
 	}
 
-	_handleJoined (message) {
+	_handleJoined(message) {
 		clearTimeout(this._joinTimeout)
 		this._joinTimeout = null
 		this.emit('joined', message[1])
@@ -214,7 +214,7 @@ class WebSocketClient extends EventEmitter {
 		}, this._config.pingInterval)
 	}
 
-	_handleJoinError (message) {
+	_handleJoinError(message) {
 		clearTimeout(this._joinTimeout)
 		this._joinTimeout = null
 		this.emit('error', message[1].error)

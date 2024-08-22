@@ -67,7 +67,8 @@ VENUELESS_MULTIFACTOR_REQUIRE = (
 )
 
 MAIL_FROM = SERVER_EMAIL = DEFAULT_FROM_EMAIL = os.environ.get(
-    "VENUELESS_MAIL_FROM", config.get("mail", "from", fallback="admin@localhost")
+    "VENUELESS_MAIL_FROM",
+    config.get("mail", "from", fallback="admin@localhost"),
 )
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -95,13 +96,15 @@ DATABASES = {
             config.get("database", "backend", fallback="postgresql"),
         ),
         "NAME": os.getenv(
-            "VENUELESS_DB_NAME", config.get("database", "name", fallback="venueless")
+            "VENUELESS_DB_NAME",
+            config.get("database", "name", fallback="venueless"),
         ),
         "USER": os.getenv(
             "VENUELESS_DB_USER", config.get("database", "user", fallback="")
         ),
         "PASSWORD": os.getenv(
-            "VENUELESS_DB_PASS", config.get("database", "password", fallback="")
+            "VENUELESS_DB_PASS",
+            config.get("database", "password", fallback=""),
         ),
         "HOST": os.getenv(
             "VENUELESS_DB_HOST", config.get("database", "host", fallback="")
@@ -152,7 +155,8 @@ else:
 
 
 REDIS_USE_PUBSUB = os.getenv(
-    "VENUELESS_REDIS_USE_PUBSUB", config.get("redis", "use_pubsub", fallback="false")
+    "VENUELESS_REDIS_USE_PUBSUB",
+    config.get("redis", "use_pubsub", fallback="false"),
 ) in (True, "yes", "on", "true", "True", "1")
 
 CHANNEL_LAYERS = {
@@ -175,12 +179,14 @@ CHANNEL_LAYERS = {
 }
 
 SITE_URL = os.getenv(
-    "VENUELESS_SITE_URL", config.get("venueless", "url", fallback="http://localhost")
+    "VENUELESS_SITE_URL",
+    config.get("venueless", "url", fallback="http://localhost"),
 )
 ALLOWED_HOSTS = ["*"]
 
 SHORT_URL = os.getenv(
-    "VENUELESS_SHORT_URL", config.get("venueless", "short_url", fallback=SITE_URL)
+    "VENUELESS_SHORT_URL",
+    config.get("venueless", "short_url", fallback=SITE_URL),
 )
 
 if os.getenv("VENUELESS_COOKIE_DOMAIN", ""):
@@ -194,7 +200,8 @@ MEDIA_URL = os.getenv(
 )
 
 WEBSOCKET_PROTOCOL = os.getenv(
-    "VENUELESS_WEBSOCKET_PROTOCOL", config.get("websocket", "protocol", fallback="wss")
+    "VENUELESS_WEBSOCKET_PROTOCOL",
+    config.get("websocket", "protocol", fallback="wss"),
 )
 
 STORAGES = {
@@ -231,14 +238,16 @@ STATSD_PREFIX = "venueless"
 
 
 TWITTER_CLIENT_ID = os.getenv(
-    "VENUELESS_TWITTER_CLIENT_ID", config.get("twitter", "client_id", fallback="")
+    "VENUELESS_TWITTER_CLIENT_ID",
+    config.get("twitter", "client_id", fallback=""),
 )
 TWITTER_CLIENT_SECRET = os.getenv(
     "VENUELESS_TWITTER_CLIENT_SECRET",
     config.get("twitter", "client_secret", fallback=""),
 )
 LINKEDIN_CLIENT_ID = os.getenv(
-    "VENUELESS_LINKEDIN_CLIENT_ID", config.get("linkedin", "client_id", fallback="")
+    "VENUELESS_LINKEDIN_CLIENT_ID",
+    config.get("linkedin", "client_id", fallback=""),
 )
 LINKEDIN_CLIENT_SECRET = os.getenv(
     "VENUELESS_LINKEDIN_CLIENT_SECRET",
@@ -400,7 +409,11 @@ LOGGING = {
         },
     },
     "loggers": {
-        "": {"handlers": ["file", "console"], "level": loglevel, "propagate": True},
+        "": {
+            "handlers": ["file", "console"],
+            "level": loglevel,
+            "propagate": True,
+        },
         "django.request": {
             "handlers": ["file", "console"],
             "level": loglevel,

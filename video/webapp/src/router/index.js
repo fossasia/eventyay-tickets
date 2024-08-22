@@ -43,7 +43,7 @@ const routes = [{
 	}]
 }, {
 	path: '/rooms/:roomId/presentation/:mode',
-	redirect (to) {
+	redirect(to) {
 		return {
 			path: `/standalone/${to.params.roomId}/${to.params.mode}`
 		}

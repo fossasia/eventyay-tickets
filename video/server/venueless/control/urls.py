@@ -18,26 +18,44 @@ urlpatterns = [
     path("users/", views.UserList.as_view(), name="user.list"),
     path("users/<int:pk>/", views.UserUpdate.as_view(), name="user.update"),
     path("bbbs/", views.BBBServerList.as_view(), name="bbbserver.list"),
-    path("bbbs/moveroom/", views.BBBMoveRoom.as_view(), name="bbbserver.moveroom"),
+    path(
+        "bbbs/moveroom/",
+        views.BBBMoveRoom.as_view(),
+        name="bbbserver.moveroom",
+    ),
     path("bbbs/new/", views.BBBServerCreate.as_view(), name="bbbserver.create"),
     path(
         "bbbs/<uuid:pk>/delete",
         views.BBBServerDelete.as_view(),
         name="bbbserver.delete",
     ),
-    path("bbbs/<uuid:pk>/", views.BBBServerUpdate.as_view(), name="bbbserver.update"),
+    path(
+        "bbbs/<uuid:pk>/",
+        views.BBBServerUpdate.as_view(),
+        name="bbbserver.update",
+    ),
     path("janus/", views.JanusServerList.as_view(), name="janusserver.list"),
-    path("janus/new/", views.JanusServerCreate.as_view(), name="janusserver.create"),
+    path(
+        "janus/new/",
+        views.JanusServerCreate.as_view(),
+        name="janusserver.create",
+    ),
     path(
         "janus/<uuid:pk>/delete",
         views.JanusServerDelete.as_view(),
         name="janusserver.delete",
     ),
     path(
-        "janus/<uuid:pk>/", views.JanusServerUpdate.as_view(), name="janusserver.update"
+        "janus/<uuid:pk>/",
+        views.JanusServerUpdate.as_view(),
+        name="janusserver.update",
     ),
     path("turns/", views.TurnServerList.as_view(), name="turnserver.list"),
-    path("turns/new/", views.TurnServerCreate.as_view(), name="turnserver.create"),
+    path(
+        "turns/new/",
+        views.TurnServerCreate.as_view(),
+        name="turnserver.create",
+    ),
     path(
         "turns/<uuid:pk>/delete",
         views.TurnServerDelete.as_view(),
@@ -72,11 +90,23 @@ urlpatterns = [
     path("worlds/", views.WorldList.as_view(), name="world.list"),
     path("worlds/new/", views.WorldCreate.as_view(), name="world.create"),
     path("worlds/calendar", views.WorldCalendar.as_view(), name="world.calendar"),
-    path("worlds/<slug:pk>/admin", views.WorldAdminToken.as_view(), name="world.admin"),
-    path("worlds/<slug:pk>/clear", views.WorldClear.as_view(), name="world.clear"),
+    path(
+        "worlds/<slug:pk>/admin",
+        views.WorldAdminToken.as_view(),
+        name="world.admin",
+    ),
+    path(
+        "worlds/<slug:pk>/clear",
+        views.WorldClear.as_view(),
+        name="world.clear",
+    ),
     path("worlds/<slug:pk>/", views.WorldUpdate.as_view(), name="world.update"),
     path("feedback/", views.FeedbackList.as_view(), name="feedback.list"),
-    path("feedback/<uuid:pk>/", views.FeedbackDetail.as_view(), name="feedback.detail"),
+    path(
+        "feedback/<uuid:pk>/",
+        views.FeedbackDetail.as_view(),
+        name="feedback.detail",
+    ),
     path(
         "conftool/syncposters/",
         views.ConftoolSyncPosters.as_view(),

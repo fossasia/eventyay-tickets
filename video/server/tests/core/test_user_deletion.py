@@ -29,7 +29,9 @@ def test_delete_user(world, chat_room):
     should_be_deleted_after_u1_is_deleted = []
 
     bbb_server = BBBServer.objects.create(
-        url="https://video1.pretix.eu/bigbluebutton/", secret="bogussecret", active=True
+        url="https://video1.pretix.eu/bigbluebutton/",
+        secret="bogussecret",
+        active=True,
     )
     bbbcall = BBBCall.objects.create(server=bbb_server, world=world)
     bbbcall.invited_members.add(u1)

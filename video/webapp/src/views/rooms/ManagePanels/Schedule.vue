@@ -8,16 +8,16 @@ export default {
 	props: {
 		room: Object
 	},
-	data () {
+	data() {
 		return {
 		}
 	},
 	computed: {
 		computeSession: {
-			get () {
+			get() {
 				return this.room.schedule_data?.computeSession
 			},
-			set (value) {
+			set(value) {
 				if (value) {
 					this.$store.dispatch('updateRoomSchedule', {
 						room: this.room,
@@ -34,8 +34,8 @@ export default {
 			}
 		}
 	},
-	created () {},
-	mounted () {
+	created() {},
+	mounted() {
 		this.$nextTick(() => {
 		})
 	},

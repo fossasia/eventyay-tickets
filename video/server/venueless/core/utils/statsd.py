@@ -43,7 +43,8 @@ class StatsD:
     async def start(self):
         logger.debug(f"StatsD connection to {self.host}:{self.port} established")
         _, self.protocol = await self.loop.create_datagram_endpoint(
-            lambda: StatsdProtocol(self.prefix), remote_addr=(self.host, self.port)
+            lambda: StatsdProtocol(self.prefix),
+            remote_addr=(self.host, self.port),
         )
 
     def stop(self):

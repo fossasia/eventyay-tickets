@@ -17,7 +17,7 @@ module.exports = {
 			'.eventyay.com',
 			'video-dev.eventyay.com',
 			'video.eventyay.com'
-		  ],
+		],
 	},
 	pwa: {
 		name: 'eventyay',
@@ -105,7 +105,7 @@ module.exports = {
 			})
 		],
 	},
-	chainWebpack (config) {
+	chainWebpack(config) {
 		config.entryPoints.clear()
 		config.entry('preloader').add('./src/preloader.js')
 		if (config.plugins.has('optimize-css')) {

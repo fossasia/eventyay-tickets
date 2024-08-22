@@ -84,7 +84,7 @@ export default {
 			default: true
 		}
 	},
-	data () {
+	data() {
 		return {
 			theme,
 			isLive: null,
@@ -116,10 +116,10 @@ export default {
 	computed: {
 		...mapState(['streamingRoom']),
 		...mapGetters(['autoplay']),
-		seekable () {
+		seekable() {
 			return this.isLive === false || config.seekableLiveStreams
 		},
-		progressStyles () {
+		progressStyles() {
 			return {
 				play: {
 					'--play-progress': this.currentTime / this.duration
@@ -130,16 +130,16 @@ export default {
 				}))
 			}
 		},
-		hoveredTime () {
+		hoveredTime() {
 			return this.hoveredProgress * this.duration
 		},
-		levelIcon () {
+		levelIcon() {
 			const level = this.manualLevel || this.autoLevel
 			if (!level || level.height < 480) return 'quality-low'
 			if (level.height < 720) return 'quality-medium'
 			return 'quality-high'
 		},
-		hlsUrl () {
+		hlsUrl() {
 			if (this.chosenAlternative) {
 				const alternative = (this.module.config.alternatives || []).find((a) => a.label === this.chosenAlternative)
 				if (alternative) {
@@ -148,21 +148,21 @@ export default {
 			}
 			return this.module.config.hls_url
 		},
-		hasAlternativeStreams () {
+		hasAlternativeStreams() {
 			return this.module.config.alternatives?.length > 0
 		}
 	},
 	watch: {
 		hlsUrl: 'initializePlayer',
 	},
-	created () {
+	created() {
 		// don't start playing when autoplay is disabled
 		this.playing = this.autoplay
 		if (localStorage[`livestream.native.alternative:${this.room.id}`]) {
 			this.chosenAlternative = localStorage[`livestream.native.alternative:${this.room.id}`]
 		}
 	},
-	mounted () {
+	mounted() {
 		document.addEventListener('fullscreenchange', this.onFullscreenchange)
 		/* loadedmetadata */
 		this.$refs.video.addEventListener('durationchange', this.onDurationchange)
@@ -176,7 +176,7 @@ export default {
 		this.$refs.video.textTracks.addEventListener('removetrack', this.onTextTracksChanged)
 		this.initializePlayer()
 	},
-	beforeDestroy () {
+	beforeDestroy() {
 		this.player?.destroy()
 		document.removeEventListener('fullscreenchange', this.onFullscreenchange)
 		this.$refs.video.textTracks.removeEventListener('addtrack', this.onTextTracksChanged)
@@ -184,11 +184,11 @@ export default {
 		this.$refs.video.textTracks.removeEventListener('removetrack', this.onTextTracksChanged)
 	},
 	methods: {
-		initializePlayer () {
+		initializePlayer() {
 			this.player?.destroy()
 			this.buffering = true
 			const video = this.$refs.video
-			const start = async () => {
+			const start = async() => {
 				this.offline = false
 				this.buffering = false
 				if (!this.playing) return
@@ -202,7 +202,7 @@ export default {
 				this.onVolumechange()
 			}
 			if (Hls.isSupported()) {
-				const hlsConfig = Object.assign({}, HLS_DEFAULT_CONFIG, config.videoPlayer?.['hls.js'], {
+				const hlsConfig = Object.assign({}, HLS_DEFAULT_CONFIG, config.video_player?.['hls.js'], {
 					autoStartLoad: this.playing
 				})
 				const player = new Hls(hlsConfig)
@@ -215,7 +215,7 @@ export default {
 				player.on(Hls.Events.MEDIA_ATTACHED, () => {
 					load()
 				})
-				player.on(Hls.Events.MANIFEST_PARSED, async (event, data) => {
+				player.on(Hls.Events.MANIFEST_PARSED, async(event, data) => {
 					if (data.levels[0].height) {
 						this.levels = data.levels.map((level, index) => ({...level, index})).sort((a, b) => b.height - a.height)
 					}
@@ -261,7 +261,7 @@ export default {
 				video.src = this.hlsUrl
 				// TODO probably explodes on re-init
 				// TODO doesn't seem like the buffer ring gets hidden?
-				video.addEventListener('loadedmetadata', function () {
+				video.addEventListener('loadedmetadata', function() {
 					start()
 				})
 			}
@@ -283,7 +283,7 @@ export default {
 				})
 			}
 		},
-		toggleVideo () {
+		toggleVideo() {
 			if (this.offline) return
 			if (this.automuted) {
 				this.toggleVolume()
@@ -300,12 +300,12 @@ export default {
 				this.player.stopLoad()
 			}
 		},
-		chooseLevel (level) {
+		chooseLevel(level) {
 			this.manualLevel = level
 			this.player.loadLevel = level?.index ?? -1
 			this.showLevelChooser = false
 		},
-		chooseSource (source) {
+		chooseSource(source) {
 			this.chosenAlternative = source?.label
 			if (source) {
 				localStorage[`livestream.native.alternative:${this.room.id}`] = source?.label
@@ -314,7 +314,7 @@ export default {
 			}
 			this.showSourceChooser = false
 		},
-		toggleCaptions () {
+		toggleCaptions() {
 			if (this.$refs.video.textTracks.length === 1) {
 				const t = this.$refs.video.textTracks[0]
 				t.mode = t.mode === 'showing' ? 'hidden' : 'showing'
@@ -323,7 +323,7 @@ export default {
 				this.showCaptionsChooser = true
 			}
 		},
-		chooseTextTrack (track) {
+		chooseTextTrack(track) {
 			for (let i = 0; i < this.$refs.video.textTracks.length; i++) { // TextTrackList.forEach not supported in all browsers
 				const t = this.$refs.video.textTracks[i]
 				if (track !== null && t.label === track.label) {
@@ -335,25 +335,25 @@ export default {
 			this.onTextTracksChanged()
 			this.showCaptionsChooser = false
 		},
-		toggleVolume () {
+		toggleVolume() {
 			this.automuted = false
 			this.$refs.video.muted = !this.muted
 		},
-		onVolumeSlider (event) {
+		onVolumeSlider(event) {
 			this.$refs.video.volume = event.target.value
 			this.volume = event.target.value
 		},
-		toggleFullscreen () {
+		toggleFullscreen() {
 			if (document.fullscreenElement) {
 				document.exitFullscreen()
 			} else {
 				this.$refs.videocontainer.requestFullscreen()
 			}
 		},
-		openExternalSubtitles () {
+		openExternalSubtitles() {
 			window.open(this.module.config.subtitle_url, 'subtitles', 'width=600,height=400,toolbar=no,menubar=no,location=yes,status=yes,resizable=yes,scrollbars=yes')
 		},
-		onTextTracksChanged () {
+		onTextTracksChanged() {
 			const newList = []
 			for (let i = 0; i < this.$refs.video.textTracks.length; i++) { // TextTrackList.forEach not supported in all browsers
 				const t = this.$refs.video.textTracks[i]
@@ -367,7 +367,7 @@ export default {
 			}
 			this.textTracks = newList
 		},
-		onVolumechange () {
+		onVolumechange() {
 			if (!this.$refs.video) return
 			if (this.$refs.video.muted) {
 				this.volume = 0
@@ -377,11 +377,11 @@ export default {
 				this.muted = false
 			}
 		},
-		onDurationchange () {
+		onDurationchange() {
 			if (!this.$refs.video) return
 			this.duration = this.$refs.video.duration
 		},
-		onProgress () {
+		onProgress() {
 			if (!this.$refs.video) return
 			this.bufferedRanges = []
 			for (let i = 0; i < this.$refs.video.buffered.length; i++) {
@@ -391,37 +391,37 @@ export default {
 				})
 			}
 		},
-		onTimeupdate () {
+		onTimeupdate() {
 			if (!this.$refs.video) return
 			this.currentTime = this.$refs.video.currentTime
 		},
-		onSeeking () {
+		onSeeking() {
 			this.seeking = true
 		},
-		onSeeked () {
+		onSeeked() {
 			this.seeking = false
 		},
-		onEnded () {
+		onEnded() {
 			this.player?.destroy()
 			this.offline = true
 		},
-		onFullscreenchange () {
+		onFullscreenchange() {
 			this.fullscreen = !!document.fullscreenElement
 		},
-		playingVideo () {
+		playingVideo() {
 			this.playing = true
 		},
-		pausingVideo () {
+		pausingVideo() {
 			this.playing = false
 		},
-		onProgressPointerdown (event) {
+		onProgressPointerdown(event) {
 			this.$refs.progress.setPointerCapture(event.pointerId)
 			this.mouseSeeking = true
 			this.$refs.video.currentTime = this.hoveredProgress * this.duration
 			// TODO respect video.seekable?
 			// TODO show pos to seek
 		},
-		onProgressPointermove (event) {
+		onProgressPointermove(event) {
 			const el = this.$refs.progress
 			const rect = el.getBoundingClientRect() // TODO probably killing performance
 			this.hoveredProgress = Math.min(Math.max(0, (event.clientX - (rect.x + 16)) / (rect.width - 32)), 1)
@@ -429,14 +429,14 @@ export default {
 				this.$refs.video.currentTime = this.hoveredProgress * this.duration
 			}
 		},
-		onProgressPointerup (event) {
+		onProgressPointerup(event) {
 			this.mouseSeeking = false
 			this.$refs.progress.releasePointerCapture(event.pointerId)
 		},
-		onResize (event) {
+		onResize(event) {
 			this.totalWidth = event[event.length - 1].contentRect.width
 		},
-		formatTime (s) {
+		formatTime(s) {
 			let prefix = ''
 			if (this.isLive) {
 				s = Math.abs(s - this.duration)
