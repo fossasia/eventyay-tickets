@@ -47,7 +47,7 @@ import { required } from 'buntpapier/src/vuelidate/validators'
 
 export default {
 	components: { Avatar, Prompt, ChangeAvatar, ChangeAdditionalFields, ConnectGravatar},
-	data () {
+	data() {
 		return {
 			profile: null,
 			interfaceLanguage: this.$i18n.resolvedLanguage,
@@ -71,12 +71,12 @@ export default {
 		...mapState('notifications', {
 			notificationPermission: 'permission'
 		}),
-		languages () {
+		languages() {
 			if (!config.locales?.length) return null
 			return locales.filter(locale => config.locales.includes(locale.code))
 		}
 	},
-	created () {
+	created() {
 		this.profile = Object.assign({}, this.user.profile)
 		this.autoplay = this.$store.getters.autoplay
 		if (!this.profile.avatar || (!this.profile.avatar.url && !this.profile.avatar.identicon)) {
@@ -86,14 +86,14 @@ export default {
 		}
 	},
 	methods: {
-		async uploadAvatar () {
+		async uploadAvatar() {
 			this.savingAvatar = true
 			await this.$refs.avatar.update()
 			await this.$store.dispatch('updateUser', {profile: Object.assign({}, this.user.profile, {avatar: this.profile.avatar})})
 			this.showChangeAvatar = false
 			this.savingAvatar = false
 		},
-		async save () {
+		async save() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			this.saving = true

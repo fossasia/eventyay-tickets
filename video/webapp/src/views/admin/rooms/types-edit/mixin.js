@@ -10,14 +10,14 @@ export default {
 		}
 	},
 	methods: {
-		addModule (type, config) {
+		addModule(type, config) {
 			if (this.modules[type]) return
 			this.config.module_config.push({
 				type: type,
 				config: config || {}
 			})
 		},
-		removeModule (type) {
+		removeModule(type) {
 			const removeIndex = this.config.module_config.findIndex(m => m.type === type)
 			if (removeIndex >= 0) {
 				this.config.module_config.splice(removeIndex, 1)

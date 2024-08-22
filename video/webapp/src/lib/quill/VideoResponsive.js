@@ -15,7 +15,7 @@ export default class VideoResponsive extends BlockEmbed {
 	static tagName = 'div'
 	static className = 'ql-video-wrapper'
 
-	static create (value) {
+	static create(value) {
 		const node = super.create(value)
 		const src = this.sanitize(value)
 		const innerNode = document.createElement('div')
@@ -37,11 +37,11 @@ export default class VideoResponsive extends BlockEmbed {
 		return node
 	}
 
-	static sanitize (url) {
+	static sanitize(url) {
 		return Link.sanitize(url)
 	}
 
-	static value (domNode) {
+	static value(domNode) {
 		const iframe = domNode.querySelector('.ql-video-inner')
 		return iframe ? iframe.dataset.src : ''
 	}

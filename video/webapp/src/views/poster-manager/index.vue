@@ -19,7 +19,7 @@ import { mapGetters } from 'vuex'
 import api from 'lib/api'
 
 export default {
-	data () {
+	data() {
 		return {
 			posters: null
 		}
@@ -27,7 +27,7 @@ export default {
 	computed: {
 		...mapGetters(['hasPermission']),
 	},
-	async created () {
+	async created() {
 		this.posters = (await api.call('poster.list.all', {}))
 	}
 }

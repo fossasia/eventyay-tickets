@@ -22,7 +22,7 @@ import fuzzysearch from 'lib/fuzzysearch'
 
 export default {
 	name: 'AdminKiosks',
-	data () {
+	data() {
 		return {
 			kiosks: null,
 			search: ''
@@ -30,13 +30,13 @@ export default {
 	},
 	computed: {
 		...mapGetters(['roomsLookup']),
-		filteredKiosks () {
+		filteredKiosks() {
 			if (!this.kiosks) return
 			if (!this.search) return this.kiosks
 			return this.kiosks.filter(kiosk => kiosk.id === this.search.trim() || fuzzysearch(this.search.toLowerCase(), kiosk.profile.display_name.toLowerCase()))
 		}
 	},
-	async created () {
+	async created() {
 		this.kiosks = (await api.call('user.list', {type: 'kiosk'})).results
 	}
 }

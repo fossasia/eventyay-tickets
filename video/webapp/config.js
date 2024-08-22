@@ -3,8 +3,8 @@ import cloneDeep from 'lodash/cloneDeep'
 let config
 if (ENV_DEVELOPMENT || !window.venueless) {
 	const hostname = window.location.hostname
-	const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-	const httpProtocol = window.location.protocol;
+	const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws'
+	const httpProtocol = window.location.protocol
 	config = {
 		api: {
 			base: `${httpProtocol}//${hostname}:8443/api/v1/worlds/sample/`,
@@ -17,8 +17,8 @@ if (ENV_DEVELOPMENT || !window.venueless) {
 		locales: ['en', 'de', 'pt_BR', 'ar', 'fr', 'es', 'uk', 'ru'],
 		theme: {
 			logo: {
-				url: "/eventyay-video-logo.svg",
-                fitToWidth: false
+				url: '/eventyay-video-logo.svg',
+				fitToWidth: false
 			},
 			colors: {
 				primary: '#2185d0',

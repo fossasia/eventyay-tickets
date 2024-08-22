@@ -8,19 +8,19 @@ export default {
 	props: {
 		loading: Boolean
 	},
-	data () {
+	data() {
 		return {
 			isIntersecting: false
 		}
 	},
 	computed: {},
 	watch: {
-		loading () {
+		loading() {
 			if (!this.loading && this.isIntersecting) this.$emit('load')
 		}
 	},
-	created () {},
-	mounted () {
+	created() {},
+	mounted() {
 		const scrollParent = this.$el.closest('.bunt-scrollbars')
 		this.observer = new IntersectionObserver(this.intersected, {
 			root: scrollParent,
@@ -29,7 +29,7 @@ export default {
 		this.observer.observe(this.$el)
 	},
 	methods: {
-		intersected (event) {
+		intersected(event) {
 			this.isIntersecting = event[0].isIntersecting
 			if (!this.loading && this.isIntersecting) this.$emit('load')
 		}

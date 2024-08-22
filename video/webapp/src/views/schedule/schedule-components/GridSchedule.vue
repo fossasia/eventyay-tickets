@@ -42,7 +42,7 @@ import moment from 'moment-timezone'
 import Session from './Session'
 import { getLocalizedString, getPrettyDuration } from 'views/schedule/utils'
 
-const getSliceName = function (date) {
+const getSliceName = function(date) {
 	return `slice-${date.format('MM-DD-HH-mm')}`
 }
 
@@ -53,7 +53,7 @@ export default {
 		rooms: Array,
 		favs: {
 			type: Array,
-			default () {
+			default() {
 				return []
 			}
 		},
@@ -61,7 +61,7 @@ export default {
 		now: Object,
 		scrollParent: Element
 	},
-	data () {
+	data() {
 		return {
 			moment,
 			getLocalizedString,
@@ -70,17 +70,17 @@ export default {
 		}
 	},
 	computed: {
-		hasSessionsWithoutRoom () {
+		hasSessionsWithoutRoom() {
 			return this.sessions.some(s => !s.room)
 		},
-		hasAmPm () {
+		hasAmPm() {
 			return moment.localeData().longDateFormat('LT').endsWith(' A')
 		},
-		timeslices () {
+		timeslices() {
 			const minimumSliceMins = 30
 			const slices = []
 			const slicesLookup = {}
-			const pushSlice = function (date, {hasSession = false, hasBreak = false, hasStart = false, hasEnd = false} = {}) {
+			const pushSlice = function(date, {hasSession = false, hasBreak = false, hasStart = false, hasEnd = false} = {}) {
 				const name = getSliceName(date)
 				let slice = slicesLookup[name]
 				if (slice) {
@@ -102,7 +102,7 @@ export default {
 					slicesLookup[name] = slice
 				}
 			}
-			const fillHalfHours = function (start, end, {hasSession, hasBreak} = {}) {
+			const fillHalfHours = function(start, end, {hasSession, hasBreak} = {}) {
 				// fill to the nearest half hour, then each half hour, then fill to end
 				let mins = end.diff(start, 'minutes')
 				const startingMins = minimumSliceMins - start.minute() % minimumSliceMins
@@ -143,12 +143,12 @@ export default {
 				fillHalfHours(session.start, session.end, {hasSession: isProper, hasBreak: !isProper})
 			}
 
-			const sliceIsFraction = function (slice) {
+			const sliceIsFraction = function(slice) {
 				if (!slice) return
 				return slice.date.minutes() !== 0 && slice.date.minutes() !== minimumSliceMins
 			}
 
-			const sliceShouldDisplay = function (slice, index) {
+			const sliceShouldDisplay = function(slice, index) {
 				if (!slice) return
 				// keep slices with sessions or when changing dates, or when sessions start or immediately after they end
 				if (slice.hasSession || slice.datebreak || slice.hasStart || slice.hasEnd) return true
@@ -193,10 +193,10 @@ export default {
 			if (compactedSlices && compactedSlices[compactedSlices.length - 1]?.gap) compactedSlices.pop()
 			return compactedSlices
 		},
-		visibleTimeslices () {
+		visibleTimeslices() {
 			return this.timeslices.filter(slice => slice.date.minute() % 30 === 0)
 		},
-		gridStyle () {
+		gridStyle() {
 			let rows = '[header] 52px '
 			rows += this.timeslices.map((slice, index) => {
 				const next = this.timeslices[index + 1]
@@ -215,7 +215,7 @@ export default {
 				'grid-template-rows': rows
 			}
 		},
-		nowSlice () {
+		nowSlice() {
 			let slice
 			for (const s of this.timeslices) {
 				if (this.now.isBefore(s.date)) break
@@ -241,7 +241,7 @@ export default {
 	watch: {
 		currentDay: 'changeDay'
 	},
-	async mounted () {
+	async mounted() {
 		await this.$nextTick()
 		this.observer = new IntersectionObserver(this.onIntersect, {
 			root: this.scrollParent,
@@ -269,28 +269,28 @@ export default {
 		}
 	},
 	methods: {
-		isProperSession (session) {
+		isProperSession(session) {
 			// breaks and such don't have ids
 			return !!session.id
 		},
-		getSessionStyle (session) {
+		getSessionStyle(session) {
 			const roomIndex = this.rooms.indexOf(session.room)
 			return {
 				'grid-row': `${getSliceName(session.start)} / ${getSliceName(session.end)}`,
 				'grid-column': roomIndex > -1 ? roomIndex + 2 : null
 			}
 		},
-		getOffsetTop () {
+		getOffsetTop() {
 			const rect = this.$parent.$el.getBoundingClientRect()
 			return rect.top + window.scrollY
 		},
-		getSliceClasses (slice) {
+		getSliceClasses(slice) {
 			return {
 				datebreak: slice.datebreak,
 				gap: slice.gap
 			}
 		},
-		getSliceStyle (slice) {
+		getSliceStyle(slice) {
 			if (slice.datebreak) {
 				let index = this.timeslices.findIndex(s => s.date.isAfter(slice.date, 'day'))
 				if (index < 0) {
@@ -300,11 +300,11 @@ export default {
 			}
 			return {'grid-area': `${slice.name} / 1 / auto / auto`}
 		},
-		getSliceLabel (slice) {
+		getSliceLabel(slice) {
 			if (slice.datebreak) return slice.date.format('ddd[\n]DD. MMM')
 			return slice.date.format('LT')
 		},
-		changeDay (day) {
+		changeDay(day) {
 			if (this.scrolledDay === day) return
 			const el = this.$refs[getSliceName(day)]?.[0]
 			if (!el) return
@@ -315,7 +315,7 @@ export default {
 				window.scroll({top: offset})
 			}
 		},
-		onIntersect (entries) {
+		onIntersect(entries) {
 			// TODO still gets stuck when scrolling fast above threshold and back
 			const entry = entries.sort((a, b) => b.time - a.time).find(entry => entry.isIntersecting)
 			if (!entry) return

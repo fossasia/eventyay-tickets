@@ -28,14 +28,14 @@ import api from 'lib/api'
 
 export default {
 	components: {},
-	data () {
+	data() {
 		return {
 			rawAnnouncements: null
 		}
 	},
 	computed: {
 		...mapState(['now']),
-		announcements () {
+		announcements() {
 			if (!this.rawAnnouncements) return null
 			return this.rawAnnouncements.map(announcement => {
 				// COPYPASTA from store
@@ -59,7 +59,7 @@ export default {
 			})
 		}
 	},
-	async created () {
+	async created() {
 		this.rawAnnouncements = (await api.call('announcement.list'))
 	}
 }

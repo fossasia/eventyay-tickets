@@ -4,7 +4,7 @@ import store from 'store'
 import WebSocketClient from './WebSocketClient'
 
 const api = Object.create(WebSocketClient.prototype)
-api.connect = function ({token, clientId, inviteToken}) {
+api.connect = function({token, clientId, inviteToken}) {
 	if (api._socket) {
 		api.close()
 	}
@@ -54,7 +54,7 @@ api.connect = function ({token, clientId, inviteToken}) {
 	})
 }
 
-api.uploadFile = function (file, filename, url, width, height) {
+api.uploadFile = function(file, filename, url, width, height) {
 	url = url || config.api.upload
 	const data = new FormData()
 	data.append('file', file, filename)
@@ -73,7 +73,7 @@ api.uploadFile = function (file, filename, url, width, height) {
 }
 
 // TODO unify, rename, progress support
-api.uploadFilePromise = function (file, filename, url) {
+api.uploadFilePromise = function(file, filename, url) {
 	url = url || config.api.upload
 	const data = new FormData()
 	data.append('file', file, filename)

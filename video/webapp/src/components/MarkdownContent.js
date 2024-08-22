@@ -8,7 +8,7 @@ const markdownIt = MarkdownIt({
 	html: true
 })
 
-markdownIt.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+markdownIt.renderer.rules.link_open = function(tokens, idx, options, env, self) {
 	const [, link] = tokens[idx].attrs.find(([attr]) => attr === 'href')
 	if (!link.startsWith('/')) {
 		tokens[idx].attrPush(['target', '_blank'])
@@ -17,7 +17,7 @@ markdownIt.renderer.rules.link_open = function (tokens, idx, options, env, self)
 	return self.renderToken(tokens, idx, options)
 }
 
-const handleClick = function (event) {
+const handleClick = function(event) {
 	const a = event.target.closest('a')
 	if (!a || a.target === '_blank') return
 	// from https://github.com/vuejs/vue-router/blob/dfc289202703319cf7beb38d03c9258c806c4d62/src/components/link.js#L165
@@ -37,7 +37,7 @@ export default {
 	props: {
 		markdown: String
 	},
-	render (createElement, ctx) {
+	render(createElement, ctx) {
 		if (!ctx.props.markdown) return
 		return createElement('section', {
 			class: 'markdown-content rich-text-content',

@@ -14,7 +14,7 @@ export default {
 		}
 	},
 	computed: {
-		url () {
+		url() {
 			return renderIdenticonUrl(this.user, this.identiconStyle)
 		}
 	}

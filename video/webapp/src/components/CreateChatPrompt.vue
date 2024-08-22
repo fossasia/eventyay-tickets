@@ -19,7 +19,7 @@ import Prompt from 'components/Prompt'
 
 export default {
 	components: { Prompt },
-	data () {
+	data() {
 		return {
 			name: '',
 			description: '',
@@ -29,7 +29,7 @@ export default {
 	},
 	computed: {
 		...mapGetters(['hasPermission']),
-		types () {
+		types() {
 			const types = []
 			if (this.hasPermission('world:rooms.create.chat')) {
 				types.push({
@@ -47,17 +47,17 @@ export default {
 			}
 			return types
 		},
-		selectedType () {
+		selectedType() {
 			return this.types.find(type => type.id === this.type)
 		}
 	},
-	created () {},
-	mounted () {
+	created() {},
+	mounted() {
 		this.$nextTick(() => {
 		})
 	},
 	methods: {
-		async create () {
+		async create() {
 			this.loading = true
 			const modules = []
 			if (this.type === 'text') {

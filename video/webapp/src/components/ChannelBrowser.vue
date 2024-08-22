@@ -25,7 +25,7 @@ import fuzzysearch from 'lib/fuzzysearch'
 
 export default {
 	components: { Prompt },
-	data () {
+	data() {
 		return {
 			search: ''
 		}
@@ -34,12 +34,12 @@ export default {
 		...mapState(['rooms']),
 		...mapState('chat', ['joinedChannels']),
 		...mapGetters(['hasPermission']),
-		channels () {
+		channels() {
 			return this.rooms
 				.filter(room => room.modules.length === 1 && room.modules[0].type === 'chat.native')
 				.map(room => ({room, channelJoined: this.joinedChannels.some(channel => channel.id === room.modules[0].channel_id)}))
 		},
-		searchedChannels () {
+		searchedChannels() {
 			if (!this.search) return this.channels
 			return this.channels.filter(channel => fuzzysearch(this.search.toLowerCase(), channel.room.name.toLowerCase()) || fuzzysearch(this.search.toLowerCase(), channel.room.description?.toLowerCase()))
 		}

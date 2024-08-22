@@ -58,7 +58,7 @@ export default {
 			default: true
 		}
 	},
-	data () {
+	data() {
 		return {
 			userCardUser: null,
 			scrollPosition: 0,
@@ -70,7 +70,7 @@ export default {
 		...mapState('chat', ['channel', 'members', 'usersLookup', 'timeline', 'fetchingMessages', 'warnings']),
 		...mapGetters('chat', ['activeJoinedChannel']),
 		...mapState('poll', ['polls']),
-		filteredTimeline () {
+		filteredTimeline() {
 			// We want to hide join/leave event (a) in rooms with force join (b) in stage chats (c) in direct messages
 			const showJoinleave = this.mode === 'standalone' && this.room && !this.room.force_join
 			return this.timeline.filter(message =>
@@ -80,7 +80,7 @@ export default {
 				(!message.content.poll_id || this.polls?.find(poll => poll.id === message.content.poll_id))
 			)
 		},
-		sortedMembers () {
+		sortedMembers() {
 			return this.members.slice().sort((a, b) => {
 				const aBadges = a.badges?.length || 0
 				const bBadges = b.badges?.length || 0
@@ -92,20 +92,20 @@ export default {
 				return bBadges - aBadges
 			})
 		},
-		mergedWarning () {
+		mergedWarning() {
 			if (this.warnings.length === 0) return null
 			// TODO dedupe users
 			return { missed_users: this.warnings.map(warning => warning.missed_users.map(user => '@' + user.id)).flat() }
 		}
 	},
 	watch: {
-		connected (value) {
+		connected(value) {
 			if (value) {
 				// resubscribe
 				this.$store.dispatch('chat/subscribe', {channel: this.module.channel_id, config: this.module.config})
 			}
 		},
-		async filteredTimeline () {
+		async filteredTimeline() {
 			await this.$nextTick()
 			// TODO scroll to bottom when resizing
 			// restore scrollPosition after load
@@ -114,35 +114,35 @@ export default {
 			this.$emit('change')
 		}
 	},
-	created () {
+	created() {
 		this.$store.dispatch('chat/subscribe', {channel: this.module.channel_id, config: this.module.config})
 	},
-	beforeDestroy () {
+	beforeDestroy() {
 		this.$store.dispatch('chat/unsubscribe')
 	},
 	methods: {
-		fetchMessages () {
+		fetchMessages() {
 			this.syncedScroll = false
 			this.$store.dispatch('chat/fetchMessages')
 		},
-		timelineScrolled (event) {
+		timelineScrolled(event) {
 			const scrollEl = this.$refs.timeline.$refs.content
 			this.scrollPosition = scrollEl.scrollHeight - scrollEl.scrollTop - scrollEl.clientHeight
 		},
-		onResize () {
+		onResize() {
 			this.refreshScrollbar()
 		},
-		refreshScrollbar () {
+		refreshScrollbar() {
 			const scrollEl = this.$refs.timeline.$refs.content
 			this.$refs.timeline.scrollTop(scrollEl.scrollHeight - this.scrollPosition - scrollEl.clientHeight)
 		},
-		join () {
+		join() {
 			this.$store.dispatch('chat/join')
 		},
-		send (content) {
+		send(content) {
 			this.$store.dispatch('chat/sendMessage', {content})
 		},
-		async showUserCard (event, user, placement = 'left-start') {
+		async showUserCard(event, user, placement = 'left-start') {
 			console.log(user.id)
 			this.userCardUser = user
 			await this.$nextTick()

@@ -55,7 +55,7 @@ import ConnectGravatar from './ConnectGravatar'
 
 export default {
 	components: { Prompt, ChangeAvatar, ChangeAdditionalFields, ConnectGravatar },
-	data () {
+	data() {
 		return {
 			activeStep: null,
 			showConnectGravatar: false,
@@ -66,7 +66,7 @@ export default {
 			interfaceLanguage: this.$i18n.resolvedLanguage,
 		}
 	},
-	validations () {
+	validations() {
 		if (this.activeStep !== 'displayName') return {}
 		return {
 			profile: {
@@ -78,7 +78,7 @@ export default {
 	},
 	computed: {
 		...mapState(['user', 'world']),
-		steps () {
+		steps() {
 			const steps = [
 				'displayName',
 				'displayLanguage',
@@ -88,18 +88,18 @@ export default {
 			if (this.world?.profile_fields?.length) steps.push('additionalFields')
 			return steps
 		},
-		previousStep () {
+		previousStep() {
 			return this.steps[this.steps.indexOf(this.activeStep) - 1]
 		},
-		nextStep () {
+		nextStep() {
 			return this.steps[this.steps.indexOf(this.activeStep) + 1]
 		},
-		languages () {
+		languages() {
 			if (!config.locales?.length) return null
 			return locales.filter(locale => config.locales.includes(locale.code))
 		}
 	},
-	async created () {
+	async created() {
 		this.activeStep = this.steps[0]
 		this.profile = Object.assign({
 			greeted: true,
@@ -113,7 +113,7 @@ export default {
 		if (this.activeStep === 'connectSocial' && this.profile.avatar.url) this.activeStep = this.nextStep
 	},
 	methods: {
-		async toNextStep () {
+		async toNextStep() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			if (this.$refs.step?.update) {
@@ -123,19 +123,19 @@ export default {
 			}
 			this.activeStep = this.nextStep
 		},
-		async connectSocial (network) {
+		async connectSocial(network) {
 			const { url } = await api.call('user.social.connect', {
 				network,
 				return_url: window.location.href
 			})
 			window.location = url
 		},
-		setGravatar (gravatar) {
+		setGravatar(gravatar) {
 			Object.assign(this.profile, gravatar)
 			this.showConnectGravatar = false
 			this.activeStep = this.nextStep
 		},
-		async update () {
+		async update() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			this.saving = true

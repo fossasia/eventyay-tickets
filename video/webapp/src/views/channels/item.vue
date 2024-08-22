@@ -22,7 +22,7 @@ export default {
 	props: {
 		channelId: String
 	},
-	data () {
+	data() {
 		return {
 			onlineStatus: {},
 			pollOnlineStatusStatusTimeout: null,
@@ -31,30 +31,30 @@ export default {
 	computed: {
 		...mapState(['user']),
 		...mapState('chat', ['joinedChannels', 'call']),
-		hasCall () {
+		hasCall() {
 			return this.call && this.call.channel === this.channelId
 		},
-		channel () {
+		channel() {
 			return this.joinedChannels?.find(channel => channel.id === this.channelId)
 		},
-		otherUsers () {
+		otherUsers() {
 			return this.channel?.members.filter(member => member.id !== this.user.id)
 		}
 	},
-	async created () {
+	async created() {
 		await this.pollOnlineStatus()
 	},
-	destroyed () {
+	destroyed() {
 		if (this.pollOnlineStatusStatusTimeout) {
 			window.clearTimeout(this.pollOnlineStatusStatusTimeout)
 		}
 	},
 	methods: {
-		startCall () {
+		startCall() {
 			const channel = this.channel
 			this.$store.dispatch('chat/startCall', {channel})
 		},
-		async pollOnlineStatus () {
+		async pollOnlineStatus() {
 			this.onlineStatus = (await api.call('user.online_status', {ids: this.otherUsers.map(u => u.id)}))
 			this.pollOnlineStatusStatusTimeout = window.setTimeout(this.pollOnlineStatus, 20000)
 		}

@@ -34,13 +34,13 @@ export default {
 	props: {
 		user: Object
 	},
-	data () {
+	data() {
 		return {
 		}
 	},
 	computed: {
 		...mapState(['world']),
-		fields () {
+		fields() {
 			if (!this.user.profile?.fields) return
 			return this.world?.profile_fields
 				.map(field => ({...field, value: this.user.profile.fields[field.id]}))
@@ -48,7 +48,7 @@ export default {
 		},
 	},
 	methods: {
-		getLinkLabel (field) {
+		getLinkLabel(field) {
 			const generator = NETWORK_LABEL_GENERATORS[field.network]
 			if (!generator) return field.value
 			const match = field.value.match(generator.regex)

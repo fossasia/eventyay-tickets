@@ -25,32 +25,32 @@ export default {
 		warnings: []
 	},
 	getters: {
-		activeJoinedChannel (state) {
+		activeJoinedChannel(state) {
 			return state.joinedChannels?.find(channel => channel.id === state.channel)
 		},
 		// TODO maybe merge this with joinedChannels?
-		automaticallyJoinedChannels (state, getters, rootState) {
+		automaticallyJoinedChannels(state, getters, rootState) {
 			return rootState.rooms.map(room => room.modules.find(m => m.type === 'chat.native')).filter(m => m?.config?.volatile).map(m => m.channel_id)
 		},
-		hasUnreadMessages (state) {
-			return function (channel) {
+		hasUnreadMessages(state) {
+			return function(channel) {
 				const joinedChannel = state.joinedChannels?.find(c => c.id === channel)
 				return joinedChannel && (!state.readPointers[channel] || joinedChannel.unread_pointer > state.readPointers[channel])
 			}
 		},
-		notificationCount (state) {
-			return function (channel) {
+		notificationCount(state) {
+			return function(channel) {
 				return state.notificationCounts[channel] || 0
 			}
 		},
 		// TODO this is BAD
-		isDirectMessageChannel (state, getters, rootState) {
-			return function (channel) {
+		isDirectMessageChannel(state, getters, rootState) {
+			return function(channel) {
 				return channel.members && channel.members.some(member => member.id !== rootState.user.id)
 			}
 		},
-		channelName (state, getters, rootState) {
-			return function (channel) {
+		channelName(state, getters, rootState) {
+			return function(channel) {
 				if (this.isDirectMessageChannel(channel)) {
 					return this.directMessageChannelName(channel)
 				} else {
@@ -58,28 +58,28 @@ export default {
 				}
 			}
 		},
-		directMessageChannelName (state, getters, rootState) {
-			return function (channel) {
+		directMessageChannelName(state, getters, rootState) {
+			return function(channel) {
 				return channel.members.filter(user => user.id !== rootState.user.id).map(user => user.profile.display_name).join(', ')
 			}
 		}
 	},
 	mutations: {
-		setJoinedChannels (state, channels) {
+		setJoinedChannels(state, channels) {
 			state.joinedChannels = channels
 		},
-		setReadPointers (state, readPointers) {
+		setReadPointers(state, readPointers) {
 			state.readPointers = readPointers
 		},
-		setNotificationCounts (state, notificationCounts) {
+		setNotificationCounts(state, notificationCounts) {
 			state.notificationCounts = notificationCounts
 		},
 	},
 	actions: {
-		disconnected ({state}) {
+		disconnected({state}) {
 			state.channel = null
 		},
-		async subscribe ({state, dispatch, getters, rootState}, {channel, config}) {
+		async subscribe({state, dispatch, getters, rootState}, {channel, config}) {
 			if (!rootState.connected) return
 			if (state.channel) {
 				dispatch('unsubscribe')
@@ -101,19 +101,19 @@ export default {
 			await dispatch('fetchMessages')
 			dispatch('markChannelRead')
 		},
-		async unsubscribe ({state}) {
+		async unsubscribe({state}) {
 			if (!state.channel) return
 			const channel = state.channel
 			state.channel = null
 			if (api.socketState !== 'open') return
 			await api.call('chat.unsubscribe', {channel})
 		},
-		async join ({state}, channel) {
+		async join({state}, channel) {
 			channel = channel?.modules[0]?.channel_id
 			const response = await api.call('chat.join', {channel: channel || state.channel})
 			state.joinedChannels.push({id: channel || state.channel, unread_pointer: response.unread_pointer})
 		},
-		async fetchMessages ({state, dispatch}) {
+		async fetchMessages({state, dispatch}) {
 			if (!state.beforeCursor || state.fetchingMessages) return
 			state.fetchingMessages = true
 			try {
@@ -147,7 +147,7 @@ export default {
 			}
 			state.fetchingMessages = false
 		},
-		async markChannelRead ({state}) {
+		async markChannelRead({state}) {
 			if (state.timeline.length === 0) return
 			if (state.config?.volatile && !state.notificationCounts[state.channel]) return
 			const pointer = state.timeline[state.timeline.length - 1].event_id
@@ -157,21 +157,21 @@ export default {
 			})
 			Vue.set(state.readPointers, state.channel, pointer)
 		},
-		async fetchUsers ({state}, ids) {
+		async fetchUsers({state}, ids) {
 			if (!ids?.length) return
 			const users = await api.call('user.fetch', {ids})
 			for (const user of Object.values(users)) {
 				Vue.set(state.usersLookup, user.id, user)
 			}
 		},
-		sendMessage ({state}, {content}) {
+		sendMessage({state}, {content}) {
 			api.call('chat.send', {
 				channel: state.channel,
 				event_type: 'channel.message',
 				content
 			})
 		},
-		deleteMessage ({state}, message) {
+		deleteMessage({state}, message) {
 			api.call('chat.send', {
 				channel: state.channel,
 				event_type: 'channel.message',
@@ -181,7 +181,7 @@ export default {
 				}
 			})
 		},
-		editMessage ({state}, {message, content}) {
+		editMessage({state}, {message, content}) {
 			api.call('chat.send', {
 				channel: state.channel,
 				event_type: 'channel.message',
@@ -189,13 +189,13 @@ export default {
 				content
 			})
 		},
-		updateUser ({state}, {id, update}) {
+		updateUser({state}, {id, update}) {
 			if (!state.usersLookup[id]) return
 			for (const [key, value] of Object.entries(update)) {
 				Vue.set(state.usersLookup[id], key, value)
 			}
 		},
-		async moderateUser ({state}, {user, action}) {
+		async moderateUser({state}, {user, action}) {
 			const postStates = {
 				ban: 'banned',
 				silence: 'silence',
@@ -207,10 +207,10 @@ export default {
 			}
 			// user.moderation_state = postStates[action]
 		},
-		async blockUser ({state}, {user}) {
+		async blockUser({state}, {user}) {
 			await api.call('user.block', {id: user.id})
 		},
-		async openDirectMessage ({state}, {users, hide}) {
+		async openDirectMessage({state}, {users, hide}) {
 			let channel = state.joinedChannels.find(channel => channel.members?.length === users.length + 1 && users.every(user => channel.members.some(member => member.id === user.id)))
 			if (hide !== false) {
 				hide = true
@@ -224,7 +224,7 @@ export default {
 			}
 			return channel
 		},
-		async leaveChannel ({state}, {channelId}) {
+		async leaveChannel({state}, {channelId}) {
 			await api.call('chat.leave', {channel: channelId})
 			if (router.currentRoute.name === 'channel' && router.currentRoute.params.channelId === channelId) {
 				await router.push({name: 'home'})
@@ -232,7 +232,7 @@ export default {
 			const index = state.joinedChannels.findIndex(c => c.id === channelId)
 			if (index > -1) state.joinedChannels.splice(index, 1)
 		},
-		async startCall ({state, dispatch}, {channel}) {
+		async startCall({state, dispatch}, {channel}) {
 			const {event} = await api.call('chat.send', {
 				channel: channel.id,
 				event_type: 'channel.message',
@@ -242,7 +242,7 @@ export default {
 			})
 			dispatch('joinCall', event.content.body)
 		},
-		async joinCall ({state}, body) {
+		async joinCall({state}, body) {
 			if (body.type === 'janus') {
 				state.call = {
 					type: 'janus',
@@ -263,10 +263,10 @@ export default {
 				}
 			}
 		},
-		async leaveCall ({state}) {
+		async leaveCall({state}) {
 			state.call = null
 		},
-		addReaction ({state}, {message, reaction}) {
+		addReaction({state}, {message, reaction}) {
 			// TODO skip if already reacted
 			return api.call('chat.react', {
 				channel: state.channel,
@@ -274,7 +274,7 @@ export default {
 				reaction
 			})
 		},
-		removeReaction ({state}, {message, reaction}) {
+		removeReaction({state}, {message, reaction}) {
 			return api.call('chat.react', {
 				channel: state.channel,
 				event: message.event_id,
@@ -282,11 +282,11 @@ export default {
 				delete: true
 			})
 		},
-		dismissWarnings ({state}) {
+		dismissWarnings({state}) {
 			state.warnings = []
 		},
 		// INCOMING
-		async 'api::chat.event' ({state, dispatch}, event) {
+		async 'api::chat.event'({state, dispatch}, event) {
 			if (event.channel !== state.channel) return
 			const handleMembership = (event) => {
 				switch (event.content.membership) {
@@ -331,26 +331,26 @@ export default {
 				await dispatch('fetchUsers', [event.sender])
 			}
 		},
-		'api::chat.channels' ({state}, {channels}) {
+		'api::chat.channels'({state}, {channels}) {
 			state.joinedChannels = channels
 		},
-		'api::chat.read_pointers' ({state}, readPointers) {
+		'api::chat.read_pointers'({state}, readPointers) {
 			for (const [channel, pointer] of Object.entries(readPointers)) {
 				Vue.set(state.readPointers, channel, pointer)
 				// TODO passively close desktop notifications
 			}
 		},
-		'api::chat.unread_pointers' ({state, rootState, getters, dispatch}, unreadPointers) {
+		'api::chat.unread_pointers'({state, rootState, getters, dispatch}, unreadPointers) {
 			for (const [channelId, pointer] of Object.entries(unreadPointers)) {
 				const channel = state.joinedChannels.find(c => c.id === channelId)
 				if (!channel) continue
 				channel.unread_pointer = pointer
 			}
 		},
-		'api::chat.notification_counts' ({state, rootState, getters, dispatch}, notificationCounts) {
+		'api::chat.notification_counts'({state, rootState, getters, dispatch}, notificationCounts) {
 			state.notificationCounts = notificationCounts
 		},
-		async 'api::chat.notification' ({state, rootState, getters, dispatch}, data) {
+		async 'api::chat.notification'({state, rootState, getters, dispatch}, data) {
 			const channelId = data.event.channel
 			const channel = state.joinedChannels.find(c => c.id === channelId) || getters.automaticallyJoinedChannels.includes(channelId) ? {id: channelId} : null
 			if (!channel) return
@@ -377,7 +377,7 @@ export default {
 				}
 			}, {root: true})
 		},
-		'api::chat.event.reaction' ({state}, event) {
+		'api::chat.event.reaction'({state}, event) {
 			if (event.channel !== state.channel) return
 			const original = state.timeline.find(msg => msg.event_id === event.event_id)
 			if (original) {
@@ -389,7 +389,7 @@ export default {
 				}
 			}
 		},
-		'api::chat.mention_warning' ({state}, data) {
+		'api::chat.mention_warning'({state}, data) {
 			state.warnings.push(data)
 		}
 	}

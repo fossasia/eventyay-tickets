@@ -57,7 +57,7 @@ import Avatar from 'components/Avatar'
 export default {
 	name: 'AdminUsers',
 	components: { Avatar },
-	data () {
+	data() {
 		return {
 			users: null,
 			search: ''
@@ -67,13 +67,13 @@ export default {
 		...mapState({
 			ownUser: 'user'
 		}),
-		filteredUsers () {
+		filteredUsers() {
 			if (!this.users) return
 			if (!this.search) return this.users
 			return this.users.filter(user => user.id.startsWith(this.search.trim()) || (user.token_id && user.token_id.startsWith(this.search.trim())) || fuzzysearch(this.search.toLowerCase(), user.profile?.display_name?.toLowerCase()))
 		}
 	},
-	async created () {
+	async created() {
 		this.users = (await api.call('user.list')).results.map(user => {
 			return {
 				...user,
@@ -83,7 +83,7 @@ export default {
 		})
 	},
 	methods: {
-		async doAction (user, action, postState) {
+		async doAction(user, action, postState) {
 			user.updating = action
 			user.error = null
 			try {

@@ -82,7 +82,7 @@ export default {
 	provide: {
 		isManaging: true
 	},
-	data () {
+	data() {
 		return {
 			showingPresentationUrlFor: null,
 			copiedUrl: false,
@@ -96,7 +96,7 @@ export default {
 		...mapGetters('schedule', ['sessions', 'sessionsScheduledNow'])
 	},
 	methods: {
-		async showUrlPopup (type) {
+		async showUrlPopup(type) {
 			this.showingPresentationUrlFor = type
 			await this.$nextTick()
 			createPopper(event.target, this.$refs.urlPopup, {
@@ -106,7 +106,7 @@ export default {
 				]
 			})
 		},
-		showCreatePollPrompt () {
+		showCreatePollPrompt() {
 			this.editedPoll = {
 				content: '',
 				options: [{
@@ -116,7 +116,7 @@ export default {
 				}]
 			}
 		},
-		startEditingPoll (poll) {
+		startEditingPoll(poll) {
 			// only clone relevant parts of the poll to not update too much
 			this.editedPoll = {
 				id: poll.id,
@@ -124,7 +124,7 @@ export default {
 				options: poll.options.map(o => Object.assign({}, o))
 			}
 		},
-		submitPoll () {
+		submitPoll() {
 			if (this.editedPoll.id) {
 				this.$store.dispatch('poll/updatePoll', {
 					poll: this.editedPoll,
@@ -138,11 +138,11 @@ export default {
 			}
 			this.editedPoll = null
 		},
-		getPresentationUrl (type) {
+		getPresentationUrl(type) {
 			console.log(type)
 			return window.location.origin + this.$router.resolve({name: `standalone:${type}`}).href + '#token=' + this.token
 		},
-		copyUrl () {
+		copyUrl() {
 			this.$refs.urlInput.$refs.input.select()
 			document.execCommand('copy')
 			this.copiedUrl = true

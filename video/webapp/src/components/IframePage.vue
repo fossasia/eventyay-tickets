@@ -15,7 +15,7 @@ export default {
 			required: true
 		}
 	},
-	data () {
+	data() {
 		return {
 			loading: false,
 		}
@@ -23,24 +23,24 @@ export default {
 	computed: {
 		...mapState(['user']),
 
-		url () {
+		url() {
 			let url = this.module.config.url
 			url = url.replace('{display_name}', encodeURIComponent(this.user.profile.display_name))
 			url = url.replace('{id}', encodeURIComponent(this.user.id))
 			return url
 		}
 	},
-	mounted () {
+	mounted() {
 		window.addEventListener('message', this.onMessage)
 	},
-	beforeDestroy () {
+	beforeDestroy() {
 		window.removeEventListener('message', this.onMessage)
 	},
 	methods: {
-		loaded () {
+		loaded() {
 			this.loading = false
 		},
-		onMessage (event) {
+		onMessage(event) {
 			if (event.data.action === 'router.push' && event.data.location) {
 				this.$router.push(event.data.location)
 			} else {

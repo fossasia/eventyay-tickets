@@ -20,7 +20,7 @@ import EditForm from './EditForm'
 
 export default {
 	components: { EditForm },
-	data () {
+	data() {
 		return {
 			ROOM_TYPES,
 			type: null,
@@ -28,18 +28,18 @@ export default {
 		}
 	},
 	computed: {
-		chosenType () {
+		chosenType() {
 			return ROOM_TYPES.find(t => t.id === this.type)
 		},
 	},
 	watch: {
 		$route: 'updateType'
 	},
-	created () {
+	created() {
 		this.updateType()
 	},
 	methods: {
-		updateType () {
+		updateType() {
 			this.type = this.$route.params.type
 			if (!this.type || !this.chosenType) return
 			this.config = {

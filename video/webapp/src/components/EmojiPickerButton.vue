@@ -35,19 +35,19 @@ export default {
 			default: () => ([-3, 8])
 		}
 	},
-	data () {
+	data() {
 		return {
 			showEmojiPicker: false
 		}
 	},
 	computed: {},
-	created () {},
-	mounted () {
+	created() {},
+	mounted() {
 		this.$nextTick(() => {
 		})
 	},
 	methods: {
-		async toggle (event) {
+		async toggle(event) {
 			if (this.showEmojiPicker) {
 				this.showEmojiPicker = false
 				return
@@ -67,7 +67,7 @@ export default {
 				]
 			})
 		},
-		selected (emoji) {
+		selected(emoji) {
 			this.showEmojiPicker = false
 			this.$emit('selected', emoji)
 		}

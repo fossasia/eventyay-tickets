@@ -15,7 +15,7 @@ export default {
 	components: { RichTextEditor, UploadUrlInput },
 	mixins: [mixin],
 	computed: {
-		sponsorRooms () {
+		sponsorRooms() {
 			return this.$store.state.rooms.filter(room => room.modules.filter(m => m.type === 'exhibition.native').length > 0)
 		}
 	}

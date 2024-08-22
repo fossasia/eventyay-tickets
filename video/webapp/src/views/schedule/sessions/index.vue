@@ -22,7 +22,7 @@
                     :options="exportType"
                     label="Add to Calendar"
                     @input="makeExport")
-                
+
         bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay.toISOString()", ref="tabs", v-scrollbar.x="")
             bunt-tab(v-for="day in days", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
         .scroll-parent(ref="scrollParent", v-scrollbar.x.y="")
@@ -57,232 +57,235 @@ import AppDropdown from 'components/AppDropdown.vue'
 import AppDropdownContent from 'components/AppDropdownContent.vue'
 import AppDropdownItem from 'components/AppDropdownItem.vue'
 const exportTypeSet = [
-    {
-        "id": "ics",
-        "label": "Session ICal"
-    },
-    {
-        "id": "json",
-        "label": "Session JSON"
-    },
-    {
-        "id": "xcal",
-        "label": "Session XCal"
-    },
-    {
-        "id": "xml",
-        "label": "Session XML"
-    },
-    {
-        "id": "myics",
-        "label": "My ⭐ Sessions ICal"
-    },
-    {
-        "id": "myjson",
-        "label": "My ⭐ Sessions JSON"
-    },
-    {
-        "id": "myxcal",
-        "label": "My ⭐ Sessions XCal"
-    },
-    {
-        "id": "myxml",
-        "label": "My ⭐ Sessions XML"
-    },
+	{
+		id: 'ics',
+		label: 'Session ICal'
+	},
+	{
+		id: 'json',
+		label: 'Session JSON'
+	},
+	{
+		id: 'xcal',
+		label: 'Session XCal'
+	},
+	{
+		id: 'xml',
+		label: 'Session XML'
+	},
+	{
+		id: 'myics',
+		label: 'My ⭐ Sessions ICal'
+	},
+	{
+		id: 'myjson',
+		label: 'My ⭐ Sessions JSON'
+	},
+	{
+		id: 'myxcal',
+		label: 'My ⭐ Sessions XCal'
+	},
+	{
+		id: 'myxml',
+		label: 'My ⭐ Sessions XML'
+	},
 ]
 
 const defaultFilter = {
-    tracks: {
-        refKey: 'track',
-        data: [],
-        title: 'Tracks'
-    },
-    rooms: {
-        refKey: 'room',
-        data: [],
-        title: 'Rooms'
-    },
-    types: {
-        refKey: 'session_type',
-        data: [],
-        title: 'Types'
-    }
+	tracks: {
+		refKey: 'track',
+		data: [],
+		title: 'Tracks'
+	},
+	rooms: {
+		refKey: 'room',
+		data: [],
+		title: 'Rooms'
+	},
+	types: {
+		refKey: 'session_type',
+		data: [],
+		title: 'Types'
+	}
 }
 
 export default {
-    name: 'Schedule',
-    components: { LinearSchedule, GridSchedule, TimezoneChanger, Prompt, CustomDropdown, AppDropdown, AppDropdownContent, AppDropdownItem },
-    mixins: [scheduleProvidesMixin],
-    data () {
-        return {
-            tracksFilter: {},
-            moment,
-            currentDay: moment().startOf('day'),
-            selectedExporter: null,
-            exportOptions: [],
-            isExporting: false,
-            error: null,
-            defaultFilter: defaultFilter,
-            onlyFavs: false
-        }
-    },
-    computed: {
-        ...mapState(['now']),
-        ...mapState('schedule', ['schedule', 'errorLoading']),
-        ...mapGetters('schedule', ['days', 'rooms', 'sessions', 'favs']),
-        exportType () {
-            return exportTypeSet
-        },
-        filteredTracks () {
-            let results = null
-            let self = this
-            this.onlyFavs = false
-            Object.keys(this.filter).forEach(key => {
-                const refKey = this.filter[key].refKey
-                const selectedIds = this.filter[key].data.filter(t => t.selected).map(t => t.value)
-                let founds = null
-                if (selectedIds.length) {
-                    if (results && results.length) {
-                        founds = self.schedule.talks.filter(t => selectedIds.includes(t[refKey]) && results && results.includes(t.id))?.map(i => i.id) || []
-                    } else {
-                        founds = self.schedule.talks.filter(t => {return selectedIds.includes(t[refKey])})?.map(i => i.id) || []
-                    }
-                    results = founds
-                }
-            })
-            return results
-        },
-        tracksLookup () {
-            if (!this.schedule) return {}
-            return this.schedule.tracks.reduce((acc, t) => { acc[t.id] = t; return acc }, {})
-        },
-        roomsLookup () {
-            if (!this.schedule) return {}
-            return this.schedule.rooms.reduce((acc, room) => { acc[room.id] = room; return acc }, {})
-        },
-        speakersLookup () {
-            if (!this.schedule) return {}
-            return this.schedule.speakers.reduce((acc, s) => { acc[s.code] = s; return acc }, {})
-        },
-        sessions () {
-            const sessions = []
-            const filter = this.filteredTracks
-            for (const session of this.schedule.talks.filter(s => s.start)) {
-                if (this.onlyFavs && !this.favs.includes(session.code)) continue
-                if (filter && !filter.includes(session.id)) continue
-                sessions.push({
-                    id: session.code,
-                    title: session.title,
-                    abstract: session.abstract,
-                    start: moment.tz(session.start, this.currentTimezone),
-                    end: moment.tz(session.end, this.currentTimezone),
-                    speakers: session.speakers?.map(s => this.speakersLookup[s]),
-                    track: this.tracksLookup[session.track],
-                    room: this.roomsLookup[session.room],
-                    fav_count: session.fav_count,
-                    do_not_record: session.do_not_record,
-                    tags: session.tags,
-                    session_type: session.session_type
-                })
-            }
-            sessions.sort((a, b) => a.start.diff(b.start))
-            return sessions
-        },
-        rooms() {
-            return _.uniqBy(this.sessions, 'room.id').map(s => s.room)
-        },
-        filter() {
-            const filter = this.defaultFilter
-            filter.tracks.data = this.schedule.tracks.map(t => { t.value = t.id; t.label = t.name; return t })
-            filter.rooms.data = this.schedule.rooms.map(t => { t.value = t.id; t.label = t.name; return t })
-            filter.types.data = this.schedule.session_type.map(t => { t.value = t.session_type; t.label = t.session_type; return t })
-            return filter
-        }
-    },
-    watch: {
-        tracksFilter: {
-            handler: function (newValue) {
-                const arr = Object.keys(newValue).filter(key => newValue[key])
-                this.$store.dispatch('schedule/filter', {type: 'track', tracks: arr})
-            },
-            deep: true
-        }
-    },
-    methods: {
-        changeDay (day) {
-            if (day.isSame(this.currentDay)) return
-            this.currentDay = day
-        },
-        changeDayByScroll (day) {
-            this.currentDay = day
-            const tabEl = this.$refs.tabs.$refs.tabElements.find(el => el.id === day.toISOString())
-            // TODO smooth scroll, seems to not work with chrome {behavior: 'smooth', block: 'center', inline: 'center'}
-            tabEl?.$el.scrollIntoView()
-        },
-        getTrackName(track) {
-            const language_track = localStorage.userLanguage;
-            if (typeof track.name === 'object' && track.name !== null) {
-                if (language_track && track.name[language_track]) {
-                    return track.name[language_track];
-                } else {
-                    return track.name.en || track.name;
-                }
-            } else if (track.session_type && track.session_type !== null) {
-                return track.session_type;
-            } else {
-                return track.name;
-            }
-        },
-        toggleFavFilter () {
-            this.tracksFilter = {}
-            if (this.filter.type === 'fav') {
-                this.$store.dispatch('schedule/filter', {})
-            } else {
-                this.$store.dispatch('schedule/filter', {type: 'fav'})
-            }
-        },
-        async makeExport() {
-            try {
-                this.isExporting = true;
-                const url = config.api.base + 'export-talk?export_type=' + this.selectedExporter.id
-                const authHeader = api._config.token ? `Bearer ${api._config.token}` : (api._config.clientId ? `Client ${api._config.clientId}` : null)
-                const result = await fetch(url, {
-                            method: 'GET',
-                            headers: {
-                                Accept: 'application/json',
-                                Authorization: authHeader,
-                            }
-                        }).then(response => response.json())
-                var a = document.createElement("a");
-                document.body.appendChild(a);
-                const blob = new Blob([result], {type: "octet/stream"}),
-                download_url = window.URL.createObjectURL(blob);
-                a.href = download_url;
-                a.download = "schedule-" + this.selectedExporter.id + '.' + this.selectedExporter.id.replace('my','');
-                a.click();
-                window.URL.revokeObjectURL(download_url);
-                a.remove()
-                this.isExporting = false;
-            } catch (error) {
-                this.isExporting = false;
-                this.error = error
-                console.log(error)
-            }
-        },
-        resetAllFiltered () {
-            this.resetFiltered()
-            this.onlyFavs = false
-        },
-        resetFiltered () {
-            Object.keys(this.filter).forEach(key => {
-                this.filter[key].data.forEach(t => {
-                    if (t.selected) {
-                        t.selected = false
-                    }
-                })
-            })
-        }
-    }
+	name: 'Schedule',
+	components: { LinearSchedule, GridSchedule, TimezoneChanger, Prompt, CustomDropdown, AppDropdown, AppDropdownContent, AppDropdownItem },
+	mixins: [scheduleProvidesMixin],
+	data() {
+		return {
+			tracksFilter: {},
+			moment,
+			currentDay: moment().startOf('day'),
+			selectedExporter: null,
+			exportOptions: [],
+			isExporting: false,
+			error: null,
+			defaultFilter: defaultFilter,
+			onlyFavs: false
+		}
+	},
+	computed: {
+		...mapState(['now']),
+		...mapState('schedule', ['schedule', 'errorLoading']),
+		...mapGetters('schedule', ['days', 'rooms', 'sessions', 'favs']),
+		exportType() {
+			return exportTypeSet
+		},
+		filteredTracks() {
+			let results = null
+			const self = this
+			Object.keys(this.filter).forEach(key => {
+				const refKey = this.filter[key].refKey
+				const selectedIds = this.filter[key].data.filter(t => t.selected).map(t => t.value)
+				let founds = null
+				if (selectedIds.length) {
+					if (results && results.length) {
+						founds = self.schedule.talks.filter(t => selectedIds.includes(t[refKey]) && results && results.includes(t.id))?.map(i => i.id) || []
+					} else {
+						founds = self.schedule.talks.filter(t => { return selectedIds.includes(t[refKey]) })?.map(i => i.id) || []
+					}
+					results = founds
+				}
+			})
+			return results
+		},
+		tracksLookup() {
+			if (!this.schedule) return {}
+			return this.schedule.tracks.reduce((acc, t) => { acc[t.id] = t; return acc }, {})
+		},
+		roomsLookup() {
+			if (!this.schedule) return {}
+			return this.schedule.rooms.reduce((acc, room) => { acc[room.id] = room; return acc }, {})
+		},
+		speakersLookup() {
+			if (!this.schedule) return {}
+			return this.schedule.speakers.reduce((acc, s) => { acc[s.code] = s; return acc }, {})
+		},
+		sessions() {
+			const sessions = []
+			const filter = this.filteredTracks
+			for (const session of this.schedule.talks.filter(s => s.start)) {
+				if (this.onlyFavs && !this.favs.includes(session.code)) continue
+				if (filter && !filter.includes(session.id)) continue
+				sessions.push({
+					id: session.code,
+					title: session.title,
+					abstract: session.abstract,
+					start: moment.tz(session.start, this.currentTimezone),
+					end: moment.tz(session.end, this.currentTimezone),
+					speakers: session.speakers?.map(s => this.speakersLookup[s]),
+					track: this.tracksLookup[session.track],
+					room: this.roomsLookup[session.room],
+					fav_count: session.fav_count,
+					do_not_record: session.do_not_record,
+					tags: session.tags,
+					session_type: session.session_type
+				})
+			}
+			sessions.sort((a, b) => a.start.diff(b.start))
+			return sessions
+		},
+		rooms() {
+			return _.uniqBy(this.sessions, 'room.id').map(s => s.room)
+		},
+		filter() {
+			const filter = this.defaultFilter
+			filter.tracks.data = this.schedule.tracks.map(t => { t.value = t.id; t.label = t.name; return t })
+			filter.rooms.data = this.schedule.rooms.map(t => { t.value = t.id; t.label = t.name; return t })
+			filter.types.data = this.schedule.session_type.map(t => { t.value = t.session_type; t.label = t.session_type; return t })
+			return filter
+		}
+	},
+	watch: {
+		tracksFilter: {
+			handler: function(newValue) {
+				const arr = Object.keys(newValue).filter(key => newValue[key])
+				this.$store.dispatch('schedule/filter', {type: 'track', tracks: arr})
+				this.onlyFavs = false
+			},
+			deep: true
+		}
+	},
+	methods: {
+		changeDay(day) {
+			if (day.isSame(this.currentDay)) return
+			this.currentDay = day
+		},
+		changeDayByScroll(day) {
+			this.currentDay = day
+			const tabEl = this.$refs.tabs.$refs.tabElements.find(el => el.id === day.toISOString())
+			// TODO smooth scroll, seems to not work with chrome {behavior: 'smooth', block: 'center', inline: 'center'}
+			tabEl?.$el.scrollIntoView()
+		},
+		getTrackName(track) {
+			const languageUrl = localStorage.userLanguage
+			if (typeof track.name === 'object' && track.name !== null) {
+				if (languageUrl && track.name[languageUrl]) {
+					return track.name[languageUrl]
+				} else {
+					return track.name.en || track.name
+				}
+			} else if (track.session_type && track.session_type !== null) {
+				return track.session_type
+			} else {
+				return track.name
+			}
+		},
+		toggleFavFilter() {
+			this.tracksFilter = {}
+			if (this.filter.type === 'fav') {
+				this.$store.dispatch('schedule/filter', {})
+			} else {
+				this.$store.dispatch('schedule/filter', {type: 'fav'})
+			}
+		},
+		async makeExport() {
+			try {
+				this.isExporting = true
+				const url = config.api.base + 'export-talk?export_type=' + this.selectedExporter.id
+				const authHeader = api._config.token ? `Bearer ${api._config.token}` : (api._config.clientId ? `Client ${api._config.clientId}` : null)
+				const result = await fetch(url, {
+					method: 'GET',
+					headers: {
+						Accept: 'application/json',
+						Authorization: authHeader,
+					}
+				}).then(response => response.json())
+				var a = document.createElement('a')
+				document.body.appendChild(a)
+				const blob = new Blob([result], {type: 'octet/stream'})
+				const downloadUrl = window.URL.createObjectURL(blob)
+				a.href = downloadUrl
+				a.download = 'schedule-' + this.selectedExporter.id + '.' + this.selectedExporter.id.replace('my', '')
+				a.click()
+				window.URL.revokeObjectURL(downloadUrl)
+				a.remove()
+				this.isExporting = false
+			} catch (error) {
+				this.isExporting = false
+				this.error = error
+				console.log(error)
+			}
+		},
+		resetAllFiltered() {
+			this.resetFiltered()
+			this.onlyFavs = false
+		},
+		resetFiltered() {
+			Object.keys(this.filter).forEach(key => {
+				this.filter[key].data.forEach(t => {
+					if (t.selected) {
+						t.selected = false
+					}
+				})
+			})
+		},
+		resetOnlyFavs() {
+			this.onlyFavs = false
+		}
+	}
 }
 </script>
 <style lang="stylus">
@@ -292,7 +295,7 @@ export default {
         .app-drop-down
             width: 90px
             margin-bottom: 8px
-    .c-schedule 
+    .c-schedule
         .bunt-ripple-ink
             margin: 12px 0 20px 15px !important;
         .export.dropdown

@@ -35,7 +35,7 @@ export default {
 	props: {
 		talkId: String
 	},
-	data () {
+	data() {
 		return {
 			talk: null
 		}
@@ -43,16 +43,16 @@ export default {
 	computed: {
 		...mapState(['rooms']),
 		...mapGetters('schedule', ['pretalxApiBaseUrl', 'sessions']),
-		datetime () {
+		datetime() {
 			return moment(this.talk.slot?.start || this.talk.start).format('L LT') + ' - ' + moment(this.talk.slot?.end || this.talk.end).format('LT')
 		},
-		roomName () {
+		roomName() {
 			return this.$localize(this.talk.slot?.room || this.talk.room.name)
 		}
 	},
 	watch: {
 		sessions: {
-			handler () {
+			handler() {
 				if (!this.sessions) return
 				if (this.talk) return
 				this.talk = this.sessions.find(session => session.id === this.talkId)
@@ -60,25 +60,25 @@ export default {
 			immediate: true
 		}
 	},
-	async created () {
+	async created() {
 		// TODO error handling
 		if (!this.pretalxApiBaseUrl) return
 		this.talk = await (await fetch(`${this.pretalxApiBaseUrl}/talks/${this.talkId}/`)).json()
 	},
-	mounted () {
+	mounted() {
 		this.$nextTick(() => {
 		})
 	},
 	methods: {
 		getIconByFileEnding,
-		getAbsoluteResourceUrl (resource) {
+		getAbsoluteResourceUrl(resource) {
 			if (!this.pretalxApiBaseUrl) return resource
 			const base = (new URL(this.pretalxApiBaseUrl)).origin
 			return new URL(resource, base)
 		},
 		getRoomIdByName(roomName) {
-			const room = this.rooms.find(r => r.name === roomName);
-			return room ? room.id : null;
+			const room = this.rooms.find(r => r.name === roomName)
+			return room ? room.id : null
 		}
 	}
 }

@@ -1,21 +1,41 @@
 <template>
-  <div class="custom-dropdown" ref="dropdown">
+  <div
+    ref="dropdown"
+    class="custom-dropdown"
+  >
     <button @click="isOpen = !isOpen">
       {{ selectedOption || 'Add to Calendar' }}
     </button>
-    <div v-if="isOpen" class="dropdown-options">
-			<div class="dropdown-item"
-				v-for="option in options"
-				:key="option.id"
-				@click="selectOption(option)"
-				@mouseover="setHoveredOption(option)"
-				@mouseleave="clearHoveredOption(option)"
-			>
-        <div class="item-text">{{ option.label }}</div>
-        <img class="default-image" v-if="qrCodes[option.id]" :src="qrCodes[option.id]" alt="QR Code" />
+    <div
+      v-if="isOpen"
+      class="dropdown-options"
+    >
+      <div
+        v-for="option in options"
+        :key="option.id"
+        class="dropdown-item"
+        @click="selectOption(option)"
+        @mouseover="setHoveredOption(option)"
+        @mouseleave="clearHoveredOption(option)"
+      >
+        <div class="item-text">
+          {{ option.label }}
+        </div>
+        <img
+          v-if="qrCodes[option.id]"
+          class="default-image"
+          :src="qrCodes[option.id]"
+          alt="QR Code"
+        >
         <transition name="fade">
-          <div v-if="hoveredOption === option" class="qr-popup">
-            <img :src="qrCodes[option.id]" alt="QR Code" />
+          <div
+            v-if="hoveredOption === option"
+            class="qr-popup"
+          >
+            <img
+              :src="qrCodes[option.id]"
+              alt="QR Code"
+            >
           </div>
         </transition>
       </div>
@@ -24,65 +44,70 @@
 </template>
 
 <script>
-import QRCode from 'qrcode';
+import QRCode from 'qrcode'
 import config from 'config'
 
 export default {
-  props: ['options'],
+	props: {
+		options: {
+			type: Array,
+			required: true
+		}
+	},
+	data() {
+		return {
+			isOpen: false,
+			selectedOption: null,
+			hoveredOption: null,
+			qrCodes: {}
+		}
+	},
 	mounted() {
-    document.addEventListener('click', this.outsideClick);
-  },
+		document.addEventListener('click', this.outsideClick)
+	},
 	beforeDestroy() {
-    document.removeEventListener('click', this.outsideClick);
-  },
-  data() {
-    return {
-      isOpen: false,
-      selectedOption: null,
-      hoveredOption: null,
-      qrCodes: {}
-    };
-  },
-  created() {
-    this.options.forEach(option => {
-      this.generateQRCode(option);
-    });
-  },
-  methods: {
-    selectOption(option) {
-      this.selectedOption = option.label;
-      this.isOpen = false;
-      this.$emit('input', option);
-    },
-    outsideClick(event) {
-      const dropdown = this.$refs.dropdown;
-      if (!dropdown.contains(event.target)) {
-        this.isOpen = false;
-      }
-    },
-    generateQRCode(option) {
-      if (!['ics', 'xml', 'myics', 'myxml'].includes(option.id)) {
-        return;
-      }
-      const url = config.api.base + 'export-talk?export_type=' + option.id
-      QRCode.toDataURL(url, { scale: 1 }, (err, url) => {
-        if (!err) this.qrCodes[option.id] = url;
-      });
-    },
+		document.removeEventListener('click', this.outsideClick)
+	},
+	created() {
+		this.options.forEach(option => {
+			this.generateQRCode(option)
+		})
+	},
+	methods: {
+		selectOption(option) {
+			this.selectedOption = option.label
+			this.isOpen = false
+			this.$emit('input', option)
+		},
+		outsideClick(event) {
+			const dropdown = this.$refs.dropdown
+			if (!dropdown.contains(event.target)) {
+				this.isOpen = false
+			}
+		},
+		generateQRCode(option) {
+			if (!['ics', 'xml', 'myics', 'myxml'].includes(option.id)) {
+				return
+			}
+			const url = config.api.base + 'export-talk?export_type=' + option.id
+			QRCode.toDataURL(url, { scale: 1 }, (err, url) => {
+				if (!err) this.qrCodes[option.id] = url
+			})
+		},
 		setHoveredOption(option) {
-      if (['ics', 'xml', 'myics', 'myxml'].includes(option.id)) {
-        this.hoveredOption = option;
-      } else {
-        this.hoveredOption = null;
-      }
-    },
-    clearHoveredOption(option) {
-      if (this.hoveredOption === option) {
-        this.hoveredOption = null;
-      }
-    },
-  }
-};
+			if (['ics', 'xml', 'myics', 'myxml'].includes(option.id)) {
+				this.hoveredOption = option
+			} else {
+				this.hoveredOption = null
+			}
+		},
+		clearHoveredOption(option) {
+			if (this.hoveredOption === option) {
+				this.hoveredOption = null
+			}
+		},
+	}
+}
 </script>
 
 <style>

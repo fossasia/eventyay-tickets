@@ -18,16 +18,16 @@ export default {
 	props: {
 		contactRequest: Object
 	},
-	data () {
+	data() {
 		return {
 			lateStartGap: moment(this.contactRequest.timestamp).diff(moment(), 'seconds')
 		}
 	},
 	methods: {
-		close () {
+		close() {
 			this.$store.dispatch('exhibition/dismissContactRequest', this.contactRequest)
 		},
-		accept () {
+		accept() {
 			this.$store.dispatch('exhibition/acceptContactRequest', this.contactRequest)
 		}
 	}

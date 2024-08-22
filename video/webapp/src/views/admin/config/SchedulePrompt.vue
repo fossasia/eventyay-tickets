@@ -34,7 +34,7 @@ export default {
 	props: {
 		currentConfig: Object
 	},
-	data () {
+	data() {
 		return {
 			domain: null,
 			event: null,
@@ -43,7 +43,7 @@ export default {
 			error: null
 		}
 	},
-	validations () {
+	validations() {
 		if (this.url) {
 			return {
 				url: {
@@ -59,7 +59,7 @@ export default {
 		}
 	},
 	computed: {
-		activeTab () {
+		activeTab() {
 			if (this.currentConfig.url) {
 				if (this.currentConfig.url.includes('/pub/')) { // this *looks* like our storage
 					return 'file'
@@ -72,13 +72,13 @@ export default {
 			return 'pretalx'
 		}
 	},
-	mounted () {
+	mounted() {
 		this.domain = this.currentConfig.domain
 		this.event = this.currentConfig.event
 		this.url = this.currentConfig.url
 	},
 	methods: {
-		async importFile () {
+		async importFile() {
 			if (this.$refs.fileInput.files.length < 1) return
 			this.loading = true
 			this.error = null
@@ -98,17 +98,17 @@ export default {
 				this.uploading = false
 			})
 		},
-		savePretalx () {
+		savePretalx() {
 			this.error = null
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			this.$emit('save', {domain: this.domain, event: this.event})
 		},
-		saveConftool () {
+		saveConftool() {
 			this.error = null
 			this.$emit('save', {conftool: true, url: this.currentConfig.url})
 		},
-		saveURL () {
+		saveURL() {
 			this.error = null
 			this.$v.$touch()
 			if (this.$v.$invalid) return

@@ -5,14 +5,14 @@ const PALETTE = [
 	'#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548', '#607D8B'
 ]
 
-const hashFunc = function (source) {
-	return String(source).split('').reduce(function (a, b) {
+const hashFunc = function(source) {
+	return String(source).split('').reduce(function(a, b) {
 		a = ((a << 5) - a) + b.charCodeAt(0)
 		return a & a
 	}, 0)
 }
 
-export function getIdenticonSVG (id) {
+export function getIdenticonSVG(id) {
 	const hash = hashFunc(id)
 	const primaryColor = PALETTE[Math.abs(hash % PALETTE.length)]
 	const accentColor = PALETTE[Math.abs(hashFunc(hash) % PALETTE.length)]
@@ -124,6 +124,6 @@ export function getIdenticonSVG (id) {
 `
 }
 
-export function getIdenticonSvgUrl (id) {
+export function getIdenticonSvgUrl(id) {
 	return `data:image/svg+xml;base64,${btoa(getIdenticonSVG(id).replace(/[\t\n]/g, ''))}`
 }

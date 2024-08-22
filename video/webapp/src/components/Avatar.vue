@@ -14,11 +14,11 @@ export default {
 		size: Number
 	},
 	computed: {
-		gravatarAvatarUrl () {
+		gravatarAvatarUrl() {
 			if (!this.user.profile?.gravatar_hash) return
 			return getAvatarUrl(this.user.profile.gravatar_hash, this.size)
 		},
-		imageUrl () {
+		imageUrl() {
 			return this.user.profile?.avatar?.url ?? this.gravatarAvatarUrl
 		}
 	}

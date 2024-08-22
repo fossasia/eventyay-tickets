@@ -73,12 +73,12 @@ const socialNetworks = [
 	'youtube',
 ]
 
-function generateSocialComputed (network) {
+function generateSocialComputed(network) {
 	return {
-		get () {
+		get() {
 			return this.config?.social_logins.includes(network)
 		},
-		set (value) {
+		set(value) {
 			if (value) {
 				this.config.social_logins.push(network)
 			} else {
@@ -89,7 +89,7 @@ function generateSocialComputed (network) {
 }
 
 export default {
-	data () {
+	data() {
 		return {
 			config: null,
 			saving: false,
@@ -102,7 +102,7 @@ export default {
 		socialLinkedIn: generateSocialComputed('linkedin'),
 		socialGravatar: generateSocialComputed('gravatar')
 	},
-	async created () {
+	async created() {
 		// TODO: Force reloading if world.updated is received from the server
 		try {
 			this.config = await api.call('world.config.get')
@@ -112,13 +112,13 @@ export default {
 		}
 	},
 	methods: {
-		addField () {
+		addField() {
 			this.config.profile_fields.push({id: uuid(), label: '', type: 'text', searchable: false})
 		},
-		removeField (field) {
+		removeField(field) {
 			this.$delete(this.config.profile_fields, field)
 		},
-		async save () {
+		async save() {
 			this.saving = true
 			try {
 				await api.call('world.config.patch', {

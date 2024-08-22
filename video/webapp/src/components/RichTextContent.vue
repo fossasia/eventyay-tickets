@@ -13,13 +13,13 @@ export default {
 	},
 	watch: {
 		content: {
-			handler (val) {
+			handler(val) {
 				this.quill.setContents(val)
 			},
 			deep: true
 		},
 	},
-	mounted () {
+	mounted() {
 		Quill.register(VideoResponsive)
 		Quill.register(fullWidthFormat)
 		const quill = new Quill(this.$el, {
@@ -28,7 +28,7 @@ export default {
 		quill.setContents(this.content)
 	},
 	methods: {
-		handleClick (event) {
+		handleClick(event) {
 			const a = event.target.closest('a')
 			if (!a) return
 			// from https://github.com/vuejs/vue-router/blob/dfc289202703319cf7beb38d03c9258c806c4d62/src/components/link.js#L165

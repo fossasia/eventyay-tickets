@@ -21,37 +21,37 @@ export default {
 		traitGrants: Object,
 		config: Object
 	},
-	data () {
+	data() {
 		return {
 			newRole: null
 		}
 	},
 	computed: {
-		remainingRoles () {
+		remainingRoles() {
 			const existingRoles = Object.keys(this.traitGrants)
 			return Object.keys(this.config.roles).filter(role => !existingRoles.includes(role))
 		}
 	},
-	created () {},
-	mounted () {
+	created() {},
+	mounted() {
 		this.$nextTick(() => {
 		})
 	},
 	methods: {
-		getTraitGrants (traits) {
+		getTraitGrants(traits) {
 			return stringifyTraitGrants(traits)
 		},
-		setTraitGrants (role, traits) {
+		setTraitGrants(role, traits) {
 			if (typeof this.traitGrants[role] !== 'undefined') {
 				this.$set(this.traitGrants, role, parseTraitGrants(traits))
 			}
 			this.$emit('changed')
 		},
-		removeTraitGrant (role) {
+		removeTraitGrant(role) {
 			this.$delete(this.traitGrants, role)
 			this.$emit('changed')
 		},
-		addTraitGrant () {
+		addTraitGrant() {
 			this.$set(this.traitGrants, this.newRole, [])
 			this.newRole = null
 			this.$emit('changed')

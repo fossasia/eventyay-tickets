@@ -13,7 +13,7 @@ export default {
 	components: { SidebarAddons },
 	mixins: [mixin],
 	computed: {
-		module () {
+		module() {
 			return this.modules['call.zoom']
 		}
 	}

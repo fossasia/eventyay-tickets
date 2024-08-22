@@ -30,4 +30,4 @@ export const locales = [{
 	code: 'ru',
 	nativeLabel: 'Русский',
 	englishLabel: 'Russian'
-}];
+}]

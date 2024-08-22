@@ -21,21 +21,21 @@ export default {
 	props: {
 		room: Object
 	},
-	data () {
+	data() {
 		return {
 			url: null,
 			qrcode: null
 		}
 	},
 	computed: {
-		shortUrl () {
+		shortUrl() {
 			return this.url.replace(/^https?:\/\//, '')
 		},
-		downloadUrl () {
+		downloadUrl() {
 			return `data:image/svg+xml;base64,${btoa(this.qrcode)}`
 		}
 	},
-	async created () {
+	async created() {
 		const { url } = await api.call('room.invite.anonymous.link', {room: this.room.id})
 		this.url = url
 		this.qrcode = await QRCode.toString(this.url, {type: 'svg', margin: 1})

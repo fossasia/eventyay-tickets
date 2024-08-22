@@ -14,50 +14,50 @@ import ViewersSlide from './Viewers'
 
 const SLIDES = [{
 	id: 'poll',
-	condition () {
+	condition() {
 		return this.isSlideEnabled('pinned_poll') && !!this.$store.getters['poll/pinnedPoll']
 	},
-	watch () {
+	watch() {
 		return this.isSlideEnabled('pinned_poll') && this.$store.getters['poll/pinnedPoll']
 	},
 	priority: 10,
 	component: PollSlide
 }, {
 	id: 'vote',
-	condition () {
+	condition() {
 		return this.isSlideEnabled('pinned_poll_voting') && !!this.$store.getters['poll/pinnedPoll']
 	},
 	priority: 10,
 	component: VoteSlide
 }, {
 	id: 'question',
-	condition () {
+	condition() {
 		return this.isSlideEnabled('pinned_question') && !!this.$store.getters['question/pinnedQuestion']
 	},
-	watch () {
+	watch() {
 		return this.isSlideEnabled('pinned_question') && this.$store.getters['question/pinnedQuestion']
 	},
 	priority: 10,
 	component: QuestionSlide
 }, {
 	id: 'nextSession',
-	condition () {
+	condition() {
 		if (!this.isSlideEnabled('next_session')) return false
 		const currentSession = this.$store.getters['schedule/currentSessionPerRoom']?.[this.room.id]?.session
 		const nextSession = this.$store.getters['schedule/sessions']?.find(session => session.room === this.room && session.start.isAfter(this.now))
 		return !!nextSession && (!currentSession || currentSession.end.isBefore(moment().add(10, 'minutes')))
 	},
-	watch () {
+	watch() {
 		return this.isSlideEnabled('next_session') && this.$store.getters['schedule/sessions']
 	},
 	priority: 1,
 	component: NextSessionSlide
 }, {
 	id: 'viewers',
-	condition () {
+	condition() {
 		return this.isSlideEnabled('viewers') && this.$store.state.roomViewers?.length > 0
 	},
-	watch () {
+	watch() {
 		return this.isSlideEnabled('viewers') && this.$store.state.roomViewers
 	},
 	priority: 1,
@@ -71,12 +71,12 @@ export default {
 		room: Object,
 		config: Object
 	},
-	data () {
+	data() {
 		return {
 			activeSlide: SLIDES[0],
 		}
 	},
-	mounted () {
+	mounted() {
 		this.nextSlide()
 		for (const slide of SLIDES) {
 			if (slide.watch) {
@@ -91,10 +91,10 @@ export default {
 		}
 	},
 	methods: {
-		isSlideEnabled (slide) {
+		isSlideEnabled(slide) {
 			return !this.config.slides || this.config.slides[slide] !== false
 		},
-		nextSlide () {
+		nextSlide() {
 			if (this.slideTimer) clearTimeout(this.slideTimer)
 			let index = SLIDES.indexOf(this.activeSlide)
 			const stoppingIndex = Math.max(0, index)

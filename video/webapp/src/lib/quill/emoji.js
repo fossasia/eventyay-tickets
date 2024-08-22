@@ -4,17 +4,17 @@ import { nativeToStyle as nativeEmojiToStyle, objectToCssString } from 'lib/emoj
 const Embed = Quill.import('blots/embed')
 
 class EmojiBlot extends Embed {
-  static create(value) {
-    const node = super.create()
-    node.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
-    node.style.cssText = objectToCssString(nativeEmojiToStyle(value))
-    node.dataset.emoji = value
-    return node
-  }
+	static create(value) {
+		const node = super.create()
+		node.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+		node.style.cssText = objectToCssString(nativeEmojiToStyle(value))
+		node.dataset.emoji = value
+		return node
+	}
 
-  static value(node) {
-    return node.dataset.emoji
-  }
+	static value(node) {
+		return node.dataset.emoji
+	}
 }
 
 EmojiBlot.blotName = 'emoji'

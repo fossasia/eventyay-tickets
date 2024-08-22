@@ -20,7 +20,7 @@ export default {
 			default: true
 		}
 	},
-	mounted () {
+	mounted() {
 		this.$nextTick(() => {
 			if (!this.scrollable) return
 			this.scrollbars = new Scrollbars(this.$refs.wrapper, {
@@ -29,12 +29,12 @@ export default {
 		})
 	},
 	methods: {
-		onPointerdown (event) {
+		onPointerdown(event) {
 			if (!this.allowCancel) return
 			event.stopPropagation()
 			this.$el.addEventListener('pointerup', this.onPointerup)
 		},
-		onPointerup (event) {
+		onPointerup(event) {
 			this.$el.removeEventListener('pointerup', this.onPointerup)
 			if (event.target !== this.$el) return
 			console.log(event)

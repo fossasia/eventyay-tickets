@@ -23,7 +23,7 @@ export const definition = {
 	},
 }
 
-export function renderSvg (random, userProfile, config) {
+export function renderSvg(random, userProfile, config) {
 	const initials = userProfile.display_name
 		.split(' ')
 		.map((n) => n[0])

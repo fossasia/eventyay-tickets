@@ -1,6 +1,6 @@
 export default {
 	computed: {
-		validationErrors () {
+		validationErrors() {
 			const errorMessages = []
 			const extractErrors = ($v) => {
 				const params = Object.values($v.$params)

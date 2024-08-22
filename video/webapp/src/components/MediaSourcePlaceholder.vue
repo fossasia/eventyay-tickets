@@ -6,21 +6,21 @@
 // - has to always be top left because ResizeObserver can't observe position changes
 export default {
 	components: {},
-	data () {
+	data() {
 		return {
 		}
 	},
 	computed: {},
-	created () {},
-	async mounted () {
+	created() {},
+	async mounted() {
 		await this.$nextTick()
 		this.$store.commit('reportMediaSourcePlaceholderRect', this.$el.getBoundingClientRect())
 	},
-	beforeDestroy () {
+	beforeDestroy() {
 		this.$store.commit('reportMediaSourcePlaceholderRect', null)
 	},
 	methods: {
-		onResize ([{contentRect}]) {
+		onResize([{contentRect}]) {
 			this.$store.commit('reportMediaSourcePlaceholderRect', contentRect)
 		}
 	}

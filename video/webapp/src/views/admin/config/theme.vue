@@ -40,7 +40,7 @@ import { renderers as identiconRenderers } from 'lib/identicons'
 export default {
 	components: { ColorPicker, UploadUrlInput },
 	mixins: [ValidationErrorsMixin],
-	data () {
+	data() {
 		return {
 			// We do not use the global config object since we cannot rely on it being up to date (theme is only updated
 			// during application load).
@@ -51,11 +51,11 @@ export default {
 		}
 	},
 	computed: {
-		strings () {
+		strings() {
 			// access i18n dict via undocumented api
 			return i18n.store.data[this.config.locale].translation
 		},
-		identiconStyles () {
+		identiconStyles() {
 			return Object.entries(identiconRenderers).map(([id, renderer]) => ({
 				id,
 				label: renderer.definition.label
@@ -90,7 +90,7 @@ export default {
 			},
 		}
 	},
-	async created () {
+	async created() {
 		// TODO: Force reloading if world.updated is received from the server
 		try {
 			this.config = await api.call('world.config.get')
@@ -106,7 +106,7 @@ export default {
 		}
 	},
 	methods: {
-		async save () {
+		async save() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 

@@ -15,7 +15,7 @@ export default {
 		y: Boolean,
 		x: Boolean
 	},
-	data () {
+	data() {
 		return {
 			dimensions: null,
 			draggingDimension: null,
@@ -23,7 +23,7 @@ export default {
 		}
 	},
 	computed: {
-		thumbStyles () {
+		thumbStyles() {
 			const thumbStyles = {}
 			if (this.dimensions?.x) {
 				thumbStyles.x = {
@@ -47,7 +47,7 @@ export default {
 			return thumbStyles
 		}
 	},
-	created () {
+	created() {
 		const dimensions = {}
 		if (this.x) {
 			dimensions.x = {
@@ -66,7 +66,7 @@ export default {
 		}
 		this.dimensions = dimensions
 	},
-	async mounted () {
+	async mounted() {
 		await this.$nextTick()
 		// setting direction once should be good enough
 		if (this.dimensions.y) {
@@ -99,24 +99,24 @@ export default {
 			childList: true
 		})
 	},
-	beforeDestroy () {
+	beforeDestroy() {
 		this.resizeObserver.disconnect()
 		this.mutationObserver.disconnect()
 	},
 	methods: {
-		scrollTop (y) {
+		scrollTop(y) {
 			this.$refs.content.scrollTop = y
 		},
-		onScroll (event) {
+		onScroll(event) {
 			this.$emit('scroll', event)
 			this.computeThumbPositions()
 		},
-		onResize () {
+		onResize() {
 			this.computeDimensions()
 			this.computeThumbPositions()
 			this.$emit('resize')
 		},
-		onPointerdown (dimension, $event) {
+		onPointerdown(dimension, $event) {
 			const el = this.$refs[`thumb-${dimension}`][0]
 			event.stopPropagation()
 			el.setPointerCapture(event.pointerId)
@@ -126,7 +126,7 @@ export default {
 			el.addEventListener('pointermove', this.onPointermove)
 			el.addEventListener('pointerup', this.onPointerup)
 		},
-		onPointermove () {
+		onPointermove() {
 			if (this.draggingDimension === 'x') {
 				const maxX = this.$refs.content.clientWidth - this.dimensions.x.thumbLength
 				const newPosition = event.clientX - this.$refs.content.getBoundingClientRect().left - this.draggingOffset
@@ -147,7 +147,7 @@ export default {
 				}
 			}
 		},
-		onPointerup (event) {
+		onPointerup(event) {
 			const dimension = this.draggingDimension
 			const el = this.$refs[`thumb-${dimension}`][0]
 			this.draggingDimension = null
@@ -155,7 +155,7 @@ export default {
 			el.removeEventListener('pointermove', this.onPointermove)
 			el.removeEventListener('pointerup', this.onPointerup)
 		},
-		computeDimensions () {
+		computeDimensions() {
 			if (this.dimensions.x) {
 				this.dimensions.x.visibleRatio = this.$refs.content.clientWidth / this.$refs.content.scrollWidth
 				this.dimensions.x.thumbLength = this.$refs.content.clientWidth * this.dimensions.x.visibleRatio
@@ -165,7 +165,7 @@ export default {
 				this.dimensions.y.thumbLength = this.$refs.content.clientHeight * this.dimensions.y.visibleRatio
 			}
 		},
-		computeThumbPositions () {
+		computeThumbPositions() {
 			if (this.dimensions.x) {
 				this.dimensions.x.thumbPosition = this.$refs.content.scrollLeft / (this.$refs.content.scrollWidth - this.$refs.content.clientWidth) * (this.$refs.content.clientWidth - this.dimensions.x.thumbLength)
 			}
@@ -177,7 +177,7 @@ export default {
 				}
 			}
 		},
-		updateThumb (dimension) {
+		updateThumb(dimension) {
 			const state = this[dimension]
 			if (!state) return
 			if (state.visibleRatio >= 1) {

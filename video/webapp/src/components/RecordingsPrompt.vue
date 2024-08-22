@@ -25,14 +25,14 @@ export default {
 	props: {
 		room: Object
 	},
-	data () {
+	data() {
 		return {
 			recordings: null,
 			error: null,
 		}
 	},
 	computed: {},
-	async created () {
+	async created() {
 		try {
 			this.recordings = (await api.call('bbb.recordings', {room: this.room.id}, {timeout: 150000})).results
 			this.error = null

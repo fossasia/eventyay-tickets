@@ -18,11 +18,11 @@ export default {
 	computed: {
 		...mapGetters('poll', ['pinnedPoll']),
 		// TODO copypasta
-		totalVotes () {
+		totalVotes() {
 			if (!this.pinnedPoll.results) return 0
 			return Object.values(this.pinnedPoll.results).reduce((acc, result) => acc + result, 0)
 		},
-		optionsWithMostVotes () {
+		optionsWithMostVotes() {
 			const sortedResults = Object.entries(this.pinnedPoll.results).slice().sort((a, b) => b[1] - a[1])
 			const mostVotes = sortedResults[0][1]
 			const optionsWithMostVotes = []

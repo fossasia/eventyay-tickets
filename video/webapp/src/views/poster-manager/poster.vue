@@ -107,7 +107,7 @@ export default {
 		create: Boolean,
 		posterId: String
 	},
-	data () {
+	data() {
 		return {
 			error: null,
 			poster: null,
@@ -122,21 +122,21 @@ export default {
 	},
 	computed: {
 		...mapGetters(['hasPermission']),
-		rooms () {
+		rooms() {
 			return this.$store.state.rooms.filter(room => room.modules.some(m => m.type === 'poster.native'))
 		},
-		room () {
+		room() {
 			if (!this.poster.parent_room_id) return
 			return this.rooms.find(room => room.id === this.poster.parent_room_id)
 		},
-		posterModule () {
+		posterModule() {
 			return this.room?.modules.find(module => module.type === 'poster.native')
 		},
-		presentationRoomOptions () {
+		presentationRoomOptions() {
 			return [{name: '', id: ''}, ...this.$store.state.rooms]
 		},
 	},
-	validations () {
+	validations() {
 		return {
 			poster: {
 				title: {
@@ -145,7 +145,7 @@ export default {
 			}
 		}
 	},
-	async created () {
+	async created() {
 		if (this.create) {
 			this.poster = {
 				id: '', // needs to be empty string for creation to work
@@ -172,7 +172,7 @@ export default {
 		}
 	},
 	methods: {
-		async generatePosterPreview () {
+		async generatePosterPreview() {
 			const pdf = await pdfjs.getDocument(this.poster.poster_url).promise
 			const page = await pdf.getPage(1)
 			const unscaledViewport = page.getViewport({scale: 1})
@@ -189,13 +189,13 @@ export default {
 			// TODO handle error (const {url, error} = …)
 			this.poster.poster_preview = url
 		},
-		addAuthor () {
+		addAuthor() {
 			this.poster.authors.authors.push({
 				name: '',
 				orgs: []
 			})
 		},
-		toggleAuthorOrg (author, orgIndex) {
+		toggleAuthorOrg(author, orgIndex) {
 			const index = author.orgs.indexOf(orgIndex)
 			if (index >= 0) {
 				author.orgs.splice(index, 1)
@@ -203,18 +203,18 @@ export default {
 				author.orgs.push(orgIndex)
 			}
 		},
-		addPresenters (presenters) {
+		addPresenters(presenters) {
 			for (const presenter of presenters) {
 				if (this.poster.presenters.some(existing => existing.id === presenter.id)) continue
 				this.poster.presenters.push(presenter)
 			}
 			this.showPresenterPrompt = false
 		},
-		removePresenter (presenter) {
+		removePresenter(presenter) {
 			const index = this.poster.presenters.indexOf(presenter)
 			this.poster.presenters.splice(index, 1)
 		},
-		async save () {
+		async save() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			this.saving = true
@@ -226,7 +226,7 @@ export default {
 			if (this.create) await router.push({name: 'posters:poster', params: {posterId: poster.id}})
 			this.saving = false
 		},
-		async deletePoster () {
+		async deletePoster() {
 			if (this.deletingPosterTitle !== this.poster.title) return
 			this.deleting = true
 			this.deleteError = null

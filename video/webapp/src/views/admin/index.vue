@@ -6,13 +6,13 @@
 <script>
 export default {
 	components: {},
-	data () {
+	data() {
 		return {
 		}
 	},
 	computed: {},
-	created () {},
-	mounted () {
+	created() {},
+	mounted() {
 		this.$nextTick(() => {
 		})
 	},

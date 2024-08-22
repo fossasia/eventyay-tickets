@@ -6,12 +6,12 @@ export default {
 			default: 360
 		}
 	},
-	data () {
+	data() {
 		return {
 			contentRect: null
 		}
 	},
-	async mounted () {
+	async mounted() {
 		await this.$nextTick()
 		this.contentRect = this.$el.getBoundingClientRect()
 		this.observer = new ResizeObserver(([{contentRect}]) => {
@@ -19,11 +19,11 @@ export default {
 		})
 		this.observer.observe(this.$el)
 	},
-	beforeUnmount () {
+	beforeUnmount() {
 		this.observer.disconnect()
 	},
 	methods: {},
-	render (createElement) {
+	render(createElement) {
 		// filter out v-if=false nodes
 		const panels = this.$slots.default.filter(vnode => !vnode.isComment)
 		const panelCount = panels.length

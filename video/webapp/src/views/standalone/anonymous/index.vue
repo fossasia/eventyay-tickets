@@ -42,7 +42,7 @@ export default {
 	props: {
 		room: Object
 	},
-	data () {
+	data() {
 		return {
 			activeSidebarTab: null, // chat, questions, polls
 			unreadTabs: {
@@ -55,22 +55,22 @@ export default {
 		...mapState(['now', 'user']),
 		...mapGetters('poll', ['pinnedPoll']),
 		...mapGetters('schedule', ['sessions', 'currentSessionPerRoom']),
-		modules () {
+		modules() {
 			return this.room?.modules.reduce((acc, module) => {
 				acc[module.type] = module
 				return acc
 			}, {})
 		},
-		isAnonymous () {
+		isAnonymous() {
 			return Object.keys(this.user.profile).length === 0
 		},
-		unreadTabsClasses () {
+		unreadTabsClasses() {
 			return Object.entries(this.unreadTabs).filter(([tab, value]) => value).map(([tab]) => `tab-${tab}-unread`)
 		},
-		session () {
+		session() {
 			return this.currentSessionPerRoom?.[this.room.id]?.session
 		},
-		nextSessions () {
+		nextSessions() {
 			if (!this.sessions) return
 			// current or next sessions per room
 			const sessions = []
@@ -83,11 +83,11 @@ export default {
 		},
 	},
 	watch: {
-		activeSidebarTab (tab) {
+		activeSidebarTab(tab) {
 			this.unreadTabs[tab] = false
 		}
 	},
-	mounted () {
+	mounted() {
 		if (this.modules.poll) {
 			this.activeSidebarTab = 'polls'
 		} else if (this.modules.question) {
@@ -95,7 +95,7 @@ export default {
 		}
 	},
 	methods: {
-		changedTabContent (tab) {
+		changedTabContent(tab) {
 			if (tab === this.activeSidebarTab) return
 			this.unreadTabs[tab] = true
 		}

@@ -148,7 +148,7 @@ export default {
 	props: {
 		exhibitorId: String
 	},
-	data () {
+	data() {
 		return {
 			exhibitor: null,
 			saving: false,
@@ -164,15 +164,15 @@ export default {
 	},
 	computed: {
 		...mapGetters(['hasPermission']),
-		all_rooms_or_none () {
+		all_rooms_or_none() {
 			const r = [{name: '', id: ''}]
 			r.push(...this.$store.state.rooms)
 			return r
 		},
-		rooms () {
+		rooms() {
 			return this.$store.state.rooms.filter(room => room.modules.filter(m => m.type === 'exhibition.native').length > 0)
 		},
-		supportedNetworks () {
+		supportedNetworks() {
 			return [
 				'Facebook',
 				'LinkedIn',
@@ -188,7 +188,7 @@ export default {
 			]
 		}
 	},
-	validations () {
+	validations() {
 		return {
 			exhibitor: {
 				name: {
@@ -264,7 +264,7 @@ export default {
 			}
 		}
 	},
-	async created () {
+	async created() {
 		try {
 			if (this.exhibitorId !== '') {
 				this.exhibitor = (await api.call('exhibition.get', {exhibitor: this.exhibitorId})).exhibitor
@@ -298,33 +298,33 @@ export default {
 		}
 	},
 	methods: {
-		remove_social_media_link (link) {
+		remove_social_media_link(link) {
 			this.$delete(this.exhibitor.social_media_links, link)
 		},
-		add_social_media_link () {
+		add_social_media_link() {
 			this.exhibitor.social_media_links.push({display_text: '', url: ''})
 		},
-		set_social_media_link_text (index, displayText) {
+		set_social_media_link_text(index, displayText) {
 			this.exhibitor.social_media_links[index].display_text = displayText
 		},
-		set_social_media_link_url (index, url) {
+		set_social_media_link_url(index, url) {
 			this.exhibitor.social_media_links[index].url = url
 		},
-		remove_link (index, category) {
+		remove_link(index, category) {
 			if (category === 'profile') {
 				this.$delete(this.exhibitor.profileLinks, index)
 			} else if (category === 'download') {
 				this.$delete(this.exhibitor.downloadLinks, index)
 			}
 		},
-		add_link (category) {
+		add_link(category) {
 			if (category === 'profile') {
 				this.exhibitor.profileLinks.push({display_text: '', url: '', category: category, sorting_priority: 0})
 			} else if (category === 'download') {
 				this.exhibitor.downloadLinks.push({display_text: '', url: '', category: category, sorting_priority: 0})
 			}
 		},
-		up_link (index, category) {
+		up_link(index, category) {
 			if (index === 0) return
 			if (category === 'profile') {
 				const l = this.exhibitor.profileLinks[index - 1]
@@ -336,7 +336,7 @@ export default {
 				this.$set(this.exhibitor.downloadLinks, index, l)
 			}
 		},
-		down_link (index, category) {
+		down_link(index, category) {
 			if (category === 'profile') {
 				if (index === this.exhibitor.profileLinks.length - 1) return
 				const l = this.exhibitor.profileLinks[index + 1]
@@ -349,29 +349,29 @@ export default {
 				this.$set(this.exhibitor.downloadLinks, index, l)
 			}
 		},
-		set_link_text (index, category, displayText) {
+		set_link_text(index, category, displayText) {
 			if (category === 'profile') {
 				this.exhibitor.profileLinks[index].display_text = displayText
 			} else if (category === 'download') {
 				this.exhibitor.downloadLinks[index].display_text = displayText
 			}
 		},
-		set_link_url (index, category, url) {
+		set_link_url(index, category, url) {
 			if (category === 'profile') {
 				this.exhibitor.profileLinks[index].url = url
 			} else if (category === 'download') {
 				this.exhibitor.downloadLinks[index].url = url
 			}
 		},
-		add_staff (users) {
+		add_staff(users) {
 			this.exhibitor.staff = this.exhibitor.staff.concat(users)
 			this.exhibitor.staff = this.exhibitor.staff.filter((user, index) => this.exhibitor.staff.indexOf(user) === index)
 			this.showStaffPrompt = false
 		},
-		remove_staff (user) {
+		remove_staff(user) {
 			this.$delete(this.exhibitor.staff, user)
 		},
-		async save () {
+		async save() {
 			this.$v.$touch()
 			if (this.$v.$invalid) return
 			this.saving = true
@@ -403,7 +403,7 @@ export default {
 			this.saving = false
 			// TODO error handling
 		},
-		async deleteExhibitor () {
+		async deleteExhibitor() {
 			this.deleting = true
 			this.deleteError = null
 			try {

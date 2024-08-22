@@ -20,7 +20,7 @@ export const definition = {
 // - config: object, event-global config for identicons, based on renderer definition
 //   - colorPalette: [string], array of colors, same size as definition.colorPalette.size
 
-export function renderSvg (random, userProfile, config) {
+export function renderSvg(random, userProfile, config) {
 	return `
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1">
 		YOUR SVG HERE

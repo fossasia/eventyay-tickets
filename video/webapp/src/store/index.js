@@ -41,18 +41,18 @@ export default new Vuex.Store({
 		youtubeTransUrl: null
 	},
 	getters: {
-		hasPermission (state) {
+		hasPermission(state) {
 			return (permission) => {
 				return !!state.permissions?.includes(permission) || (permission.startsWith('room:') && state.activeRoom?.permissions?.includes(permission))
 			}
 		},
-		autoplay (state) {
+		autoplay(state) {
 			if (state.autoplayUserSetting !== null) return state.autoplayUserSetting
 			if (!state.token) return true
 			const token = jwtDecode(state.token)
 			return !doesTraitsMatchGrants(token.traits, state.world.onsite_traits)
 		},
-		roomsLookup (state) {
+		roomsLookup(state) {
 			return state.rooms?.reduce((lookup, room) => {
 				lookup[room.id] = room
 				return lookup
@@ -60,7 +60,7 @@ export default new Vuex.Store({
 		}
 	},
 	mutations: {
-		updateRooms (state, rooms) {
+		updateRooms(state, rooms) {
 			// preserve object references for media source
 			if (state.rooms) {
 				for (const [index, newRoom] of rooms.entries()) {
@@ -73,29 +73,29 @@ export default new Vuex.Store({
 			}
 			state.rooms = rooms
 		},
-		reportMediaSourcePlaceholderRect (state, rect) {
+		reportMediaSourcePlaceholderRect(state, rect) {
 			state.mediaSourcePlaceholderRect = rect
 		},
-		setUserLocale (state, locale) {
+		setUserLocale(state, locale) {
 			state.userLocale = locale
 		},
-		updateStageStreamCollapsed (state, stageStreamCollapsed) {
+		updateStageStreamCollapsed(state, stageStreamCollapsed) {
 			state.stageStreamCollapsed = stageStreamCollapsed
 		},
-		updateNow (state) {
+		updateNow(state) {
 			state.now = moment()
 		},
-		updateYoutubeTransAudio(state, youtubeTransUrl){
+		updateYoutubeTransAudio(state, youtubeTransUrl) {
 			state.youtubeTransUrl = youtubeTransUrl
 		}
 	},
 	actions: {
-		login ({state}, {token, clientId, inviteToken}) {
+		login({state}, {token, clientId, inviteToken}) {
 			state.token = token
 			state.clientId = clientId
 			state.inviteToken = inviteToken
 		},
-		connect ({state, dispatch, commit}) {
+		connect({state, dispatch, commit}) {
 			api.connect({token: state.token, clientId: state.clientId, inviteToken: state.inviteToken})
 			api.on('joined', (serverState) => {
 				state.connected = true
@@ -146,23 +146,23 @@ export default new Vuex.Store({
 				// TODO handle generic fatal error?
 			})
 		},
-		async updateUser ({state, dispatch}, update) {
+		async updateUser({state, dispatch}, update) {
 			await api.call('user.update', update)
 			for (const [key, value] of Object.entries(update)) {
 				Vue.set(state.user, key, value)
 			}
 			dispatch('chat/updateUser', {id: state.user.id, update})
 		},
-		async adminUpdateUser ({dispatch}, update) {
+		async adminUpdateUser({dispatch}, update) {
 			await api.call('user.admin.update', update)
 			const userId = update.id
 			delete update.id
 			dispatch('chat/updateUser', {id: userId, update})
 		},
-		async createRoom ({state}, room) {
+		async createRoom({state}, room) {
 			return await api.call('room.create', room)
 		},
-		async changeRoom ({state, dispatch}, room) {
+		async changeRoom({state, dispatch}, room) {
 			state.activeRoom = room
 			state.reactions = null
 			state.roomViewers = null
@@ -173,72 +173,72 @@ export default new Vuex.Store({
 			dispatch('question/changeRoom', room)
 			dispatch('poll/changeRoom', room)
 		},
-		async addReaction ({state}, reaction) {
+		async addReaction({state}, reaction) {
 			if (!state.activeRoom || !state.connected) return
 			await api.call('room.react', {room: state.activeRoom.id, reaction})
 		},
-		async updateRoomSchedule ({state}, {room, schedule_data}) {
+		async updateRoomSchedule({state}, {room, schedule_data}) {
 			return await api.call('room.schedule', {room: room.id, schedule_data})
 		},
-		async updateUserLocale ({state}, locale) {
+		async updateUserLocale({state}, locale) {
 			await i18n.changeLanguage(locale)
 			state.userLocale = locale
 		},
-		updateUserTimezone ({state}, timezone) {
+		updateUserTimezone({state}, timezone) {
 			moment.tz.setDefault(timezone)
 			state.userTimezone = timezone
 			localStorage.userTimezone = timezone // TODO this bakes the auto-detected timezone into localStorage on first load, do we really want this?
 		},
-		setAutoplay ({state, getters}, autoplay) {
+		setAutoplay({state, getters}, autoplay) {
 			if (getters.autoplay === autoplay) return
 			state.autoplayUserSetting = autoplay
 			localStorage.disableAutoplay = !autoplay
 		},
-		unblockIframeDomain ({state}, domain) {
+		unblockIframeDomain({state}, domain) {
 			state.unblockedIframeDomains.add(domain)
 			localStorage.unblockedIframeDomains = JSON.stringify(Array.from(state.unblockedIframeDomains))
 			// TODO propagate between tabs?
 		},
-		'api::room.create' ({state}, room) {
+		'api::room.create'({state}, room) {
 			state.rooms.push(room)
 			// TODO ordering?
 		},
-		'api::room.delete' ({state}, {id}) {
+		'api::room.delete'({state}, {id}) {
 			const index = state.rooms.findIndex(room => room.id === id)
 			if (index >= 0) {
 				state.rooms.splice(index, 1)
 			}
 		},
-		'api::room.reaction' ({state}, {room, reactions}) {
+		'api::room.reaction'({state}, {room, reactions}) {
 			if (state.activeRoom.id !== room) return
 			state.reactions = reactions
 		},
-		'api::world.updated' ({state, commit, dispatch}, {world, rooms, permissions}) {
+		'api::world.updated'({state, commit, dispatch}, {world, rooms, permissions}) {
 			state.world = world
 			state.permission = permissions
 			commit('updateRooms', rooms)
 		},
-		'api::world.schedule.updated' ({state, commit, dispatch}, pretalx) {
+		'api::world.schedule.updated'({state, commit, dispatch}, pretalx) {
 			state.world.pretalx = pretalx
 			dispatch('schedule/fetch', {root: true})
 		},
-		'api::world.user_count_change' ({state, commit, dispatch}, {room, users}) {
+		'api::world.user_count_change'({state, commit, dispatch}, {room, users}) {
 			room = state.rooms.find(r => r.id === room)
 			room.users = users
 			commit('updateRooms', state.rooms)
 		},
-		'api::room.schedule' ({state}, {room, schedule_data}) {
+		'api::room.schedule'({state}, {room, schedule_data}) {
 			room = state.rooms.find(r => r.id === room)
 			if (!room) return
 			Vue.set(room, 'schedule_data', schedule_data)
 		},
-		'api::user.updated' ({state, dispatch}, update) {
+		'api::user.updated'({state, dispatch}, update) {
 			for (const [key, value] of Object.entries(update)) {
 				Vue.set(state.user, key, value)
 			}
 			dispatch('chat/updateUser', {id: state.user.id, update})
 		},
-		'api::room.viewer.added' ({state}, {user}) {
+		'api::room.viewer.added'({state}, {user}) {
 			if (!state.roomViewers) return
 			// overwrite existing user
 			const index = state.roomViewers.findIndex(u => u.id === user.id)
@@ -248,7 +248,7 @@ export default new Vuex.Store({
 				state.roomViewers.push(user)
 			}
 		},
-		'api::room.viewer.removed' ({state}, {user_id: userId}) {
+		'api::room.viewer.removed'({state}, {user_id: userId}) {
 			if (!state.roomViewers) return
 			const index = state.roomViewers.findIndex(u => u.id === userId)
 			if (index >= 0) {

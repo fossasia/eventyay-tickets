@@ -54,7 +54,7 @@ const chatbarModules = ['chat.native', 'question', 'poll']
 
 export default {
 	components: { AppBar, RoomsSidebar, MediaSource, GreetingPrompt, Notifications },
-	data () {
+	data() {
 		return {
 			themeVariables,
 			backgroundRoom: null,
@@ -66,34 +66,34 @@ export default {
 		...mapState(['fatalConnectionError', 'fatalError', 'connected', 'socketCloseCode', 'world', 'rooms', 'user', 'mediaSourcePlaceholderRect', 'userLocale', 'userTimezone']),
 		...mapState('notifications', ['askingPermission']),
 		...mapState('chat', ['call']),
-		room () {
+		room() {
 			if (this.$route.name.startsWith('admin')) return
 			if (this.$route.name === 'home') return this.rooms?.[0]
 			return this.rooms?.find(room => room.id === this.$route.params.roomId)
 		},
 		// TODO since this is used EVERYWHERE, use provide/inject?
-		modules () {
+		modules() {
 			return this.room?.modules.reduce((acc, module) => {
 				acc[module.type] = module
 				return acc
 			}, {})
 		},
-		roomHasMedia () {
+		roomHasMedia() {
 			return this.room?.modules.some(module => mediaModules.includes(module.type))
 		},
-		stageStreamCollapsed () {
+		stageStreamCollapsed() {
 			if (this.$mq.above.m) return false
 			return this.$refs.primaryMediaSource?.$refs.livestream ? !this.$refs.primaryMediaSource.$refs.livestream.playing : false
 		},
 		// force open sidebar on medium screens on home page (with no media) so certain people can find the menu
-		overrideSidebarCollapse () {
+		overrideSidebarCollapse() {
 			return this.$mq.below.l &&
 				this.$mq.above.m &&
 				this.$route.name === 'home' &&
 				!this.roomHasMedia
 		},
 		// safari cleverly includes the address bar cleverly in 100vh
-		mediaConstraintsStyle () {
+		mediaConstraintsStyle() {
 			const hasStageTools = this.room?.modules.some(module => stageToolModules.includes(module.type))
 			const hasChatbar = (
 				(this.room?.modules.length > 1 && this.room?.modules.some(module => chatbarModules.includes(module.type))) ||
@@ -112,7 +112,7 @@ export default {
 			}
 			return style
 		},
-		browserhackStyle () {
+		browserhackStyle() {
 			return {
 				'--vh100': this.windowHeight + 'px',
 				'--vh': this.windowHeight && (this.windowHeight / 100) + 'px'
@@ -124,53 +124,53 @@ export default {
 		rooms: 'roomListChange',
 		room: 'roomChange',
 		call: 'callChange',
-		$route () {
+		$route() {
 			this.showSidebar = false
 		},
 		stageStreamCollapsed: {
-			handler  () {
+			handler() {
 				this.$store.commit('updateStageStreamCollapsed', this.stageStreamCollapsed)
 			},
 			immediate: true
 		}
 	},
-	mounted () {
+	mounted() {
 		this.windowHeight = window.innerHeight
 		window.addEventListener('resize', this.onResize)
 		window.addEventListener('focus', this.onFocus, true)
 	},
-	destroyed () {
+	destroyed() {
 		window.removeEventListener('resize', this.onResize)
 		window.removeEventListener('focus', this.onFocus)
 	},
 	methods: {
-		onResize () {
+		onResize() {
 			this.windowHeight = window.innerHeight
 		},
-		onFocus () {
+		onFocus() {
 			this.$store.dispatch('notifications/clearDesktopNotifications')
 		},
-		toggleSidebar () {
+		toggleSidebar() {
 			this.showSidebar = !this.showSidebar
 		},
-		clearTokenAndReload () {
+		clearTokenAndReload() {
 			localStorage.removeItem('token')
 			location.reload()
 		},
-		reload () {
+		reload() {
 			location.reload()
 		},
-		worldChange () {
+		worldChange() {
 			// initial connect
 			document.title = this.world.title
 		},
-		callChange () {
+		callChange() {
 			if (this.call) {
 				// When a DM call starts, all other background media stops
 				this.backgroundRoom = null
 			}
 		},
-		roomChange (newRoom, oldRoom) {
+		roomChange(newRoom, oldRoom) {
 			// HACK find out why this is triggered often
 			if (newRoom === oldRoom) return
 			// TODO non-room urls
@@ -202,7 +202,7 @@ export default {
 				this.backgroundRoom = null
 			}
 		},
-		roomListChange () {
+		roomListChange() {
 			if (this.room && !this.rooms.includes(this.room)) {
 				this.$router.push('/').catch(() => {})
 			}

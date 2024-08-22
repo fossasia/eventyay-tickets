@@ -20,7 +20,7 @@ import ValidationErrorsMixin from 'components/mixins/validation-errors'
 export default {
 	components: {},
 	mixins: [ValidationErrorsMixin],
-	data () {
+	data() {
 		return {
 			profile: {
 				display_name: ''
@@ -30,7 +30,7 @@ export default {
 		}
 	},
 	computed: {
-		rooms () {
+		rooms() {
 			return this.$store.state.rooms.filter(room => inferRoomType(room)?.id === 'stage')
 		},
 	},
@@ -45,7 +45,7 @@ export default {
 		}
 	},
 	methods: {
-		async save () {
+		async save() {
 			this.error = null
 			this.$v.$touch()
 			if (this.$v.$invalid) return

@@ -37,18 +37,18 @@ export default {
 			default: false
 		}
 	},
-	data () {
+	data() {
 		return {
 			showModerationMenu: false
 		}
 	},
 	computed: {
 		...mapGetters(['hasPermission']),
-		totalVotes () {
+		totalVotes() {
 			if (!this.poll.results) return 0
 			return Object.values(this.poll.results).reduce((acc, result) => acc + result, 0)
 		},
-		optionsWithMostVotes () {
+		optionsWithMostVotes() {
 			const sortedResults = Object.entries(this.poll.results).slice().sort((a, b) => b[1] - a[1])
 			const mostVotes = sortedResults[0][1]
 			const optionsWithMostVotes = []
@@ -60,10 +60,10 @@ export default {
 		}
 	},
 	methods: {
-		async vote () {
+		async vote() {
 			this.$store.dispatch('question/vote', this.question)
 		},
-		async doAction (action) {
+		async doAction(action) {
 			await this.$store.dispatch(`poll/${action}Poll`, this.poll)
 			this.showModerationMenu = false
 		}

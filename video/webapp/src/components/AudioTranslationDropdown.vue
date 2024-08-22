@@ -17,7 +17,7 @@ export default {
 			required: true
 		}
 	},
-	data () {
+	data() {
 		return {
 			selectedLanguage: null, // Selected language for audio translation
 			languageOptions: [] // Options for the dropdown
@@ -26,13 +26,13 @@ export default {
 	watch: {
 		languages: {
 			immediate: true,
-			handler (newLanguages) {
+			handler(newLanguages) {
 				this.languageOptions = newLanguages.map(entry => entry.language) // Directly assigning the list of languages
 			}
 		}
 	},
 	methods: {
-		sendLanguageChange () {
+		sendLanguageChange() {
 			const selected = this.languages.find(item => item.language === this.selectedLanguage)
 			this.$emit('languageChanged', selected.youtube_id || null)
 		}

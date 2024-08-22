@@ -32,19 +32,19 @@ export default {
 		},
 		tooltipOptions: Object
 	},
-	data () {
+	data() {
 		return {
 			id: 'file-input' + uuid() // we need to generate a unique id for label "for" to work with multiple existing upload inputs
 		}
 	},
 	computed: {
-		_tooltip () {
+		_tooltip() {
 			return this.errorMessage ? this.errorMessage : this.tooltip
 		},
-		buttonClass () {
+		buttonClass() {
 			return this.icon ? 'bunt-icon-button' : 'bunt-button'
 		},
-		iconClass () {
+		iconClass() {
 			if (!this.icon) return
 			return iconHelper.getClass(this.icon)
 		}

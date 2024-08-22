@@ -15,14 +15,14 @@
 // instantaneous and time-decaying volumes available for inspection.
 // It also reports on the fraction of samples that were at or near
 // the top of the measurement range.
-function SoundMeter (context) {
+function SoundMeter(context) {
 	this.context = context
 	this.instant = 0.0
 	this.slow = 0.0
 	this.clip = 0.0
 	this.script = context.createScriptProcessor(2048, 1, 1)
 	const that = this
-	this.script.onaudioprocess = function (event) {
+	this.script.onaudioprocess = function(event) {
 		const input = event.inputBuffer.getChannelData(0)
 		let i
 		let sum = 0.0
@@ -39,7 +39,7 @@ function SoundMeter (context) {
 	}
 }
 
-SoundMeter.prototype.connectToSource = function (stream, callback) {
+SoundMeter.prototype.connectToSource = function(stream, callback) {
 	console.log('SoundMeter connecting')
 	try {
 		this.mic = this.context.createMediaStreamSource(stream)
@@ -57,7 +57,7 @@ SoundMeter.prototype.connectToSource = function (stream, callback) {
 	}
 }
 
-SoundMeter.prototype.stop = function () {
+SoundMeter.prototype.stop = function() {
 	console.log('SoundMeter stopping')
 	this.mic.disconnect()
 	this.script.disconnect()

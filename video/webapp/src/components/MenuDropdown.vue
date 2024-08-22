@@ -30,7 +30,7 @@ export default {
 		}
 	},
 	methods: {
-		async toggle (event) {
+		async toggle(event) {
 			if (this.value) {
 				this.$emit('input', false)
 				return
@@ -51,7 +51,7 @@ export default {
 				]
 			})
 		},
-		close () {
+		close() {
 			this.isOpen = false
 		}
 	}

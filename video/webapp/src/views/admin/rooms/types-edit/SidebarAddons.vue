@@ -13,16 +13,16 @@ import mixin from './mixin'
 
 export default {
 	mixins: [mixin],
-	data () {
+	data() {
 		return {
 		}
 	},
 	computed: {
 		hasChat: {
-			get () {
+			get() {
 				return !!this.modules['chat.native']
 			},
-			set (value) {
+			set(value) {
 				if (value) {
 					this.addModule('chat.native', {volatile: true})
 				} else {
@@ -31,10 +31,10 @@ export default {
 			}
 		},
 		hasQuestions: {
-			get () {
+			get() {
 				return !!this.modules.question
 			},
-			set (value) {
+			set(value) {
 				if (value) {
 					this.addModule('question', {
 						active: true,
@@ -46,10 +46,10 @@ export default {
 			}
 		},
 		hasPolls: {
-			get () {
+			get() {
 				return !!this.modules.poll
 			},
-			set (value) {
+			set(value) {
 				if (value) {
 					this.addModule('poll', {
 						active: true

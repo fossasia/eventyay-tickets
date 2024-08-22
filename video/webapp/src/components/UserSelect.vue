@@ -49,7 +49,7 @@ export default {
 			default: () => []
 		},
 	},
-	data () {
+	data() {
 		return {
 			selectedUsers: [],
 			search: '',
@@ -59,14 +59,14 @@ export default {
 		}
 	},
 	watch: {
-		search () {
+		search() {
 			this.loading = false
 			this.results = []
 			this.nextPage = 1
 		}
 	},
 	methods: {
-		async loadPage () {
+		async loadPage() {
 			this.loading = true
 			const search = this.search
 			const newPage = (await api.call('user.list.search', {search_term: this.search, page: this.nextPage}))
@@ -79,13 +79,13 @@ export default {
 			}
 			this.loading = false
 		},
-		addUser (user) {
+		addUser(user) {
 			if (this.isSelected(user)) return this.removeUser(user)
 			this.selectedUsers.push(user)
 			this.$refs.input.focus()
 			this.$refs.input.select()
 		},
-		removeUser (user) {
+		removeUser(user) {
 			const index = this.selectedUsers.indexOf(user)
 			if (index > -1) {
 				this.selectedUsers.splice(index, 1)
@@ -93,10 +93,10 @@ export default {
 			this.$refs.input.focus()
 			this.$refs.input.select()
 		},
-		submit () {
+		submit() {
 			this.$emit('selected', this.selectedUsers)
 		},
-		isSelected (user) {
+		isSelected(user) {
 			return this.selectedUsers.some(u => u.id === user.id)
 		}
 	}

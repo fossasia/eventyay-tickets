@@ -12,7 +12,7 @@ import UserSelect from 'components/UserSelect'
 
 export default {
 	components: { Prompt, UserSelect },
-	data () {
+	data() {
 		return {
 			selectedUser: null
 		}
@@ -22,7 +22,7 @@ export default {
 		...mapState(['user'])
 	},
 	methods: {
-		async create (users) {
+		async create(users) {
 			// TODO error handling, progress
 			await this.$store.dispatch('chat/openDirectMessage', {users: users})
 			this.$emit('close')

@@ -33,7 +33,7 @@ export default {
 			default: false
 		}
 	},
-	data () {
+	data() {
 		return {
 			iframeError: null,
 			iframe: null, // Track the iframe element
@@ -44,18 +44,18 @@ export default {
 	computed: {
 		...mapState(['streamingRoom', 'youtubeTransUrl']),
 		...mapGetters(['autoplay']),
-		module () {
+		module() {
 			if (!this.room) {
 				return null
 			}
 			return this.room.modules.find(module => ['livestream.native', 'livestream.youtube', 'livestream.iframe', 'call.bigbluebutton', 'call.janus', 'call.zoom'].includes(module.type))
 		},
-		inRoomManager () {
+		inRoomManager() {
 			return this.$route.name === 'room:manage'
 		}
 	},
 	watch: {
-		background () {
+		background() {
 			if (!this.iframe) return
 			if (this.background) {
 				this.iframe.classList.add('background')
@@ -64,13 +64,13 @@ export default {
 			}
 		},
 		module: {
-			handler (value, oldValue) {
+			handler(value, oldValue) {
 				if (isEqual(value, oldValue)) return
 				this.destroyIframe()
 				this.initializeIframe(false)
 			}
 		},
-		youtubeTransUrl (youtubeTransUrl) {
+		youtubeTransUrl(youtubeTransUrl) {
 			if (!this.room) {
 				return
 			}
@@ -79,14 +79,14 @@ export default {
 			this.initializeIframe(false)
 		}
 	},
-	async mounted () {
+	async mounted() {
 		if (!this.room) {
 			return
 		}
 		this.initializeIframe(false)
 		this.$root.$on('languageChanged', this.handleLanguageChange)
 	},
-	beforeDestroy () {
+	beforeDestroy() {
 		this.iframe?.remove()
 		if (api.socketState !== 'open') return
 		// TODO move to store?
@@ -94,7 +94,7 @@ export default {
 		this.$root.$off('languageChanged', this.handleLanguageChange)
 	},
 	methods: {
-		async initializeIframe (mute) {
+		async initializeIframe(mute) {
 			try {
 				let iframeUrl
 				let hideIfBackground = false
@@ -141,11 +141,11 @@ export default {
 				console.error(error)
 			}
 		},
-		destroyIframe () {
+		destroyIframe() {
 			this.iframe?.remove()
 			this.iframe = null
 		},
-		isPlaying () {
+		isPlaying() {
 			if (this.call) {
 				return this.$refs.janus.roomId
 			}
@@ -163,7 +163,7 @@ export default {
 			}
 			return true
 		},
-		handleLanguageChange (languageUrl) {
+		handleLanguageChange(languageUrl) {
 			this.languageAudioUrl = languageUrl // Set the audio source to the selected language URL
 			const mute = !!languageUrl // Mute if language URL is present, otherwise unmute
 			this.destroyIframe()
@@ -182,15 +182,15 @@ export default {
 				loop: loop ? '1' : '0',
 				modestbranding: modestBranding ? '1' : '0',
 				playlist: ytid,
-			});
+			})
 
-			const domain = enablePrivacyEnhancedMode ? 'www.youtube-nocookie.com' : 'www.youtube.com';
-			return `https://${domain}/embed/${ytid}?${params}`;
+			const domain = enablePrivacyEnhancedMode ? 'www.youtube-nocookie.com' : 'www.youtube.com'
+			return `https://${domain}/embed/${ytid}?${params}`
 		},
 		// Added method to get the language iframe URL
 		getLanguageIframeUrl(languageUrl, enablePrivacyEnhancedMode) {
 			// Checks if the languageUrl is not provided the retun null
-			if (!languageUrl) return null;
+			if (!languageUrl) return null
 			const params = new URLSearchParams({
 				enablejsapi: '1',
 				autoplay: '1',
@@ -201,10 +201,10 @@ export default {
 				rel: '0',
 				showinfo: '0',
 				playlist: languageUrl,
-			});
+			})
 
-			const domain = enablePrivacyEnhancedMode ? 'www.youtube-nocookie.com' : 'www.youtube.com';
-			return `https://${domain}/embed/${languageUrl}?${params}`;
+			const domain = enablePrivacyEnhancedMode ? 'www.youtube-nocookie.com' : 'www.youtube.com'
+			return `https://${domain}/embed/${languageUrl}?${params}`
 		}
 	}
 }

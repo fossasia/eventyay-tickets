@@ -54,7 +54,7 @@ export default {
 	props: {
 		kioskId: String
 	},
-	data () {
+	data() {
 		return {
 			error: null,
 			kiosk: null,
@@ -67,10 +67,10 @@ export default {
 		}
 	},
 	computed: {
-		rooms () {
+		rooms() {
 			return this.$store.state.rooms.filter(room => inferRoomType(room)?.id === 'stage')
 		},
-		loginUrl () {
+		loginUrl() {
 			return `${window.location.origin}/login/${this.kiosk.token}`
 		}
 	},
@@ -89,7 +89,7 @@ export default {
 			}
 		}
 	},
-	async created () {
+	async created() {
 		try {
 			this.kiosk = await api.call('user.kiosk.fetch', {id: this.kioskId})
 			if (!this.kiosk.profile.show_reactions) this.$set(this.kiosk.profile, 'show_reactions', true)
@@ -107,7 +107,7 @@ export default {
 		}
 	},
 	methods: {
-		async save () {
+		async save() {
 			this.saveError = null
 			this.$v.$touch()
 			if (this.$v.$invalid) return
@@ -123,7 +123,7 @@ export default {
 				this.saving = false
 			}
 		},
-		async deleteKiosk () {
+		async deleteKiosk() {
 			if (this.deletingKioskName !== this.kiosk.profile.display_name) return
 			this.deleting = true
 			this.deleteError = null

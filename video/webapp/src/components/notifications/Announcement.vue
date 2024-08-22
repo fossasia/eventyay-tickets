@@ -12,7 +12,7 @@ export default {
 		announcement: Object
 	},
 	methods: {
-		dismiss () {
+		dismiss() {
 			this.$store.dispatch('announcement/dismissAnnouncement', this.announcement)
 		}
 	}

@@ -34,7 +34,7 @@ import Avatar from 'components/Avatar'
 import moment from 'moment'
 export default {
 	components: { Avatar },
-	data () {
+	data() {
 		return {
 			moment,
 			onlyMissed: false
@@ -42,7 +42,7 @@ export default {
 	},
 	computed: {
 		...mapState('exhibition', ['contactRequests']),
-		sortedContactRequests () {
+		sortedContactRequests() {
 			let contactRequests = this.contactRequests.slice().sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
 			if (this.onlyMissed) {
 				contactRequests = contactRequests.filter(cr => cr.state === 'missed')
@@ -50,8 +50,8 @@ export default {
 			return contactRequests
 		}
 	},
-	created () {},
-	mounted () {
+	created() {},
+	mounted() {
 		this.$nextTick(() => {
 		})
 	},

@@ -10,7 +10,7 @@ export default {
 		dismissedAnnouncements: localStorage.dismissedAnnouncements ? JSON.parse(localStorage.dismissedAnnouncements) : [],
 	},
 	getters: {
-		announcements (state, getters, rootState) {
+		announcements(state, getters, rootState) {
 			return state.rawAnnouncements.map(announcement => {
 				const showUntil = announcement.show_until ? moment(announcement.show_until) : null
 				return Object.assign({}, announcement, {
@@ -19,12 +19,12 @@ export default {
 				})
 			})
 		},
-		visibleAnnouncements (state, getters, rootState) {
+		visibleAnnouncements(state, getters, rootState) {
 			return getters.announcements.filter(announcement => announcement.state === 'active' && !announcement.expired && !state.dismissedAnnouncements.includes(announcement.id))
 		}
 	},
 	mutations: {
-		setAnnouncements (state, announcements) {
+		setAnnouncements(state, announcements) {
 			for (const announcement of announcements) {
 				if (announcement.show_until) announcement.show_until = moment(announcement.show_until)
 			}
@@ -33,11 +33,11 @@ export default {
 	},
 	actions: {
 		// dismiss announcement by saving into localStorage
-		dismissAnnouncement ({ state }, announcement) {
+		dismissAnnouncement({ state }, announcement) {
 			state.dismissedAnnouncements.push(announcement.id)
 			localStorage.setItem('dismissedAnnouncements', JSON.stringify(state.dismissedAnnouncements))
 		},
-		async 'api::announcement.created_or_updated' ({state}, announcement) {
+		async 'api::announcement.created_or_updated'({state}, announcement) {
 			const existingAnnouncement = state.rawAnnouncements.find(a => a.id === announcement.id)
 			if (existingAnnouncement) {
 				for (let [key, value] of Object.entries(announcement)) {

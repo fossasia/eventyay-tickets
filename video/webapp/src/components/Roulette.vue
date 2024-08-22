@@ -40,7 +40,7 @@ export default {
 			required: true,
 		},
 	},
-	data () {
+	data() {
 		return {
 			showDevicePrompt: false,
 			videoError: null,
@@ -56,27 +56,27 @@ export default {
 		...mapState(['connected']),
 		...mapState('roulette', ['callId', 'server', 'iceServers', 'token', 'roomId', 'sessionId', 'loading', 'error', 'recentPairs']),
 
-		soundBarWidth () {
+		soundBarWidth() {
 			return Math.min(1, this.soundLevel * 10) * 100
 		}
 	},
 	watch: {
-		connected (value) {
+		connected(value) {
 			if (value) {
 				// resubscribe
 				this.$store.dispatch('roulette/reconnect')
 			}
 		},
-		server (value) {
+		server(value) {
 			if (!this.server && !this.callId && !this.loading) {
 				this.startVideo()
 			}
 		}
 	},
-	mounted () {
+	mounted() {
 		this.startVideo()
 	},
-	destroyed () {
+	destroyed() {
 		if (this.soundMeter) {
 			this.soundMeter.context.close()
 		}
@@ -93,7 +93,7 @@ export default {
 		...mapMutations('roulette', ['setLoading']),
 		...mapActions('roulette', ['startCall', 'stopCall', 'startRequesting', 'stopRequesting']),
 
-		findNewCall () {
+		findNewCall() {
 			if (this.previewStream) {
 				this.previewStream.getTracks().forEach((track) => track.stop())
 			}
@@ -107,7 +107,7 @@ export default {
 			this.startRequesting({room: this.room})
 			this.hasPreviousCall = true
 		},
-		startVideo () {
+		startVideo() {
 			const constraints = {
 				audio: {deviceId: localStorage.audioInput ? {exact: localStorage.audioInput} : undefined},
 				video: {deviceId: localStorage.videoInput ? {exact: localStorage.videoInput} : undefined},

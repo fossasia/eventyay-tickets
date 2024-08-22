@@ -8,10 +8,10 @@ const LinkBlot = Quill.import('formats/link')
 
 // This is based on the "snow" theme from quill, but optimized to work with buntpapier
 class BuntTheme extends BaseTheme {
-	extendToolbar (toolbar) {
+	extendToolbar(toolbar) {
 		this.tooltip = new BuntTooltip(this.quill, this.options.bounds)
 		if (toolbar.container.querySelector('.ql-link')) {
-			this.quill.keyboard.addBinding({ key: 'K', shortKey: true }, function (range, context) {
+			this.quill.keyboard.addBinding({ key: 'K', shortKey: true }, function(range, context) {
 				toolbar.handlers.link.call(toolbar, !context.format.link)
 			})
 		}
@@ -21,7 +21,7 @@ BuntTheme.DEFAULTS = defaultsDeep(defaultsDeep({}, BaseTheme.DEFAULTS), {
 	modules: {
 		toolbar: {
 			handlers: {
-				link: function (value) {
+				link: function(value) {
 					if (value) {
 						const range = this.quill.getSelection()
 						if (range == null || range.length === 0) return
@@ -41,12 +41,12 @@ BuntTheme.DEFAULTS = defaultsDeep(defaultsDeep({}, BaseTheme.DEFAULTS), {
 })
 
 class BuntTooltip extends BaseTooltip {
-	constructor (quill, bounds) {
+	constructor(quill, bounds) {
 		super(quill, bounds)
 		this.preview = this.root.querySelector('a.ql-preview')
 	}
 
-	listen () {
+	listen() {
 		super.listen()
 		this.root.querySelector('a.ql-action').addEventListener('click', (event) => {
 			if (this.root.classList.contains('ql-editing')) {
@@ -87,7 +87,7 @@ class BuntTooltip extends BaseTooltip {
 		})
 	}
 
-	show () {
+	show() {
 		super.show()
 		this.root.removeAttribute('data-mode')
 	}

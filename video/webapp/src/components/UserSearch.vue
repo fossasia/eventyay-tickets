@@ -24,7 +24,7 @@ export default {
 	props: {
 		placeholder: String
 	},
-	data () {
+	data() {
 		return {
 			search: '',
 			loading: false,
@@ -36,35 +36,35 @@ export default {
 		}
 	},
 	watch: {
-		page: async function () {
+		page: async function() {
 			this.loading = true
 			const newPage = (await api.call('user.list.search', {search_term: this.search, page: this.page, include_banned: false}))
 			this.lastPage = newPage.isLastPage
 			this.list.push(...newPage.results)
 			this.loading = false
 		},
-		search: async function () {
+		search: async function() {
 			await this.updateList()
 		}
 	},
-	async created () {
+	async created() {
 		this.loading = true
 		this.list = (await api.call('user.list.search', {search_term: this.search, page: this.page, include_banned: false})).results
 		this.loading = false
 	},
 	methods: {
-		updateList: async function () {
+		updateList: async function() {
 			this.loading = true
 			this.page = 1
 			this.list = (await api.call('user.list.search', {search_term: this.search, page: this.page, include_banned: false})).results
 			this.loading = false
 		},
-		select: function (index) {
+		select: function(index) {
 			this.user = this.list[index]
 			this.selectedIndex = index
 			this.$emit('selected', this.user)
 		},
-		selectNext: function () {
+		selectNext: function() {
 			if (this.selectedIndex < this.list.length - 1) {
 				if (this.selectedIndex === this.list.length - 2) { this.page++ }
 				this.selectedIndex++
@@ -72,7 +72,7 @@ export default {
 				this.selectedIndex = 0
 			}
 		},
-		selectPrev: function () {
+		selectPrev: function() {
 			if (this.selectedIndex > 0) {
 				this.selectedIndex--
 			} else {

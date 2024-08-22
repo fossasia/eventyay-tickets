@@ -32,7 +32,7 @@ export default {
 			default: false
 		}
 	},
-	data () {
+	data() {
 		return {
 			showModerationMenu: false
 		}
@@ -40,16 +40,16 @@ export default {
 	computed: {
 		...mapGetters(['hasPermission'])
 	},
-	created () {},
-	mounted () {
+	created() {},
+	mounted() {
 		this.$nextTick(() => {
 		})
 	},
 	methods: {
-		async vote () {
+		async vote() {
 			this.$store.dispatch('question/vote', this.question)
 		},
-		async doAction (action) {
+		async doAction(action) {
 			await this.$store.dispatch(`question/${action}Question`, this.question)
 			this.showModerationMenu = false
 		}

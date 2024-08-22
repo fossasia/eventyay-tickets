@@ -17,7 +17,7 @@ import Prompt from 'components/Prompt'
 export default {
 	components: {Prompt},
 	props: {},
-	data () {
+	data() {
 		return {
 			videoInput: localStorage.videoInput || '',
 			audioInput: localStorage.audioInput || '',
@@ -30,7 +30,7 @@ export default {
 		}
 	},
 	computed: {},
-	mounted () {
+	mounted() {
 		navigator.mediaDevices.enumerateDevices().then(this.gotDevices).catch((e) => {
 			console.warn(e)
 			alert('Could not access camera or microphone, is another program on your machine using it right now?')
@@ -38,7 +38,7 @@ export default {
 		})
 	},
 	methods: {
-		gotDevices (deviceInfos) {
+		gotDevices(deviceInfos) {
 			this.videoInputs = [
 				{
 					value: '',
@@ -79,7 +79,7 @@ export default {
 			}
 			this.refreshVideo()
 		},
-		refreshVideo () {
+		refreshVideo() {
 			console.log('refresh')
 			if (this.stream) {
 				this.stream.getTracks().forEach(track => {
@@ -101,7 +101,7 @@ export default {
 				// possibly "overconstrained" (camera doesn't exist)
 			})
 		},
-		save () {
+		save() {
 			localStorage.videoInput = this.videoInput || ''
 			localStorage.audioInput = this.audioInput || ''
 			localStorage.audioOutput = this.audioOutput || ''
