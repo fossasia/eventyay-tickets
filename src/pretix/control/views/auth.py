@@ -1,6 +1,7 @@
 import json
 import logging
 import time
+import os
 from urllib.parse import quote
 
 import webauthn
@@ -439,3 +440,17 @@ class Login2FAView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+
+def ComponentsView(request):
+    parent_directory = '/home/abhigawande/Downloads/fossasia'
+    # Construct the path to the eventyay-talk directory
+    eventyay_talk_path = os.path.join(parent_directory, 'eventyay-talk')
+    # Check if the eventyay-talk directory exists
+    is_eventyay_talk_installed = os.path.isdir(eventyay_talk_path)
+    context = {
+        'is_eventyay_talk_installed': is_eventyay_talk_installed,
+        'eventyay_talk_path': eventyay_talk_path if is_eventyay_talk_installed else None,
+    }
+
+    return render(request, 'pretixcontrol/auth/components.html', context)
