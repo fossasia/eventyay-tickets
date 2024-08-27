@@ -7,9 +7,11 @@
 <head>
     <title>{{ django_settings.INSTANCE_NAME }}</title>
     {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/auth.scss" %}"/>
+    <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/auth.scss" %}"/>
+    {% if additional_styles_needed %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/main.scss" %}" />
         <link rel="stylesheet" type="text/x-scss" href="{% static "lightbox/css/lightbox.scss" %}" />
+    {% endif %}
     {% endcompress %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% if development_warning or debug_warning %}
