@@ -4,7 +4,6 @@ import re
 import shutil
 import urllib.parse
 from pathlib import Path
-from shutil import make_archive
 
 from bs4 import BeautifulSoup
 from django.conf import settings
@@ -22,6 +21,7 @@ from pretalx.event.models import Event
 def fake_admin(event):
     with rolledback_transaction():
         event.is_public = True
+        event.custom_domain = None
         event.save()
         client = Client()
 
@@ -113,7 +113,7 @@ def dump_content(destination, path, getter):
     logging.debug(path)
     content = getter(path)
     if path.endswith("/"):
-        path = path + "index.html"
+        path += "index.html"
 
     path = (Path(destination) / path.lstrip("/")).resolve()
     if not Path(destination) in path.parents:
@@ -215,17 +215,21 @@ class Command(BaseCommand):
                 export_event(event, tmp_dir)
                 delete_directory(export_dir)
                 tmp_dir.rename(export_dir)
+            except Exception as exc:
+                logging.error(f"Export failed: {exc}")
+                delete_directory(tmp_dir)
             finally:
                 delete_directory(tmp_dir)
 
-            logging.info(f"Exported to {export_dir}")
-
             if options.get("zip"):
-                make_archive(
+                shutil.make_archive(
                     root_dir=settings.HTMLEXPORT_ROOT,
                     base_dir=event.slug,
                     base_name=zip_path.parent / zip_path.stem,
                     format="zip",
                 )
+                delete_directory(export_dir)
 
                 logging.info(f"Exported to {zip_path}")
+            else:
+                logging.info(f"Exported to {export_dir}")

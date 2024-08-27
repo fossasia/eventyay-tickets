@@ -42,19 +42,10 @@ Your embedded widget could look like the following:
 
 .. raw:: html
 
-    </section>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
     <script type="text/javascript" src="https://pretalx.com/democon/schedule/widget/v2.en.js" async></script>
 
-    <div class="nav-content" style="max-width: 100%; display: block; position: relative;">
-    <div>
-    <pretalx-schedule event-url="https://pretalx.com/democon/" locale="en" style="--pretalx-clr-primary: #3aa57c; --pretalx-sticky-top-offset: 70px"></pretalx-schedule>
-    </div>
+    <div style="overflow-x: auto; width: calc(100% + 100px); padding-right: 12px">
+    <pretalx-schedule event-url="https://pretalx.com/democon/" locale="en" style="--pretalx-clr-primary: #3aa57c;"></pretalx-schedule>
     </div>
     <noscript>
        <div class="pretalx-widget">
@@ -64,10 +55,3 @@ Your embedded widget could look like the following:
             </div>
         </div>
     </noscript>
-    <div class="nav-content">
-    <div>
-    <div>
-    <div>
-    <div>
-    <section>
-    <section>

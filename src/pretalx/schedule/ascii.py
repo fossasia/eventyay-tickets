@@ -72,7 +72,7 @@ def talk_card(talk, col_width):
     if speaker_str:
         if join_speaker_and_locale:
             yield (
-                f"  \033[33m{speaker_str:<{text_width-4}}\033[0m"
+                f"  \033[33m{speaker_str:<{text_width - 4}}\033[0m"
                 f"  \033[38;5;246m{talk.submission.content_locale:<2}\033[0m  "
             )
             yielded_lines += 1
@@ -193,7 +193,7 @@ def draw_grid_for_day(day, col_width=20):
     talks_by_room = {str(r["name"]): r["talks"] for r in day["rooms"]}
     cards_by_id = {talk.pk: talk_card(talk, col_width) for talk in talk_list}
     rooms = list(talks_by_room.keys())
-    lines = ["        | " + " | ".join(f"{room:<{col_width-2}}" for room in rooms)]
+    lines = ["        | " + " | ".join(f"{room:<{col_width - 2}}" for room in rooms)]
     tick_times = rrule.rrule(
         rrule.HOURLY,
         byminute=(0, 30),

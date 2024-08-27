@@ -24,7 +24,7 @@ class I18nEventFormSet(i18nfield.forms.I18nModelFormSet):
         kwargs["locales"] = getattr(self.event, "locales", [])
         super().__init__(*args, **kwargs)
 
-    def _construct_form(self, i, **kwargs):
+    def _construct_form(self, *args, **kwargs):
         kwargs["locales"] = self.locales
         kwargs["event"] = self.event
-        return super()._construct_form(i, **kwargs)
+        return super()._construct_form(*args, **kwargs)

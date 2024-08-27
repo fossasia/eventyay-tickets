@@ -8,7 +8,7 @@ from pretalx.event.models import Event
 LOGGER = logging.getLogger(__name__)
 
 
-@app.task()
+@app.task(name="pretalx.submission.recalculate_review_scores")
 def recalculate_all_review_scores(*, event_id: int):
     with scopes_disabled():
         event = (

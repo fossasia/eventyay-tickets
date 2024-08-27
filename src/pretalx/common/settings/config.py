@@ -155,9 +155,8 @@ CONFIG = {
 
 def read_config_files(config):
     if "PRETALX_CONFIG_FILE" in os.environ:
-        config_files = config.read_file(
-            open(os.environ.get("PRETALX_CONFIG_FILE"), encoding="utf-8")
-        )
+        with open(os.environ.get("PRETALX_CONFIG_FILE"), encoding="utf-8") as fp:
+            config_files = config.read_file(fp)
     else:
         config_files = config.read(
             [

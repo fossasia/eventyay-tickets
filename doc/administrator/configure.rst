@@ -186,6 +186,12 @@ The database section
 The mail section
 ----------------
 
+This section serves to configure the email server pretalx will use to send
+emails by default. Events can override these settings in the web interface.
+However, even with event-specific settings, pretalx will use these global
+settings for non-event-specific emails like password resets (even when
+triggered from an event context) and team invitations.
+
 ``from``
 ~~~~~~~~
 

@@ -1,9 +1,17 @@
 {% extends "cfp/event/submission_base.html" %}
 {% load bootstrap4 %}
+{% load compress %}
 {% load i18n %}
 {% load orga_edit_link %}
 {% load rich_text %}
 {% load rules %}
+{% load static %}
+
+{% block cfp_submission_header %}
+    {% compress js %}
+        <script defer src="{% static 'cfp/js/proposalTabTitles.js' %}"></script>
+    {% endcompress %}
+{% endblock %}
 
 {% block inner %}
     <div class="d-flex">

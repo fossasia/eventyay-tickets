@@ -99,9 +99,8 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         ) + register_my_data_exporters.send(request.event)
         for __, response in responses:
             ex = response(request.event)
-            if ex.identifier == exporter:
-                if ex.public or request.is_orga:
-                    return ex
+            if ex.identifier == exporter and (ex.public or request.is_orga):
+                return ex
 
     def get(self, request, *args, **kwargs):
         exporter = self.get_exporter(request)
@@ -133,9 +132,8 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
                 f"Failed to use {exporter.identifier} for {self.request.event.slug}"
             )
             raise Http404()
-        if "If-None-Match" in request.headers:
-            if request.headers["If-None-Match"] == etag:
-                return HttpResponseNotModified()
+        if request.headers.get("If-None-Match") == etag:
+            return HttpResponseNotModified()
         headers = {"ETag": etag}
         if file_type not in ["application/json", "text/xml"]:
             headers["Content-Disposition"] = (
@@ -174,7 +172,10 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
         output_format = request.GET.get("format", "table")
         if output_format not in ["list", "table"]:
             output_format = "table"
-        result = draw_ascii_schedule(data, output_format=output_format)
+        try:
+            result = draw_ascii_schedule(data, output_format=output_format)
+        except StopIteration:
+            result = draw_ascii_schedule(data, output_format="list")
         return HttpResponse(
             response_start + result, content_type="text/plain; charset=utf-8"
         )

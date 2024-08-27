@@ -32,7 +32,7 @@ def delete_media_file(path):
         default_storage.delete(str(path))
 
 
-@app.task()
+@app.task(name="pretalx.common.regenerate_css")
 def regenerate_css(event_id: int):
     event = Event.objects.filter(pk=event_id).first()
     local_apps = ["agenda", "cfp"]

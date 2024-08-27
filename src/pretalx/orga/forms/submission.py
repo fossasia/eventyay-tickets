@@ -243,7 +243,7 @@ class AnonymiseForm(SubmissionForm):
         kwargs["anonymise"] = True
         super().__init__(*args, **kwargs)
         self._instance = instance
-        to_be_removed = []
+        to_be_removed = ["content_locale"]
         for key, field in self.fields.items():
             try:
                 field.plaintext = getattr(self._instance, key)
@@ -251,7 +251,7 @@ class AnonymiseForm(SubmissionForm):
             except AttributeError:
                 to_be_removed.append(key)
         for key in to_be_removed:
-            self.fields.pop(key)
+            self.fields.pop(key, None)
 
     def save(self):
         anonymised_data = {"_anonymised": True}

@@ -41,7 +41,7 @@ class TolerantDict(dict):
         return key
 
 
-@app.task(bind=True)
+@app.task(bind=True, name="pretalx.common.send_mail")
 def mail_send_task(
     self,
     to: list,

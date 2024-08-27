@@ -15,8 +15,7 @@ def test_log_hides_password(submission):
 
 @pytest.mark.django_db
 def test_log_wrong_data(submission):
-    with scope(event=submission.event):
-        with pytest.raises(TypeError):
-            submission.log_action(
-                "test.hide", data=[{"password": "12345", "non-sensitive": "foo"}]
-            )
+    with scope(event=submission.event), pytest.raises(TypeError):
+        submission.log_action(
+            "test.hide", data=[{"password": "12345", "non-sensitive": "foo"}]
+        )

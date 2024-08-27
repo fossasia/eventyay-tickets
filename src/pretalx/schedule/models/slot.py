@@ -152,7 +152,7 @@ class TalkSlot(PretalxModel):
         all_slots = list(
             TalkSlot.objects.filter(
                 submission_id=self.submission_id, schedule_id=self.schedule_id
-            )
+            ).order_by("start")
         )
         if len(all_slots) == 1:
             return ""

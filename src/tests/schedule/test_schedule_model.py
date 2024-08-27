@@ -127,9 +127,8 @@ def test_unfreeze_bug72(slot):
 
 @pytest.mark.django_db
 def test_unfreeze_unreleased_schedule(event):
-    with scope(event=event):
-        with pytest.raises(Exception):  # noqa
-            event.wip_schedule.unfreeze()
+    with scope(event=event), pytest.raises(Exception):  # noqa
+        event.wip_schedule.unfreeze()
 
 
 @pytest.mark.django_db

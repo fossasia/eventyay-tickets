@@ -13,7 +13,6 @@ from django.contrib.auth.models import (
 )
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
-from django.db.models import Q
 from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -184,7 +183,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         if self.get_gravatar and update_gravatar:
             from pretalx.person.tasks import gravatar_cache
 
-            gravatar_cache.apply_async(args=(self.pk,))
+            gravatar_cache.apply_async(args=(self.pk,), ignore_result=True)
         return result
 
     def event_profile(self, event):
@@ -303,7 +302,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
 
     @cached_property
     def guid(self) -> str:
-        return uuid.uuid5(uuid.NAMESPACE_URL, f"acct:{self.email.strip()}").__str__()
+        return str(uuid.uuid5(uuid.NAMESPACE_URL, f"acct:{self.email.strip()}"))
 
     @cached_property
     def gravatar_parameter(self) -> str:
@@ -336,12 +335,12 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
             return Event.objects.all()
 
         return Event.objects.filter(
-            Q(
+            models.Q(
                 organiser_id__in=self.teams.filter(all_events=True).values_list(
                     "organiser", flat=True
                 )
             )
-            | Q(id__in=self.teams.values_list("limit_events__id", flat=True))
+            | models.Q(id__in=self.teams.values_list("limit_events__id", flat=True))
         )
 
     def get_events_for_permission(self, **kwargs):
