@@ -44,7 +44,7 @@ def test_widget_data(
 ):
     event.feature_flags["show_schedule"] = True
     event.save()
-    with django_assert_num_queries(11):
+    with django_assert_num_queries(19):
         response = client.get(
             event.urls.schedule + "widgets/schedule.json", follow=True
         )

@@ -1,5 +1,6 @@
 import logging
 
+from allauth.socialaccount.models import SocialApp
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -7,7 +8,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DeleteView, DetailView, TemplateView
 from django_context_decorator import context
-from allauth.socialaccount.models import SocialApp
 
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.mixins.views import PermissionRequired
@@ -235,7 +235,7 @@ class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
     @cached_property
     def sso_client_form(self):
         organiser = self.kwargs.get("organiser", None)
-        if self.request.POST.get('form') == 'remove_sso_client':
+        if self.request.POST.get("form") == "remove_sso_client":
             bind = is_form_bound(self.request, "remove_sso_client")
         else:
             bind = is_form_bound(self.request, "sso_client")
@@ -249,7 +249,8 @@ class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
             self.sso_client_form.save(organiser=self.kwargs.get("organiser", None))
         except Exception as e:
             logger.error(
-                f"Error saving SSO client for organiser {self.kwargs.get('organiser', None)}: {e}")
+                f"Error saving SSO client for organiser {self.kwargs.get('organiser', None)}: {e}"
+            )
             messages.error(request, _("An error occurred: ") + str(e))
             return redirect(self.request.path)
         return redirect(self.get_success_url())
@@ -268,8 +269,10 @@ class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
             return redirect(self.request.path)
 
     def is_remove_sso_client_request(self, request):
-        return is_form_bound(self.request, "remove_sso_client") and request.POST.get(
-            'form') == 'remove_sso_client'
+        return (
+            is_form_bound(self.request, "remove_sso_client")
+            and request.POST.get("form") == "remove_sso_client"
+        )
 
     def handle_remove_sso_client(self, request):
         provider_id = self.kwargs.get("organiser")
@@ -281,13 +284,14 @@ class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
         return redirect(self.request.path)
 
     def is_sso_client_request(self, request):
-        return is_form_bound(self.request, "sso_client") and request.POST.get(
-            'form') == 'sso_client' and self.sso_client_form.is_valid()
+        return (
+            is_form_bound(self.request, "sso_client")
+            and request.POST.get("form") == "sso_client"
+            and self.sso_client_form.is_valid()
+        )
 
     def handle_sso_client(self, request, *args, **kwargs):
         return self.save_sso_client(request, *args, **kwargs)
-
-
 
 
 class OrganiserDelete(PermissionRequired, DeleteView):

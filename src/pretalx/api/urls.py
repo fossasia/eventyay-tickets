@@ -24,5 +24,7 @@ urlpatterns = [
     path("me", user.MeView.as_view(), name="user.me"),
     path("auth/", obtain_auth_token),
     path("events/<event>/", include(event_router.urls)),
-    path("events/<event>/favourite-talk/", submission.SubmissionFavouriteView.as_view()),
+    path(
+        "events/<event>/favourite-talk/", submission.SubmissionFavouriteView.as_view()
+    ),
 ]

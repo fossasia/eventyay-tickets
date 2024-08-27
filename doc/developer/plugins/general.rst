@@ -13,13 +13,13 @@ Core
 ----
 
 .. automodule:: pretalx.common.signals
-   :members: periodic_task, register_locales
+   :members: periodic_task, register_locales, register_data_exporters, register_my_data_exporters
 
 .. automodule:: pretalx.submission.signals
    :members: submission_state_change
 
 .. automodule:: pretalx.schedule.signals
-   :members: schedule_release
+   :members: schedule_release, register_my_data_exporters
 
 .. automodule:: pretalx.mail.signals
    :members: register_mail_placeholders, queuedmail_post_send

@@ -1,9 +1,9 @@
-import json
-import jwt
-import logging
 import datetime as dt
-import requests
+import json
+import logging
 
+import jwt
+import requests
 from django.db import IntegrityError
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
@@ -13,8 +13,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django_filters import rest_framework as filters
 from django_scopes import scopes_disabled
-from rest_framework import viewsets, status
-from rest_framework.views import APIView
+from rest_framework import status, viewsets
 from rest_framework.authentication import get_authorization_header
 
 from pretalx.api.serializers.submission import (
@@ -25,19 +24,24 @@ from pretalx.api.serializers.submission import (
     SubmissionSerializer,
     TagSerializer,
 )
-from pretalx.schedule.models import Schedule
+from pretalx.common import exceptions
 from pretalx.person.models import User
+from pretalx.schedule.models import Schedule
 from pretalx.submission.models import Submission, SubmissionStates, Tag
-from pretalx.submission.models.submission import SubmissionFavourite, \
-    SubmissionFavouriteSerializer
+from pretalx.submission.models.submission import (
+    SubmissionFavourite,
+    SubmissionFavouriteSerializer,
+)
 
 with scopes_disabled():
+
     class SubmissionFilter(filters.FilterSet):
         state = filters.MultipleChoiceFilter(choices=SubmissionStates.get_choices())
 
         class Meta:
             model = Submission
             fields = ("state", "content_locale", "submission_type")
+
 
 logger = logging.getLogger(__name__)
 
@@ -168,13 +172,16 @@ class SubmissionFavouriteView(View):
             # user_id = 52
             fav_talks = get_object_or_404(SubmissionFavourite, user=user_id)
             return JsonResponse(fav_talks.talk_list, safe=False)
-        except Http404 as e:
+        except Http404:
             # As user not have any favourite talk yet
             return JsonResponse([], safe=False)
         except Exception as e:
             logger.error(f"unexpected error happened: {str(e)}")
-            return JsonResponse({'error': str(e)}, safe=False,
-                                status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            return JsonResponse(
+                {"error": str(e)},
+                safe=False,
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
 
     @staticmethod
     def post(request, *args, **kwargs) -> JsonResponse:
@@ -184,7 +191,9 @@ class SubmissionFavouriteView(View):
         try:
             user_id = request.user.id
             if user_id is None:
-                user_id = SubmissionFavouriteView.get_user_from_token(request, request.event.venueless_settings)
+                user_id = SubmissionFavouriteView.get_user_from_token(
+                    request, request.event.venueless_settings
+                )
             talk_list = json.loads(request.body.decode())
             talk_list_valid = []
             for talk in talk_list:
@@ -192,41 +201,51 @@ class SubmissionFavouriteView(View):
                     if Submission.objects.filter(code=talk).exists():
                         talk_list_valid.append(talk)
 
-            data = {
-                "user": user_id,
-                "talk_list": talk_list_valid
-            }
+            data = {"user": user_id, "talk_list": talk_list_valid}
             serializer = SubmissionFavouriteSerializer(data=data)
             if serializer.is_valid():
                 fav_talks = serializer.save(user_id, talk_list_valid)
                 # call to video for update favourite talks
-                token = SubmissionFavouriteView.get_user_video_token(request.user.code,
-                                                                     request.event.venueless_settings)
+                token = SubmissionFavouriteView.get_user_video_token(
+                    request.user.code, request.event.venueless_settings
+                )
                 video_url = request.event.venueless_settings.url + "favourite-talk/"
                 header = {
                     "Content-Type": "application/json",
-                    "Authorization": f"Bearer {token}"
+                    "Authorization": f"Bearer {token}",
                 }
-                requests.post(video_url, data=json.dumps(talk_list_valid), headers=header)
+                requests.post(
+                    video_url, data=json.dumps(talk_list_valid), headers=header
+                )
             else:
                 logger.error(f"Validation error: {serializer.errors}")
-                return JsonResponse({'error': serializer.errors}, safe=False,
-                                    status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse(
+                    {"error": serializer.errors},
+                    safe=False,
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
-            return JsonResponse(fav_talks.talk_list, safe=False,
-                                status=status.HTTP_200_OK)
+            return JsonResponse(
+                fav_talks.talk_list, safe=False, status=status.HTTP_200_OK
+            )
 
         except Http404:
             logger.info("User not login yet, so can't add favourite talks.")
-            return JsonResponse('user_not_logged_in', safe=False, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(
+                "user_not_logged_in", safe=False, status=status.HTTP_400_BAD_REQUEST
+            )
         except IntegrityError as e:
             logger.error(f"Integrity error: {str(e)}")
-            return JsonResponse({'error': str(e)}, safe=False,
-                                status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(
+                {"error": str(e)}, safe=False, status=status.HTTP_400_BAD_REQUEST
+            )
         except Exception as e:
             logger.error(f"Unexpected error: {str(e)}")
-            return JsonResponse({'error': str(e)}, safe=False,
-                                status=status.HTTP_503_SERVICE_UNAVAILABLE)
+            return JsonResponse(
+                {"error": str(e)},
+                safe=False,
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
 
     @staticmethod
     def get_user_video_token(user_code, video_settings):
@@ -247,16 +266,21 @@ class SubmissionFavouriteView(View):
         auth_header = get_authorization_header(request).split()
         if not auth_header:
             raise Http404
-        if auth_header and auth_header[0].lower() == b'bearer':
+        if auth_header and auth_header[0].lower() == b"bearer":
             if len(auth_header) == 1:
-                raise exceptions.AuthenticationFailed('Invalid token header. No credentials provided.')
+                raise exceptions.AuthenticationFailed(
+                    "Invalid token header. No credentials provided."
+                )
             elif len(auth_header) > 2:
                 raise exceptions.AuthenticationFailed(
-                    'Invalid token header. Token string should not contain spaces.')
-        token_decode =  jwt.decode(auth_header[1], video_settings.secret,
-                                   algorithms=["HS256"],
-                                   audience=video_settings.audience,
-                                   issuer=video_settings.issuer,
+                    "Invalid token header. Token string should not contain spaces."
                 )
+        token_decode = jwt.decode(
+            auth_header[1],
+            video_settings.secret,
+            algorithms=["HS256"],
+            audience=video_settings.audience,
+            issuer=video_settings.issuer,
+        )
         user_code = token_decode.get("uid")
         return get_object_or_404(User, code=user_code).id

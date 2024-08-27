@@ -61,12 +61,12 @@ class SpeakerSerializer(ModelSerializer):
 
     @staticmethod
     def get_avatar_source(obj):
-        if obj.user.has_avatar and obj.user.avatar_source != '':
+        if obj.user.has_avatar and obj.user.avatar_source != "":
             return obj.user.avatar_source
 
     @staticmethod
     def get_avatar_license(obj):
-        if obj.user.has_avatar and obj.user.avatar_license != '':
+        if obj.user.has_avatar and obj.user.avatar_license != "":
             return obj.user.avatar_license
 
     @staticmethod
