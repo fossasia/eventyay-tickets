@@ -94,8 +94,9 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         exporter = (
             exporter[len("export.") :] if exporter.startswith("export.") else exporter
         )
-        responses = (register_data_exporters.send(request.event)
-                     + register_my_data_exporters.send(request.event))
+        responses = register_data_exporters.send(
+            request.event
+        ) + register_my_data_exporters.send(request.event)
         for __, response in responses:
             ex = response(request.event)
             if ex.identifier == exporter:
@@ -114,8 +115,8 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
 
         exporter.schedule = self.schedule
         if "-my" in exporter.identifier and self.request.user.id is None:
-            if request.GET.get('talks'):
-                exporter.talk_ids = request.GET.get('talks').split(',')
+            if request.GET.get("talks"):
+                exporter.talk_ids = request.GET.get("talks").split(",")
             else:
                 return HttpResponseRedirect(self.request.event.urls.login)
         favs_talks = SubmissionFavourite.objects.filter(user=self.request.user.id)

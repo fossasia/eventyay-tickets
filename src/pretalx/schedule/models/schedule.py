@@ -667,13 +667,19 @@ class Schedule(PretalxModel):
                         "duration": talk.submission.get_duration(),
                         "updated": talk.updated.isoformat(),
                         "state": talk.submission.state if all_talks else None,
-                        "fav_count": count_fav_talk(talk.submission.code) if talk.submission else 0,
+                        "fav_count": (
+                            count_fav_talk(talk.submission.code)
+                            if talk.submission
+                            else 0
+                        ),
                         "do_not_record": talk.submission.do_not_record,
                         "tags": talk.submission.get_tag(),
-                        "session_type": str(talk.submission.submission_type.name)
-                                        + " (" + str(
-                            talk.submission.submission_type.default_duration)
-                                        + " minutes)"
+                        "session_type": (
+                            str(talk.submission.submission_type.name)
+                            + " ("
+                            + str(talk.submission.submission_type.default_duration)
+                            + " minutes)"
+                        ),
                     }
                 )
             else:
@@ -723,7 +729,11 @@ class Schedule(PretalxModel):
 
 def count_fav_talk(submission_code):
     # Cast talk_list to TextField for using the contains lookup
-    count = SubmissionFavourite.objects.annotate(
-        talk_list_str=Cast('talk_list', TextField())
-    ).filter(talk_list_str__contains=str(submission_code)).count()
+    count = (
+        SubmissionFavourite.objects.annotate(
+            talk_list_str=Cast("talk_list", TextField())
+        )
+        .filter(talk_list_str__contains=str(submission_code))
+        .count()
+    )
     return count

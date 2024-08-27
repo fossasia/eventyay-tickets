@@ -112,12 +112,12 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
     )
     ticket_link = forms.URLField(
         label=_("Event ticket shop URL"),
-        help_text=_(
-            "Ticket shop link will be shown on event menu. "
+        help_text=_("Ticket shop link will be shown on event menu. "),
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "e.g: https://tickets-dev.eventyay.com/2024/wikimania/"
+            }
         ),
-        widget=forms.TextInput(attrs={
-            'placeholder': 'e.g: https://tickets-dev.eventyay.com/2024/wikimania/'
-        }),
         required=False,
     )
     header_pattern = forms.ChoiceField(

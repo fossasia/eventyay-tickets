@@ -192,3 +192,11 @@ This command generates new migration files for database changed. It should ONLY
 be used during pretalx development, even if you are running a custom
 installation, or if the console output of pretalx tells you to run it in case
 of changes to database models.
+
+``create_social_apps``
+~~~~~~~~~~~~~~~~~~~~~~~
+This command is used to create SocialApp entries for Eventyay-ticket Provider
+
+``sync_customer_account``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This command is used to sync customer accounts from Eventyay Ticket

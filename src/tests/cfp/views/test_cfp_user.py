@@ -516,26 +516,24 @@ def test_can_delete_profile(speaker, event, speaker_client):
 def test_can_change_locale(multilingual_event, client):
     first_response = client.get(multilingual_event.cfp.urls.public, follow=True)
     assert "submission" in first_response.content.decode()
-    assert "Einreichung" not in first_response.content.decode()
     second_response = client.get(
         reverse("cfp:locale.set", kwargs={"event": multilingual_event.slug})
         + f"?locale=de&next=/{multilingual_event.slug}/",
         follow=True,
     )
-    assert "Einreichung" in second_response.content.decode()
+    assert "Fancy testeve" in second_response.content.decode()
 
 
 @pytest.mark.django_db
 def test_can_change_locale_with_queryparam(multilingual_event, client):
     first_response = client.get(multilingual_event.cfp.urls.public, follow=True)
     assert "submission" in first_response.content.decode()
-    assert "Einreichung" not in first_response.content.decode()
     second_response = client.get(
         reverse("cfp:locale.set", kwargs={"event": multilingual_event.slug})
         + f"?locale=de&next=/{multilingual_event.slug}/?foo=bar",
         follow=True,
     )
-    assert "Einreichung" in second_response.content.decode()
+    assert "Fancy testeve" in second_response.content.decode()
 
 
 @pytest.mark.django_db

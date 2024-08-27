@@ -1,7 +1,8 @@
-from django import template
 from allauth.socialaccount.models import SocialApp
+from django import template
 
 register = template.Library()
+
 
 @register.simple_tag
 def socialapp_exists(provider):

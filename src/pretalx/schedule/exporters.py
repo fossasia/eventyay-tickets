@@ -1,5 +1,6 @@
 import datetime as dt
 import json
+import xml.etree.ElementTree as ET
 from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
 
@@ -8,7 +9,6 @@ from django.template.loader import get_template
 from django.utils.functional import cached_property
 from django.utils.safestring import SafeString
 from i18nfield.utils import I18nJSONEncoder
-import xml.etree.ElementTree as ET
 
 from pretalx import __version__
 from pretalx.common.exporter import BaseExporter
@@ -62,7 +62,7 @@ class ScheduleData(BaseExporter):
                 "index": index + 1,
                 "start": current_date.replace(hour=4, minute=0).astimezone(event.tz),
                 "end": current_date.replace(hour=3, minute=59).astimezone(event.tz)
-                       + dt.timedelta(days=1),
+                + dt.timedelta(days=1),
                 "first_start": None,
                 "last_end": None,
                 "rooms": {},
@@ -134,13 +134,13 @@ class FrabXmlExporter(ScheduleData):
         content = get_template("agenda/schedule.xml").render(context=context)
         if self.favs_retrieve:
             root = ET.fromstring(content)
-            for day in root.findall('day'):
-                for room in day.findall('room'):
-                    for event in room.findall('event'):
-                        event_slug = event.find('url').text.split('/')[-2]
+            for day in root.findall("day"):
+                for room in day.findall("room"):
+                    for event in room.findall("event"):
+                        event_slug = event.find("url").text.split("/")[-2]
                         if event_slug not in self.talk_ids:
                             room.remove(event)
-            filtered_xml_data = ET.tostring(root, encoding='unicode')
+            filtered_xml_data = ET.tostring(root, encoding="unicode")
             content = SafeString(filtered_xml_data)
         return f"{self.event.slug}-schedule.xml", "text/xml", content
 
@@ -166,12 +166,12 @@ class FrabXCalExporter(ScheduleData):
         content = get_template("agenda/schedule.xcal").render(context=context)
         if self.favs_retrieve:
             root = ET.fromstring(content)
-            for vcalendar in root.findall('vcalendar'):
-                for vevent in vcalendar.findall('vevent'):
-                    event_uid = vevent.find('uid').text.split('@@')[0]
+            for vcalendar in root.findall("vcalendar"):
+                for vevent in vcalendar.findall("vevent"):
+                    event_uid = vevent.find("uid").text.split("@@")[0]
                     if event_uid not in self.talk_ids:
                         vcalendar.remove(vevent)
-            filtered_xcal_data = ET.tostring(root, encoding='unicode')
+            filtered_xcal_data = ET.tostring(root, encoding="unicode")
             content = SafeString(filtered_xcal_data)
         return f"{self.event.slug}.xcal", "text/xml", content
 
@@ -264,7 +264,7 @@ class FrabJsonExporter(ScheduleData):
                                             "code": person.code,
                                             "public_name": person.get_display_name(),
                                             "avatar": person.get_avatar_url(self.event)
-                                                      or None,
+                                            or None,
                                             "biography": getattr(
                                                 person.profiles.filter(
                                                     event=self.event
@@ -279,8 +279,7 @@ class FrabJsonExporter(ScheduleData):
                                                         "answer": answer.answer,
                                                         "options": [
                                                             option.answer
-                                                            for option in
-                                                            answer.options.all()
+                                                            for option in answer.options.all()
                                                         ],
                                                     }
                                                     for answer in person.answers.all()
@@ -309,8 +308,12 @@ class FrabJsonExporter(ScheduleData):
                                         else []
                                     ),
                                 }
-                                for talk in room["talks"] if (
-                                                                     self.favs_retrieve is True and talk.submission.code in self.talk_ids) or not self.favs_retrieve
+                                for talk in room["talks"]
+                                if (
+                                    self.favs_retrieve is True
+                                    and talk.submission.code in self.talk_ids
+                                )
+                                or not self.favs_retrieve
                             ]
                             for room in day["rooms"]
                         },

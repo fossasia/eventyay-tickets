@@ -29,7 +29,7 @@ urlpatterns = [
     path("", include("pretalx.agenda.urls", namespace="agenda")),
     path("", include("pretalx.cfp.urls", namespace="cfp")),
     path("", include((plugin_patterns, "plugins"))),
-    re_path(r'^accounts/', include('allauth.urls')),
+    re_path(r"^accounts/", include("allauth.urls")),
 ]
 
 handler500 = "pretalx.common.views.handle_500"

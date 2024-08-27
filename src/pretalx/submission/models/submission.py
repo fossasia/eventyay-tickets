@@ -4,10 +4,9 @@ import statistics
 from itertools import repeat
 
 from django.conf import settings
-from django.db.models import JSONField
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import Q
+from django.db.models import JSONField, Q
 from django.db.models.fields.files import FieldFile
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
@@ -340,11 +339,7 @@ class Submission(GenerateCode, PretalxModel):
     def get_tag(self):
         tags = []
         for tag in self.tags.all():
-            tags.append({
-                'id': tag.id,
-                'tag': tag.tag,
-                'color': tag.color
-            })
+            tags.append({"id": tag.id, "tag": tag.tag, "color": tag.color})
         return tags
 
     def update_duration(self):
@@ -939,13 +934,9 @@ class SubmissionFavourite(models.Model):
         to="person.User",
         related_name="submission_favorites",
         on_delete=models.PROTECT,
-        verbose_name=_n("User", "Users", 1)
+        verbose_name=_n("User", "Users", 1),
     )
-    talk_list = JSONField(
-        null=True,
-        blank=True,
-        verbose_name=_("List favourite talk")
-    )
+    talk_list = JSONField(null=True, blank=True, verbose_name=_("List favourite talk"))
 
     class Meta:
         db_table = '"submission_submission_favourites"'
@@ -967,7 +958,8 @@ class SubmissionFavouriteSerializer(serializers.ModelSerializer):
         with scopes_disabled():
             user = get_object_or_404(User, id=user_id)
             submission_fav, created = SubmissionFavourite.objects.get_or_create(
-                user=user)
+                user=user
+            )
             submission_fav.talk_list = talk_code
             submission_fav.save()
             return submission_fav
