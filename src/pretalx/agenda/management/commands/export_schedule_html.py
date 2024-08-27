@@ -4,7 +4,6 @@ import re
 import shutil
 import urllib.parse
 from pathlib import Path
-from shutil import make_archive
 
 from bs4 import BeautifulSoup
 from django.conf import settings
