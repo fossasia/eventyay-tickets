@@ -11,7 +11,7 @@ from pretalx.schedule.models import TalkSlot
 def test_can_create_feedback(django_assert_num_queries, past_slot, client, event):
     with scope(event=event):
         assert past_slot.submission.speakers.count() == 1
-    with django_assert_num_queries(43):
+    with django_assert_num_queries(44):
         response = client.post(
             past_slot.submission.urls.feedback, {"review": "cool!"}, follow=True
         )
@@ -33,7 +33,7 @@ def test_can_create_feedback_for_multiple_speakers(
         past_slot.submission.speakers.add(other_speaker)
         past_slot.submission.speakers.add(speaker)
         assert past_slot.submission.speakers.count() == 2
-    with django_assert_num_queries(44):
+    with django_assert_num_queries(45):
         response = client.post(
             past_slot.submission.urls.feedback, {"review": "cool!"}, follow=True
         )

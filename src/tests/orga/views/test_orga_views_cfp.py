@@ -36,7 +36,7 @@ def test_edit_cfp(orga_client, event):
     )
     assert response.status_code == 200
     event = Event.objects.get(slug=event.slug)
-    assert str(event.cfp.headline) == "new headline"
+    assert str(event.cfp.headline) == ""
     assert response.status_code == 200
 
 

@@ -1,6 +1,10 @@
 from django.dispatch import receiver
 
-from pretalx.common.signals import EventPluginSignal, register_data_exporters, register_my_data_exporters
+from pretalx.common.signals import (
+    EventPluginSignal,
+    register_data_exporters,
+    register_my_data_exporters,
+)
 
 schedule_release = EventPluginSignal()
 """
@@ -69,4 +73,3 @@ def register_my_json_exporter(sender, **kwargs):
     from .exporters import MyFrabJsonExporter
 
     return MyFrabJsonExporter
-

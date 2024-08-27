@@ -1,5 +1,5 @@
 import base64
-from io import StringIO, BytesIO
+from io import BytesIO, StringIO
 from urllib.parse import quote
 
 import qrcode

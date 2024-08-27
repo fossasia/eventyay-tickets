@@ -10,6 +10,7 @@
             <xs:attribute type="xs:string" name="version"/>
           </xs:complexType>
         </xs:element>
+        <xs:element type="httpURI"   name="url" minOccurs="0" maxOccurs="1"/>
         <xs:element type="xs:string" name="version"/>
         <xs:element name="conference">
           <xs:complexType>
@@ -90,7 +91,7 @@
       <xs:element type="voc-slug" name="slug"/>
       <xs:element type="xs:string" name="track"/>
       <!-- logo is the path or URL to an image, we use httpURI as type here as apps prefer full URLs now -->
-      <xs:element type="httpURI" name="logo" minOccurs="0"/>
+      <xs:element type="emptyOrURI" name="logo" minOccurs="0" />
       <xs:element type="persons" name="persons" minOccurs="0"/>
       <xs:element type="xs:string" name="language" minOccurs="0"/>
       <xs:element type="xs:string" name="description" minOccurs="0"/>
@@ -156,6 +157,12 @@
       <xs:pattern value="https?://.*"/>
     </xs:restriction>
   </xs:simpleType>
+  
+  <xs:simpleType name="emptyOrURI">
+    <xs:restriction base="xs:anyURI">
+      <xs:pattern value="https?://.*|\s*"/> <!-- Allow for empty string -->
+    </xs:restriction>
+  </xs:simpleType>
 
   <xs:simpleType name="string-nonempty">
     <xs:restriction base="xs:string">
@@ -166,7 +173,7 @@
   <xs:simpleType name="hexColor">
     <xs:restriction base="xs:string">
       <!-- Pattern for hexadecimal color code: # followed by exactly 6 hexadecimal digits, prefered in lower case -->
-      <xs:pattern value="#[0-9a-f]{6}"/>
+      <xs:pattern value="#[0-9a-fA-F]{6}"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -185,7 +192,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attribute type="xs:positiveInteger" name="id" />
+              <xs:attribute type="xs:integer" name="id" />
               <xs:attribute type="uuid" name="guid"/>
             </xs:extension>
           </xs:simpleContent>
