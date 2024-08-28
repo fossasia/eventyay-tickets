@@ -490,13 +490,7 @@ def test_orga_can_assign_reviewer_to_submission(orga_client, review_user, submis
     response = orga_client.post(
         submission.event.orga_urls.reviews + "assign/?direction=submission",
         {
-            "formset-TOTAL_FORMS": 1,
-            "formset-INITIAL_FORMS": 1,
-            "formset-MIN_NUM_FORMS": 0,
-            "formset-MAX_NUM_FORMS": 0,
-            "formset-0-id": [submission.id, submission.id],
-            "formset-0-code": submission.code,
-            "formset-0-assigned_reviewers": review_user.id,
+            f"submission-{submission.code}": [review_user.id],
         },
     )
     with scope(event=submission.event):
@@ -568,13 +562,7 @@ def test_orga_can_assign_submission_to_reviewer(orga_client, review_user, submis
     response = orga_client.post(
         submission.event.orga_urls.reviews + "assign/?direction=reviewer",
         {
-            "formset-TOTAL_FORMS": 1,
-            "formset-INITIAL_FORMS": 1,
-            "formset-MIN_NUM_FORMS": 0,
-            "formset-MAX_NUM_FORMS": 0,
-            "formset-0-id": review_user.id,
-            "formset-0-code": review_user.code,
-            "formset-0-assigned_reviews": submission.id,
+            f"reviewer-{review_user.code}": [submission.id],
         },
     )
     with scope(event=submission.event):
