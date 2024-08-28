@@ -1359,6 +1359,15 @@ div.mail-preview {
   }
 }
 
+.speaker-avatar {
+  width: 120px;
+  margin-left: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}
+
 @media print {
   body,
   #page-content,

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`orga:speaker` Speaker profile pictures are now shown in more places.
 - :feature:`orga` Most organiser pages now have a useful tab title.
 - :bug:`orga` When copying an old event's settings to a new one, questions were copied, but their answer options (for choice/multiple choice questions) were omitted.
 - :bug:`orga:email` When sending an email to only speakers with a specific question answer, emails would instead be generated (and placed in the outbox, not sent!) to all speakers.

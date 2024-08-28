@@ -24,16 +24,23 @@
     </div>{% endif %}
 
     {% for speaker in speakers %}
-        <div class="card"><div class="card-body">
+        <div class="card mb-3"><div class="card-body">
             <h3 class="card-title">
-                <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.code %}">
-                    {{ speaker.name }}
+                <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.user.code %}">
+                    {{ speaker.user.get_display_name }}
                 </a>
+                {% if speaker.user.avatar %}
+                  <div class="speaker-avatar">
+                    <a href="{{ speaker.user.avatar.url }}" data-lightbox="{{ speaker.user.avatar.url }}">
+                        <img loading="lazy" width="100%" src="{{ speaker.user.avatar.url }}" alt="{% translate "The speaker’s profile picture" %}">
+                    </a>
+                  </div>
+                {% endif %}
             </h3>
             {% if request.event.cfp.request_biography %}
                 <p class="card-text">
                     <h5>{% translate "Biography" %}:</h5>
-                    {{ speaker.biography|rich_text|default:"-" }}
+                    {{ speaker.profile.biography|rich_text|default:"-" }}
                 </p>
             {% endif %}
             <p class="card-text">
@@ -49,11 +56,11 @@
                 {% endif %}
             </p>
             {% if can_edit_speakers %}
-                <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.code %}"
+                <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.user.code %}"
                    class="btn btn-info">
                     <i class="fa fa-edit"></i> {{ phrases.base.edit }}
                 </a>
-                <a href="{{ submission.orga_urls.delete_speaker }}?id={{ speaker.id }}"
+                <a href="{{ submission.orga_urls.delete_speaker }}?id={{ speaker.user.id }}"
                    class="btn btn-danger">
                     <i class="fa fa-trash"></i> {% translate "Remove" %}
                 </a>
