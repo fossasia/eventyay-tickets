@@ -9,6 +9,7 @@
 
 {% block submission_content %}
     {% has_perm 'submission.edit_speaker_list' request.user submission as can_edit_speakers %}
+    {% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
     {% if can_edit_speakers %}<div class="alert">
         <form method="POST" action="{{ submission.orga_urls.new_speaker }}" class="form flex-row">
             <label>
@@ -30,11 +31,11 @@
                     {{ speaker.user.get_display_name }}
                 </a>
                 {% if speaker.user.avatar %}
-                  <div class="speaker-avatar">
-                    <a href="{{ speaker.user.avatar.url }}" data-lightbox="{{ speaker.user.avatar.url }}">
-                        <img loading="lazy" width="100%" src="{{ speaker.user.avatar.url }}" alt="{% translate "The speaker’s profile picture" %}">
-                    </a>
-                  </div>
+                    <div class="speaker-avatar">
+                        <a href="{{ speaker.user.avatar.url }}" data-lightbox="{{ speaker.user.avatar.url }}">
+                            <img loading="lazy" width="100%" src="{{ speaker.user.avatar.url }}" alt="{% translate "The speaker’s profile picture" %}">
+                        </a>
+                    </div>
                 {% endif %}
             </h3>
             {% if request.event.cfp.request_biography %}
@@ -56,6 +57,12 @@
                 {% endif %}
             </p>
             {% if can_edit_speakers %}
+                {% if can_send_mails %}
+                    <a class="btn btn-outline-info" href="{{ request.event.orga_urls.compose_mails_sessions }}?speakers={{ speaker.user.code }}">
+                        <i class="fa fa-envelope"></i>
+                        {% translate "Send email" %}
+                    </a>
+                {% endif %}
                 <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.user.code %}"
                    class="btn btn-info">
                     <i class="fa fa-edit"></i> {{ phrases.base.edit }}
