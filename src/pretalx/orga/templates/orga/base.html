@@ -375,14 +375,14 @@
                                 <a href="{{ request.event.orga_urls.outbox }}" class="nav-link nav-link-second-level{% if "mails.outbox" in url_name %} {% if not form or not form.instance.sent %}active{% endif %}{% endif %}">
                                     <span>{% translate "Outbox" %}</span>
                                 </a>
-                                <a href="{{ request.event.orga_urls.mail_templates }}" class="nav-link nav-link-second-level{% if "mails.templates" in url_name %} active{% endif %}">
-                                    <span>{% translate "Templates" %}</span>
-                                </a>
                                 <a href="{% if can_change_teams %}{{ request.event.orga_urls.compose_mails }}{% else %}{{ request.event.orga_urls.compose_mails_sessions }}{% endif %}" class="nav-link nav-link-second-level{% if "mails.compose" in url_name %} active{% endif %}">
                                     <span>{% translate "Compose emails" %}</span>
                                 </a>
                                 <a href="{{ request.event.orga_urls.sent_mails }}" class="nav-link nav-link-second-level{% if "mails.sent" in url_name %} active{% elif url_name == "mails.outbox.mail.view" and form.instance.sent %} active{% endif %}">
                                     <span>{% translate "Sent emails" %}</span>
+                                </a>
+                                <a href="{{ request.event.orga_urls.mail_templates }}" class="nav-link nav-link-second-level{% if "mails.templates" in url_name %} active{% endif %}">
+                                    <span>{% translate "Templates" %}</span>
                                 </a>
                             </div>
                         </div>
