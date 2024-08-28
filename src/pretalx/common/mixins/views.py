@@ -161,7 +161,7 @@ class Filterable:
                     if "__isnull" in _key:
                         # We don't append to the list here, because that's not meaningful
                         # in a boolean lookup
-                        lookups[_key] = True if _value == "on" else False
+                        lookups[_key] = _value == "on"
                     else:
                         _key = f"{_key}__in"
                         lookups[_key].append(_value)
@@ -262,7 +262,7 @@ class SensibleBackWizardMixin:
         step button, save data instead. The rest of this is copied from
         WizardView. We want to save data when hitting "back"!
         """
-        wizard_goto_step = self.request.POST.get("wizard_goto_step", None)
+        wizard_goto_step = self.request.POST.get("wizard_goto_step")
         management_form = ManagementForm(self.request.POST, prefix=self.prefix)
         if not management_form.is_valid():
             raise forms.ValidationError(

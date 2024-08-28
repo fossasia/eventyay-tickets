@@ -137,9 +137,7 @@ def cache_control(request, event, version=None):
     they'll get the most recent content upon cache invalidation.
     """
     if version:
-        if version == "wip":
-            return False
-        return True
+        return version != "wip"
     return False
 
 
@@ -150,9 +148,7 @@ def cache_version(request, event, version=None):
     will be sent to make sure users will always see the most recent
     changes.
     """
-    if version and version == "wip":
-        return False
-    return True
+    return not (version and version == "wip")
 
 
 def version_prefix(request, event, version=None):

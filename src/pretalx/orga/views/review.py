@@ -669,6 +669,7 @@ class ReviewSubmissionDelete(EventPermissionRequired, ReviewViewMixin, TemplateV
         return self.submission.orga_urls.reviews
 
     def post(self, request, *args, **kwargs):
+        self.object.answers.all().delete()
         self.object.delete()
         messages.success(request, _("The review has been deleted."))
         return redirect(self.submission.orga_urls.reviews)

@@ -35,7 +35,7 @@ def run_update_check(sender, **kwargs):
         update_check.apply_async()
 
 
-@app.task
+@app.task(name="pretalx.common.update_check")
 @scopes_disabled()
 def update_check():
     gs = GlobalSettings()
@@ -59,13 +59,15 @@ def update_check():
             "public": Event.objects.filter(is_public=True).count(),
         },
         "plugins": [
-            {"name": p.module, "version": p.version} for p in get_all_plugins()
+            {"name": plugin.module, "version": plugin.version}
+            for plugin in get_all_plugins()
         ],
     }
     try:
         response = requests.post(
             "https://pretalx.com/.update_check/",
             json=check_payload,
+            timeout=30,
         )
     except requests.RequestException:  # pragma: no cover
         gs.settings.set("update_check_last", now())
@@ -113,7 +115,8 @@ def send_update_notification_email():
                 url=settings.SITE_URL + reverse("orga:admin.update"),
             ),
             "html": None,
-        }
+        },
+        ignore_result=True,
     )
 
 

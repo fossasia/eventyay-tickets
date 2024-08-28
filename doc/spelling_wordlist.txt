@@ -44,6 +44,7 @@ iframe
 iframes
 installable
 iterable
+Jorian
 libffi
 linters
 localhost
@@ -75,3 +76,4 @@ templating
 transactional
 virtualenv
 wip
+Woltjer

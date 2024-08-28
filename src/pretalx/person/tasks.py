@@ -12,7 +12,7 @@ from pretalx.person.models.user import User
 logger = logging.getLogger(__name__)
 
 
-@app.task()
+@app.task(name="pretalx.person.gravatar_cache")
 def gravatar_cache(person_id: int):
     user = User.objects.filter(pk=person_id, get_gravatar=True).first()
 
@@ -57,4 +57,4 @@ def refetch_gravatars(sender, **kwargs):
     users_with_gravatar = User.objects.filter(get_gravatar=True)
 
     for user in users_with_gravatar:
-        gravatar_cache.apply_async(args=(user.pk,))
+        gravatar_cache.apply_async(args=(user.pk,), ignore_result=True)

@@ -120,7 +120,9 @@ class ScheduleExportTriggerView(EventPermissionRequired, View):
 
     def post(self, request, event):
         if settings.HAS_CELERY:
-            export_schedule_html.apply_async(kwargs={"event_id": self.request.event.id})
+            export_schedule_html.apply_async(
+                kwargs={"event_id": self.request.event.id}, ignore_result=True
+            )
             messages.success(
                 self.request,
                 _("A new export is being generated and will be available soon."),
