@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load url_replace %}
 
-{% block title %}{{ user.name }}{% endblock %}
+{% block extra_title %}{{ user.name }} :: {% endblock %}
 
 {% block content %}
   <h2 class="d-flex">{{ user.name }}

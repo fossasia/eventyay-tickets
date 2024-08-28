@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load rules %}
 
-{% block title %}{% if request.event %}{{ request.event.name }}{% else %}{{ request.organiser.name }}{% endif %}{% endblock %}
+{% block extra_title %}{% translate "Teams" %} :: {{ request.organiser.name }} :: {% endblock %}
 
 {% block content %}
     <form method="post"><fieldset>
