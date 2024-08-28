@@ -4,6 +4,8 @@
 {% load i18n %}
 {% load static %}
 
+{% block extra_title %}{% if form.instance.pk %}{% translate "Room" %} {{ quotation_open }}{{ form.name }}{{ quotation_close }}{% else %}{% translate "New room" %}{% endif %} :: {% endblock %}
+
 {% block content %}
     {% compress js %}
         <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
@@ -13,7 +15,7 @@
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        <h2>{% translate "Room" %}</h2>
+        <h2>{% if form.instance.pk %}{% translate "Room" %} {{ quotation_open }}{{ form.name }}{{ quotation_close }}{% else %}{% translate "New room" %}{% endif %}</h2>
         {% bootstrap_field form.name layout='event' %}
         {% bootstrap_field form.description layout='event' %}
         {% bootstrap_field form.speaker_info layout='event' %}

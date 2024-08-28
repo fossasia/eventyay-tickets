@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load bootstrap4 %}
 
+{% block extra_title %}{% translate "Apply pending changes" %} :: {% endblock %}
+
 {% block content %}
     <form method="post">
         {% if submission_count %}

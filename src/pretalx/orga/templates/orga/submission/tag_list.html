@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load rules %}
 
+{% block extra_title %}{% translate "Tags" %} :: {% endblock %}
+
 {% block content %}
     <h2>{% translate "Tags" %}</h2>
     {% has_perm 'orga.add_tags' request.user request.event as can_edit_tags %}

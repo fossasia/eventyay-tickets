@@ -2,6 +2,8 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
+{% block extra_title %}{% blocktranslate trimmed count count=1 %}Speaker Information Note{% plural %}Speaker Information Notes{% endblocktranslate %} :: {% endblock %}
+
 {% block content %}
     <h2>
         {% blocktranslate trimmed count count=1 %}

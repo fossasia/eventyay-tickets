@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load rich_text %}
 
+{% block submission_title %}{% translate "Attendee feedback" %} :: {% endblock %}
+
 {% block submission_content %}
     {% for entry in feedback %}
         <div class="card feedback-card">

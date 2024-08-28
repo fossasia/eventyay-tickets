@@ -16,6 +16,8 @@
     <link rel="stylesheet" type="text/css" href="{% static "vendored/rslider/rSlider.min.css" %}" />
 {% endblock %}
 
+{% block extra_title %}{% translate "Reviews" %} :: {% endblock %}
+
 {% block content %}
     {% has_perm 'orga.perform_reviews' request.user request.event as can_review %}
     {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}

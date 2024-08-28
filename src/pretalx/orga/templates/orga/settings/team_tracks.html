@@ -2,6 +2,8 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
+{% block extra_title %}{% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Tracks" %} :: {% endblock %}
+
 {% block settings_content %}
     <div>
         <h2>

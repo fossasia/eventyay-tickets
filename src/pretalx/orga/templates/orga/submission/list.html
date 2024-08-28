@@ -18,6 +18,8 @@
     {% endif %}
 {% endblock %}
 
+{% block extra_title %}{{ page_obj.paginator.count }} {% blocktranslate trimmed count count=page_obj.paginator.count %}session{% plural %}sessions{% endblocktranslate %} :: {% endblock %}
+
 {% block content %}
     {% has_perm 'orga.create_submission' request.user request.event as can_create_submission %}
     {% has_perm 'orga.change_submission_state' request.user request.event as can_change_submission %}

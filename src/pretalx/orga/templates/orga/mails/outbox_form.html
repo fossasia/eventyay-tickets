@@ -3,6 +3,8 @@
 {% load i18n %}
 {% load rich_text %}
 
+{% block extra_title %}{% translate "Mail Editor" %} :: {% endblock %}
+
 {% block mail_content %}
     {% if form.instance.sent %}
         <div class="alert alert-info">

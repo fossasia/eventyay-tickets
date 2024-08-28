@@ -4,6 +4,8 @@
 {% load i18n %}
 {% load static %}
 
+{% block extra_title %}{% translate "Widget generation" %} :: {% endblock %}
+
 {% block settings_content %}
     {% compress js %}
         <script defer src="{% static "orga/js/widgetSettings.js" %}"></script>

@@ -5,6 +5,8 @@
 {% load formset_tags %}
 {% load static %}
 
+{% block extra_title %}{% translate "Review settings" %} :: {% endblock %}
+
 {% block settings_content %}
     {% compress js %}
         <script defer src="{% static "js/jquery.formset.js" %}"></script>
