@@ -149,7 +149,6 @@ def test_event_copy_settings(event, submission_type, choice_question, track):
     with scopes_disabled():
         assert new_event.submission_types.count() == 1
         new_event.copy_data_from(event)
-        assert new_event.submission_types.count() == event.submission_types.count()
     with scope(event=new_event):
         assert new_event.submission_types.count() == 2
         assert new_event.accept_template
@@ -158,6 +157,8 @@ def test_event_copy_settings(event, submission_type, choice_question, track):
         assert not new_event.custom_domain
         assert new_event.feature_flags == {"testing": "working"}
         assert new_event.cfp.deadline == event.cfp.deadline
+        assert new_event.questions.count()
+        assert new_event.questions.first().options.count()
 
 
 @pytest.mark.django_db

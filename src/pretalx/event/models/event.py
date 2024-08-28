@@ -741,9 +741,9 @@ class Event(PretalxModel):
         question_map = {}
         for question in other_event.questions.all():
             question_map[question.pk] = question
-            options = question.options.all()
-            tracks = question.tracks.all().values_list("pk", flat=True)
-            types = question.submission_types.all().values_list("pk", flat=True)
+            options = list(question.options.all())
+            tracks = list(question.tracks.all().values_list("pk", flat=True))
+            types = list(question.submission_types.all().values_list("pk", flat=True))
             question.pk = None
             question.event = self
             question.save()

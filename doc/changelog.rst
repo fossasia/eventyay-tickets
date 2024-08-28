@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`orga` When copying an old event's settings to a new one, questions were copied, but their answer options (for choice/multiple choice questions) were omitted.
 - :bug:`orga:email` When sending an email to only speakers with a specific question answer, emails would instead be generated (and placed in the outbox, not sent!) to all speakers.
 - :bug:`orga:submission` When organisers filtered the session list by specific question answers, adding search terms or filters would reset the question filter.
 - :feature:`schedule,1002` Logged-in users can now download an iCal file with their starred talks.
