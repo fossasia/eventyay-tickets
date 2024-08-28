@@ -5,11 +5,13 @@
 {% load static %}
 
 {% block scripts %}
+    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
     {% compress js %}
         <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
         <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
         <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
         <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
+        <script defer src="{% static "common/js/modalDialog.js" %}"></script>
         <script defer src="{% static "orga/js/cfp.js" %}"></script>
     {% endcompress %}
 {% endblock %}
@@ -17,20 +19,28 @@
 {% block extra_title %}{% translate "Call for Proposals" %} :: {% endblock %}
 
 {% block content %}
-    <div class="alert alert-info">
-        <span>
-            {% translate "A good Call for Participation will engage potential speakers. Remember to include:" %}<br>
-            <ul>
-                <li>{% translate "The formats (sessions, workshops, panels) and their durations" %}</li>
-                <li>{% translate "Topics you are looking for" %}</li>
-                <li>{% translate "How open you are to alternative topics" %}</li>
-                <li>{% translate "The people coming to your conference: interests, experience level …" %}</li>
-                <li>{% translate "Link your Code of Conduct and Data Protection statements." %}</li>
-                <li>{% translate "Do you offer financial or other support, e.g. support for first time speakers?" %}
-                    <li>{% translate "Dates and location" %}</li>
-                </ul>
-            </span>
-        </div>
+    <h2>
+        {% translate "Call for Proposals" %}
+        <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
+            <i class="fa fa-question-circle-o text-info"></i>
+        </span>
+    </h2>
+    <dialog class="info-dialog" id="info-dialog">
+        <div class="alert alert-info">
+            <span>
+                {% translate "A good Call for Participation will engage potential speakers. Remember to include:" %}<br>
+                <ul>
+                    <li>{% translate "The formats (sessions, workshops, panels) and their durations" %}</li>
+                    <li>{% translate "Topics you are looking for" %}</li>
+                    <li>{% translate "How open you are to alternative topics" %}</li>
+                    <li>{% translate "The people coming to your conference: interests, experience level …" %}</li>
+                    <li>{% translate "Link your Code of Conduct and Data Protection statements." %}</li>
+                    <li>{% translate "Do you offer financial or other support, e.g. support for first time speakers?" %}
+                        <li>{% translate "Dates and location" %}</li>
+                    </ul>
+                </span>
+            </div>
+        </dialog>
         <div class="flex-container">
             <div class="flex-content">
                 <form method="post">
@@ -66,11 +76,18 @@
                     </fieldset>
 
                     <fieldset>
-                        <legend id="information">{% translate "Proposal information" %}</legend>
-                        <div class="offset-md-3 alert alert-info"><span>
-                            {% translate "Select which information should be requested and/or required during CfP proposal." %}
-                            <a href="{{ request.event.cfp.urls.submit }}">{% translate "Click here to view the proposal form." %}</a>
-                        </span></div>
+                        <legend id="information"><div>
+                            {% translate "Proposal information" %}
+                            <span class="dialog-anchor" data-target="#proposal-info-dialog" data-toggle="dialog">
+                                <i class="fa fa-question-circle-o text-info"></i>
+                            </span>
+                        </div></legend>
+                        <dialog class="info-dialog" id="proposal-info-dialog">
+                            <div class="offset-md-3 alert alert-info"><span>
+                                {% translate "Select which information should be requested and/or required during CfP proposal." %}
+                                <a href="{{ request.event.cfp.urls.editor }}">{% translate "Click here to view the proposal form." %}</a>
+                            </span></div>
+                        </dialog>
                         <div class="table-responsive-sm"><table class="table offset-md-3 table-sm table-hover table-flip table-sticky" id="cfp-option-table">
                             <thead>
                                 <tr>
@@ -147,7 +164,14 @@
                         </table></div>
                     </fieldset>
                     <fieldset>
-                        <legend id="information">{% translate "Speaker information" %}</legend>
+                        <legend id="information">
+                            <div>
+                                {% translate "Speaker information" %}
+                                <span class="dialog-anchor" data-target="#proposal-info-dialog" data-toggle="dialog">
+                                    <i class="fa fa-question-circle-o text-info"></i>
+                                </span>
+                            </div>
+                        </legend>
                         <div class="table-responsive-sm"><table class="table offset-md-3 table-sm table-hover table-flip table-sticky" id="cfp-option-table">
                             <thead>
                                 <tr>

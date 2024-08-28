@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`orga` A lot of info boxes that are mostly useful to new or inexperienced users are now hidden behind ❓ symbols rather than being always visible.
 - :bug:`cfp` The "additional speaker" form field would be shown even after a proposal had been submitted, even though there is a more detailed dedicated page to add new speakers at that point. The field now won't be shown on the proposal edit page.
 - :feature:`orga:speaker` Speaker profile pictures are now shown in more places.
 - :feature:`orga` Most organiser pages now have a useful tab title.
