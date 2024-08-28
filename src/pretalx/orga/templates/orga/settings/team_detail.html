@@ -4,6 +4,8 @@
 {% load i18n %}
 {% load static %}
 
+{% block extra_title %}{% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }} :: {% endblock %}
+
 {% block settings_content %}
     <div>
         {% if team.pk %}

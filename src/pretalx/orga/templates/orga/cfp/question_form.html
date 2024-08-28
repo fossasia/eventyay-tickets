@@ -5,6 +5,8 @@
 {% load i18n %}
 {% load static %}
 
+{% block extra_title %}{% if form.instance.question %}{{ form.instance.question }}{% else %}{% translate "New question" %}{% endif %} :: {% endblock %}
+
 {% block content %}
     {% compress js %}
         <script defer src="{% static "js/jquery.formset.js" %}"></script>

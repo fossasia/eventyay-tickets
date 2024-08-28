@@ -13,6 +13,8 @@
     {% endcompress %}
 {% endblock %}
 
+{% block extra_title %}{% translate "Reviews" %} :: {% endblock %}
+
 {% block content %}
     {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
     <div class="alert alert-info">

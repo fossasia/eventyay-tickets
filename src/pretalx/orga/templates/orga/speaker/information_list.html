@@ -1,6 +1,8 @@
 {% extends "orga/base.html" %}
 {% load i18n %}
 
+{% block extra_title %}{{ information.count }} {% blocktranslate trimmed count count=information.count %}Speaker Information Note{% plural %}Speaker Information Notes{% endblocktranslate %} :: {% endblock %}
+
 {% block content %}
     <h2>
         {{ information.count }}

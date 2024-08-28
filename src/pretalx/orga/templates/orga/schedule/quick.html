@@ -10,6 +10,8 @@
     {% endcompress %}
 {% endblock %}
 
+{% block extra_title %}{% translate "Schedule session" %} {{ quotation_open}}{{ form.instance.submission.title }}{{ quotation_close }} :: {% endblock %}
+
 {% block schedule_content %}
     <h2>{% translate "Schedule session" %} {{ quotation_close }}{{ form.instance.submission.title }}{{ quotation_open }}</h2>
     <form method="post">

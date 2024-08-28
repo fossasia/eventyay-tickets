@@ -1,6 +1,8 @@
 {% extends "orga/base.html" %}
 {% load i18n %}
 
+{% block extra_title %}{{ request.event.rooms.count }} {% blocktranslate trimmed count count=request.event.rooms.count context "Number of rooms" %}Room{% plural %}Rooms{% endblocktranslate %} :: {% endblock %}
+
 {% block content %}
     <div>
         <h2>

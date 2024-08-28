@@ -4,6 +4,8 @@
 {% load i18n %}
 {% load static %}
 
+{% block extra_title %}{% translate "Release new schedule" %} :: {% endblock %}
+
 {% block schedule_content %}
     <form method="post">
         {% csrf_token %}

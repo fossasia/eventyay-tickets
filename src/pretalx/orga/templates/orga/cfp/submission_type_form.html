@@ -13,6 +13,8 @@
     {% endcompress %}
 {% endblock %}
 
+{% block extra_title %}{% if form.instance.name %}{{ form.instance.name }}{% else %}{% translate "New Session Type" %}{% endif %} :: {% endblock %}
+
 {% block content %}
     <h2>
         {% if form.instance.name %}
