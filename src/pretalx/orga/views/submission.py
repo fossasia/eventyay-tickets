@@ -350,12 +350,8 @@ class SubmissionSpeakers(ReviewerSubmissionFilter, SubmissionViewMixin, Template
         submission = self.object
         return [
             {
-                "id": speaker.id,
-                "code": speaker.code,
-                "name": speaker.get_display_name(),
-                "biography": speaker.profiles.get_or_create(event=submission.event)[
-                    0
-                ].biography,
+                "user": speaker,
+                "profile": speaker.event_profile(submission.event),
                 "other_submissions": speaker.submissions.filter(
                     event=submission.event
                 ).exclude(code=submission.code),
