@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`cfp` The "additional speaker" form field would be shown even after a proposal had been submitted, even though there is a more detailed dedicated page to add new speakers at that point. The field now won't be shown on the proposal edit page.
 - :feature:`orga:speaker` Speaker profile pictures are now shown in more places.
 - :feature:`orga` Most organiser pages now have a useful tab title.
 - :bug:`orga` When copying an old event's settings to a new one, questions were copied, but their answer options (for choice/multiple choice questions) were omitted.
