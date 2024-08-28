@@ -213,13 +213,8 @@ class ReviewerForProposalForm(ReviewAssignmentForm):
             )
 
     def save(self, *args, **kwargs):
-        # No calling 'super().save()' here – it would potentially update a user's code!
-        instance = self.instance
-        if "assigned_reviews" in self.changed_data:
-            new_code = self.cleaned_data.get("code")
-            if instance.code != new_code:
-                instance = User.objects.get(code=new_code)
-            instance.assigned_reviews.set(self.cleaned_data["assigned_reviews"])
+        for submission in self.submissions:
+            submission.assigned_reviewers.set(self.cleaned_data[submission.code])
 
 
 class ProposalForReviewerForm(ReviewAssignmentForm):
