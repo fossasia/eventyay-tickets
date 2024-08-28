@@ -15,9 +15,9 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return [
-            e
-            for e in Event.objects.all().order_by("-date_from")
-            if self.request.user.has_perm(self.permission_required, e)
+            event
+            for event in Event.objects.all().order_by("-date_from")
+            if self.request.user.has_perm(self.permission_required, event)
         ]
 
     def get_object(self):

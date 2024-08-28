@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 from django_context_decorator import context
 
 from pretalx.common.mixins.views import EventPermissionRequired
-from pretalx.common.plugins import get_all_plugins, get_all_plugins_grouped
+from pretalx.common.plugins import get_all_plugins_grouped
 
 
 class EventPluginsView(EventPermissionRequired, TemplateView):
@@ -25,17 +25,14 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
         return self.request.event.plugin_list
 
     def post(self, request, *args, **kwargs):
-        plugins_available = {
-            p.module
-            for p in get_all_plugins(self.request.event)
-            if not p.name.startswith(".") and getattr(p, "visible", True)
-        }
-
         with transaction.atomic():
             for key, value in request.POST.items():
                 if key.startswith("plugin:"):
                     module = key.split(":", maxsplit=1)[1]
-                    if value == "enable" and module in plugins_available:
+                    if (
+                        value == "enable"
+                        and module in self.request.event.available_plugins
+                    ):
                         self.request.event.enable_plugin(module)
                         self.request.event.log_action(
                             "pretalx.event.plugins.enabled",

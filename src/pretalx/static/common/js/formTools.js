@@ -14,7 +14,7 @@ function checkForChanges() {
     dirtyInputs.forEach(element => {
       const inputElement = element.querySelector("textarea")
       const outputElement = element.querySelector(".preview")
-      outputElement.innerHTML = marked.parse(inputElement.value, options)
+      outputElement.innerHTML = DOMPurify.sanitize(marked.parse(inputElement.value, options))
     })
     dirtyInputs = []
   }
@@ -39,7 +39,7 @@ window.onload = () => {
   document.querySelectorAll(".markdown-wrapper").forEach(element => {
     const inputElement = element.querySelector("textarea")
     const outputElement = element.querySelector(".preview")
-    outputElement.innerHTML = marked.parse(inputElement.value, options)
+    outputElement.innerHTML = DOMPurify.sanitize(marked.parse(inputElement.value, options))
     const handleInput = () => {
       dirtyInputs.push(element)
     }

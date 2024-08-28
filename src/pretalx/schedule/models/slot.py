@@ -132,7 +132,9 @@ class TalkSlot(PretalxModel):
         """
         new_slot = TalkSlot(schedule=new_schedule)
 
-        for field in [f for f in self._meta.fields if f.name not in ("id", "schedule")]:
+        for field in (
+            fn for fn in self._meta.fields if fn.name not in ("id", "schedule")
+        ):
             setattr(new_slot, field.name, getattr(self, field.name))
 
         if save:

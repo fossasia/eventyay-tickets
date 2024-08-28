@@ -1,5 +1,6 @@
 import copy
 import datetime as dt
+import json
 import zoneinfo
 
 from dateutil.relativedelta import relativedelta
@@ -20,8 +21,8 @@ from pretalx.common.language import LANGUAGE_NAMES
 from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.models import TIMEZONE_CHOICES
 from pretalx.common.models.settings import hierarkey
-from pretalx.common.phrases import phrases
 from pretalx.common.plugins import get_all_plugins
+from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import daterange, path_with_hash
 
@@ -210,7 +211,7 @@ class Event(PretalxModel):
         null=True,
         blank=True,
         validators=[
-            RegexValidator(r"#([0-9A-Fa-f]{3}){1,2}"),
+            RegexValidator("#([0-9A-Fa-f]{3}){1,2}"),
         ],
         verbose_name=_("Main event colour"),
         help_text=_(
@@ -313,7 +314,8 @@ class Event(PretalxModel):
     plugins = models.TextField(null=True, blank=True, verbose_name=_("Plugins"))
 
     template_names = [
-        f"{t}_template" for t in ("accept", "ack", "reject", "update", "question")
+        f"{template}_template"
+        for template in ("accept", "ack", "reject", "update", "question")
     ]
 
     objects = models.Manager()
@@ -454,7 +456,7 @@ class Event(PretalxModel):
     @cached_property
     def named_content_locales(self) -> list:
         locale_names = dict(self.available_content_locales)
-        return [(a, locale_names[a]) for a in self.content_locales]
+        return [(code, locale_names[code]) for code in self.content_locales]
 
     @cached_property
     def named_plugin_locales(self) -> list:
@@ -473,7 +475,7 @@ class Event(PretalxModel):
 
     @cached_property
     def plugin_locales(self) -> list:
-        return sorted(list(self.named_plugin_locales.keys()))
+        return sorted(self.named_plugin_locales.keys())
 
     @cached_property
     def cache(self):
@@ -498,6 +500,14 @@ class Event(PretalxModel):
             return []
         return self.plugins.split(",")
 
+    @cached_property
+    def available_plugins(self):
+        return {
+            plugin.module: plugin
+            for plugin in get_all_plugins(self)
+            if not plugin.name.startswith(".") and getattr(plugin, "visible", True)
+        }
+
     def set_plugins(self, modules: list) -> None:
         """
         This method is not @plugin_list.setter to make the side effects more visible.
@@ -505,21 +515,16 @@ class Event(PretalxModel):
         uninstalled() on all plugins that are not active anymore.
         """
         plugins_active = set(self.plugin_list)
-        plugins_available = {
-            p.module: p
-            for p in get_all_plugins(self)
-            if not p.name.startswith(".") and getattr(p, "visible", True)
-        }
 
-        enable = set(modules) & (set(plugins_available) - plugins_active)
+        enable = set(modules) & (set(self.available_plugins) - plugins_active)
         disable = plugins_active - set(modules)
 
         for module in enable:
-            if hasattr(plugins_available[module].app, "installed"):
-                plugins_available[module].app.installed(self)
+            if hasattr(self.available_plugins[module].app, "installed"):
+                self.available_plugins[module].app.installed(self)
         for module in disable:
-            if hasattr(plugins_available[module].app, "uninstalled"):
-                plugins_available[module].app.uninstalled(self)
+            if hasattr(self.available_plugins[module].app, "uninstalled"):
+                self.available_plugins[module].app.uninstalled(self)
 
         self.plugins = ",".join(modules)
 
@@ -604,7 +609,7 @@ class Event(PretalxModel):
             from pretalx.submission.models import ReviewPhase
 
             cfp_deadline = self.cfp.deadline
-            r = ReviewPhase.objects.create(
+            rp = ReviewPhase.objects.create(
                 event=self,
                 name=_("Review"),
                 start=cfp_deadline,
@@ -615,7 +620,7 @@ class Event(PretalxModel):
             ReviewPhase.objects.create(
                 event=self,
                 name=_("Selection"),
-                start=r.end,
+                start=rp.end,
                 is_active=False,
                 position=1,
                 can_review=False,
@@ -678,7 +683,7 @@ class Event(PretalxModel):
         ]
         if skip_attributes:
             clonable_attributes = [
-                a for a in clonable_attributes if a not in skip_attributes
+                attr for attr in clonable_attributes if attr not in skip_attributes
             ]
         for attribute in clonable_attributes:
             setattr(self, attribute, getattr(other_event, attribute))
@@ -783,12 +788,12 @@ class Event(PretalxModel):
                 score.category = score_category
                 score.save()
 
-        for s in other_event.settings._objects.all():
-            if s.value.startswith("file://"):
+        for sett in other_event.settings._objects.all():
+            if sett.value.startswith("file://"):
                 continue
-            s.object = self
-            s.pk = None
-            s.save()
+            sett.object = self
+            sett.pk = None
+            sett.save()
         self.settings.flush()
         self.cfp.copy_data_from(other_event.cfp, skip_attributes=skip_attributes)
         event_copy_data.send(
@@ -873,7 +878,7 @@ class Event(PretalxModel):
     def teams(self):
         """Returns all :class:`~pretalx.event.models.organiser.Team` objects
         that concern this event."""
-        from .organiser import Team
+        from pretalx.event.models.organiser import Team
 
         return Team.objects.filter(
             models.Q(limit_events__in=[self]) | models.Q(all_events=True),
@@ -953,12 +958,7 @@ class Event(PretalxModel):
         old_position = old_phase.position if old_phase else -1
         future_phases = future_phases.filter(position__gt=old_position)
         next_phase = future_phases.order_by("position").first()
-        if not (
-            next_phase
-            and (
-                (next_phase.start and next_phase.start <= _now) or not next_phase.start
-            )
-        ):
+        if not next_phase or not next_phase.start or next_phase.start > _now:
             return old_phase
         next_phase.activate()
         return next_phase
@@ -1076,7 +1076,7 @@ class Event(PretalxModel):
             ).send()
 
     @transaction.atomic
-    def shred(self):
+    def shred(self, person=None):
         """Irrevocably deletes an event and all related data."""
         from pretalx.common.models import ActivityLog
         from pretalx.person.models import SpeakerProfile
@@ -1090,6 +1090,21 @@ class Event(PretalxModel):
             Submission,
         )
 
+        ActivityLog.objects.create(
+            person=person,
+            action_type="pretalx.event.delete",
+            content_object=self.organiser,
+            is_orga_action=True,
+            data=json.dumps(
+                {
+                    "slug": self.slug,
+                    "name": str(self.name),
+                    # We log the organiser because events and organisers are
+                    # often deleted together.
+                    "organiser": str(self.organiser.name),
+                }
+            ),
+        )
         deletion_order = [
             (self.logged_actions(), False),
             (self.queued_mails.all(), False),

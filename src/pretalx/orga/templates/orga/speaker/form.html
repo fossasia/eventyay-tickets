@@ -9,6 +9,7 @@
 {% block content %}
     {% if form.biography %}
         <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
+        <script defer src="{% static "vendored/purify.min.js" %}"></script>
     {% endif %}
     {% block alternate_link %}
         <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.speakers.full }}{{ form.instance.code }}" />

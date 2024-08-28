@@ -1,7 +1,25 @@
 .. _changelog:
 
 Release Notes
-- :feature:`orga:sidebar` Renamed CfP to Call for Speakers for clarity
+=============
+
+- :feature:`schedule,1794` The iCal schedule export has been made private (available only to organisers) as the utility of importing a conference's entire schedule is limited, and people were frustrated that the iCal export did not reflect any applied schedule filters.
+- :bug:`schedule,1803` The QR code for schedule exporter links was not showing up when hovering on the QR code symbol.
+- :release:`2024.2.1 <2024-08-07>`
+- :bug:`orga` The plugin list was always shown as empty, even when there were plugins installed.
+- :feature:`orga` Administrators can now also deactivate user accounts, which will log out that user and won't allow them to log in again.
+- :release:`2024.2.0 <2024-08-06>`
+- :bug:`orga` The markdown preview posed a security vulnerability by allowing speakers and organisers to include unsafe JavaScript. This JavaScript would only be executed when accessing the preview, i.e. when a speaker or organiser opened to proposal page (not attendees or the public). Thanks to Jorian Woltjer for reporting this issue.
+- :feature:`api` The submission API now has a filter for the ``is_featured`` field.
+- :feature:`cfp,1761` In the CfP submission multi-step form, the tab title now reflects the proposal title, to make it easier to work on multiple proposal submissions at the same time.
+- :bug:`orga:speaker,1768` When filtering the speaker list by only accepted/confirmed speakers, the listed proposal count would be incorrect (inflated).
+- :feature:`cfp,1574` pretalx now supports the ``~~`` strikethrough syntax in Markdown.
+- :bug:`orga:schedule,1702` Sessions starting at exactly midnight of the first day of the event would not show up in the schedule editor (but could be scheduled there by dropping them on the day heading).
+- :feature:`orga:schedule,1730` The schedule editor now allows you to schedule talks that are only "pending accepted" (i.e. the speaker has not yet received the acceptance email), so that organisers can try out how their schedule would look with a given number of tentatively accepted proposals.
+- :feature:`orga` Administrators (i.e. instance owners) can now search a list of all users, which includes their teams and permissions, and links to trigger account deletion and password resets.
+- :bug:`orga:review` Assigning reviewers could lead to incorrect assignments when browsers cached the form, but new reviewers were added to the team, shifting the overall order of input fields.
+- :feature:`cfp` Choice and multiple choice questions now use a drop-down with typeahead (search for options) when they have a lot of options.
+- :feature:`orga,1079` All images in forms in the organiser area now include a preview of the saved image, and open a lightbox instead of the image file when clicked.
 - :announcement:`admin` We now recommend that you use a virtualenv instead of the ``pip --user`` installation method, and have updated our install and upgrade documentation accordingly.
 - :bug:`orga` While organisers could reorder questions, and the order was saved and used in the frontend, the new order was not shown in the organiser backend.
 - :feature:`orga` All tables in the organiser area now come with sticky headers, to accommodate the possible increased length of the tables.

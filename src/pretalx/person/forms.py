@@ -22,7 +22,7 @@ from pretalx.common.mixins.forms import (
     ReadOnlyFlag,
     RequestRequire,
 )
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.forms import AvailabilitiesFormMixin
 from pretalx.submission.models import Question
@@ -183,7 +183,7 @@ class SpeakerProfileForm(
             kwargs["instance"] = self.user.event_profile(self.event)
         super().__init__(*args, **kwargs, event=self.event, limit_to_rooms=True)
         read_only = kwargs.get("read_only", False)
-        initial = kwargs.get("initial", dict())
+        initial = kwargs.get("initial", {})
         initial["name"] = name
 
         if self.user:
@@ -191,12 +191,13 @@ class SpeakerProfileForm(
                 {field: getattr(self.user, field) for field in self.user_fields}
             )
         for field in self.user_fields:
-            field_class = (
-                self.Meta.field_classes.get(field)
-                or User._meta.get_field(field).formfield
+            field_class = self.Meta.field_classes.get(
+                field, User._meta.get_field(field).formfield
             )
             self.fields[field] = field_class(
-                initial=initial.get(field), disabled=read_only
+                initial=initial.get(field),
+                disabled=read_only,
+                help_text=User._meta.get_field(field).help_text,
             )
             if self.Meta.widgets.get(field):
                 self.fields[field].widget = self.Meta.widgets.get(field)()
@@ -216,11 +217,16 @@ class SpeakerProfileForm(
     @cached_property
     def user_fields(self):
         if self.user and not self.essential_only:
-            return [f for f in self.USER_FIELDS if f != "email" or self.with_email]
+            return [
+                field
+                for field in self.USER_FIELDS
+                if field != "email" or self.with_email
+            ]
         return [
-            f
-            for f in self.USER_FIELDS
-            if f not in self.FIRST_TIME_EXCLUDE and (f != "email" or self.with_email)
+            field
+            for field in self.USER_FIELDS
+            if field not in self.FIRST_TIME_EXCLUDE
+            and (field != "email" or self.with_email)
         ]
 
     def clean_email(self):
@@ -234,20 +240,20 @@ class SpeakerProfileForm(
 
     def clean(self):
         data = super().clean()
-        if self.event.cfp.require_avatar:
-            if (
-                not data.get("avatar")
-                and not data.get("get_gravatar")
-                and not (self.user and self.user.has_avatar)
-            ):
-                self.add_error(
-                    "avatar",
-                    forms.ValidationError(
-                        _(
-                            "Please provide a profile picture or allow us to load your picture from gravatar!"
-                        )
-                    ),
-                )
+        if (
+            self.event.cfp.require_avatar
+            and not data.get("avatar")
+            and not data.get("get_gravatar")
+            and not (self.user and self.user.has_avatar)
+        ):
+            self.add_error(
+                "avatar",
+                forms.ValidationError(
+                    _(
+                        "Please provide a profile picture or allow us to load your picture from gravatar!"
+                    )
+                ),
+            )
         return data
 
     def save(self, **kwargs):
@@ -256,7 +262,6 @@ class SpeakerProfileForm(
             if user_attribute == "avatar":
                 if value is False:
                     self.user.avatar = None
-                    # self.user.avatar = getattr(self.user, "avatar") or None  # Don't unset avatar in
                 elif value:
                     self.user.avatar = value
             elif value is None and user_attribute == "get_gravatar":
@@ -280,6 +285,9 @@ class SpeakerProfileForm(
             "biography": MarkdownWidget,
             "avatar_source": MarkdownWidget,
             "avatar_license": MarkdownWidget,
+        }
+        field_classes = {
+            "avatar": ImageField,
         }
         request_require = {"biography", "availabilities"}
 
@@ -326,7 +334,7 @@ class LoginInfoForm(forms.ModelForm):
     def clean(self):
         data = super().clean()
         password = self.cleaned_data.get("password")
-        if password and not password == self.cleaned_data.get("password_repeat"):
+        if password and password != self.cleaned_data.get("password_repeat"):
             self.add_error(
                 "password_repeat", ValidationError(phrases.base.passwords_differ)
             )

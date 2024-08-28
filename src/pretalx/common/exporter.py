@@ -1,10 +1,10 @@
-import base64
-from io import BytesIO, StringIO
+from io import StringIO
 from urllib.parse import quote
 
 import qrcode
 import qrcode.image.svg
 from defusedcsv import csv
+from defusedxml import ElementTree
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 
@@ -94,27 +94,10 @@ class BaseExporter:
         base = "{self.event.urls.export}{self.quoted_identifier}"
 
     def get_qrcode(self):
-        # Generate QR code
-        qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_L,
-            box_size=5,
-            border=4,
+        image = qrcode.make(
+            self.urls.base.full(), image_factory=qrcode.image.svg.SvgPathFillImage
         )
-        qr.add_data(self.urls.base.full())
-        qr.make(fit=True)
-
-        # Create an image from the QR Code instance
-        img = qr.make_image(fill_color="black", back_color="white")
-        # Convert the image to a data URL
-        buffer = BytesIO()
-        img.save(buffer, format="PNG")
-        img_str = base64.b64encode(buffer.getvalue()).decode()
-
-        # Use the data URL in an HTML img tag
-        html_img = f'<img src="data:image/png;base64,{img_str}" alt="QR Code"/>'
-
-        return mark_safe(html_img)
+        return mark_safe(ElementTree.tostring(image.get_image()).decode())
 
 
 class CSVExporterMixin:

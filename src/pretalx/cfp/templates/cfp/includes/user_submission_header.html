@@ -1,0 +1,33 @@
+{% load i18n %}
+<h2>
+    {{ quotation_open }}{{ submission.title }}{{ quotation_close }}
+    {% if submission.state == "draft" %}
+        <span class="badge badge-secondary">{% translate "Draft" %}</span>
+    {% endif %}
+</h2>
+{% if submission.state != "draft" %}
+    <p>
+        {% translate "Current state of your proposal:" %}
+        {% include "cfp/event/fragment_state.html" with state=submission.state %}
+    </p>
+{% else %}
+    <div class="alert alert-info">
+        {% blocktranslate trimmed %}
+            This is a draft proposal.
+            It will never be visible to anybody else, unless you submit it or explicitly share it.
+        {% endblocktranslate %}
+    </div>
+{% endif %}
+{% if submission.public_slots %}
+    <h3>
+        <small>
+            {% for talk in submission.public_slots %}
+                {{ talk.start|date:DAY_MONTH_DATE_FORMAT }}, {{ talk.start|date:"TIME_FORMAT" }}–{{ talk.end|date:"TIME_FORMAT" }}, {{ talk.room.name }} {% if not forloop.last %}·{% endif %}
+            {% endfor %}
+        </small>
+    </h3>
+{% endif %}
+{% if submission.submission_type and request.event.submission_types.all|length > 1 %}<p><strong>{% translate "Session type" %}</strong>: {{ submission.submission_type.name }}</p>{% endif %}
+{% if submission.track and request.event.tracks.all|length > 1 %}<p><strong>{% translate "Track" %}</strong> {{ submission.track.name }}</p>{% endif %}
+{% if request.event.is_multilingual and request.event.cfp.request_content_locale %}<p><strong>{{ phrases.base.language }}</strong> {{ submission.get_content_locale_display }}</p>{% endif %}
+<p><strong>{% translate "Duration" %}</strong> {{ submission.export_duration }}</p>

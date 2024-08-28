@@ -21,7 +21,7 @@ class OutputFilter(OutputWrapper):
     )
 
     def write(self, msg, style_func=None, ending=None):
-        if any(b in msg for b in self.banlist):
+        if any(word in msg for word in self.banlist):
             return
         super().write(msg, style_func, ending)
 

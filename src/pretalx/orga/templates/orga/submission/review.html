@@ -8,6 +8,7 @@
 
 {% block submission_content %}
     <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
+    <script defer src="{% static "vendored/purify.min.js" %}"></script>
     <script src="{% static "orga/js/reviewSubmission.js" %}" defer></script>
 
     {% has_perm 'orga.view_reviews' request.user submission as can_view_other_reviews %}

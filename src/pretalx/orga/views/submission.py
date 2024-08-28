@@ -461,7 +461,9 @@ class SubmissionContent(
             elif form.has_changed():
                 form.instance.submission = obj
                 form.save()
-                change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
+                change_data = {
+                    key: form.cleaned_data.get(key) for key in form.changed_data
+                }
                 change_data["id"] = form.instance.pk
                 obj.log_action(
                     "pretalx.submission.resource.update", person=self.request.user
@@ -839,9 +841,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
         )
         return json.dumps(
             sorted(
-                list(
-                    {"label": label, "value": value} for label, value in counter.items()
-                ),
+                [{"label": label, "value": value} for label, value in counter.items()],
                 key=itemgetter("label"),
             )
         )
@@ -856,9 +856,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
         )
         return json.dumps(
             sorted(
-                list(
-                    {"label": label, "value": value} for label, value in counter.items()
-                ),
+                [{"label": label, "value": value} for label, value in counter.items()],
                 key=itemgetter("label"),
             )
         )
@@ -874,10 +872,10 @@ class SubmissionStats(PermissionRequired, TemplateView):
             )
             return json.dumps(
                 sorted(
-                    list(
+                    [
                         {"label": label, "value": value}
                         for label, value in counter.items()
-                    ),
+                    ],
                     key=itemgetter("label"),
                 )
             )
@@ -916,9 +914,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
         )
         return json.dumps(
             sorted(
-                list(
-                    {"label": label, "value": value} for label, value in counter.items()
-                ),
+                [{"label": label, "value": value} for label, value in counter.items()],
                 key=itemgetter("label"),
             )
         )
@@ -933,9 +929,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
         )
         return json.dumps(
             sorted(
-                list(
-                    {"label": label, "value": value} for label, value in counter.items()
-                ),
+                [{"label": label, "value": value} for label, value in counter.items()],
                 key=itemgetter("label"),
             )
         )
@@ -951,10 +945,10 @@ class SubmissionStats(PermissionRequired, TemplateView):
             )
             return json.dumps(
                 sorted(
-                    list(
+                    [
                         {"label": label, "value": value}
                         for label, value in counter.items()
-                    ),
+                    ],
                     key=itemgetter("label"),
                 )
             )
@@ -970,12 +964,11 @@ class AllFeedbacksList(EventPermissionRequired, PaginationMixin, ListView):
     paginate_by = 25
 
     def get_queryset(self):
-        qs = (
+        return (
             Feedback.objects.order_by("-pk")
             .select_related("talk")
             .filter(talk__event=self.request.event)
         )
-        return qs
 
 
 class TagList(EventPermissionRequired, PaginationMixin, ListView):

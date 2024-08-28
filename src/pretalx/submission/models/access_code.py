@@ -20,7 +20,7 @@ class SubmitterAccessCode(GenerateCode, PretalxModel):
         verbose_name=_("Access code"),
         max_length=255,
         db_index=True,
-        validators=[validators.RegexValidator(r"^[a-zA-Z0-9]+$")],
+        validators=[validators.RegexValidator("^[a-zA-Z0-9]+$")],
     )
     track = models.ForeignKey(
         to="submission.Track",

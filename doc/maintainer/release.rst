@@ -25,8 +25,8 @@ System checks
 -------------
 
 1. Deploy the release-ready commit to an instance. Check if the upgrade and the instance works.
-2. Clone pretalx into a clean repo: ``git clone git@github.com:pretalx/pretalx pretalx-release && cd pretalx-release``
-3. Set up your environment: ``mkvirtualenv pretalx-release && pip install -e . check-manifest twine``
+2. Clean clone: ``git clone git@github.com:pretalx/pretalx pretalx-release && cd pretalx-release``
+3. Set up your environment: ``mkvirtualenv pretalx-release && pip install -e . check-manifest twine wheel``
 4. Run ``check-manifest`` **locally**.
 
 Take-off and landing
@@ -37,7 +37,7 @@ Take-off and landing
 3. Make a release commit: ``RELEASE=vx.y.z; git commit -am "Release $RELEASE" && git tag -m "Release $RELEASE" $RELEASE``
 4. Build a new release: ``rm -rf dist/ build/ pretalx.egg-info && python -m build -n``
 5. Upload the release: ``twine upload dist/pretalx-*``
-6. Push the release: ``git push && git push --tags``
+6. Push the release: ``git push``
 7. Install/update the package somewhere.
 8. Publish the blog post.
 9. Add the release on `GitHub <https://github.com/pretalx/pretalx/releases>`_ (upload the archive you uploaded to PyPI, and add a link to the correct section of the :ref:`changelog`)

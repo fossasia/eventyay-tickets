@@ -25,9 +25,6 @@ class AvailabilitiesFormMixin(forms.Form):
     )
 
     def _serialize(self, event, instance):
-        def is_valid(availability):
-            return availability["end"] > availability["start"]
-
         if instance:
             availabilities = AvailabilitySerializer(
                 instance.availabilities.all(), many=True
@@ -36,7 +33,9 @@ class AvailabilitiesFormMixin(forms.Form):
             availabilities = []
 
         result = {
-            "availabilities": [a for a in availabilities if is_valid(a)],
+            "availabilities": [
+                avail for avail in availabilities if avail["end"] > avail["start"]
+            ],
             "event": {
                 "timezone": event.timezone,
                 "date_from": str(event.date_from),
@@ -66,7 +65,7 @@ class AvailabilitiesFormMixin(forms.Form):
         self.event = event
         self.resolution = kwargs.pop("resolution", None)
         self.limit_to_rooms = limit_to_rooms
-        initial = kwargs.pop("initial", dict())
+        initial = kwargs.pop("initial", {})
         initial_instance = kwargs["instance"]
         initial["availabilities"] = self._serialize(self.event, initial_instance)
         if not isinstance(self, forms.BaseModelForm):
@@ -121,7 +120,7 @@ class AvailabilitiesFormMixin(forms.Form):
             raise forms.ValidationError(message)
         rawavail.pop("id", None)
         rawavail.pop("allDay", None)
-        if not set(rawavail.keys()) == {"start", "end"}:
+        if set(rawavail.keys()) != {"start", "end"}:
             raise forms.ValidationError(message)
 
         try:
@@ -171,8 +170,7 @@ class AvailabilitiesFormMixin(forms.Form):
         if not availabilities and required:
             raise forms.ValidationError(_("Please fill in your availability!"))
         # Remove overlaps by merging availabilities
-        availabilities = Availability.union(availabilities)
-        return availabilities
+        return Availability.union(availabilities)
 
     def _set_foreignkeys(self, instance, availabilities):
         """Set the reference to `instance` in each given availability.

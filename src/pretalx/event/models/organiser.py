@@ -1,3 +1,4 @@
+import json
 import string
 
 from django.core.validators import RegexValidator
@@ -53,9 +54,23 @@ class Organiser(PretalxModel):
         new_team = "{teams}new"
 
     @transaction.atomic
-    def shred(self):
+    def shred(self, person=None):
         """Irrevocably deletes the organiser and all related events and their
         data."""
+        from pretalx.common.models import ActivityLog
+
+        ActivityLog.objects.create(
+            person=person,
+            action_type="pretalx.organiser.delete",
+            content_object=self,
+            is_orga_action=True,
+            data=json.dumps(
+                {
+                    "slug": self.slug,
+                    "name": str(self.name),
+                }
+            ),
+        )
         for event in self.events.all():
             with scope(event=event):
                 event.shred()
@@ -132,10 +147,10 @@ class Team(PretalxModel):
         """A set of all permissions this team has, as strings."""
         attribs = dir(self)
         return {
-            a
-            for a in attribs
-            if (a.startswith("can_") or a.startswith("is_"))
-            and getattr(self, a, False) is True
+            attr
+            for attr in attribs
+            if (attr.startswith("can_") or attr.startswith("is_"))
+            and getattr(self, attr, False) is True
         }
 
     class orga_urls(EventUrls):

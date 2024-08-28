@@ -2,7 +2,6 @@ import json
 from collections import defaultdict
 
 from csp.decorators import csp_update
-from django.conf import settings
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Count
@@ -76,7 +75,7 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
         if deadlines:
             return dict(deadlines)
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return self.request.event.cfp
 
     def get_success_url(self) -> str:
@@ -120,17 +119,17 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_template_names(self):
         action = self.request.path.lstrip("/").rpartition("/")[2]
         if action in ("edit", "new"):
-            return "orga/cfp/question_form.html"
-        return "orga/cfp/question_detail.html"
+            return ["orga/cfp/question_form.html"]
+        return ["orga/cfp/question_detail.html"]
 
-    @property
+    @cached_property
     def permission_object(self):
         return self.object or self.request.event
 
     def get_permission_object(self):
         return self.permission_object
 
-    def get_object(self) -> Question:
+    def get_object(self, queryset=None) -> Question:
         return Question.all_objects.filter(
             event=self.request.event, pk=self.kwargs.get("pk")
         ).first()
@@ -164,8 +163,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 url = f"{url}submission_type={submission_type}&"
         else:
             url = self.request.event.orga_urls.speakers + "?"
-        url = f"{url}&question={self.question.id}&"
-        return url
+        return f"{url}&question={self.question.id}&"
 
     @context
     @cached_property
@@ -206,7 +204,9 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
             elif form.has_changed():
                 form.instance.question = obj
                 form.save()
-                change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
+                change_data = {
+                    key: form.cleaned_data.get(key) for key in form.changed_data
+                }
                 change_data["id"] = form.instance.pk
                 obj.log_action(
                     "pretalx.question.option.update",
@@ -223,7 +223,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         for form in extra_forms:
             form.instance.question = obj
             form.save()
-            change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
+            change_data = {key: form.cleaned_data.get(key) for key in form.changed_data}
             change_data["id"] = form.instance.pk
             obj.log_action(
                 "pretalx.question.option.create",
@@ -303,10 +303,17 @@ class CfPQuestionDelete(PermissionRequired, DetailView):
     permission_required = "orga.remove_question"
     template_name = "orga/cfp/question_delete.html"
 
-    def get_object(self) -> Question:
+    def get_object(self, queryset=None) -> Question:
         return get_object_or_404(
             Question.all_objects, event=self.request.event, pk=self.kwargs.get("pk")
         )
+
+    def action_object_name(self):
+        return _("Question") + f": {self.get_object().question}"
+
+    @property
+    def action_back_url(self):
+        return self.request.event.cfp.urls.questions
 
     def post(self, request, *args, **kwargs):
         question = self.get_object()
@@ -434,7 +441,7 @@ class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView
     def get_success_url(self) -> str:
         return self.request.event.cfp.urls.types
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return self.request.event.submission_types.filter(
             pk=self.kwargs.get("pk")
         ).first()
@@ -483,10 +490,17 @@ class SubmissionTypeDelete(PermissionRequired, DetailView):
     permission_required = "orga.remove_submission_type"
     template_name = "orga/cfp/submission_type_delete.html"
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return get_object_or_404(
             self.request.event.submission_types, pk=self.kwargs.get("pk")
         )
+
+    def action_object_name(self):
+        return _("Session type") + f": {self.get_object().name}"
+
+    @property
+    def action_back_url(self):
+        return self.request.event.cfp.urls.types
 
     def post(self, request, *args, **kwargs):
         submission_type = self.get_object()
@@ -543,7 +557,7 @@ class TrackDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def get_success_url(self) -> str:
         return self.request.event.cfp.urls.tracks
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return self.request.event.tracks.filter(pk=self.kwargs.get("pk")).first()
 
     def get_permission_object(self):
@@ -568,8 +582,15 @@ class TrackDelete(PermissionRequired, DetailView):
     permission_required = "orga.remove_track"
     template_name = "orga/cfp/track_delete.html"
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return get_object_or_404(self.request.event.tracks, pk=self.kwargs.get("pk"))
+
+    def action_object_name(self):
+        return _("Track") + f": {self.get_object().name}"
+
+    @property
+    def action_back_url(self):
+        return self.request.event.cfp.urls.tracks
 
     def post(self, request, *args, **kwargs):
         track = self.get_object()
@@ -676,11 +697,18 @@ class AccessCodeDelete(PermissionRequired, DetailView):
     permission_required = "orga.remove_access_code"
     template_name = "orga/cfp/access_code_delete.html"
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return get_object_or_404(
             self.request.event.submitter_access_codes,
             code__iexact=self.kwargs.get("code"),
         )
+
+    def action_object_name(self):
+        return _("Access code") + f": {self.get_object().code}"
+
+    @property
+    def action_back_url(self):
+        return self.request.event.cfp.urls.access_codes
 
     def post(self, request, *args, **kwargs):
         access_code = self.get_object()
@@ -707,11 +735,11 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
     permission_required = "orga.edit_cfp"
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["current_configuration"] = (
-            self.request.event.cfp_flow.get_editor_config(json_compat=True)
+        ctx = super().get_context_data(**kwargs)
+        ctx["current_configuration"] = self.request.event.cfp_flow.get_editor_config(
+            json_compat=True
         )
-        context["event_configuration"] = {
+        ctx["event_configuration"] = {
             "header_pattern": self.request.event.display_settings["header_pattern"]
             or "bg-primary",
             "header_image": (
@@ -725,9 +753,7 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
             "primary_color": self.request.event.get_primary_color(),
             "locales": self.request.event.locales,
         }
-        site_name = dict(settings.CONFIG.items("site")).get("name")
-        context["site_name"] = site_name
-        return context
+        return ctx
 
     def post(self, request, *args, **kwargs):
         try:

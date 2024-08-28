@@ -55,11 +55,10 @@ class ExportForm(forms.Form):
 
     @cached_property
     def export_fields(self):
-        result = [
+        return [
             forms.BoundField(self, self.fields[field], field)
             for field in self.export_field_names + self.question_field_names
         ]
-        return result
 
     def _build_model_fields(self):
         for field in self.Meta.model_fields:
@@ -133,15 +132,16 @@ class ExportForm(forms.Form):
             if self.cleaned_data.get(field_name)
         ]
         questions = [
-            q for q in self.questions if self.cleaned_data.get(f"question_{q.pk}")
+            question
+            for question in self.questions
+            if self.cleaned_data.get(f"question_{question.pk}")
         ]
         data = self.get_data(self.get_queryset(), fields, questions)
         if not data:
             return
         if self.cleaned_data.get("export_format") == "csv":
             return self.csv_export(data)
-        else:
-            return self.json_export(data)
+        return self.json_export(data)
 
     def csv_export(self, data):
         delimiters = {

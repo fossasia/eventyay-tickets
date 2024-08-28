@@ -1,6 +1,6 @@
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
-from pretalx.common.phrases import BasePhrases, Phrases
+from pretalx.common.text.phrases import Phrases
 
 
 class AgendaPhrases(Phrases, app="agenda"):
@@ -8,10 +8,8 @@ class AgendaPhrases(Phrases, app="agenda"):
         _("Thank you for your feedback!"),
         _("Thanks, we (and our speakers) appreciate your feedback!"),
     ]
-
-    feedback_send = BasePhrases.send + [
-        _("Send feedback"),
-        _("Send review"),
-    ]
-
     schedule_do_not_record = _("This session will not be recorded.")
+
+    view_schedule = _("View conference schedule")
+    view_schedule_preview = _("View schedule preview")
+    view_own_submissions = _("Edit or view your proposals")

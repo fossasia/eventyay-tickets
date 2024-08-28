@@ -42,7 +42,7 @@ class Command(BaseCommand):
         call_command(
             "collectstatic", verbosity=silent, interactive=False, clear=options["clear"]
         )
-        with override_settings(_VITE_IGNORE=True):
+        with override_settings(VITE_IGNORE=True):
             frontend_dir = (
                 Path(__file__).parent.parent.parent.parent / "frontend/schedule-editor/"
             )

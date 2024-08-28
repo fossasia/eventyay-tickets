@@ -14,7 +14,7 @@ from i18nfield.fields import I18nTextField
 
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.mixins.models import PretalxModel
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.notifications import render_notifications
@@ -73,7 +73,7 @@ class Schedule(PretalxModel):
         """
         from pretalx.schedule.models import TalkSlot
 
-        if name in ["wip", "latest"]:
+        if name in ("wip", "latest"):
             raise Exception(f'Cannot use reserved name "{name}" for schedule version.')
         if self.version:
             raise Exception(
@@ -695,7 +695,7 @@ class Schedule(PretalxModel):
                     }
                 )
         tracks.discard(None)
-        tracks = sorted(list(tracks), key=lambda x: x.position or 0)
+        tracks = sorted(tracks, key=lambda track: track.position or 0)
         result["tracks"] = [
             {
                 "id": track.id,

@@ -1,6 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
-from pretalx.common.phrases import Phrases
+from pretalx.common.text.phrases import Phrases
 
 
 class CfPPhrases(Phrases, app="cfp"):
@@ -48,3 +48,20 @@ class CfPPhrases(Phrases, app="cfp"):
     submission_email_fail = _(
         "We are experiencing difficulties when sending mails, but your session was submitted successfully!"
     )
+    speaker_email = _("Speaker email")
+    invite_subject = _("{speaker} invites you to join their session!")
+    invite_text = _(
+        """Hi!
+
+I’d like to invite you to be a speaker in the session
+
+  “{title}”
+
+at {event}. Please follow this link to join:
+
+  {url}
+
+I’m looking forward to it!
+{speaker}"""
+    )
+    questions = _("Questions")

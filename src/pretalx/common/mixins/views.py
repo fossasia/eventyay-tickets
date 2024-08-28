@@ -9,7 +9,6 @@ from django.conf import settings
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import CharField, Q
 from django.db.models.functions import Lower
-from django.forms import ValidationError
 from django.http import FileResponse, Http404
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
@@ -21,6 +20,7 @@ from i18nfield.forms import I18nModelForm
 from rules.contrib.views import PermissionRequiredMixin
 
 from pretalx.common.forms import SearchForm
+from pretalx.common.text.phrases import phrases
 
 SessionStore = import_string(f"{settings.SESSION_ENGINE}.SessionStore")
 
@@ -45,7 +45,7 @@ class ActionFromUrl:
     @context
     @cached_property
     def action(self):
-        if not any(_id in self.kwargs for _id in ["pk", "code"]):
+        if not any(_id in self.kwargs for _id in ("pk", "code")):
             if self._check_permission(
                 self.create_permission_required or self.write_permission_required
             ):
@@ -89,7 +89,7 @@ class Sortable:
         return list(secondary_sort_config.get(key, []) or [])
 
     def _sort_queryset(self, qs, fields):
-        fields = [k for k in fields if k]
+        fields = [key for key in fields if key]
         # If the model does not have a Meta.ordering, we need to add a
         # final sort key to make sure the sorting is stable.
         if not qs.model._meta.ordering and "pk" not in fields and "-pk" not in fields:
@@ -265,7 +265,7 @@ class SensibleBackWizardMixin:
         wizard_goto_step = self.request.POST.get("wizard_goto_step")
         management_form = ManagementForm(self.request.POST, prefix=self.prefix)
         if not management_form.is_valid():
-            raise ValidationError(
+            raise forms.ValidationError(
                 _("ManagementForm data is missing or has been tampered with."),
                 code="missing_management_form",
             )
@@ -346,4 +346,71 @@ class PaginationMixin:
         ctx = super().get_context_data(**kwargs)
         ctx["page_size"] = self.get_paginate_by(None)
         ctx["pagination_sizes"] = [50, 100, 250]
+        return ctx
+
+
+class ActionConfirmMixin:
+    """
+    Mixin providing all variables needed for the action_confirm.html template,
+    which you can either include via common/includes/action_confirm.html, or
+    use directly as common/action_confirm.html.
+
+    Implement at least:
+    - action_object_name
+
+    Implement probably:
+    - action_back_url
+
+    If the view is not a delete view, also implement:
+    - action_confirm_label
+    - action_confirm_color
+    - action_confirm_icon
+    - action_title
+    - action_text
+    """
+
+    template_name = "common/action_confirm.html"
+    action_object_name = None  # Shown between the title and the warning text
+    action_text = phrases.base.delete_warning  # Use this for context or warnings
+    action_title = phrases.base.delete_confirm_heading  # Shown as heading and as title
+    action_confirm_color = "danger"
+    action_confirm_icon = "trash"
+    action_confirm_label = phrases.base.delete_button
+    action_confirm_name = None
+    action_confirm_value = None
+    action_back_color = "outline-info"
+    action_back_icon = None
+    action_back_label = phrases.base.back_button
+
+    @property
+    def additional_actions(self):
+        # Actions can be links or buttons, and should be a list of dicts:
+        # optional attributes: label, color, icon
+        # links additionally have href
+        # buttons additionall have name, value
+        return []
+
+    @property
+    def action_back_url(self):
+        url_param = self.request.GET.get("next") or self.request.GET.get("back")
+        if url_param:
+            return urllib.parse.unquote(url_param)
+        # Fallback if we don't have a next parameter: go up one level
+        return self.request.path.rsplit("/", 2)[0]
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["action_additional_actions"] = self.additional_actions
+        ctx["action_back_color"] = self.action_back_color
+        ctx["action_back_icon"] = self.action_back_icon
+        ctx["action_back_label"] = self.action_back_label
+        ctx["action_back_url"] = self.action_back_url
+        ctx["action_confirm_color"] = self.action_confirm_color
+        ctx["action_confirm_icon"] = self.action_confirm_icon
+        ctx["action_confirm_label"] = self.action_confirm_label
+        ctx["action_confirm_name"] = self.action_confirm_name
+        ctx["action_confirm_value"] = self.action_confirm_value
+        ctx["action_text"] = self.action_text
+        ctx["action_title"] = self.action_title
+        ctx["action_object_name"] = self.action_object_name
         return ctx

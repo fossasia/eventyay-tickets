@@ -12,26 +12,6 @@ class NamespacedCache:
         self.prefixkey = prefixkey
         self._last_prefix = None
 
-    def _prefix_key(self, original_key: str, known_prefix=None) -> str:
-        # Race conditions can happen here, but should be very very rare.
-        # We could only handle this by going _really_ lowlevel using
-        # memcached's `add` keyword instead of `set`.
-        # See also:
-        # https://code.google.com/p/memcached/wiki/NewProgrammingTricks#Namespacing
-        prefix = known_prefix or self.cache.get(self.prefixkey)
-        if prefix is None:
-            prefix = int(time.time())
-            self.cache.set(self.prefixkey, prefix)
-        self._last_prefix = prefix
-        key = "%s:%d:%s" % (self.prefixkey, prefix, original_key)
-        if len(key) > 200:  # Hash long keys, as memcached has a length limit
-            # TODO: Use a more efficient, non-cryptographic hash algorithm
-            key = hashlib.sha256(key.encode("UTF-8")).hexdigest()
-        return key
-
-    def _strip_prefix(self, key: str) -> str:
-        return key.split(":", 2 + self.prefixkey.count(":"))[-1]
-
     def clear(self) -> None:
         self._last_prefix = None
         try:
@@ -56,14 +36,14 @@ class NamespacedCache:
     def get_many(self, keys: list[str]) -> dict[str, str]:
         values = self.cache.get_many([self._prefix_key(key) for key in keys])
         newvalues = {}
-        for k, v in values.items():
-            newvalues[self._strip_prefix(k)] = v
+        for key, value in values.items():
+            newvalues[self._strip_prefix(key)] = value
         return newvalues
 
     def set_many(self, values: dict[str, str], timeout=300):
         newvalues = {}
-        for k, v in values.items():
-            newvalues[self._prefix_key(k)] = v
+        for key, value in values.items():
+            newvalues[self._prefix_key(key)] = value
         return self.cache.set_many(newvalues, timeout)
 
     def delete(self, key: str):  # NOQA
@@ -80,6 +60,26 @@ class NamespacedCache:
 
     def close(self):  # NOQA
         pass
+
+    def _prefix_key(self, original_key: str, known_prefix=None) -> str:
+        # Race conditions can happen here, but should be very very rare.
+        # We could only handle this by going _really_ lowlevel using
+        # memcached's `add` keyword instead of `set`.
+        # See also:
+        # https://code.google.com/p/memcached/wiki/NewProgrammingTricks#Namespacing
+        prefix = known_prefix or self.cache.get(self.prefixkey)
+        if prefix is None:
+            prefix = int(time.time())
+            self.cache.set(self.prefixkey, prefix)
+        self._last_prefix = prefix
+        key = f"{self.prefixkey}:{prefix}:{original_key}"
+        if len(key) > 200:  # Hash long keys, as memcached has a length limit
+            # TODO: Use a more efficient, non-cryptographic hash algorithm
+            key = hashlib.sha256(key.encode("UTF-8")).hexdigest()
+        return key
+
+    def _strip_prefix(self, key: str) -> str:
+        return key.split(":", 2 + self.prefixkey.count(":"))[-1]
 
 
 class ObjectRelatedCache(NamespacedCache):

@@ -6,7 +6,7 @@ from itertools import repeat
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import JSONField, Q
+from django.db.models import JSONField
 from django.db.models.fields.files import FieldFile
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
@@ -21,7 +21,7 @@ from rest_framework import serializers
 from pretalx.common.choices import Choices
 from pretalx.common.exceptions import SubmissionError
 from pretalx.common.mixins.models import GenerateCode, PretalxModel
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import path_with_hash
 from pretalx.mail.models import MailTemplate, QueuedMail
@@ -68,7 +68,7 @@ class SubmissionStates(Choices):
         CONFIRMED: (ACCEPTED, CANCELED),
         CANCELED: (ACCEPTED, CONFIRMED),
         WITHDRAWN: (SUBMITTED),
-        DELETED: tuple(),
+        DELETED: (),
         DRAFT: (SUBMITTED,),
     }
 
@@ -715,7 +715,7 @@ class Submission(GenerateCode, PretalxModel):
             "0",
         ]  # compatibility with imported frab data
         base = len(charset)
-        table = {char: i for i, char in enumerate(charset)}
+        table = {char: cp for cp, char in enumerate(charset)}
 
         intval = 0
         for char in self.code:
@@ -773,12 +773,16 @@ class Submission(GenerateCode, PretalxModel):
 
     @cached_property
     def median_score(self):
-        scores = [r.score for r in self.reviews.all() if r.score is not None]
+        scores = [
+            review.score for review in self.reviews.all() if review.score is not None
+        ]
         return statistics.median(scores) if scores else None
 
     @cached_property
     def mean_score(self):
-        scores = [r.score for r in self.reviews.all() if r.score is not None]
+        scores = [
+            review.score for review in self.reviews.all() if review.score is not None
+        ]
         return round(statistics.fmean(scores), 1) if scores else None
 
     @cached_property
@@ -794,10 +798,14 @@ class Submission(GenerateCode, PretalxModel):
     @cached_property
     def active_resources(self):
         return self.resources.filter(
-            Q(  # either the resource exists
-                ~Q(resource="") & Q(resource__isnull=False) & ~Q(resource="None")
+            models.Q(  # either the resource exists
+                ~models.Q(resource="")
+                & models.Q(resource__isnull=False)
+                & ~models.Q(resource="None")
             )
-            | Q(Q(link__isnull=False) & ~Q(link=""))  # or the link exists
+            | models.Q(
+                models.Q(link__isnull=False) & ~models.Q(link="")
+            )  # or the link exists
         ).order_by("link")
 
     @property

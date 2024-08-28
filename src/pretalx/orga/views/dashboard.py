@@ -59,7 +59,7 @@ class DashboardEventListView(TemplateView):
                         state
                         for state in SubmissionStates.display_values.keys()
                         if state
-                        not in [SubmissionStates.DELETED, SubmissionStates.DRAFT]
+                        not in (SubmissionStates.DELETED, SubmissionStates.DRAFT)
                     ]
                 ),
             )
@@ -361,5 +361,5 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
             }
         )
         result["tiles"] += self.get_review_tiles()
-        result["tiles"].sort(key=lambda x: x.get("priority") or 100)
+        result["tiles"].sort(key=lambda tile: tile.get("priority") or 100)
         return result

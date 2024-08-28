@@ -118,12 +118,9 @@ class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):
 
     def clean(self):
         data = super().clean()
-        if not self.errors:
-            # if we already have found errors, no need to add another one
-            if not data.get("email") and not data.get("bulk_email"):
-                raise forms.ValidationError(
-                    _("Please enter at least one email address!")
-                )
+        # if we already have found errors, no need to add another one
+        if not self.errors and not data.get("email") and not data.get("bulk_email"):
+            raise forms.ValidationError(_("Please enter at least one email address!"))
         return data
 
     def save(self, team):
@@ -192,7 +189,7 @@ class EventWizardBasicsForm(I18nHelpText, I18nModelForm):
         self.locales = locales or []
         super().__init__(*args, **kwargs, locales=locales)
         self.fields["locale"].choices = [
-            (a, b) for a, b in settings.LANGUAGES if a in self.locales
+            (code, lang) for code, lang in settings.LANGUAGES if code in self.locales
         ]
         self.fields["slug"].help_text = (
             str(

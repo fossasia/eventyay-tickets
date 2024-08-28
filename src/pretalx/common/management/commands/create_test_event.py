@@ -16,6 +16,14 @@ from pretalx.schedule.models import Room
 from pretalx.submission.models import Review, Submission, SubmissionType, Track
 
 
+def schedule_slot(submission, time, room):
+    slot = submission.slots.first()
+    slot.start = time
+    slot.end = time + dt.timedelta(minutes=submission.submission_type.default_duration)
+    slot.room = room
+    slot.save()
+
+
 class Command(BaseCommand):
     help = "Create a test event"
 
@@ -100,8 +108,8 @@ Feel free to look around, but don\'t be alarmed if something doesn\'t quite make
                     name=self.fake.catch_phrase().split()[0],
                     color=self.fake.hex_color(),
                 )
-            event.cfp.headline = "DemoCon submissions are {}!".format(
-                "open" if end_stage == "cfp" else "closed"
+            event.cfp.headline = "DemoCon submissions are {state}!".format(
+                state="open" if end_stage == "cfp" else "closed"
             )
             track_text = "\n".join(f"- {track.name}" for track in event.tracks.all())
             event.cfp.text = f"""This is the Call for Participation for DemoCon!\n\n{intro}\n\n
@@ -126,7 +134,11 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
 
     def build_room(self):
         name = " ".join(
-            [a for a in re.split(r"([A-Z][a-z]*\d*)", self.fake.color_name()) if a]
+            [
+                clr
+                for clr in re.split(r"([A-Z][a-z]*\d*)", self.fake.color_name())
+                if clr
+            ]
         )
         return Room.objects.create(
             event=self.event, name=f"{name} Room", position=self.fake.random_digit()
@@ -263,13 +275,13 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
             self.build_review(reviewer, submission, positive=False)
 
         all_talks = sorted(
-            list(self.event.submissions.filter(submission_type__name="Talk")),
-            key=lambda x: x.median_score,
+            self.event.submissions.filter(submission_type__name="Talk"),
+            key=lambda talk: talk.median_score,
             reverse=True,
         )
         all_workshops = sorted(
-            list(self.event.submissions.filter(submission_type__name="Workshop")),
-            key=lambda x: x.median_score,
+            self.event.submissions.filter(submission_type__name="Workshop"),
+            key=lambda talk: talk.median_score,
             reverse=True,
         )
 
@@ -308,25 +320,12 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
         talk_room, workshop_room = self.event.rooms.all()
         current_time = self.event.datetime_from + dt.timedelta(hours=9)
 
-        def schedule_slot(submission, time, room):
-            slot = submission.slots.first()
-            slot.start = time
-            slot.end = time + dt.timedelta(
-                minutes=submission.submission_type.default_duration
-            )
-            slot.room = room
-            slot.save()
-
-        def build_block():
-            nonlocal current_time
-            schedule_slot(next(workshops), current_time, workshop_room)
-            for _ in range(3):
-                schedule_slot(next(talks), current_time, talk_room)
-                current_time += dt.timedelta(minutes=30)
-
         for _ in range(3):
             for _ in range(3):
-                build_block()
+                schedule_slot(next(workshops), current_time, workshop_room)
+                for _ in range(3):
+                    schedule_slot(next(talks), current_time, talk_room)
+                    current_time += dt.timedelta(minutes=30)
                 current_time += dt.timedelta(minutes=60)
             current_time += dt.timedelta(hours=16, minutes=30)
         self.event.wip_schedule.freeze("v1.0")

@@ -4,7 +4,7 @@ import django.utils.safestring
 from django import template
 
 register = template.Library()
-strip_ascii = {c: None for c in list(range(0, 9)) + list(range(11, 32))}
+strip_ascii = dict.fromkeys(list(range(9)) + list(range(11, 32)))
 
 
 @register.filter

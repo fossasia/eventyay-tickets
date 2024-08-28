@@ -10,7 +10,7 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 
 from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.mixins.forms import ReadOnlyFlag
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.orga.forms.export import ExportForm
 from pretalx.person.models import User
 from pretalx.submission.models import Question, Review, Submission
@@ -183,57 +183,56 @@ class DirectionForm(forms.Form):
     )
 
 
-class ReviewerForProposalForm(forms.ModelForm):
-    def __init__(self, *args, reviewers=None, **kwargs):
+class ReviewAssignmentForm(forms.Form):
+    def __init__(self, *args, event=None, **kwargs):
+        self.event = event
+        self.reviewers = (
+            User.objects.filter(teams__in=self.event.teams.filter(is_reviewer=True))
+            .order_by("name")
+            .distinct()
+        ).prefetch_related("assigned_reviews")
+        self.submissions = self.event.submissions.order_by("title").prefetch_related(
+            "assigned_reviewers"
+        )
         super().__init__(*args, **kwargs)
-        self.fields["assigned_reviewers"].queryset = reviewers
-        self.fields["assigned_reviewers"].label = self.instance.title
+
+
+class ReviewerForProposalForm(ReviewAssignmentForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        review_choices = [(reviewer.id, reviewer.name) for reviewer in self.reviewers]
+        for submission in self.submissions:
+            self.fields[submission.code] = forms.MultipleChoiceField(
+                choices=review_choices,
+                widget=forms.SelectMultiple(attrs={"class": "select2"}),
+                initial=list(
+                    submission.assigned_reviewers.values_list("id", flat=True)
+                ),
+                label=submission.title,
+                required=False,
+            )
 
     def save(self, *args, **kwargs):
-        # No calling 'super().save()' here – it would potentially update a submission's code!
-        instance = self.instance
-        if "assigned_reviewers" in self.changed_data:
-            new_code = self.cleaned_data.get("code")
-            if instance.code != new_code:
-                instance = instance.event.submissions.all().get(code=new_code)
-            instance.assigned_reviewers.set(self.cleaned_data["assigned_reviewers"])
-
-    class Meta:
-        model = Submission
-        fields = ["assigned_reviewers", "code"]
-        widgets = {
-            "assigned_reviewers": forms.SelectMultiple(attrs={"class": "select2"}),
-            "code": forms.HiddenInput(),
-        }
+        for submission in self.submissions:
+            submission.assigned_reviewers.set(self.cleaned_data[submission.code])
 
 
-class ProposalForReviewerForm(forms.ModelForm):
-    def __init__(self, *args, proposals=None, **kwargs):
+class ProposalForReviewerForm(ReviewAssignmentForm):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        initial = proposals.filter(assigned_reviewers__in=[self.instance]).values_list(
-            "id", flat=True
-        )
-        self.fields["assigned_reviews"] = forms.MultipleChoiceField(
-            choices=((p.id, p.title) for p in proposals),
-            widget=forms.SelectMultiple(attrs={"class": "select2"}),
-            label=self.instance.name,
-            initial=list(initial),
-            required=False,
-        )
+        submission_choices = [(sub.id, sub.title) for sub in self.submissions]
+        for reviewer in self.reviewers:
+            self.fields[reviewer.code] = forms.MultipleChoiceField(
+                choices=submission_choices,
+                widget=forms.SelectMultiple(attrs={"class": "select2"}),
+                initial=list(reviewer.assigned_reviews.values_list("id", flat=True)),
+                label=reviewer.name,
+                required=False,
+            )
 
     def save(self, *args, **kwargs):
-        # No calling 'super().save()' here – it would potentially update a user's code!
-        instance = self.instance
-        if "assigned_reviews" in self.changed_data:
-            new_code = self.cleaned_data.get("code")
-            if instance.code != new_code:
-                instance = User.objects.get(code=new_code)
-            instance.assigned_reviews.set(self.cleaned_data["assigned_reviews"])
-
-    class Meta:
-        model = User
-        fields = ["code"]
-        widgets = {"code": forms.HiddenInput()}
+        for reviewer in self.reviewers:
+            reviewer.assigned_reviews.set(self.cleaned_data[reviewer.code])
 
 
 class ReviewExportForm(ExportForm):
@@ -395,7 +394,9 @@ class ReviewAssignImportForm(DirectionForm):
 
     def _get_submission(self, text):
         if not self._submissions_cache:
-            self._submissions_cache = {s.code: s for s in self.event.submissions.all()}
+            self._submissions_cache = {
+                sub.code: sub for sub in self.event.submissions.all()
+            }
         try:
             return self._submissions_cache[text.strip().upper()]
         except Exception:
@@ -418,13 +419,13 @@ class ReviewAssignImportForm(DirectionForm):
         if direction == "reviewer":
             # keys should be users, values should be lists of proposals
             new_uploaded_data = {
-                self._get_user(key): [self._get_submission(v) for v in value]
+                self._get_user(key): [self._get_submission(val) for val in value]
                 for key, value in uploaded_data.items()
             }
         else:
             # keys should be proposals, values should be lists of users
             new_uploaded_data = {
-                self._get_submission(key): [self._get_user(v) for v in value]
+                self._get_submission(key): [self._get_user(val) for val in value]
                 for key, value in uploaded_data.items()
             }
 

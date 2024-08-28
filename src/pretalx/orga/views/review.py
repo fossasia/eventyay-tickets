@@ -5,7 +5,6 @@ from contextlib import suppress
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Count, Max, OuterRef, Q, Subquery
-from django.forms.models import BaseModelFormSet, modelformset_factory
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -25,7 +24,6 @@ from pretalx.orga.forms.review import (
 )
 from pretalx.orga.forms.submission import SubmissionStateChangeForm
 from pretalx.orga.views.submission import BaseSubmissionList
-from pretalx.person.models import User
 from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
 from pretalx.submission.models import Review, Submission, SubmissionStates
 
@@ -137,7 +135,10 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
                     review = reviews[0]
                     submission.current_score = review.score
                     if self.independent_categories:
-                        mapping = {s.category_id: s.value for s in review.scores.all()}
+                        mapping = {
+                            score.category_id: score.value
+                            for score in review.scores.all()
+                        }
                         result = []
                         for category in self.independent_categories:
                             result.append(mapping.get(category.pk))
@@ -149,7 +150,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
 
         return self.sort_queryset(queryset)
 
-    def sort_queryset(self, queryset):
+    def sort_queryset(self, qs):
         order_prevalence = {
             "default": ("is_assigned", "state", "current_score", "code"),
             "score": ("current_score", "state", "code"),
@@ -174,7 +175,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
             return tuple(result)
 
         return sorted(
-            queryset,
+            qs,
             key=get_order_tuple,
             reverse=reverse,
         )
@@ -269,7 +270,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
         total = {"accept": 0, "reject": 0, "error": 0}
         pending = self.get_pending(request)
         for key, value in request.POST.items():
-            if not key.startswith("s-") or value not in ["accept", "reject"]:
+            if not key.startswith("s-") or value not in ("accept", "reject"):
                 continue
             code = key.strip("s-")
             try:
@@ -439,12 +440,11 @@ class ReviewViewMixin:
 
     @cached_property
     def object(self):
-        review = (
+        return (
             self.submission.reviews.exclude(user__in=self.submission.speakers.all())
             .filter(user=self.request.user)
             .first()
         )
-        return review
 
     def get_object(self):
         return self.object
@@ -597,10 +597,10 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
     def form_valid(self, form):
         if not self.qform.is_valid():
             messages.error(self.request, _("There have been errors with your input."))
-            return redirect(self.get_success_url())
+            return super().form_invalid(form)
         if self.tags_form and not self.tags_form.is_valid():
             messages.error(self.request, _("There have been errors with your input."))
-            return redirect(self.get_success_url())
+            return super().form_invalid(form)
         form.save()
         self.qform.review = form.instance
         self.qform.save()
@@ -659,6 +659,13 @@ class ReviewSubmissionDelete(EventPermissionRequired, ReviewViewMixin, TemplateV
     def get_permission_object(self):
         return self.object
 
+    def action_object_name(self):
+        return _("Your review")
+
+    @property
+    def action_back_url(self):
+        return self.submission.orga_urls.reviews
+
     def post(self, request, *args, **kwargs):
         self.object.answers.all().delete()
         self.object.delete()
@@ -685,6 +692,16 @@ class RegenerateDecisionMails(EventPermissionRequired, TemplateView):
     def count(self):
         return sum(len(proposal.speakers.all()) for proposal in self.get_queryset())
 
+    def action_text(self):
+        return _(
+            "Do you really want to regenerate %(count)s acceptance and rejection emails? "
+            "They will be placed in the outbox and not sent out directly."
+        ) % {"count": self.count}
+
+    @property
+    def action_back_url(self):
+        return self.request.event.orga_urls.reviews
+
     def post(self, request, **kwargs):
         for submission in self.get_queryset():
             submission.send_state_mail()
@@ -700,7 +717,6 @@ class RegenerateDecisionMails(EventPermissionRequired, TemplateView):
 class ReviewAssignment(EventPermissionRequired, FormView):
     template_name = "orga/review/assignment.html"
     permission_required = "orga.change_settings"
-    form_class = DirectionForm
 
     @cached_property
     def form_type(self):
@@ -709,7 +725,9 @@ class ReviewAssignment(EventPermissionRequired, FormView):
             return "reviewer"
         return direction
 
-    def get_form(self):
+    @context
+    @cached_property
+    def direction_form(self):
         return DirectionForm(self.request.GET)
 
     @context
@@ -717,60 +735,22 @@ class ReviewAssignment(EventPermissionRequired, FormView):
     def review_teams(self):
         return self.request.event.teams.filter(is_reviewer=True)
 
-    @context
-    @cached_property
-    def formset(self):
-        proposals = self.request.event.submissions.order_by("title")
-        reviewers = (
-            User.objects.filter(
-                teams__in=self.request.event.teams.filter(is_reviewer=True)
-            )
-            .order_by("name")
-            .distinct()
+    def get_form(self):
+        if self.form_type == "submission":
+            form_class = ReviewerForProposalForm
+        else:
+            form_class = ProposalForReviewerForm
+        return form_class(
+            self.request.POST if self.request.method == "POST" else None,
+            files=self.request.FILES if self.request.method == "POST" else None,
+            event=self.request.event,
+            prefix=self.form_type,
         )
 
-        if self.form_type == "submission":
-            formset_class = modelformset_factory(
-                model=Submission,
-                form=ReviewerForProposalForm,
-                formset=BaseModelFormSet,
-                can_delete=False,
-                extra=0,
-                max_num=0,
-            )
-            result = formset_class(
-                self.request.POST if self.request.method == "POST" else None,
-                files=self.request.FILES if self.request.method == "POST" else None,
-                queryset=proposals,
-                form_kwargs={"reviewers": reviewers},
-                prefix="formset",
-            )
-            return result
-        else:
-            formset_class = modelformset_factory(
-                User,
-                form=ProposalForReviewerForm,
-                formset=BaseModelFormSet,
-                can_delete=False,
-                extra=0,
-                max_num=0,
-            )
-            return formset_class(
-                self.request.POST if self.request.method == "POST" else None,
-                files=self.request.FILES if self.request.method == "POST" else None,
-                queryset=reviewers,
-                form_kwargs={"proposals": proposals},
-                prefix="formset",
-            )
-
-    def post(self, request, *args, **kwargs):
-        if not self.formset.is_valid():
-            return self.get(self.request, *self.args, **self.kwargs)
-
-        for form in self.formset:
-            form.save()
-        messages.success(request, _("Saved!"))
-        return self.get(self.request, *self.args, **self.kwargs)
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, _("Saved!"))
+        return redirect(self.request.event.orga_urls.review_assignments)
 
 
 class ReviewAssignmentImport(EventPermissionRequired, FormView):

@@ -57,15 +57,15 @@ def mail_send_task(
 ):
     if isinstance(to, str):
         to = [to]
-    to = [t for t in to if t]
+    to = [addr for addr in to if addr]
 
     if not settings.DEBUG:
         # We don't want to send emails to localhost or example.org in production,
         # but we'll allow it in development setups for easier testing.
         to = [
-            t
-            for t in to
-            if (not t.endswith("@localhost")) and (not t.endswith("@example.org"))
+            addr
+            for addr in to
+            if (not addr.endswith("@localhost")) and (not addr.endswith("@example.org"))
         ]
     if not to:
         return

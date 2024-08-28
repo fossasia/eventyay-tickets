@@ -54,8 +54,7 @@ class OutboxList(
             .order_by("-id")
         )
         qs = self.filter_queryset(qs)
-        qs = self.sort_queryset(qs)
-        return qs
+        return self.sort_queryset(qs)
 
 
 class SentMail(
@@ -82,8 +81,7 @@ class SentMail(
             .order_by("-sent")
         )
         qs = self.filter_queryset(qs)
-        qs = self.sort_queryset(qs)
-        return qs
+        return self.sort_queryset(qs)
 
 
 class OutboxSend(EventPermissionRequired, TemplateView):
@@ -95,6 +93,16 @@ class OutboxSend(EventPermissionRequired, TemplateView):
         return _("Do you really want to send {count} mails?").format(
             count=self.queryset.count()
         )
+
+    def action_title(self):
+        return _("Send emails")
+
+    def action_text(self):
+        return self.question()
+
+    @property
+    def action_back_url(self):
+        return self.request.event.orga_urls.outbox
 
     def dispatch(self, request, *args, **kwargs):
         if "pk" in self.kwargs:
@@ -126,9 +134,9 @@ class OutboxSend(EventPermissionRequired, TemplateView):
         return qs
 
     def post(self, request, *args, **kwargs):
-        qs = self.queryset
-        count = qs.count()
-        for mail in qs:
+        mails = self.queryset
+        count = mails.count()
+        for mail in mails:
             mail.send(requestor=self.request.user)
         messages.success(
             request, _("{count} mails have been sent.").format(count=count)
@@ -153,6 +161,13 @@ class MailDelete(PermissionRequired, TemplateView):
                 sent__isnull=True, template=mail.first().template
             )
         return mail
+
+    def action_text(self):
+        return self.question()
+
+    @property
+    def action_back_url(self):
+        return self.request.event.orga_urls.outbox
 
     @context
     def question(self):
@@ -207,10 +222,16 @@ class OutboxPurge(PermissionRequired, TemplateView):
             count=self.queryset.count()
         )
 
+    def action_text(self):
+        return self.question()
+
+    @property
+    def action_back_url(self):
+        return self.request.event.orga_urls.outbox
+
     @cached_property
     def queryset(self):
-        qs = self.request.event.queued_mails.filter(sent__isnull=True)
-        return qs
+        return self.request.event.queued_mails.filter(sent__isnull=True)
 
     def post(self, request, *args, **kwargs):
         qs = self.queryset
@@ -229,7 +250,7 @@ class MailDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     write_permission_required = "orga.edit_mails"
     permission_required = "orga.view_mails"
 
-    def get_object(self) -> QueuedMail:
+    def get_object(self, queryset=None) -> QueuedMail:
         return self.request.event.queued_mails.filter(pk=self.kwargs.get("pk")).first()
 
     def get_success_url(self):
@@ -335,13 +356,13 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
             for locale in self.request.event.locales:
                 with language(locale):
                     context_dict = TolerantDict()
-                    for k, v in form.get_valid_placeholders().items():
-                        context_dict[k] = (
-                            '<span class="placeholder" title="{}">{}</span>'.format(
-                                _(
+                    for key, value in form.get_valid_placeholders().items():
+                        context_dict[key] = (
+                            '<span class="placeholder" title="{title}">{content}</span>'.format(
+                                title=_(
                                     "This value will be replaced based on dynamic parameters."
                                 ),
-                                v.render_sample(self.request.event),
+                                content=value.render_sample(self.request.event),
                             )
                         )
 
@@ -358,7 +379,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                         "html": preview_text,
                     }
                     # Very rough method to deduplicate recipients, but good enough for a preview
-                    self.mail_count = len({str(r) for r in result})
+                    self.mail_count = len({str(res) for res in result})
             return self.get(self.request, *self.args, **self.kwargs)
 
         result = form.save()
@@ -459,7 +480,7 @@ class TemplateList(EventPermissionRequired, TemplateView):
         )
         pks = [
             template.pk if template else None
-            for template in [accept, ack, reject, update, remind]
+            for template in (accept, ack, reject, update, remind)
         ]
         result["other"] = [
             MailTemplateForm(
@@ -493,7 +514,7 @@ class TemplateDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def object(self):
         return self.get_object()
 
-    @property
+    @cached_property
     def permission_object(self):
         return self.object or self.request.event
 

@@ -56,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function() {
         })
       }
     }
-    console.log(events)
     let localeData = document.querySelector("#calendar-locale")
     const locale = localeData ? localeData.dataset.locale : "en"
     const calendar = new FullCalendar.Calendar(editor[0], {
@@ -81,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
         minute: "2-digit",
         omitZeroMinute: false,
         hour12: false,
-      },    
+      },
       scrollTime: "09:00:00",
       selectable: editable,
       editable: editable,

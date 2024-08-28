@@ -81,7 +81,7 @@ def update_check():
 
     rdata = response.json()
     update_available = rdata["version"]["updatable"] or any(
-        p["updatable"] for p in rdata["plugins"].values()
+        plugin["updatable"] for plugin in rdata["plugins"].values()
     )
     gs.settings.set("update_check_result_warning", update_available)
     if update_available and rdata != gs.settings.update_check_result:
@@ -129,27 +129,26 @@ def check_result_table():
     if "error" in res:
         return res
 
-    table = []
-    table.append(
+    table = [
         (
             "pretalx",
             pretalx_version,
             res["version"]["latest"],
             res["version"]["updatable"],
         )
-    )
-    for p in get_all_plugins():
-        if p.module in res["plugins"]:
-            pdata = res["plugins"][p.module]
+    ]
+    for plugin in get_all_plugins():
+        if plugin.module in res["plugins"]:
+            pdata = res["plugins"][plugin.module]
             table.append(
                 (
-                    _("Plugin: {}").format(p.name),
-                    p.version,
+                    _("Plugin") + f": {plugin.name}",
+                    plugin.version,
                     pdata["latest"],
                     pdata["updatable"],
                 )
             )
         else:
-            table.append((_("Plugin: {}").format(p.name), p.version, "?", False))
+            table.append((_("Plugin") + f": {plugin.name}", plugin.version, "?", False))
 
     return table

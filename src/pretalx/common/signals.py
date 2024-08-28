@@ -155,11 +155,11 @@ def minimum_interval(
     is naive and should not be completely relied upon.
     """
 
-    def decorate(f):
-        @wraps(f)
+    def decorate(func):
+        @wraps(func)
         def wrapper(*args, **kwargs):
-            key_running = f"pretalx_periodic_{f.__module__}.{f.__name__}_running"
-            key_result = f"pretalx_periodic_{f.__module__}.{f.__name__}_result"
+            key_running = f"pretalx_periodic_{func.__module__}.{func.__name__}_running"
+            key_result = f"pretalx_periodic_{func.__module__}.{func.__name__}_result"
 
             if cache.get(key_running) or cache.get(key_result):
                 return
@@ -167,7 +167,7 @@ def minimum_interval(
             uniqid = str(uuid.uuid4())
             cache.set(key_running, uniqid, timeout=minutes_running_timeout * 60)
             try:
-                retval = f(*args, **kwargs)
+                retval = func(*args, **kwargs)
             except Exception as e:
                 try:
                     cache.set(key_result, "error", timeout=minutes_after_error * 60)

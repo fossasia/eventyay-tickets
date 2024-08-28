@@ -11,6 +11,7 @@
     {% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
     {% has_perm 'orga.view_all_reviews' request.user request.event as can_view_all_reviews %}
     <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
+    <script defer src="{% static "vendored/purify.min.js" %}"></script>
     {% compress js %}
         <script defer src="{% static "js/jquery.formset.js" %}"></script>
         <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
@@ -74,75 +75,8 @@
         {% if form.slot_count %}{% bootstrap_field form.slot_count layout='event' %}{% endif %}
         {% if form.image %}{% bootstrap_field form.image layout='event' %}{% endif %}
         {% if action != 'create' %}
-            <div class="formset form-group row" data-formset data-formset-prefix="{{ formset.prefix }}">
-                {{ formset.management_form }}
-                {% bootstrap_formset_errors formset %}
-                <label class="col-md-3 col-form-label" for="resources">{% translate "Resources" %}</label>
-                <div data-formset-body class="col-md-9">
-                    {% for form in formset %}
-                        <div data-formset-form class="mb-2">
-                            <div class="sr-only">
-                                {{ form.id }}
-                                {% bootstrap_field form.DELETE form_group_class="" layout="inline" %}
-                            </div>
-                            <div class="resource-option-row">
-                                <div class="resource-option-input{% if action == 'view' %} disabled{% endif %}">
-                                    {% bootstrap_form_errors form %}
-                                    {% bootstrap_field form.description layout='inline' %}
-                                    {% if form.instance.link %}
-                                        {% bootstrap_field form.link layout='inline'  %}
-                                    {% else %}
-                                        <i class="fa fa-paperclip mr-1 ml-2 pt-1"></i> <a href="{{ form.instance.url }}">{{ form.instance.filename }}</a>
-                                    {% endif %}
-                                </div>
-                                {% if action != 'view' %}
-                                    <div class="resource-option-delete">
-                                        <button type="button" class="btn btn-danger btn-sm" data-formset-delete-button>
-                                            <i class="fa fa-trash"></i></button>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% empty %}
-                        <div class="mt-1">
-                            {% translate "This proposal has no file uploads yet." %}
-                        </div>
-                    {% endfor %}
-                </div>
-                <script type="form-template" data-formset-empty-form>
-                    {% escapescript %}
-                        <div data-formset-form class="formset-row">
-                        <div class="sr-only">
-                        {{ formset.empty_form.id }}
-                        {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
-                        </div>
-                        <div class="resource-option-row">
-                        <div class="resource-option-input">
-                        {% bootstrap_field formset.empty_form.description layout='inline' %}
-                        {% bootstrap_field formset.empty_form.link layout='inline'  %}
-                        {% bootstrap_field formset.empty_form.resource layout='inline'  %}
-                        </div>
-                        <div class="resource-option-delete">
-                        <button type="button" class="btn btn-danger btn-sm" data-formset-delete-button>
-                        <i class="fa fa-trash"></i></button>
-                        </div>
-                        </div>
-                        <div class="form-text text-muted mt-0 pt-0 mb-2">
-                        {% translate "You can either provide a URL or upload a file." %}
-                        {% translate "Max file size:" %}
-                        {{ settings.FILE_UPLOAD_DEFAULT_LIMIT | filesize }}
-                        </div>
-                    {% endescapescript %}
-                </script>
-                {% if action != 'view' %}
-                    <div class="col-md-3 offset-md-9">
-                        <button type="button" class="btn btn-info btn-block" data-formset-add>
-                            <i class="fa fa-plus"></i> {% translate "Add another resource" %}</button>
-                    </div>
-                {% endif %}
-            </div>
+            {% include "cfp/includes/submission_resources_form.html" %}
         {% endif %}
-
         {% if questions_form and questions_form.fields %}
             <div><legend>{% translate "Questions" %}</legend></div>
             {% bootstrap_form questions_form layout='event' %}

@@ -57,8 +57,8 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         self._set_slot_count(instance=instance)
 
         if self.readonly:
-            for f in self.fields.values():
-                f.disabled = True
+            for field in self.fields.values():
+                field.disabled = True
 
     def _set_track(self, instance=None):
         if "track" in self.fields:
@@ -215,7 +215,7 @@ class SelectMultipleWithCount(forms.SelectMultiple):
     """
 
     def optgroups(self, name, value, attrs=None):
-        choices = sorted(self.choices, key=lambda x: x[1].count, reverse=True)
+        choices = sorted(self.choices, key=lambda choice: choice[1].count, reverse=True)
         result = []
         for index, (option_value, label) in enumerate(choices):
             selected = str(option_value) in value
@@ -427,8 +427,14 @@ class SubmissionFilterForm(forms.Form):
 
         state_filter = self.cleaned_data.get("state")
         if state_filter:
-            states = [s for s in state_filter if not s.startswith("pending_state__")]
-            pending_states = [s.split("__")[1] for s in state_filter if s not in states]
+            states = [
+                state
+                for state in state_filter
+                if not state.startswith("pending_state__")
+            ]
+            pending_states = [
+                state.split("__")[1] for state in state_filter if state not in states
+            ]
             if states and not pending_states:
                 qs = qs.filter(state__in=states)
             elif pending_states and not states:

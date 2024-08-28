@@ -56,7 +56,7 @@ ALLOWED_ATTRIBUTES = {
 ALLOWED_PROTOCOLS = {"http", "https", "mailto", "tel"}
 
 ALLOWED_TLDS = sorted(  # Sorting this list makes sure that shorter substring TLDs don't win against longer TLDs, e.g. matching '.com' before '.co'
-    list({suffix.rsplit(".")[-1] for suffix in PublicSuffixList()._publicsuffix}),
+    {suffix.rsplit(".")[-1] for suffix in PublicSuffixList()._publicsuffix},
     reverse=True,
 )
 TLD_REGEX = bleach.linkifier.build_url_re(
@@ -95,6 +95,19 @@ NO_LINKS_CLEANER = bleach.Cleaner(
     strip=True,
 )
 
+
+STRIKETHROUGH_RE = "(~{2})(.+?)(~{2})"
+
+
+class StrikeThroughExtension(markdown.Extension):
+    def extendMarkdown(self, md):
+        md.inlinePatterns.register(
+            markdown.inlinepatterns.SimpleTagPattern(STRIKETHROUGH_RE, "del"),
+            "strikethrough",
+            200,
+        )
+
+
 md = markdown.Markdown(
     extensions=[
         "markdown.extensions.nl2br",
@@ -107,7 +120,7 @@ md = markdown.Markdown(
 )
 
 
-def _rich_text(text: str, cleaner):
+def render_markdown(text: str, cleaner=CLEANER) -> str:
     """Process markdown and cleans HTML in a text input."""
     if not text:
         return ""
@@ -117,10 +130,10 @@ def _rich_text(text: str, cleaner):
 
 @register.filter
 def rich_text(text: str):
-    return _rich_text(text, cleaner=CLEANER)
+    return render_markdown(text, cleaner=CLEANER)
 
 
 @register.filter
 def rich_text_without_links(text: str):
     """Process markdown and cleans HTML in a text input, but without links."""
-    return _rich_text(text, cleaner=NO_LINKS_CLEANER)
+    return render_markdown(text, cleaner=NO_LINKS_CLEANER)

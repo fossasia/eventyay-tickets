@@ -29,7 +29,7 @@ from pretalx.cfp.forms.submissions import SubmissionInvitationForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.middleware.event import get_login_redirect
-from pretalx.common.phrases import phrases
+from pretalx.common.text.phrases import phrases
 from pretalx.common.views import is_form_bound
 from pretalx.person.forms import LoginInfoForm, SpeakerProfileForm
 from pretalx.person.permissions import person_can_view_information
@@ -149,9 +149,9 @@ class SubmissionsListView(LoggedInEventPageMixin, ListView):
     @context
     def information(self):
         return [
-            i
-            for i in self.request.event.information.all()
-            if person_can_view_information(self.request.user, i)
+            info
+            for info in self.request.event.information.all()
+            if person_can_view_information(self.request.user, info)
         ]
 
     @context
@@ -269,7 +269,7 @@ class SubmissionDraftDiscardView(
 
     def get_object(self):
         submission = super().get_object()
-        if not submission.state == SubmissionStates.DRAFT:
+        if submission.state != SubmissionStates.DRAFT:
             raise Http404()
         return submission
 
@@ -329,7 +329,9 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             elif form.has_changed():
                 form.instance.submission = obj
                 form.save()
-                change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
+                change_data = {
+                    key: form.cleaned_data.get(key) for key in form.changed_data
+                }
                 change_data["id"] = form.instance.pk
                 obj.log_action(
                     "pretalx.submission.resource.update", person=self.request.user

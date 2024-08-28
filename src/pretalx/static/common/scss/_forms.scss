@@ -311,3 +311,10 @@ textarea {
     }
   }
 }
+.avatar-form-fields .avatar-upload {
+  .form-image-preview,
+  label + br,
+  .form-image-preview + br {
+    display: none;
+  }
+}

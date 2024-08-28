@@ -13,7 +13,7 @@ MANIFEST_PATH = settings.STATIC_ROOT / "pretalx-manifest.json"
 
 # We're building the manifest if we don't have a dev server running AND if we're
 # not currently running `rebuild` (which creates the manifest in the first place).
-if not settings.VITE_DEV_MODE and not settings._VITE_IGNORE:
+if not settings.VITE_DEV_MODE and not settings.VITE_IGNORE:
     try:
         with open(MANIFEST_PATH) as fp:
             _MANIFEST = json.load(fp)

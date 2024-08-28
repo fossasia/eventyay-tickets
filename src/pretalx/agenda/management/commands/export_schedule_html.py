@@ -32,8 +32,7 @@ def fake_admin(event):
             except FileNotFoundError:
                 # … then fall back to asking the views.
                 response = client.get(url, is_html_export=True, HTTP_ACCEPT="text/html")
-                content = get_content(response)
-                return content
+                return get_content(response)
 
         yield get
 
@@ -45,7 +44,7 @@ def find_assets(html):
     for asset in soup.find_all(["script", "img"]):
         yield asset.attrs["src"]
     for asset in soup.find_all(["link"]):
-        if asset.attrs["rel"][0] in ["icon", "stylesheet"]:
+        if asset.attrs["rel"][0] in ("icon", "stylesheet"):
             yield asset.attrs["href"]
 
 
@@ -116,12 +115,12 @@ def dump_content(destination, path, getter):
         path += "index.html"
 
     path = (Path(destination) / path.lstrip("/")).resolve()
-    if not Path(destination) in path.parents:
+    if Path(destination) not in path.parents:
         raise CommandError("Path traversal detected, aborting.")
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(path, "wb") as f:
-        f.write(content)
+    with open(path, "wb") as output_file:
+        output_file.write(content)
     return content
 
 
@@ -141,37 +140,37 @@ def get_mediastatic_content(url):
     ):
         raise FileNotFoundError()
 
-    with open(local_path, "rb") as f:
-        return f.read()
+    with open(local_path, "rb") as media_file:
+        return media_file.read()
 
 
 def export_event(event, destination):
     with (
         override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True),
         override_timezone(event.timezone),
+        fake_admin(event) as get,
     ):
-        with fake_admin(event) as get:
-            logging.info("Collecting URLs for export")
-            urls = [*event_urls(event)]
-            assets = set()
+        logging.info("Collecting URLs for export")
+        urls = list(event_urls(event))
+        assets = set()
 
-            logging.info(f"Exporting {len(urls)} pages")
-            for url in map(get_path, urls):
-                content = dump_content(destination, url, get)
-                assets |= set(map(get_path, find_assets(content)))
+        logging.info(f"Exporting {len(urls)} pages")
+        for url in map(get_path, urls):
+            content = dump_content(destination, url, get)
+            assets |= set(map(get_path, find_assets(content)))
 
-            css_assets = set()
+        css_assets = set()
 
-            logging.info(f"Exporting {len(assets)} static files from HTML links")
-            for url in assets:
-                content = dump_content(destination, url, get)
+        logging.info(f"Exporting {len(assets)} static files from HTML links")
+        for url in assets:
+            content = dump_content(destination, url, get)
 
-                if url.endswith(".css"):
-                    css_assets |= set(find_urls(content))
+            if url.endswith(".css"):
+                css_assets |= set(find_urls(content))
 
-            logging.info(f"Exporting {len(css_assets)} files from CSS links")
-            for url_path in (get_path(urllib.parse.unquote(url)) for url in css_assets):
-                dump_content(destination, url_path, get)
+        logging.info(f"Exporting {len(css_assets)} files from CSS links")
+        for url_path in (get_path(urllib.parse.unquote(url)) for url in css_assets):
+            dump_content(destination, url_path, get)
 
 
 def delete_directory(path):

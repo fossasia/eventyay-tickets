@@ -11,6 +11,7 @@ from django_context_decorator import context
 
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.mixins.views import PermissionRequired
+from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView, is_form_bound
 from pretalx.event.forms import OrganiserForm, TeamForm, TeamInviteForm
 from pretalx.event.models import Organiser, Team, TeamInvite
@@ -26,7 +27,7 @@ class TeamMixin:
                 self.request.organiser.teams.all(), pk=self.kwargs["pk"]
             )
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return self._get_team()
 
     @context
@@ -50,10 +51,10 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         kwargs["organiser"] = self.request.organiser
         return kwargs
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         if "pk" not in self.kwargs:
             return None
-        return super().get_object()
+        return super().get_object(queryset=queryset)
 
     def get_permission_object(self):
         if "pk" not in self.kwargs:
@@ -94,11 +95,14 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         form.save()
         if created:
             messages.success(self.request, _("The team has been created."))
-            return redirect(self.request.organiser.orga_urls.base)
-        if form.has_changed():
+        elif form.has_changed():
             messages.success(self.request, _("The settings have been saved."))
-        success_url = self.request.GET.get("next", self.request.path)
-        return redirect(success_url)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        if "pk" not in self.kwargs:
+            return self.request.organiser.orga_urls.base
+        return self.request.GET.get("next", self.request.path)
 
 
 class TeamDelete(PermissionRequired, TeamMixin, DetailView):
@@ -108,11 +112,20 @@ class TeamDelete(PermissionRequired, TeamMixin, DetailView):
     def get_permission_object(self):
         return self._get_team()
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         team = super().get_object()
         if "user_pk" in self.kwargs:
             return team.members.filter(pk=self.kwargs.get("user_pk")).first()
         return team
+
+    def action_object_name(self):
+        if "user_pk" in self.kwargs:
+            return _("Team member") + f": {self.get_object().name}"
+        return _("Team") + f": {self.get_object().name}"
+
+    @property
+    def action_back_url(self):
+        return self._get_team().orga_urls.base
 
     @context
     @cached_property
@@ -153,6 +166,15 @@ class TeamUninvite(InviteMixin, PermissionRequired, DetailView):
     model = TeamInvite
     template_name = "orga/settings/team_delete.html"
     permission_required = "orga.change_teams"
+    action_title = _("Retract invitation")
+    action_text = _("Are you sure you want to retract the invitation to this user?")
+
+    def action_object_name(self):
+        return self.get_object().email
+
+    @property
+    def action_back_url(self):
+        return self.get_object().team.orga_urls.base
 
     def post(self, request, *args, **kwargs):
         self.get_object().delete()
@@ -164,6 +186,18 @@ class TeamResend(InviteMixin, PermissionRequired, DetailView):
     model = TeamInvite
     template_name = "orga/settings/team_resend.html"
     permission_required = "orga.change_teams"
+    action_title = _("Resend invitation")
+    action_text = _("Are you sure you want to resend the invitation to this user?")
+    action_confirm_color = "success"
+    action_confirm_icon = "envelope"
+    action_confirm_label = phrases.base.send
+
+    def action_object_name(self):
+        return self.get_object().email
+
+    @property
+    def action_back_url(self):
+        return self.get_object().team.orga_urls.base
 
     def post(self, request, *args, **kwargs):
         self.get_object().send()
@@ -175,6 +209,19 @@ class TeamResetPassword(PermissionRequired, TemplateView):
     model = Team
     template_name = "orga/settings/team_reset_password.html"
     permission_required = "orga.change_teams"
+    action_confirm_icon = "key"
+    action_confirm_label = phrases.base.password_reset_heading
+    action_title = phrases.base.password_reset_heading
+    action_text = _(
+        "Do your really want to reset this user’s password? They won’t be able to log in until they set a new password."
+    )
+
+    def action_object_name(self):
+        return f"{self.user.get_display_name()} ({self.user.email})"
+
+    @property
+    def action_back_url(self):
+        return self.team.orga_urls.base
 
     def get_permission_object(self):
         return self.request.organiser
@@ -220,7 +267,7 @@ class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
             return []
         return self.request.organiser.teams.all().order_by("-all_events", "-id")
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return getattr(self.request, "organiser", None)
 
     @cached_property
@@ -299,10 +346,17 @@ class OrganiserDelete(PermissionRequired, DeleteView):
     permission_required = "person.is_administrator"
     model = Organiser
 
-    def get_object(self):
+    def get_object(self, queryset=None):
         return getattr(self.request, "organiser", None)
 
-    def form_valid(self, request, *args, **kwargs):
+    def action_object_name(self):
+        return _("Organiser") + f": {self.get_object().name}"
+
+    @property
+    def action_back_url(self):
+        return self.get_object().orga_urls.base
+
+    def post(self, *args, **kwargs):
         organiser = self.get_object()
         organiser.shred()
         return HttpResponseRedirect("/orga/")

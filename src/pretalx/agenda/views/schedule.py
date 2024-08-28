@@ -32,8 +32,8 @@ logger = logging.getLogger(__name__)
 class ScheduleMixin:
     @cached_property
     def version(self):
-        if "version" in self.kwargs:
-            return unquote(self.kwargs["version"])
+        if version := self.kwargs.get("version"):
+            return unquote(version)
         return None
 
     def get_object(self):
@@ -50,8 +50,8 @@ class ScheduleMixin:
         return self.get_object()
 
     def dispatch(self, request, *args, **kwargs):
-        if "version" in request.GET:
-            kwargs["version"] = request.GET["version"]
+        if version := request.GET.get("version"):
+            kwargs["version"] = version
             return HttpResponsePermanentRedirect(
                 reverse(
                     f"agenda:versioned-{request.resolver_match.url_name}",
@@ -135,7 +135,7 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         if request.headers.get("If-None-Match") == etag:
             return HttpResponseNotModified()
         headers = {"ETag": etag}
-        if file_type not in ["application/json", "text/xml"]:
+        if file_type not in ("application/json", "text/xml"):
             headers["Content-Disposition"] = (
                 f'attachment; filename="{safe_filename(file_name)}"'
             )
@@ -170,7 +170,7 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
         """
         )
         output_format = request.GET.get("format", "table")
-        if output_format not in ["list", "table"]:
+        if output_format not in ("list", "table"):
             output_format = "table"
         try:
             result = draw_ascii_schedule(data, output_format=output_format)
@@ -222,10 +222,10 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
 
     @context
     def exporters(self):
-        return list(
+        return [
             exporter(self.request.event)
             for _, exporter in register_data_exporters.send(self.request.event)
-        )
+        ]
 
     @context
     def my_exporters(self):
@@ -242,6 +242,10 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
         )
 
 
+def talk_sort_key(talk):
+    return (talk.start, talk.submission.title if talk.submission else "")
+
+
 class ScheduleNoJsView(ScheduleView):
     template_name = "agenda/schedule_nojs.html"
 
@@ -255,9 +259,7 @@ class ScheduleNoJsView(ScheduleView):
         for date in data:
             rooms = date.pop("rooms")
             talks = [talk for room in rooms for talk in room.get("talks", [])]
-            talks.sort(
-                key=lambda x: (x.start, x.submission.title if x.submission else "")
-            )
+            talks.sort(key=talk_sort_key)
             date["talks"] = talks
         return {"data": list(data)}
 

@@ -3,10 +3,11 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% translate "Create proposal" %} :: {{ request.event.name }}{% endblock %}
+{% block title %}{% if submission_title %}{{ submission_title }}{% else %}{% translate "Create proposal" %}{% endif %} :: {{ request.event.name }}{% endblock %}
 
 {% block cfp_header %}
     <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
+    <script defer src="{% static "vendored/purify.min.js" %}"></script>
     {% compress js %}
         <script src="{% static "common/js/formTools.js" %}" defer></script>
         <script src="{% static "cfp/js/trackDescriptions.js" %}" defer></script>
