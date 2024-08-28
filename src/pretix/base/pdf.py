@@ -554,6 +554,7 @@ class Renderer:
     def _draw_barcodearea(self, canvas: Canvas, op: OrderPosition, o: dict):
         content = o.get('content', 'secret')
         content_dict = {
+                'event': str(op.event),
                 'ticket': op.secret,
                 'lead': op.pseudonymization_id
         }
