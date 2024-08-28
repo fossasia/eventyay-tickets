@@ -182,6 +182,7 @@ class DirectionForm(forms.Form):
         required=False,
     )
 
+
 class ReviewAssignmentForm(forms.Form):
     def __init__(self, *args, event=None, **kwargs):
         self.event = event
@@ -192,46 +193,6 @@ class ReviewAssignmentForm(forms.Form):
         ).prefetch_related("assigned_reviews")
         self.submissions = self.event.submissions.order_by("title").prefetch_related(
             "assigned_reviewers"
-        )
-        super().__init__(*args, **kwargs)
-
-
-class ReviewerForProposalForm(forms.ModelForm):
-    def __init__(self, *args, reviewers=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["assigned_reviewers"].queryset = reviewers
-        self.fields["assigned_reviewers"].label = self.instance.title
-
-    def save(self, *args, **kwargs):
-        # No calling 'super().save()' here – it would potentially update a submission's code!
-        instance = self.instance
-        if "assigned_reviewers" in self.changed_data:
-            new_code = self.cleaned_data.get("code")
-            if instance.code != new_code:
-                instance = instance.event.submissions.all().get(code=new_code)
-            instance.assigned_reviewers.set(self.cleaned_data["assigned_reviewers"])
-
-    class Meta:
-        model = Submission
-        fields = ["assigned_reviewers", "code"]
-        widgets = {
-            "assigned_reviewers": forms.SelectMultiple(attrs={"class": "select2"}),
-            "code": forms.HiddenInput(),
-        }
-
-
-class ProposalForReviewerForm(forms.ModelForm):
-    def __init__(self, *args, proposals=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        initial = proposals.filter(assigned_reviewers__in=[self.instance]).values_list(
-            "id", flat=True
-        )
-        self.fields["assigned_reviews"] = forms.MultipleChoiceField(
-            choices=((p.id, p.title) for p in proposals),
-            widget=forms.SelectMultiple(attrs={"class": "select2"}),
-            label=self.instance.name,
-            initial=list(initial),
-            required=False,
         )
         super().__init__(*args, **kwargs)
 

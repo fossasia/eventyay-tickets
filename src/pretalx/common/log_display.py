@@ -1,4 +1,5 @@
 import string
+
 from django.dispatch import receiver
 from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
@@ -7,7 +8,6 @@ from django.utils.translation import ngettext_lazy as _n
 from pretalx.common.models.log import ActivityLog
 from pretalx.common.signals import activitylog_display, activitylog_object_link
 from pretalx.event.models.event import Event
-
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.submission.models import (
     Answer,

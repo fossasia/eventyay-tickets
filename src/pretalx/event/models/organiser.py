@@ -54,7 +54,7 @@ class Organiser(PretalxModel):
         new_team = "{teams}new"
 
     @transaction.atomic
-    def shred(self):
+    def shred(self, person=None):
         """Irrevocably deletes the organiser and all related events and their
         data."""
         from pretalx.common.models import ActivityLog

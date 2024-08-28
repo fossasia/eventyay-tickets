@@ -2,6 +2,7 @@ from django.utils.translation import gettext as _
 
 from pretalx.common.text.phrases import Phrases
 
+
 class OrgaPhrases(Phrases, app="orga"):
     schedule_example_version = [
         "v1",

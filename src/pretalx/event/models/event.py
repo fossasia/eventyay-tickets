@@ -21,8 +21,8 @@ from pretalx.common.language import LANGUAGE_NAMES
 from pretalx.common.mixins.models import PretalxModel
 from pretalx.common.models import TIMEZONE_CHOICES
 from pretalx.common.models.settings import hierarkey
-from pretalx.common.text.phrases import phrases
 from pretalx.common.plugins import get_all_plugins
+from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.common.utils import daterange, path_with_hash
 
@@ -1076,7 +1076,7 @@ class Event(PretalxModel):
             ).send()
 
     @transaction.atomic
-    def shred(self):
+    def shred(self, person=None):
         """Irrevocably deletes an event and all related data."""
         from pretalx.common.models import ActivityLog
         from pretalx.person.models import SpeakerProfile

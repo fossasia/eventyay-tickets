@@ -15,6 +15,7 @@ from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext_lazy
 from django.views.generic import (
     DeleteView,
     FormView,
@@ -29,11 +30,6 @@ from formtools.wizard.views import SessionWizardView
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.forms import I18nEventFormSet, I18nFormSet
-from pretalx.common.models import ActivityLog
-from pretalx.common.tasks import regenerate_css
-from pretalx.common.templatetags.rich_text import render_markdown
-from pretalx.common.text.phrases import phrases
-from pretalx.common.views import OrderModelView, is_form_bound
 from pretalx.common.mixins.views import (
     ActionFromUrl,
     EventPermissionRequired,
@@ -42,7 +38,7 @@ from pretalx.common.mixins.views import (
 )
 from pretalx.common.models import ActivityLog
 from pretalx.common.tasks import regenerate_css
-from pretalx.common.templatetags.rich_text import rich_text
+from pretalx.common.templatetags.rich_text import render_markdown
 from pretalx.common.views import OrderModelView, is_form_bound
 from pretalx.event.forms import (
     EventWizardBasicsForm,

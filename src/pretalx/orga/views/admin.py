@@ -7,7 +7,7 @@ from django.db.models import Count, Q
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import FormView, TemplateView, ListView, DetailView
+from django.views.generic import DetailView, FormView, ListView, TemplateView
 from django_context_decorator import context
 from django_scopes import scopes_disabled
 
