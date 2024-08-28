@@ -7,7 +7,7 @@
 <html lang="{{ html_locale }}"{% if rtl %} dir="rtl" class="rtl"{% endif %}>
     <head>
         <meta charset="utf-8">
-        <title>{% block title %}{% block extra_title %}{% endblock %}{% if request.event %}{{ request.event.name }}{% endif %}{% endblock %} :: pretalx</title>
+        <title>{% block title %}{% block extra_title %}{% endblock %}{% if request.event %}{{ request.event.name }} :: {% endif %}{% endblock %}pretalx</title>
         <meta name="title" content="{% block meta_title %}{% endblock %} {% if request.event %} - {{ request.event.name }} {% endif %}pretalx">
         <meta name="description" content="{% block meta_description %}{% if request.event %}Schedule, talks and talk submissions for {{ reqeuest.event.name }}{% else %}Talks and talk submissions by pretalx{% endif %}{% endblock %}">
         <meta name="application-name" content="pretalx">

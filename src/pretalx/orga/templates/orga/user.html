@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% translate "User settings" %}{% endblock %}
+{% block extra_title %}{% translate "User settings" %} :: {% endblock %}
 {% block content %}
     <form method="post">
         {% csrf_token %}

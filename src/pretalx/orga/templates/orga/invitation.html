@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block title %}{% translate "Invitation" %} :: {{ invitation.team.name }}{% endblock %}
+{% block extra_title %}{% translate "Invitation" %} :: {{ invitation.team.name }} :: {% endblock %}
 {% block content %}
     <h2 class="col-sm-6 ml-auto mr-auto">
         {% blocktranslate with organiser=invitation.team.organiser.name name=invitation.team.name trimmed %}
