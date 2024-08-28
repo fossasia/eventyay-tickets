@@ -1,4 +1,4 @@
-{% extends "orga/cfp/base.html" %}
+{% extends "orga/base.html" %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -18,7 +18,7 @@
     <script defer src="{% static "orga/js/cfp_flow.js" %}"></script>
 {% endblock %}
 
-{% block cfp_content %}
+{% block content %}
     <h1>{% translate "CfP Editor" %}</h1>
     <p>
         {% blocktranslate trimmed %}

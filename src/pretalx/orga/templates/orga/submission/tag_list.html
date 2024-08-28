@@ -1,8 +1,8 @@
-{% extends "orga/cfp/base.html" %}
+{% extends "orga/base.html" %}
 {% load i18n %}
 {% load rules %}
 
-{% block cfp_content %}
+{% block content %}
     <h2>{% translate "Tags" %}</h2>
     {% has_perm 'orga.add_tags' request.user request.event as can_edit_tags %}
     {% if can_edit_tags %}

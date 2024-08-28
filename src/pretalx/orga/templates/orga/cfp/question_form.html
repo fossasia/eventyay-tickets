@@ -1,11 +1,11 @@
-{% extends "orga/cfp/base.html" %}
+{% extends "orga/base.html" %}
 {% load bootstrap4 %}
 {% load compress %}
 {% load formset_tags %}
 {% load i18n %}
 {% load static %}
 
-{% block cfp_content %}
+{% block content %}
     {% compress js %}
         <script defer src="{% static "js/jquery.formset.js" %}"></script>
         <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
