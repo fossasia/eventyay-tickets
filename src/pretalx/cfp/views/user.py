@@ -380,6 +380,8 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
             "info", {}
         ).get("fields")
         kwargs["readonly"] = not self.can_edit
+        # At this stage, new speakers can be added via the dedicated form
+        kwargs["remove_additional_speaker"] = True
         return kwargs
 
     def form_valid(self, form):

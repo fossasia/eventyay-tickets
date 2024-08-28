@@ -29,7 +29,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
     )
     content_locale = forms.ChoiceField(label=phrases.base.language)
 
-    def __init__(self, event, **kwargs):
+    def __init__(self, event, remove_additional_speaker=False, **kwargs):
         self.event = event
         self.readonly = kwargs.pop("readonly", False)
         self.access_code = kwargs.pop("access_code", None)
@@ -49,6 +49,8 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
 
         super().__init__(initial=initial, **kwargs)
 
+        if remove_additional_speaker and "additional_speaker" in self.fields:
+            self.fields.pop("additional_speaker")
         if "abstract" in self.fields:
             self.fields["abstract"].widget.attrs["rows"] = 2
 
