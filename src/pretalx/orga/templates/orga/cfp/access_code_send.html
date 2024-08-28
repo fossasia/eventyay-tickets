@@ -7,15 +7,7 @@
 {% block extra_title %}{% translate "Send access code" %} :: {% endblock %}
 
 {% block content %}
-    <h2>
-        {% translate "Send access code" %}
-    </h2>
-    <div class="alert alert-info">
-        {% blocktranslate trimmed %}
-            Access codes can allow access to your CfP beyond its deadline for one or multiple
-            proposals. If the code is circulated more widely than you’d like, you can always delete or invalidate it.
-        {% endblocktranslate %}
-    </div>
+    <h2>{% translate "Send access code" %}</h2>
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}

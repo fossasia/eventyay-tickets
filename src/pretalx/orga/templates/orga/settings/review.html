@@ -7,7 +7,8 @@
 
 {% block extra_title %}{% translate "Review settings" %} :: {% endblock %}
 
-{% block settings_content %}
+{% block scripts %}
+    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
     {% compress js %}
         <script defer src="{% static "js/jquery.formset.js" %}"></script>
         <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
@@ -15,35 +16,51 @@
         <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
         <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
         <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
+        <script defer src="{% static "common/js/modalDialog.js" %}"></script>
         <script defer src="{% static "orga/js/reviewSettings.js" %}"></script>
     {% endcompress %}
+{% endblock %}
+
+{% block settings_content %}
     <form method="post" class="d-flex flex-column">
         {% csrf_token %}
 
         <h2>{% translate "Review settings" %}</h2>
-        <div class="alert alert-info col-md-9 flip ml-auto">
-            {% blocktranslate trimmed %}
-                If you require neither a review score nor a review text, reviewers will
-                be offered an additional {{ quotation_open }}Abstain{{ quotation_close }}
-                button when reviewing proposals.
-            {% endblocktranslate %}
+        {% bootstrap_field form.score_mandatory layout="event" %}
+        {% bootstrap_field form.text_mandatory layout="event" %}
+        <div class="col-md-9 flip ml-auto mb-4">
+            <small class="form-text text-muted">
+                {% blocktranslate trimmed %}
+                    If you require neither a review score nor a review text, reviewers will
+                    be offered an additional {{ quotation_open }}Abstain{{ quotation_close }}
+                    button when reviewing proposals.
+                {% endblocktranslate %}
+            </small>
         </div>
-        {% bootstrap_form form layout='event' %}
+        {% bootstrap_field form.aggregate_method layout="event" %}
+        {% bootstrap_field form.review_help_text layout="event" %}
         {% include "orga/includes/submit_row.html" %}
 
-        <h2>{% translate "Review scoring" %}</h2>
-        <div class="alert alert-info">
-            <p>
-                {% blocktranslate trimmed %}
-                    You can ask reviewers to provide one or multiple scores. If you ask for multiple scores,
-                    they will be added up to a final total score. If you want, this total score can be weighted.
-                    Currently, the total score is calculated as:
-                {% endblocktranslate %}
-                <span class="text-center d-block">
-                    <strong><span id="total-score"></span></strong>
-                </span>
-            </p>
-        </div>
+        <h2>
+            {% translate "Review scoring" %}
+            <span class="dialog-anchor" data-target="#info-review-scoring" data-toggle="dialog">
+                <i class="fa fa-question-circle-o text-info"></i>
+            </span>
+        </h2>
+        <dialog id="info-review-scoring">
+            <div class="alert alert-info">
+                <p>
+                    {% blocktranslate trimmed %}
+                        You can ask reviewers to provide one or multiple scores. If you ask for multiple scores,
+                        they will be added up to a final total score. If you want, this total score can be weighted.
+                        Currently, the total score is calculated as:
+                    {% endblocktranslate %}
+                    <span class="text-center d-block">
+                        <strong><span id="total-score"></span></strong>
+                    </span>
+                </p>
+            </div>
+        </dialog>
         {# TODO warn about changing score categories #}
         <div id="score-formset" class="formset" data-formset data-formset-prefix="{{ scores_formset.prefix }}">
             {{ scores_formset.management_form }}
@@ -153,16 +170,23 @@
             {% endif %}
         </div>
 
-        <h2>{% translate "Review phases" %}</h2>
-        <div class="alert alert-info">
-            {% blocktranslate trimmed %}
-                Review phases allow you to structure your review process.
-                By default, there are two review phases: The review itself, and
-                the selection process once the review phase is over. But you could for example
-                add another review and selection phase after that, if you require additional
-                review rounds.
-            {% endblocktranslate %}
-        </div>
+        <h2 class="mt-4 mb-2">
+            {% translate "Review phases" %}
+            <span class="dialog-anchor" data-target="#info-review-phases" data-toggle="dialog">
+                <i class="fa fa-question-circle-o text-info"></i>
+            </span>
+        </h2>
+        <dialog id="info-review-phases">
+            <div class="alert alert-info">
+                {% blocktranslate trimmed %}
+                    Review phases allow you to structure your review process.
+                    By default, there are two review phases: The review itself, and
+                    the selection process once the review phase is over. But you could for example
+                    add another review and selection phase after that, if you require additional
+                    review rounds.
+                {% endblocktranslate %}
+            </div>
+        </dialog>
         <div class="formset" data-formset data-formset-prefix="{{ phases_formset.prefix }}">
             {{ phases_formset.management_form }}
             {% bootstrap_formset_errors phases_formset %}

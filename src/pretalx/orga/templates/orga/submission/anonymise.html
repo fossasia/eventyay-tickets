@@ -8,14 +8,15 @@
 
 {% block submission_title %}{% translate "Anonymisation" %} :: {% endblock %}
 
+{% block scripts %}
+    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
+    {% compress js %}
+        <script defer src="{% static "common/js/modalDialog.js" %}"></script>
+        <script defer src="{% static "orga/js/anonymise.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
+
 {% block submission_content %}
-    <div class="alert alert-info">
-        {% blocktranslate trimmed %}
-            If a review phase with anonymisation is currently active, all reviewers
-            who have no permissions to change this proposal will be shown the anonymised
-            proposal content.
-        {% endblocktranslate %}
-    </div>
     <form method="post" enctype="multipart/form-data"><fieldset>
         {% bootstrap_form_errors form %}
         {% csrf_token %}
@@ -26,9 +27,23 @@
                     <h2>{% translate "Original" %}</h2>
                 </div>
                 <div class="anonymised">
-                    <h2>{% translate "Anonymised" %}</h2>
+                    <h2>
+                        {% translate "Anonymised" %}
+                        <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
+                            <i class="fa fa-question-circle-o text-info"></i>
+                        </span>
+                    </h2>
                 </div>
             </div>
+            <dialog class="info-dialog" id="info-dialog">
+                <div class="alert alert-info">
+                    {% blocktranslate trimmed %}
+                        If a review phase with anonymisation is currently active, all reviewers
+                        who have no permissions to change this proposal will be shown the anonymised
+                        proposal content.
+                    {% endblocktranslate %}
+                </div>
+            </dialog>
             {% for field in form %}
                 <h4>{{ field.label }}</h4>
                 <div>
@@ -57,8 +72,4 @@
     <div id="anon-menu" class="d-none">
         <button>{% translate "Replace selection with █" %}</button>
     </div>
-
-    {% compress js %}
-        <script defer src="{% static "orga/js/anonymise.js" %}"></script>
-    {% endcompress %}
 {% endblock %}
