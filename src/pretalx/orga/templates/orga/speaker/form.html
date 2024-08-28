@@ -36,8 +36,8 @@
             proposal
         {% plural %}
             proposals
-        {% endblocktranslate %}
-        {{ proposal_title }}
+          {% endblocktranslate %}
+        {{ proposal_title }})
         {% if can_send_mails %}
             <a class="btn btn-outline-info ml-auto mb-1" href="{{ request.event.orga_urls.compose_mails_sessions }}?speakers={{ form.instance.user.code }}">
                 <i class="fa fa-envelope"></i>
