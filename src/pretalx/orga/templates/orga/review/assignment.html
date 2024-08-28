@@ -2,13 +2,10 @@
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
-{% load formset_tags %}
 {% load static %}
 
 {% block content %}
     {% compress js %}
-        <script defer src="{% static "js/jquery.formset.js" %}"></script>
-        <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
         <script defer src="{% static "orga/js/reviewAssignment.js" %}"></script>
     {% endcompress %}
     <h2>{% translate "Assign reviewers" %}</h2>
@@ -84,14 +81,10 @@
                             {% endif %}
                         </td>
                         <td class="text-right">
-                            <a href="{{ team.orga_urls.base }}?next={{ request.path }}"
-                               class="btn btn-sm btn-info"
-                               title="{% translate "Edit" %}">
+                            <a href="{{ team.orga_urls.base }}?next={{ request.path }}" class="btn btn-sm btn-info" title="{% translate "Edit" %}">
                                 <i class="fa fa-edit"></i>
                             </a>
-                            <a href="{{ team.orga_urls.delete }}?next={{ request.path }}"
-                               class="btn btn-sm btn-danger"
-                               title="{% translate "Delete" %}">
+                            <a href="{{ team.orga_urls.delete }}?next={{ request.path }}" class="btn btn-sm btn-danger" title="{% translate "Delete" %}">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </td>
@@ -140,42 +133,15 @@
                 </div>
                 <div class="ml-auto mr-auto col-md-4">
                     <form id="direction">
-                        {% bootstrap_form form layout='inline' %}
+                        {% bootstrap_form direction_form layout='inline' %}
                     </form>
                 </div>
                 <form method="post" class="d-flex flex-column select2-textbox">
                     {% csrf_token %}
 
-                    <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
-                        {{ formset.management_form }}
-                        {% bootstrap_formset_errors formset %}
-                        <div data-formset-body>
-                            {% for form in formset %}
-                                <div data-formset-form>
-                                    <div class="sr-only">
-                                        {{ form.id }}
-                                    </div>
-                                    <div class="reviewer-formset">
-                                        {% bootstrap_form_errors form %}
-                                        {% for field in form %}{% if field.label %}
-                                            {% bootstrap_field field layout='event' %}
-                                        {% endif %}{% endfor %}
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="submit-group panel">
-                        <span></span>
-                        <span>
-                            <button type="submit" class="btn btn-success btn-lg">
-                                <i class="fa fa-check"></i>
-                                {% translate "Save" %}
-                            </button>
-                        </span>
-                    </div>
+                    {% bootstrap_form form layout="event" %}
+                    {% include "orga/includes/submit_row.html" %}
                 </form>
             </div>
         </div>
 {% endblock %}
-
