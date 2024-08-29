@@ -26,7 +26,7 @@
           {% translate "Activate account" %}
         </button>
       {% endif %}
-      <a href="delete" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+      <a href="{% url "orga:admin.user.delete" code=user.code %}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
     </form>
   </h2>
 

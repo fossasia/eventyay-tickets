@@ -54,7 +54,7 @@
                     </a>
                 </li>
             </ul>
-            <a class="navbar-brand d-none d-md-block" href="/orga/">
+            <a class="navbar-brand d-none d-md-block" href="{% url "orga:event_list" %}">
                 <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}" alt="{% translate "The pretalx logo" %}">
                 pretalx
             </a>
@@ -403,7 +403,7 @@
                     {% endif %}
                     {% has_perm 'orga.view_organisers' request.user request as can_see_organisers %}
                     {% if can_see_organisers %}
-                        <a class="nav-link {% if "/orga/organiser/" in request.path %} active{% endif %}" href="/orga/organiser/">
+                        <a class="nav-link {% if "/orga/organiser/" in request.path %} active{% endif %}" href="{% url "orga:organiser.list" %}">
                             <i class="fa fa-users"></i>
                             <span>{% translate "Organisers" %}</span>
                         </a>
@@ -411,7 +411,7 @@
                     {% if request.user.is_administrator %}
                         <div class="nav-fold">
                             <span class="has-children">
-                                <a class="nav-link nav-link-inner" href="/orga/admin/">
+                                <a class="nav-link nav-link-inner" href="{% url "orga:admin.dashboard" %}">
                                     <i class="fa fa-cogs"></i>
                                     <span class="sidebar-text">
                                         {% translate "Administration" %}
@@ -422,10 +422,10 @@
                                 </a>
                             </span>
                             <div class="collapse in{% if "/orga/admin/" in request.path %} show{% endif %}" aria-expand="true" id="collapseAdmin">
-                                <a class="nav-link nav-link-second-level {% if "/orga/admin/" == request.path %} active{% endif %}" href="/orga/admin/">
+                                <a class="nav-link nav-link-second-level {% if "/orga/admin/" == request.path %} active{% endif %}" href="{% url "orga:admin.dashboard" %}">
                                     <span>{% translate "Admin information" %}</span>
                                 </a>
-                                <a href="/orga/admin/users/" class="nav-link nav-link-second-level{% if "/orga/admin/users" in request.path %} active{% endif %}">
+                                <a href="{% url "orga:admin.user.list" %}" class="nav-link nav-link-second-level{% if "/orga/admin/users" in request.path %} active{% endif %}">
                                     <span>{% translate "Users" %}</span>
                                 </a>
                             </div>
