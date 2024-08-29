@@ -56,7 +56,7 @@
                     <li>
                         <a href="{{ submission.orga_urls.base }}">
                             {{ submission.title }}
-                            ({% include "cfp/event/fragment_state.html" with state=submission.state %}{% if submission.pending_state %}, {% translate "pending" %}{% include "cfp/event/fragment_state.html"  with state=submission.pending_state %}{% endif %})
+                            ({% include "cfp/event/fragment_state.html" with state=submission.state %}{% if submission.pending_state %}, {% translate "pending" %}{% include "cfp/event/fragment_state.html" with state=submission.pending_state %}{% endif %})
                         </a>
                     </li>
                 {% endfor %}
@@ -96,7 +96,6 @@
 
     </form>
 
-
     <h3>{% translate "Emails" %}</h3>
     {% if mails %}
 
@@ -105,7 +104,6 @@
     {% else %}
         {% translate "No mails were sent to this speaker yet." %}
     {% endif %}
-
 
     <script defer src="{% static "cfp/js/profile.js" %}"></script>
 {% endblock content %}

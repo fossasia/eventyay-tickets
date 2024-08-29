@@ -102,7 +102,7 @@
                         <a href="?{% url_replace request "sort" "-title" %}"><i class="fa fa-caret-up" title="{% translate "Sort by title (z-a)" %}"></i></a>
                     </th>
                     {% if can_view_speakers %}<th>{{ phrases.schedule.speakers }}</th>{% endif %}
-                    {% if show_submission_types  %}
+                    {% if show_submission_types %}
                         <th>
                             {% translate "Type" %}
                         </th>
