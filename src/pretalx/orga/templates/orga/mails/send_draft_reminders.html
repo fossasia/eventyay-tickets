@@ -1,4 +1,5 @@
 {% extends "orga/mails/base.html" %}
+
 {% load bootstrap4 %}
 {% load i18n %}
 
@@ -16,6 +17,8 @@
         {% bootstrap_form_errors form %}
         {% bootstrap_field form.subject layout='event' %}
         {% bootstrap_field form.text layout='event' %}
+
         {% include "orga/includes/submit_row.html" with submit_label=phrases.base.send %}
+
     </form>
 {% endblock %}

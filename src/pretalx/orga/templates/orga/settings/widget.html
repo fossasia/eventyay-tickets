@@ -1,4 +1,5 @@
 {% extends "orga/settings/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -35,7 +36,9 @@
             </div>
         </dialog>
         {% bootstrap_form form layout='event' %}
+
         {% include "orga/includes/submit_row.html" %}
+
     </form>
 
     <h2>{% translate "Widget generation" %}</h2>

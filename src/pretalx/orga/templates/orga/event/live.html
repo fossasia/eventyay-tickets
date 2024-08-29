@@ -1,10 +1,17 @@
 {% extends "orga/base.html" %}
+
 {% load i18n %}
 
 {% block extra_title %}{% if request.event.is_public %}{% translate "Deactivate event" %}{% else %}{% translate "Go live" %}{% endif %} :: {% endblock %}
 
 {% block content %}
-    <h2>{% if request.event.is_public %}{% translate "Deactivate event" %}{% else %}{% translate "Go live" %}{% endif %}</h2>
+    <h2>
+        {% if request.event.is_public %}
+            {% translate "Deactivate event" %}
+        {% else %}
+            {% translate "Go live" %}
+        {% endif %}
+    </h2>
 
     {% if request.event.is_public %}
         {% blocktranslate trimmed %}
@@ -21,7 +28,11 @@
             <p>
                 <h4>{% translate "Your event may not be ready for release yet!" %}</h4>
                 <ul>
-                    {% for warning in warnings %}<li>{{ warning.text }} <a class="btn btn-sm btn-outline-info" href="{{ warning.url }}">{% translate "Fix me" %}</a></li>{% endfor %}
+                    {% for warning in warnings %}
+                        <li>
+                            {{ warning.text }} <a class="btn btn-sm btn-outline-info" href="{{ warning.url }}">{% translate "Fix me" %}</a>
+                        </li>
+                    {% endfor %}
                 </ul>
             </p>
         {% endif %}
@@ -29,7 +40,11 @@
             <p>
                 <h4>{% translate "There may be easy ways to improve your event before its release!" %}</h4>
                 <ul>
-                    {% for suggestion in suggestions %}<li>{{ suggestion.text }} <a class="btn btn-sm btn-outline-info" href="{{ suggestion.url }}">{% translate "Fix me" %}</a></li>{% endfor %}
+                    {% for suggestion in suggestions %}
+                        <li>
+                            {{ suggestion.text }} <a class="btn btn-sm btn-outline-info" href="{{ suggestion.url }}">{% translate "Fix me" %}</a>
+                        </li>
+                    {% endfor %}
                 </ul>
             </p>
         {% endif %}

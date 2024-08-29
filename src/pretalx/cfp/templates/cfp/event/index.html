@@ -1,4 +1,5 @@
 {% extends "cfp/event/base.html" %}
+
 {% load i18n %}
 {% load rich_text %}
 {% load rules %}
@@ -6,9 +7,7 @@
 {% block content %}
     {% with cfp=request.event.cfp %}
         {% has_perm 'agenda.view_featured_submissions' request.user request.event as can_view_featured_submissions %}
-        {% if request.event.landing_page_text %}
-            {{ request.event.landing_page_text|rich_text }}
-        {% endif %}
+        {% if request.event.landing_page_text %}{{ request.event.landing_page_text|rich_text }}{% endif %}
         <div class="row mb-4 url-links">
             {% if has_submissions or request.user.is_anonymous %}
                 {% if not is_html_export %}

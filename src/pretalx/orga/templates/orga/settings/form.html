@@ -1,4 +1,5 @@
 {% extends "orga/settings/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -6,7 +7,7 @@
 {% load static %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{% static "vendored/colorpicker/css/bootstrap-colorpicker.min.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/colorpicker/css/bootstrap-colorpicker.min.css" %}" />
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/lightbox.scss" %}">
     {% endcompress %}

@@ -24,7 +24,9 @@
             </p>
         </div>
         <hr>
+
         {% include "common/auth.html" %}
+
     {% else %}
         <form method="post" class="col-sm-6 ml-auto mr-auto">
             {% csrf_token %}

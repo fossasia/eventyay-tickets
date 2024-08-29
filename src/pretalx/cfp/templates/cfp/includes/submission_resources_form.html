@@ -26,12 +26,12 @@
                         {% bootstrap_field form.description layout='inline' %}
                         {% if form.errors %}
                             <div class="resource-option-inline">
-                                {% bootstrap_field form.link layout='inline'  %}
-                                {% bootstrap_field form.resource layout='inline'  %}
+                                {% bootstrap_field form.link layout='inline' %}
+                                {% bootstrap_field form.resource layout='inline' %}
                             </div>
                         {% else %}
                             {% if form.instance.link %}
-                                {% bootstrap_field form.link layout='inline'  %}
+                                {% bootstrap_field form.link layout='inline' %}
                             {% else %}
                                 <i class="fa fa-paperclip mr-1 ml-2 pt-1"></i> <a href="{{ form.instance.url }}">{{ form.instance.filename }}</a>
                             {% endif %}
@@ -46,9 +46,7 @@
                 </div>
             </div>
         {% empty %}
-            <div class="mt-1">
-                {% translate "This proposal has no resources yet." %}
-            </div>
+            <div class="mt-1">{% translate "This proposal has no resources yet." %}</div>
         {% endfor %}
     </div>
     {% if can_edit %}
@@ -82,7 +80,8 @@
         {% if action != 'view' %}
             <div class="d-flex flex-row-reverse w-100 mr-3">
                 <button type="button" class="btn btn-info" data-formset-add>
-                    <i class="fa fa-plus"></i> {% translate "Add another resource" %}</button>
+                    <i class="fa fa-plus"></i> {% translate "Add another resource" %}
+                </button>
             </div>
         {% endif %}
     {% endif %}

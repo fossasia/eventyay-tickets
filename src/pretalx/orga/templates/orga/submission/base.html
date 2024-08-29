@@ -26,6 +26,7 @@
                     by {{ submission.display_speaker_names }}
                 {% endif %}
                 {% include "orga/submission/state_dropdown.html" with submission=submission %}
+
             </span>
         </h2>
         <ul class="nav nav-tabs">
@@ -86,7 +87,9 @@
                 {% endif %}
                 {% if submission.state == "confirmed" or can_view_speakers %}
                     <details class="dropdown">
-                        <summary class="btn btn-primary">{% translate "Links" %} <i class="fa fa-caret-down"></i></summary>
+                        <summary class="btn btn-primary">
+                            {% translate "Links" %} <i class="fa fa-caret-down"></i>
+                        </summary>
                         <ul class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
                             {% if is_publicly_visible or submission.state == "accepted" or submission.state == "confirmed" %}
                                 <li>
@@ -98,13 +101,18 @@
                                     </a>
                                 </li>
                             {% endif %}
-                            {% if can_view_speakers %}<li><a href="{{ submission.urls.review.full }}" class="dropdown-item" target=_blank>{% translate "Secret public link" %}</a></li>{% endif %}
+                            {% if can_view_speakers %}
+                                <li>
+                                    <a href="{{ submission.urls.review.full }}"
+                                       class="dropdown-item"
+                                       target="_blank">{% translate "Secret public link" %}</a>
+                                </li>
+                            {% endif %}
                         </ul>
                     </details>
                 {% endif %}
             </div>
         </ul>
     {% endif %}
-    {% block submission_content %}
-    {% endblock %}
+    {% block submission_content %}{% endblock %}
 {% endblock %}

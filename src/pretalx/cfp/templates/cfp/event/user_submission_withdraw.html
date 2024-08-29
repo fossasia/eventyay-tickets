@@ -1,10 +1,13 @@
 {% extends "cfp/event/base.html" %}
+
 {% load i18n %}
 
 {% block title %}{{ proposal.title }} :: {% endblock %}
 
 {% block content %}
+
     {% include "cfp/includes/user_submission_header.html" %}
+
     <form method="post">
         {% csrf_token %}
         <h3>{% translate "Withdraw proposal" %}</h3>

@@ -1,4 +1,5 @@
 {% extends "orga/settings/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -40,9 +41,7 @@
                     <button type="submit" class="btn btn-lg btn-success" name="test" value="1">
                         {% translate "Save and test custom SMTP connection" %}
                     </button>
-                    <button type="submit" class="btn btn-lg btn-info">
-                        {{ phrases.base.save }}
-                    </button>
+                    <button type="submit" class="btn btn-lg btn-info">{{ phrases.base.save }}</button>
                 {% endif %}
             </span>
         </div>

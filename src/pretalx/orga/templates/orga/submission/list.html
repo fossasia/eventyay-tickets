@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -140,7 +141,11 @@
                         </td>
                         <td>
                             <a href="{{ submission.orga_urls.base }}">
-                                {% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %}
+                                {% if can_view_speakers %}
+                                    {{ submission.title }}
+                                {% else %}
+                                    {{ submission.anonymised.title|default:submission.title }}
+                                {% endif %}
                             </a>
                         </td>
                         {% if can_view_speakers %}
@@ -152,13 +157,11 @@
                                 {% endfor %}
                             </td>
                         {% endif %}
-                        {% if show_submission_types  %}
-                            <td>
-                                {{ submission.submission_type.name }}
-                            </td>
-                        {% endif %}
+                        {% if show_submission_types %}<td>{{ submission.submission_type.name }}</td>{% endif %}
                         <td>
+
                             {% include "orga/submission/state_dropdown.html" with submission=submission %}
+
                         </td>
                         {% if can_change_submission %}
                             <td class="submission_featured">

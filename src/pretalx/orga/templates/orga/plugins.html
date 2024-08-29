@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+
 {% load i18n %}
 
 {% block extra_title %}{% translate "Plugins" %} :: {% endblock %}
@@ -33,13 +34,17 @@
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item">
                                             {% if plugin.author %}
-                                                <p class="meta">{% blocktranslate trimmed with v=plugin.version a=plugin.author %}
-                                                    Version {{ v }} by <em>{{ a }}</em>
-                                                {% endblocktranslate %}</p>
+                                                <p class="meta">
+                                                    {% blocktranslate trimmed with v=plugin.version a=plugin.author %}
+                                                        Version {{ v }} by <em>{{ a }}</em>
+                                                    {% endblocktranslate %}
+                                                </p>
                                             {% else %}
-                                                <p class="meta">{% blocktranslate trimmed with v=plugin.version a=plugin.author %}
-                                                    Version {{ v }}
-                                                {% endblocktranslate %}</p>
+                                                <p class="meta">
+                                                    {% blocktranslate trimmed with v=plugin.version a=plugin.author %}
+                                                        Version {{ v }}
+                                                    {% endblocktranslate %}
+                                                </p>
                                             {% endif %}
                                             {{ plugin.description }}
                                         </li>

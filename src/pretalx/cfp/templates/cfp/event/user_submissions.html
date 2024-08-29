@@ -1,4 +1,5 @@
 {% extends "cfp/event/base.html" %}
+
 {% load compress %}
 {% load html_signal %}
 {% load i18n %}
@@ -35,9 +36,7 @@
                     {% for submission in drafts %}
                         <tr>
                             <td>
-                                <a href="{{ submission.urls.user_base }}">
-                                    {{ submission.title }}
-                                </a>
+                                <a href="{{ submission.urls.user_base }}">{{ submission.title }}</a>
                             </td>
                             <td class="flip text-right">
                                 {% if submission.review_code %}
@@ -46,7 +45,8 @@
                                             data-toggle="tooltip"
                                             data-placement="top"
                                             title="{% translate 'Copy code for review' %}"
-                                            target="_blank" rel="noopener">
+                                            target="_blank"
+                                            rel="noopener">
                                         <i class="fa fa-link"></i>
                                     </button>
                                 {% endif %}
@@ -80,18 +80,19 @@
                     {% for submission in submissions %}
                         <tr>
                             <td>
-                                <a href="{{ submission.urls.user_base }}">
-                                    {{ submission.title }}
-                                </a>
+                                <a href="{{ submission.urls.user_base }}">{{ submission.title }}</a>
                             </td>
                             <td>
+
                                 {% include "cfp/event/fragment_state.html" with state=submission.user_state %}
+
                             </td>
                             <td class="flip text-right">
                                 {% if submission.public_slots %}
                                     <a href="{{ submission.urls.public }}">
                                         {% for talk in submission.public_slots %}
-                                            {{ talk.start|date:DAY_MONTH_DATE_FORMAT }}, {{ talk.start|date:"TIME_FORMAT" }}–{{ talk.end|date:"TIME_FORMAT" }}, {{ talk.room.name }} {% if not forloop.last %}<br>{% endif %}
+                                            {{ talk.start|date:DAY_MONTH_DATE_FORMAT }}, {{ talk.start|date:"TIME_FORMAT" }}–{{ talk.end|date:"TIME_FORMAT" }}, {{ talk.room.name }}
+                                            {% if not forloop.last %}<br>{% endif %}
                                         {% endfor %}
                                     </a>
                                 {% endif %}
@@ -103,7 +104,8 @@
                                             data-toggle="tooltip"
                                             data-placement="top"
                                             title="{% translate 'Copy code for review' %}"
-                                            target="_blank" rel="noopener">
+                                            target="_blank"
+                                            rel="noopener">
                                         <i class="fa fa-link"></i>
                                     </button>
                                 {% endif %}
@@ -115,15 +117,14 @@
                                     {% endif %}
                                 </a>
                                 {% if submission.state == 'accepted' %}
-                                    <a href="{{ submission.urls.confirm }}"
-                                       class="btn btn-sm btn-success">
+                                    <a href="{{ submission.urls.confirm }}" class="btn btn-sm btn-success">
                                         <i class="fa fa-check"></i> {% translate "Confirm" %}
                                     </a>
                                 {% endif %}
                                 {% if request.event.feature_flags.use_feedback and submission.does_accept_feedback %}
-                                    <a href="{{ submission.urls.feedback }}"
-                                       class="btn btn-sm btn-info">
-                                        <i class="fa fa-comments"></i> {% translate "Feedback" %}{% if submission.feedback.count %}  ({{ submission.feedback.count }}){% endif %}
+                                    <a href="{{ submission.urls.feedback }}" class="btn btn-sm btn-info">
+                                        <i class="fa fa-comments"></i> {% translate "Feedback" %}
+                                        {% if submission.feedback.count %}({{ submission.feedback.count }}){% endif %}
                                     </a>
                                 {% endif %}
                             </td>
@@ -134,19 +135,12 @@
         </div>
         <p>
             {% if request.event.cfp.is_open %}
-                <a class="btn btn-success btn-lg"
-                   href="{{ request.event.urls.submit }}">
-                    {% translate "Create a new proposal" %}
-                </a>
+                <a class="btn btn-success btn-lg" href="{{ request.event.urls.submit }}">{% translate "Create a new proposal" %}</a>
             {% endif %}
         </p>
     {% else %}
-        <p class="text-center">
-            {% translate "It seems like you haven’t submitted anything to this event yet." %}
-        </p>
-        <p class="text-center">
-            {% translate "If you did, maybe you used a different account? Check your emails!" %}
-        </p>
+        <p class="text-center">{% translate "It seems like you haven’t submitted anything to this event yet." %}</p>
+        <p class="text-center">{% translate "If you did, maybe you used a different account? Check your emails!" %}</p>
         {% if request.event.cfp.is_open %}
             <p class="text-center">
                 {% translate "If you did not, why not go ahead and create a proposal now? We’d love to hear from you!" %}

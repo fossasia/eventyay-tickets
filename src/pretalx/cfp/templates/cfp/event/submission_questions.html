@@ -1,4 +1,5 @@
 {% extends "cfp/event/submission_base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -16,8 +17,8 @@
         <script defer src="{% static 'cfp/js/formTools.js' %}"></script>
     {% endcompress %}
     {% compress css %}
-        <link rel="stylesheet" type="text/css" href="{% static "vendored/select2.min.css" %}"/>
-        <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/_select2.scss" %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static "vendored/select2.min.css" %}" />
+        <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/_select2.scss" %}" />
     {% endcompress %}
 {% endblock %}
 
@@ -27,9 +28,7 @@
         {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
         {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.questions %}{% endif %}
     </div>
-    <p>
-        {{ text|rich_text }}
-    </p>
+    <p>{{ text|rich_text }}</p>
     {% if form.submission_fields %}
         {% if form.speaker_fields and form.submission_fields %}
             <h4>{% translate "… about your proposal:" %}</h4>

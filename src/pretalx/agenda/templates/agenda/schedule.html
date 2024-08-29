@@ -1,4 +1,5 @@
 {% extends "agenda/base.html" %}
+
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -16,16 +17,18 @@
 {% block agenda_content %}
     <div id="fahrplan" class="{% if show_talk_list %}list{% else %}grid{% endif %}">
         {% if schedule != schedule.event.current_schedule %}
-            <div class="alert alert-warning m-3"><span>
-                {% if not schedule.version %}
-                    {{ phrases.schedule.wip_version }}
-                {% else %}
-                    {{ phrases.schedule.old_version }}
-                {% endif %}
-                {% if request.event.current_schedule %}
-                    {% phrase "phrases.schedule.current_version" current_url=schedule.event.urls.schedule %}
-                {% endif %}
-            </span></div>
+            <div class="alert alert-warning m-3">
+                <span>
+                    {% if not schedule.version %}
+                        {{ phrases.schedule.wip_version }}
+                    {% else %}
+                        {{ phrases.schedule.old_version }}
+                    {% endif %}
+                    {% if request.event.current_schedule %}
+                        {% phrase "phrases.schedule.current_version" current_url=schedule.event.urls.schedule %}
+                    {% endif %}
+                </span>
+            </div>
         {% endif %}
 
         {% include "agenda/header_row.html" with with_margin=True with_extra=True %}

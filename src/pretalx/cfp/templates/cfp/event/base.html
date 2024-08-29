@@ -1,10 +1,7 @@
 {% extends "common/base.html" %}
 
 {% block custom_header %}
-    {% block cfp_header %}
-    {% endblock %}
+    {% block cfp_header %}{% endblock %}
 {% endblock %}
 
-{% block nav_link %}
-    {{ request.event.urls.base }}
-{% endblock %}
+{% block nav_link %}{{ request.event.urls.base }}{% endblock %}

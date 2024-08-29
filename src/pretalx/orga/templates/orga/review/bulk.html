@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -35,14 +36,22 @@
     <div class="submit-group search-submit-group">
         <form class="search-form" id="review-filter-form">
             {% bootstrap_field filter_form.q %}
-            {% if show_submission_types and filter_form.submission_type %}{% bootstrap_field filter_form.submission_type %}{% endif %}
+            {% if show_submission_types and filter_form.submission_type %}
+                {% bootstrap_field filter_form.submission_type %}
+            {% endif %}
             <div class="d-none form-group">
                 {% bootstrap_field filter_form.state layout='inline' %}
                 <div id="pending">{% bootstrap_field filter_form.pending_state__isnull layout='inline' %}</div>
             </div>
-            {% if filter_form.track %}{% bootstrap_field filter_form.track %}{% endif %}
-            {% if filter_form.content_locale %}{% bootstrap_field filter_form.content_locale %}{% endif %}
-            {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}
+            {% if filter_form.track %}
+                {% bootstrap_field filter_form.track %}
+            {% endif %}
+            {% if filter_form.content_locale %}
+                {% bootstrap_field filter_form.content_locale %}
+            {% endif %}
+            {% if filter_form.tags %}
+                {% bootstrap_field filter_form.tags %}
+            {% endif %}
             <div class="form-group w-auto">
                 <button class="btn btn-success" type="submit">{% translate "Search" %}</button>
             </div>
@@ -61,16 +70,15 @@
         {% endif %}
     </div>
 
-    <form method="post">{% csrf_token %}
+    <form method="post">
+        {% csrf_token %}
         <div class="table-responsive-sm">
             <table class="table table-sm table-hover table-flip table-sticky">
                 <thead>
                     <tr>
                         <th>{% translate "Title" %}</th>
                         {% if can_view_speakers %}<th>{{ phrases.schedule.speakers }}</th>{% endif %}
-                        {% for category in categories %}
-                            <th>{{ category.name }}</th>
-                        {% endfor %}
+                        {% for category in categories %}<th>{{ category.name }}</th>{% endfor %}
                         <th class="">{% translate "Comment" %}</th>
                     </tr>
                 </thead>
@@ -78,7 +86,8 @@
                     {% for row in table %}
                         <tr>
                             <td>
-                                <a href="{{ row.submission.orga_urls.base }}">{{ row.submission.title }}</a></td>
+                                <a href="{{ row.submission.orga_urls.base }}">{{ row.submission.title }}</a>
+                            </td>
                             {% if can_view_speakers %}
                                 <td>
                                     {% for speaker in row.submission.speakers.all %}
@@ -106,9 +115,7 @@
             </table>
         </div>
         <div id="submitBar">
-            <button type="submit" class="btn btn-success">
-                {{ phrases.base.save }}
-            </button>
+            <button type="submit" class="btn btn-success">{{ phrases.base.save }}</button>
         </div>
     </form>
 {% endblock %}
