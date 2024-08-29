@@ -22674,3 +22674,9 @@ msgstr "Мои заказы"
 
 msgid "Logout"
 msgstr "Выйти"
+
+msgid "Want to create a %(event_name)s account?"
+msgstr "Хотите создать аккаунт %(event_name)s?"
+
+msgid "Already have a %(event_name)s account?"
+msgstr "У вас уже есть аккаунт %(event_name)s?"

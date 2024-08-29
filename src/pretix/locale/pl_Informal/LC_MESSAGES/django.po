@@ -21058,3 +21058,9 @@ msgstr "Moje zamówienia"
 
 msgid "Logout"
 msgstr "Wyloguj się"
+
+msgid "Want to create a %(event_name)s account?"
+msgstr "Chcesz utworzyć konto %(event_name)s?"
+
+msgid "Already have a %(event_name)s account?"
+msgstr "Masz już konto %(event_name)s?"
