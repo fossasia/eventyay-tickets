@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block extra_title %}{% if request.event.is_public %}{% translate "Deactivate event" %}{% else %}{% translate "Go live" %}{% endif %} :: {% endblock %}
+{% block extra_title %}{% if request.event.is_public %}{% translate "Deactivate event" %}{% else %}{% translate "Go live" %}{% endif %} :: {% endblock extra_title %}
 
 {% block content %}
     <h2>
@@ -61,4 +61,4 @@
                 {% endif %}
             </form>
         </div>
-{% endblock %}
+{% endblock content %}

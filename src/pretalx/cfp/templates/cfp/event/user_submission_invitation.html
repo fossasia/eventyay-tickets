@@ -3,7 +3,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block title %}{{ submission.title }} :: {% endblock %}
+{% block title %}{{ submission.title }} :: {% endblock title %}
 
 {% block content %}
 
@@ -31,4 +31,4 @@
             </div>
         </div>
     </form>
-{% endblock %}
+{% endblock content %}

@@ -4,7 +4,7 @@
 {% load rich_text %}
 {% load rules %}
 
-{% block extra_title %}{% translate "Attendee feedback" %} :: {% endblock %}
+{% block extra_title %}{% translate "Attendee feedback" %} :: {% endblock extra_title %}
 
 {% block content %}
     <h2 class="d-flex w-100 justify-content-between align-items-start">{% translate "Attendee feedback" %}</h2>
@@ -32,4 +32,4 @@
 
     {% include "orga/includes/pagination.html" %}
 
-{% endblock %}
+{% endblock content %}

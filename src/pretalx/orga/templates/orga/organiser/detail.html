@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load rules %}
 
-{% block extra_title %}{% translate "Teams" %} :: {{ request.organiser.name }} :: {% endblock %}
+{% block extra_title %}{% translate "Teams" %} :: {{ request.organiser.name }} :: {% endblock extra_title %}
 
 {% block content %}
     <form method="post"><fieldset>
@@ -89,4 +89,4 @@
           </fieldset>
         {% endif %}
     </form>
-{% endblock %}
+{% endblock content %}

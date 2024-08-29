@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load rules %}
 
-{% block extra_title %}{% translate "Dashboard" %} :: {% endblock %}
+{% block extra_title %}{% translate "Dashboard" %} :: {% endblock extra_title %}
 
 {% block content %}
     {% has_perm 'orga.create_events' request.user request.user as can_create_event %}
@@ -91,4 +91,4 @@
             {% endfor %}
         </div>
     {% endif %}
-{% endblock %}
+{% endblock content %}

@@ -7,7 +7,7 @@
 {% load rules %}
 {% load static %}
 
-{% block title %}{% translate "Your proposals" %} :: {% endblock %}
+{% block title %}{% translate "Your proposals" %} :: {% endblock title %}
 
 {% block content %}
     {% if information %}
@@ -156,4 +156,4 @@
     {% compress js %}
         <script defer src="{% static "common/js/copy.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock content %}

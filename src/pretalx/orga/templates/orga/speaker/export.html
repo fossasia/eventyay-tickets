@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block extra_title %}{% translate "Export speaker data" %} :: {% endblock %}
+{% block extra_title %}{% translate "Export speaker data" %} :: {% endblock extra_title %}
 
 {% block content %}
     <h2>{% translate "Export speaker data" %}</h2>
@@ -131,4 +131,4 @@
         </div>
     </div>
     <script defer src="{% static "orga/js/speaker_export.js" %}"></script>
-{% endblock %}
+{% endblock content %}

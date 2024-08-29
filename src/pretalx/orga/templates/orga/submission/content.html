@@ -12,13 +12,13 @@
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/lightbox.scss" %}">
     {% endcompress %}
-{% endblock %}
+{% endblock stylesheets %}
 
 {% block scripts %}
     {% compress js %}
         <script defer src="{% static "common/js/lightbox.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
 {% block submission_content %}
     {% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
@@ -110,4 +110,4 @@
         </fieldset></form>
 
     <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
-{% endblock %}
+{% endblock submission_content %}

@@ -5,7 +5,7 @@
 
 {% block error_image %}
     <img loading="lazy" src="{% static "common/img/error_5xx.svg" %}" class="img" alt="{% translate "Internal server error." %}">
-{% endblock %}
+{% endblock error_image %}
 {% block error_message %}
     <p>
         {% translate "We have encountered an error." %}
@@ -21,5 +21,5 @@
             {% endif %}
         </p>
     </h5>
-{% endblock %}
-{% block error_code %}500{% endblock %}
+{% endblock error_message %}
+{% block error_code %}500{% endblock error_code %}

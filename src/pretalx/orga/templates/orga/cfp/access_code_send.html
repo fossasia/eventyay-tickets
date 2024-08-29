@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block extra_title %}{% translate "Send access code" %} :: {% endblock %}
+{% block extra_title %}{% translate "Send access code" %} :: {% endblock extra_title %}
 
 {% block content %}
     <h2>{% translate "Send access code" %}</h2>
@@ -17,4 +17,4 @@
 
     </form>
 
-{% endblock %}
+{% endblock content %}

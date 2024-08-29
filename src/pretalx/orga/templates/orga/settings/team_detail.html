@@ -5,7 +5,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block extra_title %}{% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }} :: {% endblock %}
+{% block extra_title %}{% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }} :: {% endblock extra_title %}
 
 {% block settings_content %}
     <div>
@@ -136,4 +136,4 @@
         <script defer src="{% static "orga/js/speakers.js" %}"></script>
         <script defer src="{% static "orga/js/teamSettings.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock settings_content %}

@@ -6,7 +6,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block extra_title %}{% if form.instance.question %}{{ form.instance.question }}{% else %}{% translate "New question" %}{% endif %} :: {% endblock %}
+{% block extra_title %}{% if form.instance.question %}{{ form.instance.question }}{% else %}{% translate "New question" %}{% endif %} :: {% endblock extra_title %}
 
 {% block content %}
     {% compress js %}
@@ -168,4 +168,4 @@
         {% include "orga/includes/submit_row.html" %}
 
     </form>
-{% endblock %}
+{% endblock content %}

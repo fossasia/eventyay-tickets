@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block extra_title %}{{ request.event.rooms.count }} {% blocktranslate trimmed count count=request.event.rooms.count context "Number of rooms" %}Room{% plural %}Rooms{% endblocktranslate %} :: {% endblock %}
+{% block extra_title %}{{ request.event.rooms.count }} {% blocktranslate trimmed count count=request.event.rooms.count context "Number of rooms" %}Room{% plural %}Rooms{% endblocktranslate %} :: {% endblock extra_title %}
 
 {% block content %}
     <div>
@@ -61,4 +61,4 @@
             </a>
         </div>
     </div>
-{% endblock %}
+{% endblock content %}

@@ -5,7 +5,7 @@
 
 {% block email_editor_title_detail %}
     {% translate "Reviewers and team members" %}
-{% endblock %}
+{% endblock email_editor_title_detail %}
 
 {% block skip_queue %}
     <div class="alert alert-danger col-md-9 offset-md-3">
@@ -15,10 +15,10 @@
             They also do not show up in the list of sent mails.
         {% endblocktranslate %}
     </div>
-{% endblock %}
+{% endblock skip_queue %}
 
 {% block recipient_form %}
     {% bootstrap_field form.recipients layout='event' %}
-{% endblock %}
+{% endblock recipients %}
 
-{% block send_button_label %}{{ phrases.base.send }}{% endblock %}
+{% block send_button_label %}{{ phrases.base.send }}{% endblock send_button_label %}

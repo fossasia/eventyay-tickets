@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load rules %}
 
-{% block extra_title %}{% translate "Teams" %} :: {% endblock %}
+{% block extra_title %}{% translate "Teams" %} :: {% endblock extra_title %}
 
 {% block content %}
     <form class="mb-4 m-2">
@@ -44,4 +44,4 @@
     {% if not organisers and not can_create_organiser %}
         <div class="alert alert-info">{% translate "There are no organisers you can edit." %}</div>
     {% endif %}
-{% endblock %}
+{% endblock content %}

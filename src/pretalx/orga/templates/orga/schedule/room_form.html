@@ -5,7 +5,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block extra_title %}{% if form.instance.pk %}{% translate "Room" %} {{ quotation_open }}{{ form.name }}{{ quotation_close }}{% else %}{% translate "New room" %}{% endif %} :: {% endblock %}
+{% block extra_title %}{% if form.instance.pk %}{% translate "Room" %} {{ quotation_open }}{{ form.name }}{{ quotation_close }}{% else %}{% translate "New room" %}{% endif %} :: {% endblock extra_title %}
 
 {% block content %}
     {% compress js %}
@@ -40,4 +40,4 @@
         {% include "orga/includes/submit_row.html" %}
 
     </form>
-{% endblock %}
+{% endblock content %}

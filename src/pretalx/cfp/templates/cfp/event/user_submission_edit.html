@@ -8,7 +8,7 @@
 {% load rules %}
 {% load static %}
 
-{% block title %}{{ submission.title }} :: {% endblock %}
+{% block title %}{{ submission.title }} :: {% endblock title %}
 
 {% block cfp_header %}
     {% compress js %}
@@ -28,7 +28,7 @@
         <link rel="stylesheet" type="text/css" href="{% static "vendored/select2.min.css" %}" />
         <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/_select2.scss" %}" />
     {% endcompress %}
-{% endblock %}
+{% endblock cfp_header %}
 
 {% block content %}
     {% has_perm 'cfp.add_speakers' request.user submission  as can_invite_speakers %}
@@ -156,4 +156,4 @@
         {% include "common/logs.html" with entries=submission.logged_actions hide_orga="true" %}
 
     </div>
-{% endblock %}
+{% endblock content %}

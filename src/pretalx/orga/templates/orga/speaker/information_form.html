@@ -3,7 +3,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block extra_title %}{% blocktranslate trimmed count count=1 %}Speaker Information Note{% plural %}Speaker Information Notes{% endblocktranslate %} :: {% endblock %}
+{% block extra_title %}{% blocktranslate trimmed count count=1 %}Speaker Information Note{% plural %}Speaker Information Notes{% endblocktranslate %} :: {% endblock extra_title %}
 
 {% block content %}
     <h2>
@@ -20,4 +20,4 @@
         {% include "orga/includes/submit_row.html" %}
 
     </form>
-{% endblock %}
+{% endblock content %}

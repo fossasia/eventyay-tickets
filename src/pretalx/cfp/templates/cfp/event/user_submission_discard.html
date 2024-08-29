@@ -5,7 +5,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{{ submission.title }} :: {% endblock %}
+{% block title %}{{ submission.title }} :: {% endblock title %}
 
 {% block content %}
     <div class="col-md-10 ml-auto mr-auto">
@@ -25,4 +25,4 @@
             </div>
         </form>
     </div>
-{% endblock %}
+{% endblock content %}

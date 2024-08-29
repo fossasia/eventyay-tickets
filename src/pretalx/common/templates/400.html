@@ -5,7 +5,7 @@
 
 {% block error_image %}
     <img loading="lazy" src="{% static "common/img/error_5xx.svg" %}" class="img" alt="{{ phrases.base.bad_request }}">
-{% endblock %}
+{% endblock error_image %}
 
 {% block error_message %}
     <p>
@@ -24,5 +24,5 @@
         </p>
     </h3>
     <h2>
-{% endblock %}
-{% block error_code %}400{% endblock %}
+{% endblock error_message %}
+{% block error_code %}400{% endblock error_code %}

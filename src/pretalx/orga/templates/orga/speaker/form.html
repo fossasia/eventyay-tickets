@@ -10,15 +10,15 @@
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/lightbox.scss" %}">
     {% endcompress %}
-{% endblock %}
+{% endblock stylesheets %}
 
 {% block scripts %}
     {% compress js %}
         <script defer src="{% static "common/js/lightbox.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
-{% block extra_title %}{{ form.instance.user.get_display_name }} :: {% endblock %}
+{% block extra_title %}{{ form.instance.user.get_display_name }} :: {% endblock extra_title %}
 
 {% block content %}
     {% if form.biography %}
@@ -27,7 +27,7 @@
     {% endif %}
     {% block alternate_link %}
         <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.speakers.full }}{{ form.instance.code }}" />
-    {% endblock %}
+    {% endblock alternate_link %}
 
     {% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}
     {% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
@@ -110,4 +110,4 @@
 
 
     <script defer src="{% static "cfp/js/profile.js" %}"></script>
-{% endblock %}
+{% endblock content %}

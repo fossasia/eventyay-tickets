@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block extra_title %}{% translate "Event History" %} :: {% endblock %}
+{% block extra_title %}{% translate "Event History" %} :: {% endblock extra_title %}
 
 {% block content %}
     <h2>{% translate "Event History" %}</h2>
@@ -12,4 +12,4 @@
         {% include "orga/includes/pagination.html" %}
 
     </div>
-{% endblock %}
+{% endblock content %}

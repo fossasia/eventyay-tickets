@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load rich_text %}
 
-{% block submission_title %}{% translate "Attendee feedback" %} :: {% endblock %}
+{% block submission_title %}{% translate "Attendee feedback" %} :: {% endblock submission_title %}
 
 {% block submission_content %}
     {% for entry in feedback %}
@@ -16,4 +16,4 @@
 
     {% include "orga/includes/pagination.html" %}
 
-{% endblock %}
+{% endblock submission_content %}

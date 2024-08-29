@@ -10,9 +10,9 @@
 {% block scripts %}
     {% vite_hmr %}
     {% vite_asset "src/main.js" %}
-{% endblock %}
+{% endblock scrpits %}
 
-{% block extra_title %}{% translate "Schedule" %} :: {% endblock %}
+{% block extra_title %}{% translate "Schedule" %} :: {% endblock extra_title %}
 
 {% block navbar_right %}
     <li class="nav-item">
@@ -21,7 +21,7 @@
             {% phrase "phrases.schedule.timezone_hint" tz=request.event.timezone %}
         </a>
     </li>
-{% endblock %}
+{% endblock navbar_right %}
 
 {% block schedule_content %}
 
@@ -78,4 +78,4 @@
         <div id="app" data-gettext="{{ gettext_language }}"></div>
 
     {% endif %}
-{% endblock %}
+{% endblock schedule_content %}

@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{% block title %}{% endblock %} {{site_name}}</title>
+        <title>{% block title %}{% endblock title %} {{site_name}}</title>
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/error.scss" %}" />
         {% endcompress %}
@@ -17,9 +17,9 @@
     </head>
     <body>
         <div id="wrapper">
-            {% block error_image %}{% endblock %}
-            <h2>{% block error_message %}{% endblock %}</h2>
-            <h4 class="mt-4">HTTP {% block error_code %}{% endblock %}</h4>
+            {% block error_image %}{% endblock error_image %}
+            <h2>{% block error_message %}{% endblock error_message %}</h2>
+            <h4 class="mt-4">HTTP {% block error_code %}{% endblock error_code %}</h4>
         </div>
     </body>
 </html>

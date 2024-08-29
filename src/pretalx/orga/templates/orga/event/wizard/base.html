@@ -3,7 +3,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block extra_title %}{% translate "New event" %} :: {% endblock %}
+{% block extra_title %}{% translate "New event" %} :: {% endblock extra_title %}
 
 {% block content %}
     <form method="post"><fieldset>
@@ -16,7 +16,7 @@
             </span>
         </legend>
         {{ wizard.form.media }}
-        {% block wizard_content %}{% endblock %}
+        {% block wizard_content %}{% endblock wizard_content %}
         {% csrf_token %}
         {{ wizard.management_form }}
         {% bootstrap_form wizard.form layout='event' %}
@@ -29,4 +29,4 @@
             {% endif %}
         </div>
     </fieldset></form>
-{% endblock %}
+{% endblock content %}

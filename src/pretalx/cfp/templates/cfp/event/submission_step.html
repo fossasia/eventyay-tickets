@@ -12,7 +12,7 @@
     {% compress js %}
         <script defer src="{% static 'cfp/js/proposalTabTitles.js' %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock cfp_submission_header %}
 
 {% block inner %}
     <div class="d-flex">
@@ -24,4 +24,4 @@
     {% for field in form %}
         {% bootstrap_field field layout='event' %}
     {% endfor %}
-{% endblock %}
+{% endblock inner %}

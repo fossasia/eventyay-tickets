@@ -112,7 +112,7 @@
         @media (max-width: 480px) {
         }
 
-        {% block addcss %}{% endblock %}
+        {% block addcss %}{% endblock addcss %}
     </style>
     <body{% if rtl %} dir="rtl" class="rtl"{% endif %}>
         <table width="600" cellspacing="0" border="0" class="layout">
@@ -123,7 +123,7 @@
                             <a href="{{ event.urls.base.full }}" target="_blank" rel="noopener">{{ event.name }}</a>
                         </h2>
                     {% endif %}
-                    {% block header %}<h1>{{ subject }}</h1>{% endblock %}
+                    {% block header %}<h1>{{ subject }}</h1>{% endblock header %}
                 </td>
             </tr>
             <tr>

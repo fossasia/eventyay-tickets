@@ -6,7 +6,7 @@
 
 {% block scripts %}
     {% compress js %}<script src="{% static 'orga/js/event_wizard.js' %}" defer></script>{% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
 {% block content %}
     <form method="post"><fieldset>
@@ -19,7 +19,7 @@
             </span>
         </legend>
         {{ wizard.form.media }}
-        {% block wizard_content %}{% endblock %}
+        {% block wizard_content %}{% endblock wizard_content %}
         {% csrf_token %}
         {{ wizard.management_form }}
         {% bootstrap_form_errors wizard.form %}
@@ -40,4 +40,4 @@
             {% endif %}
         </div>
     </fieldset></form>
-{% endblock %}
+{% endblock content %}

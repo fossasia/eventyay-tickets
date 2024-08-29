@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load rich_text %}
 
-{% block title %}{% translate "Accept invitation?" %}{% endblock %}
+{% block title %}{% translate "Accept invitation?" %}{% endblock title %}
 
 {% block content %}
     <h2>{% translate "Accept invitation?" %}</h2>
@@ -45,4 +45,4 @@
             </div>
         </form>
     {% endif %}
-{% endblock %}
+{% endblock content %}

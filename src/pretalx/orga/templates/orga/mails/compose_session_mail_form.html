@@ -6,7 +6,7 @@
 
 {% block email_editor_title_detail %}
   {% translate "Sessions, proposals, speakers" %}
-{% endblock %}
+{% endblock email_editor_title_detail %}
 
 {% block recipient_form %}
 
@@ -56,4 +56,4 @@
   {% bootstrap_field form.submissions layout='event' %}
   {% bootstrap_field form.speakers layout='event' %}
 
-{% endblock %}
+{% endblock recipient_form %}

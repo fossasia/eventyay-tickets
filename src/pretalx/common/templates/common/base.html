@@ -24,9 +24,9 @@
         <meta name="HandheldFriendly" content="True"/>
         {% block meta_image %}{% if request.event %}<meta property="thumbnail" content="{{ request.event.urls.social_image.full }}">
             <meta property="og:image" content="{{ request.event.urls.social_image.full }}">
-        {% endif %}{% endblock %}
-        <meta property="og:title" content="{% block social_title %}{% endblock %} {% if request.event %}{{ request.event.name }}{% endif %}">
-        <meta property="og:description" content="{% block social_description %}{% if request.event %}Schedule, talks and talk submissions for {{ request.event.name }}{% else %}Talks and talk submissions by {{site_name}} {% endif %}{% endblock %}">
+        {% endif %}{% endblock meta_image %}
+        <meta property="og:title" content="{% block social_title %}{% endblock social_title %} {% if request.event %}{{ request.event.name }}{% endif %}">
+        <meta property="og:description" content="{% block social_description %}{% if request.event %}Schedule, talks and talk submissions for {{ request.event.name }}{% else %}Talks and talk submissions by {{site_name}} {% endif %}{% endblock social_description %}">
         <meta property="og:url" content="{% if request.event and request.event.display_settings.html_export_url %}{{ request.event.display_settings.html_export_url }}{{ request.path|slice:"1:" }}{% else %}{{ request.build_absolute_uri }}{% endif %}">
         <meta property="twitter:card" content="summary">
 
@@ -52,7 +52,7 @@
             <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
             <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
         {% endcompress %}
-        {% block custom_header %}{% endblock %}
+        {% block custom_header %}{% endblock custom_header %}
     </head>
     <body data-datetimeformat="{{ js_datetime_format }}" data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}">
         <div id="top-bg" class="header {{ request.event.display_settings.header_pattern|default:"bg-primary" }}">
@@ -69,10 +69,10 @@
                 {% endblocktranslate %}
             </div>
         {% endif %}
-        <div class="container{% block container_width %}{% endblock %}" id="main-container">
+        <div class="container{% block container_width %}{% endblock container_width %}" id="main-container">
             <header>
                 <h1>
-                    <a href="{% block nav_link %}{% endblock %}">
+                    <a href="{% block nav_link %}{% endblock nav_link %}">
                         {% if request.event and request.event.logo %}
                             <img loading="lazy" src="{{ request.event.logo.url }}" id="event-logo" alt="{% translate "The event’s logo" %}">
                         {% elif request.event %}
@@ -136,7 +136,7 @@
                         {% for message in messages %}<div class="alert alert-{{ message.tags }}">{{ message }}</div>{% endfor %}
                     {% endif %}
 
-                    {% block content %}{% endblock %}
+                    {% block content %}{% endblock content %}
                 </main>
             </div>
             <footer>

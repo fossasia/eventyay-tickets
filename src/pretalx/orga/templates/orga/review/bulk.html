@@ -12,9 +12,9 @@
     {% compress js %}
         <script src="{% static "orga/js/submission_filter.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
-{% block extra_title %}{% translate "Reviews" %} :: {% endblock %}
+{% block extra_title %}{% translate "Reviews" %} :: {% endblock extra_title %}
 
 {% block content %}
     {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
@@ -118,4 +118,4 @@
             <button type="submit" class="btn btn-success">{{ phrases.base.save }}</button>
         </div>
     </form>
-{% endblock %}
+{% endblock content %}
