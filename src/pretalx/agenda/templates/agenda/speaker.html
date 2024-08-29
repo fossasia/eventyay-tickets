@@ -14,7 +14,7 @@
 {% endblock meta_image %}
 {% block alternate_link %}
     <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.speakers.full }}{{ profile.code }}" />
-{% endblock alternate %}
+{% endblock alternate_link %}
 
 {% block agenda_custom_header %}
     {% compress js %}
