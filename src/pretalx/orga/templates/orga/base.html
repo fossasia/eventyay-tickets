@@ -3,6 +3,7 @@
 {% load rules %}
 {% load static %}
 {% load vite %}
+
 <!DOCTYPE html>
 <html lang="{{ html_locale }}"{% if rtl %} dir="rtl" class="rtl"{% endif %}>
     <head>
@@ -26,10 +27,10 @@
 
         <link rel="stylesheet" type="text/css" href="{% static "common/scss/uncompressed.css" %}" />
         {% compress css %}
-            <link rel="stylesheet" type="text/css" href="{% static "vendored/typeahead.css" %}"/>
-            <link rel="stylesheet" type="text/css" href="{% static "vendored/select2.min.css" %}"/>
-            <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
-            <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}"/>
+            <link rel="stylesheet" type="text/css" href="{% static "vendored/typeahead.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "vendored/select2.min.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}" />
+            <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}" />
         {% endcompress %}
         {% block stylesheets %}{% endblock %}
         {% compress js %}
@@ -54,15 +55,18 @@
                 </li>
             </ul>
             <a class="navbar-brand d-none d-md-block" href="/orga/">
-                <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}" alt="{% translate "The pretalx logo" %}"> pretalx
+                <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}" alt="{% translate "The pretalx logo" %}">
+                pretalx
             </a>
             <div class="navbar-collapse" id="navbartoggle">
                 <ul class="navbar-nav mr-auto flip">
                     {% if request.event %}
                         <li class="nav-item">
                             {% if request.event.custom_domain and not request.event.is_public %}
-                                <form action="{{ request.event.urls.auth.full }}" method="post"
-                                      target="_blank" class="mobile-navbar-view-form visible-xs-block d-flex align-items-center">
+                                <form action="{{ request.event.urls.auth.full }}"
+                                      method="post"
+                                      target="_blank"
+                                      class="mobile-navbar-view-form visible-xs-block d-flex align-items-center">
                                     <input type="hidden" value="{{ new_session }}" name="session">
                                     <input type="hidden" value="{{ go_to_target }}" name="target">
                                     <button type="submit" class="btn btn-link navbar-toggle">
@@ -71,10 +75,10 @@
                                     </button>
                                 </form>
                             {% else %}
-                                <a
-                                    class="nav-link d-flex align-items-center" target="_blank" rel="noopener"
-                                    href="{% if go_to_target == 'schedule' %}{{ request.event.urls.schedule }}{% else %}{{ request.event.cfp.urls.public }}{% endif %}"
-                                >
+                                <a class="nav-link d-flex align-items-center"
+                                   target="_blank"
+                                   rel="noopener"
+                                   href="{% if go_to_target == 'schedule' %}{{ request.event.urls.schedule }}{% else %}{{ request.event.cfp.urls.public }}{% endif %}">
                                     <i class="fa fa-eye mr-2 mt-0"></i>
                                     {% translate "View event" %}
                                 </a>
@@ -91,8 +95,7 @@
                         </a>
                     </li>
                 {% endif %}
-                {% block navbar_right %}
-                {% endblock %}
+                {% block navbar_right %}{% endblock %}
                 <li class="nav-item d-none d-md-block">
                     <a class="nav-link active" href="{% url "orga:user.view" %}">
                         <i class="fa fa-user"></i>

@@ -1,4 +1,5 @@
 {% extends "orga/submission/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -16,19 +17,19 @@
     {% has_perm 'orga.view_reviews' request.user submission as can_view_other_reviews %}
     {% has_perm 'orga.view_reviewer_names' request.user submission as can_view_reviewer_names %}
     {% if request.user in submission.speakers.all %}
-        <div class="alert alert-error"><span>
-            {% blocktranslate trimmed %}
-                You’re not allowed to review or see reviews for your own proposals.
-            {% endblocktranslate %}</span>
+        <div class="alert alert-error">
+            <span>
+                {% blocktranslate trimmed %}
+                    You’re not allowed to review or see reviews for your own proposals.
+                {% endblocktranslate %}
+            </span>
         </div>
     {% else %}
         {% if not read_only %}
             {% if request.event.settings.review_help_text %}
                 <div class="alert alert-info">
                     <div>
-                        <p>
-                            {{ request.event.settings.review_help_text|rich_text }}
-                        </p>
+                        <p>{{ request.event.settings.review_help_text|rich_text }}</p>
                     </div>
                 </div>
             {% elif not form.instance.pk and not can_view_other_reviews and request.event.active_review_phase and request.event.active_review_phase.can_see_other_reviews == 'after_review' %}
@@ -46,7 +47,9 @@
             {% csrf_token %}
             {% bootstrap_form_errors form %}
             {% bootstrap_form_errors qform %}
-            {% if tags_form %}{% bootstrap_form_errors tags_form %}{% endif %}
+            {% if tags_form %}
+                {% bootstrap_form_errors tags_form %}
+            {% endif %}
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">{% translate "Title" %}</label>
                 <div class="col-md-9 mt-1">
@@ -59,16 +62,12 @@
             </div>
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">{% translate "Session type" %}</label>
-                <div class="col-md-9 mt-1">
-                    {{ submission.submission_type }}
-                </div>
+                <div class="col-md-9 mt-1">{{ submission.submission_type }}</div>
             </div>
             {% if submission.track %}
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{% translate "Track" %}</label>
-                    <div class="col-md-9 mt-1">
-                        {{ submission.track.name|default:'-' }}
-                    </div>
+                    <div class="col-md-9 mt-1">{{ submission.track.name|default:'-' }}</div>
                 </div>
             {% endif %}
             {% if request.event.cfp.request_abstract %}
@@ -111,7 +110,9 @@
                 <div class="form-group row">
                     <label class="col-md-3 col-form-label">{{ answer.question.question }}</label>
                     <div class="col-md-9 mt-1">
+
                         {% include "common/question_answer.html" with answer=answer %}
+
                     </div>
                 </div>
             {% endfor %}
@@ -121,7 +122,9 @@
                         <label class="col-md-3 col-form-label">{% translate "Resources" %}</label>
                         <div class="col-md-9 mt-1">
                             {% for resource in submission.active_resources %}
+
                                 {% include "agenda/includes/submission_resource.html" %}
+
                                 {% if not forloop.last %}<br>{% endif %}
                             {% endfor %}
                         </div>
@@ -147,7 +150,9 @@
             {% endif %}
 
             {% if not read_only %}
-                {% if tags_form %}{% bootstrap_form tags_form layout='event' %}{% endif %}
+                {% if tags_form %}
+                    {% bootstrap_form tags_form layout='event' %}
+                {% endif %}
 
                 <div id="own-review" {% if form.instance.pk %}class="d-none"{% endif %}>
                     {% for score_field in form.get_score_fields %}
@@ -164,25 +169,27 @@
                         <tr>
                             <th>{% translate "Score" %}</th>
                             {% if score_categories|length > 1 %}
-                                {% for cat in score_categories %}
-                                    <th>{{ cat.name }}</th>
-                                {% endfor %}
+                                {% for cat in score_categories %}<th>{{ cat.name }}</th>{% endfor %}
                             {% endif %}
-                            {% for field in qform %}
-                                <th>{{ field.label }}</th>
-                            {% endfor %}
+                            {% for field in qform %}<th>{{ field.label }}</th>{% endfor %}
                             <th>{% translate "Review" %}</th>
                             <th></th>
                         </tr>
                         <tbody>
                             {% if form.instance.pk and review_display %}
+
                                 {% include "orga/submission/review_fragment.html" with review=review_display read_only=read_only show_reviewer_name=False %}
+
                             {% endif %}
                             {% if can_view_other_reviews %}
                                 {% for review in reviews %}
+
                                     {% include "orga/submission/review_fragment.html" with review=review read_only=True show_reviewer_name=can_view_reviewer_names %}
+
                                 {% empty %}
-                                    <tr><td colspan="100">{% translate "Nobody else has submitted a review yet." %}</td></tr>
+                                    <tr>
+                                        <td colspan="100">{% translate "Nobody else has submitted a review yet." %}</td>
+                                    </tr>
                                 {% endfor %}
                             {% endif %}
                         </tbody>

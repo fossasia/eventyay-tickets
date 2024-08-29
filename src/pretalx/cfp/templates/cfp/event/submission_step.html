@@ -1,4 +1,5 @@
 {% extends "cfp/event/submission_base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -19,9 +20,7 @@
         {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
         {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.editor %}{% endif %}
     </div>
-    <p>
-        {{ text|rich_text }}
-    </p>
+    <p>{{ text|rich_text }}</p>
     {% for field in form %}
         {% bootstrap_field field layout='event' %}
     {% endfor %}

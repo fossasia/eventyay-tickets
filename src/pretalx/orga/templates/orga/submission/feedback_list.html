@@ -1,4 +1,5 @@
 {% extends "orga/submission/base.html" %}
+
 {% load i18n %}
 {% load rich_text %}
 
@@ -7,12 +8,12 @@
 {% block submission_content %}
     {% for entry in feedback %}
         <div class="card feedback-card">
-            <div class="card-body">
-                {{ entry.review|rich_text }}
-            </div>
+            <div class="card-body">{{ entry.review|rich_text }}</div>
         </div>
     {% empty %}
         {{ phrases.schedule.no_feedback }}
     {% endfor %}
+
     {% include "orga/includes/pagination.html" %}
+
 {% endblock %}

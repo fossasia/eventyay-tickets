@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load copyable %}
 {% load i18n %}
@@ -13,35 +14,20 @@
         <input name="q" type="text" {% if request.GET.q %} value="{{ request.GET.q }}" {% endif %}>
     </form>
 
-    <form method="post">{% csrf_token %}
+    <form method="post">
+        {% csrf_token %}
         <div class="table-responsive">
             <table class="table table-sm table-hover table-flip">
                 <thead>
                     <tr>
-                        <th>
-                            {% translate "Name" %}
-                        </th>
-                        <th>
-                            {% translate "Email" %}
-                        </th>
-                        <th>
-                            {{ phrases.base.language }}
-                        </th>
-                        <th>
-                            {% translate "Teams" %}
-                        </th>
-                        <th>
-                            {% translate "Events" %}
-                        </th>
-                        <th class="numeric">
-                            {% translate "Submissions" %}
-                        </th>
-                        <th class="numeric">
-                            {% translate "Last login" %}
-                        </th>
-                        <th class="numeric">
-                            {% translate "Password reset time" %}
-                        </th>
+                        <th>{% translate "Name" %}</th>
+                        <th>{% translate "Email" %}</th>
+                        <th>{{ phrases.base.language }}</th>
+                        <th>{% translate "Teams" %}</th>
+                        <th>{% translate "Events" %}</th>
+                        <th class="numeric">{% translate "Submissions" %}</th>
+                        <th class="numeric">{% translate "Last login" %}</th>
+                        <th class="numeric">{% translate "Password reset time" %}</th>
                         <th></th>
                     </tr>
                 </thead>

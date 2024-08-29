@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -29,11 +30,9 @@
                 {% plural %}
                     {{ count }} proposals are waiting for your review.
                 {% endblocktranslate %}
-                <a href="{{ next_submission.orga_urls.reviews }}">
-                    {% translate "Click here to get started!" %}
-                </a>
+                <a href="{{ next_submission.orga_urls.reviews }}">{% translate "Click here to get started!" %}</a>
                 <br>
-                <small><a href="{{ request.event.orga_urls.reviews }}bulk/"> {% translate "Or review all proposals at once." %}</a></small>
+                <small><a href="{{ request.event.orga_urls.reviews }}bulk/">{% translate "Or review all proposals at once." %}</a></small>
             {% elif can_review %}
                 {% translate "You’ve got no proposals left to review!" %}
             {% else %}
@@ -45,14 +44,22 @@
     <div class="submit-group search-submit-group">
         <form class="search-form" id="review-filter-form">
             {% bootstrap_field filter_form.q %}
-            {% if show_submission_types and filter_form.submission_type %}{% bootstrap_field filter_form.submission_type %}{% endif %}
+            {% if show_submission_types and filter_form.submission_type %}
+                {% bootstrap_field filter_form.submission_type %}
+            {% endif %}
             <div class="d-flex flex-column form-group">
                 {% bootstrap_field filter_form.state layout='inline' %}
                 <div id="pending" class="d-none">{% bootstrap_field filter_form.pending_state__isnull layout='inline' %}</div>
             </div>
-            {% if filter_form.track %}{% bootstrap_field filter_form.track %}{% endif %}
-            {% if filter_form.content_locale %}{% bootstrap_field filter_form.content_locale %}{% endif %}
-            {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}
+            {% if filter_form.track %}
+                {% bootstrap_field filter_form.track %}
+            {% endif %}
+            {% if filter_form.content_locale %}
+                {% bootstrap_field filter_form.content_locale %}
+            {% endif %}
+            {% if filter_form.tags %}
+                {% bootstrap_field filter_form.tags %}
+            {% endif %}
             {% if max_review_count and max_review_count > 1 %}
                 <div id="range-wrapper">
                     <label for="review-count">{% translate "Number of reviews" %}</label>
@@ -127,12 +134,16 @@
                         {% translate "Actions" %} <i class="fa fa-caret-down"></i>
                     </summary>
                     <ul class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-                        <li><a class="dropdown-item" href="{{ request.event.orga_urls.reviews }}regenerate">
-                            <i class="fa fa-link"></i> {% translate "Regenerate decision emails" %}
-                        </a></li>
-                        <li><a class="dropdown-item" href="{{ request.event.orga_urls.apply_pending }}?next={{ request.path }}">
-                            <i class="fa fa-link"></i> {% translate "Apply pending changes" %}
-                        </a></li>
+                        <li>
+                            <a class="dropdown-item" href="{{ request.event.orga_urls.reviews }}regenerate">
+                                <i class="fa fa-link"></i> {% translate "Regenerate decision emails" %}
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{{ request.event.orga_urls.apply_pending }}?next={{ request.path }}">
+                                <i class="fa fa-link"></i> {% translate "Apply pending changes" %}
+                            </a>
+                        </li>
                     </ul>
                 </details>
             </div>
@@ -151,7 +162,8 @@
         {% endif %}
     </div>
 
-    <form method="post">{% csrf_token %}
+    <form method="post">
+        {% csrf_token %}
         <div class="table-responsive-sm">
             <table class="table table-sm review-table table-hover table-flip table-sticky">
                 <colgroup>
@@ -166,7 +178,8 @@
                         {% endif %}
                     {% endif %}
                     <col class="nowrap col-review-count numeric">
-                    <col class="w-75">{# Title #}
+                    <col class="w-75">
+                    {# Title #}
                     {% if can_view_speakers %}<col class="w-25 col-speakers">{% endif %}
                     {% for question in short_questions %}<col class="col-question-{{ question.id }} d-none">{% endfor %}
                     {% if filter_form.track %}<col class="nowrap col-track">{% endif %}
@@ -342,6 +355,8 @@
         </div>
     </form>
     {% if page_obj.paginator.count > 50 %}
+
         {% include "orga/includes/pagination.html" %}
+
     {% endif %}
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends "agenda/base.html" %}
+
 {% load i18n %}
 {% load rich_text %}
 
@@ -20,9 +21,7 @@
                     </div>
                 {% endif %}
                 <i class="fa fa-quote-left quote" aria-hidden="true"></i>
-                <div class="feedback-text">
-                    {{ opinion.review|rich_text }}
-                </div>
+                <div class="feedback-text">{{ opinion.review|rich_text }}</div>
                 <i class="fa fa-quote-right quote float-right" aria-hidden="true"></i>
             </div>
         {% empty %}

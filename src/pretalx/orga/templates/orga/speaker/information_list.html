@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+
 {% load i18n %}
 {% load static %}
 
@@ -24,7 +25,8 @@
     <dialog class="info-dialog" id="info-dialog">
         <div class="alert alert-info">
             {% blocktranslate trimmed %}
-                Add important messages (e.g. “Please bring an HDMI adapter if required.”) or files (e.g. a conference styleguide).<br>
+                Add important messages (e.g. “Please bring an HDMI adapter if required.”) or files (e.g. a conference styleguide).
+                <br>
                 They are shown to the selected speakers above the list of their submitted sessions.
             {% endblocktranslate %}
         </div>
@@ -49,9 +51,7 @@
                     <tr>
                         <td>
                             <a href="{{ info.orga_urls.edit }}">{{ info.title }}</a>
-                            {% if info.resource %}
-                                <a href="{{ info.resource.url }}"><i class="fa fa-paperclip"></i></a>
-                            {% endif %}
+                            {% if info.resource %}<a href="{{ info.resource.url }}"><i class="fa fa-paperclip"></i></a>{% endif %}
                         </td>
                         <td>{{ info.target_group }}</td>
                         <td class="action-column">
@@ -63,5 +63,7 @@
             </tbody>
         </table>
     </div>
+
     {% include "orga/includes/pagination.html" %}
+
 {% endblock %}

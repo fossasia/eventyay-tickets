@@ -1,4 +1,5 @@
 {% extends "agenda/base.html" %}
+
 {% load compress %}
 {% load i18n %}
 {% load rich_text %}
@@ -7,7 +8,8 @@
 {% block title %}{{ profile.user.get_display_name }} ::{% endblock %}
 {% block meta_title %}{{ profile.user.get_display_name }}{% endblock %}
 {% block social_title %}{{ profile.user.get_display_name }}{% endblock %}
-{% block meta_image %}<meta property="thumbnail" content="{{ profile.urls.social_image.full }}">
+{% block meta_image %}
+    <meta property="thumbnail" content="{{ profile.urls.social_image.full }}">
     <meta property="og:image" content="{{ profile.urls.social_image.full }}">
 {% endblock %}
 {% block alternate_link %}
@@ -39,9 +41,7 @@
         </div>
         <div class="speaker-container">
             <section class="speaker-info">
-                <div class="speaker-bio">
-                    {{ profile.biography|rich_text }}
-                </div>
+                <div class="speaker-bio">{{ profile.biography|rich_text }}</div>
                 <div class="speaker-avatar">
                     {% if profile.user.avatar %}
                         <a href="{{ profile.user.avatar.url }}" data-lightbox="{{ profile.user.avatar.url }}">
@@ -59,7 +59,7 @@
                     {% endfor %}
                 </section>
             {% endif %}
-            <hr/>
+            <hr />
             <section class="speaker-talks">
                 <h4>
                     {% blocktranslate trimmed count count=talks.count %}
@@ -70,7 +70,9 @@
                 </h4>
                 {% for session in talks %}
                     <a href="{{ session.submission.urls.public }}">
+
                         {% include "agenda/session_block.html" with show_date=True %}
+
                     </a>
                 {% endfor %}
             </section>

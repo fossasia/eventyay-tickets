@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load rules %}
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="{{ html_locale }}"{% if rtl %} dir="rtl" class="rtl"{% endif %}>
     <head>
@@ -13,7 +14,11 @@
         <meta name="generator" content="pretalx">
         <meta name="keywords" content="{% if request.event %}{{ request.event.name }}, {{ request.event.slug }}, {% if request.event.date_from %}{{ request.event.date_from.year }}, {% endif %}{% endif %}schedule, talks, cfp, call for papers, conference, submissions, organizer">
         {{ html_head|safe }}
-        {% if request.event and request.event.display_settings.meta_noindex %}<meta name="robots" content="noindex, nofollow">{% else %}<meta name="robots" content="index, follow">{% endif %}
+        {% if request.event and request.event.display_settings.meta_noindex %}
+            <meta name="robots" content="noindex, nofollow">
+        {% else %}
+            <meta name="robots" content="index, follow">
+        {% endif %}
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="{% if request.event %}{{ request.event.get_primary_color }}{% else %}#3aa57c{% endif %}">
         <meta name="HandheldFriendly" content="True"/>
@@ -34,8 +39,8 @@
             <link rel="stylesheet" type="text/css" href="{{ request.event.settings.agenda_css_file }}"/>
         {% else %}
             {% compress css %}
-                <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
-                <link rel="stylesheet" type="text/x-scss" href="{% static "cfp/scss/main.scss" %}"/>
+                <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}" />
+                <link rel="stylesheet" type="text/x-scss" href="{% static "cfp/scss/main.scss" %}" />
                 <link rel="stylesheet" type="text/x-scss" href="{% static "agenda/scss/main.scss" %}" />
             {% endcompress %}
         {% endif %}
@@ -106,10 +111,12 @@
                                 </a></li>
                                 {% if can_see_orga_area %}
                                     <li class="dropdown-divider"></li>
-                                    <li><a href="{{ request.event.orga_urls.base }}" class="dropdown-item">
-                                        <i class="fa fa-gears mr-2"></i>
-                                        {% translate "Organiser area" %}
-                                    </a></li>
+                                    <li>
+                                        <a href="{{ request.event.orga_urls.base }}" class="dropdown-item">
+                                            <i class="fa fa-gears mr-2"></i>
+                                            {% translate "Organiser area" %}
+                                        </a>
+                                    </li>
                                 {% endif %}
                                 <li class="dropdown-divider"></li>
                                 <li><a href="{% url "cfp:event.logout" event=request.event.slug %}" class="dropdown-item">
@@ -126,15 +133,10 @@
             <div class="card" id="main-card">
                 <main>
                     {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
+                        {% for message in messages %}<div class="alert alert-{{ message.tags }}">{{ message }}</div>{% endfor %}
                     {% endif %}
 
-                    {% block content %}
-                    {% endblock %}
+                    {% block content %}{% endblock %}
                 </main>
             </div>
             <footer>

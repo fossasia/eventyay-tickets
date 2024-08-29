@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -31,7 +32,9 @@
                 {% endblocktranslate %}
                 <ul>
                     {% for submission in form.instance.submissions.all %}
-                        <li><a href="{{ submission.orga_urls.base }}">{{ submission.title }} ({{submission.display_speaker_names}})</a></li>
+                        <li>
+                            <a href="{{ submission.orga_urls.base }}">{{ submission.title }} ({{ submission.display_speaker_names }})</a>
+                        </li>
                     {% endfor %}
                 </ul>
             </span>
@@ -60,4 +63,3 @@
     </form>
 
 {% endblock %}
-

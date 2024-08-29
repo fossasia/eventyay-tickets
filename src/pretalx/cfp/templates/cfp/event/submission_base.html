@@ -22,13 +22,13 @@
                 <div class="step-icon">
                     <span class="fa {% if stp.is_before %}fa-check{% elif stp.icon %}fa-{{ stp.icon }}{% else %}fa-pencil{% endif %}"></span>
                 </div>
-                <div class="step-label">
-                    {{ stp.label }}
-                </div>
+                <div class="step-label">{{ stp.label }}</div>
             </a>
         {% endfor %}
         <div class="step step-tbd">
-            <div class="step-icon"><span class="fa fa-check"></span></div>
+            <div class="step-icon">
+                <span class="fa fa-check"></span>
+            </div>
             <div class="step-label">{% translate "Done!" %}</div>
         </div>
     </div>
@@ -36,8 +36,7 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ wizard.management_form }}
-            {% block inner %}
-            {% endblock %}
+            {% block inner %}{% endblock %}
             {% block buttons %}
                 <div class="row wizard-row">
                     <div class="col-md-3 flip ml-auto d-flex flex-column">

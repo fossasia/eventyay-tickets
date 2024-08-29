@@ -1,4 +1,5 @@
 {% extends "orga/submission/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load filesize %}
@@ -34,78 +35,79 @@
         <script defer src="{% static "orga/js/speakers.js" %}"></script>
         <script defer src="{% static "orga/js/submission_form.js" %}"></script>
     {% endcompress %}
-    <form method="post" enctype="multipart/form-data"><fieldset>
-        {% if not submission %}
-            <legend>{% translate "Create proposal" %}</legend>
-        {% endif %}
+    <form method="post" enctype="multipart/form-data">
+        <fieldset>
+            {% if not submission %}
+                <legend>{% translate "Create proposal" %}</legend>
+            {% endif %}
 
-        {% if submission.access_code %}
-            <div class="alert alert-info"><span></span><span>
-                {% blocktranslate trimmed %}
-                    This proposal was created using an access code:
-                {% endblocktranslate %} <a href="{{ submission.access_code.urls.edit }}">{{ submission.access_code.code }}</a>
-            </span></div>
-        {% endif %}
-        {% bootstrap_form_errors form %}
-        {% csrf_token %}
-        {% bootstrap_field form.title layout='event' %}
-        {% if action == "create" %}
-            {% bootstrap_field form.speaker layout='event' %}
-            {% bootstrap_field form.speaker_name layout='event' %}
-            {% bootstrap_field form.state layout='event' %}
-        {% endif %}
-        {% if form.room %}
-            <div id="show-if-state" {% if action == "create" %}class="d-none"{% endif %}>
-                {% bootstrap_field form.room layout='event' %}
-                {% bootstrap_field form.start layout='event' %}
-                {% bootstrap_field form.end layout='event' %}
-            </div>
-        {% endif %}
-        {% if form.instance.median_score != None and can_view_all_reviews %}
-            <div class="form-group row">
-                <label class="col-md-3 col-form-label">
-                    {% translate "Reviews" %}
-                </label>
-                <div class="col-md-9">
-                    <label>
-                        {{ submission.reviews.count }} {% translate "reviews" %}
-                    </label>
+            {% if submission.access_code %}
+                <div class="alert alert-info"><span></span><span>
+                    {% blocktranslate trimmed %}
+                        This proposal was created using an access code:
+                    {% endblocktranslate %} <a href="{{ submission.access_code.urls.edit }}">{{ submission.access_code.code }}</a>
+                </span></div>
+            {% endif %}
+            {% bootstrap_form_errors form %}
+            {% csrf_token %}
+            {% bootstrap_field form.title layout='event' %}
+            {% if action == "create" %}
+                {% bootstrap_field form.speaker layout='event' %}
+                {% bootstrap_field form.speaker_name layout='event' %}
+                {% bootstrap_field form.state layout='event' %}
+            {% endif %}
+            {% if form.room %}
+                <div id="show-if-state" {% if action == "create" %}class="d-none"{% endif %}>
+                    {% bootstrap_field form.room layout='event' %}
+                    {% bootstrap_field form.start layout='event' %}
+                    {% bootstrap_field form.end layout='event' %}
                 </div>
-            </div>
-        {% endif %}
-        {% bootstrap_field form.submission_type layout='event' %}
-        {% if form.track %}{% bootstrap_field form.track layout='event' %}{% endif %}
-        {% if form.tags %}{% bootstrap_field form.tags layout='event' %}{% endif %}
-        {% if form.abstract %}{% bootstrap_field form.abstract layout='event' %}{% endif %}
-        {% if form.description %}{% bootstrap_field form.description layout='event' %}{% endif %}
-        {% if form.notes %}{% bootstrap_field form.notes layout='event' %}{% endif %}
-        {% bootstrap_field form.internal_notes layout='event' %}
-        {% if form.content_locale %}{% bootstrap_field form.content_locale layout='event' %}{% endif %}
-        {% if form.do_not_record %}{% bootstrap_field form.do_not_record layout='event' %}{% endif %}
-        {% bootstrap_field form.is_featured layout='event' %}
-        {% bootstrap_field form.duration addon_after='minutes' layout='event' addon_after_class="input-group-append input-group-text" %}
-        {% if form.slot_count %}{% bootstrap_field form.slot_count layout='event' %}{% endif %}
-        {% if form.image %}{% bootstrap_field form.image layout='event' %}{% endif %}
-        {% if action != 'create' %}
-            {% include "cfp/includes/submission_resources_form.html" %}
-        {% endif %}
-        {% if questions_form and questions_form.fields %}
-            <div><legend>{% translate "Questions" %}</legend></div>
-            {% bootstrap_form questions_form layout='event' %}
-        {% endif %}
+            {% endif %}
+            {% if form.instance.median_score != None and can_view_all_reviews %}
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label">
+                        {% translate "Reviews" %}
+                    </label>
+                    <div class="col-md-9">
+                        <label>
+                            {{ submission.reviews.count }} {% translate "reviews" %}
+                        </label>
+                    </div>
+                </div>
+            {% endif %}
+            {% bootstrap_field form.submission_type layout='event' %}
+            {% if form.track %}{% bootstrap_field form.track layout='event' %}{% endif %}
+            {% if form.tags %}{% bootstrap_field form.tags layout='event' %}{% endif %}
+            {% if form.abstract %}{% bootstrap_field form.abstract layout='event' %}{% endif %}
+            {% if form.description %}{% bootstrap_field form.description layout='event' %}{% endif %}
+            {% if form.notes %}{% bootstrap_field form.notes layout='event' %}{% endif %}
+            {% bootstrap_field form.internal_notes layout='event' %}
+            {% if form.content_locale %}{% bootstrap_field form.content_locale layout='event' %}{% endif %}
+            {% if form.do_not_record %}{% bootstrap_field form.do_not_record layout='event' %}{% endif %}
+            {% bootstrap_field form.is_featured layout='event' %}
+            {% bootstrap_field form.duration addon_after='minutes' layout='event' addon_after_class="input-group-append input-group-text" %}
+            {% if form.slot_count %}{% bootstrap_field form.slot_count layout='event' %}{% endif %}
+            {% if form.image %}{% bootstrap_field form.image layout='event' %}{% endif %}
+            {% if action != 'create' %}
+                {% include "cfp/includes/submission_resources_form.html" %}
+            {% endif %}
+            {% if questions_form and questions_form.fields %}
+                <div><legend>{% translate "Questions" %}</legend></div>
+                {% bootstrap_form questions_form layout='event' %}
+            {% endif %}
 
-        {% if not form.read_only %}
-            <div class="submit-group panel">
-                <span></span>
-                <span>
-                    <button type="submit" class="btn btn-success btn-lg">
-                        <i class="fa fa-check"></i>
-                        {{ phrases.base.save }}
-                    </button>
-                </span>
-            </div>
-        {% endif %}
-    </fieldset></form>
+            {% if not form.read_only %}
+                <div class="submit-group panel">
+                    <span></span>
+                    <span>
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fa fa-check"></i>
+                            {{ phrases.base.save }}
+                        </button>
+                    </span>
+                </div>
+            {% endif %}
+        </fieldset></form>
 
     <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
 {% endblock %}

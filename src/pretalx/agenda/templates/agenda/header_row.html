@@ -2,7 +2,7 @@
 
 <nav id="schedule-nav"{% if with_margin %} class="p-3"{% endif %}>
     <div class="navigation">
-        <a href="{{ request.event.urls.schedule }}" class="btn btn-outline-success {% if "/schedule/" in request.path %} active{% endif %}">
+        <a href="{{ request.event.urls.schedule }}" class="btn btn-outline-success {% if "/schedule/" in request.path %}active{% endif %}">
             <i class="fa fa-calendar"></i> {{ phrases.schedule.schedule }}
             {% if request.event.display_settings.schedule_display != "list" %}
                 </a><a href="{{ request.event.urls.talks }}" class="btn btn-outline-success {% if "/talk/" in request.path %} active{% endif %}">
@@ -35,7 +35,8 @@
                                     <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
                                 </span>
                             {% endif %}
-                        </a></li>
+                        </a>
+                        </li>
                     {% endfor %}
                 </ul>
             </details>

@@ -1,17 +1,12 @@
 {% load i18n %}
 {% load rich_text %}
+
 <div class="pretalx-session{% if request.user in session.submission.speakers.all %} session-highlight{% endif %}{% if session.is_active %} active{% endif %}{% if session.submission.state == 'accepted' %} accepted{% endif %}{% if not session.submission %} break{% endif %}"
      id="{{ session.submission.code|default:"break" }}"
      style="--track-color:{% if not session.submission %}#ccc{% elif request.event.feature_flags.use_tracks and session.submission.track and session.submission.track.color %}{{ session.submission.track.color }}{% else %}{{ request.event.get_primary_color }}{% endif %}">
     <div class="pretalx-session-time-box">
-        {% if show_date %}
-            <div class="start">
-                {{ session.start|date:DAY_MONTH_DATE_FORMAT }}
-            </div>
-        {% endif %}
-        <div class="start">
-            {{ session.start|date:"TIME_FORMAT" }}
-        </div>
+        {% if show_date %}<div class="start">{{ session.start|date:DAY_MONTH_DATE_FORMAT }}</div>{% endif %}
+        <div class="start">{{ session.start|date:"TIME_FORMAT" }}</div>
         <div class="duration">
             {% blocktranslate trimmed with minutes=session.duration %}
                 {{ minutes }}min
@@ -35,18 +30,18 @@
             {% endif %}
         </div>
         {% if session.submission and session.submission.speakers %}
-            <div class="speakers">
-                {{ session.submission.display_speaker_names }}
-            </div>
+            <div class="speakers">{{ session.submission.display_speaker_names }}</div>
         {% endif %}
         {% if session.submission and session.submission.abstract %}
-            <div class="abstract">
-                {{ session.submission.abstract|rich_text_without_links }}
-            </div>
+            <div class="abstract">{{ session.submission.abstract|rich_text_without_links }}</div>
         {% endif %}
         <div class="bottom-info">
-            <div class="track">{% if session.submission and session.submission.track %}{{ session.submission.track.name|default:"" }}{% endif %}</div>
-            <div class="room">{% if session.room %}{{ session.room.name|default:"" }}{% endif %}</div>
+            <div class="track">
+                {% if session.submission and session.submission.track %}{{ session.submission.track.name|default:"" }}{% endif %}
+            </div>
+            <div class="room">
+                {% if session.room %}{{ session.room.name|default:"" }}{% endif %}
+            </div>
         </div>
     </div>
 </div>

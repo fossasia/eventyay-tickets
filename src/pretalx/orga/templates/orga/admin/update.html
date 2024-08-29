@@ -1,4 +1,5 @@
 {% extends 'orga/base.html' %}
+
 {% load bootstrap4 %}
 {% load i18n %}
 
@@ -9,9 +10,7 @@
     <h2>{% translate "Update check results" %}</h2>
 
     {% if not gs.settings.update_check_enabled %}
-        <div class="alert alert-warning">
-            {% translate "Update checks are disabled." %}
-        </div>
+        <div class="alert alert-warning">{% translate "Update checks are disabled." %}</div>
     {% elif not gs.settings.update_check_last %}
         <div class="alert alert-info">
             {% translate "No update check has been performed yet since the last update of this installation. Update checks are performed on a daily basis if your cronjob is set up properly." %}
@@ -86,7 +85,9 @@
         {% csrf_token %}
         {% bootstrap_form_errors form %}
         {% bootstrap_form form layout='event' %}
+
         {% include "orga/includes/submit_row.html" %}
+
     </form>
 
 {% endblock %}

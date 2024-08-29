@@ -1,13 +1,12 @@
 {% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load i18n %}
 
 {% block extra_title %}{% translate "Send out reminders" %} :: {% endblock %}
 
 {% block content %}
-    <h2>
-        {% translate "Send out reminders" %}
-    </h2>
+    <h2>{% translate "Send out reminders" %}</h2>
     <div>
         <p>
             {% blocktranslate trimmed %}
@@ -19,6 +18,8 @@
     <form class="form" method="post">
         {% csrf_token %}
         {% bootstrap_form filter_form layout='event' %}
+
         {% include "orga/includes/submit_row.html" with submit_label=phrases.base.send %}
+
     </form>
 {% endblock %}

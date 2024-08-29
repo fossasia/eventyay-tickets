@@ -1,4 +1,5 @@
 {% extends "cfp/event/submission_base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -13,21 +14,25 @@
         {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
         {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text "information" %}{% endif %}
     </div>
-    <p>
-        {{ text|rich_text }}
-    </p>
+    <p>{{ text|rich_text }}</p>
     {% if form.avatar or form.get_gravatar %}
+
         {% include "common/avatar.html" with user=user form=form %}
+
     {% endif %}
 
     {% bootstrap_field form.name layout='event' %}
-    {% if form.biography %}{% bootstrap_field form.biography layout='event' %}{% endif %}
+    {% if form.biography %}
+        {% bootstrap_field form.biography layout='event' %}
+    {% endif %}
     {% if form.availabilities %}
         {% compress js %}
             <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
             <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
         {% endcompress %}
+
         {% include "common/availabilities.html" %}
+
         {% bootstrap_field form.availabilities layout='event' %}
     {% endif %}
 

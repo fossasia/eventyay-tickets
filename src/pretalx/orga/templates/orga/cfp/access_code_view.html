@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+
 {% load compress %}
 {% load copyable %}
 {% load i18n %}
@@ -30,7 +31,8 @@
             {% endblocktranslate %}
         </div>
     </dialog>
-    <div class="d-flex justify-content-end mb-3"><span></span>
+    <div class="d-flex justify-content-end mb-3">
+        <span></span>
         <a class="btn btn-info" href="{{ request.event.cfp.urls.new_access_code }}">
             <i class="fa fa-plus"></i>
             {% translate "New access code" %}
@@ -42,7 +44,9 @@
                 <thead>
                     <tr>
                         <th>{% translate "Code" %}</th>
-                        {% if request.event.feature_flags.use_tracks %}<th>{% translate "Track" %}</th>{% endif %}
+                        {% if request.event.feature_flags.use_tracks %}
+                            <th>{% translate "Track" %}</th>
+                        {% endif %}
                         <th>{% translate "Session type" %}</th>
                         <th class="numeric">{% translate "Uses" %}</th>
                         <th></th>
@@ -51,14 +55,16 @@
                 <tbody>
                     {% for code in access_codes %}
                         <tr>
-                            <td>
-                                {{ code.code|copyable }}
-                            </td>
-                            {% if request.event.feature_flags.use_tracks %}<td>
-                                {% if code.track %}
-                                    <a href="{{ code.track.urls.base }}">{{ code.track.name }}</a>
-                                {% else %}–{% endif %}
-                            </td>{% endif %}
+                            <td>{{ code.code|copyable }}</td>
+                            {% if request.event.feature_flags.use_tracks %}
+                                <td>
+                                    {% if code.track %}
+                                        <a href="{{ code.track.urls.base }}">{{ code.track.name }}</a>
+                                    {% else %}
+                                        –
+                                    {% endif %}
+                                </td>
+                            {% endif %}
                             <td>
                                 {% if code.submission_type %}
                                     <a href="{{ code.submission_type.urls.base }}">{{ code.submission_type.name }}</a>
@@ -78,13 +84,11 @@
                                    class="btn btn-sm btn-info">
                                     <i class="fa fa-envelope"></i>
                                 </a>
-                                <a href="{{ code.urls.edit }}"
-                                   class="btn btn-sm btn-info">
+                                <a href="{{ code.urls.edit }}" class="btn btn-sm btn-info">
                                     <i class="fa fa-edit"></i>
                                 </a>
                                 {% if not code.submissions.exists %}
-                                    <a href="{{ code.urls.delete }}"
-                                       class="btn btn-sm btn-danger">
+                                    <a href="{{ code.urls.delete }}" class="btn btn-sm btn-danger">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 {% endif %}
@@ -95,5 +99,7 @@
             </table>
         </div>
     {% endif %}
+
     {% include "orga/includes/pagination.html" %}
+
 {% endblock %}

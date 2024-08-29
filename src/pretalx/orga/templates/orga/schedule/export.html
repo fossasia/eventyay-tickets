@@ -1,4 +1,5 @@
 {% extends "orga/schedule/base.html" %}
+
 {% load i18n %}
 {% load bootstrap4 %}
 {% load static %}
@@ -6,9 +7,7 @@
 {% block extra_title %}{% translate "Export schedule data" %} :: {% endblock %}
 
 {% block schedule_content %}
-    <h2>
-        {% translate "Export schedule data" %}
-    </h2>
+    <h2>{% translate "Export schedule data" %}</h2>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
             <a class="nav-link active" id="custom-tab" data-toggle="tab" href="#custom" role="tab" aria-controls="custom" aria-selected="true">{% translate "CSV/JSON exports" %}</a>
@@ -25,24 +24,18 @@
             <form method="post">
                 {% csrf_token %}
                 <fieldset>
-                    <legend>
-                        {% translate "Export settings" %}
-                    </legend>
+                    <legend>{% translate "Export settings" %}</legend>
                     {% bootstrap_field form.export_format layout='event' %}
                     <div id="data-delimiter">
                         {% bootstrap_field form.data_delimiter layout='event' %}
                     </div>
                 </fieldset>
                 <fieldset>
-                    <legend>
-                        {% translate "Dataset" %}
-                    </legend>
+                    <legend>{% translate "Dataset" %}</legend>
                     {% bootstrap_field form.target layout='event' %}
                 </fieldset>
                 <fieldset>
-                    <legend>
-                        {% translate "Data fields" %}
-                    </legend>
+                    <legend>{% translate "Data fields" %}</legend>
                     <div class="d-flex">
                         <div class="ml-auto form-check">
                             <input type="checkbox" id="select-all" name="select-all">
@@ -129,16 +122,16 @@
 
             <h3>{% translate "API" %}</h3>
 
-            <p>
-                {% translate "You can also use the API to export or use data." %}
-            </p>
+            <p>{% translate "You can also use the API to export or use data." %}</p>
 
-            <p>{% blocktranslate trimmed %}
-                Some of the general exports are only accessible for organisers, or include
-                more information when accessed with your organiser account. If you want to
-                access the organiser version in automatic integrations, you’ll have to
-                provide your authentication token just like in the API, like this:
-            {% endblocktranslate %}</p>
+            <p>
+                {% blocktranslate trimmed %}
+                    Some of the general exports are only accessible for organisers, or include
+                    more information when accessed with your organiser account. If you want to
+                    access the organiser version in automatic integrations, you’ll have to
+                    provide your authentication token just like in the API, like this:
+                {% endblocktranslate %}
+            </p>
 
             <pre> curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.urls.frab_xml.full }}
  curl -H "Authorization: Token {{ request.user.auth_token.key }}" {{ request.event.api_urls.submissions.full }} </pre>

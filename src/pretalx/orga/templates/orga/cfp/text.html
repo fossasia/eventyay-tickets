@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -28,14 +29,16 @@
     <dialog class="info-dialog" id="info-dialog">
         <div class="alert alert-info">
             <span>
-                {% translate "A good Call for Participation will engage potential speakers. Remember to include:" %}<br>
+                {% translate "A good Call for Participation will engage potential speakers. Remember to include:" %}
+                <br>
                 <ul>
                     <li>{% translate "The formats (sessions, workshops, panels) and their durations" %}</li>
                     <li>{% translate "Topics you are looking for" %}</li>
                     <li>{% translate "How open you are to alternative topics" %}</li>
                     <li>{% translate "The people coming to your conference: interests, experience level …" %}</li>
                     <li>{% translate "Link your Code of Conduct and Data Protection statements." %}</li>
-                    <li>{% translate "Do you offer financial or other support, e.g. support for first time speakers?" %}
+                    <li>
+                        {% translate "Do you offer financial or other support, e.g. support for first time speakers?" %}
                         <li>{% translate "Dates and location" %}</li>
                     </ul>
                 </span>
@@ -208,6 +211,7 @@
                     </fieldset>
 
                     {% include "orga/includes/submit_row.html" %}
+
                 </form>
             </div>
         </div>

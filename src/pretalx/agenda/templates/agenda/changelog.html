@@ -1,4 +1,5 @@
 {% extends "agenda/base.html" %}
+
 {% load i18n %}
 
 {% block agenda_content %}
@@ -12,7 +13,9 @@
                             <small class="text-muted">{{ schedule.published|date }}</small>
                         </a>
                     </h4>
+
                     {% include "agenda/changelog_block.html" with schedule=schedule %}
+
                 </section>
             {% endif %}
         {% endfor %}

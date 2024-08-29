@@ -1,4 +1,5 @@
 {% extends "orga/mails/base.html" %}
+
 {% load bootstrap4 %}
 {% load i18n %}
 {% load static %}
@@ -39,7 +40,8 @@
         <a href="{{ request.event.orga_urls.new_template }}" class="btn btn-success flip ml-auto btn-lg">
             <i class="fa fa-plus"></i>
             {% translate "New custom template" %}
-        </a></div>
+        </a>
+    </div>
 
     {# HACK: This isn't really a form, but we want to make the templates look like normal forms #}
     <form class="accordion form" id="template-accordion">

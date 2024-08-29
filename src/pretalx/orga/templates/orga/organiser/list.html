@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load i18n %}
 {% load rules %}
@@ -41,8 +42,6 @@
         {% endfor %}
     </div>
     {% if not organisers and not can_create_organiser %}
-        <div class="alert alert-info">
-            {% translate "There are no organisers you can edit." %}
-        </div>
+        <div class="alert alert-info">{% translate "There are no organisers you can edit." %}</div>
     {% endif %}
 {% endblock %}

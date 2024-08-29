@@ -1,5 +1,7 @@
-<div class="alert alert-danger">{% comment %}We remove alert-link and alert-dismissable, because those don't match our design choices{% endcomment %}
+<div class="alert alert-danger">
+    {% comment %}We remove alert-link and alert-dismissable, because those don't match our design choices{% endcomment %}
     {% for error in errors %}
-        {{ error }}{% if not forloop.last %}<br>{% endif %}
+        {{ error }}
+        {% if not forloop.last %}<br>{% endif %}
     {% endfor %}
 </div>

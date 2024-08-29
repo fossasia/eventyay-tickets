@@ -1,4 +1,5 @@
 {% extends "cfp/event/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -8,7 +9,9 @@
 
 {% block content %}
     <div class="col-md-10 ml-auto mr-auto">
+
         {% include "cfp/includes/user_submission_header.html" %}
+
         <div class="text">
             {% blocktranslate trimmed %}
                 Congratulations on your acceptance!
@@ -23,7 +26,9 @@
         <form method="post" class="availability-form">
             {% csrf_token %}
             {% if form.availabilities %}
+
                 {% include "common/availabilities.html" %}
+
                 {% bootstrap_field form.availabilities layout='inline' %}
                 <small class="form-text text-muted">{{ form.availabilities.help_text }}</small>
             {% endif %}
@@ -35,22 +40,15 @@
                 publicly available once the proposal is confirmed.
             {% endblocktranslate %}
             <p></p>
-            <div class="submit-group"><span>
-                <a href="{{ submission.urls.user_base }}"
-                   class="btn btn-lg btn-info">
-                    {{ phrases.base.back_button }}
-                </a>
-                <a href="{{ submission.urls.withdraw }}"
-                   class="btn btn-lg btn-danger">
-                    {% translate "Withdraw" %}
-                </a>
-            </span>
+            <div class="submit-group">
                 <span>
-                    <button type="submit"
-                            class="btn btn-lg btn-success">
-                        {% translate "Confirm" %}
-                    </button>
-                </span></div>
+                    <a href="{{ submission.urls.user_base }}" class="btn btn-lg btn-info">{{ phrases.base.back_button }}</a>
+                    <a href="{{ submission.urls.withdraw }}" class="btn btn-lg btn-danger">{% translate "Withdraw" %}</a>
+                </span>
+                <span>
+                    <button type="submit" class="btn btn-lg btn-success">{% translate "Confirm" %}</button>
+                </span>
+            </div>
         </form>
     </div>
 {% endblock %}

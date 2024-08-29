@@ -1,4 +1,5 @@
 {% extends "orga/base.html" %}
+
 {% load i18n %}
 {% load rules %}
 
@@ -76,7 +77,11 @@
                         </div>
                         {% if event.is_public %}
                             <div class="state active">
-                                {% if event.is_open %}{% translate "CfP open" %}{% else %}{% translate "live" %}{% endif %}
+                                {% if event.is_open %}
+                                    {% translate "CfP open" %}
+                                {% else %}
+                                    {% translate "live" %}
+                                {% endif %}
                             </div>
                         {% else %}
                             <div class="state inactive">{% translate "Not public" %}</div>

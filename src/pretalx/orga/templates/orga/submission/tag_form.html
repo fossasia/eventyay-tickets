@@ -1,11 +1,12 @@
 {% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{% static "vendored/colorpicker/css/bootstrap-colorpicker.min.css" %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/colorpicker/css/bootstrap-colorpicker.min.css" %}" />
 {% endblock %}
 
 {% block scripts %}
@@ -22,7 +23,11 @@
 
 {% block content %}
     <h2>
-        {% if form.instance.name %}{% translate "Tag" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}{% else %}{% translate "New tag" %}{% endif %}
+        {% if form.instance.name %}
+            {% translate "Tag" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}
+        {% else %}
+            {% translate "New tag" %}
+        {% endif %}
     </h2>
     <form method="post">
         {% csrf_token %}
@@ -31,8 +36,9 @@
         {% bootstrap_field form.description layout='event' %}
         {% bootstrap_field form.color layout='event' addon_before="<i></i>" addon_before_class="colorpicker-input-addon color-visible" %}
         {% bootstrap_field form.public layout='event' %}
+
         {% include "orga/includes/submit_row.html" %}
+
     </form>
 
 {% endblock %}
-
