@@ -131,3 +131,12 @@ ignore = [
   "src/tests/*",
   "SECURITY.md",
 ]
+
+[tool.djlint]
+blank_line_after_tag="load,extends,include"
+blank_line_before_tag="load,extends,include"
+close_void_tags=false
+extend_exclude="static,docs"
+max_blank_lines=1
+preserve_blank_lines=1
+profile="django"
