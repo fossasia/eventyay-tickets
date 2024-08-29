@@ -25764,3 +25764,9 @@ msgstr "Οι παραγγελίες μου"
 
 msgid "Logout"
 msgstr "Αποσύνδεση"
+
+msgid "Want to create a %(event_name)s account?"
+msgstr "Θέλετε να δημιουργήσετε έναν λογαριασμό %(event_name)s;"
+
+msgid "Already have a %(event_name)s account?"
+msgstr "Έχετε ήδη λογαριασμό %(event_name)s;"

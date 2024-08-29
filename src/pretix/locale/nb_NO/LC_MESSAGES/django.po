@@ -21056,3 +21056,9 @@ msgstr ""
 
 msgid "Logout"
 msgstr ""
+
+msgid "Want to create a %(event_name)s account?"
+msgstr ""
+
+msgid "Already have a %(event_name)s account?"
+msgstr ""

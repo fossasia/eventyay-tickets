@@ -21255,3 +21255,9 @@ msgstr "Rendeléseim"
 
 msgid "Logout"
 msgstr "Kijelentkezés"
+
+msgid "Want to create a %(event_name)s account?"
+msgstr "Szeretnél létrehozni egy %(event_name)s fiókot?"
+
+msgid "Already have a %(event_name)s account?"
+msgstr "Már van %(event_name)s fiókod?"
