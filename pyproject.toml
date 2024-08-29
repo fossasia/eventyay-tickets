@@ -91,7 +91,10 @@ dependencies = [
         'paypalrestsdk==1.13.3',
         'sepaxml==2.6.*',
         'geoip2==4.*',
+        # Note: To install eventyay-stripe/Paypal dependencies, replace {your_token} with your GitHub token
+        # Access is required to the private repositories, if you don't have access, you can remove the dependencies
         'eventyay-stripe @ git+https://your_token@github.com/fossasia/eventyay-tickets-stripe.git@master',
+        'eventyay-paypal @ git+https://your_token@github.com/fossasia/eventyay-tickets-paypal.git@master',
         'sendgrid==6.11.*',
         'importlib_metadata==7.*',
         'qrcode==7.4.*',
