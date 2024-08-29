@@ -20,7 +20,6 @@
     {% if form.instance.name %}{% translate "Tag" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}{% else %}{% translate "New tag" %}{% endif %} ::
 {% endblock extra_title %}
 
-
 {% block content %}
     <h2>
         {% if form.instance.name %}
