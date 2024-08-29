@@ -28,7 +28,8 @@ msgstr ""
 msgid "pretixSCAN"
 msgstr ""
 
-#: pretix/api/auth/devicesecurity.py:52msgid "pretixSCAN (kiosk mode, online only)"
+#: pretix/api/auth/devicesecurity.py:52
+msgid "pretixSCAN (kiosk mode, online only)"
 msgstr ""
 
 #: pretix/api/auth/devicesecurity.py:80
