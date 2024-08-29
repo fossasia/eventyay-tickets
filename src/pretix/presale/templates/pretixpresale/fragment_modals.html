@@ -64,17 +64,17 @@
                     </a>
                 </p>
                 <p class="text">
-                    {% trans "Want to create a " %}
-                    {{ event_name }}
-                    {% trans "account?" %}
+                    {% blocktrans with event_name=event_name %}
+                        Want to create a {{ event_name }} account?
+                    {% endblocktrans %}
                     <a class="btn btn-link" href='{% eventurl request.organizer "presale:organizer.customer.register" %}'>
                         {% trans "Sign up here" %}
                     </a>
                 </p>
                 <p class="text">
-                    {% trans "Already have a " %}
-                    {{ event_name }}
-                    {% trans "account?" %}
+                    {% blocktrans with event_name=event_name %}
+                        Already have a {{ event_name }} account?
+                    {% endblocktrans %}
                     <a class="btn btn-link" href='{% eventurl request.organizer "presale:organizer.customer.login" %}'>
                         {% trans "Login here" %}
                     </a>
