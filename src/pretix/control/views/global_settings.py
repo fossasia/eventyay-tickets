@@ -85,7 +85,7 @@ class RefundDetailView(AdministratorPermissionRequiredMixin, View):
         return JsonResponse({'data': p.info_data})
 
 
-class AdminiInformationView(AdministratorPermissionRequiredMixin, FormView):
+class AdminInformationView(AdministratorPermissionRequiredMixin, FormView):
     template_name = 'pretixcontrol/global_info.html'
     form_class = AdminInformationForm
 
