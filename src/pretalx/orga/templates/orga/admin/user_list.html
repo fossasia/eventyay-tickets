@@ -35,7 +35,7 @@
                     {% for user in users %}
                         <tr>
                             <td>
-                                <a href="/orga/admin/users/{{ user.code }}/">{{ user.name }}</a>
+                                <a href="{% url "orga:admin.user.view" code=user.code %}">{{ user.name }}</a>
                             </td>
                             <td>{{ user.email|copyable }}</td>
                             <td>{{ user.locale }}</td>
@@ -58,7 +58,7 @@
                             <td class="numeric-left">{{ user.pw_reset_time|timesince }}{% if user.pw_reset_time %} ago{% endif %}</td>
                             <td>
                                 <div class="d-flex mb-2">
-                                    <a href="/orga/admin/users/{{ user.code }}/" class="btn btn-xs btn-info mr-2"> <i class="fa fa-edit"></i> </a>
+                                    <a href="{% url "orga:admin.user.view" code=user.code %}" class="btn btn-xs btn-info mr-2"> <i class="fa fa-edit"></i> </a>
                                     <button name="action" value="delete-{{ user.id }}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
                                 </div>
                                 <button name="action" value="reset-{{ user.id }}" class="btn btn-xs btn-warning mr-2">{{ phrases.base.password_reset_heading }}</button>
