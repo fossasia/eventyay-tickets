@@ -8,9 +8,9 @@
 <html lang="{{ html_locale }}"{% if rtl %} dir="rtl" class="rtl"{% endif %}>
     <head>
         <meta charset="utf-8">
-        <title>{% block title %}{% block extra_title %}{% endblock %}{% if request.event %}{{ request.event.name }} :: {% endif %}{% endblock %}pretalx</title>
-        <meta name="title" content="{% block meta_title %}{% endblock %} {% if request.event %} - {{ request.event.name }} {% endif %}pretalx">
-        <meta name="description" content="{% block meta_description %}{% if request.event %}Schedule, talks and talk submissions for {{ reqeuest.event.name }}{% else %}Talks and talk submissions by pretalx{% endif %}{% endblock %}">
+        <title>{% block title %}{% block extra_title %}{% endblock extra_title %}{% if request.event %}{{ request.event.name }} :: {% endif %}{% endblock title %}pretalx</title>
+        <meta name="title" content="{% block meta_title %}{% endblock meta_title %} {% if request.event %} - {{ request.event.name }} {% endif %}pretalx">
+        <meta name="description" content="{% block meta_description %}{% if request.event %}Schedule, talks and talk submissions for {{ reqeuest.event.name }}{% else %}Talks and talk submissions by pretalx{% endif %}{% endblock meta_description %}">
         <meta name="application-name" content="pretalx">
         <meta name="generator" content="pretalx">
         <meta name="keywords" content="{% if request.event %}{{ request.event.name }}, {{ request.event.slug }}, {% if request.event.date_from %}{{ request.event.date_from.year }}, {% endif %}{% endif %}schedule, talks, cfp, call for papers, conference, submissions, organizer">
@@ -21,7 +21,7 @@
         {% if request.event and request.event.logo %}<meta property="thumbnail" content="{{ request.event.urls.logo.full }}">{% endif %}
         {% block alternate_link %}
             <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.base.full }}" />
-        {% endblock %}
+        {% endblock alternate_link %}
 
         {% include "common/includes/favicon.html" %}
 
@@ -32,7 +32,7 @@
             <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}" />
             <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}" />
         {% endcompress %}
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}{% endblock stylesheets %}
         {% compress js %}
             <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
             <script defer src="{% static "vendored/tether/tether.min.js" %}"></script>
@@ -42,7 +42,7 @@
             <script defer src="{% static 'vendored/select2.min.js' %}"></script>
             <script src="{% static "common/js/formTools.js" %}" async></script>
         {% endcompress %}
-        {% block scripts %}{% endblock %}
+        {% block scripts %}{% endblock scripts %}
         {{ html_head|safe }}
     </head>
     <body data-datetimeformat="{{ js_datetime_format }}" data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}">
@@ -95,7 +95,7 @@
                         </a>
                     </li>
                 {% endif %}
-                {% block navbar_right %}{% endblock %}
+                {% block navbar_right %}{% endblock navbar_right %}
                 <li class="nav-item d-none d-md-block">
                     <a class="nav-link active" href="{% url "orga:user.view" %}">
                         <i class="fa fa-user"></i>
@@ -446,7 +446,7 @@
                     {% endif %}
 
                     {% block content %}
-                    {% endblock %}
+                    {% endblock content %}
                 </main>
                 <footer class="no-print">
                     {% include "common/powered_by.html" %}

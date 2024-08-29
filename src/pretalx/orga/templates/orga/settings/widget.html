@@ -5,7 +5,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block extra_title %}{% translate "Widget generation" %} :: {% endblock %}
+{% block extra_title %}{% translate "Widget generation" %} :: {% endblock extra_title %}
 
 
 {% block scripts %}
@@ -14,7 +14,7 @@
         <script defer src="{% static "orga/js/widgetSettings.js" %}"></script>
         <script defer src="{% static "common/js/modalDialog.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
 {% block settings_content %}
     <form method="post" class="d-flex flex-column">
@@ -118,4 +118,4 @@
             </div>
         </noscript>
     {% endif %}
-{% endblock %}
+{% endblock settings_content %}

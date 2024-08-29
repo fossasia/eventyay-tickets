@@ -5,7 +5,7 @@
 
 {% block error_image %}
     <img loading="lazy" src="{% static "common/img/error_5xx.svg" %}" class="img" alt="{% translate "Verification failed." %}">
-{% endblock %}
+{% endblock error_image %}
 {% block error_message %}
     <p>
         {% translate "Verification failed." %}
@@ -22,5 +22,5 @@
         </p>
     </h3>
     <h2>
-{% endblock %}
-{% block error_code %}403: CSRF{% endblock %}
+{% endblock error_message %}
+{% block error_code %}403: CSRF{% endblock error_code %}

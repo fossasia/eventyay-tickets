@@ -12,9 +12,9 @@
         <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
         <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
-{% block extra_title %}{% if form.instance.pk %}{{ form.instance.code }}{% else %}{% translate "New access code" %}{% endif %} :: {% endblock %}
+{% block extra_title %}{% if form.instance.pk %}{{ form.instance.code }}{% else %}{% translate "New access code" %}{% endif %} :: {% endblock extra_title %}
 
 {% block content %}
     <h2>
@@ -62,4 +62,4 @@
         </div>
     </form>
 
-{% endblock %}
+{% endblock content %}

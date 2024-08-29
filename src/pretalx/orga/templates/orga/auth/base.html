@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{% block title %}{% endblock %} :: pretalx</title>
+        <title>{% block title %}{% endblock title %} :: pretalx</title>
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/auth.scss" %}" />
         {% endcompress %}
@@ -34,7 +34,7 @@
                 {% endif %}
                 <p>
                     <div class="card card-login">
-                        {% block content %}{% endblock %}
+                        {% block content %}{% endblock content %}
                     </div>
                 </div>
             </body>

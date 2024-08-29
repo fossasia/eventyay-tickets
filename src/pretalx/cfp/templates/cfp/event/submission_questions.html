@@ -20,7 +20,7 @@
         <link rel="stylesheet" type="text/css" href="{% static "vendored/select2.min.css" %}" />
         <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/_select2.scss" %}" />
     {% endcompress %}
-{% endblock %}
+{% endblock cfp_submission_header %}
 
 {% block inner %}
     <div class="d-flex">
@@ -45,4 +45,4 @@
             {% bootstrap_field field layout='event' %}
         {% endfor %}
     {% endif %}
-{% endblock %}
+{% endblock inner %}

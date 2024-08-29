@@ -3,7 +3,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block extra_title %}{% translate "Send out reminders" %} :: {% endblock %}
+{% block extra_title %}{% translate "Send out reminders" %} :: {% endblock extra_title %}
 
 {% block content %}
     <h2>{% translate "Send out reminders" %}</h2>
@@ -22,4 +22,4 @@
         {% include "orga/includes/submit_row.html" with submit_label=phrases.base.send %}
 
     </form>
-{% endblock %}
+{% endblock content %}

@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block extra_title %}{% translate "User settings" %} :: {% endblock %}
+{% block extra_title %}{% translate "User settings" %} :: {% endblock extra_title %}
 {% block content %}
     <form method="post">
         {% csrf_token %}
@@ -30,4 +30,4 @@
 
     {% include "common/user_api_token.html" with orga="true" %}
 
-{% endblock %}
+{% endblock content %}

@@ -1,7 +1,7 @@
 {% extends "common/base.html" %}
 {% load i18n %}
 
-{% block title %}{% translate "Events" %}{% endblock %}
+{% block title %}{% translate "Events" %}{% endblock title %}
 
 {% block content %}
     {% if current_events or future_events or past_events %}
@@ -47,4 +47,4 @@
             {% endfor %}
         </ul>
     {% endif %}
-{% endblock %}
+{% endblock content %}

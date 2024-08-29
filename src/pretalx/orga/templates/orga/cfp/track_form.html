@@ -7,17 +7,17 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" type="text/css" href="{% static "vendored/colorpicker/css/bootstrap-colorpicker.min.css" %}" />
-{% endblock %}
+{% endblock stylesheets %}
 
 {% block scripts %}
     {% compress js %}
         <script defer src="{% static "vendored/colorpicker/js/bootstrap-colorpicker.min.js" %}"></script>
         <script defer src="{% static "orga/js/colorpicker.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
 
-{% block extra_title %}{% if form.instance.name %}{{ form.instance.name }}{% else %}{% translate "New track" %}{% endif %} :: {% endblock %}
+{% block extra_title %}{% if form.instance.name %}{{ form.instance.name }}{% else %}{% translate "New track" %}{% endif %} :: {% endblock extra_title %}
 
 {% block content %}
     <h2>
@@ -39,4 +39,4 @@
 
     </form>
 
-{% endblock %}
+{% endblock content %}

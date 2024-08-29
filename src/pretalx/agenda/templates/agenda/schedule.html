@@ -5,14 +5,14 @@
 {% load static %}
 {% load phrases %}
 
-{% block container_width %}{% if not show_talk_list %} main-schedule{% endif %}{% endblock %}
+{% block container_width %}{% if not show_talk_list %} main-schedule{% endif %}{% endblock container_width %}
 
 {% block agenda_custom_header %}
     {% compress js %}
         <script defer src="{% static 'common/js/tabbed.js' %}"></script>
     {% endcompress %}
     <script id="pretalx-messages" data-logged-in="{% if request.user.is_anonymous %}false{% else %}true{% endif %}" src="{{ request.event.urls.schedule }}widget/messages.js"></script>
-{% endblock %}
+{% endblock agenda_custom_header %}
 
 {% block agenda_content %}
     <div id="fahrplan" class="{% if show_talk_list %}list{% else %}grid{% endif %}">
@@ -55,4 +55,4 @@
         </noscript>
     </div>
 
-{% endblock %}
+{% endblock agenda_content %}

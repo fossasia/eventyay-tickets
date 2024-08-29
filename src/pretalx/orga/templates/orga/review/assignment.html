@@ -5,7 +5,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block extra_title %}{% translate "Assign reviewers" %} :: {% endblock %}
+{% block extra_title %}{% translate "Assign reviewers" %} :: {% endblock extra_title %}
 
 {% block content %}
     {% compress js %}
@@ -149,5 +149,5 @@
                 </form>
             </div>
         </div>
-{% endblock %}
+{% endblock content %}
 

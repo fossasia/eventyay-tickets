@@ -2,10 +2,10 @@
 
 {% load i18n %}
 
-{% block submission_title %}{% translate "Delete review" %} :: {% endblock %}
+{% block submission_title %}{% translate "Delete review" %} :: {% endblock submission_title %}
 
 {% block submission_content %}
 
     {% include "common/includes/action_confirm.html" %}
 
-{% endblock %}
+{% endblock submission_content %}

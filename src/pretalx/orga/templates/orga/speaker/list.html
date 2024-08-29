@@ -5,7 +5,7 @@
 {% load rules %}
 {% load url_replace %}
 
-{% block extra_title %}{{ page_obj.paginator.count }} {% blocktranslate trimmed count count=page_obj.paginator.count %}submitter{% plural %}submitters{% endblocktranslate %} :: {% endblock %}
+{% block extra_title %}{{ page_obj.paginator.count }} {% blocktranslate trimmed count count=page_obj.paginator.count %}submitter{% plural %}submitters{% endblocktranslate %} :: {% endblock extra_title %}
 
 {% block content %}
     <h2>
@@ -85,4 +85,4 @@
 
     {% include "orga/includes/pagination.html" %}
 
-{% endblock %}
+{% endblock content %}

@@ -9,9 +9,9 @@
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/quick_schedule.scss" %}">
     {% endcompress %}
-{% endblock %}
+{% endblock stylesheets %}
 
-{% block extra_title %}{% translate "Schedule session" %} {{ quotation_open}}{{ form.instance.submission.title }}{{ quotation_close }} :: {% endblock %}
+{% block extra_title %}{% translate "Schedule session" %} {{ quotation_open}}{{ form.instance.submission.title }}{{ quotation_close }} :: {% endblock extra_title %}
 
 {% block schedule_content %}
     <h2>
@@ -24,4 +24,4 @@
             {{ phrases.base.save }}
         </button>
     </form>
-{% endblock %}
+{% endblock schedule_content %}

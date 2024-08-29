@@ -5,7 +5,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block extra_title %}{% translate "Release new schedule" %} :: {% endblock %}
+{% block extra_title %}{% translate "Release new schedule" %} :: {% endblock extra_title %}
 
 {% block schedule_content %}
     <form method="post">
@@ -133,4 +133,4 @@
             </div>
         </form>
 
-{% endblock %}
+{% endblock schedule_content %}

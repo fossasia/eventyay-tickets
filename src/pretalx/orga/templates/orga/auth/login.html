@@ -1,7 +1,7 @@
 {% extends "orga/auth/base.html" %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% translate "Sign in" %}{% endblock %}
+{% block title %}{% translate "Sign in" %}{% endblock title %}
 {% block content %}
     {% include "common/auth.html" with hide_register=True %}
-{% endblock %}
+{% endblock content %}

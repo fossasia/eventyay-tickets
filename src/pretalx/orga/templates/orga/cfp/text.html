@@ -15,9 +15,9 @@
         <script defer src="{% static "common/js/modalDialog.js" %}"></script>
         <script defer src="{% static "orga/js/cfp.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
-{% block extra_title %}{% translate "Call for Proposals" %} :: {% endblock %}
+{% block extra_title %}{% translate "Call for Proposals" %} :: {% endblock extra_title %}
 
 {% block content %}
     <h2>
@@ -215,4 +215,4 @@
                 </form>
             </div>
         </div>
-{% endblock %}
+{% endblock content %}

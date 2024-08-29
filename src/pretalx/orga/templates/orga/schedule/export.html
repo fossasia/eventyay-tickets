@@ -4,7 +4,7 @@
 {% load bootstrap4 %}
 {% load static %}
 
-{% block extra_title %}{% translate "Export schedule data" %} :: {% endblock %}
+{% block extra_title %}{% translate "Export schedule data" %} :: {% endblock extra_title %}
 
 {% block schedule_content %}
     <h2>{% translate "Export schedule data" %}</h2>
@@ -150,4 +150,4 @@
     </div>
     <script defer src="{% static "orga/js/speaker_export.js" %}"></script>
 
-{% endblock %}
+{% endblock schedule_content %}

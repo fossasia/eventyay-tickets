@@ -15,9 +15,9 @@
         <script src="{% static 'orga/js/review.js' %}" defer></script>
     {% endcompress %}
     <link rel="stylesheet" type="text/css" href="{% static "vendored/rslider/rSlider.min.css" %}" />
-{% endblock %}
+{% endblock scripts %}
 
-{% block extra_title %}{% translate "Reviews" %} :: {% endblock %}
+{% block extra_title %}{% translate "Reviews" %} :: {% endblock extra_title %}
 
 {% block content %}
     {% has_perm 'orga.perform_reviews' request.user request.event as can_review %}
@@ -359,4 +359,4 @@
         {% include "orga/includes/pagination.html" %}
 
     {% endif %}
-{% endblock %}
+{% endblock content %}

@@ -7,7 +7,7 @@
 {% load rules %}
 {% load static %}
 
-{% block submission_title %}{% translate "Anonymisation" %} :: {% endblock %}
+{% block submission_title %}{% translate "Anonymisation" %} :: {% endblock submission_title %}
 
 {% block scripts %}
     <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
@@ -15,7 +15,7 @@
         <script defer src="{% static "common/js/modalDialog.js" %}"></script>
         <script defer src="{% static "orga/js/anonymise.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
 {% block submission_content %}
     <form method="post" enctype="multipart/form-data"><fieldset>
@@ -73,4 +73,4 @@
     <div id="anon-menu" class="d-none">
         <button>{% translate "Replace selection with █" %}</button>
     </div>
-{% endblock %}
+{% endblock submission_content %}

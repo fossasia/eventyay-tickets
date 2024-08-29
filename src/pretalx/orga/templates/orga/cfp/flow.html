@@ -17,9 +17,9 @@
     <script defer src="{% static "vendored/marked.min.js" %}"></script> {# do not compress #}
     <script defer src="{% static "vendored/purify.min.js" %}"></script>
     <script defer src="{% static "orga/js/cfp_flow.js" %}"></script>
-{% endblock %}
+{% endblock scripts %}
 
-{% block extra_title %}{% translate "CfP Editor" %} :: {% endblock %}
+{% block extra_title %}{% translate "CfP Editor" %} :: {% endblock extra_title %}
 
 {% block content %}
     <h1>{% translate "CfP Editor" %}</h1>
@@ -32,4 +32,4 @@
         {% endblocktranslate %}
     </p>
     <div id="flow"></div>
-{% endblock %}
+{% endblock content %}

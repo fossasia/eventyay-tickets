@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block extra_title %}{% translate "Send emails" %} :: {% endblock %}
+{% block extra_title %}{% translate "Send emails" %} :: {% endblock extra_title %}
 
 {% block content %}
   <h1>{% translate "Send emails" %}</h1>
@@ -22,4 +22,4 @@
       <p>{% translate "Send an email to your reviewers or other team members." %}</p>
     </a>
   </ul>
-{% endblock %}
+{% endblock content %}

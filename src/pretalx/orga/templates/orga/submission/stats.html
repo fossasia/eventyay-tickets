@@ -6,16 +6,16 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" type="text/css" href="{% static "vendored/apexcharts/apexcharts.css" %}" />
-{% endblock %}
+{% endblock stylesheets %}
 
 {% block scripts %}
     {% compress js %}
         <script defer src="{% static "vendored/apexcharts/apexcharts.min.js" %}"></script>
         <script defer src="{% static "orga/js/stats.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
-{% block extra_title %}{% translate "Statistics" %} :: {% endblock %}
+{% block extra_title %}{% translate "Statistics" %} :: {% endblock extra_title %}
 
 {% block content %}
     <div id="stats">
@@ -72,4 +72,4 @@
             </div>
         {% endif %}
     </div>
-{% endblock %}
+{% endblock content %}

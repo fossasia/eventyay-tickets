@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block extra_title %}{% translate "Plugins" %} :: {% endblock %}
+{% block extra_title %}{% translate "Plugins" %} :: {% endblock extra_title %}
 {% block content %}
     <h2>{% translate "Plugins" %}</h2>
 
@@ -60,4 +60,4 @@
             {% translate "This instance does currently not have any plugins installed." %}
         </div>
     {% endif %}
-{% endblock %}
+{% endblock content %}

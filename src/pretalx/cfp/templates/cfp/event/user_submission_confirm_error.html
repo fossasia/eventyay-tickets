@@ -5,7 +5,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% translate "Proposal not found" %} :: {% endblock %}
+{% block title %}{% translate "Proposal not found" %} :: {% endblock title %}
 
 {% block content %}
     <div class="col-md-10 ml-auto mr-auto">
@@ -14,4 +14,4 @@
             {% translate "The proposal you’re trying to confirm either does not exist or does not belong to the account you’re currently logged in with. Try logging in with a different account, or contact the event organisers for further information." %}
         </p>
     </div>
-{% endblock %}
+{% endblock content %}

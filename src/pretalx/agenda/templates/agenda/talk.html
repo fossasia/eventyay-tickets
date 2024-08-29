@@ -7,18 +7,18 @@
 {% load rich_text %}
 {% load phrases %}
 
-{% block title %}{{ submission.title }} ::{% endblock %}
-{% block meta_title %}{{ submission.title }}{% endblock %}
-{% block social_title %}{{ submission.title }}{% endblock %}
-{% block meta_description %}{{ submission_description }}{% endblock %}
-{% block social_description %}{{ submission_description }}{% endblock %}
+{% block title %}{{ submission.title }} ::{% endblock title %}
+{% block meta_title %}{{ submission.title }}{% endblock meta_title %}
+{% block social_title %}{{ submission.title }}{% endblock social_title %}
+{% block meta_description %}{{ submission_description }}{% endblock meta_description %}
+{% block social_description %}{{ submission_description }}{% endblock social_description %}
 {% block meta_image %}
     <meta property="thumbnail" content="{{ submission.urls.social_image.full }}">
     <meta property="og:image" content="{{ submission.urls.social_image.full }}">
-{% endblock %}
+{% endblock meta_image %}
 {% block alternate_link %}
     <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.talks.full }}{{ submission.code }}" />
-{% endblock %}
+{% endblock alternate_link %}
 
 {% block agenda_custom_header %}
     <script id="pretalx-messages" data-logged-in="{% if request.user.is_anonymous %}false{% else %}true{% endif %}" src="{{ request.event.urls.schedule }}widget/messages.js"></script>
@@ -29,7 +29,7 @@
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/lightbox.scss" %}">
     {% endcompress %}
-{% endblock %}
+{% endblock agenda_custom_header %}
 
 {% block agenda_content %}
     <article>
@@ -179,4 +179,4 @@
         {% endfor %}
     {% endif %}
     </article>
-{% endblock %}
+{% endblock agenda_content %}

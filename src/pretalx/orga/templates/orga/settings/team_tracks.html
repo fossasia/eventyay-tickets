@@ -3,7 +3,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block extra_title %}{% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Tracks" %} :: {% endblock %}
+{% block extra_title %}{% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Tracks" %} :: {% endblock extra_title %}
 
 {% block settings_content %}
     <div>
@@ -29,4 +29,4 @@
             </div>
         {% endif %}
     </div>
-{% endblock %}
+{% endblock settings_content %}

@@ -5,7 +5,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% translate "Your Profile" %} :: {% endblock %}
+{% block title %}{% translate "Your Profile" %} :: {% endblock title %}
 
 {% block cfp_header %}
     {% if profile_form.biography %}
@@ -23,7 +23,7 @@
         <link rel="stylesheet" type="text/css" href="{% static "vendored/select2.min.css" %}" />
         <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/_select2.scss" %}" />
     {% endcompress %}
-{% endblock %}
+{% endblock cfp_header %}
 
 {% block content %}
     {% html_signal "pretalx.cfp.signals.html_above_profile_page" sender=request.event request=request %}
@@ -122,4 +122,4 @@
     {% compress js %}
         <script defer src="{% static "cfp/js/profile.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock content %}

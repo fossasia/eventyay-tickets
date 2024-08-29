@@ -5,7 +5,7 @@
 {% load i18n %}
 {% load url_replace %}
 
-{% block extra_title %}{% translate "Users" %} :: {% endblock %}
+{% block extra_title %}{% translate "Users" %} :: {% endblock extra_title %}
 
 {% block content %}
     <h2>{% translate "Users" %}</h2>
@@ -70,6 +70,6 @@
         </form>
     </div>
     {% include "orga/includes/pagination.html" %}
-{% endblock %}
+{% endblock content %}
 
 
