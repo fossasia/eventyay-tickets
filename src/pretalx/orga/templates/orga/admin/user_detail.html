@@ -85,9 +85,10 @@
                   <a href="{{ event.orga_urls.base }}">{{ event.name }}</a>{% if not forloop.last %},{% endif %}
                 {% endfor %}
               {% endif %}
+            </td>
 
-              <td>{{ team.permission_set }}</td>
-            </tr>
+            <td>{{ team.permission_set }}</td>
+          </tr>
         {% empty %}
           <tr>
             <td colspan="4">{% translate "User isn't in any teams" %}</td>

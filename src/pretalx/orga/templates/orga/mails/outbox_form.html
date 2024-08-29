@@ -95,11 +95,11 @@
             {% if action == "edit" %}
                 <a class="btn btn-lg btn-danger ml-1 mr-1" href={{ form.instance.urls.delete }}>{% translate "Discard" %}</a>
                 <a class="btn btn-lg btn-outline-danger flip mr-auto" href="{{ form.instance.urls.delete }}?all">{% translate "Discard all from this template" %}</a>
-                </span><span>
-                    <button type="submit" class="btn btn-lg btn-success" name="form" value="save">
-                        {{ phrases.base.save }}
-                    </button>
-                    <button class="btn btn-lg btn-info" name="form" value="send">{% translate "Save and send" %}</button>
+                <span></span>
+                <button type="submit" class="btn btn-lg btn-success" name="form" value="save">
+                    {{ phrases.base.save }}
+                </button>
+                <button class="btn btn-lg btn-info" name="form" value="send">{% translate "Save and send" %}</button>
             {% elif action == "view" %}
                 {% if form.instance.sent %}
                     <a class="btn btn-lg btn-success ml-auto flip" href="{% if form.instance.template %}{{ request.event.orga_urls.compose_mails_sessions }}?template={{ form.instance.template.pk }}{% else %}{{ form.instance.urls.copy }}{% endif %}">
