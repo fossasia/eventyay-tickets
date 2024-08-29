@@ -70,6 +70,7 @@
                                     You have placeholders in your email that are either not valid or not valid for every email!
                                 {% endblocktranslate %}
                                 <ul>
+                                    {# &#123; is the HTML entity for {, which would break django template syntax #}
                                     {% for w in form.warnings %}<li>&#123;{{ w }}}</li>{% endfor %}
                                 </ul>
                                 {% blocktranslate trimmed %}

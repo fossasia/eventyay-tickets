@@ -150,15 +150,15 @@
                 {% endif %}
                 {% include "common/powered_by.html" %}
                 {% if request.event %}
-                    &middot;
+                    ·
                     <a href="mailto:{{ request.event.email }}">{% translate "Contact us" %}</a>
                 {% endif %}
                 {% if request.event.display_settings.imprint_url %}
-                    &middot;
+                    ·
                     <a href="{{ request.event.display_settings.imprint_url }}" target="_blank" rel="noopener">{% translate "Imprint" %}</a>
                 {% endif %}
                 {% for footer in footer_links %}
-                    &middot;
+                    ·
                     <a href="{{ footer.link }}">{{ footer.label }}</a>
                 {% endfor %}
             </footer>

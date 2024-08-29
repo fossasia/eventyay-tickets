@@ -47,9 +47,9 @@
                         {% else %}
                             <button type="submit" class="btn btn-block btn-success btn-lg" name="action" value="submit">
                                 {% if next_url %}
-                                    {% translate "Continue" %} &raquo;
+                                    {% translate "Continue" %} »
                                 {% else %}
-                                    {% translate "Submit proposal!" %} &raquo;
+                                    {% translate "Submit proposal!" %} »
                                 {% endif %}
                             </button>
                             <button type="submit" class="btn btn-link text-center" name="action" value="draft">
@@ -61,7 +61,7 @@
                     <div class="col-md-3">
                         {% if prev_url %}
                             <a href="{{ prev_url }}" class="btn btn-block btn-info btn-lg">
-                                &laquo; {{ phrases.base.back_button }}
+                                « {{ phrases.base.back_button }}
                             </a>
                         {% endif %}
                     </div>
