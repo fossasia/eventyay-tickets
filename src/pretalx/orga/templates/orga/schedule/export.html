@@ -25,14 +25,14 @@
                 {% csrf_token %}
                 <fieldset>
                     <legend>{% translate "Export settings" %}</legend>
-                    {% bootstrap_field form.export_format layout='event' %}
+                    {% bootstrap_field form.export_format layout="event" %}
                     <div id="data-delimiter">
-                        {% bootstrap_field form.data_delimiter layout='event' %}
+                        {% bootstrap_field form.data_delimiter layout="event" %}
                     </div>
                 </fieldset>
                 <fieldset>
                     <legend>{% translate "Dataset" %}</legend>
-                    {% bootstrap_field form.target layout='event' %}
+                    {% bootstrap_field form.target layout="event" %}
                 </fieldset>
                 <fieldset>
                     <legend>{% translate "Data fields" %}</legend>
@@ -43,7 +43,7 @@
                         </div>
                     </div>
                     {% for field in form.export_fields %}
-                        {% bootstrap_field field layout='event' %}
+                        {% bootstrap_field field layout="event" %}
                     {% endfor %}
                 </fieldset>
 
@@ -104,7 +104,7 @@
             </p>
 
             <div class="submit-group"><span></span><span>
-                <a href='{{ request.event.orga_urls.schedule_export_download }}' class="btn btn-lg btn-info">
+                <a href="{{ request.event.orga_urls.schedule_export_download }}" class="btn btn-lg btn-info">
                     <i class="fa fa-download"></i>
                     {% translate "Download ZIP" %}
                 </a>

@@ -57,7 +57,7 @@
     <body data-datetimeformat="{{ js_datetime_format }}" data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}">
         <div id="top-bg" class="header {{ request.event.display_settings.header_pattern|default:"bg-primary" }}">
             {% if request.event and request.event.header_image %}
-                {# we're not lazy-loading the header image, even though it can be large, because it's a bit jarring to see it flash in 100ms after the page load #}
+                {# we’re not lazy-loading the header image, even though it can be large, because it’s a bit jarring to see it flash in 100ms after the page load #}
                 <img src="{{ request.event.header_image.url }}" id="header-image" alt="{{ request.event.name }}">
             {% endif %}
         </div>
@@ -92,7 +92,7 @@
                     {% endif %}
                     {% if request.event and request.user.is_authenticated and not is_html_export %}
                         <details id="user-dropdown-label" class="dropdown">
-                            {% has_perm 'orga.view_orga_area' request.user request.event as can_see_orga_area %}
+                            {% has_perm "orga.view_orga_area" request.user request.event as can_see_orga_area %}
                             <summary>
                                 {{ request.user.get_display_name }} <i class="fa fa-caret-down ml-1"></i>
                             </summary>

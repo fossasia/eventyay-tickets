@@ -44,7 +44,7 @@
                                             class="btn btn-sm btn-info"
                                             data-toggle="tooltip"
                                             data-placement="top"
-                                            title="{% translate 'Copy code for review' %}"
+                                            title="{% translate "Copy code for review" %}"
                                             target="_blank"
                                             rel="noopener">
                                         <i class="fa fa-link"></i>
@@ -103,7 +103,7 @@
                                             class="btn btn-sm btn-info"
                                             data-toggle="tooltip"
                                             data-placement="top"
-                                            title="{% translate 'Copy code for review' %}"
+                                            title="{% translate "Copy code for review" %}"
                                             target="_blank"
                                             rel="noopener">
                                         <i class="fa fa-link"></i>
@@ -116,7 +116,7 @@
                                         <i class="fa fa-edit" title="{% translate "Open proposal" %}"></i>
                                     {% endif %}
                                 </a>
-                                {% if submission.state == 'accepted' %}
+                                {% if submission.state == "accepted" %}
                                     <a href="{{ submission.urls.confirm }}" class="btn btn-sm btn-success">
                                         <i class="fa fa-check"></i> {% translate "Confirm" %}
                                     </a>

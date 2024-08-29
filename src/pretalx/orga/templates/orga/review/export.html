@@ -30,7 +30,7 @@
                 {% csrf_token %}
                 <fieldset>
                     <legend>{% translate "Dataset" %}</legend>
-                    {% bootstrap_field form.target layout='event' %}
+                    {% bootstrap_field form.target layout="event" %}
                 </fieldset>
                 <fieldset>
                     <legend>{% translate "Data fields" %}</legend>
@@ -41,12 +41,12 @@
                         </div>
                     </div>
                     {% for field in form.export_fields %}
-                        {% bootstrap_field field layout='event' %}
+                        {% bootstrap_field field layout="event" %}
                     {% endfor %}
                 </fieldset>
                 <fieldset>
                     <legend>{% translate "Export settings" %}</legend>
-                    {% bootstrap_field form.export_format layout='event' %}
+                    {% bootstrap_field form.export_format layout="event" %}
                 </fieldset>
 
                 {% include "orga/includes/submit_row.html" %}

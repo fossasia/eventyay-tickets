@@ -17,7 +17,7 @@
 {% block extra_title %}{% translate "Reviews" %} :: {% endblock extra_title %}
 
 {% block content %}
-    {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
+    {% has_perm "orga.view_speakers" request.user request.event as can_view_speakers %}
     <div class="alert alert-info">
         {% if next_submission %}
             {% blocktranslate trimmed count count=missing_reviews %}
@@ -40,8 +40,8 @@
                 {% bootstrap_field filter_form.submission_type %}
             {% endif %}
             <div class="d-none form-group">
-                {% bootstrap_field filter_form.state layout='inline' %}
-                <div id="pending">{% bootstrap_field filter_form.pending_state__isnull layout='inline' %}</div>
+                {% bootstrap_field filter_form.state layout="inline" %}
+                <div id="pending">{% bootstrap_field filter_form.pending_state__isnull layout="inline" %}</div>
             </div>
             {% if filter_form.track %}
                 {% bootstrap_field filter_form.track %}
@@ -62,7 +62,7 @@
                 {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
                     List filtered by answers to question “{{ question }}”.
                 {% endblocktranslate %}
-                <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
+                <a href="?{% url_replace request "question" "" "answer" "" "answer__options" "" %}" class="text-muted">
                     <span class="fa fa-times"></span>
                     {% translate "Remove filter" %}
                 </a>

@@ -25,16 +25,16 @@
                 {% translate "New room" %}
             {% endif %}
         </h2>
-        {% bootstrap_field form.name layout='event' %}
-        {% bootstrap_field form.description layout='event' %}
-        {% bootstrap_field form.speaker_info layout='event' %}
-        {% bootstrap_field form.capacity addon_after='people' addon_after_class='input-group-append input-group-text' layout='event' %}
-        {% bootstrap_field form.availabilities layout='event' %}
+        {% bootstrap_field form.name layout="event" %}
+        {% bootstrap_field form.description layout="event" %}
+        {% bootstrap_field form.speaker_info layout="event" %}
+        {% bootstrap_field form.capacity addon_after="people" addon_after_class="input-group-append input-group-text" layout="event" %}
+        {% bootstrap_field form.availabilities layout="event" %}
         <details>
             <summary class="col-md-9 ml-auto mb-4">
                 <h3 class="d-inline">{% translate "Advanced settings" %}</h3>
             </summary>
-            {% bootstrap_field form.guid layout='event' %}
+            {% bootstrap_field form.guid layout="event" %}
         </details>
 
         {% include "orga/includes/submit_row.html" %}

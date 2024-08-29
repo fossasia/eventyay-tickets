@@ -38,11 +38,11 @@
       </tr>
       <tr>
         <th>{% translate "Last login" %}</th>
-        <td>{{ user.last_login|default:'-' }}</td>
+        <td>{{ user.last_login|default:"-" }}</td>
       </tr>
       <tr>
         <th>{% translate "Password reset time" %}</th>
-        <td>{{ user.pw_reset_time|default:'-' }}</td>
+        <td>{{ user.pw_reset_time|default:"-" }}</td>
       </tr>
       <tr>
         <th>{{ phrases.base.language }}</th>

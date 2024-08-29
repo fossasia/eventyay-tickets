@@ -83,8 +83,8 @@
                                 </td>
                                 <td>
                                     {% csrf_token %}
-                                    {% bootstrap_field invite_form.email layout='inline' form_group_class="single-email-group" %}
-                                    {% bootstrap_field invite_form.bulk_email layout='inline' form_group_class="d-none bulk-email-group" %}
+                                    {% bootstrap_field invite_form.email layout="inline" form_group_class="single-email-group" %}
+                                    {% bootstrap_field invite_form.bulk_email layout="inline" form_group_class="d-none bulk-email-group" %}
                                     <small class="form-text text-muted bulk-email-help-text d-none">
                                         {{ invite_form.bulk_email.help_text }}
                                     </small>
@@ -107,23 +107,23 @@
         <form method="post">
             {% csrf_token %}
             {% bootstrap_form_errors form %}
-            {% bootstrap_field form.name layout='event' %}
-            {% bootstrap_field form.all_events layout='event' %}
-            {% bootstrap_field form.limit_events layout='event' %}
-            {% bootstrap_field form.can_create_events layout='event' %}
-            {% bootstrap_field form.can_change_teams layout='event' %}
-            {% bootstrap_field form.can_change_organiser_settings layout='event' %}
-            {% bootstrap_field form.can_change_event_settings layout='event' %}
-            {% bootstrap_field form.can_change_submissions layout='event' %}
-            {% bootstrap_field form.is_reviewer layout='event' %}
+            {% bootstrap_field form.name layout="event" %}
+            {% bootstrap_field form.all_events layout="event" %}
+            {% bootstrap_field form.limit_events layout="event" %}
+            {% bootstrap_field form.can_create_events layout="event" %}
+            {% bootstrap_field form.can_change_teams layout="event" %}
+            {% bootstrap_field form.can_change_organiser_settings layout="event" %}
+            {% bootstrap_field form.can_change_event_settings layout="event" %}
+            {% bootstrap_field form.can_change_submissions layout="event" %}
+            {% bootstrap_field form.is_reviewer layout="event" %}
             <div class="form-group row">
                 <div class="col-md-3"></div>
                 <div class="col-md-9">
                     <h3 id="review-settings">{% translate "Review settings" %}</h3>
                 </div>
             </div>
-            {% bootstrap_field form.force_hide_speaker_names layout='event' %}
-            {% bootstrap_field form.limit_tracks layout='event' %}
+            {% bootstrap_field form.force_hide_speaker_names layout="event" %}
+            {% bootstrap_field form.limit_tracks layout="event" %}
 
             {% include "orga/includes/submit_row.html" with submit_value="team" submit_name="form" %}
 

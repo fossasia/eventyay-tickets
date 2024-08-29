@@ -11,7 +11,7 @@
 {% block inner %}
     <div class="d-flex">
         <h2>{{ title }}</h2>
-        {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
+        {% has_perm "orga.edit_cfp" request.user request.event as can_edit_cfp %}
         {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text "information" %}{% endif %}
     </div>
     <p>{{ text|rich_text }}</p>
@@ -21,9 +21,9 @@
 
     {% endif %}
 
-    {% bootstrap_field form.name layout='event' %}
+    {% bootstrap_field form.name layout="event" %}
     {% if form.biography %}
-        {% bootstrap_field form.biography layout='event' %}
+        {% bootstrap_field form.biography layout="event" %}
     {% endif %}
     {% if form.availabilities %}
         {% compress js %}
@@ -33,7 +33,7 @@
 
         {% include "common/availabilities.html" %}
 
-        {% bootstrap_field form.availabilities layout='event' %}
+        {% bootstrap_field form.availabilities layout="event" %}
     {% endif %}
 
     {% compress js %}

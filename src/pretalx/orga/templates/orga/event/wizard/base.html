@@ -19,7 +19,7 @@
         {% block wizard_content %}{% endblock wizard_content %}
         {% csrf_token %}
         {{ wizard.management_form }}
-        {% bootstrap_form wizard.form layout='event' %}
+        {% bootstrap_form wizard.form layout="event" %}
         <div class="submit-group wizard-row">
             <button type="submit" class="btn btn-success btn-lg float-right flip ml-auto">{% translate "Next step" %}</button>
             {% if wizard.steps.prev %}

@@ -10,18 +10,18 @@
 
 {% block cfp_submission_header %}
     {% compress js %}
-        <script defer src="{% static 'cfp/js/proposalTabTitles.js' %}"></script>
+        <script defer src="{% static "cfp/js/proposalTabTitles.js" %}"></script>
     {% endcompress %}
 {% endblock cfp_submission_header %}
 
 {% block inner %}
     <div class="d-flex">
         <h2>{{ title }}</h2>
-        {% has_perm 'orga.edit_cfp' request.user request.event as can_edit_cfp %}
+        {% has_perm "orga.edit_cfp" request.user request.event as can_edit_cfp %}
         {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.editor %}{% endif %}
     </div>
     <p>{{ text|rich_text }}</p>
     {% for field in form %}
-        {% bootstrap_field field layout='event' %}
+        {% bootstrap_field field layout="event" %}
     {% endfor %}
 {% endblock inner %}

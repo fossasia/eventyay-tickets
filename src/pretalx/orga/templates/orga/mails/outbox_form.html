@@ -19,15 +19,15 @@
         {% bootstrap_form_errors form %}
 
         {% if not form.read_only %}
-            {% bootstrap_field form.to layout='event' %}
+            {% bootstrap_field form.to layout="event" %}
             {% if form.to_users %}
-                {% bootstrap_field form.to_users layout='event' %}
+                {% bootstrap_field form.to_users layout="event" %}
             {% endif %}
-            {% bootstrap_field form.reply_to layout='event' %}
-            {% bootstrap_field form.cc layout='event' %}
-            {% bootstrap_field form.bcc layout='event' %}
-            {% bootstrap_field form.subject layout='event' %}
-            {% bootstrap_field form.text layout='event' %}
+            {% bootstrap_field form.reply_to layout="event" %}
+            {% bootstrap_field form.cc layout="event" %}
+            {% bootstrap_field form.bcc layout="event" %}
+            {% bootstrap_field form.subject layout="event" %}
+            {% bootstrap_field form.text layout="event" %}
         {% else %}
             <div class="container">
                 <div class="row mb-3">

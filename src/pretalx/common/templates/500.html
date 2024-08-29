@@ -15,7 +15,7 @@
     <h5>
         <p>
             {% if development_mode %}
-                {% blocktranslate with link='https://github.com/pretalx/pretalx/issues/new?template=bug_report.md&title=Error+on+'|add:request_path trimmed %}
+                {% blocktranslate with link="https://github.com/pretalx/pretalx/issues/new?template=bug_report.md&title=Error+on+"|add:request_path trimmed %}
                     Please help us to fix this by submitting <a href="{{ link }}" rel=noopener>a bug report</a>!
                 {% endblocktranslate %}
             {% endif %}

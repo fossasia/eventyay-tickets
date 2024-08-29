@@ -70,7 +70,7 @@
                             {% endfor %}
                         {% else %}
                             <div class="no-session">
-                                {% blocktranslate with current_day=day.start|date:'DATE_FORMAT' weekday=day.start|date:'l' trimmed %}
+                                {% blocktranslate with current_day=day.start|date:"DATE_FORMAT" weekday=day.start|date:"l" trimmed %}
                                     No sessions on {{ weekday }}, {{ current_day }}.
                                 {% endblocktranslate %}
                             </div>

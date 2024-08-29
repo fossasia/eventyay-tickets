@@ -27,10 +27,10 @@
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        {% bootstrap_field form.name layout='event' %}
-        {% bootstrap_field form.default_duration addon_after="minutes" layout='event' addon_after_class="input-group-append input-group-text" %}
-        {% bootstrap_field form.deadline layout='event' %}
-        {% bootstrap_field form.requires_access_code layout='event' %}
+        {% bootstrap_field form.name layout="event" %}
+        {% bootstrap_field form.default_duration addon_after="minutes" layout="event" addon_after_class="input-group-append input-group-text" %}
+        {% bootstrap_field form.deadline layout="event" %}
+        {% bootstrap_field form.requires_access_code layout="event" %}
 
         {% include "orga/includes/submit_row.html" %}
 

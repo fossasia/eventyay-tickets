@@ -60,14 +60,14 @@
                         </td>
                         <td>{{ question.get_target_display }}</td>
                         <td class="text-center">
-                            <i class="fa fa-{{ question.required|yesno:'check-circle text-success,times-circle text-danger' }}">
+                            <i class="fa fa-{{ question.required|yesno:"check-circle text-success,times-circle text-danger" }}">
                             </i>
                             {% if question.question_required == "require after" or question.freeze_after%}
                                 <i class="fa fa-clock-o" title="{% translate "This question’s availability depends on a deadline." %}"> </i>
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <i class="fa fa-{{ question.active|yesno:'check-circle text-success,times-circle text-danger' }}">
+                            <i class="fa fa-{{ question.active|yesno:"check-circle text-success,times-circle text-danger" }}">
                             </i>
                         </td>
                         <td class="numeric">{{ question.answer_count }}</td>

@@ -71,16 +71,16 @@
                                 {% else %}–{% endif %}
                             </td>
                             <td class="numeric">
-                                {{ code.redeemed|default:0 }} / {{ code.maximum_uses|default:'∞' }}
+                                {{ code.redeemed|default:0 }} / {{ code.maximum_uses|default:"∞" }}
                             </td>
                             <td class="action-column">
                                 <div data-destination="{{ code.urls.cfp_url.full }}"
-                                     title="{% translate 'Copy access code link' %}"
+                                     title="{% translate "Copy access code link" %}"
                                      class="btn btn-sm btn-info copyable-text">
                                     <i class="fa fa-copy"></i>
                                 </div>
                                 <a href="{{ code.urls.send }}"
-                                   title="{% translate 'Send access code as email' %}"
+                                   title="{% translate "Send access code as email" %}"
                                    class="btn btn-sm btn-info">
                                     <i class="fa fa-envelope"></i>
                                 </a>

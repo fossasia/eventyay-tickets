@@ -35,7 +35,7 @@
                 {% endblocktranslate %}
             </div>
         </dialog>
-        {% bootstrap_form form layout='event' %}
+        {% bootstrap_form form layout="event" %}
 
         {% include "orga/includes/submit_row.html" %}
 
@@ -55,7 +55,7 @@
             {% endblocktranslate %}
         </p>
         <form>
-            {% bootstrap_form extra_form layout='event' %}
+            {% bootstrap_form extra_form layout="event" %}
         </form>
         <div class="submit-group panel">
             <span></span>
@@ -91,7 +91,7 @@
             <span class="text-success">
                 <i class="fa fa-info-circle"></i>
             </span>
-            {% blocktranslate trimmed with link='https://docs.pretalx.org/user/event/widget.html' %}
+            {% blocktranslate trimmed with link="https://docs.pretalx.org/user/event/widget.html" %}
 
                 Please look at <a href="{{ link }}">our documentation</a> for more information.
             {% endblocktranslate %}
@@ -106,7 +106,7 @@
                     This is roughly what your widget will look like if you choose the grid format:
                 {% endblocktranslate %}
             </p>
-            <pretalx-schedule event-url="{{ request.event.urls.base }}" locale="{{ request.event.locale }}" style="--pretalx-clr-primary: {{ request.event.primary_color|default:'#3aa57c' }}"></pretalx-schedule>
+            <pretalx-schedule event-url="{{ request.event.urls.base }}" locale="{{ request.event.locale }}" style="--pretalx-clr-primary: {{ request.event.primary_color|default:"#3aa57c" }}"></pretalx-schedule>
       </div>
    <script type="text/javascript" src="{{ request.event.urls.schedule_widget_script }}" async></script>
         <noscript>

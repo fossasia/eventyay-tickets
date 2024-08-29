@@ -1,4 +1,4 @@
-{% extends 'orga/base.html' %}
+{% extends "orga/base.html" %}
 
 {% load bootstrap4 %}
 {% load i18n %}
@@ -84,7 +84,7 @@
     <form action="" method="post" class="form-horizontal">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        {% bootstrap_form form layout='event' %}
+        {% bootstrap_form form layout="event" %}
 
         {% include "orga/includes/submit_row.html" %}
 

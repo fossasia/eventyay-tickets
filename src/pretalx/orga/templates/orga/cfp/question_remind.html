@@ -17,7 +17,7 @@
     </div>
     <form class="form" method="post">
         {% csrf_token %}
-        {% bootstrap_form filter_form layout='event' %}
+        {% bootstrap_form filter_form layout="event" %}
 
         {% include "orga/includes/submit_row.html" with submit_label=phrases.base.send %}
 

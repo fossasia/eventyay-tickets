@@ -4,8 +4,8 @@
 {% load rules %}
 
 {% block content %}
-    {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
-    {% has_perm 'orga.change_settings' request.user request.event as can_change_settings %}
+    {% has_perm "orga.view_speakers" request.user request.event as can_view_speakers %}
+    {% has_perm "orga.change_settings" request.user request.event as can_change_settings %}
     {% if "congratulations" in request.GET %}
         <div class="alert alert-success congratulations">
             <span></span>
@@ -24,7 +24,7 @@
     </h2>
     <div id="timeline-steps" class="stages">
         {% for stp in timeline %}
-            <div {% if stp.phase == 'done' and stp.url %}href="{{ stp.url }}"{% endif %} class="step step-{{ stp.phase }}">
+            <div {% if stp.phase == "done" and stp.url %}href="{{ stp.url }}"{% endif %} class="step step-{{ stp.phase }}">
                 <div class="step-icon">
                     <span class="fa {% if stp.icon %}fa-{{ stp.icon }}{% else %}fa-check{% endif %}"></span>
                 </div>

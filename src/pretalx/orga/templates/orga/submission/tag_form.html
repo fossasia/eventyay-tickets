@@ -32,10 +32,10 @@
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        {% bootstrap_field form.tag layout='event' %}
-        {% bootstrap_field form.description layout='event' %}
-        {% bootstrap_field form.color layout='event' addon_before="<i></i>" addon_before_class="colorpicker-input-addon color-visible" %}
-        {% bootstrap_field form.public layout='event' %}
+        {% bootstrap_field form.tag layout="event" %}
+        {% bootstrap_field form.description layout="event" %}
+        {% bootstrap_field form.color layout="event" addon_before="<i></i>" addon_before_class="colorpicker-input-addon color-visible" %}
+        {% bootstrap_field form.public layout="event" %}
 
         {% include "orga/includes/submit_row.html" %}
 

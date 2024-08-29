@@ -7,7 +7,7 @@
 
 {% block content %}
     <h2>{% translate "Tags" %}</h2>
-    {% has_perm 'orga.add_tags' request.user request.event as can_edit_tags %}
+    {% has_perm "orga.add_tags" request.user request.event as can_edit_tags %}
     {% if can_edit_tags %}
         <div class="d-flex justify-content-end mb-3">
             <a class="btn btn-info" href="{{ request.event.orga_urls.new_tag }}">

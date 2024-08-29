@@ -114,7 +114,7 @@
                     {{ phrases.schedule.version }}  {{ suggested_version }}
                 </h4>
                 <div class="flex-next-column">
-                    {% bootstrap_field form.comment layout='inline' %}
+                    {% bootstrap_field form.comment layout="inline" %}
                 </div>
                 {% include "agenda/changelog_block.html" with schedule=request.event.wip_schedule %}
             </div>
@@ -128,7 +128,7 @@
                 </a>
             </div>
             <div class="d-flex align-items-center justify-content-end" id="notify-speakers-check">
-                {% bootstrap_field form.notify_speakers layout='event-inline' form_group_class="mr-3" %}
+                {% bootstrap_field form.notify_speakers layout="event-inline" form_group_class="mr-3" %}
                 <button type="submit" class="btn btn-success btn-lg">{% translate "Release" %}</button>
             </div>
         </div>
