@@ -87,6 +87,8 @@ dependencies = [
         'protobuf==4.23.*',
         'cryptography>=3.4.2',
         'pycryptodome==3.20.*',
+        'paypalhttp==1.0.1',
+        'paypalrestsdk==1.13.3',
         'sepaxml==2.6.*',
         'geoip2==4.*',
         'eventyay-stripe @ git+https://your_token@github.com/fossasia/eventyay-tickets-stripe.git@master',
