@@ -42,14 +42,14 @@
                             <td>
                                 <ul>
                                     {% for team in user.teams.all %}
-                                        <li><a href="{{ team.urls.base }}">{{ team.name }}</li>
+                                        <li><a href="{{ team.urls.base }}">{{ team.name }}</a></li>
                                     {% endfor %}
                                 </ul>
                             </td>
                             <td>
                                 <ul>
                                     {% for event in user.get_events_with_any_permission %}
-                                        <li><a href="{{ event.orga_urls.base }}">{{ event.name }}</li>
+                                        <li><a href="{{ event.orga_urls.base }}">{{ event.name }}</a></li>
                                     {% endfor %}
                                 </ul>
                             </td>

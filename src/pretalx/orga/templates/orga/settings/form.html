@@ -81,23 +81,23 @@
                 <div {% if request.event.primary_color %}style="--color: {{ request.event.primary_color }}"{% endif %} class="colorpicker-update">
                     {% bootstrap_field form.header_pattern layout='event' %}
                 </div>
-                <fieldset>
-                    <div class="submit-group panel">
-                        <span>
-                            {% has_perm "person.is_administrator" request.user request.event as can_delete_event %}
-                            {% if can_delete_event %}
-                                <a class="btn btn-outline-danger btn-lg" href="{{ request.event.orga_urls.delete }}">
-                                    {% translate "Delete event" %}
-                                </a>
-                            {% endif %}
-                        </span>
-                        <span>
-                            <button type="submit" class="btn btn-success btn-lg">
-                                <i class="fa fa-check"></i>
-                                {{ phrases.base.save }}
-                            </button>
-                        </span>
-                    </div>
-                </form>
-            </div></div>
+            </fieldset>
+            <div class="submit-group panel">
+                <span>
+                    {% has_perm "person.is_administrator" request.user request.event as can_delete_event %}
+                    {% if can_delete_event %}
+                        <a class="btn btn-outline-danger btn-lg" href="{{ request.event.orga_urls.delete }}">
+                            {% translate "Delete event" %}
+                        </a>
+                    {% endif %}
+                </span>
+                <span>
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fa fa-check"></i>
+                        {{ phrases.base.save }}
+                    </button>
+                </span>
+            </div>
+        </form>
+    </div></div>
 {% endblock settings_content %}

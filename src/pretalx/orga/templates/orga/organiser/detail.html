@@ -56,21 +56,20 @@
                                     </td>
                                     <td class="numeric">{{ team.members.count }}</td>
                                     <td>
-                                        <i class="fa fa-{{ team.all_events|yesno:"check-circle text-success,times-circle text-danger" }}">
-                                        </td>
-                                        <td>
-                                            <i class="fa fa-{{ team.is_reviewer|yesno:"check-circle text-success,times-circle text-danger" }}">
-                                            </td>
-                                            <td>
-                                                <a href="{{ team.orga_urls.base }}" class="btn btn-sm btn-info" title="{{ phrases.base.edit }}">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                                <a href="{{ team.orga_urls.delete }}" class="btn btn-sm btn-danger" title="{{ phrases.base.delete_button }}">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
-                                            </td>
+                                        <i class="fa fa-{{ team.all_events|yesno:"check-circle text-success,times-circle text-danger" }}"></i>
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-{{ team.is_reviewer|yesno:"check-circle text-success,times-circle text-danger" }}"></i>
+                                    </td>
+                                    <td>
+                                        <a href="{{ team.orga_urls.base }}" class="btn btn-sm btn-info" title="{{ phrases.base.edit }}">
+                                            <i class="fa fa-edit"></i>
                                         </a>
-                                    </tr>
+                                        <a href="{{ team.orga_urls.delete }}" class="btn btn-sm btn-danger" title="{{ phrases.base.delete_button }}">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
                             {% endfor %}{% endif %}
                         </tbody>
                     </table>

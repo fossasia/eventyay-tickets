@@ -26,11 +26,10 @@
                             {% endif %}
                         {% endif %}
                     </span>
-                </span>
-                <span class="log-object">
-                    {% if not hide_orga and log.display_object %}<i class="fa fa-flag"></i>{{ log.display_object|safe }}{% endif %}
-                </span>
-                <span class="log-text">{{ log.display }}</span>
+                    <span class="log-object">
+                        {% if not hide_orga and log.display_object %}<i class="fa fa-flag"></i>{{ log.display_object|safe }}{% endif %}
+                    </span>
+                    <span class="log-text">{{ log.display }}</span>
                 </li>
             {% endfor %}
         </ul>

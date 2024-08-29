@@ -8,12 +8,12 @@
     {% has_perm 'orga.change_settings' request.user request.event as can_change_settings %}
     {% if "congratulations" in request.GET %}
         <div class="alert alert-success congratulations">
+            <span></span>
             {% blocktranslate trimmed %}
                 Your event has been created and you’re ready to go! Check out the
                 event settings, set up your Call for Papers with session types and questions,
                 and you’re ready to go!
             {% endblocktranslate %}
-        </span>
         </div>
     {% endif %}
     <h2 id="main-title">
@@ -99,9 +99,19 @@
 
     {% if history and can_view_speakers %}
         <div class="dashboard-history">
-            <div class="d-flex"><h2>{% translate "History" %}<h2> {% if can_change_settings %}<small><a href="{{ request.event.orga_urls.history }}" class="text-muted ml-2">({% translate "Full history" %})</a></small>{% endif %}</div>
-                {% include "common/logs.html" with entries=history %}
-
+            <div class="d-flex">
+                <h2>{% translate "History" %}</h2>
+                {% if can_change_settings %}
+                    <small>
+                        <a href="{{ request.event.orga_urls.history }}" class="text-muted ml-2">
+                            ({% translate "Full history" %})
+                        </a>
+                    </small>
+                {% endif %}
             </div>
+
+            {% include "common/logs.html" with entries=history %}
+
+        </div>
     {% endif %}
 {% endblock content %}
