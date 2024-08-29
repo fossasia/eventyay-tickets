@@ -10,9 +10,9 @@
 
 {% block scripts %}
     {% compress js %}
-        <script src="{% static 'vendored/rslider/rSlider.min.js' %}" defer></script>
+        <script src="{% static "vendored/rslider/rSlider.min.js" %}" defer></script>
         <script src="{% static "orga/js/submission_filter.js" %}"></script>
-        <script src="{% static 'orga/js/review.js' %}" defer></script>
+        <script src="{% static "orga/js/review.js" %}" defer></script>
     {% endcompress %}
     <link rel="stylesheet" type="text/css" href="{% static "vendored/rslider/rSlider.min.css" %}" />
 {% endblock scripts %}
@@ -20,8 +20,8 @@
 {% block extra_title %}{% translate "Reviews" %} :: {% endblock extra_title %}
 
 {% block content %}
-    {% has_perm 'orga.perform_reviews' request.user request.event as can_review %}
-    {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
+    {% has_perm "orga.perform_reviews" request.user request.event as can_review %}
+    {% has_perm "orga.view_speakers" request.user request.event as can_view_speakers %}
     <div class="alert alert-info">
         <div>
             {% if can_review and next_submission %}
@@ -48,8 +48,8 @@
                 {% bootstrap_field filter_form.submission_type %}
             {% endif %}
             <div class="d-flex flex-column form-group">
-                {% bootstrap_field filter_form.state layout='inline' %}
-                <div id="pending" class="d-none">{% bootstrap_field filter_form.pending_state__isnull layout='inline' %}</div>
+                {% bootstrap_field filter_form.state layout="inline" %}
+                <div id="pending" class="d-none">{% bootstrap_field filter_form.pending_state__isnull layout="inline" %}</div>
             </div>
             {% if filter_form.track %}
                 {% bootstrap_field filter_form.track %}
@@ -154,7 +154,7 @@
                 {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
                     List filtered by answers to question “{{ question }}”.
                 {% endblocktranslate %}
-                <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
+                <a href="?{% url_replace request "question" "" "answer" "" "answer__options" "" %}" class="text-muted">
                     <span class="fa fa-times"></span>
                     {% translate "Remove filter" %}
                 </a>
@@ -198,8 +198,8 @@
                                 {% else %}
                                     {% translate "Average" %}
                                 {% endif %}
-                                <a href="?{% url_replace request 'sort' 'score' %}"><i class="fa fa-caret-down" title="{% translate "Sort by score (highest first)" %}"></i></a>
-                                <a href="?{% url_replace request 'sort' '-score' %}"><i class="fa fa-caret-up" title="{% translate "Sort by score (lowest first)" %}"></i></a>
+                                <a href="?{% url_replace request "sort" "score" %}"><i class="fa fa-caret-down" title="{% translate "Sort by score (highest first)" %}"></i></a>
+                                <a href="?{% url_replace request "sort" "-score" %}"><i class="fa fa-caret-up" title="{% translate "Sort by score (lowest first)" %}"></i></a>
                             </th>
                             {% if independent_categories %}
                                 {% for category in independent_categories %}
@@ -210,8 +210,8 @@
                         {% if can_review or submissions_reviewed %}
                             <th class="col-score-user numeric">
                                 {% translate "Your score" %}
-                                <a href="?{% url_replace request 'sort' 'my_score' %}"><i class="fa fa-caret-down" title="{% translate "Sort by score (highest first)" %}"></i></a>
-                                <a href="?{% url_replace request 'sort' '-my_score' %}"><i class="fa fa-caret-up" title="{% translate "Sort by score (lowest first)" %}"></i></a>
+                                <a href="?{% url_replace request "sort" "my_score" %}"><i class="fa fa-caret-down" title="{% translate "Sort by score (highest first)" %}"></i></a>
+                                <a href="?{% url_replace request "sort" "-my_score" %}"><i class="fa fa-caret-up" title="{% translate "Sort by score (lowest first)" %}"></i></a>
                             </th>
                             {% if independent_categories and not can_see_all_reviews %}
                                 {% for category in independent_categories %}
@@ -221,8 +221,8 @@
                         {% endif %}
                         <th class="col-review-count numeric">
                             {% translate "Reviews" %}
-                            <a href="?{% url_replace request 'sort' 'count' %}"><i class="fa fa-caret-down" title="{% translate "Sort by review count (highest first)" %}"></i></a>
-                            <a href="?{% url_replace request 'sort' '-count' %}"><i class="fa fa-caret-up" title="{% translate "Sort by review count (lowest first)" %}"></i></a>
+                            <a href="?{% url_replace request "sort" "count" %}"><i class="fa fa-caret-down" title="{% translate "Sort by review count (highest first)" %}"></i></a>
+                            <a href="?{% url_replace request "sort" "-count" %}"><i class="fa fa-caret-up" title="{% translate "Sort by review count (lowest first)" %}"></i></a>
                         </th>
                         <th>{% translate "Title" %}</th>
                         {% if can_view_speakers %}<th class="col-speakers">{{ phrases.schedule.speakers }}</th>{% endif %}
@@ -273,8 +273,8 @@
                                 {% endif %}
                             {% endif %}
                             <td class="text-center col-review-count numeric">
-                                {{ submission.review_nonnull_count|default:'-' }}
-                                {% if submission.review_count != submission.review_nonnull_count %}({{ submission.review_count|default:'-' }}){% endif %}
+                                {{ submission.review_nonnull_count|default:"-" }}
+                                {% if submission.review_count != submission.review_nonnull_count %}({{ submission.review_count|default:"-" }}){% endif %}
                                 {% if submission.pk in submissions_reviewed %}
                                     <i class="fa fa-check text-success" title="{% translate "You have reviewed this proposal" %}"></i>
                                 {% elif request.user in submission.speakers.all %}
@@ -318,7 +318,7 @@
                                 {% endif %}
                             </td>
                             <td><div class="action-row d-flex justify-space-around">
-                                {% if submission.state == 'submitted' and can_accept_submissions %}
+                                {% if submission.state == "submitted" and can_accept_submissions %}
                                     <div class="radio form-check accept">
                                         <input type="radio" id="a-{{ submission.code }}" name="s-{{ submission.code }}" value="accept">
                                         {% comment %}Translators: This is a button to mark a proposal as accepted{% endcomment %}

@@ -11,7 +11,7 @@
         <form method="post">
             {% csrf_token %}
             {% bootstrap_form_errors form %}
-            {% bootstrap_field form.login_email layout='inline' %}
+            {% bootstrap_field form.login_email layout="inline" %}
             <button type="submit" class="btn btn-block btn-success">{{ phrases.base.password_reset_action }}</button>
         </form>
     </div>

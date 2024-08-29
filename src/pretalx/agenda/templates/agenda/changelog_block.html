@@ -3,7 +3,7 @@
 
 {% if schedule.comment %}
     <p>{{ schedule.comment|rich_text }}</p>
-{% elif schedule.changes.action == 'create' %}
+{% elif schedule.changes.action == "create" %}
     <p>{{ phrases.schedule.first_schedule }}</p>
 {% elif not schedule.changes.count %}
     <p>–</p>

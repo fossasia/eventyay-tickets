@@ -9,8 +9,8 @@
 {% block submission_title %}{% translate "Speakers" %} :: {% endblock submission_title %}
 
 {% block submission_content %}
-    {% has_perm 'submission.edit_speaker_list' request.user submission as can_edit_speakers %}
-    {% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
+    {% has_perm "submission.edit_speaker_list" request.user submission as can_edit_speakers %}
+    {% has_perm "orga.send_mails" request.user request.event as can_send_mails %}
     {% if can_edit_speakers %}<div class="alert">
         <form method="POST" action="{{ submission.orga_urls.new_speaker }}" class="form flex-row">
             <label>

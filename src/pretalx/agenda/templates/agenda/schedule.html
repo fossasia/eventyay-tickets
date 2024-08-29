@@ -9,7 +9,7 @@
 
 {% block agenda_custom_header %}
     {% compress js %}
-        <script defer src="{% static 'common/js/tabbed.js' %}"></script>
+        <script defer src="{% static "common/js/tabbed.js" %}"></script>
     {% endcompress %}
     <script id="pretalx-messages" data-logged-in="{% if request.user.is_anonymous %}false{% else %}true{% endif %}" src="{{ request.event.urls.schedule }}widget/messages.js"></script>
 {% endblock agenda_custom_header %}
@@ -37,7 +37,7 @@
 
         <pretalx-schedule
             event-url="{{ request.event.urls.base }}"
-            version="{{ schedule.version|default:'wip'|urlencode }}"
+            version="{{ schedule.version|default:"wip"|urlencode }}"
             locale="{{ request.LANGUAGE_CODE }}"
             timezone="{{ request.event.timezone }}"
             {% if show_talk_list %}format="list"{% endif %}

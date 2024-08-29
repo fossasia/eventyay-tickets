@@ -18,7 +18,7 @@
           {% blocktranslate trimmed with question=form.filter_question %}
             Recipients filtered by answers to question “{{ question }}”.
           {% endblocktranslate %}
-          <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
+          <a href="?{% url_replace request "question" "" "answer" "" "answer__options" "" %}" class="text-muted">
             <span class="fa fa-times ml-2"></span>
             {% translate "Remove filter" %}
           </a>
@@ -30,7 +30,7 @@
           {% blocktranslate trimmed with search=form.filter_search %}
             Recipients filtered by search “{{ search }}”.
           {% endblocktranslate %}
-          <a href="?{% url_replace request 'q' '' %}" class="text-muted">
+          <a href="?{% url_replace request "q" "" %}" class="text-muted">
             <span class="fa fa-times ml-2"></span>
             {% translate "Remove filter" %}
           </a>
@@ -44,16 +44,16 @@
       <span class="optional">{% translate "Optional" context "form field" %}</span>
     </label>
     <div class="col-md-9 d-flex align-items-center">
-      {% bootstrap_field form.state layout='inline' form_group_class='d-inline-flex col-md-6 pl-0 mr-3' %}
-      {% bootstrap_field form.pending_state__isnull layout='inline' form_group_class='d-inline-flex' %}
+      {% bootstrap_field form.state layout="inline" form_group_class="d-inline-flex col-md-6 pl-0 mr-3" %}
+      {% bootstrap_field form.pending_state__isnull layout="inline" form_group_class="d-inline-flex" %}
     </div>
   </div>
-  {% if form.submission_type %}{% bootstrap_field form.submission_type layout='event' %}{% endif %}
-  {% if form.track %}{% bootstrap_field form.track layout='event' %}{% endif %}
-  {% if form.content_locale %}{% bootstrap_field form.content_locale layout='event' %}{% endif %}
-  {% if form.tags %}{% bootstrap_field form.tags layout='event' %}{% endif %}
+  {% if form.submission_type %}{% bootstrap_field form.submission_type layout="event" %}{% endif %}
+  {% if form.track %}{% bootstrap_field form.track layout="event" %}{% endif %}
+  {% if form.content_locale %}{% bootstrap_field form.content_locale layout="event" %}{% endif %}
+  {% if form.tags %}{% bootstrap_field form.tags layout="event" %}{% endif %}
 
-  {% bootstrap_field form.submissions layout='event' %}
-  {% bootstrap_field form.speakers layout='event' %}
+  {% bootstrap_field form.submissions layout="event" %}
+  {% bootstrap_field form.speakers layout="event" %}
 
 {% endblock recipient_form %}

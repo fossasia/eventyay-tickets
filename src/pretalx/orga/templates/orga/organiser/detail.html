@@ -9,7 +9,7 @@
     <form method="post"><fieldset>
         <legend>{% translate "Settings" %}</legend>
         {% csrf_token %}
-        {% bootstrap_form form layout='event' %}
+        {% bootstrap_form form layout="event" %}
         <div class="submit-group panel">
             <span>
                 {% has_perm "person.is_administrator" request.user request.organiser as can_delete_event %}

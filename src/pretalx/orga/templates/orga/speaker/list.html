@@ -30,14 +30,14 @@
             {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
                 List filtered by answers to question “{{ question }}”.
             {% endblocktranslate %}
-            <a href="?{% url_replace request 'question' '' 'answer' '' 'answer__options' '' %}" class="text-muted">
+            <a href="?{% url_replace request "question" "" "answer" "" "answer__options" "" %}" class="text-muted">
                 <span class="fa fa-times"></span>
                 {% translate "Remove filter" %}
             </a>
         </p>
     {% endif %}
-    {% has_perm 'orga.mark_speakers_arrived' request.user request.event as can_mark_speaker %}
-    {% has_perm 'orga.see_speakers_arrival' request.user request.event as can_see_speaker_status %}
+    {% has_perm "orga.mark_speakers_arrived" request.user request.event as can_mark_speaker %}
+    {% has_perm "orga.see_speakers_arrival" request.user request.event as can_see_speaker_status %}
     <div class="table-responsive-md">
         <table class="table table-sm table-hover table-flip table-sticky">
             <thead>
@@ -60,7 +60,7 @@
                             <td class="action-column">
                                 {% if profile.accepted_submission_count %}
                                     {% if can_mark_speaker %}
-                                        <a class="btn btn-sm btn-{{ profile.has_arrived|yesno:'success,info' }}" href="{{ profile.orga_urls.toggle_arrived }}?from=list">
+                                        <a class="btn btn-sm btn-{{ profile.has_arrived|yesno:"success,info" }}" href="{{ profile.orga_urls.toggle_arrived }}?from=list">
                                             {% if profile.has_arrived %}
                                                 {% translate "Mark speaker as not arrived" %}
                                             {% else %}

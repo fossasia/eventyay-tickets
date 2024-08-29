@@ -43,7 +43,7 @@
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        {% bootstrap_form form layout='event' %}
+        {% bootstrap_form form layout="event" %}
         <div class="submit-group panel">
             <span>
                 {% if form.instance.pk and not form.instance.submissions.exists %}

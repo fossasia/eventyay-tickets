@@ -21,17 +21,17 @@
                 </div>
                 {% bootstrap_form_errors form %}
                 <div class="resource-option-row flip ml-auto">
-                    <div class="resource-option{% if not form.errors %}-input{% endif %}{% if action == 'view' %} disabled{% endif %}">
+                    <div class="resource-option{% if not form.errors %}-input{% endif %}{% if action == "view" %} disabled{% endif %}">
                         {% bootstrap_form_errors form %}
-                        {% bootstrap_field form.description layout='inline' %}
+                        {% bootstrap_field form.description layout="inline" %}
                         {% if form.errors %}
                             <div class="resource-option-inline">
-                                {% bootstrap_field form.link layout='inline' %}
-                                {% bootstrap_field form.resource layout='inline' %}
+                                {% bootstrap_field form.link layout="inline" %}
+                                {% bootstrap_field form.resource layout="inline" %}
                             </div>
                         {% else %}
                             {% if form.instance.link %}
-                                {% bootstrap_field form.link layout='inline' %}
+                                {% bootstrap_field form.link layout="inline" %}
                             {% else %}
                                 <i class="fa fa-paperclip mr-1 ml-2 pt-1"></i> <a href="{{ form.instance.url }}">{{ form.instance.filename }}</a>
                             {% endif %}
@@ -59,10 +59,10 @@
                 </div>
                 <div class="resource-option-row flip ml-auto">
                 <div class="resource-option-fields">
-                {% bootstrap_field formset.empty_form.description layout='inline' %}
+                {% bootstrap_field formset.empty_form.description layout="inline" %}
                 <div class="resource-option-inline">
-                {% bootstrap_field formset.empty_form.link layout='inline'  %}
-                {% bootstrap_field formset.empty_form.resource layout='inline'  %}
+                {% bootstrap_field formset.empty_form.link layout="inline"  %}
+                {% bootstrap_field formset.empty_form.resource layout="inline"  %}
                 <button type="button" class="btn btn-danger btn-sm ml-auto" data-formset-delete-button>
                 <i class="fa fa-trash"></i></button>
                 </div>
@@ -77,7 +77,7 @@
                 </div>
             {% endescapescript %}
         </script>
-        {% if action != 'view' %}
+        {% if action != "view" %}
             <div class="d-flex flex-row-reverse w-100 mr-3">
                 <button type="button" class="btn btn-info" data-formset-add>
                     <i class="fa fa-plus"></i> {% translate "Add another resource" %}

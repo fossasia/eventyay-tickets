@@ -29,9 +29,9 @@
                         {% bootstrap_form_errors form %}
                         {% csrf_token %}
                         {% if speakers|length > 1 %}
-                            {% bootstrap_field form.speaker layout='inline' %}
+                            {% bootstrap_field form.speaker layout="inline" %}
                         {% endif %}
-                        <div class="markdown-column">{% bootstrap_field form.review layout='inline' %}</div>
+                        <div class="markdown-column">{% bootstrap_field form.review layout="inline" %}</div>
 
                         <button type="submit" class="btn btn-success float-right">{{ phrases.base.send }}</button>
                     </form>

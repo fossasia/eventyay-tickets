@@ -44,7 +44,7 @@
                     </button>
                 </span>
                 <div class="buttons" id="talk-buttons">
-                    {% if submission.state == 'confirmed' and request.event.current_schedule %}
+                    {% if submission.state == "confirmed" and request.event.current_schedule %}
                         <a class="btn btn-outline-primary" href="{{ submission.urls.ical }}">
                             <i class="fa fa-calendar"></i> .ical
                         </a>
@@ -168,7 +168,7 @@
                     <div class="title">
                         <a href="{{ speaker.talk_profile.urls.public }}">{{ speaker.get_display_name }}</a>
                     </div>
-                    <div class="abstract">{{ speaker.talk_profile.biography|default:''|rich_text }}</div>
+                    <div class="abstract">{{ speaker.talk_profile.biography|default:""|rich_text }}</div>
                     {% if speaker.other_submissions %}
                         {% translate "This speaker also appears in:" %}
                         <ul>
