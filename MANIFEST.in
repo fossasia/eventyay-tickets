@@ -12,14 +12,11 @@ recursive-include src/pretix/plugins/banktransfer/templates *
 recursive-include src/pretix/plugins/banktransfer/static *
 recursive-include src/pretix/plugins/manualpayment/templates *
 recursive-include src/pretix/plugins/manualpayment/static *
-recursive-include src/pretix/plugins/paypal/templates *
 recursive-include src/pretix/plugins/pretixdroid/templates *
 recursive-include src/pretix/plugins/pretixdroid/static *
 recursive-include src/pretix/plugins/sendmail/templates *
 recursive-include src/pretix/plugins/statistics/templates *
 recursive-include src/pretix/plugins/statistics/static *
-recursive-include src/pretix/plugins/stripe/templates *
-recursive-include src/pretix/plugins/stripe/static *
 recursive-include src/pretix/plugins/ticketoutputpdf/templates *
 recursive-include src/pretix/plugins/ticketoutputpdf/static *
 recursive-include src/pretix/plugins/badges/templates *
