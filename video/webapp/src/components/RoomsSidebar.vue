@@ -231,8 +231,7 @@ export default {
 	background-color: var(--clr-sidebar)
 	display: flex
 	flex-direction: column
-	min-height: 0
-	max-height: var(--vh100)
+	height: var(--vh100)
 	.logo
 		font-size: 18px
 		text-align: center

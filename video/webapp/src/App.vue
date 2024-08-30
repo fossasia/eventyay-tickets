@@ -242,6 +242,7 @@ export default {
 		grid-area: rooms-sidebar
 	.c-room-header
 		grid-area: main
+		height: 100vh
 	> .bunt-progress-circular
 		position: fixed
 		top: 50%

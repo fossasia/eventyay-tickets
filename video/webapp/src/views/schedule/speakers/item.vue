@@ -67,8 +67,8 @@ export default {
 	mounted() {},
 	methods: {
 		generateSessionLinkUrl(sessionData) {
-			const publicPath = import.meta.env.BASE_URL || '/video/'
-			return `${publicPath}schedule/talks/${sessionData.session.id}`
+			const router = this.$router
+			return router.resolve({ name: 'schedule:talk', params: { talkId: sessionData.session.id } }).href
 		}
 	}
 }

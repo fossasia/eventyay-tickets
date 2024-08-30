@@ -181,6 +181,7 @@ export default {
 	display: flex
 	flex-direction: column
 	min-height: 0
+	max-height: 88vh
 	.bucket
 		padding-top: 8px
 		.bucket-label

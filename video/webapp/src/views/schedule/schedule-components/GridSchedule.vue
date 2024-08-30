@@ -337,6 +337,7 @@ export default {
 .c-grid-schedule
 	flex: auto
 	background-color: $clr-grey-50
+	max-height: 88vh
 	.grid
 		display: grid
 		grid-template-columns: 78px repeat(var(--total-rooms), 1fr) auto

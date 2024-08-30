@@ -63,6 +63,7 @@ export default {
 	.scroll-content
 		display: flex
 		flex-direction: column
+		max-height: 88vh
 		align-items: center
 		> *
 			width: @css{min(920px, 100%)}
