@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from django import forms
 from django.db import transaction
 from django.utils.functional import cached_property
+from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
@@ -90,7 +91,7 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         for placeholder in placeholders.values():
             if not placeholder.is_visible:
                 continue
-            placeholder.rendered_sample = placeholder.render_sample(self.event)
+            placeholder.rendered_sample = escape(placeholder.render_sample(self.event))
             for arg in specificity:
                 if arg in placeholder.required_context:
                     grouped[arg].append(placeholder)
@@ -122,7 +123,7 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                 preview_text = rich_text(
                     message.format_map(
                         {
-                            key: value.render_sample(self.event)
+                            key: escape(value.render_sample(self.event))
                             for key, value in valid_placeholders.items()
                         }
                     )
