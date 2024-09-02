@@ -23,7 +23,7 @@ from pretalx.common.views.mixins import (
     PermissionRequired,
     Sortable,
 )
-from pretalx.mail.models import MailTemplate, QueuedMail
+from pretalx.mail.models import MailTemplate, QueuedMail, get_prefixed_subject
 from pretalx.orga.forms.mails import (
     DraftRemindersForm,
     MailDetailForm,
@@ -375,7 +375,9 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                     subject = bleach.clean(
                         form.cleaned_data["subject"].localize(locale), tags={}
                     )
-                    preview_subject = subject.format_map(context_dict)
+                    preview_subject = get_prefixed_subject(
+                        self.request.event, subject.format_map(context_dict)
+                    )
                     message = form.cleaned_data["text"].localize(locale)
                     preview_text = rich_text(message.format_map(context_dict))
                     self.output[locale] = {

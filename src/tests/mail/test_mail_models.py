@@ -73,8 +73,8 @@ def test_mail_make_text(event, text, signature, expected):
         ("test", "[pref]", "[pref] test"),
     ),
 )
-def test_mail_make_subject(event, text, prefix, expected):
+def test_mail_prefixed_subject(event, text, prefix, expected):
     if prefix:
         event.mail_settings["subject_prefix"] = prefix
         event.save()
-    assert QueuedMail(text=text, subject=text, event=event).make_subject() == expected
+    assert QueuedMail(text=text, subject=text, event=event).prefixed_subject == expected

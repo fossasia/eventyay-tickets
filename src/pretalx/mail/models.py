@@ -3,6 +3,7 @@ from copy import deepcopy
 from django.conf import settings
 from django.db import models, transaction
 from django.template.loader import get_template
+from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override, pgettext_lazy
@@ -14,6 +15,14 @@ from pretalx.common.templatetags.rich_text import render_markdown
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import get_mail_context
 from pretalx.mail.signals import queuedmail_post_send
+
+
+def get_prefixed_subject(event, subject):
+    if not (prefix := event.mail_settings["subject_prefix"]):
+        return subject
+    if not (prefix.startswith("[") and prefix.endswith("]")):
+        prefix = f"[{prefix}]"
+    return f"{prefix} {subject}"
 
 
 class MailTemplate(PretalxModel):
@@ -270,14 +279,12 @@ class QueuedMail(PretalxModel):
             sig = f"-- \n{sig}"
         return f"{self.text}\n{sig}"
 
-    def make_subject(self):
+    @cached_property
+    def prefixed_subject(self):
         event = getattr(self, "event", None)
-        if not event or not event.mail_settings["subject_prefix"]:
+        if not event:
             return self.subject
-        prefix = event.mail_settings["subject_prefix"]
-        if not (prefix.startswith("[") and prefix.endswith("]")):
-            prefix = f"[{prefix}]"
-        return f"{prefix} {self.subject}"
+        return get_prefixed_subject(event, self.subject)
 
     @transaction.atomic
     def send(self, requestor=None, orga: bool = True):
@@ -304,7 +311,7 @@ class QueuedMail(PretalxModel):
         mail_send_task.apply_async(
             kwargs={
                 "to": to,
-                "subject": self.make_subject(),
+                "subject": self.prefixed_subject,
                 "body": text,
                 "html": body_html,
                 "reply_to": (self.reply_to or "").split(","),
