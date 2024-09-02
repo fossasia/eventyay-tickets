@@ -3,6 +3,7 @@ import logging
 from allauth.socialaccount.models import SocialApp
 from django.conf import settings
 from django.contrib import messages
+from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
@@ -16,7 +17,12 @@ from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views import is_form_bound
 from pretalx.common.views.mixins import ActionConfirmMixin, PermissionRequired
 from pretalx.event.forms import OrganiserForm, TeamForm, TeamInviteForm
-from pretalx.event.models import Organiser, Team, TeamInvite
+from pretalx.event.models.organiser import (
+    Organiser,
+    Team,
+    TeamInvite,
+    check_access_permissions,
+)
 from pretalx.orga.forms.sso_client_form import SSOClientForm
 
 logger = logging.getLogger(__name__)
@@ -94,7 +100,20 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
 
     def form_valid(self, form):
         created = not bool(form.instance.pk)
-        form.save()
+        warnings = []
+        try:
+            with transaction.atomic():
+                form.save()
+                if not created:
+                    warnings = check_access_permissions(self.request.organiser)
+        except Exception as e:
+            # We can't save because we would break the organiser's permissions,
+            # e.g. leave an event or the entire organiser orphaned.
+            messages.error(self.request, str(e))
+            return self.get(self.request, *self.args, **self.kwargs)
+        if warnings:
+            for warning in warnings:
+                messages.warning(self.request, warning)
         if created:
             messages.success(self.request, _("The team has been created."))
         elif form.has_changed():
@@ -135,12 +154,25 @@ class TeamDelete(PermissionRequired, TeamMixin, ActionConfirmMixin, DetailView):
         return member if member != self.team else None
 
     def post(self, request, *args, **kwargs):
-        if "user_pk" in self.kwargs:
-            self.team.members.remove(self.get_object())
-            messages.success(request, _("The member was removed from the team."))
-        else:
-            self.get_object().delete()
-            messages.success(request, _("The team was removed."))
+        warnings = []
+        try:
+            with transaction.atomic():
+                if "user_pk" in self.kwargs:
+                    self.team.members.remove(self.get_object())
+                    warnings = check_access_permissions(self.request.organiser)
+                    messages.success(
+                        request, _("The member was removed from the team.")
+                    )
+                else:
+                    self.get_object().delete()
+                    warnings = check_access_permissions(self.request.organiser)
+                    messages.success(request, _("The team was removed."))
+        except Exception as e:
+            messages.error(request, str(e))
+            return self.get(request, *args, **kwargs)
+        if warnings:
+            for warning in warnings:
+                messages.warning(request, warning)
         return redirect(self.request.organiser.orga_urls.base)
 
 

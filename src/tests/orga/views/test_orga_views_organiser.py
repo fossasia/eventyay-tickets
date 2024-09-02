@@ -70,6 +70,36 @@ def test_orga_edit_team(orga_client, organiser, event):
 
 
 @pytest.mark.django_db
+def test_orga_edit_team_illegal(orga_client, organiser, event):
+    team = organiser.teams.first()
+    url = reverse(
+        "orga:organiser.teams.view", kwargs={"organiser": organiser.slug, "pk": team.pk}
+    )
+    response = orga_client.get(url, follow=True)
+    assert response.status_code == 200
+    response = orga_client.post(
+        url,
+        follow=True,
+        data={
+            "all_events": True,
+            "can_change_submissions": True,
+            "can_change_organiser_settings": False,
+            "can_change_event_settings": True,
+            "can_change_teams": False,
+            "can_create_events": True,
+            "form": "team",
+            "limit_events": event.pk,
+            "name": "Fancy New Name",
+        },
+    )
+    assert response.status_code == 200
+    team.refresh_from_db()
+    assert team.name != "Fancy New Name"
+    assert team.can_change_teams
+    assert team.can_change_organiser_settings
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize("is_administrator", [True, False])
 def test_orga_create_team(orga_client, organiser, event, is_administrator, orga_user):
     orga_user.is_administrator = is_administrator
@@ -214,6 +244,26 @@ def test_reset_team_member_password(orga_client, organiser, other_orga_user):
     assert member.pw_reset_token != reset_token
     reset_token = member.pw_reset_token
     assert len(djmail.outbox) == 2
+
+
+@pytest.mark.django_db
+def test_remove_other_team_member_but_not_last_member(
+    orga_client, orga_user, organiser, other_orga_user
+):
+    team = organiser.teams.filter(can_change_teams=True).first()
+    team.members.add(other_orga_user)
+    team.save()
+    assert team.members.all().count() == 2
+
+    url = organiser.orga_urls.teams + f"{team.pk}/delete/{other_orga_user.pk}"
+    response = orga_client.post(url, follow=True)
+    assert response.status_code == 200
+    assert team.members.all().count() == 1
+
+    url = organiser.orga_urls.teams + f"{team.pk}/delete/{orga_user.pk}"
+    response = orga_client.post(url, follow=True)
+    assert response.status_code == 200
+    assert team.members.all().count() == 1
 
 
 @pytest.mark.django_db
