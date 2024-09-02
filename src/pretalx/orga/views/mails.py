@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
+from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy
 from django.views.generic import FormView, ListView, TemplateView, View
@@ -367,7 +368,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                                 title=_(
                                     "This value will be replaced based on dynamic parameters."
                                 ),
-                                content=value.render_sample(self.request.event),
+                                content=escape(value.render_sample(self.request.event)),
                             )
                         )
 
