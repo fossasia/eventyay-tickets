@@ -219,12 +219,16 @@ msgid ""
 "Your favourites could not be loaded from the server, but they are stored "
 "locally in your browser."
 msgstr ""
+"Suas favoritas não puderam ser carregadas do servidor, mas elas estão "
+"armazenadas localmente no seu navegador."
 
 #: pretalx/agenda/views/schedule.py:232
 msgid ""
 "Your favourites could not be saved on the server, but they are stored "
 "locally in your browser."
 msgstr ""
+"Suas favoritas não puderam ser salvas no servidor, mas elas estão "
+"armazenadas localmente no seu navegador."
 
 #: pretalx/agenda/views/talk.py:119
 #, python-brace-format
