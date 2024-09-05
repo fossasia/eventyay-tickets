@@ -1,7 +1,7 @@
 FROM python:3.11-bookworm
 
 RUN apt-get update && \
-    apt-get install -y git gettext libmariadb-dev libpq-dev locales libmemcached-dev build-essential \
+    apt-get install -y git gettext libpq-dev locales libmemcached-dev build-essential \
             supervisor \
             sudo \
             locales \
@@ -26,7 +26,7 @@ COPY deployment/docker/pretalx.bash /usr/local/bin/pretalx
 COPY deployment/docker/supervisord.conf /etc/supervisord.conf
 
 RUN pip3 install -U pip setuptools wheel typing && \
-    pip3 install -e /pretalx/[mysql,postgres,redis] && \
+    pip3 install -e /pretalx/[postgres,redis] && \
     pip3 install pylibmc && \
     pip3 install gunicorn
 

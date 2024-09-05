@@ -96,7 +96,6 @@ dev = [
   "rich",
   "urllib3",
 ]
-mysql = ["mysqlclient"]
 postgres = ["psycopg2-binary"]
 redis = ["redis~=5.0.0"]
 
