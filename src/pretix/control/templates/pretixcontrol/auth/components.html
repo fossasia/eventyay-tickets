@@ -1,0 +1,46 @@
+{% extends "pretixcontrol/auth/base.html" %}
+{% load bootstrap3 %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="form-wrapper">
+        <div class="form-signin">
+            <h3>{% trans "COMPONENTS-PAGE.." %}</h3>
+            <h2>{% trans "THIS IS THE EVENTYAY-COMPONENTS PAGE" %}</h2>
+            <p>
+                {% blocktrans trimmed with a_attr="href='https://eventyay.com'" %}
+                    This is a self-hosted installation of <a {{ a_attr }}>eventyay, your open source event solution.</a>.
+                {% endblocktrans %}
+            </p>
+
+            <!-- Eventyay-Talk Component -->
+            {% if is_eventyay_talk_installed %}
+                <p>
+                    <a href="{% url 'eventyay-talk' %}" class="btn btn-primary">
+                        {% trans "Go to Eventyay-Talk" %}
+                    </a>
+                </p>
+            {% else %}
+                <p>
+                    {% trans "Eventyay-Talk is not installed." %}
+                </p>
+            {% endif %}
+
+            <!-- Eventyay-Video Component -->
+            {% if is_eventyay_video_installed %}
+                <p>
+                    <a href="{% url 'eventyay-video' %}" class="btn btn-primary">
+                        {% trans "Go to Eventyay-Video" %}
+                    </a>
+                </p>
+            {% else %}
+                <p>
+                    {% trans "Eventyay-Video is not installed." %}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

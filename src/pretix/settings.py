@@ -779,3 +779,5 @@ if config.has_option('geoip', 'path'):
     HAS_GEOIP = True
     GEOIP_PATH = config.get('geoip', 'path')
     GEOIP_COUNTRY = config.get('geoip', 'filename_country', fallback='GeoLite2-Country.mmdb')
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

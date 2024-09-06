@@ -1,6 +1,7 @@
 import json
 import logging
 import time
+import os
 from urllib.parse import quote
 
 import webauthn
@@ -439,3 +440,24 @@ class Login2FAView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+
+def ComponentsView(request):
+    # Dynamically get the parent directory of the Django project
+    base_directory = settings.BASE_DIR  # This refers to the root directory of your Django project
+
+    # Go one level up to get the parent directory
+    parent_directory = os.path.abspath(os.path.join(base_directory, os.pardir))
+
+    # Construct the path to the eventyay-video directory
+    eventyay_video_path = os.path.join(parent_directory, 'eventyay-video')
+
+    # Check if the eventyay-video directory exists
+    is_eventyay_video_installed = os.path.isdir(eventyay_video_path)
+
+    context = {
+        'is_eventyay_video_installed': is_eventyay_video_installed,
+        'eventyay_video_path': eventyay_video_path if is_eventyay_video_installed else None,
+    }
+
+    return render(request, 'pretixcontrol/auth/components.html', context)
