@@ -5,7 +5,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block extra_title %}{% if form.instance.pk %}{% translate "Room" %} {{ quotation_open }}{{ form.name }}{{ quotation_close }}{% else %}{% translate "New room" %}{% endif %} :: {% endblock extra_title %}
+{% block extra_title %}{% if form.instance.pk %}{% translate "Room" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}{% else %}{% translate "New room" %}{% endif %} :: {% endblock extra_title %}
 
 {% block content %}
     {% compress js %}
@@ -20,7 +20,7 @@
         {% bootstrap_form_errors form %}
         <h2>
             {% if form.instance.pk %}
-                {% translate "Room" %} {{ quotation_open }}{{ form.name }}{{ quotation_close }}
+                {% translate "Room" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}
             {% else %}
                 {% translate "New room" %}
             {% endif %}
