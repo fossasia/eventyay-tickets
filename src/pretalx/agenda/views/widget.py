@@ -2,7 +2,6 @@ import datetime as dt
 from urllib.parse import unquote
 
 from csp.decorators import csp_exempt
-from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.http import Http404, HttpResponse, JsonResponse
 from django.utils.timezone import now
@@ -199,10 +198,7 @@ def widget_script(request, event):
     if not request.user.has_perm("agenda.view_widget", request.event):
         raise Http404()
 
-    if settings.DEBUG:
-        widget_file = "agenda/js/pretalx-schedule.js"
-    else:
-        widget_file = "agenda/js/pretalx-schedule.min.js"
+    widget_file = "agenda/js/pretalx-schedule.min.js"
     file_path = finders.find(widget_file)
     with open(file_path, encoding="utf-8") as fp:
         code = fp.read()
