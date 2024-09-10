@@ -2,8 +2,8 @@ import json
 import logging
 import time
 from urllib.parse import quote
-
 import webauthn
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import (
@@ -19,6 +19,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from django_otp import match_token
+from oauth2_provider.views import AuthorizationView
 
 from pretix.base.auth import get_auth_backends
 from pretix.base.forms.auth import (
@@ -26,7 +27,10 @@ from pretix.base.forms.auth import (
 )
 from pretix.base.models import TeamInvite, U2FDevice, User, WebAuthnDevice
 from pretix.base.services.mail import SendMailException
+from pretix.helpers.cookies import set_cookie_without_samesite
+from pretix.helpers.jwt_generate import generate_sso_token
 from pretix.helpers.webauthn import generate_challenge
+from pretix.multidomain.middlewares import get_cookie_domain
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +59,35 @@ def process_login(request, user, keep_logged_in):
         return redirect(reverse('control:index'))
 
 
+def process_login_and_set_cookie(request, user, keep_logged_in):
+    """
+    Process user login and set a JWT cookie.
+    """
+    # Perform login logic (e.g., set session, authenticate user)
+    response = process_login(request, user, keep_logged_in)
+
+    # Generate JWT token
+    response = set_cookie_after_logged_in(request, response)
+    return response
+
+
+def set_cookie_after_logged_in(request, response):
+    if response.status_code == 302 and request.user.is_authenticated:
+        # Set JWT as a cookie in the response
+        token = generate_sso_token(request.user)
+        set_cookie_without_samesite(
+            request, response,
+            "sso_token",
+            token,
+            max_age=settings.CSRF_COOKIE_AGE,
+            domain=get_cookie_domain(request),
+            path=settings.CSRF_COOKIE_PATH,
+            secure=request.scheme == 'https',
+            httponly=settings.CSRF_COOKIE_HTTPONLY
+        )
+    return response
+
+
 def login(request):
     """
     Render and process a most basic login form. Takes an URL as GET
@@ -66,7 +99,7 @@ def login(request):
     for b in backends:
         u = b.request_authenticate(request)
         if u and u.auth_backend == b.identifier:
-            return process_login(request, u, False)
+            return process_login_and_set_cookie(request, u, False)
         b.url = b.authentication_url(request)
 
     backend = backenddict.get(request.GET.get('backend', 'native'), backends[0])
@@ -80,7 +113,7 @@ def login(request):
     if request.method == 'POST':
         form = LoginForm(backend=backend, data=request.POST, request=request)
         if form.is_valid() and form.user_cache and form.user_cache.auth_backend == backend.identifier:
-            return process_login(request, form.user_cache, form.cleaned_data.get('keep_logged_in', False))
+            return process_login_and_set_cookie(request, form.user_cache, form.cleaned_data.get('keep_logged_in', False))
     else:
         form = LoginForm(backend=backend, request=request)
     ctx['form'] = form
@@ -129,7 +162,9 @@ def register(request):
             request.session['pretix_auth_long_session'] = (
                 settings.PRETIX_LONG_SESSIONS and form.cleaned_data.get('keep_logged_in', False)
             )
-            return redirect('control:index')
+            response = redirect('control:index')
+            set_cookie_after_logged_in(request, response)
+            return response
     else:
         form = RegistrationForm()
     ctx['form'] = form
@@ -439,3 +474,27 @@ class Login2FAView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+
+class CustomAuthorizationView(AuthorizationView):
+    """
+    Override the AuthorizationView to set a JWT cookie after successful login.
+    """
+    def get(self, request, *args, **kwargs):
+        # Call the parent method to handle the standard authorization flow
+        response = super().get(request, *args, **kwargs)
+        # Check if the response is a redirect, which indicates a successful login
+        if response.status_code == 302 and request.user.is_authenticated:
+            # Set JWT as a cookie in the response
+            token = generate_sso_token(request.user)
+            set_cookie_without_samesite(
+                request, response,
+                "sso_token",
+                token,
+                max_age=settings.CSRF_COOKIE_AGE,
+                domain=get_cookie_domain(request),
+                path=settings.CSRF_COOKIE_PATH,
+                secure=request.scheme == 'https',
+                httponly=settings.CSRF_COOKIE_HTTPONLY
+            )
+        return response
