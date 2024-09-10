@@ -24,7 +24,9 @@
             <span>{% translate "Version" %} <a href="{{ request.event.urls.changelog }}">{{ schedule.version|default:"–" }}</a></span>
             <details class="dropdown">
                 <summary class="btn btn-sm btn-outline-info">
-                    <i class="fa fa-calendar-plus-o"></i> Add to Calendar <i class="fa fa-caret-down"></i>
+                    <i class="fa fa-calendar-plus-o"></i> 
+                        <span class="calendar-text"> Add to Calendar </span>
+                    <i class="fa fa-caret-down"></i>
                 </summary>
                 <ul class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
                     {% for exporter in exporters %}{% if exporter.public %}
