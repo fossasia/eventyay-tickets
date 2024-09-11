@@ -286,7 +286,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         talk_count = event.talks.count()
         submission_count = event.submissions.count()
         if talk_count:
-            accepted_count = event.talks.filter(state=SubmissionStates.ACCEPTED).count()
+            accepted_count = event.submissions.filter(state=SubmissionStates.ACCEPTED).count()
             result["tiles"].append(
                 {
                     "large": talk_count,
