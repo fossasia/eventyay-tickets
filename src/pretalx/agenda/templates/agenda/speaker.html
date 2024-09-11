@@ -9,8 +9,10 @@
 {% block meta_title %}{{ profile.user.get_display_name }}{% endblock meta_title %}
 {% block social_title %}{{ profile.user.get_display_name }}{% endblock social_title %}
 {% block meta_image %}
-    <meta property="thumbnail" content="{{ profile.urls.social_image.full }}">
-    <meta property="og:image" content="{{ profile.urls.social_image.full }}">
+    {% if profile.user.avatar_url and request.event.cfp.request_avatar %}
+        <meta property="thumbnail" content="{{ profile.urls.social_image.full }}">
+        <meta property="og:image" content="{{ profile.urls.social_image.full }}">
+    {% endif %}
 {% endblock meta_image %}
 {% block alternate_link %}
     <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.speakers.full }}{{ profile.code }}" />
@@ -43,7 +45,7 @@
             <section class="speaker-info">
                 <div class="speaker-bio">{{ profile.biography|rich_text }}</div>
                 <div class="speaker-avatar">
-                    {% if profile.user.avatar %}
+                    {% if profile.user.avatar_url and request.event.cfp.request_avatar %}
                         <a href="{{ profile.user.avatar.url }}" data-lightbox="{{ profile.user.avatar.url }}">
                             <img loading="lazy" width="100%" src="{{ profile.user.avatar.url }}" alt="{% translate "The speaker’s profile picture" %}">
                         </a>

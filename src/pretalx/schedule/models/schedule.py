@@ -715,11 +715,14 @@ class Schedule(PretalxModel):
             for room in self.event.rooms.all()
             if room in rooms
         ]
+        include_avatar = self.event.cfp.request_avatar
         result["speakers"] = [
             {
                 "code": user.code,
                 "name": user.name,
-                "avatar": user.get_avatar_url(event=self.event),
+                "avatar": (
+                    user.get_avatar_url(event=self.event) if include_avatar else None
+                ),
             }
             for user in speakers
         ]
