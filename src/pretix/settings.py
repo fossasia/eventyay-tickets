@@ -310,7 +310,8 @@ INSTALLED_APPS = [
     'django_countries',
     'hijack',
     'oauth2_provider',
-    'phonenumber_field'
+    'phonenumber_field',
+    'pretix.eventyay_common',
 ]
 
 if db_backend == 'postgresql':
@@ -552,6 +553,7 @@ TEMPLATES = [
                 'pretix.base.context.contextprocessor',
                 'pretix.control.context.contextprocessor',
                 'pretix.presale.context.contextprocessor',
+                'pretix.eventyay_common.context.contextprocessor',
             ],
             'loaders': template_loaders
         },

@@ -1,0 +1,58 @@
+{% extends "eventyay_common/organizers/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block inner %}
+    {% if team %}
+        <h1>{{ team.name }} {% trans "Team" %}</h1>
+    {% else %}
+        <h1>{% trans "Create a new team" %}</h1>
+        <p>
+            {% blocktrans trimmed %}
+                You will be able to add team members in the next step.
+            {% endblocktrans %}
+        </p>
+    {% endif %}
+    <form class="form-horizontal" action="" method="post">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        <fieldset>
+            <legend>{% trans "General information" %}</legend>
+            {% bootstrap_field form.name layout="control" %}
+        </fieldset>
+        <fieldset>
+            <legend>{% trans "Event permissions" %}</legend>
+            {% bootstrap_field form.all_events layout="control" %}
+            {% bootstrap_field form.limit_events layout="control" %}
+            {% bootstrap_field form.can_change_event_settings layout="control" %}
+        </fieldset>
+        <fieldset>
+            <legend>{% trans "Organizer permissions" %}</legend>
+            {% bootstrap_field form.can_create_events layout="control" %}
+            {% bootstrap_field form.can_change_teams layout="control" %}
+            {% bootstrap_field form.can_change_organizer_settings layout="control" %}
+        </fieldset>
+        <fieldset>
+            <h4>{% trans "Invite team member and specific team settings for Ticket system" %}
+                <a href='{% url "control:organizer.team" organizer=request.organizer.slug team=team.id %}'
+                        class="btn btn-sm btn-default" title='{% trans "Edit" %}'
+                        data-toggle="tooltip">
+                    <span class="fa fa-edit"></span>
+                </a>
+            </h4>
+        </fieldset>
+        <fieldset>
+            <h4>{% trans "Invite team member and specific team settings for Talk system" %}
+                <a href='{{ talk_edit_url }}'
+                        class="btn btn-sm btn-default" title='{% trans "Edit" %}'
+                        data-toggle="tooltip">
+                    <span class="fa fa-edit"></span>
+                </a>
+            </h4>
+        </fieldset>
+        <div class="form-group submit-group">
+            <button type="submit" class="btn btn-primary btn-save">
+                {% trans "Save" %}
+            </button>
+        </div>
+    </form>
+{% endblock %}
