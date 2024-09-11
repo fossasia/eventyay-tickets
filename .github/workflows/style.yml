@@ -28,12 +28,13 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           pip3 install -e ".[dev]" psycopg2-binary
-          pip3 install git+https://${{ secrets.GITHUB_TOKEN }}:x-oauth-basic@github.com/fossasia/eventyay-tickets-stripe.git@master
+          pip config set global.extra-index-url https://github-package-registry.fossasia.org/
+          pip3 install eventyay-tickets-stripe
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PIP_EXTRA_INDEX_URL: https://github-package-registry.fossasia.org/
       - name: Run isort
         run: isort -c .
         working-directory: ./src
@@ -53,12 +54,13 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           pip3 install -e ".[dev]" psycopg2-binary
-          pip3 install git+https://${{ secrets.GITHUB_TOKEN }}:x-oauth-basic@github.com/fossasia/eventyay-tickets-stripe.git@master
+          pip config set global.extra-index-url https://github-package-registry.fossasia.org/
+          pip3 install eventyay-tickets-stripe
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PIP_EXTRA_INDEX_URL: https://github-package-registry.fossasia.org/
       - name: Run flake8
         run: flake8 .
         working-directory: ./src

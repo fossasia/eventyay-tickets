@@ -26,11 +26,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Set up Git for cloning private repositories
       - name: Set up Git for cloning private repositories
         run: |
-          git config --global url."https://${{ secrets.GH_TOKEN }}:@github.com/".insteadOf "https://github.com/"
-
+          git config --global url."https://${{ github.token }}@github.com/".insteadOf "https://github.com/"
       - uses: harmon758/postgresql-action@v1
         with:
           postgresql version: '12'
