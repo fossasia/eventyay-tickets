@@ -28,11 +28,17 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Install Dependencies
-        run: pip3 install -e ".[dev]" psycopg2-binary
+      - name: Install dependencies
+        run: |
+          pip3 install -e ".[dev]" psycopg2-binary
+          pip config set global.extra-index-url https://github-package-registry.fossasia.org/
+          pip3 install eventyay-tickets-stripe
+        env:
+          PIP_EXTRA_INDEX_URL: https://github-package-registry.fossasia.org/
       - name: Run isort
         run: isort -c .
         working-directory: ./src
+
   flake:
     name: flake8
     runs-on: ubuntu-latest
@@ -48,8 +54,13 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Install Dependencies
-        run: pip3 install -e ".[dev]" psycopg2-binary
+      - name: Install dependencies
+        run: |
+          pip3 install -e ".[dev]" psycopg2-binary
+          pip config set global.extra-index-url https://github-package-registry.fossasia.org/
+          pip3 install eventyay-tickets-stripe
+        env:
+          PIP_EXTRA_INDEX_URL: https://github-package-registry.fossasia.org/
       - name: Run flake8
         run: flake8 .
         working-directory: ./src
