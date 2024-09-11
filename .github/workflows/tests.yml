@@ -45,7 +45,7 @@ jobs:
       - name: Install system dependencies
         run: sudo apt update && sudo apt install gettext 
       - name: Set Github Token to pyproject file
-        run: python set_github_token_v2.py ${{ secrets.EVENTYAY_TOKEN }}
+        run: pip3 install -U pip setuptools toml wheel && python set_github_token_v2.py ${{ secrets.EVENTYAY_TOKEN }}
         working-directory: ./src
       - name: Install Python dependencies
         run: pip3 install -e ".[dev]" psycopg2-binary

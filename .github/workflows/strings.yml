@@ -7,7 +7,7 @@ on:
       - 'doc/**'
       - 'src/pretix/locale/**'
   pull_request:
-    branches: [ development, master ]
+    branches: [ master ]
     paths:
       - 'doc/**'
       - 'src/pretix/locale/**'

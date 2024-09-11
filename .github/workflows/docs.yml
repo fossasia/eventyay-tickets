@@ -8,7 +8,7 @@ on:
       - 'src/pretix/static/**'
       - 'src/tests/**'
   pull_request:
-    branches: [ development, master ]
+    branches: [ master ]
     paths-ignore:
       - 'src/pretix/locale/**'
       - 'src/pretix/static/**'
