@@ -16,4 +16,5 @@ urlpatterns = [
     url(r'^organizer/(?P<organizer>[^/]+)/team/(?P<team>[^/]+)/delete$', team.TeamDeleteView.as_view(),
         name='organizer.team.delete'),
     url(r'^events/$', event.EventList.as_view(), name='events'),
+    url(r'^events/add$', event.EventCreateView.as_view(), name='events.add'),
 ]

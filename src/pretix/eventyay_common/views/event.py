@@ -1,10 +1,19 @@
+from django.conf import settings
+from django.db import transaction
 from django.db.models import Prefetch, Min, Max, F
 from django.db.models.functions import Greatest, Coalesce
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils.functional import cached_property
+from django.utils.translation import gettext_lazy as _, gettext
 from django.views.generic import ListView
+from i18nfield.strings import LazyI18nString
 
-from pretix.base.models import Event, EventMetaValue, Quota, Organizer
+from pretix.base.forms import SafeSessionWizardView
+from pretix.base.i18n import language
+from pretix.base.models import Event, EventMetaValue, Quota, Organizer, Team
 from pretix.base.services.quotas import QuotaAvailability
+from pretix.control.forms.event import EventWizardFoundationForm, EventWizardBasicsForm
 from pretix.control.forms.filter import EventFilterForm
 from pretix.control.views import PaginationMixin
 
@@ -72,3 +81,93 @@ class EventList(PaginationMixin, ListView):
     @cached_property
     def filter_form(self):
         return EventFilterForm(data=self.request.GET, request=self.request)
+
+
+class EventCreateView(SafeSessionWizardView):
+    form_list = [
+        ('foundation', EventWizardFoundationForm),
+        ('basics', EventWizardBasicsForm),
+    ]
+    templates = {
+        'foundation': 'eventyay_common/events/create_foundation.html',
+        'basics': 'eventyay_common/events/create_basics.html',
+    }
+    condition_dict = {}
+
+    def get_form_initial(self, step):
+        initial = super().get_form_initial(step)
+        if 'organizer' in self.request.GET:
+            if step == 'foundation':
+                try:
+                    qs = Organizer.objects.all()
+                    if not self.request.user.has_active_staff_session(self.request.session.session_key):
+                        qs = qs.filter(
+                            id__in=self.request.user.teams.filter(can_create_events=True).values_list('organizer',
+                                                                                                      flat=True)
+                        )
+                    initial['organizer'] = qs.get(slug=self.request.GET.get('organizer'))
+                except Organizer.DoesNotExist:
+                    pass
+
+        return initial
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, form, **kwargs):
+        ctx = super().get_context_data(form, **kwargs)
+        ctx['has_organizer'] = self.request.user.teams.filter(can_create_events=True).exists()
+        if self.steps.current == 'basics':
+            ctx['organizer'] = self.get_cleaned_data_for_step('foundation').get('organizer')
+        return ctx
+
+    def render(self, form=None, **kwargs):
+        if self.steps.current != 'foundation':
+            fdata = self.get_cleaned_data_for_step('foundation')
+            if fdata is None:
+                return self.render_goto_step('foundation')
+
+        return super().render(form, **kwargs)
+
+    def get_form_kwargs(self, step=None):
+        kwargs = {
+            'user': self.request.user,
+            'session': self.request.session,
+        }
+        if step != 'foundation':
+            fdata = self.get_cleaned_data_for_step('foundation')
+            if fdata is None:
+                fdata = {
+                    'organizer': Organizer(slug='_nonexisting'),
+                    'has_subevents': False,
+                    'locales': ['en']
+                }
+                # The show must go on, we catch this error in render()
+            kwargs.update(fdata)
+        return kwargs
+
+    def get_template_names(self):
+        return [self.templates[self.steps.current]]
+
+    def done(self, form_list, form_dict, **kwargs):
+        foundation_data = self.get_cleaned_data_for_step('foundation')
+        basics_data = self.get_cleaned_data_for_step('basics')
+
+        with transaction.atomic(), language(basics_data['locale']):
+            event = form_dict['basics'].instance
+            event.organizer = foundation_data['organizer']
+            event.plugins = settings.PRETIX_PLUGINS_DEFAULT
+            event.has_subevents = foundation_data['has_subevents']
+            event.testmode = True
+            form_dict['basics'].save()
+
+            event.checkin_lists.create(
+                name=_('Default'),
+                all_products=True
+            )
+            event.set_defaults()
+            event.settings.set('timezone', basics_data['timezone'])
+            event.settings.set('locale', basics_data['locale'])
+            event.settings.set('locales', foundation_data['locales'])
+
+        return redirect(reverse('eventyay_common:events') + '?congratulations=1')

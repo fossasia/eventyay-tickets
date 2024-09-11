@@ -6,7 +6,7 @@
     {% if not possible %}
         <p>{% blocktrans %}You cannot delete the team because there would be no one left who could change team permissions afterwards.{% endblocktrans %}</p>
         <div class="form-group submit-group">
-            <a href='{% url "eventyay_common:organizer.teams" organizer=request.organizer.slug %}" class="btn btn-default btn-cancel'>
+            <a href='{% url "eventyay_common:organizer.teams" organizer=request.organizer.slug %}' class="btn btn-default btn-cancel">
                 {% trans "Cancel" %}
             </a>
             <div class="clearfix"></div>
@@ -17,7 +17,7 @@
             <p>{% blocktrans %}Are you sure you want to delete the team?{% endblocktrans %}
             </p>
             <div class="form-group submit-group">
-                <a href='{% url "eventyay_common:organizer.teams" organizer=request.organizer.slug%}' class="btn btn-default btn-cancel">
+                <a href='{% url "eventyay_common:organizer.teams" organizer=request.organizer.slug %}' class="btn btn-default btn-cancel">
                     {% trans "Cancel" %}
                 </a>
                 <button type="submit" class="btn btn-delete btn-danger btn-save">
