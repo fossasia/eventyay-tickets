@@ -29,10 +29,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: pip3 install -e ".[dev]" psycopg2-binary
+        run: |
+          pip3 install -e ".[dev]" psycopg2-binary
+          pip3 install git+https://${{ secrets.GITHUB_TOKEN }}:x-oauth-basic@github.com/fossasia/eventyay-tickets-stripe.git@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Run isort
         run: isort -c .
         working-directory: ./src
+
   flake:
     name: flake8
     runs-on: ubuntu-latest
@@ -49,7 +54,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: Install Dependencies
-        run: pip3 install -e ".[dev]" psycopg2-binary
+        run: |
+          pip3 install -e ".[dev]" psycopg2-binary
+          pip3 install git+https://${{ secrets.GITHUB_TOKEN }}:x-oauth-basic@github.com/fossasia/eventyay-tickets-stripe.git@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Run flake8
         run: flake8 .
         working-directory: ./src

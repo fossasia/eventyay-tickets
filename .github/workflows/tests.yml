@@ -2,12 +2,12 @@ name: Tests
 
 on:
   push:
-    branches: [ development, master ]
+    branches: [development, master]
     paths-ignore:
       - 'doc/**'
       - 'src/pretix/locale/**'
   pull_request:
-    branches: [ development, master ]
+    branches: [development, master]
     paths-ignore:
       - 'doc/**'
       - 'src/pretix/locale/**'
@@ -25,6 +25,12 @@ jobs:
             python-version: 3.11
     steps:
       - uses: actions/checkout@v2
+
+      # Set up Git for cloning private repositories
+      - name: Set up Git for cloning private repositories
+        run: |
+          git config --global url."https://${{ secrets.GH_TOKEN }}:@github.com/".insteadOf "https://github.com/"
+
       - uses: harmon758/postgresql-action@v1
         with:
           postgresql version: '12'
@@ -32,32 +38,41 @@ jobs:
           postgresql user: 'postgres'
           postgresql password: 'postgres'
         if: matrix.database == 'postgres'
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+
       - uses: actions/cache@v1
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
+
       - name: Install system dependencies
-        run: sudo apt update && sudo apt install gettext 
+        run: sudo apt update && sudo apt install gettext
+
       - name: Install Python dependencies
         run: pip3 install -e ".[dev]" psycopg2-binary
+
       - name: Run checks
         run: python manage.py check
         working-directory: ./src
+
       - name: Install JS dependencies
         working-directory: ./src
         run: make npminstall
+
       - name: Compile
         working-directory: ./src
         run: make all compress
+
       - name: Run tests
         working-directory: ./src
         run: PRETIX_CONFIG_FILE=tests/travis_${{ matrix.database }}.cfg py.test -n 3 -p no:sugar --cov=./ --cov-report=xml --reruns 3 tests --maxfail=100
+
       - name: Upload coverage
         uses: codecov/codecov-action@v1
         with:
