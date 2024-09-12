@@ -1,0 +1,40 @@
+{% extends "eventyay_common/event/settings_base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load static %}
+{% load hierarkey_form %}
+{% load formset_tags %}
+{% block title %}{% trans "General settings" %}{% endblock %}
+{% block custom_header %}
+    {{ block.super }}
+    <link type="text/css" rel="stylesheet" href="{% url "control:pdf.css" %}">
+{% endblock %}
+{% block inside %}
+    <h1>{{ request.event.name }} {% trans "- Settings" %}</h1>
+    <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        <div class="tabbed-form">
+            <fieldset>
+                <legend>{% trans "Basics" %}</legend>
+                {% bootstrap_field form.name layout="control" %}
+                {% bootstrap_field form.slug layout="control" %}
+                {% bootstrap_field form.date_from layout="control" %}
+                {% bootstrap_field form.date_to layout="control" %}
+                {% bootstrap_field form.currency layout="control" %}
+                {% bootstrap_field form.sales_channels layout="control" %}
+            </fieldset>
+            <fieldset>
+                <legend>{% trans "Localization" %}</legend>
+                {% bootstrap_field sform.locales layout="control" %}
+                {% bootstrap_field sform.locale layout="control" %}
+                {% bootstrap_field sform.timezone layout="control" %}
+            </fieldset>
+        </div>
+        <div class="form-group submit-group">
+            <button type="submit" class="btn btn-primary btn-save">
+                {% trans "Save" %}
+            </button>
+        </div>
+    </form>
+{% endblock %}

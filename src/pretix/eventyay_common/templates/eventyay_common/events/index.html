@@ -80,7 +80,7 @@
             {% for e in events %}
                 <tr>
                     <td class="event-name-col">
-                        <strong><a href="{% url "control:event.index" organizer=e.organizer.slug event=e.slug %}">{{ e.name }}</a></strong>
+                        <strong><a href='{% url "eventyay_common:event.update" organizer=e.organizer.slug event=e.slug %}'>{{ e.name }}</a></strong>
                     </td>
                     <td>{{ e.slug }}</td>
                     <td>{{ e.organizer }}</td>
@@ -106,7 +106,7 @@
                         {% endif %}
                     </td>
                     <td class="text-right flip">
-                        <a href="{% url "control:event.index" organizer=e.organizer.slug event=e.slug %}"
+                        <a href='{% url "eventyay_common:event.update" organizer=e.organizer.slug event=e.slug %}'
                                 class="btn btn-sm btn-default" title="{% trans "Edit" %}"
                                 data-toggle="tooltip">
                             <span class="fa fa-edit"></span>
