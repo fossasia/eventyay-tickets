@@ -124,12 +124,15 @@ class EventCreateView(SafeSessionWizardView):
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form, **kwargs)
+        context['create_for'] = self.storage.extra_data.get('create_for', 'all')
         context['has_organizer'] = self.request.user.teams.filter(can_create_events=True).exists()
         if self.steps.current == 'basics':
             context['organizer'] = self.get_cleaned_data_for_step('foundation').get('organizer')
         return context
 
     def render(self, form=None, **kwargs):
+        if self.steps.current == 'basics' and 'create_for' in self.request.POST:
+            self.storage.extra_data['create_for'] = self.request.POST.get('create_for')
         if self.steps.current != 'foundation':
             form_data = self.get_cleaned_data_for_step('foundation')
             if form_data is None:
@@ -160,38 +163,53 @@ class EventCreateView(SafeSessionWizardView):
         foundation_data = self.get_cleaned_data_for_step('foundation')
         basics_data = self.get_cleaned_data_for_step('basics')
 
-        create_for = self.request.POST.get('create_for')
+        create_for = self.storage.extra_data.get('create_for')
 
-        with transaction.atomic(), language(basics_data['locale']):
-            event = form_dict['basics'].instance
-            event.organizer = foundation_data['organizer']
-            event.plugins = settings.PRETIX_PLUGINS_DEFAULT
-            event.has_subevents = foundation_data['has_subevents']
-            event.testmode = True
-            form_dict['basics'].save()
-
-            event.checkin_lists.create(
-                name=_('Default'),
-                all_products=True
-            )
-            event.set_defaults()
-            event.settings.set('timezone', basics_data['timezone'])
-            event.settings.set('locale', basics_data['locale'])
-            event.settings.set('locales', foundation_data['locales'])
-            # Serialize the event instance to a JSON object
+        if create_for == "talk":
             event_dict = {
-                'organiser_slug': event.organizer.slug,
-                'name': event.name.data,
-                'slug': event.slug,
-                'is_public': event.live,
-                'date_from': str(event.date_from),
-                'date_to': str(event.date_to),
-                'timezone': str(event.timezone),
-                'locale': event.settings.locale,
-                'locales': event.settings.locales,
+                'organiser_slug': foundation_data.get('organizer').slug if foundation_data.get('organizer') else None,
+                'name': basics_data.get('name').data if basics_data.get('name') else None,
+                'slug': basics_data.get('slug'),
+                'is_public': False,
+                'date_from': str(basics_data.get('date_from')),
+                'date_to': str(basics_data.get('date_to')),
+                'timezone': str(basics_data.get('timezone')),
+                'locale': basics_data.get('locale'),
+                'locales': foundation_data.get('locales'),
             }
             send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='create')
 
+        else:
+            with transaction.atomic(), language(basics_data['locale']):
+                event = form_dict['basics'].instance
+                event.organizer = foundation_data['organizer']
+                event.plugins = settings.PRETIX_PLUGINS_DEFAULT
+                event.has_subevents = foundation_data['has_subevents']
+                event.testmode = True
+                form_dict['basics'].save()
+
+                event.checkin_lists.create(
+                    name=_('Default'),
+                    all_products=True
+                )
+                event.set_defaults()
+                event.settings.set('timezone', basics_data['timezone'])
+                event.settings.set('locale', basics_data['locale'])
+                event.settings.set('locales', foundation_data['locales'])
+                if create_for == 'all':
+                    event_dict = {
+                        'organiser_slug': event.organizer.slug,
+                        'name': event.name.data,
+                        'slug': event.slug,
+                        'is_public': event.live,
+                        'date_from': str(event.date_from),
+                        'date_to': str(event.date_to),
+                        'timezone': str(basics_data.get('timezone')),
+                        'locale': event.settings.locale,
+                        'locales': event.settings.locales,
+                    }
+                    send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='create')
+                event.settings.set('create_for', create_for)
         return redirect(reverse('eventyay_common:events') + '?congratulations=1')
 
 
@@ -220,6 +238,8 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
         context['sform'] = self.sform
+        talk_host = settings.TALK_HOSTNAME
+        context['talk_edit_url'] = talk_host + '/orga/event/' + self.object.slug + '/settings'
         return context
 
     @transaction.atomic
@@ -252,6 +272,18 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
             event = form.instance
             event.date_from = self.reset_timezone(zone, event.date_from)
             event.date_to = self.reset_timezone(zone, event.date_to)
+            if event.settings.create_for and event.settings.create_for == 'all':
+                event_dict = {
+                    'organiser_slug': event.organizer.slug,
+                    'name': event.name.data,
+                    'slug': event.slug,
+                    'date_from': str(event.date_from),
+                    'date_to': str(event.date_to),
+                    'timezone': str(event.settings.timezone),
+                    'locale': event.settings.locale,
+                    'locales': event.settings.locales,
+                }
+                send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='update')
             return self.form_valid(form)
         else:
             messages.error(self.request, _('We could not save your changes. See below for details.'))

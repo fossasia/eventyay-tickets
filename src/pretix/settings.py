@@ -446,7 +446,7 @@ FORMAT_MODULE_PATH = [
 ALL_LANGUAGES = [
     ('en', _('English')),
     ('de', _('German')),
-    ('de-informal', _('German (informal)')),
+    ('de-formal', _('German (informal)')),
     ('ar', _('Arabic')),
     ('zh-hans', _('Chinese (simplified)')),
     ('da', _('Danish')),
@@ -466,7 +466,7 @@ ALL_LANGUAGES = [
     ('uk', _('Ukrainian')),
 ]
 LANGUAGES_OFFICIAL = {
-    'en', 'de', 'de-informal'
+    'en', 'de', 'de-formal'
 }
 LANGUAGES_INCUBATING = {
     'pl', 'fi', 'pt-br'
@@ -482,9 +482,9 @@ else:
 
 
 EXTRA_LANG_INFO = {
-    'de-informal': {
+    'de-formal': {
         'bidi': False,
-        'code': 'de-informal',
+        'code': 'de-formal',
         'name': 'German (informal)',
         'name_local': 'Deutsch',
         'public_code': 'de',

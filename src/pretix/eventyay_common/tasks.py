@@ -78,7 +78,6 @@ def send_event_webhook(self, user_id, event, action):
         'organiser_slug': event.get('organiser_slug'),
         'name': event.get('name'),
         'slug': event.get('slug'),
-        'is_public': event.get('is_public'),
         'date_from': event.get('date_from'),
         'date_to': event.get('date_to'),
         'timezone': event.get('timezone'),

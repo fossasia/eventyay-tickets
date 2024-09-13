@@ -31,6 +31,24 @@
                 {% bootstrap_field sform.timezone layout="control" %}
             </fieldset>
         </div>
+        <fieldset>
+            <h4>{% trans "Setting for Tickets system" %}
+                <a href='{% url "control:event.settings" organizer=request.organizer.slug event=request.event.slug %}'
+                        class="btn btn-sm btn-default" title='{% trans "Edit" %}'
+                        data-toggle="tooltip">
+                    <span class="fa fa-edit"></span>
+                </a>
+            </h4>
+        </fieldset>
+        <fieldset>
+            <h4>{% trans "Setting for Talk system" %}
+                <a href='{{ talk_edit_url }}'
+                        class="btn btn-sm btn-default" title='{% trans "Edit" %}'
+                        data-toggle="tooltip">
+                    <span class="fa fa-edit"></span>
+                </a>
+            </h4>
+        </fieldset>
         <div class="form-group submit-group">
             <button type="submit" class="btn btn-primary btn-save">
                 {% trans "Save" %}

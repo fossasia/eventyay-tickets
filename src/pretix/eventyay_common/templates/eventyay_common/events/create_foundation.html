@@ -7,19 +7,24 @@
         <div class="col-md-9">
             <div class="radio">
                 <label>
-                    <input type="radio" name="create_for" value="tickets" {% if form.create_for.value == 'tickets' %}checked{% endif %}>
+                    <input type="radio" name="create_for" value="tickets" {% if create_for == 'tickets' %}checked{% endif %}>
                     <strong>{% trans "Tickets system" %}</strong>
                 </label>
             </div>
             <div class="radio">
                 <label>
-                    <input type="radio" name="create_for" value="talk" {% if form.create_for.value == 'talk' %}checked{% endif %}>
+                    <input type="radio" name="create_for" value="talk" {% if create_for == 'talk' %}checked{% endif %} disabled>
                     <strong>{% trans "Talk system" %}</strong>
+                    <div class="help-block">
+                        {% blocktrans trimmed %}
+                            Create event for Talk system only not ready yet.
+                        {% endblocktrans %}
+                    </div>
                 </label>
             </div>
             <div class="radio">
                 <label>
-                    <input type="radio" name="create_for" value="all" checked>
+                    <input type="radio" name="create_for" value="all" {% if create_for == 'all' %}checked{% endif %}>
                     <strong>{% trans "Both tickets and talk system" %}</strong>
                 </label>
             </div>
