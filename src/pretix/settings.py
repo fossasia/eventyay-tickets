@@ -119,7 +119,7 @@ FORCE_SCRIPT_NAME = BASE_PATH
 
 STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
 
-MEDIA_URL = config.get('urls', 'media', fallback=BASE_PATH + 'media/')
+MEDIA_URL = config.get('urls', 'media', fallback=BASE_PATH + '/media/')
 
 INSTANCE_NAME = config.get('pretix', 'instance_name', fallback='eventyay')
 PRETIX_REGISTRATION = config.getboolean('pretix', 'registration', fallback=True)
