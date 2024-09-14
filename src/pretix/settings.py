@@ -113,9 +113,13 @@ if config.has_section('replica'):
     }
     DATABASE_ROUTERS = ['pretix.helpers.database.ReplicaRouter']
 
-STATIC_URL = config.get('urls', 'static', fallback='/tickets/static/')
+BASE_PATH = config.get('pretix', 'base_path', fallback='')
 
-MEDIA_URL = config.get('urls', 'media', fallback='/tickets/media/')
+FORCE_SCRIPT_NAME = BASE_PATH
+
+STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
+
+MEDIA_URL = config.get('urls', 'media', fallback=BASE_PATH + 'media/')
 
 INSTANCE_NAME = config.get('pretix', 'instance_name', fallback='eventyay')
 PRETIX_REGISTRATION = config.getboolean('pretix', 'registration', fallback=True)
@@ -779,5 +783,3 @@ if config.has_option('geoip', 'path'):
     HAS_GEOIP = True
     GEOIP_PATH = config.get('geoip', 'path')
     GEOIP_COUNTRY = config.get('geoip', 'filename_country', fallback='GeoLite2-Country.mmdb')
-
-FORCE_SCRIPT_NAME = '/tickets'
