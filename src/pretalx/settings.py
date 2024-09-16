@@ -192,6 +192,7 @@ HAS_CELERY = bool(config.get("celery", "broker", fallback=None))
 if HAS_CELERY:
     CELERY_BROKER_URL = config.get("celery", "broker")
     CELERY_RESULT_BACKEND = config.get("celery", "backend")
+    CELERY_RESULT_BACKEND_THREAD_SAFE = True
 else:
     CELERY_TASK_ALWAYS_EAGER = True
 
