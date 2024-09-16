@@ -114,10 +114,6 @@ class AdminUserList(PermissionRequired, ListView):
         if action == "reset":
             user.reset_password(event=None)
             messages.success(request, phrases.base.password_reset_success)
-        elif action == "delete":
-            return redirect(
-                reverse("orga:admin.user.delete", kwargs={"code": user.code})
-            )
         return super().get(request, *args, **kwargs)
 
 
@@ -175,7 +171,7 @@ class AdminUserDelete(ActionConfirmMixin, AdminUserDetail):
 
     @property
     def action_back_url(self):
-        return f"/orga/admin/users/{self.get_object().code}/"
+        return reverse("orga:admin.user.view", kwargs={"code": self.get_object().code})
 
     def dispatch(self, *args, **kwargs):
         with scopes_disabled():

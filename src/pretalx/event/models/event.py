@@ -358,7 +358,6 @@ class Event(PretalxModel):
         schedule_widget_script = "{base}widgets/schedule.js"
 
     class orga_urls(EventUrls):
-        create = "/orga/event/new"
         base = "/orga/event/{self.slug}/"
         login = "{base}login/"
         live = "{base}live"

@@ -59,7 +59,7 @@
                             <td>
                                 <div class="d-flex mb-2">
                                     <a href="{% url "orga:admin.user.view" code=user.code %}" class="btn btn-xs btn-info mr-2"> <i class="fa fa-edit"></i> </a>
-                                    <button name="action" value="delete-{{ user.id }}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                    <a href="{% url "orga:admin.user.delete" code=user.code %}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>
                                 </div>
                                 <button name="action" value="reset-{{ user.id }}" class="btn btn-xs btn-warning mr-2">{{ phrases.base.password_reset_heading }}</button>
                             </td>

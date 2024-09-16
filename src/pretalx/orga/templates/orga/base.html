@@ -396,7 +396,7 @@
                     {% endif %}
                 {% else %}  {# if request.event #}
                     {% if request.orga_events|length > 1 %}
-                        <a class="nav-link {% if request.path == "/orga/event/" %} active{% endif %}" href="/orga/">
+                        <a class="nav-link {% if request.path == "/orga/event/" %} active{% endif %}" href="{% url "orga:event.list" %}">
                             <i class="fa fa-calendar-o"></i>
                             <span>{% translate "Events" %}</span>
                         </a>
