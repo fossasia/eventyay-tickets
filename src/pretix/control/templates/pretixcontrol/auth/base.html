@@ -1,98 +1,45 @@
-{% load compress %}
+{% extends "pretixcontrol/auth/base.html" %}
+{% load bootstrap3 %}
 {% load i18n %}
-{% load hijack_tags %}
 {% load static %}
-<!DOCTYPE html>
-<html{% if rtl %} dir="rtl" class="rtl"{% endif %}>
-<head>
-    <title>{{ django_settings.INSTANCE_NAME }}</title>
-    {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/auth.scss" %}"/>
-        <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/main.scss" %}" />
-        <link rel="stylesheet" type="text/x-scss" href="{% static "lightbox/css/lightbox.scss" %}" />
-    {% endcompress %}
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% if development_warning or debug_warning %}
-        <link rel="shortcut icon" href="{% static "pretixbase/img/favicon-debug.ico" %}">
-    {% else %}
-        <link rel="shortcut icon" href="{% static "pretixbase/img/favicon.ico" %}">
-        <link rel="icon" type="image/png" sizes="32x32" href="{% static "pretixbase/img/icons/favicon-32x32.png" %}">
-        <link rel="icon" type="image/png" sizes="194x194" href="{% static "pretixbase/img/icons/favicon-194x194.png" %}">
-        <link rel="icon" type="image/png" sizes="16x16" href="{% static "pretixbase/img/icons/favicon-16x16.png" %}">
-    {% endif %}
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static "pretixbase/img/icons/apple-touch-icon.png" %}">
-    <link rel="icon" type="image/png" sizes="192x192" href="{% static "pretixbase/img/icons/android-chrome-192x192.png" %}">
-    <link rel="manifest" href="{% url "presale:site.webmanifest" %}">
-    <link rel="mask-icon" href="{% static "pretixbase/img/icons/safari-pinned-tab.svg" %}" color="#2185d0">
-    <meta name="msapplication-TileColor" content="#2185d0">
-    <meta name="msapplication-config" content="{% url "presale:browserconfig.xml" %}">
-    <meta name="theme-color" content="#2185d0">
-</head>
-<body>
-    <div id="wrapper">
-        <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle"
-                        data-toggle="collapse" data-target=".navbar-nav-collapse">
-                    <span class="sr-only">{% trans "Toggle navigation" %}</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{% url "control:index" %}">
-                    <img src="{% static "pretixbase/img/eventyay-icon.svg" %}" />
-                    {{ django_settings.INSTANCE_NAME }}
-                </a>
-            </div>
-        </nav>
-        <div class="navbar-default sidebar" role="navigation">
-            <div class="sidebar-nav navbar-collapse">
-                <ul class="nav" id="side-menu">
-                    <li>
-                        <a href="/"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                    </li>
-                    <li>
-                        <a href="{% url "control:auth.component" %}"><i class="fa fa-cogs fa-fw"></i> Components</a>
-                    </li>
-                    <li>
-                        <a href="https://eventyay.com/docs/"><i class="fa fa-edit fa-fw"></i> Documentation</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
 
-        <div id="page-wrapper" class="center-content">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert {{ message.tags }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
+{% block content %}
+<div class="container">
+    <div class="form-wrapper">
+        <div class="form-signin">
+            <h3>{% trans "Components" %}</h3>
+            <p>
+                {% blocktrans trimmed with a_attr="href='https://eventyay.com'" %}
+                    This is a self-hosted installation of <a {{ a_attr }}>eventyay, your open source event solution</a>.
+                {% endblocktrans %}
+            </p>
+
+            <!-- Eventyay-Talk Component -->
+            {% if is_eventyay_talk_installed %}
+                <p>
+                    <a href="{% url 'eventyay-talk' %}" class="btn btn-primary">
+                        {% trans "Go to Eventyay-Talk" %}
+                    </a>
+                </p>
+            {% else %}
+                <p>
+                    {% trans "Eventyay-Talk is not installed." %}
+                </p>
             {% endif %}
-            {% if request|is_hijacked %}
-                <div class="impersonate-warning mb-4">
-                    <span class="fa fa-user-secret"></span>
-                    {% blocktrans with user=request.user %}
-                        You are currently working on behalf of {{ user }}.
-                    {% endblocktrans %}
-                    <form action="{% url 'control:users.impersonate.stop' %}" method="post" style="display: inline">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-warning btn-xs">
-                            {% trans 'Stop impersonating' %}
-                        </button>
-                    </form>
-                </div>
+
+            <!-- Eventyay-Video Component -->
+            {% if is_eventyay_video_installed %}
+                <p>
+                    <a href="{% url 'eventyay-video' %}" class="btn btn-primary">
+                        {% trans "Go to Eventyay-Video" %}
+                    </a>
+                </p>
+            {% else %}
+                <p>
+                    {% trans "Eventyay-Video is not installed." %}
+                </p>
             {% endif %}
-            {% block content %}
-            {% endblock %}
-            <footer>
-                {% with "href='https://eventyay.com'" as a_attr %}
-                    {% blocktrans trimmed %}
-                        powered by <a {{ a_attr }}>eventyay</a>
-                    {% endblocktrans %}
-                {% endwith %}
-            </footer>
         </div>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

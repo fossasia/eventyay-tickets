@@ -11,6 +11,7 @@ from django.contrib.auth import (
     authenticate, login as auth_login, logout as auth_logout,
 )
 from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.shortcuts import redirect, render
@@ -442,22 +443,18 @@ class Login2FAView(TemplateView):
         return super().get(request, *args, **kwargs)
 
 
+@login_required
 def ComponentsView(request):
-    # Dynamically get the parent directory of the Django project
-    base_directory = settings.BASE_DIR  # This refers to the root directory of your Django project
-
-    # Go one level up to get the parent directory
-    parent_directory = os.path.abspath(os.path.join(base_directory, os.pardir))
-
-    # Construct the path to the eventyay-video directory
-    eventyay_video_path = os.path.join(parent_directory, 'eventyay-video')
-
-    # Check if the eventyay-video directory exists
-    is_eventyay_video_installed = os.path.isdir(eventyay_video_path)
-
-    context = {
-        'is_eventyay_video_installed': is_eventyay_video_installed,
-        'eventyay_video_path': eventyay_video_path if is_eventyay_video_installed else None,
-    }
-
-    return render(request, 'pretixcontrol/auth/components.html', context)
+    try:
+        base_directory = settings.BASE_DIR
+        parent_directory = os.path.abspath(os.path.join(base_directory, os.pardir))
+        eventyay_video_path = os.path.join(parent_directory, 'eventyay-video')
+        is_eventyay_video_installed = os.path.isdir(eventyay_video_path)
+        context = {
+            'is_eventyay_video_installed': is_eventyay_video_installed,
+            'eventyay_video_path': eventyay_video_path if is_eventyay_video_installed else None,
+        }
+        return render(request, 'pretixcontrol/auth/components.html', context)
+    except Exception as e:
+        logger.error(f"Error in ComponentsView: {str(e)}")
+        return render(request, 'pretixcontrol/auth/components.html', {'error': 'An error occurred while checking components.'})
