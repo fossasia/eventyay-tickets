@@ -24233,3 +24233,9 @@ msgstr "我的订单"
 
 msgid "Logout"
 msgstr "退出登录"
+
+msgid "Want to create a %(event_name)s account?"
+msgstr "想创建一个%(event_name)s账户吗?"
+
+msgid "Already have a %(event_name)s account?"
+msgstr "已经有一个%(event_name)s账户了吗?"

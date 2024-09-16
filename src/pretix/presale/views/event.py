@@ -434,6 +434,16 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
         else:
             context['cart_redirect'] = self.request.path
 
+        # Get event_name in language code
+        event_name = self.request.event.name.data.get(self.request.LANGUAGE_CODE)
+        if event_name is None:
+            # If event_name is not available in the language code, get event name in english
+            event_name = self.request.event.name.data.get('en')
+        if event_name is None and len(self.request.event.name.data) > 0:
+            # If event_name is not available in english, get the first available event name
+            event_name = next(iter(self.request.event.name.data.values()))
+        context['event_name'] = event_name
+
         return context
 
     def _subevent_list_context(self):

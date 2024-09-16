@@ -25935,3 +25935,9 @@ msgstr "Siparişlerim"
 
 msgid "Logout"
 msgstr "Çıkış Yap"
+
+msgid "Want to create a %(event_name)s account?"
+msgstr "%(event_name)s hesabı oluşturmak ister misiniz?"
+
+msgid "Already have a %(event_name)s account?"
+msgstr "Zaten bir %(event_name)s hesabınız var mı?"
