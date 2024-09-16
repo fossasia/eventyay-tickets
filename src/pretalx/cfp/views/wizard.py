@@ -1,13 +1,11 @@
 import logging
 
-from csp.decorators import csp_update
 from django.contrib import messages
 from django.db import transaction
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
-from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 
@@ -32,7 +30,6 @@ class SubmitStartView(EventPageMixin, View):
         return redirect(url)
 
 
-@method_decorator(csp_update(IMG_SRC="https://www.gravatar.com"), name="dispatch")
 class SubmitWizard(EventPageMixin, View):
     @transaction.atomic
     def dispatch(self, request, *args, **kwargs):
@@ -76,6 +73,8 @@ class SubmitWizard(EventPageMixin, View):
         if request.method == "GET" or (
             step.get_next_applicable(request) or not step.is_completed(request)
         ):
+            if result and (csp_change := step.get_csp_update(request)):
+                result._csp_update = csp_change
             return result
         return self.done(request)
 
