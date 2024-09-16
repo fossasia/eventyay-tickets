@@ -162,6 +162,9 @@ class BaseCfPStep:
     def done(self, request, draft=False):
         pass
 
+    def get_csp_update(self, request):
+        pass
+
 
 class TemplateFlowStep(TemplateResponseMixin, BaseCfPStep):
     template_name = "cfp/event/submission_step.html"
@@ -574,6 +577,9 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
         return _(
             "This information will be publicly displayed next to your session - you can always edit for as long as proposals are still open."
         )
+
+    def get_csp_update(self, request):
+        return {"img-src": "https://www.gravatar.com"}
 
 
 DEFAULT_STEPS = (
