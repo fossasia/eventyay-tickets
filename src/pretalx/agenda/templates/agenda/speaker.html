@@ -62,22 +62,24 @@
                 </section>
             {% endif %}
             <hr />
-            <section class="speaker-talks">
-                <h4>
-                    {% blocktranslate trimmed count count=talks.count %}
-                        Session
-                    {% plural %}
-                        Sessions
-                    {% endblocktranslate %}
-                </h4>
-                {% for session in talks %}
-                    <a href="{{ session.submission.urls.public }}">
+            {% if talks %}
+                <section class="speaker-talks">
+                    <h4>
+                        {% blocktranslate trimmed count count=talks.count %}
+                            Session
+                        {% plural %}
+                            Sessions
+                        {% endblocktranslate %}
+                    </h4>
+                    {% for session in talks %}
+                        <a href="{{ session.submission.urls.public }}">
 
-                        {% include "agenda/session_block.html" with show_date=True %}
+                            {% include "agenda/session_block.html" with show_date=True %}
 
-                    </a>
-                {% endfor %}
-            </section>
+                        </a>
+                    {% endfor %}
+                </section>
+            {% endif %}
         </div>
     </article>
 {% endblock agenda_content %}
