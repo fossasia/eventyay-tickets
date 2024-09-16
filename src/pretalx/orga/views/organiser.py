@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, TemplateView
@@ -388,6 +389,5 @@ class OrganiserDelete(PermissionRequired, ActionConfirmMixin, DetailView):
 
     def post(self, *args, **kwargs):
         organiser = self.get_object()
-        organiser.shred()
-        base_path = settings.BASE_PATH
-        return HttpResponseRedirect(base_path + "/orga/")
+        organiser.shred(person=self.request.user)
+        return HttpResponseRedirect(reverse("orga:event.list"))
