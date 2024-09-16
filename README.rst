@@ -20,17 +20,17 @@
    :target: https://pretalx.com/p/news/
    :alt: Website
 
-``pretalx`` is a conference planning tool focused on providing the best
+**pretalx** is a conference planning tool focused on providing the best
 experience for organisers, speakers, reviewers, and attendees alike.  It
 handles the submission process with a configurable Call for Participation, the
 reviewing and selection of submissions, and the scheduling and release
-handling. After the event, ``pretalx`` allows speakers to receive feedback,
-upload their slides, and organisers to embed recordings.
+handling. After the event, pretalx allows speakers to receive feedback, upload
+their slides, and organisers to embed recordings.
 
-Read our `feature list`_ on our main site to get a better idea of what
-`pretalx` can do for you, but it typically involves everything you'll need to
-curate submissions and contents for a conference with several tracks and
-conference days.
+Read our `feature list`_ on our main site to get a better idea of what pretalx
+can do for you, but it typically involves everything you'll need to curate
+submissions and contents for a conference with several tracks and conference
+days.
 
 You can host pretalx yourself, as detailed in our `administrator
 documentation`_, or use our public instance at `pretalx.com`_. If you want to
@@ -52,12 +52,12 @@ enough for you, you can even write plugins of your own.
 🚦 Project status
 -----------------
 
-`pretalx` is under `active development`_ and used by `many events`_. It
-supports everything required for talk submission, speaker communication, and
-scheduling. You can see our supported features in the `feature list`_, and our
-planned features in our open issues_. `pretalx` has regular releases – you can
-look at the `changelog`_ to see upcoming and past changes, and install pretalx
-via PyPI_.
+pretalx is under `active development`_ and used by `many events`_. It supports
+everything required for talk submission, speaker communication, and scheduling.
+You can see our supported features in the `feature list`_, and our planned
+features in our open issues_. pretalx has regular releases – you can look at
+the `changelog`_ to see upcoming and past changes, and install pretalx via
+PyPI_.
 
 🔨 Contributing
 ---------------
@@ -79,8 +79,8 @@ issue tracker. The documentation is available at `docs.pretalx.org`_, and you
 can find up to date information on `our blog`_ and `Twitter`_. The pretalx
 package is available via `PyPI`_.
 
-We publish `pretalx` under the terms of the Apache License. See the LICENSE
-file for further information and the complete license text. The licenses of all
+We publish pretalx under the terms of the Apache License. See the LICENSE file
+for further information and the complete license text. The licenses of all
 dependencies are documented in the `DEPENDENCIES.rst`_ file.
 
 The primary maintainer of this project is Tobias Kunze <r@rixx.de> (who also
