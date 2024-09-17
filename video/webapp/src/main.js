@@ -50,19 +50,25 @@ async function init({token, inviteToken}) {
 	window.vapp = app
 	store.commit('setUserLocale', i18n.resolvedLanguage)
 	store.dispatch('updateUserTimezone', localStorage.userTimezone || moment.tz.guess())
+	// Get the path relative to the publicPath
+	const basePath = config.basePath || ''
+	let relativePath = location.pathname.replace(basePath, '')
+	if (!relativePath) {
+		relativePath = '/'
+	}
 
-	const { route } = router.resolve(location.pathname)
+	const { route } = router.resolve(relativePath)
 	const anonymousRoomId = route.name === 'standalone:anonymous' ? route.params.roomId : null
 	if (token) {
 		localStorage.token = token
-		router.replace(location.pathname)
+		router.replace(relativePath)
 		store.dispatch('login', {token})
 	} else if (localStorage.token) {
 		store.dispatch('login', {token: localStorage.token})
 	} else if (inviteToken && anonymousRoomId) {
 		const clientId = uuid()
 		localStorage[`clientId:room:${anonymousRoomId}`] = clientId
-		router.replace(location.pathname)
+		router.replace(relativePath)
 		store.dispatch('login', {clientId, inviteToken})
 	} else if (anonymousRoomId && localStorage[`clientId:room:${anonymousRoomId}`]) {
 		const clientId = localStorage[`clientId:room:${anonymousRoomId}`]

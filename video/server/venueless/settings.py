@@ -309,10 +309,9 @@ MIDDLEWARE = [
 ROOT_URLCONF = "venueless.urls"
 
 CORS_ORIGIN_REGEX_WHITELIST = [
-    r"^https?://(\w+\.)?eventyay\.com$",  # Allow any subdomain of eventyay.com
-    r"^https?://video\.eventyay\.com(:\d+)?$",  # Allow video.eventyay.com with any port
-    r"^https?://video-dev\.eventyay\.com(:\d+)?$",  # Allow video-dev.eventyay.com with any port
-    r"^https?://wikimania-live\.eventyay\.com(:\d+)?$",  # Allow wikimania-live.eventyay.com with any port
+    r"^https?://([\w\-]+\.)?eventyay\.com$",  # Allow any subdomain of eventyay.com
+    r"^https?://app-test\.eventyay\.com(:\d+)?$",  # Allow video-dev.eventyay.com with any port
+    r"^https?://app\.eventyay\.com(:\d+)?$",  # Allow wikimania-live.eventyay.com with any port
 ]
 if DEBUG:
     CORS_ORIGIN_REGEX_WHITELIST = [

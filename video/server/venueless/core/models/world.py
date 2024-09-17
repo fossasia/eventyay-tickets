@@ -138,7 +138,7 @@ class World(VersionedModel):
         unique=True,
         null=True,
         blank=True,
-        validators=[RegexValidator(regex=r"^[a-z0-9-.:]+$")],
+        validators=[RegexValidator(regex=r"^[a-z0-9-.:]+(/[a-zA-Z0-9-_./]*)?$")],
     )
     locale = models.CharField(
         max_length=100,

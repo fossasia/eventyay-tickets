@@ -53,7 +53,7 @@ const DEFAULT_COLORS = {
 }
 
 const DEFAULT_LOGO = {
-	url: '/eventyay-video-logo.svg',
+	url: '/video/eventyay-video-logo.svg',
 	fitToWidth: false
 }
 

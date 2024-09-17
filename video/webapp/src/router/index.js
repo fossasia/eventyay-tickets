@@ -13,6 +13,8 @@ import Speaker from 'views/schedule/speakers/item'
 import Exhibitor from 'views/exhibitors/item'
 import ContactRequests from 'views/contact-requests'
 import Preferences from 'views/preferences'
+import config from 'config'
+
 
 Vue.use(VueRouter)
 
@@ -240,7 +242,7 @@ const routes = [{
 
 const router = new VueRouter({
 	mode: 'history',
-	base: process.env.BASE_URL,
+	base: config.basePath,
 	routes
 })
 
