@@ -79,6 +79,7 @@ EXTERNAL_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "oauth2_provider",
 ]
 LOCAL_APPS = [
     "pretalx.api",
@@ -92,6 +93,7 @@ LOCAL_APPS = [
     "pretalx.cfp",
     "pretalx.orga",
     "pretalx.sso_provider",
+    "pretalx.eventyay_common",
 ]
 FALLBACK_APPS = [
     "bootstrap4",
@@ -707,3 +709,30 @@ EVENTYAY_TICKET_SSO_WELL_KNOW_URL = "/".join(
 )
 # redirect_url as https
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+
+# OAuth2 Client settings
+SSO_CLIENT_ID = config.get("sso", "client_id", fallback="")
+SSO_CLIENT_SECRET = config.get("sso", "client_secret", fallback="")
+OAUTH2_PROVIDER = {
+    "CLIENT_ID": SSO_CLIENT_ID,
+    "CLIENT_SECRET": SSO_CLIENT_SECRET,
+    "AUTHORIZE_URL": "/".join([EVENTYAY_TICKET_BASE_PATH, "control/oauth2/authorize/"]),
+    "ACCESS_TOKEN_URL": "/".join([EVENTYAY_TICKET_BASE_PATH, "control/oauth2/token/"]),
+    "REDIRECT_URI": "/".join([SITE_URL, "oauth2/callback/"]),
+    "SCOPE": ["profile"],
+}
+# Set default Application model if using default
+OAUTH2_PROVIDER_ACCESS_TOKEN_MODEL = "oauth2_provider.AccessToken"
+OAUTH2_PROVIDER_APPLICATION_MODEL = "oauth2_provider.Application"
+OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = "oauth2_provider.RefreshToken"
+OAUTH2_PROVIDER_AUTHORIZATION_CODE_MODEL = "oauth2_provider.AuthorizationCode"
+OAUTH2_PROVIDER_CLIENT_MODEL = "oauth2_provider.Application"
+OAUTH2_PROVIDER_ID_TOKEN_MODEL = "oauth2_provider.IDToken"
+SSO_USER_INFO = "/".join([EVENTYAY_TICKET_BASE_PATH, "control/oauth2/user_info/"])
+# Disable this if you are not using HTTPS
+OAUTHLIB_INSECURE_TRANSPORT = True
+
+LOGOUT_REDIRECT_URL = "/"
+LOGIN_URL = "/login/"
+
+CORS_ORIGIN_WHITELIST = [EVENTYAY_TICKET_BASE_PATH]

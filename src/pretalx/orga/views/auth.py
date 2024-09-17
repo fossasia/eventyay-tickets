@@ -41,9 +41,12 @@ class LoginView(GenericLoginView):
 
 def logout_view(request):
     logout(request)
-    return redirect(
+    response = redirect(
         GenericLoginView.get_next_url_or_fallback(request, reverse("orga:login"))
     )
+    # Remove the JWT cookie
+    response.delete_cookie("sso_token")  # Same domain used when setting the cookie
+    return response
 
 
 class ResetView(GenericResetView):

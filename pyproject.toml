@@ -68,6 +68,10 @@ dependencies = [
   'pretalx-downstream @ git+https://github.com/fossasia/eventyay-talk-downstream.git@main',
   "django-allauth~=0.63.3",
   "PyJWT~=2.8.0",
+  'django-oauth-toolkit==2.4.*',
+  'requests-oauthlib==2.*',
+  'psycopg2-binary==2.9.9',
+  'oauthlib==3.2.*',
 ]
 
 [project.optional-dependencies]

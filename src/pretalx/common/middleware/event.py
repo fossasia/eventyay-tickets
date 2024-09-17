@@ -1,8 +1,12 @@
+import logging
+import traceback
 import zoneinfo
 from contextlib import suppress
 from urllib.parse import quote, urljoin
 
+import jwt
 from django.conf import settings
+from django.contrib.auth import login
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.urls import resolve
@@ -15,6 +19,9 @@ from django.utils.translation.trans_real import (
 from django_scopes import scope, scopes_disabled
 
 from pretalx.event.models import Event, Organiser, Team
+from pretalx.person.models import User
+
+logger = logging.getLogger(__name__)
 
 
 def get_login_redirect(request):
@@ -48,6 +55,41 @@ class EventPermissionMiddleware:
 
     def __init__(self, get_response):
         self.get_response = get_response
+
+    @staticmethod
+    def _handle_login(request):
+        # If the user is already authenticated, no need to auto-login
+        if request.user.is_authenticated:
+            return
+
+        # Check for the presence of the SSO token
+        sso_token = request.COOKIES.get("sso_token")
+        if sso_token:
+            try:
+                # Decode and validate the JWT token
+                payload = jwt.decode(
+                    sso_token, settings.SECRET_KEY, algorithms=["HS256"]
+                )
+                user, created = User.objects.get_or_create(email=payload["email"])
+                if created:
+                    user.set_unusable_password()
+                user.name = payload.get("name", "")
+                user.is_active = True
+                user.is_staff = payload.get("is_staff", False)
+                user.locale = payload.get("locale", None)
+                user.timezone = payload.get("timezone", None)
+                user.save()
+                login(
+                    request, user, backend="django.contrib.auth.backends.ModelBackend"
+                )
+            except jwt.ExpiredSignatureError as e:
+                # Token expired
+                logger.warning(f"SSO token expired: {str(e)}\n{traceback.format_exc()}")
+                pass
+            except jwt.InvalidTokenError as e:
+                # Invalid token
+                logger.error(f"Invalid SSO token: {str(e)}\n{traceback.format_exc()}")
+                pass
 
     @staticmethod
     def _set_orga_events(request):
@@ -115,6 +157,7 @@ class EventPermissionMiddleware:
                     raise Http404()
         event = getattr(request, "event", None)
 
+        self._handle_login(request)
         self._set_orga_events(request)
         self._select_locale(request)
         is_exempt = (
