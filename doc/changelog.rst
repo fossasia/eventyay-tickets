@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`orga:schedule,1828` When exporting an event to a HTML export, files with umlauts or other non-ascii characters in their file name were saved with the encoded version of that name, so when the export was served by a webserver, these files wouldn't be shown.
 - :bug:`schedule` When organisers initially asked speakers to upload a profile picture, but then turned off the upload, the profile pictures collected to that date would still show up in the schedule grid and on the individual speaker pages. They will now be hidden from view.
 - :bug:`orga` Organisers could inadvertently remove all access to an event when they updated their team permissions. Pretalx now forbids this, and additionally shows warnings when an event is being orphaned by a team change.
 - :feature:`orga` A lot of info boxes that are mostly useful to new or inexperienced users are now hidden behind ❓ symbols rather than being always visible.
