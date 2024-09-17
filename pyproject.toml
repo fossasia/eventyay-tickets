@@ -76,7 +76,7 @@ dependencies = [
         'jsonschema',
         'django-hijack==2.*',
         'openpyxl==3.1.*',
-        'django-oauth-toolkit==2.3.*',
+        'django-oauth-toolkit==2.4.*',
         'oauthlib==3.2.*',
         'django-phonenumber-field==7.1.*',
         'phonenumberslite==8.13.*',
@@ -96,7 +96,9 @@ dependencies = [
         'importlib_metadata==7.*',
         'qrcode==7.4.*',
         'pretix-pages @ git+https://github.com/fossasia/eventyay-ticket-pages.git@master',
-        'pretix-venueless @ git+https://github.com/fossasia/eventyay-ticket-video.git@master'
+        'pretix-venueless @ git+https://github.com/fossasia/eventyay-ticket-video.git@master',
+        'django-sso==3.0.2',
+        'PyJWT~=2.8.0',
 ]
 
 [project.optional-dependencies]
