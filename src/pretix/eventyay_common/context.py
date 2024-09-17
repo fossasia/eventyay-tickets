@@ -40,7 +40,7 @@ def _default_context(request):
         'DEBUG': settings.DEBUG,
     }
     if getattr(request, 'event', None) and hasattr(request, 'organizer') and request.user.is_authenticated:
-        ctx['nav_items'] = get_event_navigation(request)
+        ctx['nav_items'] = get_global_navigation(request)
 
     elif request.user.is_authenticated:
         ctx['nav_items'] = get_global_navigation(request)
@@ -74,8 +74,7 @@ def get_global_navigation(request):
         },
         {
             'label': _('Events'),
-            # 'url': reverse('eventyay_common:events'),
-            'url': '#',
+            'url': reverse('eventyay_common:events'),
             'active': 'events' in url.url_name,
             'icon': 'calendar',
         },

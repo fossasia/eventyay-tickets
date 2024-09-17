@@ -1082,14 +1082,14 @@ def test_patch_event_settings(token_client, organizer, event):
         resp = token_client.patch(
             '/api/v1/organizers/{}/events/{}/settings/'.format(organizer.slug, event.slug),
             {
-                'locales': event.settings.locales + ['de', 'de-informal'],
+                'locales': event.settings.locales + ['de', 'de-formal'],
             },
             format='json'
         )
         assert resp.status_code == 200
-        assert set(resp.data['locales']) == set(locales + ['de', 'de-informal'])
+        assert set(resp.data['locales']) == set(locales + ['de', 'de-formal'])
         event.settings.flush()
-        assert set(event.settings.locales) == set(locales + ['de', 'de-informal'])
+        assert set(event.settings.locales) == set(locales + ['de', 'de-formal'])
 
         resp = token_client.patch(
             '/api/v1/organizers/{}/events/{}/settings/'.format(organizer.slug, event.slug),

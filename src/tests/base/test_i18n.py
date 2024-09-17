@@ -26,22 +26,22 @@ class I18nStringTest(TestCase):
         data = {
             'en': 'You',
             'de': 'Sie',
-            'de-informal': 'Du'
+            'de-formal': 'Du'
         }
         s = LazyI18nString(data)
         translation.activate('de')
         self.assertEqual(str(s), 'Sie')
-        translation.activate('de-informal')
+        translation.activate('de-formal')
         self.assertEqual(str(s), 'Du')
 
         data = {
             'en': 'You',
-            'de-informal': 'Du'
+            'de-formal': 'Du'
         }
         s = LazyI18nString(data)
         translation.activate('de')
         self.assertEqual(str(s), 'Du')
-        translation.activate('de-informal')
+        translation.activate('de-formal')
         self.assertEqual(str(s), 'Du')
 
         data = {
@@ -51,7 +51,7 @@ class I18nStringTest(TestCase):
         s = LazyI18nString(data)
         translation.activate('de')
         self.assertEqual(str(s), 'Sie')
-        translation.activate('de-informal')
+        translation.activate('de-formal')
         self.assertEqual(str(s), 'Sie')
 
     def test_missing_default_translation(self):
