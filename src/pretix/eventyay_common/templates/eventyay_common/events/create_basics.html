@@ -1,0 +1,42 @@
+{% extends "eventyay_common/events/create_base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load static %}
+{% block form %}
+    <fieldset>
+        <legend>{% trans "General information" %}</legend>
+        {% bootstrap_field form.name layout="control" %}
+        <div class="form-group">
+            <label class="col-md-3 control-label" for="{{ form.slug.id_for_label }}">{{ form.slug.label }}</label>
+            <div class="col-md-9 form-inline">
+                <button class="btn btn-default pull-right flip" type="button" id="event-slug-random-generate"
+                        data-rng-url="{% url "control:events.add.slugrng" organizer=organizer.slug %}">
+                    {% trans "Set to random" %}
+                </button>
+                {% bootstrap_field form.slug form_group_class="helper-display-inline" show_label=False layout="inline" %}
+                <div class="help-block">
+                    {% blocktrans trimmed %}
+                    This is the address your event will be available at. Should be short, only contain lowercase letters
+                    and numbers, and must be unique. We recommend some kind of abbreviation with less than 30 characters
+                    that can be easily remembered. You cannot change the slug later on!
+                    {% endblocktrans %}
+                </div>
+                <div class="slug-length alert alert-warning helper-display-none-soft">
+                    {% blocktrans trimmed %}
+                        We strongly recommend against using short forms of more then 16 characters.
+                    {% endblocktrans %}
+                </div>
+            </div>
+        </div>
+        {% bootstrap_field form.date_from layout="control" %}
+        {% if form.date_to %}
+            {% bootstrap_field form.date_to layout="control" %}
+        {% endif %}
+        {% bootstrap_field form.currency layout="control" %}
+    </fieldset>
+    <fieldset>
+        <legend>{% trans "Display settings" %}</legend>
+        {% bootstrap_field form.locale layout="control" %}
+        {% bootstrap_field form.timezone layout="control" %}
+    </fieldset>
+{% endblock %}
