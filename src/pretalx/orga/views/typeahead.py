@@ -1,6 +1,7 @@
 import json
 from contextlib import suppress
 
+from django.conf import settings
 from django.db.models import Exists, OuterRef, Q
 from django.http import JsonResponse
 from django.utils.translation import ngettext_lazy as _n
@@ -12,10 +13,11 @@ from pretalx.submission.models import Submission
 
 
 def serialize_user(user):
+    base_path = settings.BASE_PATH
     return {
         "type": "user",
         "name": str(user),
-        "url": "/orga/me",
+        "url": base_path + "/orga/me",
     }
 
 

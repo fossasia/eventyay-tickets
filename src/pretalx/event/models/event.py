@@ -321,7 +321,8 @@ class Event(PretalxModel):
     objects = models.Manager()
 
     class urls(EventUrls):
-        base = "/{self.slug}/"
+        base_path = settings.BASE_PATH
+        base = "{base_path}/{self.slug}/"
         login = "{base}login/"
         logout = "{base}logout"
         auth = "{base}auth/"
@@ -349,8 +350,9 @@ class Event(PretalxModel):
         schedule_widget_script = "{base}widgets/schedule.js"
 
     class orga_urls(EventUrls):
-        create = "/orga/event/new"
-        base = "/orga/event/{self.slug}/"
+        base_path = settings.BASE_PATH
+        create = "{base_path}/orga/event/new"
+        base = "{base_path}/orga/event/{self.slug}/"
         login = "{base}login/"
         live = "{base}live"
         delete = "{base}delete"
@@ -402,7 +404,8 @@ class Event(PretalxModel):
         new_information = "{base}info/new"
 
     class api_urls(EventUrls):
-        base = "/api/events/{self.slug}/"
+        base_path = settings.BASE_PATH
+        base = "{base_path}/api/events/{self.slug}/"
         submissions = "{base}submissions/"
         talks = "{base}talks/"
         schedules = "{base}schedules/"

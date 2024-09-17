@@ -1,6 +1,7 @@
 import json
 import string
 
+from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models, transaction
 from django.utils.crypto import get_random_string
@@ -48,7 +49,8 @@ class Organiser(PretalxModel):
         return str(self.name)
 
     class orga_urls(EventUrls):
-        base = "/orga/organiser/{self.slug}/"
+        base_path = settings.BASE_PATH
+        base = "{base_path}/orga/organiser/{self.slug}/"
         delete = "{base}delete"
         teams = "{base}teams/"
         new_team = "{teams}new"

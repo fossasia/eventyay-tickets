@@ -53,7 +53,7 @@
                     </a>
                 </li>
             </ul>
-            <a class="navbar-brand d-none d-md-block" href="/orga/">
+            <a class="navbar-brand d-none d-md-block" href='{% url "orga:base" %}'>
                 <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}" alt="{% translate "The {{ site_config.name }} logo" %}"> {{ site_config.name }}
             </a>
             <div class="navbar-collapse" id="navbartoggle">
@@ -392,20 +392,20 @@
                     {% endif %}
                 {% else %}  {# if request.event #}
                     {% if request.orga_events|length > 1 %}
-                        <a class="nav-link {% if request.path == "/orga/event/" %} active{% endif %}" href="/orga/">
+                        <a class='nav-link {% if request.path == "/orga/event/" %} active{% endif %}' href='{% url "orga:base" %}'>
                             <i class="fa fa-calendar-o"></i>
                             <span>{% translate "Events" %}</span>
                         </a>
                     {% endif %}
                     {% has_perm 'orga.view_organisers' request.user request as can_see_organisers %}
                     {% if can_see_organisers %}
-                        <a class="nav-link {% if "/orga/organiser/" in request.path %} active{% endif %}" href="/orga/organiser/">
+                        <a class='nav-link {% if "/orga/organiser/" in request.path %} active{% endif %}' href='{% url "orga:organiser.list" %}'>
                             <i class="fa fa-users"></i>
                             <span>{% translate "Organisers" %}</span>
                         </a>
                     {% endif %}
                     {% if request.user.is_administrator %}
-                        <a class="nav-link {% if "/orga/admin/" in request.path %} active{% endif %}" href="/orga/admin/">
+                        <a class='nav-link {% if "/orga/admin/" in request.path %} active{% endif %}' href='{% url "orga:admin.dashboard" %}'>
                             <i class="fa fa-users"></i>
                             <span>{% translate "Admin information" %}</span>
                         </a>

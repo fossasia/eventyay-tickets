@@ -125,10 +125,11 @@ SITE_NETLOC = urlparse(SITE_URL).netloc
 ALLOWED_HOSTS = [
     "*"
 ]  # We have our own security middleware to allow for custom event URLs
-
 ROOT_URLCONF = "pretalx.urls"
-STATIC_URL = config.get("site", "static")
-MEDIA_URL = config.get("site", "media")
+BASE_PATH = config.get("site", "base_path", fallback="")
+FORCE_SCRIPT_NAME = BASE_PATH
+STATIC_URL = config.get("site", "static", fallback=BASE_PATH + "/static/")
+MEDIA_URL = config.get("site", "media", fallback=BASE_PATH + "/media/")
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755
 FILE_UPLOAD_DEFAULT_LIMIT = 10 * 1024 * 1024
 IMAGE_DEFAULT_MAX_WIDTH = 1920
@@ -493,7 +494,7 @@ DEFAULT_EVENT_PRIMARY_COLOR = "#2185d0"
 
 ## AUTHENTICATION SETTINGS
 AUTH_USER_MODEL = "person.User"
-LOGIN_URL = "/orga/login"
+LOGIN_URL = BASE_PATH + "/orga/login"
 AUTHENTICATION_BACKENDS = (
     "rules.permissions.ObjectPermissionBackend",
     "django.contrib.auth.backends.ModelBackend",
@@ -688,7 +689,7 @@ else:
 # Below is configuration for SSO using eventyay-ticket
 
 EVENTYAY_TICKET_BASE_PATH = config.get(
-    "urls", "eventyay-ticket", fallback="https://tickets-dev.eventyay.com"
+    "urls", "eventyay-ticket", fallback="https://app-test.eventyay.com/tickets"
 )
 
 SITE_ID = 1
@@ -697,7 +698,7 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 # will take name from eventyay-ticket as username
 ACCOUNT_USER_MODEL_USERNAME_FIELD = "name"
 # redirect to home page after login with eventyay-ticket
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = BASE_PATH
 # custom form for signup and adapter
 SOCIALACCOUNT_FORMS = {"signup": "pretalx.sso_provider.forms.CustomSignUpForm"}
 SOCIALACCOUNT_ADAPTER = "pretalx.sso_provider.views.CustomSocialAccountAdapter"

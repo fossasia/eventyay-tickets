@@ -1,6 +1,7 @@
 import logging
 
 from allauth.socialaccount.models import SocialApp
+from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
@@ -359,4 +360,5 @@ class OrganiserDelete(PermissionRequired, DeleteView):
     def post(self, *args, **kwargs):
         organiser = self.get_object()
         organiser.shred()
-        return HttpResponseRedirect("/orga/")
+        base_path = settings.BASE_PATH
+        return HttpResponseRedirect(base_path + "/orga/")

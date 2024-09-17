@@ -28,6 +28,7 @@ class AdminDashboard(PermissionRequired, TemplateView):
         context = super().get_context_data(**kwargs)
         site_name = dict(settings.CONFIG.items("site")).get("name")
         context["site_name"] = site_name
+        context["base_path"] = settings.BASE_PATH
         return context
 
     @context

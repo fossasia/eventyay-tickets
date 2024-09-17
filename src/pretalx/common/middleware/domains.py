@@ -51,8 +51,10 @@ class MultiDomainMiddleware:
         request.port = int(port) if port else None
         request.uses_custom_domain = False
 
-        resolved = resolve(request.path)
-        if resolved.url_name in ANY_DOMAIN_ALLOWED or request.path.startswith("/api/"):
+        resolved = resolve(request.path_info)
+        if resolved.url_name in ANY_DOMAIN_ALLOWED or request.path_info.startswith(
+            "/api/"
+        ):
             return None
         event_slug = resolved.kwargs.get("event")
         if event_slug:
@@ -76,7 +78,7 @@ class MultiDomainMiddleware:
         if settings.DEBUG or domain in LOCAL_HOST_NAMES:
             return None
 
-        if request.path.startswith("/orga"):  # pragma: no cover
+        if request.path_info.startswith("/orga"):  # pragma: no cover
             if default_port not in (80, 443):
                 default_domain = f"{default_domain}:{default_port}"
             return redirect(urljoin(default_domain, request.get_full_path()))

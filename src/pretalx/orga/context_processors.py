@@ -25,6 +25,7 @@ def orga_events(request):
     # rather than using the settings object directly in the template
     site_config = dict(settings.CONFIG.items("site"))
     context["site_config"] = site_config
+    context["base_path"] = settings.BASE_PATH
 
     if not request.path.startswith("/orga/"):
         return {}

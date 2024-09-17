@@ -27,8 +27,9 @@
 
     <p>
         {% translate "Your pretalx version is:" %} <strong>{{ pretalx_version|copyable }}</strong>.
-        {% blocktranslate trimmed with url="/orga/admin/update/" %}
-            You can check for updates <a href="{{ url }}">here</a>.
+        {% url 'orga:admin.update' as update_url %}
+        {% blocktranslate trimmed %}
+            You can check for updates <a href="{{ update_url }}">here</a>.
         {% endblocktranslate %}
     </p>
 
@@ -97,17 +98,4 @@
         </ul>
     {% endif %}
 
-    <h2 class="mt-4">{% translate "Links" %}</h2>
-    <ul>
-        <li><a target="_blank" rel="noopener" href="https://pretalx.com">{% translate "pretalx website" %}</a></li>
-        <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org">{% translate "pretalx documentation" %}</a>
-            <ul>
-                <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org/en/latest/administrator/configure.html">{% translate "Configuration reference" %}</a></li>
-                <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org/en/latest/administrator/installation.html">{% translate "Installation guide" %}</a></li>
-                <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org/en/latest/administrator/maintenance.html">{% translate "Upgrade/maintenance guide" %}</a></li>
-            </ul>
-        </li>
-        <li><a target="_blank" rel="noopener" href="https://docs.pretalx.org/en/latest/changelog.html">{% translate "Release notes" %}</a></li>
-        <li><a target="_blank" rel="noopener" href="https://pretalx.com/p/news">{% translate "pretalx blog (release announcements, features)" %}</a></li>
-    </ul>
 {% endblock %}

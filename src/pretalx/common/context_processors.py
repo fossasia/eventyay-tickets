@@ -85,6 +85,7 @@ def system_information(request):
 
     context["warning_update_available"] = False
     context["warning_update_check_active"] = False
+    context["base_path"] = settings.BASE_PATH
     if (
         not request.user.is_anonymous
         and request.user.is_administrator
