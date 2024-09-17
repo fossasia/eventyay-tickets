@@ -17,7 +17,7 @@ if (ENV_DEVELOPMENT || !window.venueless) {
 		locales: ['en', 'de', 'pt_BR', 'ar', 'fr', 'es', 'uk', 'ru'],
 		theme: {
 			logo: {
-				url: '/eventyay-video-logo.svg',
+				url: '/video/eventyay-video-logo.svg',
 				fitToWidth: false
 			},
 			colors: {
@@ -25,7 +25,8 @@ if (ENV_DEVELOPMENT || !window.venueless) {
 				sidebar: '#2185d0',
 				bbb_background: '#ffffff',
 			}
-		}
+		},
+		basePath: '/video',
 	}
 } else {
 	// load from index.html as `window.venueless = {…}`
