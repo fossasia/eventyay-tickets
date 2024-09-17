@@ -75,7 +75,6 @@ def get_global_navigation(request):
         {
             'label': _('Events'),
             'url': reverse('eventyay_common:events'),
-            # 'url': '#',
             'active': 'events' in url.url_name,
             'icon': 'calendar',
         },
