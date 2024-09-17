@@ -16,7 +16,8 @@
             {% endblocktrans %}
         </p>
         <p>
-            {% blocktrans trimmed with a_attr="href='/control/'" %}
+            {% url 'control:index' as index_url %}
+            {% blocktrans trimmed with a_attr="href="|add:index_url %}
                 If you're looking to configure this installation, please <a {{ a_attr }}>head over here</a>.
             {% endblocktrans %}
         </p>
