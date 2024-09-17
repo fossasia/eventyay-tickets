@@ -2,50 +2,78 @@
 {% load i18n %}
 {% load bootstrap3 %}
 {% block form %}
-    {% bootstrap_field form.organizer layout="horizontal" %}
     <div class="form-group">
-        <label class="col-md-3 control-label">{% trans "Event type" %}</label>
+        <label class="col-md-3 control-label">{% trans "Create this event for" %}</label>
         <div class="col-md-9">
-            <div class="big-radio radio">
+            <div class="radio">
                 <label>
-                    <input type="radio" value="" name="{{ form.has_subevents.html_name }}" {% if not form.has_subevents.value %}checked{% endif %}>
-                    <span class="fa fa-calendar-o"></span>
-                    <strong>{% trans "Singular event or non-event shop" %}</strong><br>
+                    <input type="radio" name="create_for" value="tickets" {% if create_for == 'tickets' %}checked{% endif %}>
+                    <strong>{% trans "Tickets system" %}</strong>
+                </label>
+            </div>
+            <div class="radio">
+                <label>
+                    <input type="radio" name="create_for" value="talk" {% if create_for == 'talk' %}checked{% endif %} disabled>
+                    <strong>{% trans "Talk system" %}</strong>
                     <div class="help-block">
                         {% blocktrans trimmed %}
-                            An event with individual configuration. If you create more events later, you can copy
-                            the event to save yourself some work.
-                        {% endblocktrans %}
-                    </div>
-                    <div class="help-block">
-                        {% blocktrans trimmed %}
-                            Examples: Conferences, workshops, trade fairs, one-off concerts, sale of digital content,
-                            multi-day events with combination tickets.
+                            Create event for Talk system only not ready yet.
                         {% endblocktrans %}
                     </div>
                 </label>
             </div>
-            <div class="big-radio radio">
+            <div class="radio">
                 <label>
-                    <input type="radio" value="on" name="{{ form.has_subevents.html_name }}" {% if form.has_subevents.avalue %}checked{% endif %}>
-                    <span class="fa fa-calendar"></span>
-                    <strong>{% trans "Event series or time slot booking" %}</strong>
-                    <div class="help-block">
-                        {% blocktrans trimmed %}
-                            A series of events that share the same configuration. They can still be different in
-                            their dates, locations, prices, and capacities.
-                        {% endblocktrans %}
-                    </div>
-                    <div class="help-block">
-                        {% blocktrans trimmed %}
-                            Examples: Multiple presentations of the same show, same concert in multiple locations,
-                            museums, libraries, or swimming pools,
-                            events that need to be booked together in one cart.
-                        {% endblocktrans %}
-                    </div>
+                    <input type="radio" name="create_for" value="all" {% if create_for == 'all' %}checked{% endif %}>
+                    <strong>{% trans "Both tickets and talk system" %}</strong>
                 </label>
             </div>
         </div>
     </div>
+    {% bootstrap_field form.organizer layout="horizontal" %}
+    <div class="form-group">
+        <label class="col-md-3 control-label">{% trans "Event type" %}</label>
+            <div class="col-md-9">
+                <div class="big-radio radio">
+                    <label>
+                        <input type="radio" value="" name="{{ form.has_subevents.html_name }}" {% if not form.has_subevents.value %}checked{% endif %}>
+                        <span class="fa fa-calendar-o"></span>
+                        <strong>{% trans "Singular event or non-event shop" %}</strong><br>
+                        <div class="help-block">
+                            {% blocktrans trimmed %}
+                                An event with individual configuration. If you create more events later, you can copy
+                                the event to save yourself some work.
+                            {% endblocktrans %}
+                        </div>
+                        <div class="help-block">
+                            {% blocktrans trimmed %}
+                                Examples: Conferences, workshops, trade fairs, one-off concerts, sale of digital content,
+                                multi-day events with combination tickets.
+                            {% endblocktrans %}
+                        </div>
+                    </label>
+                </div>
+                <div class="big-radio radio">
+                    <label>
+                        <input type="radio" value="on" name="{{ form.has_subevents.html_name }}" {% if form.has_subevents.avalue %}checked{% endif %}>
+                        <span class="fa fa-calendar"></span>
+                        <strong>{% trans "Event series or time slot booking" %}</strong>
+                        <div class="help-block">
+                            {% blocktrans trimmed %}
+                                A series of events that share the same configuration. They can still be different in
+                                their dates, locations, prices, and capacities.
+                            {% endblocktrans %}
+                        </div>
+                        <div class="help-block">
+                            {% blocktrans trimmed %}
+                                Examples: Multiple presentations of the same show, same concert in multiple locations,
+                                museums, libraries, or swimming pools,
+                                events that need to be booked together in one cart.
+                            {% endblocktrans %}
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
     {% bootstrap_field form.locales layout="horizontal" %}
 {% endblock %}

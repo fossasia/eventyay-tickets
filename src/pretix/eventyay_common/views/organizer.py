@@ -13,7 +13,7 @@ from pretix.base.models import Organizer, Team
 from pretix.control.forms.filter import OrganizerFilterForm
 from pretix.control.forms.organizer import OrganizerForm, OrganizerUpdateForm
 from pretix.control.views import PaginationMixin, CreateView, UpdateView
-from ..tasks import send_create_organizer_webhook
+from ..tasks import send_organizer_webhook
 from ...control.permissions import OrganizerPermissionRequiredMixin
 
 logger = logging.getLogger(__name__)
@@ -69,7 +69,7 @@ class OrganizerCreate(CreateView):
             'slug': self.object.slug,
             'action': 'create',
         }
-        send_create_organizer_webhook.delay(user_id=self.request.user.id, organizer=organizer_data)
+        send_organizer_webhook.delay(user_id=self.request.user.id, organizer=organizer_data)
 
         team.members.add(self.request.user)
         return response
@@ -109,7 +109,7 @@ class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
             'slug': self.object.slug,
             'action': 'update'
         }
-        send_create_organizer_webhook.delay(user_id=self.request.user.id, organizer=organizer_data)
+        send_organizer_webhook.delay(user_id=self.request.user.id, organizer=organizer_data)
         return response
 
     def get_success_url(self) -> str:

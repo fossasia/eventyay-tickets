@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy
 from pretix.base.models import Team
 from pretix.control.forms.organizer import TeamForm
 from pretix.control.views.organizer import OrganizerDetailViewMixin
-from ..tasks import send_create_team_webhook
+from ..tasks import send_team_webhook
 from ...control.permissions import OrganizerPermissionRequiredMixin
 
 
@@ -55,7 +55,7 @@ class TeamCreateView(OrganizerDetailViewMixin, CreateView, OrganizerPermissionRe
             'can_change_event_settings': self.object.can_change_event_settings,
             'action': 'create',
         }
-        send_create_team_webhook.delay(user_id=self.request.user.id, team=team_data)
+        send_team_webhook.delay(user_id=self.request.user.id, team=team_data)
         return response
 
     def form_invalid(self, form):
@@ -113,7 +113,7 @@ class TeamUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
             'can_change_event_settings': self.object.can_change_event_settings,
             'action': 'update',
         }
-        send_create_team_webhook.delay(user_id=self.request.user.id, team=team_data)
+        send_team_webhook.delay(user_id=self.request.user.id, team=team_data)
         return response
 
     def form_invalid(self, form):
@@ -151,7 +151,7 @@ class TeamDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
                 'name': self.object.name,
                 'action': 'delete',
             }
-            send_create_team_webhook.delay(user_id=self.request.user.id, team=team_data)
+            send_team_webhook.delay(user_id=self.request.user.id, team=team_data)
             messages.success(self.request, gettext_lazy('The selected team is deleted.'))
             return redirect(success_url)
         else:

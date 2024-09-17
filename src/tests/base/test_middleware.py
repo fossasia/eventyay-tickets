@@ -83,19 +83,19 @@ class LocaleDeterminationTest(TestCase):
         self.event.settings.set('locales', ['de'])
         c = Client()
         cookies = c.cookies
-        cookies[settings.LANGUAGE_COOKIE_NAME] = 'de-informal'
+        cookies[settings.LANGUAGE_COOKIE_NAME] = 'de-formal'
         response = c.get('/dummy/dummy/')
         language = response['Content-Language']
         self.assertEqual(language, 'de')
 
     def test_event_fallback_to_long(self):
-        self.event.settings.set('locales', ['de-informal'])
+        self.event.settings.set('locales', ['de-formal'])
         c = Client()
         cookies = c.cookies
         cookies[settings.LANGUAGE_COOKIE_NAME] = 'de'
         response = c.get('/dummy/dummy/')
         language = response['Content-Language']
-        self.assertEqual(language, 'de-informal')
+        self.assertEqual(language, 'de-formal')
 
     def test_event_not_allowed(self):
         self.event.settings.set('locales', ['en'])
