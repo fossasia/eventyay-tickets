@@ -3,13 +3,16 @@ import json
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views import View
+from django.views.decorators.http import require_http_methods
 from django.views.generic import ListView, TemplateView
 from hijack.helpers import login_user, release_hijack
+from oauth2_provider.decorators import protected_resource
 
 from pretix.base.auth import get_auth_backends
 from pretix.base.models import User
@@ -198,3 +201,22 @@ class UserCreateView(AdministratorPermissionRequiredMixin, RecentAuthenticationR
     def form_valid(self, form):
         messages.success(self.request, _('The new user has been created.'))
         return super().form_valid(form)
+
+
+@require_http_methods(["GET"])
+@protected_resource()  # Ensures the endpoint is protected by OAuth2
+def user_info(request):
+    """
+    Return user information for the authenticated user.
+    """
+    user = request.resource_owner
+    user_data = {
+        'email': user.email,
+        'name': user.get_full_name(),
+        'is_active': user.is_active,
+        'is_staff': user.is_staff,
+        'locale': user.locale,
+        'timezone': user.timezone,
+        # Add more user fields as necessary
+    }
+    return JsonResponse(user_data)

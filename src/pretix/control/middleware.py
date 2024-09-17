@@ -33,6 +33,7 @@ class PermissionMiddleware:
         "auth.forgot.recover",
         "auth.invite",
         "user.settings.notifications.off",
+        'oauth2_provider',
     )
 
     EXCEPTIONS_2FA = (
@@ -74,13 +75,19 @@ class PermissionMiddleware:
         url = resolve(request.path_info)
         url_name = url.url_name
 
-        if not request.path.startswith(get_script_prefix() + 'control'):
+        if (not request.path.startswith(get_script_prefix() + 'control')
+                and not request.path.startswith(get_script_prefix() + 'common')):
             # This middleware should only touch the /control subpath
             return self.get_response(request)
 
         if hasattr(request, 'organizer'):
             # If the user is on a organizer's subdomain, he should be redirected to pretix
             return redirect(urljoin(settings.SITE_URL, request.get_full_path()))
+
+        # Add this condition to bypass middleware for 'oauth/' and its sub-URLs
+        if request.path.startswith(get_script_prefix() + 'control/oauth2/'):
+            return self.get_response(request)
+
         if url_name in self.EXCEPTIONS:
             return self.get_response(request)
         if not request.user.is_authenticated:
