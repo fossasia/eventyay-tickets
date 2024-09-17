@@ -4,6 +4,7 @@ from django.urls import re_path as url
 from django.views.generic import RedirectView
 
 import pretix.control.urls
+import pretix.eventyay_common.urls
 import pretix.presale.urls
 from pretix.base.views import js_helpers
 
@@ -28,6 +29,10 @@ control_patterns = [
     url(r'^control/', include((pretix.control.urls, 'control'))),
 ]
 
+common_patterns = [
+    url(r'^common/', include((pretix.eventyay_common.urls, 'common'))),
+]
+
 debug_patterns = []
 if settings.DEBUG:
     try:
@@ -37,4 +42,4 @@ if settings.DEBUG:
     except ImportError:
         pass
 
-common_patterns = base_patterns + control_patterns + debug_patterns
+common_patterns = base_patterns + control_patterns + debug_patterns + common_patterns
