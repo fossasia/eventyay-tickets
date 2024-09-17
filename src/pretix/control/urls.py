@@ -7,8 +7,17 @@ from pretix.control.views import (
     orderimport, orders, organizer, pdf, search, shredder, subevents,
     typeahead, user, users, vouchers, waitinglist, organizer_views
 )
+from pretix.control.views.auth import CustomAuthorizationView
+
+oauth2_patterns = ([
+    url(r'^user_info/', users.user_info, name='user_info'),
+    # other custom paths can be added here
+], 'oauth2_provider.subdomain')
 
 urlpatterns = [
+    url(r'^oauth2/authorize/', CustomAuthorizationView.as_view(), name='oauth2_provider.authorize'),
+    url(r'^oauth2/', include(oauth2_patterns)),
+    url(r'^oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     url(r'^logout$', auth.logout, name='auth.logout'),
     url(r'^login$', auth.login, name='auth.login'),
     url(r'^login/2fa$', auth.Login2FAView.as_view(), name='auth.login.2fa'),
