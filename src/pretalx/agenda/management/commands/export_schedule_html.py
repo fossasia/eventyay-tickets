@@ -114,17 +114,22 @@ def get_content(response):
 
 
 def dump_content(destination, path, getter):
+    destination = Path(destination)
     logging.debug(path)
-    content = getter(path)
-    if path.endswith("/"):
-        path += "index.html"
 
-    path = (Path(destination) / path.lstrip("/")).resolve()
-    if Path(destination) not in path.parents:
+    # We need to urldecode the file path, as otherwise we will end up with a file name
+    # that won't be found when the export is served by a web server.
+    file_path = urllib.parse.unquote(path)
+    if file_path.endswith("/"):
+        file_path += "index.html"
+    file_path = (destination / file_path.lstrip("/")).resolve()
+    if destination not in file_path.parents:
         raise CommandError("Path traversal detected, aborting.")
-    path.parent.mkdir(parents=True, exist_ok=True)
+    file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(path, "wb") as output_file:
+    content = getter(path)
+
+    with open(file_path, "wb") as output_file:
         output_file.write(content)
     return content
 
