@@ -1,4 +1,4 @@
-from django.urls import re_path as url
+from django.urls import re_path as url, include
 
 from pretix.eventyay_common.views import dashboards, event, organizer, team
 
@@ -17,4 +17,7 @@ urlpatterns = [
         name='organizer.team.delete'),
     url(r'^events/$', event.EventList.as_view(), name='events'),
     url(r'^events/add$', event.EventCreateView.as_view(), name='events.add'),
+    url(r'^event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/', include([
+        url(r'^settings/$', event.EventUpdate.as_view(), name='event.update'),
+    ])),
 ]

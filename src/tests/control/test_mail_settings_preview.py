@@ -21,10 +21,10 @@ class MailSettingPreviewTest(SoupTest):
         )
         # event with locale
         self.locale_event = Event.objects.create(
-            organizer=self.orga1, name={'en': '40C4-en', 'de-informal': '40C4-de'}, slug='40c4',
+            organizer=self.orga1, name={'en': '40C4-en', 'de-formal': '40C4-de'}, slug='40c4',
             date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc),
         )
-        self.locale_event.settings.locales = ['en', 'de-informal']
+        self.locale_event.settings.locales = ['en', 'de-formal']
         self.locale_event.save()
         t = Team.objects.create(organizer=self.orga1, can_change_items=True, can_change_event_settings=True)
         t.members.add(self.user)
@@ -110,7 +110,7 @@ class MailSettingPreviewTest(SoupTest):
         assert res['item'] == 'mail_text_order_free'
         assert len(res['msgs']) == 2
         assert dummy_text in res['msgs']['en']
-        assert dummy_text in res['msgs']['de-informal']
+        assert dummy_text in res['msgs']['de-formal']
 
     def test_i18n_placeholders(self):
         dummy_text = '{event}'
@@ -125,10 +125,10 @@ class MailSettingPreviewTest(SoupTest):
         assert res['item'] == 'mail_text_order_placed'
         assert len(res['msgs']) == 2
         assert self.locale_event.name['en'] in res['msgs']['en']
-        assert self.locale_event.name['de-informal'] in res['msgs']['de-informal']
+        assert self.locale_event.name['de-formal'] in res['msgs']['de-formal']
 
     def test_i18n_locale_order(self):
-        self.locale_event.settings.locales = ['de-informal', 'en']
+        self.locale_event.settings.locales = ['de-formal', 'en']
         self.locale_event.save()
         dummy_text = '{event}'
         response = self.client.post(self.target.format(
@@ -141,7 +141,7 @@ class MailSettingPreviewTest(SoupTest):
         res = json.loads(response.content.decode())
         assert res['item'] == 'mail_text_order_placed'
         assert len(res['msgs']) == 2
-        assert self.locale_event.name['de-informal'] in res['msgs']['de-informal']
+        assert self.locale_event.name['de-formal'] in res['msgs']['de-formal']
         assert self.locale_event.name['en'] in res['msgs']['en']
 
     def test_mail_text_order_placed(self):
@@ -286,7 +286,7 @@ class MailSettingPreviewTest(SoupTest):
         res = json.loads(response.content.decode())
         assert res['item'] == 'mail_text_order_placed'
         assert len(res['msgs']) == 2
-        assert res['msgs']['en'] != res['msgs']['de-informal']
+        assert res['msgs']['en'] != res['msgs']['de-formal']
 
     def test_localized_expire_date(self):
         dummy_text = '{expire_date}'
@@ -300,7 +300,7 @@ class MailSettingPreviewTest(SoupTest):
         res = json.loads(response.content.decode())
         assert res['item'] == 'mail_text_order_expire_warning'
         assert len(res['msgs']) == 2
-        assert res['msgs']['en'] != res['msgs']['de-informal']
+        assert res['msgs']['en'] != res['msgs']['de-formal']
 
     def test_localized_payment_info(self):
         dummy_text = '{payment_info}'
@@ -314,4 +314,4 @@ class MailSettingPreviewTest(SoupTest):
         res = json.loads(response.content.decode())
         assert res['item'] == 'mail_text_order_paid'
         assert len(res['msgs']) == 2
-        assert res['msgs']['en'] != res['msgs']['de-informal']
+        assert res['msgs']['en'] != res['msgs']['de-formal']
