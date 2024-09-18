@@ -135,6 +135,8 @@ def dump_content(destination, path, getter):
 
 
 def get_mediastatic_content(url):
+    # We have to unquote the URL to successfully find the file on disk
+    url = urllib.parse.unquote(url)
     if url.startswith(settings.STATIC_URL):
         local_path = settings.STATIC_ROOT / url[len(settings.STATIC_URL) :]
     elif url.startswith(settings.MEDIA_URL):
