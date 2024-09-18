@@ -36,7 +36,11 @@
             {% elif can_review %}
                 {% translate "You’ve got no proposals left to review!" %}
             {% else %}
-                {% translate "Reviews are currently closed." %}
+                {% if not reviews_open %}
+                    {% translate "Reviews are currently closed." %}
+                {% else %}
+                    {% translate "You don’t have reviewer permissions for this event." %}
+                {% endif %}
             {% endif %}
         </div>
     </div>
