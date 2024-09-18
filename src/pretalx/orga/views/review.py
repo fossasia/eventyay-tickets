@@ -27,6 +27,7 @@ from pretalx.orga.forms.review import (
     TagsForm,
 )
 from pretalx.orga.forms.submission import SubmissionStateChangeForm
+from pretalx.orga.permissions import reviews_are_open
 from pretalx.orga.views.submission import BaseSubmissionList
 from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
 from pretalx.submission.models import Review, Submission, SubmissionStates
@@ -252,6 +253,11 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
             self.request.event.feature_flags["use_tracks"]
             and self.request.event.tracks.all().count() > 1
         )
+
+    @context
+    @cached_property
+    def reviews_open(self):
+        return reviews_are_open(None, self.request.event)
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
