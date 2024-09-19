@@ -244,7 +244,7 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
             phases = self.save_phases()
             scores = self.save_scores()
         except ValidationError as e:
-            messages.error(self.request, str(e))
+            messages.error(self.request, e.message)
             return self.get(self.request, *self.args, **self.kwargs)
         if not phases or not scores:
             return self.get(self.request, *self.args, **self.kwargs)
@@ -279,20 +279,40 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
     def save_phases(self):
         if not self.phases_formset.is_valid():
             return False
-        for form in self.phases_formset.initial_forms:
-            # Deleting is handled elsewhere, so we skip it here
-            if form.has_changed():
+
+        with transaction.atomic():
+            for form in self.phases_formset.initial_forms:
+                # Deleting is handled elsewhere, so we skip it here
+                if form.has_changed():
+                    form.instance.event = self.request.event
+                    form.save()
+
+            extra_forms = [
+                form
+                for form in self.phases_formset.extra_forms
+                if form.has_changed
+                and not self.phases_formset._should_delete_form(form)
+            ]
+            for form in extra_forms:
                 form.instance.event = self.request.event
                 form.save()
 
-        extra_forms = [
-            form
-            for form in self.phases_formset.extra_forms
-            if form.has_changed and not self.phases_formset._should_delete_form(form)
-        ]
-        for form in extra_forms:
-            form.instance.event = self.request.event
-            form.save()
+            # Now that everything is saved, check for overlapping review phases,
+            # and show an error message if any exist. Raise an exception to
+            # get out of the transaction.
+            review_phases = self.request.event.review_phases.all().order_by("start")
+            for phase, next_phase in zip(review_phases, review_phases[1:]):
+                if not phase.end:
+                    raise ValidationError(
+                        _("Only the last review phase may be open-ended.")
+                    )
+                if phase.end > next_phase.start:
+                    raise ValidationError(
+                        _(
+                            "The review phases '{phase1}' and '{phase2}' overlap. "
+                            "Please make sure that review phases do not overlap, then save again."
+                        ).format(phase1=phase.name, phase2=next_phase.name)
+                    )
         return True
 
     @context
