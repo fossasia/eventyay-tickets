@@ -122,6 +122,7 @@ STATIC_URL = config.get('urls', 'static', fallback=BASE_PATH + '/static/')
 MEDIA_URL = config.get('urls', 'media', fallback=BASE_PATH + '/media/')
 
 INSTANCE_NAME = config.get('pretix', 'instance_name', fallback='eventyay')
+INSTANCE_NAME_COMMON = config.get('pretix', 'instance_name_common', fallback='eventyay-common')
 PRETIX_REGISTRATION = config.getboolean('pretix', 'registration', fallback=True)
 PRETIX_PASSWORD_RESET = config.getboolean('pretix', 'password_reset', fallback=True)
 PRETIX_LONG_SESSIONS = config.getboolean('pretix', 'long_sessions', fallback=True)
@@ -130,6 +131,7 @@ PRETIX_OBLIGATORY_2FA = config.getboolean('pretix', 'obligatory_2fa', fallback=F
 PRETIX_SESSION_TIMEOUT_RELATIVE = 3600 * 3
 PRETIX_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
 PRETIX_PRIMARY_COLOR = '#2185d0'
+TALK_HOSTNAME = config.get('pretix', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
 
 SITE_URL = config.get('pretix', 'url', fallback='http://localhost')
 if SITE_URL.endswith('/'):
@@ -312,7 +314,8 @@ INSTALLED_APPS = [
     'django_countries',
     'hijack',
     'oauth2_provider',
-    'phonenumber_field'
+    'phonenumber_field',
+    'pretix.eventyay_common',
 ]
 
 if db_backend == 'postgresql':
@@ -376,6 +379,7 @@ MIDDLEWARE = [
     'pretix.base.middleware.CustomCommonMiddleware',
     'pretix.multidomain.middlewares.SessionMiddleware',
     'pretix.multidomain.middlewares.CsrfViewMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -386,6 +390,13 @@ MIDDLEWARE = [
     'pretix.presale.middleware.EventMiddleware',
     'pretix.api.middleware.ApiScopeMiddleware',
 ]
+
+# Configure the authentication backends
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'oauth2_provider.backends.OAuth2Backend',  # Required for OAuth2 authentication
+)
+
 
 try:
     import debug_toolbar.settings  # noqa
@@ -439,7 +450,7 @@ FORMAT_MODULE_PATH = [
 ALL_LANGUAGES = [
     ('en', _('English')),
     ('de', _('German')),
-    ('de-informal', _('German (informal)')),
+    ('de-formal', _('German (informal)')),
     ('ar', _('Arabic')),
     ('zh-hans', _('Chinese (simplified)')),
     ('da', _('Danish')),
@@ -459,7 +470,7 @@ ALL_LANGUAGES = [
     ('uk', _('Ukrainian')),
 ]
 LANGUAGES_OFFICIAL = {
-    'en', 'de', 'de-informal'
+    'en', 'de', 'de-formal'
 }
 LANGUAGES_INCUBATING = {
     'pl', 'fi', 'pt-br'
@@ -475,9 +486,9 @@ else:
 
 
 EXTRA_LANG_INFO = {
-    'de-informal': {
+    'de-formal': {
         'bidi': False,
-        'code': 'de-informal',
+        'code': 'de-formal',
         'name': 'German (informal)',
         'name_local': 'Deutsch',
         'public_code': 'de',
@@ -546,6 +557,7 @@ TEMPLATES = [
                 'pretix.base.context.contextprocessor',
                 'pretix.control.context.contextprocessor',
                 'pretix.presale.context.contextprocessor',
+                'pretix.eventyay_common.context.contextprocessor',
             ],
             'loaders': template_loaders
         },

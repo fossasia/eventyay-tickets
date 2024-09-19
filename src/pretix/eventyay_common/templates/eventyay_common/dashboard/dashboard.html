@@ -1,0 +1,41 @@
+{% extends "eventyay_common/base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Dashboard" %}
+{% endblock %}
+{% block content %}
+    <h1>{% trans "Dashboard" %}</h1>
+    <div class="container my-5">
+      <div class="row card-content">
+        <div class="col-md-4">
+          <a href="{{ ticket_component }}">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Eventyay Tickets</h5>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="{{ talk_component }}">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Eventyay Talk</h5>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="col-md-4">
+          <a href="{{ video_component }}">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Eventyay Video</h5>
+                <p class="card-text"></p>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+{% endblock %}

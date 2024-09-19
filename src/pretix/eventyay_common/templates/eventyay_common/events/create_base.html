@@ -1,0 +1,37 @@
+{% extends "eventyay_common/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block title %}{% trans "Create a new event" %}{% endblock %}
+{% block content %}
+	<h1>{% trans "Create a new event" %}</h1>
+    {% if has_organizer %}
+        <form action="" method="post" class="form-horizontal">
+            {% csrf_token %}
+            {{ wizard.management_form }}
+            {{ wizard.prefix_form }}
+            {% bootstrap_form_errors form %}
+            {% block form %}
+            {% endblock %}
+            <div class="form-group submit-group">
+                <button type="submit" class="btn btn-primary btn-save pull-right flip">
+                    {% trans "Continue" %}
+                </button>
+                {% if wizard.steps.prev %}
+                    <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}"
+                            class="btn btn-default btn-lg pull-left flip" formnovalidate>
+                        {% trans "Back" %}
+                    </button>
+                {% endif %}
+            </div>
+        </form>
+    {% else %}
+        <div class="alert alert-danger">
+            {% trans "Every event needs to be created as part of an organizer account. Currently, you do not have access to any organizer accounts." %}
+        </div>
+        {% if staff_session %}
+            <a href='{% url "eventyay_common:organizers.add" %}' class="btn btn-default">
+                {% trans "Create a new organizer" %}
+            </a>
+        {% endif %}
+    {% endif %}
+{% endblock %}
