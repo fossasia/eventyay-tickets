@@ -58,6 +58,14 @@ const clearOldNewScores = () => {
 document.querySelector("#score-formset #score-add").addEventListener("click", () => {
   window.setTimeout(addListener, 100)
 })
+document.querySelector("#phase-add").addEventListener("click", () => {
+    window.setTimeout(() => {
+        // get last phase and activate datetime picker for start and end field
+        const lastPhase = document.querySelector("#review-phases-formset .list-group-item.review-phase:last-child")
+        lastPhase.querySelectorAll("input.datetimepickerfield").forEach(input => activateDatePicker(input))
+    }, 100)
+})
+
 addListener()
 updateTotal()
 clearOldNewScores()

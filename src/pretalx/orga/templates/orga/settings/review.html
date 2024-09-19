@@ -190,12 +190,12 @@
                 {% endblocktranslate %}
             </div>
         </dialog>
-        <div class="formset" data-formset data-formset-prefix="{{ phases_formset.prefix }}">
+        <div class="formset" data-formset data-formset-prefix="{{ phases_formset.prefix }}" id="review-phases-formset">
             {{ phases_formset.management_form }}
             {% bootstrap_formset_errors phases_formset %}
             <div data-formset-body class="card"><div class="list-group">
                 {% for form in phases_formset %}
-                    <div data-formset-form class="list-group-item">
+                    <div data-formset-form class="list-group-item review-phase">
                         <h3 class="d-flex offset-md-3 flex-wrap">
                             <span class="mr-2 ml-2">{% translate "Review Phase" %}</span>
                             {% bootstrap_field form.name form_group_class="" layout="inline" %}
@@ -233,43 +233,41 @@
                         </div>
                     </div>
                 {% endfor %}
-            </div>
                 <script type="form-template" data-formset-empty-form>
                     {% escapescript %}
-                        <div data-formset-form class="list-group-item">
+                        <div data-formset-form class="list-group-item review-phase">
                         <h3 class="d-flex offset-md-3">
                         <span class="mr-2 ml-2">{% translate "Review Phase" %}</span>
                         {% bootstrap_field phases_formset.empty_form.name form_group_class="" layout="inline" %}
-                        {% if action != "view" %}
-                            <div class="phase-option-delete flip ml-auto">
-                            <button type="button" class="btn btn-danger" data-formset-delete-button>
-                            <i class="fa fa-trash"></i></button>
-                            </div>
-                        {% endif %}
+                        <div class="phase-option-delete flip ml-auto">
+                        <button type="button" class="btn btn-danger" data-formset-delete-button>
+                        <i class="fa fa-trash"></i></button>
+                        </div>
                         </h3>
                         <div class="sr-only">
                         {{ phases_formset.empty_form.id }}
                         {% bootstrap_field phases_formset.empty_form.DELETE form_group_class="" layout="event" %}
                         </div>
-                        <div class="phase-option-row flip ml-auto">
-                        <div class="phase-option-input">
+                        <div class="phase-option-row flip ml-auto"><div class="phase-option-input">
                         {% bootstrap_form phases_formset.empty_form layout="event" form_group_class="" exclude="DELETE,name" %}
-                        </div>
-                        </div>
+                        </div></div>
                         </div>
                     {% endescapescript %}
                 </script>
             </div>
-            {% if action == "edit" or action == "create" %}
-                <div class="list-group-item d-flex">
-                    <button type="button" class="btn btn-lg btn-info flip ml-auto mr-4" data-formset-add>
-                        <i class="fa fa-plus"></i> {% translate "Add another phase" %}
-                    </button>
-                    <button type="submit" class="btn btn-lg btn-success">
-                        {{ phrases.base.save }}
-                    </button>
+            </div>
+            {% if action != "view" %}
+                <div class="submit-group panel">
+                    <span></span>
+                    <span>
+                        <button type="button" class="btn btn-lg btn-info flip ml-auto mr-4" data-formset-add id="phase-add">
+                            <i class="fa fa-plus"></i> {% translate "Add another phase" %}
+                        </button>
+                        <button type="submit" class="btn btn-lg btn-success">
+                            {{ phrases.base.save }}
+                        </button>
+                    </span>
                 </div>
             {% endif %}
-        </div>
-    </form>
+        </form>
 {% endblock settings_content %}
