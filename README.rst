@@ -80,8 +80,7 @@ can find up to date information on `our blog`_ and `Twitter`_. The pretalx
 package is available via `PyPI`_.
 
 We publish pretalx under the terms of the Apache License. See the LICENSE file
-for further information and the complete license text. The licenses of all
-dependencies are documented in the `DEPENDENCIES.rst`_ file.
+for further information and the complete license text.
 
 The primary maintainer of this project is Tobias Kunze <r@rixx.de> (who also
 runs `pretalx.com`_).  See the CONTRIBUTORS file for a list of all the awesome
@@ -108,7 +107,6 @@ list (or tell us about it, and we'll add it)!
 .. _active development: https://github.com/pretalx/pretalx/pulse
 .. _changelog: https://docs.pretalx.org/en/latest/changelog.html
 .. _PyPI: https://pypi.python.org/pypi/pretalx
-.. _DEPENDENCIES.rst: https://github.com/pretalx/pretalx/blob/main/DEPENDENCIES.rst
 .. _list of plugin ideas: https://github.com/pretalx/pretalx/wiki/Plugin-ideas
 .. _list of events: https://github.com/pretalx/pretalx/wiki/Events
 .. _many events: https://github.com/pretalx/pretalx/wiki/Events
