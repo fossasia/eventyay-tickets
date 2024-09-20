@@ -27,26 +27,26 @@
         <table class="table table-sm table-hover table-flip table-sticky">
             <thead>
                 <tr>
-                  <th>
-                    {% translate "Name" %}
+                    <th>
+                        {% translate "Name" %}
                         <a href="?{% url_replace request "sort" "name" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
                         <a href="?{% url_replace request "sort" "-name" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
-                  </th>
-                  <th>
-                    {% translate "Email" %}
+                    </th>
+                    <th>
+                        {% translate "Email" %}
                         <a href="?{% url_replace request "sort" "email" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
                         <a href="?{% url_replace request "sort" "-email" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
-                  </th>
-                  <th class="numeric">
-                    {% translate "Accepted Proposals" %}
+                    </th>
+                    <th class="numeric">
+                        {% translate "Accepted Proposals" %}
                         <a href="?{% url_replace request "sort" "-accepted_submission_count" %}"><i class="fa fa-caret-down" title="{% translate "Sort (high-low)" %}"></i></a>
                         <a href="?{% url_replace request "sort" "accepted_submission_count" %}"><i class="fa fa-caret-up" title="{% translate "Sort (low-high)" %}"></i></a>
-                  </th>
-                  <th class="numeric">
-                    {% translate "Proposals" %}
+                    </th>
+                    <th class="numeric">
+                        {% translate "Proposals" %}
                         <a href="?{% url_replace request "sort" "-submission_count" %}"><i class="fa fa-caret-down" title="{% translate "Sort (high-low)" %}"></i></a>
                         <a href="?{% url_replace request "sort" "submission_count" %}"><i class="fa fa-caret-up" title="{% translate "Sort (low-high)" %}"></i></a>
-                  </th>
+                    </th>
                 </tr>
             </thead>
             <tbody>
