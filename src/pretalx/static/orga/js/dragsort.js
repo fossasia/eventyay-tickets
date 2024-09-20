@@ -65,6 +65,7 @@ const dragStart = (el) => {
 
     const sortableElements = getSortableElements(parentElement);
     const listDirection = predictDirection(...sortableElements);
+    const isTable = parentElement.tagName === "TBODY";
 
     let closest = el;
     let intent = INTENT_BEFORE;
@@ -88,7 +89,7 @@ const dragStart = (el) => {
         unstyleDragIndicators(parentElement);
         if (intent === INTENT_BEFORE) {
             element.classList.add("drag-indicator", "insert-before");
-            if (!element.previousElementSibling) {
+            if (!element.previousElementSibling && isTable) {
                 // First table row, got to add the class to the th row instead
                 element.parentElement.parentElement
                     .querySelector("thead")

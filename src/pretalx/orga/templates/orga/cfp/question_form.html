@@ -7,13 +7,23 @@
 
 {% block extra_title %}{% if form.instance.question %}{{ form.instance.question }}{% else %}{% translate "New question" %}{% endif %} :: {% endblock extra_title %}
 
-{% block content %}
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "orga/css/dragsort.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
+{% block scripts %}
     {% compress js %}
         <script defer src="{% static "js/jquery.js" %}"></script>
         <script defer src="{% static "js/jquery.formset.js" %}"></script>
         <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
         <script defer src="{% static "orga/js/questionForm.js" %}"></script>
+        <script defer src="{% static "orga/js/dragsort.js" %}"></script>
     {% endcompress %}
+{% endblock scripts %}
+
+{% block content %}
     <h2>
         {% if form.instance.question %}
             {% translate "Question" %}: {{ form.instance.question }}
@@ -110,9 +120,9 @@
             <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
                 {{ formset.non_form_errors }}
-                <div data-formset-body>
+                <div data-formset-body dragsort-url="{{ form.instance.urls.base }}">
                     {% for form in formset %}
-                        <div data-formset-form>
+                        <div data-formset-form dragsort-id="{{ form.instance.id }}">
                             <div class="sr-only">
                                 {{ form.id }}
                                 {{ form.DELETE }}
@@ -123,7 +133,11 @@
                                     {{ form.answer.as_field_group }}
                                 </div>
                                 {% if action != "view" %}
-                                    <div class="question-option-delete ml-2">
+                                    <div class="question-option-delete d-flex align-items-start">
+                                        <button draggable="true" type="button" class="btn btn-primary ml-1 mr-1 dragsort-button" title="{% translate "Move item" %}">
+                                            <i class="fa fa-arrows"></i>
+                                        </button>
+
                                         <button type="button" class="btn btn-danger" data-formset-delete-button>
                                             <i class="fa fa-trash"></i>
                                         </button>

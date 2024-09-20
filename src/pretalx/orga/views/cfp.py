@@ -326,6 +326,20 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
         messages.success(self.request, phrases.base.saved)
         return result
 
+    def post(self, request, *args, **kwargs):
+        order = request.POST.get("order")
+        if not order:
+            return super().post(request, *args, **kwargs)
+        order = order.split(",")
+        for index, pk in enumerate(order):
+            option = get_object_or_404(
+                self.question.options,
+                pk=pk,
+            )
+            option.position = index
+            option.save(update_fields=["position"])
+        return self.get(request, *args, **kwargs)
+
 
 class CfPQuestionDelete(PermissionRequired, ActionConfirmMixin, DetailView):
     permission_required = "orga.remove_question"
