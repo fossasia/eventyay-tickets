@@ -58,16 +58,16 @@ urlpatterns = [
         "organiser/<slug:organiser>/",
         include(
             [
-                path("", organiser.OrganiserDetail.as_view(), name="organiser.view"),
+                path("settings/", organiser.OrganiserDetail.as_view(), name="organiser.view"),
                 path(
-                    "delete",
+                    "settings/delete",
                     organiser.OrganiserDelete.as_view(),
                     name="organiser.delete",
                 ),
                 path(
                     "api/users", person.UserList.as_view(), name="organiser.user_list"
                 ),
-                path("teams/", organiser.TeamDetail.as_view(), name="organiser.teams"),
+                path("teams/", organiser.TeamList.as_view(), name="organiser.teams"),
                 path(
                     "teams/new",
                     organiser.TeamDetail.as_view(),

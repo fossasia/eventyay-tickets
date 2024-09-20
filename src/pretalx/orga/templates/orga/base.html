@@ -191,7 +191,7 @@
                                         <span>{{ phrases.base.general }}</span>
                                     </a>
                                     {% if can_change_teams %}
-                                        <a href="{{ request.event.organiser.orga_urls.base }}" class="nav-link nav-link-second-level{% if "settings.team." in url_name %} active{% endif %}">
+                                        <a href="{{ request.event.organiser.orga_urls.teams }}" class="nav-link nav-link-second-level{% if "settings.team." in url_name %} active{% endif %}">
                                             <span>{% translate "Teams" %}</span>
                                         </a>
                                     {% endif %}
@@ -393,7 +393,20 @@
                             {% include "orga/includes/sidebar_nav.html" %}
                         {% endfor %}
                     {% endif %}
-                {% else %}  {# if request.event #}
+                {% elif request.organiser %}  {# if request.event #}
+                    <a class="nav-link {% if "/settings/" in request.path %} active{% endif %}" href="{% url "orga:organiser.view" organiser=request.organiser.slug %}">
+                        <i class="fa fa-cog"></i>
+                        <span>{% translate "Settings" %}</span>
+                    </a>
+                    {% has_perm "orga.change_teams" request.user request.organiser as can_change_teams %}
+                    {% has_perm "orga.change_teams" request.user request.organiser as can_change_teams %}
+                    {% if can_change_teams %}
+                        <a class="nav-link {% if "/teams/" in request.path %} active{% endif %}" href="{% url "orga:organiser.teams" organiser=request.organiser.slug %}">
+                            <i class="fa fa-users"></i>
+                            <span>{% translate "Teams" %}</span>
+                        </a>
+                    {% endif %}
+                {% else %}  {# elif request.organiser #}
                     {% if request.orga_events|length > 1 %}
                         <a class="nav-link {% if request.path == "/orga/event/" %} active{% endif %}" href="{% url "orga:event.list" %}">
                             <i class="fa fa-calendar-o"></i>
