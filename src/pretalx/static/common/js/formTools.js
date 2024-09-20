@@ -189,6 +189,7 @@ const handleUnload = (e) => {
 }
 
 const isDirty = (form) => {
+    if (!!!form) return false
     if (Object.keys(originalData[form.id]).length === 0) return false
     const currentData = {}
     new FormData(form).forEach((value, key) => (currentData[key] = value))

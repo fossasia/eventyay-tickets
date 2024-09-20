@@ -11,20 +11,31 @@ tr[dragsort-id] {
       border-bottom: 2px solid var(--color-text-lighter);
     }
   }
-  .dragsort-button:not(:disabled) {
-    &,
-    button {
-      cursor: grab;
-    }
-    &:active {
-      cursor: grabbing;
-    }
-  }
   &.dragging td {
     background-color: var(--color-grey-lighter);
-    .dragsort-button {
-      transform: translate(-9999px);
-    }
+  }
+}
+.dragging .dragsort-button {
+  transform: translate(-9999px);
+}
+.dragsort-button:not(:disabled) {
+  &,
+  button {
+    cursor: grab;
+  }
+  &:active {
+    cursor: grabbing;
+  }
+}
+div[dragsort-id] {
+  &.drag-indicator.insert-before {
+    box-shadow: 0 -2px var(--color-text-lighter);
+  }
+  &.drag-indicator.insert-after {
+    box-shadow: 0 2px var(--color-text-lighter);
+  }
+  .dragging {
+    cursor: grabbing !important;
   }
 }
 thead.drag-indicator.insert-after {
