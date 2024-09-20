@@ -45,7 +45,9 @@ def can_change_organiser_settings(user, obj):
 
 @rules.predicate
 def is_orga_member(user, obj):
-    return not user.is_anonymous and user.teams.filter(organiser=obj).exists()
+    return not user.is_anonymous and (
+        user.is_administrator or user.teams.filter(organiser=obj).exists()
+    )
 
 
 @rules.predicate
