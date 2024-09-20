@@ -111,9 +111,10 @@ class Organiser(PretalxModel):
         return str(self.name)
 
     class orga_urls(EventUrls):
-        base = "/orga/organiser/{self.slug}/"
+        _base = "/orga/organiser/{self.slug}/"
+        base = "/orga/organiser/{self.slug}/settings/"
         delete = "{base}delete"
-        teams = "{base}teams/"
+        teams = "{_base}teams/"
         new_team = "{teams}new"
 
     @transaction.atomic

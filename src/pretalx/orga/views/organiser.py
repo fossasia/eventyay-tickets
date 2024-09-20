@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView, TemplateView
+from django.views.generic import DetailView, ListView, TemplateView
 from django_context_decorator import context
 
 from pretalx.common.exceptions import SendMailException
@@ -270,18 +270,24 @@ class TeamResetPassword(PermissionRequired, ActionConfirmMixin, TemplateView):
         return redirect(self.request.organiser.orga_urls.base)
 
 
+class TeamList(PermissionRequired, ListView):
+    template_name = "orga/organiser/team_list.html"
+    model = Team
+    permission_required = "orga.change_teams"
+    context_object_name = "teams"
+
+    def get_queryset(self):
+        return self.request.organiser.teams.all().order_by("-all_events", "-id")
+
+    def get_permission_object(self):
+        return self.request.organiser
+
+
 class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
     template_name = "orga/organiser/detail.html"
     model = Organiser
     permission_required = "orga.change_organiser_settings"
     form_class = OrganiserForm
-
-    @context
-    @cached_property
-    def teams(self):
-        if not self.object:
-            return []
-        return self.request.organiser.teams.all().order_by("-all_events", "-id")
 
     def get_object(self, queryset=None):
         return getattr(self.request, "organiser", None)
