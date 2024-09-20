@@ -142,6 +142,7 @@ def _default_context(request):
             ],
             timeout=300  # The cache timeout
         )
+    ctx['base_path'] = settings.BASE_PATH
 
     ctx['html_head'] = "".join(h for h in _html_head if h)
     ctx['html_foot'] = "".join(h for h in _html_foot if h)
