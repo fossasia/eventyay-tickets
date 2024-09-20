@@ -61,13 +61,11 @@ def get_speaker_profiles_for_user(user, event):
 class SpeakerList(
     EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView
 ):
-    model = SpeakerProfile
     template_name = "orga/speaker/list.html"
     context_object_name = "speakers"
     default_filters = ("user__email__icontains", "user__name__icontains")
     sortable_fields = ("user__email", "user__name")
     default_sort_field = "user__name"
-    paginate_by = 25
     permission_required = "orga.view_speakers"
 
     @context

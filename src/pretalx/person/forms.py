@@ -23,6 +23,7 @@ from pretalx.common.forms.mixins import (
 )
 from pretalx.common.forms.widgets import MarkdownWidget
 from pretalx.common.text.phrases import phrases
+from pretalx.event.models import Event
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
 from pretalx.schedule.forms import AvailabilitiesFormMixin
 from pretalx.submission.models import Question
@@ -394,3 +395,26 @@ class SpeakerFilterForm(forms.Form):
     def __init__(self, event, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["question"].queryset = event.questions.all()
+
+
+class UserSpeakerFilterForm(forms.Form):
+    role = forms.ChoiceField(
+        choices=(
+            ("speaker", phrases.schedule.speakers),
+            ("submitter", _("Non-accepted submitters")),
+            ("all", phrases.base.all_choices),
+        ),
+        required=False,
+    )
+    events = SafeModelMultipleChoiceField(
+        queryset=Event.objects.none(),
+        required=False,
+        widget=forms.SelectMultiple(attrs={"class": "select2"}),
+    )
+
+    def __init__(self, *args, events=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if events.count() > 1:
+            self.fields["events"].queryset = events
+        else:
+            self.fields.pop("events")

@@ -216,6 +216,12 @@ class Team(PretalxModel):
             and getattr(self, attr, False) is True
         }
 
+    @cached_property
+    def events(self):
+        if self.all_events:
+            return self.organiser.events.all()
+        return self.limit_events.all()
+
     class orga_urls(EventUrls):
         base = "{self.organiser.orga_urls.teams}{self.pk}/"
         delete = "{base}delete"

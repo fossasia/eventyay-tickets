@@ -1,0 +1,67 @@
+{% extends "orga/base.html" %}
+{% load bootstrap4 %}
+{% load i18n %}
+{% load url_replace %}
+
+{% block extra_title %}{{ page_obj.paginator.count }} {% blocktranslate trimmed count count=page_obj.paginator.count %}speaker{% plural %}speakers{% endblocktranslate %} :: {% endblock extra_title %}
+
+{% block content %}
+    <h2>
+        {{ page_obj.paginator.count }}
+        {% blocktranslate trimmed count count=page_obj.paginator.count %}
+            speaker
+        {% plural %}
+            speakers
+        {% endblocktranslate %}
+    </h2>
+
+    <div class="submit-group search-submit-group">
+        <form class="search-form">
+            {% bootstrap_form search_form %}
+            {% bootstrap_form filter_form %}
+            <button class="btn btn-info btn-search" type="submit">{% translate "Search" %}</button>
+        </form>
+    </div>
+
+    <div class="table-responsive-md">
+        <table class="table table-sm table-hover table-flip table-sticky">
+            <thead>
+                <tr>
+                  <th>
+                    {% translate "Name" %}
+                        <a href="?{% url_replace request "sort" "name" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                        <a href="?{% url_replace request "sort" "-name" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
+                  </th>
+                  <th>
+                    {% translate "Email" %}
+                        <a href="?{% url_replace request "sort" "email" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                        <a href="?{% url_replace request "sort" "-email" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
+                  </th>
+                  <th class="numeric">
+                    {% translate "Accepted Proposals" %}
+                        <a href="?{% url_replace request "sort" "-accepted_submission_count" %}"><i class="fa fa-caret-down" title="{% translate "Sort (high-low)" %}"></i></a>
+                        <a href="?{% url_replace request "sort" "accepted_submission_count" %}"><i class="fa fa-caret-up" title="{% translate "Sort (low-high)" %}"></i></a>
+                  </th>
+                  <th class="numeric">
+                    {% translate "Proposals" %}
+                        <a href="?{% url_replace request "sort" "-submission_count" %}"><i class="fa fa-caret-down" title="{% translate "Sort (high-low)" %}"></i></a>
+                        <a href="?{% url_replace request "sort" "submission_count" %}"><i class="fa fa-caret-up" title="{% translate "Sort (low-high)" %}"></i></a>
+                  </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for speaker in speakers %}
+                    <tr>
+                        <td>{{ speaker.get_display_name }}</td>
+                        <td><a href="mailto:{{ speaker.email }}">{{ speaker.email }}</a></td>
+                        <td class="numeric">{{ speaker.accepted_submission_count }}</td>
+                        <td class="numeric">{{ speaker.submission_count }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% include "orga/includes/pagination.html" %}
+
+{% endblock content %}

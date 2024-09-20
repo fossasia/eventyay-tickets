@@ -58,7 +58,11 @@ urlpatterns = [
         "organiser/<slug:organiser>/",
         include(
             [
-                path("settings/", organiser.OrganiserDetail.as_view(), name="organiser.view"),
+                path(
+                    "settings/",
+                    organiser.OrganiserDetail.as_view(),
+                    name="organiser.view",
+                ),
                 path(
                     "settings/delete",
                     organiser.OrganiserDelete.as_view(),
@@ -109,6 +113,11 @@ urlpatterns = [
                             ),
                         ]
                     ),
+                ),
+                path(
+                    "speakers/",
+                    organiser.OrganiserSpeakerList.as_view(),
+                    name="organiser.speakers",
                 ),
             ]
         ),
