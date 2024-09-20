@@ -44,6 +44,11 @@ def can_change_organiser_settings(user, obj):
 
 
 @rules.predicate
+def is_orga_member(user, obj):
+    return not user.is_anonymous and user.teams.filter(organiser=obj).exists()
+
+
+@rules.predicate
 def can_change_any_organiser_settings(user, obj):
     return not user.is_anonymous and (
         user.is_administrator
@@ -191,6 +196,7 @@ rules.add_perm(
     "orga.view_speakers",
     can_change_submissions | (is_reviewer & can_view_speaker_names),
 )
+rules.add_perm("orga.view_organiser_speakers", is_orga_member)
 rules.add_perm(
     "orga.view_speaker", can_change_submissions | (is_reviewer & can_view_speaker_names)
 )

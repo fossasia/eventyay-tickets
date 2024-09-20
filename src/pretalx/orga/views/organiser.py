@@ -1,23 +1,32 @@
 import logging
 
 from allauth.socialaccount.models import SocialApp
-from django.conf import settings
 from django.contrib import messages
 from django.db import transaction
+from django.db.models import Count, Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DetailView, ListView, TemplateView
 from django_context_decorator import context
+from django_scopes import scopes_disabled
 
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views import is_form_bound
-from pretalx.common.views.mixins import ActionConfirmMixin, PermissionRequired
+from pretalx.common.views.mixins import (
+    ActionConfirmMixin,
+    Filterable,
+    PaginationMixin,
+    PermissionRequired,
+    Sortable,
+)
 from pretalx.event.forms import OrganiserForm, TeamForm, TeamInviteForm
+from pretalx.event.models import Event
 from pretalx.event.models.organiser import (
     Organiser,
     Team,
@@ -25,6 +34,10 @@ from pretalx.event.models.organiser import (
     check_access_permissions,
 )
 from pretalx.orga.forms.sso_client_form import SSOClientForm
+from pretalx.person.forms import UserSpeakerFilterForm
+from pretalx.person.models import User
+from pretalx.submission.models.submission import SubmissionStates
+
 
 logger = logging.getLogger(__name__)
 
@@ -397,3 +410,85 @@ class OrganiserDelete(PermissionRequired, ActionConfirmMixin, DetailView):
         organiser = self.get_object()
         organiser.shred(person=self.request.user)
         return HttpResponseRedirect(reverse("orga:event.list"))
+
+
+@method_decorator(scopes_disabled(), "dispatch")
+class OrganiserSpeakerList(
+    PermissionRequired, Sortable, Filterable, PaginationMixin, ListView
+):
+    template_name = "orga/organiser/speaker_list.html"
+    permission_required = "orga.view_organiser_speakers"
+    context_object_name = "speakers"
+    default_filters = ("email__icontains", "name__icontains")
+    sortable_fields = ("email", "name", "accepted_submission_count", "submission_count")
+    default_sort_field = "name"
+
+    def get_permission_object(self):
+        return self.request.organiser
+
+    @context
+    @cached_property
+    def filter_form(self):
+        return UserSpeakerFilterForm(self.request.GET, events=self.events)
+
+    @context
+    @cached_property
+    def events(self):
+        events = set()
+        for team in self.request.organiser.teams.all():
+            if team.can_change_submissions:
+                if team.all_events:
+                    # This user has access to all speakers for all events,
+                    # so we can cut our logic short here.
+                    return self.request.organiser.events.all()
+                else:
+                    events.update(team.events.values_list("pk", flat=True))
+            elif team.is_reviewer:
+                # Reviewers *can* have access to speakers, but they do not necessarily
+                # do, so we need to check permissions for each event.
+                for event in team.events:
+                    if self.request.user.has_perm("orga.view_speakers", event):
+                        events.add(event.pk)
+        return Event.objects.filter(pk__in=events)
+
+    def get_queryset(self):
+        events = self.events
+        if (
+            self.filter_form.fields.get("events")
+            and self.filter_form.is_valid()
+            and self.filter_form.cleaned_data.get("events")
+        ):
+            events = self.filter_form.cleaned_data["events"]
+
+        qs = (
+            User.objects.filter(profiles__event__in=events)
+            .prefetch_related("profiles", "profiles__event")
+            .annotate(
+                submission_count=Count(
+                    "submissions",
+                    filter=Q(submissions__event__in=events),
+                    distinct=True,
+                ),
+                accepted_submission_count=Count(
+                    "submissions",
+                    filter=Q(submissions__event__in=events)
+                    & Q(submissions__state__in=SubmissionStates.accepted_states),
+                    distinct=True,
+                ),
+            )
+        )
+
+        qs = self.filter_queryset(qs)
+        role = self.request.GET.get("role") or "speaker"
+        if role == "speaker":
+            qs = qs.filter(accepted_submission_count__gt=0)
+        elif role == "submitter":
+            qs = qs.filter(accepted_submission_count=0)
+
+        qs = qs.order_by("id").distinct()
+        return self.sort_queryset(qs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context[self.context_object_name] = list(context[self.context_object_name])
+        return context

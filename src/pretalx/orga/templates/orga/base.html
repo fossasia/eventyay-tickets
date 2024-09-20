@@ -399,11 +399,17 @@
                         <span>{% translate "Settings" %}</span>
                     </a>
                     {% has_perm "orga.change_teams" request.user request.organiser as can_change_teams %}
-                    {% has_perm "orga.change_teams" request.user request.organiser as can_change_teams %}
+                    {% has_perm "orga.view_organiser_speakers" request.user request.organiser as can_view_speakers %}
                     {% if can_change_teams %}
                         <a class="nav-link {% if "/teams/" in request.path %} active{% endif %}" href="{% url "orga:organiser.teams" organiser=request.organiser.slug %}">
                             <i class="fa fa-users"></i>
                             <span>{% translate "Teams" %}</span>
+                        </a>
+                    {% endif %}
+                    {% if can_view_speakers %}
+                        <a class="nav-link {% if "/speakers/" in request.path %} active{% endif %}" href="{% url "orga:organiser.speakers" organiser=request.organiser.slug %}">
+                            <i class="fa fa-address-card-o"></i>
+                            <span>{% translate "Speakers" %}</span>
                         </a>
                     {% endif %}
                 {% else %}  {# elif request.organiser #}
