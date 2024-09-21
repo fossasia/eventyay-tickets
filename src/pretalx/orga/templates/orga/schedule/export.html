@@ -98,9 +98,14 @@
             <p>
                 {% blocktranslate trimmed %}
                     The event schedule can be exported to a static HTML dump, so you can upload it
-                    to a normal file-serving web server like nginx. This is done automatically on
-                    schedule release, but you can also trigger that action here.
+                    to a normal file-serving web server like nginx.
                 {% endblocktranslate %}
+                {% if request.export_html_on_release %}
+                  {% blocktranslate trimmed %}
+                      This is done automatically on
+                      schedule release, but you can also trigger that action here.
+                  {% endblocktranslate %}
+                {% endif %}
             </p>
 
             <div class="submit-group"><span></span><span>
