@@ -136,6 +136,11 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
     def __init__(self, *args, **kwargs):
         self.is_administrator = kwargs.pop("is_administrator", False)
         super().__init__(*args, **kwargs)
+        site_url = settings.SITE_URL.split("://")[-1]
+        site_url = f"<code>{site_url}</code>"
+        self.fields["custom_domain"].help_text += ". " + _(
+            "Make sure to point a CNAME record from your domain to {site_url}."
+        ).format(site_url=site_url)
         self.initial["locales"] = self.instance.locale_array.split(",")
         self.initial["content_locales"] = self.instance.content_locale_array.split(",")
         year = str(now().year)
