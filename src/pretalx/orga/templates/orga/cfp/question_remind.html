@@ -13,6 +13,11 @@
                 Here you can limit who will receive reminder emails.
                 You will be able to review emails before they are sent out.
             {% endblocktranslate %}
+            <br>
+            <a href="{{ request.event.question_template.urls.base }}">
+                {% translate "Email template" %}:
+                {% translate "Unanswered questions reminder" %}
+            </a>
         </p>
     </div>
     <form class="form" method="post">
