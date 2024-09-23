@@ -26,10 +26,10 @@ and configuration here, but please have a look at the linked pages.
 
 * **Python 3.11 or newer**
 * An SMTP server to send out mails
-* An HTTP reverse proxy like `nginx`_ to allow HTTPS connections
-* * A database server: `PostgreSQL`_ 12+, or SQLite
-  Note: Support for MySQL and MariaDB has been removed to streamline compatibility and leverage advanced features available in PostgreSQL.
-  3. Given the choice, we’d recommend to use PostgreSQL.
+* An HTTP reverse proxy like `nginx`_ to allow HTTPS connections and serve
+  files from the filesystem
+* A database server: `PostgreSQL`_ 12+, or SQLite 3. Given the choice, we’d
+  recommend to use PostgreSQL.
 * A `redis`_ server, if you want to use pretalx with an asynchronous task
   runner or improved caching.
 * `nodejs`_ and npm (usually bundled with nodejs). You’ll need a `supported
@@ -59,8 +59,8 @@ As we do not want to run pretalx as root, we first create a new unprivileged use
 Step 2: Database setup
 ----------------------
 
-pretalx runs with PostgreSQL or SQLite. If you’re using
-SQLite, you can skip this step, as there is no need to set up the database.
+pretalx runs with PostgreSQL or SQLite. If you’re using SQLite, you can skip
+this step, as there is no need to set up the database.
 
 We recommend using PostgreSQL. This is how you can set up a database for your
 pretalx installation – if you do not use PostgreSQL, please refer to the
@@ -72,8 +72,6 @@ appropriate documentation on how to set up a database::
 Make sure that your database encoding is UTF-8. You can check with this command::
 
   # sudo -u postgres psql -c 'SHOW SERVER_ENCODING'
-
-.. highlight:: sql
 
 
 Step 3: Package dependencies
@@ -138,7 +136,7 @@ Now, upgrade your pip and then install the required Python packages::
 +=================+========================================================================+
 | SQLite          | ``pip install --user --upgrade-strategy eager -U pretalx``             |
 +-----------------+------------------------------------------------------------------------+
-| PostgreSQL      | ``pip install --user --upgrade-strategy eager -U "pretalx[postgres]"`` |
+| PostgreSQL      | ``pip install --upgrade-strategy eager -U "pretalx[postgres]"``        |
 +-----------------+------------------------------------------------------------------------+
 
 If you intend to run pretalx with asynchronous task runners or with redis as

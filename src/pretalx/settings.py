@@ -200,9 +200,6 @@ else:
 ## DATABASE SETTINGS
 db_backend = config.get("database", "backend")
 db_name = config.get("database", "name", fallback=str(DATA_DIR / "db.sqlite3"))
-
-db_opts = {}
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends." + db_backend,
@@ -212,7 +209,7 @@ DATABASES = {
         "HOST": config.get("database", "host"),
         "PORT": config.get("database", "port"),
         "CONN_MAX_AGE": 0 if db_backend == "sqlite3" or HAS_CELERY else 120,
-        "OPTIONS": db_opts,
+        "OPTIONS": {},
         "TEST": {},
     }
 }
