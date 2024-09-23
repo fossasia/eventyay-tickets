@@ -76,6 +76,10 @@ for app in apps.get_app_configs():
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^organizers/(?P<organizer>[^/]+)/', include(orga_router.urls)),
+    url(r'^organizers/(?P<organizer>[^/]+)/checkinrpc/redeem/$', checkin.CheckinRPCRedeemView.as_view(),
+            name="checkinrpc.redeem"),
+    url(r'^organizers/(?P<organizer>[^/]+)/checkinrpc/search/$', checkin.CheckinRPCSearchView.as_view(),
+            name="checkinrpc.search"),
     url(r'^organizers/(?P<organizer>[^/]+)/settings/$', organizer.OrganizerSettingsView.as_view(),
         name="organizer.settings"),
     url(r'^organizers/(?P<organizer>[^/]+)/giftcards/(?P<giftcard>[^/]+)/', include(giftcard_router.urls)),
