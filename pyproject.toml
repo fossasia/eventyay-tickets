@@ -91,7 +91,7 @@ dev = [
   "rich",
   "urllib3",
 ]
-postgres = ["psycopg[pool]"]
+postgres = ["psycopg2-binary~=2.9.0"]
 redis = ["redis~=5.0.0"]
 
 [build-system]
