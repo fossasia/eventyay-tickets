@@ -191,14 +191,6 @@ else:
 ## DATABASE SETTINGS
 db_backend = config.get("database", "backend")
 db_name = config.get("database", "name", fallback=str(DATA_DIR / "db.sqlite3"))
-if db_backend == "mysql":
-    db_opts = {
-        "charset": "utf8mb4",
-        "use_unicode": True,
-        "init_command": "SET character_set_connection=utf8mb4,collation_connection=utf8mb4_unicode_ci;",
-    }
-else:
-    db_opts = {}
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends." + db_backend,
@@ -208,15 +200,8 @@ DATABASES = {
         "HOST": config.get("database", "host"),
         "PORT": config.get("database", "port"),
         "CONN_MAX_AGE": 0 if db_backend == "sqlite3" or HAS_CELERY else 120,
-        "OPTIONS": db_opts,
-        "TEST": (
-            {
-                "CHARSET": "utf8mb4",
-                "COLLATION": "utf8mb4_unicode_ci",
-            }
-            if "mysql" in db_backend
-            else {}
-        ),
+        "OPTIONS": {},
+        "TEST": {},
     }
 }
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"

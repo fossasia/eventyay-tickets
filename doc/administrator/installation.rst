@@ -28,8 +28,8 @@ and configuration here, but please have a look at the linked pages.
 * An SMTP server to send out mails
 * An HTTP reverse proxy like `nginx`_ to allow HTTPS connections and serve
   files from the filesystem
-* A database server: `MySQL`_ 8+, MariaDB 10.4+ or `PostgreSQL`_ 12+, or SQLite
-  3. Given the choice, we’d recommend to use PostgreSQL.
+* A database server: `PostgreSQL`_ 12+, or SQLite 3. Given the choice, we’d
+  recommend to use PostgreSQL.
 * A `redis`_ server, if you want to use pretalx with an asynchronous task
   runner or improved caching.
 * `nodejs`_ and npm (usually bundled with nodejs). You’ll need a `supported
@@ -59,8 +59,8 @@ As we do not want to run pretalx as root, we first create a new unprivileged use
 Step 2: Database setup
 ----------------------
 
-pretalx runs with PostgreSQL, MySQL, MariaDB, or SQLite. If you’re using
-SQLite, you can skip this step, as there is no need to set up the database.
+pretalx runs with PostgreSQL or SQLite. If you’re using SQLite, you can skip
+this step, as there is no need to set up the database.
 
 We recommend using PostgreSQL. This is how you can set up a database for your
 pretalx installation – if you do not use PostgreSQL, please refer to the
@@ -72,13 +72,6 @@ appropriate documentation on how to set up a database::
 Make sure that your database encoding is UTF-8. You can check with this command::
 
   # sudo -u postgres psql -c 'SHOW SERVER_ENCODING'
-
-.. highlight:: sql
-
-When using MySQL, make sure you set the character set of the database to
-``utf8mb4``, e.g. like this::
-
-    mysql> CREATE DATABASE pretalx DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;
 
 
 Step 3: Package dependencies
@@ -93,7 +86,6 @@ flavours – on Ubuntu-like systems, you will need packages like:
 - ``python3-dev``
 - ``python3-venv``
 - ``gettext``
-- ``libmysqlclient-dev`` if you use MariaDB
 
 
 Step 4: Configuration
@@ -146,8 +138,6 @@ Now, upgrade your pip and then install the required Python packages::
 | SQLite          | ``pip install --upgrade-strategy eager -U pretalx``                    |
 +-----------------+------------------------------------------------------------------------+
 | PostgreSQL      | ``pip install --upgrade-strategy eager -U "pretalx[postgres]"``        |
-+-----------------+------------------------------------------------------------------------+
-| MySQL / MariaDB | ``pip install --upgrade-strategy eager -U "pretalx[mysql]"``           |
 +-----------------+------------------------------------------------------------------------+
 
 If you intend to run pretalx with asynchronous task runners or with redis as
@@ -292,7 +282,6 @@ If you want to read about updates, backups, and monitoring, head over to our
 .. _Ansible role: https://github.com/pretalx/ansible-pretalx
 .. _nginx: https://botleg.com/stories/https-with-lets-encrypt-and-nginx/
 .. _Let’s Encrypt: https://letsencrypt.org/
-.. _MySQL: https://dev.mysql.com/doc/refman/5.7/en/linux-installation-apt-repo.html
 .. _PostgreSQL: https://www.postgresql.org/docs/
 .. _redis: https://redis.io/docs/latest/
 .. _ufw: https://en.wikipedia.org/wiki/Uncomplicated_Firewall
