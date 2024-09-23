@@ -210,7 +210,11 @@ DATABASES = {
         "PORT": config.get("database", "port"),
         "CONN_MAX_AGE": 0 if db_backend == "sqlite3" else 120,
         "CONN_HEALTH_CHECKS": db_backend != "sqlite3",
-        "OPTIONS": {},
+        "OPTIONS": (
+            {"init_command": "PRAGMA synchronous=3; PRAGMA cache_size=2000;"}
+            if db_backend == "sqlite3"
+            else {}
+        ),
         "TEST": {},
     }
 }
