@@ -28,6 +28,12 @@ class EventPluginSignal(django.dispatch.Signal):
     that are enabled for the given Event.
     """
 
+    def get_live_receivers(self, sender):
+        receivers = self._live_receivers(sender)
+        if not receivers:
+            return []
+        return receivers[0]
+
     @staticmethod
     def _is_active(sender, receiver):
         # Find the Django application this belongs to
@@ -69,7 +75,7 @@ class EventPluginSignal(django.dispatch.Signal):
         if not app_cache:
             _populate_app_cache()
 
-        for receiver in self._live_receivers(sender):
+        for receiver in self.get_live_receivers(sender):
             if self._is_active(sender, receiver):
                 response = receiver(signal=self, sender=sender, **named)
                 responses.append((receiver, response))
@@ -99,7 +105,7 @@ class EventPluginSignal(django.dispatch.Signal):
         if not app_cache:  # pragma: no cover
             _populate_app_cache()
 
-        for receiver in self._live_receivers(sender):
+        for receiver in self.get_live_receivers(sender):
             if self._is_active(sender, receiver):
                 try:
                     response = receiver(signal=self, sender=sender, **named)
@@ -136,7 +142,7 @@ class EventPluginSignal(django.dispatch.Signal):
         if not app_cache:  # pragma: no cover
             _populate_app_cache()
 
-        for receiver in self._live_receivers(sender):
+        for receiver in self.get_live_receivers(sender):
             if self._is_active(sender, receiver):
                 named[chain_kwarg_name] = response
                 response = receiver(signal=self, sender=sender, **named)

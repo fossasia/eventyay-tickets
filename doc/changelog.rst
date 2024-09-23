@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :announcement:`admin` pretalx now requires Python 3.10 or newer.
 - :feature`orga` Organisers now have access to a list of all speakers / submitters for all of their events.
 - :bug:`orga:schedule,1828` When exporting an event to a HTML export, files with umlauts or other non-ascii characters in their file name were saved with the encoded version of that name, so when the export was served by a webserver, these files wouldn't be shown.
 - :bug:`schedule` When organisers initially asked speakers to upload a profile picture, but then turned off the upload, the profile pictures collected to that date would still show up in the schedule grid and on the individual speaker pages. They will now be hidden from view.
