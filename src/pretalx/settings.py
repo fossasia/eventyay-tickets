@@ -199,7 +199,8 @@ DATABASES = {
         "PASSWORD": config.get("database", "password"),
         "HOST": config.get("database", "host"),
         "PORT": config.get("database", "port"),
-        "CONN_MAX_AGE": 0 if db_backend == "sqlite3" or HAS_CELERY else 120,
+        "CONN_MAX_AGE": 0 if db_backend == "sqlite3" else 120,
+        "CONN_HEALTH_CHECKS": db_backend != "sqlite3",
         "OPTIONS": {"pool": True} if db_backend == "postgresql" else {},
         "TEST": {},
     }
