@@ -26,8 +26,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.11]
-        database: [sqlite, postgres]
+        python-version: ['3.10', 3.11, 3.12]
+        database: [sqlite, postgres, mysql]
+        exclude:
+          - database: mysql
+            python-version: '3.10'
+          - database: mysql
+            python-version: '3.11'
+          - database: sqlite
+            python-version: '3.10'
+          - database: sqlite
+            python-version: '3.11'
     steps:
       - uses: actions/checkout@v4
       - uses: harmon758/postgresql-action@v1

@@ -344,7 +344,6 @@ MESSAGE_TAGS = {
 
 ## I18N SETTINGS
 USE_I18N = True
-USE_TZ = True
 TIME_ZONE = config.get("locale", "time_zone")
 LOCALE_PATHS = (Path(__file__).resolve().parent / "locale",)
 FORMAT_MODULE_PATH = ["pretalx.common.formats"]
