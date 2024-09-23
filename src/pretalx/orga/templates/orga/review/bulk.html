@@ -5,7 +5,6 @@
 {% load i18n %}
 {% load review_score %}
 {% load rules %}
-{% load url_replace %}
 {% load static %}
 
 {% block scripts %}
@@ -62,7 +61,7 @@
                 {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
                     List filtered by answers to question “{{ question }}”.
                 {% endblocktranslate %}
-                <a href="?{% url_replace request "question" "" "answer" "" "answer__options" "" %}" class="text-muted">
+                <a href="?{% querystring question="" answer="" answer__options="" %}" class="text-muted">
                     <span class="fa fa-times"></span>
                     {% translate "Remove filter" %}
                 </a>

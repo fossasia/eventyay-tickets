@@ -2,7 +2,6 @@
 
 {% load bootstrap4 %}
 {% load i18n %}
-{% load url_replace %}
 
 {% block mail_content %}
     <h2>
@@ -16,19 +15,19 @@
                 <tr>
                     <th>
                         {{ phrases.base.email_subject }}
-                        <a href="?{% url_replace request "sort" "subject" %}"><i class="fa fa-caret-down" title="{% translate "Sort by subject (a-z)" %}"></i></a>
-                        <a href="?{% url_replace request "sort" "-subject" %}"><i class="fa fa-caret-up" title="{% translate "Sort by subject (z-a)" %}"></i></a>
+                        <a href="{% querystring sort="subject" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                        <a href="{% querystring sort="-subject" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
                     </th>
                     <th>
                         {% translate "To" %}
-                        <a href="?{% url_replace request "sort" "to" %}"><i class="fa fa-caret-down" title="{% translate "Sort by recipient (a-z)" %}"></i></a>
-                        <a href="?{% url_replace request "sort" "-to" %}"><i class="fa fa-caret-up" title="{% translate "Sort by recipient (z-a)" %}"></i></a>
+                        <a href="{% querystring sort="to" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                        <a href="{% querystring sort="-to" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
                     </th>
                     <th></th>
                     <th class="numeric">
                         {% translate "Sent" %}
-                        <a href="?{% url_replace request "sort" "-sent" %}"><i class="fa fa-caret-down" title="{% translate "Sort by sending time (most recent first)" %}"></i></a>
-                        <a href="?{% url_replace request "sort" "sent" %}"><i class="fa fa-caret-up" title="{% translate "Sort by sending time (earliest first)" %}"></i></a>
+                        <a href="{% querystring sort="-sent" %}"><i class="fa fa-caret-down" title="{% translate "Sort (latest first)" %}"></i></a>
+                        <a href="{% querystring sort="sent" %}"><i class="fa fa-caret-up" title="{% translate "Sort (oldest first)" %}"></i></a>
                     </th>
                 </tr>
             </thead>

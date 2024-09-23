@@ -2,7 +2,6 @@
 
 {% load bootstrap4 %}
 {% load i18n %}
-{% load url_replace %}
 
 {% block email_editor_title_detail %}
   {% translate "Sessions, proposals, speakers" %}
@@ -18,7 +17,7 @@
           {% blocktranslate trimmed with question=form.filter_question %}
             Recipients filtered by answers to question “{{ question }}”.
           {% endblocktranslate %}
-          <a href="?{% url_replace request "question" "" "answer" "" "answer__options" "" %}" class="text-muted">
+          <a href="{% querystring question="" answer="" answer__options="" %}" class="text-muted">
             <span class="fa fa-times ml-2"></span>
             {% translate "Remove filter" %}
           </a>
@@ -30,7 +29,7 @@
           {% blocktranslate trimmed with search=form.filter_search %}
             Recipients filtered by search “{{ search }}”.
           {% endblocktranslate %}
-          <a href="?{% url_replace request "q" "" %}" class="text-muted">
+          <a href="{% querystring q="" %}" class="text-muted">
             <span class="fa fa-times ml-2"></span>
             {% translate "Remove filter" %}
           </a>
