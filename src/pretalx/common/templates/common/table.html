@@ -8,7 +8,7 @@
                     {% for column in columns %}
                         <th {{ column.attrs.th }}>
                             {% if column.orderable %}
-                                <a href="{% url_replace request order_by=column.order_by_alias.next %}">{{ column.header }}</a>
+                                <a href="{% querystring order_by=column.order_by_alias.next %}">{{ column.header }}</a>
                             {% else %}
                                 {{ column.header }}
                             {% endif %}

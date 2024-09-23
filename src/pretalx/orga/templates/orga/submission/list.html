@@ -5,7 +5,6 @@
 {% load i18n %}
 {% load rules %}
 {% load static %}
-{% load url_replace %}
 
 {% block scripts %}
     {% compress js %}
@@ -37,7 +36,7 @@
         </span>
         <p class="flip ml-auto">
             {% if can_send_mails %}
-                <a class="btn btn-outline-info mt-2" href="{{ request.event.orga_urls.compose_mails_sessions }}?{% url_replace request page "" %}">
+                <a class="btn btn-outline-info mt-2" href="{{ request.event.orga_urls.compose_mails_sessions }}{% querystring page="" %}">
                     <i class="fa fa-envelope"></i>
                     {% translate "Send email" %}
                 </a>
@@ -83,7 +82,7 @@
                 {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
                     List filtered by answers to question “{{ question }}”.
                 {% endblocktranslate %}
-                <a href="?{% url_replace request "question" "" "answer" "" "answer__options" "" %}" class="text-muted">
+                <a href="{% querystring question="" answer="" answer__options="" %}" class="text-muted">
                     <span class="fa fa-times"></span>
                     {% translate "Remove filter" %}
                 </a>
@@ -98,8 +97,8 @@
                     <th></th>
                     <th>
                         {% translate "Title" %}
-                        <a href="?{% url_replace request "sort" "title" %}"><i class="fa fa-caret-down" title="{% translate "Sort by title (a-z)" %}"></i></a>
-                        <a href="?{% url_replace request "sort" "-title" %}"><i class="fa fa-caret-up" title="{% translate "Sort by title (z-a)" %}"></i></a>
+                        <a href="{% querystring sort="title" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                        <a href="{% querystring sort="-title" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
                     </th>
                     {% if can_view_speakers %}<th>{{ phrases.schedule.speakers }}</th>{% endif %}
                     {% if show_submission_types %}
@@ -109,14 +108,14 @@
                     {% endif %}
                     <th>
                         {% translate "State" %}
-                        <a href="?{% url_replace request "sort" "state" %}"><i class="fa fa-caret-down" title="{% translate "Sort by state (a-z)" %}"></i></a>
-                        <a href="?{% url_replace request "sort" "-state" %}"><i class="fa fa-caret-up" title="{% translate "Sort by state (z-a)" %}"></i></a>
+                        <a href="{% querystring sort="state" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                        <a href="{% querystring sort="-state" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
                     </th>
                     {% if can_change_submission %}
                         <th>
                             {% translate "Featured" %} <i class="fa fa-question-circle" data-toggle="tooltip" title="{% translate "Show this session on the list of featured sessions, once it was accepted" %}"></i>
-                            <a href="?{% url_replace request "sort" "-is_featured" %}"><i class="fa fa-caret-down" title="{% translate "Sort by featured first" %}"></i></a>
-                            <a href="?{% url_replace request "sort" "is_featured" %}"><i class="fa fa-caret-up" title="{% translate "Sort featured last" %}"></i></a>
+                            <a href="{% querystring sort="-is_featured" %}"><i class="fa fa-caret-down" title="{% translate "Sort (latest first)" %}"></i></a>
+                            <a href="{% querystring sort="is_featured" %}"><i class="fa fa-caret-up" title="{% translate "Sort (oldest first)" %}"></i></a>
                         </th>
                         <th></th>
                     {% endif %}

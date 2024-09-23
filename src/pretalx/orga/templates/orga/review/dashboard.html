@@ -5,7 +5,6 @@
 {% load i18n %}
 {% load review_score %}
 {% load rules %}
-{% load url_replace %}
 {% load static %}
 
 {% block scripts %}
@@ -158,7 +157,7 @@
                 {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
                     List filtered by answers to question “{{ question }}”.
                 {% endblocktranslate %}
-                <a href="?{% url_replace request "question" "" "answer" "" "answer__options" "" %}" class="text-muted">
+                <a href="{% querystring question="" answer="" answer__options="" %}" class="text-muted">
                     <span class="fa fa-times"></span>
                     {% translate "Remove filter" %}
                 </a>
@@ -202,8 +201,8 @@
                                 {% else %}
                                     {% translate "Average" %}
                                 {% endif %}
-                                <a href="?{% url_replace request "sort" "score" %}"><i class="fa fa-caret-down" title="{% translate "Sort by score (highest first)" %}"></i></a>
-                                <a href="?{% url_replace request "sort" "-score" %}"><i class="fa fa-caret-up" title="{% translate "Sort by score (lowest first)" %}"></i></a>
+                                <a href="{% querystring sort="score" %}"><i class="fa fa-caret-down" title="{% translate "Sort (highest first)" %}"></i></a>
+                                <a href="{% querystring sort="-score" %}"><i class="fa fa-caret-up" title="{% translate "Sort (lowest first)" %}"></i></a>
                             </th>
                             {% if independent_categories %}
                                 {% for category in independent_categories %}
@@ -214,8 +213,8 @@
                         {% if can_review or submissions_reviewed %}
                             <th class="col-score-user numeric">
                                 {% translate "Your score" %}
-                                <a href="?{% url_replace request "sort" "my_score" %}"><i class="fa fa-caret-down" title="{% translate "Sort by score (highest first)" %}"></i></a>
-                                <a href="?{% url_replace request "sort" "-my_score" %}"><i class="fa fa-caret-up" title="{% translate "Sort by score (lowest first)" %}"></i></a>
+                                <a href="{% querystring sort="my_score" %}"><i class="fa fa-caret-down" title="{% translate "Sort (highest first)" %}"></i></a>
+                                <a href="{% querystring sort="-my_score" %}"><i class="fa fa-caret-up" title="{% translate "Sort (lowest first)" %}"></i></a>
                             </th>
                             {% if independent_categories and not can_see_all_reviews %}
                                 {% for category in independent_categories %}
@@ -225,8 +224,8 @@
                         {% endif %}
                         <th class="col-review-count numeric">
                             {% translate "Reviews" %}
-                            <a href="?{% url_replace request "sort" "count" %}"><i class="fa fa-caret-down" title="{% translate "Sort by review count (highest first)" %}"></i></a>
-                            <a href="?{% url_replace request "sort" "-count" %}"><i class="fa fa-caret-up" title="{% translate "Sort by review count (lowest first)" %}"></i></a>
+                            <a href="{% querystring sort="count" %}"><i class="fa fa-caret-down" title="{% translate "Sort (highest first)" %}"></i></a>
+                            <a href="{% querystring sort="-count" %}"><i class="fa fa-caret-up" title="{% translate "Sort (lowest first)" %}"></i></a>
                         </th>
                         <th>{% translate "Title" %}</th>
                         {% if can_view_speakers %}<th class="col-speakers">{{ phrases.schedule.speakers }}</th>{% endif %}

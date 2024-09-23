@@ -1,7 +1,6 @@
 {% extends "orga/base.html" %}
 {% load bootstrap4 %}
 {% load i18n %}
-{% load url_replace %}
 
 {% block extra_title %}{{ page_obj.paginator.count }} {% blocktranslate trimmed count count=page_obj.paginator.count %}speaker{% plural %}speakers{% endblocktranslate %} :: {% endblock extra_title %}
 
@@ -29,23 +28,23 @@
                 <tr>
                     <th>
                         {% translate "Name" %}
-                        <a href="?{% url_replace request "sort" "name" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
-                        <a href="?{% url_replace request "sort" "-name" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
+                        <a href="{% querystring sort="name" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                        <a href="{% querystring sort="-name" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
                     </th>
                     <th>
                         {% translate "Email" %}
-                        <a href="?{% url_replace request "sort" "email" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
-                        <a href="?{% url_replace request "sort" "-email" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
+                        <a href="{% querystring sort="email" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                        <a href="{% querystring sort="-email" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
                     </th>
                     <th class="numeric">
                         {% translate "Accepted Proposals" %}
-                        <a href="?{% url_replace request "sort" "-accepted_submission_count" %}"><i class="fa fa-caret-down" title="{% translate "Sort (high-low)" %}"></i></a>
-                        <a href="?{% url_replace request "sort" "accepted_submission_count" %}"><i class="fa fa-caret-up" title="{% translate "Sort (low-high)" %}"></i></a>
+                        <a href="{% querystring sort="-accepted_submission_count" %}"><i class="fa fa-caret-down" title="{% translate "Sort (high-low)" %}"></i></a>
+                        <a href="{% querystring sort="accepted_submission_count" %}"><i class="fa fa-caret-up" title="{% translate "Sort (low-high)" %}"></i></a>
                     </th>
                     <th class="numeric">
                         {% translate "Proposals" %}
-                        <a href="?{% url_replace request "sort" "-submission_count" %}"><i class="fa fa-caret-down" title="{% translate "Sort (high-low)" %}"></i></a>
-                        <a href="?{% url_replace request "sort" "submission_count" %}"><i class="fa fa-caret-up" title="{% translate "Sort (low-high)" %}"></i></a>
+                        <a href="{% querystring sort="-submission_count" %}"><i class="fa fa-caret-down" title="{% translate "Sort (high-low)" %}"></i></a>
+                        <a href="{% querystring sort="submission_count" %}"><i class="fa fa-caret-up" title="{% translate "Sort (low-high)" %}"></i></a>
                     </th>
                 </tr>
             </thead>
