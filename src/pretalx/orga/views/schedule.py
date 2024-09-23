@@ -340,7 +340,7 @@ class TalkList(EventPermissionRequired, View):
         result["locales"] = request.event.locales
         return JsonResponse(result, encoder=I18nJSONEncoder)
 
-    @method_decorator(csrf_exempt)
+    @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -465,7 +465,7 @@ class TalkUpdate(PermissionRequired, View):
             pk=self.kwargs.get("pk")
         ).first()
 
-    @method_decorator(csrf_exempt)
+    @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
