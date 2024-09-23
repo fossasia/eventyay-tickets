@@ -66,46 +66,6 @@
   }
 }
 
-
-//
-// Pills
-//
-
-.nav-pills {
-  .nav-link {
-    @include border-radius($nav-pills-border-radius);
-  }
-
-  .nav-link.active,
-  .show > .nav-link {
-    color: $nav-pills-link-active-color;
-    background-color: $nav-pills-link-active-bg;
-  }
-}
-
-
-//
-// Justified variants
-//
-
-.nav-fill {
-  > .nav-link,
-  .nav-item {
-    flex: 1 1 auto;
-    text-align: center;
-  }
-}
-
-.nav-justified {
-  > .nav-link,
-  .nav-item {
-    flex-basis: 0;
-    flex-grow: 1;
-    text-align: center;
-  }
-}
-
-
 // Tabbable tabs
 //
 // Hide tabbable panes to start, show them when `.active`

@@ -87,17 +87,6 @@
 }
 
 
-// Navbar text
-//
-//
-
-.navbar-text {
-  display: inline-block;
-  padding-top: $nav-link-padding-y;
-  padding-bottom: $nav-link-padding-y;
-}
-
-
 // Responsive navbar
 //
 // Custom styles for responsive collapsing and toggling of navbar contents.
@@ -112,36 +101,6 @@
   // For always expanded or extra full navbars, ensure content aligns itself
   // properly vertically. Can be easily overridden with flex utilities.
   align-items: center;
-}
-
-// Button for toggling the navbar when in its collapsed state
-.navbar-toggler {
-  padding: $navbar-toggler-padding-y $navbar-toggler-padding-x;
-  @include font-size($navbar-toggler-font-size);
-  line-height: 1;
-  background-color: transparent; // remove default button style
-  border: $border-width solid transparent; // remove default button style
-  @include border-radius($navbar-toggler-border-radius);
-
-  @include hover-focus() {
-    text-decoration: none;
-  }
-}
-
-// Keep as a separate element so folks can easily override it with another icon
-// or image file as needed.
-.navbar-toggler-icon {
-  display: inline-block;
-  width: 1.5em;
-  height: 1.5em;
-  vertical-align: middle;
-  content: "";
-  background: 50% / 100% 100% no-repeat;
-}
-
-.navbar-nav-scroll {
-  max-height: $navbar-nav-scroll-max-height;
-  overflow-y: auto;
 }
 
 // Generate series of `.navbar-expand-*` responsive classes for configuring
@@ -217,115 +176,6 @@
         .navbar-toggler {
           display: none;
         }
-      }
-    }
-  }
-}
-
-
-// Navbar themes
-//
-// Styles for switching between navbars with light or dark background.
-
-// Dark links against a light background
-.navbar-light {
-  .navbar-brand {
-    color: $navbar-light-brand-color;
-
-    @include hover-focus() {
-      color: $navbar-light-brand-hover-color;
-    }
-  }
-
-  .navbar-nav {
-    .nav-link {
-      color: $navbar-light-color;
-
-      @include hover-focus() {
-        color: $navbar-light-hover-color;
-      }
-
-      &.disabled {
-        color: $navbar-light-disabled-color;
-      }
-    }
-
-    .show > .nav-link,
-    .active > .nav-link,
-    .nav-link.show,
-    .nav-link.active {
-      color: $navbar-light-active-color;
-    }
-  }
-
-  .navbar-toggler {
-    color: $navbar-light-color;
-    border-color: $navbar-light-toggler-border-color;
-  }
-
-  .navbar-toggler-icon {
-    background-image: escape-svg($navbar-light-toggler-icon-bg);
-  }
-
-  .navbar-text {
-    color: $navbar-light-color;
-    a {
-      color: $navbar-light-active-color;
-
-      @include hover-focus() {
-        color: $navbar-light-active-color;
-      }
-    }
-  }
-}
-
-// White links against a dark background
-.navbar-dark {
-  .navbar-brand {
-    color: $navbar-dark-brand-color;
-
-    @include hover-focus() {
-      color: $navbar-dark-brand-hover-color;
-    }
-  }
-
-  .navbar-nav {
-    .nav-link {
-      color: $navbar-dark-color;
-
-      @include hover-focus() {
-        color: $navbar-dark-hover-color;
-      }
-
-      &.disabled {
-        color: $navbar-dark-disabled-color;
-      }
-    }
-
-    .show > .nav-link,
-    .active > .nav-link,
-    .nav-link.show,
-    .nav-link.active {
-      color: $navbar-dark-active-color;
-    }
-  }
-
-  .navbar-toggler {
-    color: $navbar-dark-color;
-    border-color: $navbar-dark-toggler-border-color;
-  }
-
-  .navbar-toggler-icon {
-    background-image: escape-svg($navbar-dark-toggler-icon-bg);
-  }
-
-  .navbar-text {
-    color: $navbar-dark-color;
-    a {
-      color: $navbar-dark-active-color;
-
-      @include hover-focus() {
-        color: $navbar-dark-active-color;
       }
     }
   }
