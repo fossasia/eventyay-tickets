@@ -26,13 +26,6 @@
     display: none;
   }
 }
-
-// Quick fix for badges in buttons
-.btn .badge {
-  position: relative;
-  top: -1px;
-}
-
 // Pill badges
 //
 // Make them extra rounded with a modifier to replace v3's badges.
