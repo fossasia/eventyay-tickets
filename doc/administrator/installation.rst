@@ -28,7 +28,7 @@ and configuration here, but please have a look at the linked pages.
 * An SMTP server to send out mails
 * An HTTP reverse proxy like `nginx`_ to allow HTTPS connections and serve
   files from the filesystem
-* A database server: `PostgreSQL`_ 12+, or SQLite 3. Given the choice, we’d
+* A database server: `PostgreSQL`_ 13+, or SQLite 3. Given the choice, we’d
   recommend to use PostgreSQL.
 * A `redis`_ server, if you want to use pretalx with an asynchronous task
   runner or improved caching.
