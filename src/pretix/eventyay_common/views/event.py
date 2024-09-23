@@ -21,7 +21,7 @@ from pretix.control.permissions import EventPermissionRequiredMixin
 from pretix.control.views import PaginationMixin, UpdateView
 from pretix.control.views.event import DecoupleMixin, EventSettingsViewMixin
 from pretix.control.views.item import MetaDataEditorMixin
-from pretix.eventyay_common.forms.event import EventCommonSettingsForm, EventWizardCommonFoundationForm
+from pretix.eventyay_common.forms.event import EventCommonSettingsForm
 from pretix.eventyay_common.tasks import send_event_webhook
 
 

@@ -1,16 +1,15 @@
 from django.conf import settings
 from django.contrib import messages
 from django.db import transaction
-from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.views.generic import ListView, UpdateView, DeleteView, CreateView
 from django.utils.translation import gettext_lazy
+from django.views.generic import ListView, UpdateView, DeleteView, CreateView
 
 from pretix.base.models import Team
-from pretix.control.forms.organizer import TeamForm
 from pretix.control.views.organizer import OrganizerDetailViewMixin
 from ..tasks import send_team_webhook
+from ...control.forms.organizer_forms import TeamForm
 from ...control.permissions import OrganizerPermissionRequiredMixin
 
 
