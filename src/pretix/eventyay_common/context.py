@@ -8,9 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from pretix.base.models.auth import StaffSession
 from pretix.base.settings import GlobalSettingsObject
-from pretix.control.navigation import (
-    get_event_navigation, merge_in,
-)
+from pretix.control.navigation import merge_in
 from pretix.control.signals import nav_global
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore

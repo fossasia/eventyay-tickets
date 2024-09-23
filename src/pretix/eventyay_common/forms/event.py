@@ -4,9 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from pytz import common_timezones
 
 from pretix.base.forms import SettingsForm
-from pretix.base.settings import (
-    PERSON_NAME_SCHEMES, PERSON_NAME_TITLE_GROUPS, validate_event_settings,
-)
+from pretix.base.settings import validate_event_settings
 from pretix.control.forms import MultipleLanguagesWidget
 from pretix.control.forms.event import EventWizardFoundationForm
 
