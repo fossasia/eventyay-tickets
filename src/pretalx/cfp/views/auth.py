@@ -7,7 +7,6 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.decorators import method_decorator
 from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
@@ -96,7 +95,7 @@ class RecoverView(FormView):
 class EventAuth(View):
     """Taken from pretix' brilliant solution for multidomain auth."""
 
-    @method_decorator(csrf_exempt)
+    @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
