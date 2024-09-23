@@ -16,7 +16,7 @@ from django.core.management.commands.migrate import Command as Parent
 
 class OutputFilter(OutputWrapper):
     banlist = (
-        "Your models have changes that are not yet reflected",
+        "have changes that are not yet reflected",
         "Run 'manage.py makemigrations' to make new ",
     )
 
