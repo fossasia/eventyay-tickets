@@ -497,7 +497,6 @@ class EventSettingsForm(SettingsForm):
         'schedule_link',
         'session_link',
         'speaker_link',
-        'video_link'
     ]
 
     def clean(self):
@@ -1341,11 +1340,6 @@ class QuickSetupForm(I18nForm):
     speaker_link = forms.URLField(
         label=_("Speaker URL"),
         help_text=_("This should point to your speakers."),
-        required=False,
-    )
-    video_link = forms.URLField(
-        label=_("Video URL"),
-        help_text=_("This should point to your Video URL."),
         required=False,
     )
     contact_mail = forms.EmailField(
