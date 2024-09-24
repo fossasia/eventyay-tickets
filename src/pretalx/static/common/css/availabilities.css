@@ -1,5 +1,3 @@
-@import "../../vendored/forkawesome/scss/fork-awesome";
-
 input.availabilities-editor-data {
   display: none;
 }
@@ -16,24 +14,23 @@ input.availabilities-editor-data {
 }
 .availabilities-tz-hint {
   text-align: right;
-  color: $gray;
+  color: var(--color-grey);
 }
 
 .fc-event.delete {
-  background-color: $brand-danger !important;
-  border-color: $brand-danger !important;
-}
-
-.fc-event.delete::before {
-  font-family: ForkAwesome;
-  content: "\f014";
-  position: absolute;
-  top: calc(50% - 1ex);
-  left: 0;
-  width: 100%;
-  text-align: center;
-  font-size: 200%;
-  color: white;
+  background-color: var(--color-danger) !important;
+  border-color: var(--color-danger) !important;
+  &:before, &::before {
+      font-family: ForkAwesome;
+      content: "\f014";
+      position: absolute;
+      top: calc(50% - 1ex);
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 200%;
+      color: white;
+  }
 }
 
 .fc-day-grid-event.delete::before {

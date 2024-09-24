@@ -7,7 +7,6 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0.5rem;
   font-weight: 500;
   line-height: 1.2;
-  font-family: var(--font-family-title);
 }
 h1 { font-size: 2.5rem }
 h2 { font-size: 2rem }
@@ -29,9 +28,6 @@ hr {
   border-top: 1px solid rgb(0 0 0 / 0.1);
 }
 
-code, pre {
-  font-family: var(--font-family-monospace);
-}
 code {
     font-size: 87.5%;
     color: var(--color-code);
@@ -42,8 +38,16 @@ code {
 }
 pre {
   display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
   font-size: 13px;
+  word-break: break-all;
+  word-wrap: break-word;
   overflow: auto;
+  color: #333;
+  background-color: var(--color-grey-lightest);
+  border: 1px solid var(--color-border);
+  border-radius: var(--size-border-radius);
   code {
       font-size: inherit;
       color: inherit;
@@ -59,6 +63,13 @@ table {
     vertical-align: top;
     border-top: 1px solid var(--color-grey-light);
     padding: .3rem;
+    &.numeric {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+    &.numeric-left {
+        font-variant-numeric: tabular-nums;
+    }
   }
 
   thead th {
@@ -69,9 +80,19 @@ table {
   th {
      font-weight: bold;
   }
-  tr:hover {
-    backdrop-filter: brightness(0.95);
+  tr {
+      vertical-align: middle;
+      &:hover {
+        backdrop-filter: brightness(0.95);
+      }
   }
+  a:hover {
+    text-decoration: none;
+  }
+}
+
+table td.action-column {
+  text-align: right;
 }
 
 label, legend {
@@ -246,14 +267,13 @@ input:not([type="checkbox"]):not([type="radio"]), select, textarea {
       box-shadow: 0 0 0 1px rgba(58, 165, 124, 0.25);
   }
 
-
   &::placeholder {
       color: var(--color-grey-medium);
       opacity: 1;
   }
 
   &:disabled, &[readonly] {
-      background-color: var(--color-grey-lighter);
+      background-color: var(--color-grey-lightest);
       opacity: 1;
   }
 
@@ -287,8 +307,7 @@ input[type="checkbox"], input[type="radio"] {
   opacity: 0;
 
   & + label {
-      margin-bottom: 0;
-      margin-left: 36px;
+      display: inherit !important;
       cursor: pointer;
       position: relative;
       background-color: var(--color-bg);
@@ -296,6 +315,15 @@ input[type="checkbox"], input[type="radio"] {
       border: 1px solid var(--color-border);
       border-radius: var(--size-border-radius);
       transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+      text-align: right;
+      font-weight: bold;
+      margin-bottom: 0;
+      margin-left: 36px;
+
+      .optional {
+        font-weight: normal;
+        color: var(--color-grey);
+      }
 
       &:before, &:after {
           content: "";
@@ -305,8 +333,8 @@ input[type="checkbox"], input[type="radio"] {
           left:0;
           width:24px;
           height:24px;
-          background:#f8f9fa;
-          box-shadow:0 0 2px #5f7273;
+          background: var(--color-offwhite);
+          box-shadow: 0 0 2px var(--color-grey-medium-light);
           margin-left:-34px;
           border-radius:4px;
       }
@@ -317,7 +345,7 @@ input[type="checkbox"], input[type="radio"] {
           height:16px;
           margin:4px 0 0;
           opacity:0;
-          background:#3aa57c;
+          background: var(--color-success);
           margin-left:-34px;
           border-radius:2px;
         }
@@ -376,6 +404,7 @@ legend {
 textarea {
     resize: vertical;
     height: auto;
+    form-sizing: auto;
 }
 
 select, input[type="file"], input [type="range"] {
@@ -430,6 +459,33 @@ progress {
   padding: 0;
 }
 
+.form-image-preview {
+  border: 1px solid var(--color-grey-light);
+  max-width: 180px;
+  background-size: 21px 21px;
+  background-position: 0 0, 10px 10px;
+  background-image: linear-gradient(
+      45deg,
+      #efefef 25%,
+      rgba(239, 239, 239, 0) 25%,
+      rgba(239, 239, 239, 0) 75%,
+      #efefef 75%,
+      #efefef
+    ),
+    linear-gradient(
+      45deg,
+      #efefef 25%,
+      rgba(239, 239, 239, 0) 25%,
+      rgba(239, 239, 239, 0) 75%,
+      #efefef 75%,
+      #efefef
+    );
+  img {
+    max-width: 100%;
+    height: auto;
+    box-shadow: var(--shadow-light);
+  }
+}
 
 .input-group {
   position: relative;
@@ -629,6 +685,7 @@ small {
   white-space: nowrap;
   padding: .4em .6em;
   font-weight: bold;
+  font-size: 75%;
 
   color: white;
   background: var(--highlight-color);
@@ -975,6 +1032,7 @@ nav.navbar {
 }
 
 .d-none { display: none !important }
+.d-hidden { visibility: hidden !important }
 .d-inline { display: inline !important }
 .d-inline-block { display: inline-block !important }
 .d-block { display: block !important }
@@ -1030,12 +1088,18 @@ nav.navbar {
 .text-right { text-align: right !important }
 .text-left { text-align: left !important }
 .font-weight-bold { font-weight: bold !important }
+.nowrap { white-space: nowrap }
 
 .text-success { color: var(--color-success) !important }
 .text-info { color: var(--color-info) !important }
 .text-warning { color: var(--color-warning) !important }
 .text-danger { color: var(--color-danger) !important }
 .text-muted { color: var(--color-grey-medium) !important }
+
+.bg-success { background-color: var(--color-success) !important }
+.bg-info { background-color: var(--color-info) !important }
+.bg-warning { background-color: var(--color-warning) !important }
+.bg-danger { background-color: var(--color-danger) !important }
 
 .sr-only {
   position: absolute;
@@ -1076,9 +1140,14 @@ nav.navbar {
     body {
         color: black;
         background: white;
+        overflow: visible !important;
+        height: auto;
     }
     .badge {
         border: 1px solid black;
+    }
+    .d-print-none {
+        display: none !important;
     }
     a:not(role="button") {
         text-decoration: underline;
