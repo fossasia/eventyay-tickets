@@ -7,8 +7,13 @@
 
 {% block extra_title %}{% translate "Widget generation" %} :: {% endblock extra_title %}
 
+{% block stylesheets %}
+  {% compress css %}
+    <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+  {% endcompress %}
+{% endblock stylesheets %}
+
 {% block scripts %}
-    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
     {% compress js %}
         <script defer src="{% static "orga/js/widgetSettings.js" %}"></script>
         <script defer src="{% static "common/js/modalDialog.js" %}"></script>

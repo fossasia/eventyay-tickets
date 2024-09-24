@@ -212,7 +212,7 @@ Vue.component("modal", {
           <label class="col-md-3 col-form-label">Duration</label>
           <div class="col-md-9"><div class="input-group">
             <input type="number" name="duration" value="30" min="5" class="form-control" placeholder="Duration" title="Duration in minutes" v-model="talk.duration" v-on:keyup.enter="saveTalk">
-            <div class="input-group-append"><span class="input-group-append input-group-text">minutes</span></div>
+            <span class="input-group-append input-group-text">minutes</span>
           </div>
         </div></div>
         <div class="button-row">

@@ -162,13 +162,13 @@ Vue.component("field", {
         </div>
 
         <template v-if="!isModal">
-          <small class="form-text text-muted" v-if="display_help_text" v-html="display_help_text"></small>
+          <div class="text-muted" v-if="display_help_text" v-html="display_help_text"></div>
         </template>
         <template v-else>
           <div class="i18n-form-group" @click.stop="">
             <input type="text" class="form-control" :title="locale" :lang="locale" v-model="field.help_text[locale]" v-for="locale in locales">
           </div>
-          <small class="form-text text-muted" v-if="fixed_help_text">{{ fixed_help_text }}</small>
+          <div class="text-muted" v-if="fixed_help_text">{{ fixed_help_text }}</div>
         </template>
       </div>
       </div>

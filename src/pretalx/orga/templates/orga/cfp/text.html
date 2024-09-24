@@ -5,8 +5,13 @@
 {% load i18n %}
 {% load static %}
 
+{% block stylesheets %}
+  {% compress css %}
+    <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+  {% endcompress %}
+{% endblock stylesheets %}
+
 {% block scripts %}
-    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
     {% compress js %}
         <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
         <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
@@ -90,7 +95,7 @@
                             <a href="{{ request.event.cfp.urls.editor }}">{% translate "Click here to view the proposal form." %}</a>
                         </span></div>
                     </dialog>
-                    <div class="table-responsive-sm"><table class="table offset-md-3 table-sm table-hover table-flip table-sticky" id="cfp-option-table">
+                    <div class="table-responsive-sm"><table class="table offset-md-3 table-sm table-hover table-flip table-sticky cfp-option-table">
                         <thead>
                             <tr>
                                 <th></th>
@@ -174,7 +179,7 @@
                             </span>
                         </div>
                     </legend>
-                    <div class="table-responsive-sm"><table class="table offset-md-3 table-sm table-hover table-flip table-sticky" id="cfp-option-table">
+                    <div class="table-responsive-sm"><table class="table offset-md-3 table-sm table-hover table-flip table-sticky cfp-option-table">
                         <thead>
                             <tr>
                                 <th></th>
@@ -204,9 +209,7 @@
                             </tr>
                         </tbody>
                     </table></div>
-                    <div class="inline-group">
-                        {% bootstrap_field form.count_length_in layout="event" %}
-                    </div>
+                    {% bootstrap_field form.count_length_in layout="event" %}
                 </fieldset>
 
                 {% include "orga/includes/submit_row.html" %}

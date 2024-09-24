@@ -9,8 +9,13 @@
 
 {% block submission_title %}{% translate "Anonymisation" %} :: {% endblock submission_title %}
 
+{% block stylesheets %}
+    {% compress css %}
+      <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+    {% endcompress %}
+{% endblock %}
+
 {% block scripts %}
-    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
     {% compress js %}
         <script defer src="{% static "common/js/modalDialog.js" %}"></script>
         <script defer src="{% static "orga/js/anonymise.js" %}"></script>
