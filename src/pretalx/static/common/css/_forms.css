@@ -120,21 +120,6 @@ input.password_strength {
     background: var(--color-bg);
   }
 }
-.i18n-form-group input,
-.i18n-form-group textarea {
-  border-top-width: 0;
-  border-radius: 0;
-
-  &:first-child {
-    border-top-width: 1px;
-    border-top-left-radius: var(--border-radius);
-    border-top-right-radius: var(--border-radius);
-  }
-  &:last-child {
-    border-bottom-left-radius: var(--border-radius);
-    border-bottom-right-radius: var(--border-radius);
-  }
-}
 @media (max-width: 768px) {
   .submit-group {
     flex-direction: column;

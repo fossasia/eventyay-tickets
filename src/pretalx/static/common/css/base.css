@@ -17,10 +17,10 @@ h1 {
   font-size: 2.5rem;
 }
 h2 {
-  font-size: 2rem;
+  font-size: 1.75rem;
 }
 h3 {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
 }
 h4 {
   font-size: 1.5rem;
@@ -254,6 +254,10 @@ iframe {
 .form-group {
   margin-bottom: var(--size-spacer);
   display: flex;
+  .col-md-9, .col-md-3 {
+      padding-left: 15px;
+      padding-right: 15px;
+  }
 }
 .row {
   display: flex;
@@ -291,19 +295,17 @@ textarea {
     border-radius: 0.2rem;
   }
 
-  &:valid,
   &.is-valid {
     border-color: var(--color-success);
   }
 
-  &:invalid,
   &.is-invalid {
     border-color: var(--color-danger);
   }
 
   &:-moz-focusring {
     color: transparent;
-    text-shadow: 0 0 0 $input-color;
+    text-shadow: 0 0 0 var(--color-text-input);
   }
 
   &:focus {
@@ -368,11 +370,6 @@ input[type="radio"] {
     margin-bottom: 0;
     margin-left: 36px;
 
-    .optional {
-      font-weight: normal;
-      color: var(--color-grey);
-    }
-
     &:before,
     &:after {
       content: "";
@@ -426,10 +423,23 @@ input[type="radio"] + label {
 
 label {
   display: inline-block;
-  padding-top: calc(0.375rem + 1px);
+  padding-top: 4px;
   padding-bottom: calc(0.375rem + 1px);
   margin-bottom: 0;
   font-size: inherit;
+  text-align: right;
+  font-weight: bold;
+    .optional {
+      font-weight: normal;
+      color: var(--color-grey);
+    }
+
+}
+
+small.form-text {
+    font-size: inherit;
+    margin-top: 0.25rem;
+    display: block;
 }
 
 fieldset {
@@ -446,7 +456,7 @@ legend {
   width: 100%;
 
   padding: 0;
-  font-size: 1.4rem;
+  font-size: 22px;
   border-bottom: 1px solid var(--color-border);
   margin-bottom: 20px;
 }
@@ -467,7 +477,7 @@ input [type="range"] {
 select {
   padding: 0.375rem 2.25rem 0.375rem 0.75rem;
   background-color: var(--color-bg);
-  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='#{$form-select-indicator-color}' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/></svg>");
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='none' stroke='var(--color-text-input)' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/></svg>");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 16px 12px;
@@ -550,9 +560,9 @@ progress {
   align-items: stretch;
   width: 100%;
 
-  & > input,
-  select,
-  button {
+  & > input:not([type="checkbox"]):not([type="radio"]),
+  & > select,
+  & >button {
     position: relative;
     flex: 1 1 auto;
     width: 1%;
@@ -595,10 +605,10 @@ progress {
 }
 
 .input-group-prepend {
-  margin-right: -$input-border-width;
+  margin-right: -1px;
 }
 .input-group-append {
-  margin-left: -$input-border-width;
+  margin-left: -1px;
 }
 
 .input-group-text {
@@ -665,7 +675,7 @@ progress {
   flex-direction: column;
   justify-content: center;
   overflow: hidden;
-  color: $progress-bar-color;
+  color: var(--color-text);
   text-align: center;
   white-space: nowrap;
   background-color: var(--color-primary);
@@ -902,6 +912,7 @@ small {
     border-radius: 0;
     & > .list-group-item {
       border-width: 0 0 1px;
+      display: block;
 
       &:last-child {
         border-bottom-width: 0;
@@ -962,7 +973,7 @@ small {
       }
 
       &:active {
-        background-color: $list-group-action-active-bg;
+        background-color: var(--color-grey-lighter);
         color: var(--color-text);
       }
     }
@@ -1184,10 +1195,10 @@ nav.navbar {
 .mw-100 {
   max-width: 100% !important;
 }
-.w-25 {
+.w-25, .col-md-3 {
   width: 25% !important;
 }
-.w-75 {
+.w-75, .col-md-9 {
   width: 75% !important;
 }
 .w-100 {
