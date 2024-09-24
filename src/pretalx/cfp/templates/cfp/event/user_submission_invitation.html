@@ -21,7 +21,7 @@
         {% csrf_token %}
         {% bootstrap_form form layout="event" %}
         <div class="row">
-            <div class="col-md-3 flip ml-auto url-links">
+            <div class="w-25 flip ml-auto url-links">
                 <a class="btn btn-block btn-info btn-lg" href="{{ submission.urls.user_base }}">
                     {{ phrases.base.cancel }}
                 </a>

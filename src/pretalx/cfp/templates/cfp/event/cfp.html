@@ -31,7 +31,7 @@
                 </strong>
             </p>
         {% endif %}
-        <div class="row mb-4 url-links">
+        <div class="url-links">
             {% if request.event.current_schedule and request.event.feature_flags.show_schedule %}
                 <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
                     {{ phrases.agenda.view_schedule }}
