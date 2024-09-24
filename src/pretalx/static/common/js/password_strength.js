@@ -63,18 +63,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
       if (result.score < 1) {
         password_strength_bar
-          .removeClass("progress-bar-success")
-          .addClass("progress-bar-danger")
+          .removeClass("bg-success")
+          .addClass("bg-danger")
         password_strength_info.find(".label").removeClass("hidden")
       } else if (result.score < 3) {
         password_strength_bar
-          .removeClass("progress-bar-danger")
-          .addClass("progress-bar-warning")
+          .removeClass("bg-danger")
+          .addClass("bg-warning")
         password_strength_info.find(".label").removeClass("hidden")
       } else {
         password_strength_bar
-          .removeClass("progress-bar-warning")
-          .addClass("progress-bar-success")
+          .removeClass("bg-warning")
+          .addClass("bg-success")
         password_strength_info.find(".label").addClass("hidden")
       }
 
@@ -85,8 +85,8 @@ document.addEventListener("DOMContentLoaded", function() {
       password_strength_info.removeClass("hidden")
     } else {
       password_strength_bar
-        .removeClass("progress-bar-success")
-        .addClass("progress-bar-warning")
+        .removeClass("bg-success")
+        .addClass("bg-warning")
       password_strength_bar.width("0%").attr("aria-valuenow", 0)
       password_strength_info.addClass("hidden")
     }

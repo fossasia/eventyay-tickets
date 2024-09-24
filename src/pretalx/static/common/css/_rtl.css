@@ -55,7 +55,7 @@ html.rtl {
     }
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: var(--breakpoint-md)) {
     .form-inline label {
       padding-right: 0;
       padding-left: initial;
@@ -65,8 +65,6 @@ html.rtl {
       margin-right: 0;
       margin-left: auto;
     }
-  }
-  @media (min-width: 768px) {
     form .col-form-label {
       text-align: left;
     }
@@ -101,8 +99,7 @@ html.rtl {
     left: auto;
   }
 
-  .help-text,
-  .form-text {
+  .help-text {
     text-align: right;
   }
   .mr-auto.flip {
@@ -130,11 +127,7 @@ html.rtl {
       margin-right: -16px;
     }
   }
-  ul,
-  h2,
-  h3,
-  p,
-  .avatar-upload {
+  ul, h2, h3, p, .avatar-upload {
     text-align: right;
   }
   .dropdown-content-se {

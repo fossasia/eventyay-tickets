@@ -32,7 +32,7 @@
 
         {% include "common/includes/favicon.html" %}
 
-        <link rel="stylesheet" type="text/css" href="{% static "common/scss/uncompressed.css" %}" />
+        <link rel="stylesheet" type="text/css" href="{% static "common/css/uncompressed.css" %}" />
         {% if request.event and request.event.settings.cfp_css_file %}
             <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
             <link rel="stylesheet" type="text/css" href="{{ request.event.settings.cfp_css_file }}"/>
@@ -40,10 +40,23 @@
         {% else %}
             {% compress css %}
                 <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}" />
-                <link rel="stylesheet" type="text/x-scss" href="{% static "cfp/scss/main.scss" %}" />
-                <link rel="stylesheet" type="text/x-scss" href="{% static "agenda/scss/main.scss" %}" />
+                <link rel="stylesheet" type="text/x-scss" href="{% static "vendored/datetimepicker/_bootstrap-datetimepicker.scss" %}" />
+                <link rel="stylesheet" type="text/x-scss" href="{% static "vendored/forkawesome/scss/fork-awesome.scss" %}" />
+                <link rel="stylesheet" type="text/css" href="{% static "common/css/_variables.css" %}" />
+                <link rel="stylesheet" type="text/css" href="{% static "common/css/_font.css" %}" />
+                <link rel="stylesheet" type="text/css" href="{% static "common/css/_avatar.css" %}" />
+                <link rel="stylesheet" type="text/css" href="{% static "common/css/_dashboard.css" %}" />
+                <link rel="stylesheet" type="text/css" href="{% static "common/css/_dropdown.css" %}" />
+                <link rel="stylesheet" type="text/css" href="{% static "common/css/_forms.css" %}" />
+                <link rel="stylesheet" type="text/css" href="{% static "common/css/_pretalx.css" %}" />
+                <link rel="stylesheet" type="text/css" href="{% static "common/css/_rtl.css" %}" />
+                <link rel="stylesheet" type="text/css" href="{% static "common/css/_stages.css" %}" />
+                <link rel="stylesheet" type="text/css" href="{% static "cfp/css/_layout.css" %}" />
+                <link rel="stylesheet" type="text/css" href="{% static "agenda/css/_agenda.css" %}" />
+                <link rel="stylesheet" type="text/css" href="{% static "agenda/css/_speaker.css" %}" />
             {% endcompress %}
         {% endif %}
+        {% block stylesheets %}{% endblock stylesheets %}
         {% if request.event and request.event.custom_css %}<link rel="stylesheet" type="text/css" href="{{ request.event.custom_css.url }}"/>{% endif %}
         {% compress js %}
             <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
@@ -62,7 +75,7 @@
             {% endif %}
         </div>
         {% if request.event and not request.event.is_public and not is_html_export %}
-            <div id="event-nonpublic">
+            <div id="event-nonpublic" class="d-print-none">
                 <i class="fa fa-user-secret"></i>
                 {% blocktranslate trimmed %}
                     This event is currently non-public. Only organisers can see it.
@@ -141,7 +154,7 @@
             </div>
             <footer>
                 {% if is_html_export %}
-                    <div id="exporttimestamp" class="text-muted">
+                    <div id="exporttimestamp" class="text-muted mb-4">
                         {% now "Y-m-d H:i T" as timestamp %}
                         {% blocktranslate trimmed %}
                             This is a static export generated at {{ timestamp }}

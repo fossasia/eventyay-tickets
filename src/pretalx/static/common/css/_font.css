@@ -79,27 +79,19 @@
     url(static("fonts/mulish-v12-latin-ext-700italic.woff2")) format("woff2"),
     url(static("fonts/mulish-v12-latin-ext-700italic.woff")) format("woff");
 }
+
+:root {
+  --font-family: "Muli", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-family-heading: "Titillium Web", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-family-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+}
+
 body {
-  font-family: "Muli", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica,
-    Arial, sans-serif;
-  font-size: 16px;
-  h1,
-  h2,
-  h3,
-  h4,
-  legend,
-  .btn,
-  button {
-    font-family: "Titillium Web", "Open Sans", "OpenSans", "Helvetica Neue",
-      Helvetica, Arial, sans-serif;
-  }
-  h2 {
-    font-size: 28px;
-  }
-  h3 {
-    font-size: 24px;
-  }
-  legend {
-    font-size: 22px;
-  }
+  font-family: var(--font-family);
+}
+h1, h2, h3, h4, legend, button, [role="button"], .button {
+    font-family: var(--font-family-title);
+}
+code, pre {
+  font-family: var(--font-family-monospace);
 }

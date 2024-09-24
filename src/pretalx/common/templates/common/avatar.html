@@ -22,7 +22,14 @@
 
         <div class="avatar-upload">
             {% bootstrap_field form.avatar layout="inline" %}
-            <small class="form-text text-muted d-block">{{ form.avatar.help_text }}</small>
+            <div class="text-muted">{{ form.avatar.help_text }}</div>
         </div>
     </div>
 </div>
+
+{% compress css %}
+  <link rel="stylesheet" href="{% static "common/css/avatar.css" %}">
+{% endcompress %}
+{% compress js %}
+<script defer src="{% static "cfp/js/profile.js" %}"></script>
+{% endcompress %}

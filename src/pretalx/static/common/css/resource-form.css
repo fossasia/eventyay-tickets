@@ -1,0 +1,27 @@
+.resource-option-row,
+.resource-option-input {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+
+  .resource-option-delete {
+    float: right;
+    flex-grow: 0;
+  }
+
+  .form-group {
+    display: flex;
+    padding-right: 16px;
+    margin-bottom: 0;
+    margin-top: 2px;
+
+    .bootstrap-multi-input {
+      flex-grow: 1;
+    }
+
+    input {
+      width: 280px;
+    }
+  }
+}
+
