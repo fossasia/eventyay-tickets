@@ -56,7 +56,6 @@ dependencies = [
         'bleach==5.0.*',
         'sentry-sdk==1.15.*',
         'babel',
-        'paypalrestsdk==1.13.*',
         'pycparser==2.21',
         'django-redis==5.4.*',
         'redis==5.0.*',
@@ -88,10 +87,14 @@ dependencies = [
         'protobuf==4.23.*',
         'cryptography>=3.4.2',
         'pycryptodome==3.20.*',
+        'paypalhttp==1.0.1',
+        'paypalrestsdk==1.13.3',
         'sepaxml==2.6.*',
         'geoip2==4.*',
-        'paypalhttp==1.*',
+        # Note: To install eventyay-stripe/Paypal dependencies, replace {your_token} with your GitHub token
+        # Access is required to the private repositories, if you don't have access, you can remove the dependencies
         'eventyay-stripe @ git+https://your_token@github.com/fossasia/eventyay-tickets-stripe.git@master',
+        'eventyay-paypal @ git+https://your_token@github.com/fossasia/eventyay-tickets-paypal.git@master',
         'sendgrid==6.11.*',
         'importlib_metadata==7.*',
         'qrcode==7.4.*',
