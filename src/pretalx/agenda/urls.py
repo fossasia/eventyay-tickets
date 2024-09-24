@@ -43,6 +43,7 @@ urlpatterns = [
                     widget.widget_script,
                     name="widget.script",
                 ),
+                path("static/event.css", widget.event_css, name="event.css"),
                 path(
                     "schedule/changelog/",
                     schedule.ChangelogView.as_view(),

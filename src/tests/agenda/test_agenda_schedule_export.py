@@ -14,7 +14,6 @@ from jsonschema import validate
 from lxml import etree
 
 from pretalx.agenda.tasks import export_schedule_html
-from pretalx.common.tasks import regenerate_css
 from pretalx.event.models import Event
 from pretalx.submission.models import Resource
 
@@ -487,10 +486,7 @@ def test_html_export_full(
 
     with override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True):
         call_command("rebuild")
-        regenerate_css(event.pk)
-        regenerate_css(other_event.pk)
         event = Event.objects.get(slug=event.slug)
-        assert event.settings.agenda_css_file
         args = ["export_schedule_html", event.slug]
         if zip:
             args.append("--zip")
@@ -503,7 +499,6 @@ def test_html_export_full(
 
     paths = [
         "static/common/img/icons/favicon.ico",
-        f'media/test/{event.settings.agenda_css_file.split("/")[-1]}',
         f"media/test/submissions/{slot.submission.code}/resources/{resource_filename}",
         f"media/test/submissions/{slot.submission.code}/{image_filename}",
         f"media/avatars/{avatar_filename}",

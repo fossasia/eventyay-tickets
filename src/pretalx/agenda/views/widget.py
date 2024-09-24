@@ -225,3 +225,15 @@ def widget_script(request, event):
         code = fp.read()
     data = code.encode()
     return HttpResponse(data, content_type="text/javascript")
+
+
+@condition(etag_func=color_etag)
+@cache_page(60 * 60)
+@csp_exempt
+def event_css(request, event):
+    # If this event has custom colours, we send back a simple CSS file that sets the
+    # root colours for the event.
+    result = ""
+    if request.event.primary_color:
+        result = ":root {" + f"--primary-color: {request.event.primary_color};" + "}"
+    return HttpResponse(result, content_type="text/css")

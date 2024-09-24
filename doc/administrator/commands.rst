@@ -99,14 +99,6 @@ pretalx detects that you don’t have a ``node_modules`` directory, but it’s y
 responsibility to use it during updates. It’s not the default as running ``npm
 install`` can take a long time.
 
-``regenerate_css``
-~~~~~~~~~~~~~~~~~~
-
-The ``regenerate_css`` command regenerates only the custom CSS for events. It
-only runs for events with a specified custom colour, or custom uploaded styles.
-You can specify an event slug with ``--event``. If no event is specified, the
-files for all relevant events will be rebuilt.
-
 ``init``
 ~~~~~~~~
 
