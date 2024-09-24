@@ -1,9 +1,5 @@
-@import "../../common/scss/_variables";
-@import "../../vendored/bootstrap/scss/bootstrap";
-@import "../../vendored/forkawesome/scss/fork-awesome";
-
 body {
-  background: $brand-primary;
+  background: var(--color-primary);
 }
 
 #wrapper {

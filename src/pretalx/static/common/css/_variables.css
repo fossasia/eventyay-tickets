@@ -1,0 +1,56 @@
+:root {
+    --font-family: "Muli", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-family-heading: "Titillium Web";
+    --font-family-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+
+    --color-text: rgb(13, 15, 16);
+    --color-code: #e83e8c;
+    --color-text-input: var(--color-grey-dark)
+
+    /* We're making the text colour version of the primary colour a tad darker for contrast */
+    --color-pretalx: #3aa57c;
+
+    --color-primary: var(--color-pretalx);
+    --color-primary-text: color-mix(in srgb, var(--color-primary), black 10%);
+    --color-primary-text-dark: color-mix(in srgb, var(--color-primary), black 40%);
+    --color-primary-light: color-mix(in srgb, var(--color-primary), white 45%);
+    --color-secondary: var(--color-grey-medium);
+
+    --color-success: var(--color-pretalx);
+    --color-success-text: color-mix(in srgb, var(--color-success), black 10%);
+    --color-success-text-dark: color-mix(in srgb, var(--color-success), black 40%);
+    --color-bg: var(--color-white);
+
+    --color-info: #4697c9;
+    --color-info-text: color-mix(in srgb, var(--color-info), black 10%);
+    --color-info-text-dark: color-mix(in srgb, var(--color-info), black 40%);
+
+    --color-warning: #f0ad4e;
+    --color-warning-text: color-mix(in srgb, var(--color-warning), black 10%);
+    --color-warning-text-dark: color-mix(in srgb, var(--color-warning), black 50%);
+
+    --color-danger: #b23e65;
+    --color-danger-text: color-mix(in srgb, var(--color-danger), black 10%);
+    --color-danger-text-dark: color-mix(in srgb, var(--color-danger), black 40%);
+
+    --color-white: #fff;
+    --color-offwhite: #f8f9fa;
+    --color-grey-lightest: color-mix(in srgb, #f8f9fa 95%, var(--color-primary))
+    --color-grey-lighter: color-mix(in srgb, #e9ecef 95%, var(--color-primary))
+    --color-grey-light: color-mix(in srgb, #dae0e4 90%, var(--color-primary))
+    --color-grey-medium: #6c757d;
+    --color-grey-dark: #495057;
+
+    --color-card-border: rgb(0 0 0 / 0.125);
+    --color-card-header: rgb(0 0 0 / 0.03);
+    --color-border: #ced4da;
+
+    --size-border-radius: 0.25rem;
+    --size-spacer: 1rem;
+
+    --shadow-light: 0 1px 3px rgba(0,0,0,0.12),0 1px 2px rgba(0,0,0,0.24);
+    --shadow-focus: 0 0 0 0.2rem rgba(0,123,255,0.25);
+
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+}
