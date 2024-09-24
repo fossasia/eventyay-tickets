@@ -30,16 +30,16 @@
         </p>
 
         {% if submission.abstract %}
-            <div class="card submission-abstract">
+            <div class="card submission-abstract ml-auto mr-auto w-75">
                 <div class="card-header">{% translate "Abstract:" %} {{ submission.title }}</div>
-                <div class="card-body">
+                <div class="card-body mt-0 mb-0 mr-3 ml-3">
                     <p class="card-text">{{ submission.abstract|rich_text }}</p>
                 </div>
             </div>
         {% endif %}
         <form method="post" class="form">
             {% csrf_token %}
-            <div class="row url-links">
+            <div class="url-links">
                 <a href="/" class="btn btn-danger btn-lg btn-block">{% translate "No" %}</a>
                 <button type="submit" class="btn btn-success btn-lg btn-block">{% translate "Accept invitation" %}</button>
             </div>

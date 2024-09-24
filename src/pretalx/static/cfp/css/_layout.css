@@ -1,5 +1,5 @@
 body {
-  background: $gray-lightest;
+  background: var(--color-grey-lightest);
 }
 
 #top-bg {
@@ -48,12 +48,12 @@ header {
   }
 
   .locales a:hover {
-    border-bottom: 1px dashed $white;
+    border-bottom: 1px dashed white;
     text-decoration: none;
   }
 
   .locales a.active {
-    border-bottom: 1px solid $white;
+    border-bottom: 1px solid white;
   }
 }
 
@@ -64,24 +64,23 @@ header {
 
 #main-card {
   min-height: 300px;
-  box-shadow: 0 5px 10px rgba($black, 0.2);
+  box-shadow: 0 5px 10px rgba(black, 0.2);
   padding: 0;
   border: none;
 
   main {
-    padding: 1rem;
+    padding: var(--size-spacer);
   }
 }
 
 #user-dropdown-label .dropdown-content {
-  a,
-  a:hover {
-    color: $brand-primary;
+  a, a:hover {
+    color: var(--color-primary);
   }
 }
 
 #event-nonpublic {
-  background: $brand-danger;
+  background: var(--color-danger);
   padding: 5px 20px;
   color: white;
   text-align: center;
@@ -105,14 +104,6 @@ footer {
   }
 }
 
-.bootstrap4-multi-input {
-  margin: auto;
-}
-
-.add-speaker .input-group {
-  padding-left: 8px;
-}
-
 #main-container {
     width: 100%;
     padding-right: 15px;
@@ -122,25 +113,91 @@ footer {
     max-width: 1140px;
 }
 
-@media (max-width: 1400px) {
+.url-links {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  align-content: stretch;
+  padding: 10px;
+  margin-right: -15px;
+  margin-left: -15px;
+  margin-bottom: var(--size-spacer);
+
+  a, button {
+    margin: 5px;
+    flex-basis: 100px;
+    flex-grow: 1;
+  }
+}
+
+.user-logs {
+  position: absolute;
+  left: 100%;
+  top: 5%;
+  width: 200px;
+  z-index: -1;
+
+  .logentry {
+    display: flex;
+    flex-direction: column;
+    .time {
+      color: var(--color-grey-muted);
+    }
+    .person {
+      font-style: italic;
+    }
+    span i.fa {
+      padding-right: 4px;
+    }
+  }
+}
+
+.resource-option-row,
+.resource-option-input {
+  align-items: center;
+
+  .resource-option-fields {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-top: 1px var(--color-grey-lighter) solid;
+    padding-top: 4px;
+    .resource-option-inline {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+  .resource-option-delete {
+    margin-top: 8px;
+  }
+
+  .form-group {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: var(--breakpoint-xl)) {
   .user-logs {
     display: none;
   }
 }
 
-@include media-breakpoint-down(lg) {
-    #main-container {
-        max-width: 960px;
-    }
+@media (max-width: var(--breakpoint-lg)) {
+  #main-container {
+    max-width: 960px;
+  }
 }
 
-@include media-breakpoint-down(md) {
-    #main-container {
-        max-width: 720px;
-    }
+@media (max-width: var(--breakpoint-md)) {
+  #main-container {
+    max-width: 720px;
+  }
 }
 
-@include media-breakpoint-down(sm) {
+@media (max-width: var(--breakpoint-sm)) {
   #main-container {
     padding: 0;
     padding-top: 20px;
@@ -211,104 +268,13 @@ footer {
       .resource-option-fields {
         display: flex;
         flex-direction: column;
-        border-bottom: 2px $gray-lighter solid;
+        border-bottom: 2px var(--color-grey-lighter) solid;
         margin-bottom: 8px;
       }
 
       .btn-info {
         width: 100%;
       }
-    }
-  }
-}
-
-.url-links {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: baseline;
-  align-content: stretch;
-  padding: 10px;
-
-  a,
-  button {
-    margin: 5px;
-    flex-basis: 100px;
-    flex-grow: 1;
-  }
-}
-
-.submission-abstract {
-  width: 70%;
-  margin-left: auto;
-  margin-right: auto;
-
-  .card-body {
-    margin: 0 16px;
-  }
-}
-
-.user-logs {
-  position: absolute;
-  left: 100%;
-  top: 5%;
-  width: 200px;
-  z-index: -1;
-
-  .logentry {
-    display: flex;
-    flex-direction: column;
-    .time {
-      color: $text-muted;
-    }
-    .person {
-      font-style: italic;
-    }
-    span i.fa {
-      padding-right: 4px;
-    }
-  }
-}
-
-.resource-option-row,
-.resource-option-input {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  align-items: center;
-
-  .resource-option-fields {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    border-top: 1px $gray-lighter solid;
-    padding-top: 4px;
-    .resource-option-inline {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-    }
-  }
-
-  .resource-option-delete {
-    float: right;
-    flex-grow: 0;
-    margin-top: 8px;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    padding-right: 16px;
-    margin-bottom: 0;
-    margin-top: 2px;
-
-    .bootstrap-multi-input {
-      flex-grow: 1;
-    }
-
-    input {
-      width: 280px;
     }
   }
 }
