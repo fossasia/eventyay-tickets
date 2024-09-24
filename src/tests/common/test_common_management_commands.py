@@ -43,25 +43,6 @@ def test_common_test_event_without_user():
 
 
 @pytest.mark.django_db
-def test_common_test_regenerate_css_global(event):
-    call_command("regenerate_css")
-
-
-@pytest.mark.django_db
-def test_common_test_regenerate_css_single_event(event):
-    event.settings.widget_checksum_en = "a"
-    event.settings.agenda_css_checksum = "a"
-    event.primary_color = "#ff0000"
-    event.save()
-    call_command("regenerate_css", "--silent", event=event.slug)
-
-
-@pytest.mark.django_db
-def test_common_test_regenerate_css_wrong_slug(event):
-    call_command("regenerate_css", event=event.slug + "wrong")
-
-
-@pytest.mark.django_db
 def test_common_uncallable(event):
     with pytest.raises(OSError):
         call_command("init")

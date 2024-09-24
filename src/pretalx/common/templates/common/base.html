@@ -33,11 +33,6 @@
         {% include "common/includes/favicon.html" %}
 
         <link rel="stylesheet" type="text/css" href="{% static "common/css/uncompressed.css" %}" />
-        {% if request.event and request.event.settings.cfp_css_file %}
-            <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
-            <link rel="stylesheet" type="text/css" href="{{ request.event.settings.cfp_css_file }}"/>
-            <link rel="stylesheet" type="text/css" href="{{ request.event.settings.agenda_css_file }}"/>
-        {% else %}
             {% compress css %}
                 <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}" />
                 <link rel="stylesheet" type="text/x-scss" href="{% static "vendored/datetimepicker/_bootstrap-datetimepicker.scss" %}" />
@@ -55,8 +50,8 @@
                 <link rel="stylesheet" type="text/css" href="{% static "agenda/css/_agenda.css" %}" />
                 <link rel="stylesheet" type="text/css" href="{% static "agenda/css/_speaker.css" %}" />
             {% endcompress %}
-        {% endif %}
         {% block stylesheets %}{% endblock stylesheets %}
+        {% if request.event and request.event.primary_color %}<link rel="stylesheet" type="text/css" href="{{ request.event.urls.settings_css }}" />{% endif %}
         {% if request.event and request.event.custom_css %}<link rel="stylesheet" type="text/css" href="{{ request.event.custom_css.url }}"/>{% endif %}
         {% compress js %}
             <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>

@@ -24,7 +24,6 @@ from rest_framework.authtoken.models import Token
 
 from pretalx.common.forms import I18nEventFormSet, I18nFormSet
 from pretalx.common.models import ActivityLog
-from pretalx.common.tasks import regenerate_css
 from pretalx.common.templatetags.rich_text import render_markdown
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views import OrderModelView, is_form_bound
@@ -101,7 +100,6 @@ class EventDetail(EventSettingsPermission, ActionFromUrl, UpdateView):
             "pretalx.event.update", person=self.request.user, orga=True
         )
         messages.success(self.request, _("The event settings have been saved."))
-        regenerate_css.apply_async(args=(form.instance.pk,), ignore_result=True)
         return result
 
 
