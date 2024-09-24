@@ -2,23 +2,35 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".colorpickerfield").forEach((field) => {
         // We're creating a parent element to hold the colorpicker/preview and the input field
         const parentEl = document.createElement("div")
-        parentEl.classList.add("colorpicker-update input-group")
+        parentEl.classList.add("colorpicker-wrapper", "input-group")
         const pickerEl = document.createElement("div")
         pickerEl.classList.add("input-group-prepend")
+        const wrapperEl = document.createElement("div")
+        wrapperEl.classList.add("input-group-text")
+        const previewEl = document.createElement("div")
+        previewEl.classList.add("colorpicker-preview")
+        previewEl.style.backgroundColor = field.value
+
+        wrapperEl.appendChild(previewEl)
+        pickerEl.appendChild(wrapperEl)
         parentEl.appendChild(pickerEl)
+        const fieldParent = field.parentNode
+        fieldParent.replaceChild(parentEl, field)
         parentEl.appendChild(field)
-        field.parentNode.insertBefore(parentEl, field)
 
         const picker = new Picker({
             parent: pickerEl,
             color: field.value,
-            popup: "bottom",
+            popup: "left",
             alpha: false,
             editor: false,
             onChange: (color) => updateContrast(field, color),
         })
 
         field.addEventListener("focus", () => {
+            picker.openHandler()
+        })
+        previewEl.addEventListener("click", () => {
             picker.openHandler()
         })
 
@@ -29,18 +41,17 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 const updateContrast = (field, color) => {
-    field.parentNode.querySelector(".colorpicker-update").style["--color"] =
-        color.hex
+    field.parentNode.parentNode.querySelector(".colorpicker-preview").style.backgroundColor = color.hex
     // We're getting RRGGBBAA, but we don't want the alpha channel
     field.value = color.hex.slice(0, 7)
     const c = contrast([255, 255, 255], color.rgba.slice(0, 3))
-    if (!field.parentNode.querySelector(".contrast-state")) {
+    if (!field.parentNode.parentNode.querySelector(".contrast-state")) {
         const note = document.createElement("div")
-        note.classList.add("help-block contrast-state")
-        field.parentNode.appendChild(note)
+        note.classList.add("help-block", "contrast-state")
+        field.parentNode.parentNode.appendChild(note)
     }
-    const note = field.parentNode.querySelector(".contrast-state")
-    const goal = field.parentNode.querySelector(".color-visible") ? "visible" : "readable"
+    const note = field.parentNode.parentNode.querySelector(".contrast-state")
+    const goal = field.parentNode.parentNode.querySelector(".color-visible") ? "visible" : "readable"
     note.classList.remove("text-success")
     note.classList.remove("text-warning")
     note.classList.remove("text-danger")
