@@ -33,7 +33,7 @@
         {% endif %}
         <div class="panel panel-default">
             <div class="panel-heading text-center" id="headingOne">
-                <a class="btn btn-lg btn-primary btn-block mt-3" href="/login">
+                <a class="btn btn-lg btn-primary btn-block mt-3" href='{% url "eventyay_common:oauth2_provider.login" %}'>
                     {% translate "Login with SSO" %}
                 </a>
             </div>
