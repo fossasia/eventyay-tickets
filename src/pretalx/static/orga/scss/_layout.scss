@@ -45,17 +45,21 @@ table.table-sticky thead {
   z-index: 100;
   box-shadow: 0 2px $border-color;
 }
+
 aside.sidebar {
   background-color: $gray-lightest;
   border-right: 1px solid $gray-lighter;
   width: 45px;
   height: 100vh;
+  display: flex;
   font-size: 14px;
   flex-grow: 0;
   flex-shrink: 0;
   flex-wrap: nowrap;
   z-index: 150;
+  padding-left: 0;
   margin-top: 50px;
+  margin-bottom: 0;
   overflow-y: auto;
 
   &.sidebar-uncollapsed,
@@ -107,6 +111,7 @@ aside.sidebar {
 
   .nav-link,
   .nav-fold {
+    display: block;
     border-top: 1px solid $gray-light;
     div > a {
       display: none;
@@ -267,21 +272,6 @@ aside.sidebar {
   }
 }
 
-.navbar {
-  height: 50px;
-  color: $brand-primary;
-  background-color: $offwhite;
-  border-bottom: 4px $brand-primary solid;
-  padding: 0.25rem;
-  box-shadow:
-    1px 1px 3px rgba(0, 0, 0, 0.12),
-    1px 1px 2px rgba(0, 0, 0, 0.24);
-  z-index: 200;
-  a {
-    color: $brand-primary;
-  }
-}
-
 .navbar-brand {
   font-family: "Titillium Web";
   font-weight: 600;
@@ -312,30 +302,6 @@ aside.sidebar {
 
 .orga-headline {
   font-weight: bold;
-}
-
-ul.nav-tabs {
-  border-bottom: $gray-light solid 1px;
-  margin-bottom: 16px;
-
-  .nav-link {
-    border: none;
-  }
-
-  .nav-link:hover,
-  .nav-link:focus {
-    border-bottom: $gray-light solid 2px;
-  }
-
-  .nav-link:hover,
-  .nav-link:focus .nav-link.active {
-    border-bottom: $brand-primary 2px solid;
-    background-color: $white;
-  }
-
-  .nav-link.active {
-    border-bottom: $brand-primary 4px solid;
-  }
 }
 
 legend {

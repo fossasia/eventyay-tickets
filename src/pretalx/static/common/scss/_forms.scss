@@ -6,10 +6,6 @@
   display: flex;
 }
 
-.form-control:focus {
-  box-shadow: 0 0 0 1px rgba(58, 165, 124, 0.25);
-}
-
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;

@@ -113,10 +113,31 @@ footer {
   padding-left: 8px;
 }
 
+#main-container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 1140px;
+}
+
 @media (max-width: 1400px) {
   .user-logs {
     display: none;
   }
+}
+
+@include media-breakpoint-down(lg) {
+    #main-container {
+        max-width: 960px;
+    }
+}
+
+@include media-breakpoint-down(md) {
+    #main-container {
+        max-width: 720px;
+    }
 }
 
 @include media-breakpoint-down(sm) {
