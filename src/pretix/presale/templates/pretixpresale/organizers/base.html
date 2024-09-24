@@ -13,6 +13,7 @@
         <script type="text/javascript" src="{% static "pretixpresale/js/ui/popover.js" %}"></script>
     {% endcompress %}
     {{ request.organizer.slug|json_script:"organizer_name" }}
+    {{ base_path|json_script:"base_path" }}
     {% if organizer.settings.locales|length > 1 or request.organizer.settings.customer_accounts %}
         {% if organizer.settings.theme_color_background|upper != "#FFFFFF" or organizer.settings.organizer_logo_image_large %}
             <div class="container page-header-links">
