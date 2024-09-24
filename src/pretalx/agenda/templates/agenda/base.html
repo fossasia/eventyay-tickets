@@ -22,7 +22,7 @@
 
 {% block content %}
     {% if not request.event.feature_flags.show_schedule and not request.user.is_anonymous and not hide_visibility_warning %}
-        <div id="event-nonpublic">
+        <div id="event-nonpublic" class="d-print-none">
             <i class="fa fa-user-secret"></i>
             {% blocktranslate trimmed %}
                 This schedule-related page is non-public. Only organisers can see it.

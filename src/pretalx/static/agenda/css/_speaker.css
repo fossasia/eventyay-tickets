@@ -1,30 +1,8 @@
 .talk-title small {
   font-size: 18px;
-  padding-top: 5px;
   display: block;
 }
 
-.talk-title small,
-.talk-slot {
-  color: lighten($gray-800, 25%);
-}
-
-.talk.feedback-list {
-  flex-direction: column;
-
-  .feedback-box {
-    margin: 20px;
-
-    .quote {
-      font-size: 1.5rem;
-      color: rgba(0, 0, 0, 0.56);
-    }
-
-    .feedback-text {
-      padding-left: 40px;
-    }
-  }
-}
 
 .talk {
   display: flex;
@@ -39,8 +17,8 @@
     }
 
     .abstract {
-      margin-top: 1rem;
-      margin-bottom: 1rem;
+      margin-top: var(--size-spacer);
+      margin-bottom: var(--size-spacer);
       border: 0;
       font-weight: bold;
     }
@@ -56,6 +34,21 @@
         padding: 0px 5px;
     }
   }
+    &.feedback-list .feedback-box {
+        margin: 20px;
+
+        .quote {
+          font-size: 1.5rem;
+          color: rgba(0, 0, 0, 0.56);
+          border: var(--color-border) 1px solid;
+          border-radius: var(--size-border-radius);
+          padding: 20px;
+        }
+
+        .feedback-text {
+          padding-left: 40px;
+        }
+    }
 }
 
 .speaker-container {
@@ -73,7 +66,7 @@
     .speaker-avatar {
       width: 120px;
       margin-left: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--shadow-light);
     }
   }
 
@@ -83,20 +76,5 @@
 
   a:hover {
     text-decoration: none !important;
-  }
-
-  .talk {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid lighten($brand-primary, 25%);
-    border-top: 4px solid lighten($brand-primary, 25%);
-    padding: 8px;
-    margin-bottom: 16px;
-    color: black;
-
-    &:hover,
-    &:hover .talk-title {
-      background-color: $gray-lightest;
-    }
   }
 }
