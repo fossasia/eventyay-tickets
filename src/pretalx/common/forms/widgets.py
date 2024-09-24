@@ -11,7 +11,7 @@ class PasswordStrengthInput(PasswordInput):
         markup = """
         <div class="password-progress">
             <div class="password-progress-bar progress">
-                <div class="progress-bar progress-bar-warning password_strength_bar"
+                <div class="progress-bar bg-warning password_strength_bar"
                      role="progressbar"
                      aria-valuenow="0"
                      aria-valuemin="0"

@@ -17,7 +17,7 @@
                 Do you really want to discard your draft proposal? All data will be lost.
             {% endblocktranslate %}
         </div>
-        <form method="post" class="availability-form">
+        <form method="post">
             {% csrf_token %}
             <div class="submit-group">
                 <a href="{{ submission.urls.user_base }}" class="btn btn-lg btn-info">{{ phrases.base.back_button }}</a>

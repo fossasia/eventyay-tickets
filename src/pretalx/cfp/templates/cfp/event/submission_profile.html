@@ -15,10 +15,9 @@
         {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text "information" %}{% endif %}
     </div>
     <p>{{ text|rich_text }}</p>
+
     {% if form.avatar or form.get_gravatar %}
-
         {% include "common/avatar.html" with user=user form=form %}
-
     {% endif %}
 
     {% bootstrap_field form.name layout="event" %}
@@ -26,17 +25,9 @@
         {% bootstrap_field form.biography layout="event" %}
     {% endif %}
     {% if form.availabilities %}
-        {% compress js %}
-            <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-            <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
-        {% endcompress %}
-
         {% include "common/availabilities.html" %}
 
         {% bootstrap_field form.availabilities layout="event" %}
     {% endif %}
 
-    {% compress js %}
-        <script defer src="{% static "cfp/js/profile.js" %}"></script>
-    {% endcompress %}
 {% endblock inner %}
