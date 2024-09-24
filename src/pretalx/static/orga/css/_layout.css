@@ -60,7 +60,7 @@ body {
 
 .superuser-warning {
   position: absolute;
-  background: $brand-danger;
+  background: var(--color-danger);
   padding: 8px 20px;
   color: white;
   text-align: center;
@@ -85,11 +85,11 @@ body {
   }
 
   .done {
-    color: $brand-primary;
+    color: var(--color-success);
   }
 
   .fail {
-    color: $brand-danger;
+    color: var(--color-danger);
   }
 }
 table.table-sticky thead {
@@ -1130,8 +1130,7 @@ div.mail-preview {
 }
 
 .mail-preview-group div[lang] {
-  @include border-top-radius(0px);
-  @include border-bottom-radius(0px);
+  border-radius: 0;
   border-top-width: 0;
   margin-bottom: 0;
   padding-right: 15px;
@@ -1519,7 +1518,6 @@ div.mail-preview {
   display: block;
 
   input {
-    height: $height;
     max-width: 250px;
     display: inline-block;
   }
@@ -1529,8 +1527,6 @@ div.mail-preview {
   }
 
   .btn {
-    height: $height;
-    width: $height + 0.1rem;
     text-align: center;
     vertical-align: top;
     margin-left: 5px;
