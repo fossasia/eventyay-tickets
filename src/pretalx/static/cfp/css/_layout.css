@@ -3,6 +3,7 @@ body {
 }
 
 #top-bg {
+  background-color: var(--color-primary);
   position: fixed;
   top: 0;
   left: 0;
@@ -70,7 +71,8 @@ header {
 }
 
 #user-dropdown-label .dropdown-content {
-  a, a:hover {
+  a,
+  a:hover {
     color: var(--color-primary);
   }
 }
@@ -101,12 +103,12 @@ footer {
 }
 
 #main-container {
-    width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
-    max-width: 1140px;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 1140px;
 }
 
 .url-links {
@@ -120,7 +122,8 @@ footer {
   margin-left: -15px;
   margin-bottom: var(--size-spacer);
 
-  a, button {
+  a,
+  button {
     margin: 5px;
     flex-basis: 100px;
     flex-grow: 1;
@@ -175,25 +178,25 @@ footer {
   }
 }
 
-@media (max-width: var(--breakpoint-xl)) {
+@media (max-width: 1200px) {
   .user-logs {
     display: none;
   }
 }
 
-@media (max-width: var(--breakpoint-lg)) {
+@media (max-width: 992px) {
   #main-container {
     max-width: 960px;
   }
 }
 
-@media (max-width: var(--breakpoint-md)) {
+@media (max-width: 768px) {
   #main-container {
     max-width: 720px;
   }
 }
 
-@media (max-width: var(--breakpoint-sm)) {
+@media (max-width: 576px) {
   #main-container {
     padding: 0;
     padding-top: 20px;

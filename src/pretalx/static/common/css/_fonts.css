@@ -6,7 +6,7 @@
   src:
     local("Titillium Web SemiBold"),
     local("TitilliumWeb-SemiBold"),
-    url(static("fonts/titillium-web-v17-latin-ext-600.woff2")) format("woff2");
+    url("/static/fonts/titillium-web-v17-latin-ext-600.woff2") format("woff2");
 }
 @font-face {
   font-family: "Titillium Web";
@@ -16,7 +16,7 @@
   src:
     local("Titillium Web Bold"),
     local("TitilliumWeb-Bold"),
-    url(static("fonts/titillium-web-v17-latin-ext-700.woff2")) format("woff2");
+    url("/static/fonts/titillium-web-v17-latin-ext-700.woff2") format("woff2");
 }
 @font-face {
   font-family: "Titillium Web";
@@ -26,7 +26,7 @@
   src:
     local("Titillium Web SemiBold Italic"),
     local("TitilliumWeb-SemiBoldItalic"),
-    url(static("fonts/titillium-web-v17-latin-ext-600italic.woff2"))
+    url("/static/fonts/titillium-web-v17-latin-ext-600italic.woff2")
       format("woff2");
 }
 @font-face {
@@ -37,7 +37,7 @@
   src:
     local("Titillium Web Bold Italic"),
     local("TitilliumWeb-BoldItalic"),
-    url(static("fonts/titillium-web-v17-latin-ext-700italic.woff2"))
+    url("/static/fonts/titillium-web-v17-latin-ext-700italic.woff2")
       format("woff2");
 }
 @font-face {
@@ -47,8 +47,8 @@
   font-display: swap;
   src:
     local(""),
-    url(static("fonts/mulish-v12-latin-ext-regular.woff2")) format("woff2"),
-    url(static("fonts/mulish-v12-latin-ext-regular.woff")) format("woff");
+    url("/static/fonts/mulish-v12-latin-ext-regular.woff2") format("woff2"),
+    url("/static/fonts/mulish-v12-latin-ext-regular.woff") format("woff");
 }
 @font-face {
   font-family: "Muli";
@@ -57,8 +57,8 @@
   font-display: swap;
   src:
     local(""),
-    url(static("fonts/mulish-v12-latin-ext-700.woff2")) format("woff2"),
-    url(static("fonts/mulish-v12-latin-ext-700.woff")) format("woff");
+    url("/static/fonts/mulish-v12-latin-ext-700.woff2") format("woff2"),
+    url("/static/fonts/mulish-v12-latin-ext-700.woff") format("woff");
 }
 @font-face {
   font-family: "Muli";
@@ -67,8 +67,8 @@
   font-display: swap;
   src:
     local(""),
-    url(static("fonts/mulish-v12-latin-ext-italic.woff2")) format("woff2"),
-    url(static("fonts/mulish-v12-latin-ext-italic.woff")) format("woff");
+    url("/static/fonts/mulish-v12-latin-ext-italic.woff2") format("woff2"),
+    url("/static/fonts/mulish-v12-latin-ext-italic.woff") format("woff");
 }
 @font-face {
   font-family: "Muli";
@@ -76,22 +76,34 @@
   font-weight: 700;
   font-display: swap;
   src:
-    url(static("fonts/mulish-v12-latin-ext-700italic.woff2")) format("woff2"),
-    url(static("fonts/mulish-v12-latin-ext-700italic.woff")) format("woff");
+    url("/static/fonts/mulish-v12-latin-ext-700italic.woff2") format("woff2"),
+    url("/static/fonts/mulish-v12-latin-ext-700italic.woff") format("woff");
 }
 
 :root {
-  --font-family: "Muli", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-family-heading: "Titillium Web", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-family-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+  --font-family: "Muli", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
+  --font-family-title: "Titillium Web", "Open Sans", "OpenSans",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
 }
 
 body {
   font-family: var(--font-family);
 }
-h1, h2, h3, h4, legend, button, [role="button"], .button {
-    font-family: var(--font-family-title);
+h1,
+h2,
+h3,
+h4,
+legend,
+button,
+[role="button"],
+.button {
+  font-family: var(--font-family-title);
+  font-weight: 600;
 }
-code, pre {
+code,
+pre {
   font-family: var(--font-family-monospace);
 }

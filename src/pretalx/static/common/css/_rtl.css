@@ -55,7 +55,7 @@ html.rtl {
     }
   }
 
-  @media (min-width: var(--breakpoint-md)) {
+  @media (min-width: 768px) {
     .form-inline label {
       padding-right: 0;
       padding-left: initial;
@@ -127,7 +127,11 @@ html.rtl {
       margin-right: -16px;
     }
   }
-  ul, h2, h3, p, .avatar-upload {
+  ul,
+  h2,
+  h3,
+  p,
+  .avatar-upload {
     text-align: right;
   }
   .dropdown-content-se {
