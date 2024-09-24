@@ -47,7 +47,7 @@
           }
           &:hover {
             filter: opacity(50%);
-            background-color: $gray-light;
+            background-color: var(--color-grey-light);
             transition: all 0.5s ease;
           }
           &:hover,
@@ -76,7 +76,7 @@
               box-shadow:
                 3px 3px 5px rgba(0, 0, 0, 0.18),
                 3px 1px 4px rgba(0, 0, 0, 0.3);
-              border: $brand-danger 4px solid;
+              border: var(--color-danger) 4px solid;
               background-color: white;
             }
           }
@@ -87,7 +87,7 @@
 }
 .defocused {
   #flow {
-    background-color: $gray-light;
+    background-color: var(--color-grey-light);
     opacity: 0.5;
     * {
       cursor: default !important;

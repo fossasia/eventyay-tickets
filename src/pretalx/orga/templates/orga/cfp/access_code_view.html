@@ -5,8 +5,13 @@
 {% load i18n %}
 {% load static %}
 
+{% block stylesheets %}
+  {% compress css %}
+    <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+  {% endcompress %}
+{% endblock stylesheets %}
+
 {% block scripts %}
-    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
     {% compress js %}
         <script defer src="{% static "common/js/copy.js" %}"></script>
         <script defer src="{% static "common/js/modalDialog.js" %}"></script>

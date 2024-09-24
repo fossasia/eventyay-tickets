@@ -4,6 +4,12 @@
 {% load i18n %}
 {% load static %}
 
+{% block stylesheets %}
+  {% compress css %}
+    <link rel="stylesheet" href="{% static "orga/css/flow.css" %}">
+  {% endcompress %}
+{% endblock stylesheets %}
+
 {% block scripts %}
     {{ current_configuration|json_script:"currentConfiguration" }}
     {{ all_fields|json_script:"allFields" }}

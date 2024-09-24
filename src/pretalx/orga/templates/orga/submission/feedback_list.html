@@ -7,8 +7,8 @@
 
 {% block submission_content %}
     {% for entry in feedback %}
-        <div class="card feedback-card">
-            <div class="card-body">{{ entry.review|rich_text }}</div>
+        <div class="card mb-2">
+            <div class="card-body pb-0">{{ entry.review|rich_text }}</div>
         </div>
     {% empty %}
         {{ phrases.schedule.no_feedback }}

@@ -8,8 +8,13 @@
 
 {% block extra_title %}{% translate "Review settings" %} :: {% endblock extra_title %}
 
+{% block stylesheets %}
+  {% compress css %}
+    <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+  {% endcompress %}
+{% enblock stylesheets %}
+
 {% block scripts %}
-    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
     {% compress js %}
         <script defer src="{% static "js/jquery.formset.js" %}"></script>
         <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
@@ -30,13 +35,13 @@
         {% bootstrap_field form.score_mandatory layout="event" %}
         {% bootstrap_field form.text_mandatory layout="event" %}
         <div class="col-md-9 flip ml-auto mb-4">
-            <small class="form-text text-muted">
+            <div class="text-muted">
                 {% blocktranslate trimmed %}
                     If you require neither a review score nor a review text, reviewers will
                     be offered an additional {{ quotation_open }}Abstain{{ quotation_close }}
                     button when reviewing proposals.
                 {% endblocktranslate %}
-            </small>
+            </div>
         </div>
         {% bootstrap_field form.aggregate_method layout="event" %}
         {% bootstrap_field form.score_format layout="event" %}

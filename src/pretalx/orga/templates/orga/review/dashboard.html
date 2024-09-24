@@ -7,13 +7,16 @@
 {% load rules %}
 {% load static %}
 
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="{% static "vendored/rslider/rSlider.min.css" %}" />
+{% endblock stylesheets %}
+
 {% block scripts %}
     {% compress js %}
         <script src="{% static "vendored/rslider/rSlider.min.js" %}" defer></script>
         <script src="{% static "orga/js/submission_filter.js" %}"></script>
         <script src="{% static "orga/js/review.js" %}" defer></script>
     {% endcompress %}
-    <link rel="stylesheet" type="text/css" href="{% static "vendored/rslider/rSlider.min.css" %}" />
 {% endblock scripts %}
 
 {% block extra_title %}{% translate "Reviews" %} :: {% endblock extra_title %}

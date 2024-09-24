@@ -85,9 +85,9 @@
                                     {% csrf_token %}
                                     {% bootstrap_field invite_form.email layout="inline" form_group_class="single-email-group" %}
                                     {% bootstrap_field invite_form.bulk_email layout="inline" form_group_class="d-none bulk-email-group" %}
-                                    <small class="form-text text-muted bulk-email-help-text d-none">
+                                    <div class="text-muted bulk-email-help-text d-none">
                                         {{ invite_form.bulk_email.help_text }}
-                                    </small>
+                                    </div>
                                 </td>
                                 <td class="flip text-right">
                                     <button type="submit" name="form" value="invite" class="btn btn-success btn-sm"><i class="fa fa-check"></i></button>

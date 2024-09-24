@@ -1,11 +1,19 @@
 {% extends "orga/base.html" %}
 
+{% load compress %}
 {% load i18n %}
 {% load static %}
 
+{% block stylesheets %}
+  {% compress css %}
+    <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+  {% endcompress %}
+{% endblock stylesheets %}
+
 {% block scripts %}
-    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
+  {% compress js %}
     <script defer src="{% static "common/js/modalDialog.js" %}"></script>
+  {% endcompress %}
 {% endblock scripts %}
 
 {% block extra_title %}{{ information.count }} {% blocktranslate trimmed count count=information.count %}Speaker Information Note{% plural %}Speaker Information Notes{% endblocktranslate %} :: {% endblock extra_title %}

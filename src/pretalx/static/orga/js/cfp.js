@@ -1,5 +1,5 @@
 document
-  .querySelectorAll("#cfp-option-table .require input")
+  .querySelectorAll(".cfp-option-table .require input")
   .forEach(element => {
     element.addEventListener("click", ev => {
       if (ev.target.checked) {

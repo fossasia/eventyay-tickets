@@ -1,11 +1,14 @@
 {% extends "orga/mails/base.html" %}
 
 {% load bootstrap4 %}
+{% load compress %}
 {% load i18n %}
 {% load static %}
 
 {% block scripts %}
-    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
+    {% compress css %}
+      <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+    {% endcompress %}
     <script defer src="{% static "common/js/modalDialog.js" %}"></script>
 {% endblock scripts %}
 
