@@ -24,6 +24,7 @@
     {% endcompress %}
     {{ request.event.organizer.slug|json_script:"organizer_name" }}
     {{ request.event.slug|json_script:"event_slug" }}
+    {{ base_path|json_script:"base_path" }}
 {% endblock %}
 {% block content %}
 
