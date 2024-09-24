@@ -27,7 +27,7 @@
         <script src="{% static "common/js/lightbox.js" %}"></script>
     {% endcompress %}
     {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/lightbox.scss" %}">
+        <link rel="stylesheet" type="text/css" href="{% static "common/css/lightbox.css" %}">
     {% endcompress %}
 {% endblock agenda_custom_header %}
 
@@ -43,9 +43,9 @@
                         <i class="fa fa-star d-none" title="{% translate "Remove this session from your favourites" %}"></i>
                     </button>
                 </span>
-                <div class="buttons" id="talk-buttons">
+                <div class="buttons d-flex justify-content-end" id="talk-buttons">
                     {% if submission.state == "confirmed" and request.event.current_schedule %}
-                        <a class="btn btn-outline-primary" href="{{ submission.urls.ical }}">
+                        <a class="btn btn-outline-primary ml-2" href="{{ submission.urls.ical }}">
                             <i class="fa fa-calendar"></i> .ical
                         </a>
                     {% endif %}
@@ -61,7 +61,7 @@
                     {% endif %}
                 </div>
             </div>
-            <small>
+            <small class="text-muted">
                 {% if talk_slots|length == 1 %}
                     {{ talk_slots.0.start|date:DAY_MONTH_DATE_FORMAT }}, {{ talk_slots.0.start|date:"TIME_FORMAT" }}–{{ talk_slots.0.end|date:"TIME_FORMAT" }} ({{ request.event.timezone }}), {{ talk_slots.0.room.name }}
                     {% if talk_slots.0.room.description %}
@@ -98,7 +98,7 @@
                 {% if talk_slots|length > 1 %}
                     <ul class="talk-slots">
                         {% for talk in talk_slots %}
-                            <li class="talk-slot">
+                            <li class="text-muted">
                                 {{ talk.start|date:DAY_MONTH_DATE_FORMAT }}, {{ talk.start|date:"TIME_FORMAT" }}–{{ talk.end|date:"TIME_FORMAT" }}, {{ talk.room.name }}
                                 {% if room.description %}
                                     <i class="fa fa-question-circle" data-toggle="tooltip" title="{{ room.description }}"></i>

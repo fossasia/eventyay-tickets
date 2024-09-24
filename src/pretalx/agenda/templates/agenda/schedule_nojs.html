@@ -6,6 +6,12 @@
 {% load static %}
 {% load phrases %}
 
+{% block stylesheets %}
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{% static "agenda/css/agenda_nojs.css" %}" />
+  {% endcompress %}
+{% endblock stylesheets %}
+
 {% block agenda_content %}
     <div id="fahrplan" class="list">
 

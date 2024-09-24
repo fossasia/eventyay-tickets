@@ -1,3 +1,5 @@
+/* This file contains styles for the schedule and other attendee-facing components */
+
 #main-container.main-schedule {
   min-width: min-content;
   margin: 0 auto;
@@ -5,16 +7,14 @@
   padding-right: 0;
   padding-bottom: 0;
   #main-card {
-    min-width: 1200px; // make loading look less awkward
+    min-width: 1200px;
     margin: 0 auto;
     main {
       padding: 1rem 0;
       width: 100%;
     }
   }
-  header,
-  #fahrplan.grid #schedule-nav {
-    // keep these left while scrolling sideways
+  header, #fahrplan.grid #schedule-nav {
     margin: 0;
     padding: 0;
     position: sticky;
@@ -85,75 +85,8 @@ header {
   margin: 0 auto;
 }
 
-#fahrplan noscript {
-  display: block;
-}
-
-.pretalx-tabbed {
-  display: flex;
-  flex-direction: column-reverse;
-  input[name="tabs"] {
-    display: none;
-
-    &:not(:checked) + .pretalx-tab-content {
-      display: none;
-    }
-  }
-  .pretalx-tab-content {
-    margin-top: 12px;
-  }
-}
-.pretalx-tabs {
-  display: flex;
-  flex-direction: row;
-  border-bottom: 1px solid $gray-lighter;
-  position: sticky;
-  top: 0;
-  background-color: $white;
-  z-index: 200;
-
-  h4,
-  h3,
-  h2,
-  h1,
-  .pretalx-tab {
-    padding: 8px 24px;
-    font-size: 14pt;
-    overflow: hidden;
-    border: 1px solid $gray-lighter;
-    border-bottom: none;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    box-shadow: 0 0 0.5em $gray-lightest;
-    cursor: pointer;
-    &.active {
-      border-top: 4px solid $brand-primary;
-    }
-    label {
-      margin-bottom: 0; /* container .pretalx-tab takes care of the spacing */
-      user-select: none;
-      cursor: pointer;
-      -moz-user-select: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
-    }
-  }
-}
-
-#talk-buttons {
-  display: flex;
-  justify-content: flex-end;
-  .btn {
-    margin-left: 8px;
-  }
-}
-
 .btn-sm .fa:not(:only-child) {
   padding-right: 5px;
-}
-
-#exporttimestamp {
-  margin-bottom: 1em;
 }
 
 .export-icon {
@@ -161,19 +94,6 @@ header {
   display: inline-block;
 }
 
-.pretalx-list-day {
-  .bucket-time {
-    color: rgba(0, 0, 0, 0.54);
-    font-size: 14px;
-    font-weight: 500;
-  }
-  a:hover {
-    text-decoration: none;
-    .title {
-      color: $brand-primary;
-    }
-  }
-}
 .pretalx-session {
   display: flex;
   min-width: 360px;
@@ -291,7 +211,7 @@ article .pretalx-session .pretalx-session-info .abstract {
   display: block;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: var(--breakpoint-xl)) {
   header {
     text-align: right;
     flex-direction: column;
@@ -320,7 +240,7 @@ article .pretalx-session .pretalx-session-info .abstract {
     }
   }
 }
-@media (max-width: 1000px) {
+@media (max-width: var(--breakpoint-lg)) {
   #fahrplan #schedule-nav {
     flex-direction: column;
   }
@@ -340,27 +260,14 @@ article .pretalx-session .pretalx-session-info .abstract {
 }
 
 @media print {
-  body {
-    background: none;
-    overflow: visible !important;
-    height: auto;
-  }
-  #schedule-nav,
-  #main-card .user-row,
-  header,
-  footer,
-  .schedule-header .btn,
-  #event-nonpublic {
+  header, footer {
     display: none;
   }
   .container {
     max-width: 100%;
   }
-  .pretalx-schedule-day {
-    page-break-after: always;
-    overflow: visible !important;
-  }
 }
+
 .heading-with-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -376,7 +283,7 @@ article .pretalx-session .pretalx-session-info .abstract {
     height: 30px;
     border-radius: 100%;
     font-size: 20px;
-    background-color: $gray-lightest;
+    background-color: var(--color-grey-lightest);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -384,11 +291,5 @@ article .pretalx-session .pretalx-session-info .abstract {
     i.fa-star::before {
       filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.17));
     }
-  }
-}
-#fahrplan.list {
-  .pretalx-tab-content {
-    margin: 20px;
-    margin-top: 8px;
   }
 }
