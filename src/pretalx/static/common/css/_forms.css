@@ -5,11 +5,11 @@
 input[type="number"] {
   -moz-appearance: textfield;
 
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 }
 
 .labelless-password-input-form {
@@ -39,7 +39,6 @@ input.password_strength {
     }
   }
 }
-
 
 #auth-form {
   flex-direction: row;
@@ -121,7 +120,22 @@ input.password_strength {
     background: var(--color-bg);
   }
 }
-@media (max-width: var(--breakpoint-md)) {
+.i18n-form-group input,
+.i18n-form-group textarea {
+  border-top-width: 0;
+  border-radius: 0;
+
+  &:first-child {
+    border-top-width: 1px;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+  }
+  &:last-child {
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+  }
+}
+@media (max-width: 768px) {
   .submit-group {
     flex-direction: column;
     button,

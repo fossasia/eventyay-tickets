@@ -35,7 +35,6 @@ body {
   }
 }
 
-
 .flex-container {
   display: flex;
   flex-wrap: no-wrap;
@@ -101,7 +100,6 @@ table.table-sticky thead {
   z-index: 100;
   box-shadow: 0 2px var(--color-border);
 }
-
 
 .accordion .card {
   h2 {
@@ -183,6 +181,9 @@ aside.sidebar {
   a {
     color: var(--color-text-lighter);
     font-weight: bold;
+    &:hover {
+        text-decoration: none;
+    }
   }
 
   .nav-fold span.has-children {
@@ -362,7 +363,7 @@ aside.sidebar {
         }
         .search-detail {
           font-size: 11px;
-          color: var(--color-text-lighter)
+          color: var(--color-text-lighter);
           font-weight: normal;
         }
       }
@@ -371,9 +372,9 @@ aside.sidebar {
 }
 
 .navbar-brand {
-  font-family: "Titillium Web";
-  font-weight: 600;
   img {
+    display: inline-block;
+    vertical-align: middle;
     height: 30px;
     width: auto;
     margin: auto;
@@ -396,7 +397,6 @@ aside.sidebar {
     width: 350px;
     margin-right: 8px;
   }
-}
 }
 
 footer {
@@ -445,13 +445,15 @@ footer {
     }
   }
 
-  button, [role="button"],
+  button,
+  [role="button"],
   details {
     align-self: flex-start;
     margin-top: auto;
     margin-bottom: 16px;
   }
-  button, [role="button"] {
+  button,
+  [role="button"] {
     margin-right: 16px;
     margin-left: auto;
   }
@@ -476,7 +478,7 @@ footer {
     padding-right: 8px;
   }
   .form-group input {
-      height: 2rem;
+    height: 2rem;
   }
 }
 
@@ -520,7 +522,6 @@ footer {
     }
   }
 }
-
 
 td.reviewer {
   display: flex;
@@ -660,11 +661,11 @@ h2 .submission-state-dropdown {
 .submission-state-submitted {
   color: var(--color-info);
   background-color: white;
-  --submission-color-primary: #{var(--color-info);
-  --submission-color-secondary: #{var(--color-info);
+  --submission-color-primary: var(--color-info);
+  --submission-color-secondary: var(--color-info);
 }
 .submission-state-dropdown.submission-state-pending-submitted {
-  --submission-color-secondary: #{var(--color-info);
+  --submission-color-secondary: var(--color-info);
 }
 .submission-state-submitted:hover {
   color: white;
@@ -716,7 +717,9 @@ h2 .submission-state-dropdown {
 .cfp-option-table {
   width: 75%;
   display: table;
-  input:not([type="checkbox"]):not([type="radio"]), select, textarea {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
     margin-bottom: 4px;
     margin-top: 4px;
     input {
@@ -732,7 +735,8 @@ h2 .submission-state-dropdown {
   input[type="number"] {
     width: 64px;
   }
-  tr, tr td {
+  tr,
+  tr td {
     line-height: 2.5;
   }
 }
@@ -1158,18 +1162,18 @@ div.mail-preview {
   }
 }
 .list-group .list-group-item-action h4 {
-/* This is in the email editor placeholder sidebar */
-      color: var(--color-primary);
-      display: flex;
-      justify-content: space-between;
-      margin-top: 8px;
-      .fa-chevron-right {
-        position: absolute;
-        right: 24px;
-        height: 24px;
-        top: calc(50% - 12px);
-      }
-    }
+  /* This is in the email editor placeholder sidebar */
+  color: var(--color-primary);
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  .fa-chevron-right {
+    position: absolute;
+    right: 24px;
+    height: 24px;
+    top: calc(50% - 12px);
+  }
+}
 
 .form-with-placeholder {
   margin-right: 300px;
@@ -1486,8 +1490,8 @@ div.mail-preview {
 }
 
 .pending-mails {
-  background: $brand_warning;
-  color: $gray-lightest;
+  background: var(--color-warning);
+  color: var(--color-grey-lightest);
   border-radius: 20px;
   font-weight: bold;
   margin-left: 8px;
@@ -1545,7 +1549,7 @@ div.mail-preview {
     }
   }
 }
-@media (max-width: var(--breakpoint-md)) {
+@media (max-width: 768px) {
   nav input,
   nav #navigate,
   nav .twiter-typeahead {

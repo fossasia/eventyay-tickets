@@ -14,7 +14,8 @@
       width: 100%;
     }
   }
-  header, #fahrplan.grid #schedule-nav {
+  header,
+  #fahrplan.grid #schedule-nav {
     margin: 0;
     padding: 0;
     position: sticky;
@@ -248,7 +249,7 @@ article .pretalx-session .pretalx-session-info .abstract {
   display: block;
 }
 
-@media (max-width: var(--breakpoint-xl)) {
+@media (max-width: 1200px) {
   header {
     text-align: right;
     flex-direction: column;
@@ -280,7 +281,7 @@ article .pretalx-session .pretalx-session-info .abstract {
     }
   }
 }
-@media (max-width: var(--breakpoint-lg)) {
+@media (max-width: 992px) {
   #fahrplan #schedule-nav {
     flex-direction: column;
     .navigation {
@@ -306,7 +307,8 @@ article .pretalx-session .pretalx-session-info .abstract {
 }
 
 @media print {
-  header, footer {
+  header,
+  footer {
     display: none;
   }
   .container {
@@ -429,4 +431,9 @@ article .pretalx-session .pretalx-session-info .abstract {
   transition: opacity .5s ease-in-out;
   -moz-transition: opacity .5s ease-in-out;
   -webkit-transition: opacity .5s ease-in-out;
+
+}
+
+.markdown-column .form-group {
+  flex-direction: column;
 }
