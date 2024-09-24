@@ -2390,16 +2390,6 @@ Your {organizer} team"""))
             help_text=_("This should point to your speakers."),
         ),
     },
-    'video_link': {
-        'default': None,
-        'type': str,
-        'form_class': forms.URLField,
-        'serializer_class': serializers.URLField,
-        'form_kwargs': dict(
-            label=_("Video URL"),
-            help_text=_("This should point to your Video Live URL."),
-        ),
-    },
     'seating_choice': {
         'default': 'True',
         'form_class': forms.BooleanField,

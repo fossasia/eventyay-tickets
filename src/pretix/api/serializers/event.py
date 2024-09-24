@@ -725,7 +725,6 @@ class EventSettingsSerializer(SettingsSerializer):
         'schedule_link',
         'session_link',
         'speaker_link',
-        'video_link'
     ]
 
     def __init__(self, *args, **kwargs):
