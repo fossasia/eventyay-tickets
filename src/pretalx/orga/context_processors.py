@@ -27,7 +27,7 @@ def orga_events(request):
     context["site_config"] = site_config
     context["base_path"] = settings.BASE_PATH
 
-    if not request.path.startswith("/orga/"):
+    if not request.path_info.startswith("/orga/"):
         return {}
 
     if not getattr(request, "user", None) or not request.user.is_authenticated:
