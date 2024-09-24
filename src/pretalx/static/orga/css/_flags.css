@@ -1,10 +1,11 @@
-input[lang] {
-  background: no-repeat 10px center;
+input[type="text"][lang] {
+  background-repeat: no-repeat;
+  background-position: 10px center;
   padding-left: 34px;
 }
 
 div[lang], textarea[lang] {
-  background: no-repeat 10px 10px;
+  background: no-repeat 10px 10px !default;
   padding-left: 34px;
 }
 
