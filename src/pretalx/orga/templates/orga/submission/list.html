@@ -63,7 +63,9 @@
             {% if show_submission_types and filter_form.submission_type %}{% bootstrap_field filter_form.submission_type %}{% endif %}
             <div class="d-flex flex-column form-group">
                 {% bootstrap_field filter_form.state layout="inline" %}
+                <div class="ml-4">
                 <div id="pending" class="d-none">{% bootstrap_field filter_form.pending_state__isnull layout="inline" %}</div>
+                </div>
             </div>
             {% if filter_form.track %}{% bootstrap_field filter_form.track %}{% endif %}
             {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}

@@ -371,9 +371,9 @@ input[type="radio"] {
     background-color: transparent;
     background-clip: padding-box;
     text-align: right;
-    font-weight: bold;
     margin-bottom: 0;
     padding-bottom: 0;
+    user-select: none;
 
     &:before,
     &:after {
@@ -432,12 +432,12 @@ label {
   margin-bottom: 0;
   font-size: inherit;
   text-align: right;
+  user-select: none;
   font-weight: bold;
     .optional {
       font-weight: normal;
       color: var(--color-grey);
     }
-
 }
 
 small.form-text {
@@ -1268,6 +1268,9 @@ nav.navbar {
 }
 .ml-3 {
   margin-left: 1rem !important;
+}
+.ml-4 {
+  margin-left: 1.5rem !important;
 }
 .ml-auto {
   margin-left: auto !important;

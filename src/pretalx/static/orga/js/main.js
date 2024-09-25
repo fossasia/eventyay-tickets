@@ -6,10 +6,22 @@ document.addEventListener("DOMContentLoaded", function() {
     return state.text
   }
   document.querySelectorAll(".select2").forEach(select => {
-    $(select).select2({
-      placeholder: select.title,
-      templateResult: hideOptions,
-      allowClear: !select.required && !select.multiple,
+    new Choices(select, {
+        removeItems: !select.readonly,
+        removeItemButton: !select.readonly && (!select.required || select.multiple),
+        removeItemButtonAlignLeft: true,
+        searchFields: ["label"],
+        searchEnabled: true,
+        searchResultLimit: -1,
+        resetScrollPosition: false,
+        shouldSort: false,
+        searchPlaceholderValue: select.title,
+        renderSelectedChoices: true,
+        itemSelectText: "",
+        addItemText: "",
+        removeItemLabelText: "×",
+        removeItemIconText: "×",
+        maxItemText: "",
     })
   })
 
