@@ -1,11 +1,11 @@
 import datetime as dt
+import hashlib
 from urllib.parse import unquote
 
 from csp.decorators import csp_exempt
 from django.contrib.staticfiles import finders
 from django.http import Http404, HttpResponse, JsonResponse
 from django.utils.timezone import now
-from django.views.decorators.cache import cache_page
 from django.views.decorators.http import condition
 from i18nfield.utils import I18nJSONEncoder
 
@@ -14,9 +14,19 @@ from pretalx.common.language import language
 from pretalx.common.views import conditional_cache_page
 from pretalx.schedule.exporters import ScheduleData
 
+WIDGET_JS_CHECKSUM = None
+WIDGET_PATH = "agenda/js/pretalx-schedule.min.js"
+
 
 def widget_js_etag(request, event, **kwargs):
-    return request.event.settings.widget_checksum
+    # The widget is stable across all events, we just return a checksum of the JS file
+    # to make sure clients reload the widget when it changes.
+    global WIDGET_JS_CHECKSUM
+    if not WIDGET_JS_CHECKSUM:
+        file_path = finders.find(WIDGET_PATH)
+        with open(file_path, encoding="utf-8") as fp:
+            WIDGET_JS_CHECKSUM = hashlib.md5(fp.read().encode()).hexdigest()
+    return WIDGET_JS_CHECKSUM
 
 
 def widget_data_etag(request, **kwargs):
@@ -158,10 +168,14 @@ def version_prefix(request, event, version=None):
 
 
 @conditional_cache_page(
-    60, cache_version, cache_control=cache_control, key_prefix=version_prefix
+    60 * 10, cache_version, cache_control=cache_control, key_prefix=version_prefix
 )
 @csp_exempt
 def widget_data(request, event, version=None):
+    # We use caching here, rather than an eTag, because the data is
+    # expensive to generate *and* can change outside of our cache control:
+    # Big changes only happen with new schedule versions, but smaller changes,
+    # like talk updates or speaker information, can change at any time.
     event = request.event
     if request.method == "OPTIONS":
         response = JsonResponse({})
@@ -192,14 +206,17 @@ def widget_data(request, event, version=None):
 
 
 @condition(etag_func=widget_js_etag)
-@cache_page(60)
 @csp_exempt
 def widget_script(request, event):
+    # This page basically just serves a static file under a known path (ideally, the
+    # administrators could and should even turn on gzip compression for the
+    # /<event>/widget/schedule.js path, as it cuts down the transferred data
+    # by about 80% for the schedule.js file, which is the largest file on the
+    # main schedule page).
     if not request.user.has_perm("agenda.view_widget", request.event):
         raise Http404()
 
-    widget_file = "agenda/js/pretalx-schedule.min.js"
-    file_path = finders.find(widget_file)
+    file_path = finders.find(WIDGET_PATH)
     with open(file_path, encoding="utf-8") as fp:
         code = fp.read()
     data = code.encode()

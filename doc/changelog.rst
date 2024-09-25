@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`schedule` The schedule page makes even better use of several caching methods in order to be smaller and faster to load and re-load.
 - :announcement:`admin` Due to a potentially tricky update in Django, and maintenance cost, pretalx is dropping support for MySQL/MariaDB. Please use either PostgreSQL or SQLite. If you are currently running MySLQ, please take a look at this exemplary `MySQL migration guide<https://pretix.readthedocs.io/en/latest/admin/mysql2postgres.html>`_ by the pretix project **BEFORE** starting your pretalx update, in order to migrate your data with ``pgloader`` to PostgreSQL!
 - :announcement:`admin` pretalx now requires Python 3.10 or newer.
 - :feature:`orga` Organisers now have access to a list of all speakers / submitters for all of their events.
