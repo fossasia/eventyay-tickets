@@ -134,9 +134,11 @@ legend {
 
 button,
 [role="button"],
-a.button {
+a.btn {
   display: inline-block;
+  font-size: 1rem;
   font-weight: 400;
+  line-height: 1.5;
   -webkit-appearance: button;
 
   text-align: center;
@@ -155,19 +157,19 @@ a.button {
 
   padding: 0.375rem 0.75rem;
 
-  &:small {
+  &.small, &.btn-sm {
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
     border-radius: 0.2rem;
   }
 
-  &.large {
+  &.large, &.btn-lg {
     padding: 0.5rem 1rem;
     font-size: 1.25rem;
     border-radius: 0.3rem;
   }
 
-  &.block {
+  &.block, &.btn-block {
     display: block;
     width: 100%;
 
@@ -176,7 +178,7 @@ a.button {
     }
   }
 
-  &.link {
+  &.link, &.btn-link {
     font-weight: normal;
     --highlight-color: transparent;
     color: var(--color-primary-text);
@@ -190,16 +192,20 @@ a.button {
   &:hover,
   &:active {
     background: color-mix(in hsl, var(--highlight-color), black 10%);
-    border-color: color-mix(in hsl, var(--highlight-color), black 20%);
     text-decoration: none;
+    color: white;
   }
   &:active {
     box-shadow: var(--shadow-light);
   }
 
-  &.outline {
+  &.outline, &.btn-outline-info, &.btn-outline-success, &.btn-outline-warning, &.btn-outline-danger {
     background: var(--color-bg);
     color: var(--highlight-color);
+    &:hover {
+      background: var(--highlight-color);
+      color: white;
+    }
   }
 
   &:disabled,
@@ -220,6 +226,9 @@ a.button {
       box-shadow: 0 0 0 0.2rem
         color-mix(in srgb, var(--highlight-color), white 55%);
     }
+  }
+  &> i:only-child {
+    margin: 0;
   }
 }
 a[data-toggle] {
@@ -359,17 +368,12 @@ input[type="radio"] {
     display: inherit !important;
     cursor: pointer;
     position: relative;
-    background-color: var(--color-bg);
+    background-color: transparent;
     background-clip: padding-box;
-    border: 1px solid var(--color-border);
-    border-radius: var(--size-border-radius);
-    transition:
-      border-color 0.15s ease-in-out,
-      box-shadow 0.15s ease-in-out;
     text-align: right;
     font-weight: bold;
     margin-bottom: 0;
-    margin-left: 36px;
+    padding-bottom: 0;
 
     &:before,
     &:after {
@@ -383,10 +387,9 @@ input[type="radio"] {
       background: var(--color-offwhite);
       box-shadow: 0 0 2px var(--color-grey-medium-lighter);
       margin-left: -34px;
-      border-radius: 4px;
     }
     &:after {
-      top: 0;
+      top: 4px;
       left: 4px;
       width: 16px;
       height: 16px;
@@ -394,7 +397,6 @@ input[type="radio"] {
       opacity: 0;
       background: var(--color-success);
       margin-left: -34px;
-      border-radius: 2px;
     }
   }
   &:checked + label:after {
@@ -407,18 +409,19 @@ input[type="radio"] {
 
 input[type="checkbox"] + label {
   margin-left: 18px;
+  &:before {
+    border-radius: var(--size-border-radius);
+  }
+  &:after {
+    border-radius: calc(var(--size-border-radius) - 2px);
+  }
 }
 
 input[type="radio"] + label {
   line-height: 2;
   margin-left: 36px;
-  &:before,
-  &:after {
+  &:before, &:after {
     border-radius: 50%;
-    margin-top: 4px;
-  }
-  &:after {
-    top: 4px;
   }
 }
 
@@ -705,29 +708,42 @@ small {
 
 /* Conventions and custom elements */
 
-.color-success {
+.color-success, .btn-success {
   --highlight-color: var(--color-success);
   --highlight-color-text: var(--color-success-text-dark);
 }
-.color-info {
+.color-info, .btn-info {
   --highlight-color: var(--color-info);
   --highlight-color-text: var(--color-info-text-dark);
 }
-.color-warning {
+.color-warning, .btn-warning {
   --highlight-color: var(--color-warning);
   --highlight-color-text: var(--color-warning-text-dark);
 }
-.color-danger {
+.color-danger, .btn-danger {
   --highlight-color: var(--color-danger);
   --highlight-color-text: var(--color-danger-text-dark);
 }
-.color-primary {
+.color-primary, .btn-primary {
   --highlight-color: var(--color-primary);
   --highlight-color-text: var(--color-primary-text-dark);
 }
-.color-secondary {
+.color-secondary, .btn-secondary {
   --highlight-color: var(--color-secondary);
   --highlight-color-text: var(--color-secondary);
+}
+
+.btn-outline-success {
+    --highlight-color: var(--color-success);
+}
+.btn-outline-info {
+    --highlight-color: var(--color-info);
+}
+.btn-outline-warning {
+    --highlight-color: var(--color-warning);
+}
+.btn-outline-danger {
+    --highlight-color: var(--color-danger);
 }
 
 .alert {

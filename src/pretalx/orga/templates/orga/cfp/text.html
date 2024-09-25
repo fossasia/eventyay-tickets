@@ -48,8 +48,6 @@
             </span>
         </div>
     </dialog>
-    <div class="flex-container">
-        <div class="flex-content">
             <form method="post">
                 {% csrf_token %}
                 {% bootstrap_form_errors form %}
@@ -215,6 +213,4 @@
                 {% include "orga/includes/submit_row.html" %}
 
             </form>
-        </div>
-    </div>
 {% endblock content %}

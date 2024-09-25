@@ -84,7 +84,7 @@ input.password_strength {
   justify-content: space-between;
   flex-grow: 1;
   flex-wrap: wrap;
-  background-color: var(--grey-lightest);
+  background-color: var(--color-grey-lightest);
   padding: 16px;
   margin-bottom: 16px;
 

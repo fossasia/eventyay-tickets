@@ -137,18 +137,8 @@ footer {
   width: 200px;
   z-index: -1;
 
-  .logentry {
-    display: flex;
-    flex-direction: column;
-    .time {
-      color: var(--color-grey-muted);
-    }
-    .person {
-      font-style: italic;
-    }
-    span i.fa {
-      padding-right: 4px;
-    }
+  .logentry .person {
+    font-style: italic;
   }
 }
 
