@@ -127,7 +127,7 @@
             </ul>
         </nav>
         {% if request.user.is_superuser %}
-            <div class="superuser-warning">
+            <div class="global-top-warning">
                 <i class="fa fa-exclamation-triangle"></i>
                 {% blocktranslate with link=link trimmed %}
                     You’re using pretalx as a superuser. This is not recommended.
@@ -138,7 +138,7 @@
             </div>
         {% endif %}
         {% if warning_update_check_active %}
-            <div class="superuser-warning">
+            <div class="global-top-warning">
                 <a href="{% url "orga:admin.update" %}">
                     {% blocktranslate trimmed %}
                         Starting with version 1.1.0, pretalx automatically checks for updates in the background.

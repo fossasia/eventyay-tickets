@@ -30,3 +30,14 @@
 .state-fragment {
   white-space: nowrap;
 }
+
+.logentry {
+  display: flex;
+  flex-direction: column;
+  .time {
+    color: var(--color-text-muted);
+  }
+  span i.fa {
+    padding-right: 4px;
+  }
+}
