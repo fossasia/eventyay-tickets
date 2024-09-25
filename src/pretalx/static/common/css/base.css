@@ -275,6 +275,7 @@ textarea {
   width: 100%;
   padding: 0.375rem 0.75rem;
   color: var(--color-text-input);
+  caret-color: var(--color-text-input);
 
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -315,7 +316,7 @@ textarea {
   }
 
   &::placeholder {
-    color: var(--color-grey-medium);
+    color: var(--color-grey);
     opacity: 1;
   }
 
@@ -464,7 +465,7 @@ legend {
 textarea {
   resize: vertical;
   height: auto;
-  form-sizing: auto;
+  field-sizing: content;
 }
 
 select,
