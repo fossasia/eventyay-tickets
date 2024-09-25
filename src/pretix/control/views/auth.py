@@ -1,12 +1,10 @@
+import base64
 import json
 import logging
 import time
-from urllib.parse import quote
-import base64
 from urllib.parse import quote, urlparse
 
 import webauthn
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import (
@@ -23,6 +21,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from django_otp import match_token
 from oauth2_provider.views import AuthorizationView
+from webauthn.helpers import generate_challenge
 
 from pretix.base.auth import get_auth_backends
 from pretix.base.forms.auth import (
@@ -32,7 +31,6 @@ from pretix.base.models import TeamInvite, U2FDevice, User, WebAuthnDevice
 from pretix.base.services.mail import SendMailException
 from pretix.helpers.cookies import set_cookie_without_samesite
 from pretix.helpers.jwt_generate import generate_sso_token
-from pretix.helpers.webauthn import generate_challenge
 from pretix.multidomain.middlewares import get_cookie_domain
 
 logger = logging.getLogger(__name__)
