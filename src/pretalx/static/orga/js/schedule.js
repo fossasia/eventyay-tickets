@@ -515,9 +515,6 @@ var app = new Vue({
       .then(() => this.updateRooms())
       .then(() => {
         this.loading = false
-        $(function() {
-          $('[data-toggle="tooltip"]').tooltip()
-        })
       })
       .then(() => {
         // load warnings later, because they are slow

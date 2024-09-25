@@ -1,5 +1,5 @@
 $(function() {
-  $('[data-toggle="tooltip"]').tooltip()
+  // $('[data-toggle="tooltip"]').tooltip()
   $('[data-toggle="tooltip"], .copyable-text').click(function(e) {
     var $temp = $("<input>")
     $("body").append($temp)
@@ -10,11 +10,11 @@ $(function() {
     const previousTitle = e.currentTarget.dataset["originalTitle"]
     e.currentTarget.title = "Copied!"
     e.currentTarget.dataset["originalTitle"] = "Copied!"
-    currentTarget.tooltip('show')
+    // currentTarget.tooltip('show')
     window.setTimeout(() => {
       e.currentTarget.title = previousTitle
       e.currentTarget.dataset["originalTitle"] = previousTitle
-      currentTarget.tooltip('hide')
+      // currentTarget.tooltip('hide')
     }, 400)
   })
 })
