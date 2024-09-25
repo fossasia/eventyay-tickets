@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
   "use strict"
-  $('[data-toggle="tooltip"]').tooltip()
   function hideOptions (state) {
     if (!state.id || !state.element) return state.text
     if (state.element && state.element.classList.contains("hidden")) return
