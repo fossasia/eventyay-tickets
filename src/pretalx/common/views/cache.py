@@ -70,12 +70,12 @@ def should_cache(request, response):
     # Don't cache a response with 'Cache-Control: private'
     if "private" in response.get("Cache-Control", ()):
         return False
-
-    # The timeout from the "max-age" section of the "Cache-Control"
-    # header takes precedence over the default cache timeout.
-    if get_max_age(response) == 0:
-        return False
     return True
+
+
+def patched_response(response, timeout):
+    patch_response_headers(response, timeout)
+    return response
 
 
 def etag_cache_page(
@@ -102,16 +102,16 @@ def etag_cache_page(
     if current_etag and requested_etag and current_etag != requested_etag:
         current_etag = None
     elif requested_etag and current_etag == requested_etag:
-        return HttpResponseNotModified()
+        return patched_response(HttpResponseNotModified(), timeout)
 
     if cache_key and (cached_response := cache.get(cache_key)):
-        response = HttpResponse(cached_response)
+        return patched_response(HttpResponse(cached_response), timeout)
     else:
         response = cache_page(
             timeout=server_timeout, cache=cache_alias, key_prefix=key_prefix
         )(handler)(request, *request_args, **request_kwargs)
         if not should_cache(request, response):
-            return response
+            return patched_response(response, timeout)
 
     cache_key = cache_key or learn_cache_key(
         request, response, timeout, key_prefix, cache=cache_alias
@@ -124,8 +124,7 @@ def etag_cache_page(
     # If an ETag was requested and we forgot about it, but now our response matches the
     # requested ETag, return 304
     if requested_etag and current_etag == requested_etag:
-        return HttpResponseNotModified()
+        return patched_response(HttpResponseNotModified(), timeout)
 
     response["ETag"] = current_etag
-    patch_response_headers(response, timeout)
-    return response
+    return patched_response(response, timeout)
