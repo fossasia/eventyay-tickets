@@ -641,22 +641,12 @@ urlpatterns = [
                         [
                             *event.ReviewPhaseOrderView.get_urls(),
                             path(
-                                "delete",
-                                event.PhaseDelete.as_view(),
-                                name="settings.review.phasedelete",
-                            ),
-                            path(
                                 "activate",
                                 event.PhaseActivate.as_view(),
-                                name="settings.review.phasedelete",
+                                name="settings.review.phase.activate",
                             ),
                         ]
                     ),
-                ),
-                path(
-                    "settings/review/category/<int:pk>/delete",
-                    event.ScoreCategoryDelete.as_view(),
-                    name="settings.review.categorydelete",
                 ),
                 path(
                     "schedule/", schedule.ScheduleView.as_view(), name="schedule.main"

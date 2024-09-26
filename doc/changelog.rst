@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`orga` Deleting review phases and review score categories was broken.
 - :feature:`schedule` The schedule page makes even better use of several caching methods in order to be smaller and faster to load and re-load.
 - :announcement:`admin` Due to a potentially tricky update in Django, and maintenance cost, pretalx is dropping support for MySQL/MariaDB. Please use either PostgreSQL or SQLite. If you are currently running MySLQ, please take a look at this exemplary `MySQL migration guide<https://pretix.readthedocs.io/en/latest/admin/mysql2postgres.html>`_ by the pretix project **BEFORE** starting your pretalx update, in order to migrate your data with ``pgloader`` to PostgreSQL!
 - :announcement:`admin` pretalx now requires Python 3.10 or newer.
