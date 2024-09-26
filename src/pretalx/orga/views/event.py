@@ -297,6 +297,9 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
                 form.instance.event = self.request.event
                 form.save()
 
+            for form in self.phases_formset.deleted_forms:
+                form.instance.delete()
+
             # Now that everything is saved, check for overlapping review phases,
             # and show an error message if any exist. Raise an exception to
             # get out of the transaction.
@@ -360,31 +363,15 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
             form.instance.event = self.request.event
             form.save()
 
+        for form in self.scores_formset.deleted_forms:
+            if not form.instance.is_independent:
+                weights_changed = True
+            form.instance.scores.all().delete()
+            form.instance.delete()
+
         if weights_changed:
             ReviewScoreCategory.recalculate_scores(self.request.event)
         return True
-
-
-class ScoreCategoryDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
-    permission_required = "orga.change_settings"
-
-    def get_object(self):
-        return get_object_or_404(
-            ReviewScoreCategory, event=self.request.event, pk=self.kwargs.get("pk")
-        )
-
-    def action_object_name(self):
-        return _("Score category") + f": {self.get_object().name}"
-
-    @property
-    def action_back_url(self):
-        return self.request.event.orga_urls.review_settings
-
-    def post(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
-        category = self.get_object()
-        category.delete()
-        return redirect(self.request.event.orga_urls.review_settings)
 
 
 class ReviewPhaseOrderView(OrderModelView):
@@ -393,27 +380,6 @@ class ReviewPhaseOrderView(OrderModelView):
 
     def get_success_url(self):
         return self.request.event.orga_urls.review_settings
-
-
-class PhaseDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
-    permission_required = "orga.change_settings"
-
-    def get_object(self):
-        return get_object_or_404(
-            ReviewPhase, event=self.request.event, pk=self.kwargs.get("pk")
-        )
-
-    def action_object_name(self):
-        return _("Review phase") + f": {self.get_object().name}"
-
-    @property
-    def action_back_url(self):
-        return self.request.event.orga_urls.review_settings
-
-    def post(self, request, *args, **kwargs):
-        phase = self.get_object()
-        phase.delete()
-        return redirect(self.request.event.orga_urls.review_settings)
 
 
 class PhaseActivate(PermissionRequired, View):
