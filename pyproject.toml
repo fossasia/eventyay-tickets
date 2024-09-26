@@ -59,7 +59,7 @@ dependencies = [
         'django-redis==5.4.*',
         'redis==5.0.*',
         'fakeredis==2.23.*',
-        'stripe==7.9.*',
+        'stripe==5.4.*',
         'chardet==5.2.*',
         'mt-940==4.30.*',
         'django-i18nfield==1.9.*,>=1.9.4',
