@@ -336,7 +336,8 @@ for entry_point in entry_points.select(group='pretix.plugin'):
         PLUGINS.append(entry_point.module)
         INSTALLED_APPS.append(entry_point.module)
 
-HIJACK_AUTHORIZE_STAFF = True
+HIJACK_PERMISSION_CHECK = "hijack.permissions.superusers_and_staff"
+HIJACK_INSERT_BEFORE = None
 
 
 REST_FRAMEWORK = {
