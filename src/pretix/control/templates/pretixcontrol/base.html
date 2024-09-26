@@ -8,7 +8,7 @@
 <html{% if rtl %} dir="rtl" class="rtl"{% endif %}>
 	<head>
 		<title>{% block title %}{% endblock %}{% if url_name != "index" %} :: {% endif %}
-            {{ settings.INSTANCE_NAME }}</title>
+            {{ django_settings.INSTANCE_NAME }}</title>
 		{% compress css %}
     		<link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/main.scss" %}" />
             <link rel="stylesheet" type="text/x-scss" href="{% static "lightbox/css/lightbox.scss" %}" />
@@ -122,7 +122,7 @@
                     {% endif %}
                     <a class="navbar-brand" href="{% url "control:index" %}">
                         <img src="{% static "pretixbase/img/eventyay-icon.svg" %}" />
-                        {{ settings.INSTANCE_NAME }}
+                        {{ django_settings.INSTANCE_NAME }}
                     </a>
                 </div>
                 <ul class="nav navbar-nav navbar-top-links navbar-left flip hidden-xs">
