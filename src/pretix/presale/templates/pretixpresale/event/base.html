@@ -31,7 +31,7 @@
             <div class="container">
                 <span class="fa fa-user-secret" aria-hidden="true"></span>
                 {% trans "This shop is currently only visible to you and your team." %}
-                <a href="{{ site_url }}{% url "control:event.live" event=event.slug organizer=event.organizer.slug %}">
+                <a href='{% url "control:event.live" event=event.slug organizer=event.organizer.slug %}'>
                     {% trans "Take it live now" %}
                 </a>
             </div>
