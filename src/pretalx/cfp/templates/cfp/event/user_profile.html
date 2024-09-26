@@ -16,7 +16,7 @@
     {% compress js %}
         <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
         <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
-        <script defer src="{% static "vendored/select2.min.js" %}"></script>
+        <script defer src="{% static "vendored/choices/choices.min.js" %}"></script>
         <script defer src="{% static "cfp/js/formTools.js" %}"></script>
     {% endcompress %}
     {% if profile_form.biography %}
@@ -24,7 +24,7 @@
         <script src="{% static "common/js/formTools.js" %}" defer></script>
     {% endif %}
     {% compress css %}
-        <link rel="stylesheet" type="text/css" href="{% static "vendored/select2.min.css" %}" />
+        <link rel="stylesheet" type="text/css" href="{% static "vendored/choices/choices.min.css" %}" />
         <link rel="stylesheet" type="text/css" href="{% static "common/css/select2.css" %}" />
     {% endcompress %}
 {% endblock cfp_header %}
