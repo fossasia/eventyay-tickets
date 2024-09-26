@@ -1,4 +1,4 @@
-/* Handle Markdown */
+/* Handle Markdown: run marked on change and activate tabs */
 let dirtyInputs = []
 const options = {
   breaks: true,
@@ -9,7 +9,7 @@ const options = {
   tables: true,
 }
 
-function checkForChanges() {
+const checkForChanges = () => {
   if (dirtyInputs.length) {
     dirtyInputs.forEach(element => {
       const inputElement = element.querySelector("textarea")
@@ -18,7 +18,37 @@ function checkForChanges() {
     })
     dirtyInputs = []
   }
-  checkChangeTimeout = window.setTimeout(checkForChanges, 100)
+  window.setTimeout(checkForChanges, 100)
+}
+
+const initMarkdown = (element) => {
+    const inputElement = element.querySelector("textarea")
+    const outputElement = element.querySelector(".markdown-preview")
+    outputElement.innerHTML = DOMPurify.sanitize(marked.parse(inputElement.value, options))
+    const handleInput = () => { dirtyInputs.push(element) }
+    inputElement.addEventListener("change", handleInput, false)
+    inputElement.addEventListener("keyup", handleInput, false)
+    inputElement.addEventListener("keypress", handleInput, false)
+    inputElement.addEventListener("keydown", handleInput, false)
+
+    // Activate tabs
+    const updateTabPanels = (ev) => {
+        const selectedTab = ev.target.closest("[role=tablist]").querySelector("input[role=tab]:checked")
+        if (!selectedTab) return
+        const selectedPanel = document.getElementById(selectedTab.getAttribute("aria-controls"))
+        if (!selectedPanel) return
+        selectedTab.parentElement.querySelectorAll(`[role=tab][aria-selected=true]`).forEach((element) => {
+            element.setAttribute("aria-selected", "false")
+        })
+        selectedPanel.parentElement.querySelectorAll("[role=tabpanel][aria-hidden=false]").forEach((element) => {
+            element.setAttribute("aria-hidden", "true")
+        })
+        selectedTab.setAttribute("aria-selected", "true")
+        selectedPanel.setAttribute("aria-hidden", "false")
+    }
+    element.parentElement.querySelectorAll("input[role=tab]").forEach((tab) => {
+        tab.addEventListener('change', updateTabPanels)
+    })
 }
 
 const warnFileSize = (element) => {
@@ -36,18 +66,7 @@ const unwarnFileSize = (element) => {
 
 /* Register handlers */
 window.onload = () => {
-  document.querySelectorAll(".markdown-wrapper").forEach(element => {
-    const inputElement = element.querySelector("textarea")
-    const outputElement = element.querySelector(".preview")
-    outputElement.innerHTML = DOMPurify.sanitize(marked.parse(inputElement.value, options))
-    const handleInput = () => {
-      dirtyInputs.push(element)
-    }
-    inputElement.addEventListener("change", handleInput, false)
-    inputElement.addEventListener("keyup", handleInput, false)
-    inputElement.addEventListener("keypress", handleInput, false)
-    inputElement.addEventListener("keydown", handleInput, false)
-  })
+  document.querySelectorAll(".markdown-wrapper").forEach(element => initMarkdown(element))
   checkForChanges()
 
   document.querySelectorAll("input[data-maxsize][type=file]").forEach(element => {
