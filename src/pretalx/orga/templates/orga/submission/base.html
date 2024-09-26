@@ -1,6 +1,8 @@
 {% extends "orga/base.html" %}
+{% load compress %}
 {% load i18n %}
 {% load rules %}
+{% load static %}
 
 {% block extra_title %}
     {% block submission_title %}{% endblock submission_title %}
@@ -11,6 +13,12 @@
 {% block alternate_link %}
     <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.talks.full }}{{ submission.code }}" />
 {% endblock alternate_link %}
+
+{% block stylesheets %}
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{% static "common/css/tabs.css" %}">
+  {% endcompress %}
+{% endblock stylesheets %}
 
 {% block content %}
     {% if submission %}
@@ -29,54 +37,30 @@
 
             </span>
         </h2>
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a
-                    class="nav-link {% if "submissions.content" in url_name %}active{% endif %}"
-                    href="{{ submission.orga_urls.base }}"
-                >
-                    {% translate "Content" %}
-                </a>
-            </li>
+
+        <div role="tablist" class="mb-4">
+          <a role="tab" href="{{ submission.orga_urls.base }}" {% if "submissions.content" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+            {% translate "Content" %}
+          </a>
             {% if can_view_speakers %}
-                <li class="nav-item">
-                    <a
-                        class="nav-link {% if "submissions.speakers" in url_name %}active{% endif %}"
-                        href="{{ submission.orga_urls.speakers }}"
-                    >
-                        {{ phrases.schedule.speakers }}
-                    </a>
-                </li>
+              <a role="tab" href="{{ submission.orga_urls.speakers }}" {% if "submissions.speakers" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                {{ phrases.schedule.speakers }}
+              </a>
             {% endif %}
             {% if can_edit_submission and has_anonymised_review %}
-                <li class="nav-item">
-                    <a
-                        class="nav-link {% if "submissions.anonymise" in url_name %}active{% endif %}"
-                        href="{{ submission.orga_urls.anonymise }}"
-                    >
-                        {% translate "Anonymisation" %}
-                    </a>
-                </li>
+              <a role="tab" href="{{ submission.orga_urls.anonymise }}" {% if "submissions.anonymise" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                {% translate "Anonymisation" %}
+              </a>
             {% endif %}
             {% if submission.feedback.count and request.event.feature_flags.use_feedback %}
-                <li class="nav-item">
-                    <a
-                        class="nav-link {% if "submissions.feedback" in url_name %}active{% endif %}"
-                        href="{{ submission.orga_urls.feedback }}"
-                    >
-                        {% translate "Feedback" %}
-                    </a>
-                </li>
+              <a role="tab" href="{{ submission.orga_urls.feedback }}" {% if "submissions.feedback" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                {% translate "Feedback" %}
+              </a>
             {% endif %}
             {% if can_view_reviews or can_review %}
-                <li class="nav-item">
-                    <a
-                        class="nav-link {% if "reviews" in url_name %}active{% endif %}"
-                        href="{{ submission.orga_urls.reviews }}"
-                    >
-                        {% translate "Reviews" %}
-                    </a>
-                </li>
+              <a role="tab" href="{{ submission.orga_urls.reviews }}" {% if "submissions.reviews" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                {% translate "Reviews" %}
+              </a>
             {% endif %}
             <div class="ml-auto flip d-flex">
                 {% if can_send_mails %}
@@ -112,7 +96,7 @@
                     </details>
                 {% endif %}
             </div>
-        </ul>
+        </div>
     {% endif %}
     {% block submission_content %}{% endblock submission_content %}
 {% endblock content %}

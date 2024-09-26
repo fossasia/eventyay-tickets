@@ -997,45 +997,6 @@ small {
   }
 }
 
-/* nav tabs */
-ul.nav-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  padding-left: 0;
-  list-style: none;
-
-  border-bottom: var(--color-grey-light) solid 1px;
-  margin-bottom: 16px;
-
-  .nav-item {
-    .nav-link {
-      display: block;
-      padding: 0.5rem 1rem;
-      margin-bottom: -1px;
-      border: none;
-      &:hover,
-      &:focus {
-        border-bottom: var(--color-primary) solid 2px;
-      }
-      &.active {
-        border-bottom: var(--color-primary) solid 4px;
-      }
-    }
-    &.show .nav-link,
-    .nav-link.active {
-      color: var(--color-grey-dark);
-    }
-  }
-}
-.tab-content {
-  > .tab-pane {
-    display: none;
-  }
-  > .active {
-    display: block;
-  }
-}
-
 /* top navbar, /orga only */
 nav.navbar {
   display: flex;

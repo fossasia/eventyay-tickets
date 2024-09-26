@@ -26,31 +26,9 @@ html.rtl {
     float: left;
     text-align: right;
   }
-  .nav-tabs > li {
+  [role=tab] {
     float: right;
-  }
-
-  .nav-tabs > li > a {
     margin-left: auto;
     margin-right: -2px;
-    border-radius: 4px 4px 0 0;
-  }
-
-  .nav-pills > li {
-    float: right;
-  }
-
-  .nav-pills > li > a {
-    border-radius: 4px;
-  }
-
-  .nav-pills > li + li {
-    margin-right: 2px;
-    margin-left: auto;
-  }
-
-  .nav-pills > li > a > .badge {
-    margin-left: 0px;
-    margin-right: 3px;
   }
 }

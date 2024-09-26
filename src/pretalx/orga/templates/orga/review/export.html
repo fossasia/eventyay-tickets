@@ -8,16 +8,9 @@
 {% block content %}
     <h2>{% translate "Export review data" %}</h2>
 
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="custom-tab" data-toggle="tab" href="#custom" role="tab" aria-controls="custom" aria-selected="true">{% translate "CSV/JSON exports" %}</a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" id="api-tab" data-toggle="tab" href="#api" role="tab" aria-controls="api" aria-selected="false">{% translate "API" %}</a>
-        </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="custom" role="tabpanel" aria-labelledby="custom-tab">
+    {% include "orga/includes/tablist.html" %}
+
+        <div role="tabpanel" id="tabpanel-custom" aria-labelledby="tab-custom" tabindex="0" aria-hidden="false">
             <p>
                 {% blocktranslate trimmed %}
                     Build your own custom export here, by selecting all the data you need,
@@ -54,7 +47,7 @@
             </form>
 
         </div>
-        <div class="tab-pane fade" id="api" role="tabpanel" aria-labelledby="api-tab">
+        <div role="tabpanel" id="tabpanel-api" aria-labelledby="tab-api" tabindex="0" aria-hidden="true">
             <p>
                 {% translate "You can also use the API to export or use data." %}
             </p>
@@ -81,6 +74,5 @@
             </span>
             </div>
         </div>
-    </div>
     <script defer src="{% static "orga/js/speaker_export.js" %}"></script>
 {% endblock content %}

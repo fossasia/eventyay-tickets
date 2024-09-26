@@ -10,6 +10,7 @@
 {% block submission_title %}{% translate "Anonymisation" %} :: {% endblock submission_title %}
 
 {% block stylesheets %}
+    {{ block.super }}
     {% compress css %}
       <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
     {% endcompress %}
