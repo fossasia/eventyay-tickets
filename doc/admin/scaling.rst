@@ -233,4 +233,4 @@ throughput. If you want to use pretix for an event with 10,000+ tickets that are
 within minutes, please get in touch to discuss possible solutions. We'll work something out for you!
 
 
-.. _object storage cluster: https://behind.eventyay.com/2018/03/20/high-available-cdn/
+.. _object storage cluster: https://behind.pretix.eu/2018/03/20/high-available-cdn/
