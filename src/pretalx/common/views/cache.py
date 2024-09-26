@@ -4,7 +4,6 @@ from django.core.cache import caches
 from django.http import HttpResponse, HttpResponseNotModified
 from django.utils.cache import (
     get_cache_key,
-    get_max_age,
     has_vary_header,
     learn_cache_key,
     patch_response_headers,
