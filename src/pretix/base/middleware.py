@@ -243,7 +243,8 @@ class SecurityMiddleware(MiddlewareMixin):
             'form-action': ["{dynamic}", "https:"] + (['http:'] if settings.SITE_URL.startswith('http://') else []),
         }
         if settings.LOG_CSP:
-            h['report-uri'] = ["/csp_report/"]
+            base_path = settings.BASE_PATH
+            h['report-uri'] = [f"{base_path}/csp_report/"]
         if 'Content-Security-Policy' in resp:
             _merge_csp(h, _parse_csp(resp['Content-Security-Policy']))
         if settings.CSP_ADDITIONAL_HEADER:
