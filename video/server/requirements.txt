@@ -1,6 +1,6 @@
 # prod
 aiofile==3.8.*
-aiohttp==3.9.5
+aiohttp==3.10.5
 beautifulsoup4==4.12.*
 celery==5.3.*
 channels==4.1.*
@@ -16,11 +16,11 @@ emoji==2.12.*
 icalendar==5.0.*
 lxml==5.2.*
 matplotlib==3.9.*
-numpy==1.26.*
+numpy==2.1.*
 orjson==3.10.*
 openpyxl~=3.1.2
 Pillow==10.3.*
-pandas==2.1.*
+pandas==2.2.*
 pdf2image==1.17.*
 pdfrw==0.4
 pyjwt==2.8.*
@@ -29,14 +29,14 @@ pytz
 redis==5.0.4
 reportlab==4.2.*
 requests==2.31.*
-sentry-sdk==1.30.*
+sentry-sdk==2.14.*
 tqdm==4.66.*
 websockets==12.*
 
 # deploy
 psycopg2==2.9.9
 gunicorn==21.2.0
-uvicorn[standard]==0.26.0
+uvicorn[standard]==0.30.6
 
 # dev
 daphne==4.1.*
@@ -44,7 +44,7 @@ black==23.7
 isort==5.13.2
 flake8==7.0.0
 pytest==8.2.0
-pytest-django==4.7.0
+pytest-django==4.9.0
 pytest-asyncio==0.23.7
 pytest-cov==5.0.0
 pytest-rerunfailures==14.0
