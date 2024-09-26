@@ -50,19 +50,21 @@
                 <h3>
                     {% trans "As a ticket holder please also check your email for the unique link to join online sessions." %}
                 </h3>
-                <p class="text">
-                    {% trans "Can't find your ticket?" %}
-                    <a class="btn btn-link" href='{% eventurl request.event "presale:event.resend_link" %}'>
-                        {% trans "Resend the email" %}
-                    </a>
-                    {% trans "to receive it." %}
-                </p>
-                <p class="text">
-                    {% trans "Want to order a ticket?" %}
-                    <a class="btn btn-link" href='{% eventurl request.event "presale:event.index" %}'>
-                        {% trans "Get a ticket here" %}
-                    </a>
-                </p>
+                {% if request.event %}
+                    <p class="text">
+                        {% trans "Can't find your ticket?" %}
+                        <a class="btn btn-link" href='{% eventurl request.event "presale:event.resend_link" %}'>
+                            {% trans "Resend the email" %}
+                        </a>
+                        {% trans "to receive it." %}
+                    </p>
+                    <p class="text">
+                        {% trans "Want to order a ticket?" %}
+                        <a class="btn btn-link" href='{% eventurl request.event "presale:event.index" %}'>
+                            {% trans "Get a ticket here" %}
+                        </a>
+                    </p>
+                {% endif %}
                 <p class="text">
                     {% blocktrans with event_name=event_name %}
                         Want to create a {{ event_name }} account?
