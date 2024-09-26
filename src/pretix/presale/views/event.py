@@ -50,6 +50,15 @@ from . import (
     iframe_entry_view_wrapper,
 )
 
+import importlib.util
+
+package_name = 'pretix_venueless'
+
+if importlib.util.find_spec(package_name) is not None:
+    pretix_venueless = import_module(package_name)
+else:
+    pretix_venueless = None
+
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 logger = logging.getLogger(__name__)
@@ -443,6 +452,11 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
             # If event_name is not available in english, get the first available event name
             event_name = next(iter(self.request.event.name.data.values()))
         context['event_name'] = event_name
+
+        context['is_video_plugin_enabled'] = False
+        if pretix_venueless is not None:
+            if pretix_venueless.apps.PluginApp.name in self.request.event.get_plugins():
+                context['is_video_plugin_enabled'] = True
 
         return context
 

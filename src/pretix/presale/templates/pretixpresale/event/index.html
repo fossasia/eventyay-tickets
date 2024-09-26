@@ -62,7 +62,7 @@
                         <i class="fa fa-ticket"></i> {% trans "Tickets" %}
                     </a>
                 </div>
-                {% if request.event.settings.video_link %}
+                {% if is_video_plugin_enabled %}
                     <div class="video-link">
                         <a join-event-link class="header-nav btn btn-outline-success join-event"
                             href='{% eventurl request.event "presale:event.onlinevideo.join" %}'>
