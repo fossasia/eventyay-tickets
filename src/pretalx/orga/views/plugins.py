@@ -20,6 +20,13 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
         return get_all_plugins_grouped(self.request.event)
 
     @context
+    def tablist(self):
+        return {
+            key: value
+            for key, value in self.grouped_plugins.keys()
+            }
+
+    @context
     @cached_property
     def plugins_active(self):
         return self.request.event.plugin_list

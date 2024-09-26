@@ -1,34 +1,55 @@
-function docReady(fn) {
-    // see if DOM is already available
-    if (document.readyState === "complete" || document.readyState === "interactive") {
-        // call on next available tick
-        setTimeout(fn, 1);
-    } else {
-        document.addEventListener("DOMContentLoaded", fn);
+const TAB_SELECTOR = "input[role=tab][name=tablist]"
+
+const updateTabPanels = () => {
+    const selectedTab = document.querySelector(`${TAB_SELECTOR}:checked`)
+    if (!selectedTab) return
+    const selectedPanel = document.getElementById(selectedTab.getAttribute("aria-controls"))
+    if (!selectedPanel) return
+    selectedTab.parentElement.querySelectorAll(`[role=tab][aria-selected=true]`).forEach((element) => {
+        element.setAttribute("aria-selected", "false")
+    })
+    selectedPanel.parentElement.querySelectorAll("[role=tabpanel][aria-hidden=false]").forEach((element) => {
+        element.setAttribute("aria-hidden", "true")
+    })
+    selectedTab.setAttribute("aria-selected", "true")
+    selectedPanel.setAttribute("aria-hidden", "false")
+    window.location.hash = selectedTab.id
+}
+
+const getTabFromHash = () => {
+    const fragment = window.location.hash.substr(1)
+    if (fragment) {
+        return document.querySelector(`${TAB_SELECTOR}#${fragment}`)
     }
 }
 
 const initTabs = () => {
-  let selectedTab = document.querySelector("input[name=tabs]:checked")
-  if (!selectedTab) {
-    selectedTab = document.querySelector("input[name=tabs]")
-    if (!selectedTab) return
-  }
-  const fragment = window.location.hash.substr(1);
-  if (fragment) {
-    selectedTab = document.querySelector("input[name=tabs][id='" + fragment + "']") || selectedTab
-  }
-  selectedTab.checked = true
-  document.querySelector("label.pretalx-tab-label[for='" + selectedTab.id + "']").parentElement.classList.add("active")
+    // First, check if there is a tab selected by the hash. If not:
+    // Fall back to the last selected tab, and failing that, the first tab
 
-  document.querySelectorAll("label.pretalx-tab-label").forEach((element) => {
-    element.addEventListener('click', (event) => {
-      document.querySelectorAll(".pretalx-tab").forEach((element) => {
-        element.classList.remove("active")
-      })
-      event.target.parentElement.classList.add("active")
-      window.location.hash = event.target.attributes.for.nodeValue
+    let selectedTab = getTabFromHash()
+    if (!selectedTab) { selectedTab = document.querySelector(`${TAB_SELECTOR}:checked`) }
+    if (!selectedTab) { selectedTab = document.querySelector(TAB_SELECTOR) }
+    if (!selectedTab) return
+
+    selectedTab.checked = true
+    updateTabPanels()
+
+    document.querySelectorAll(`${TAB_SELECTOR}`).forEach((element) => {
+        element.addEventListener('change', updateTabPanels)
     })
-  })
+
+    // If the URL fragment changes, e.g. by navigating backwards, update the tab
+    window.addEventListener('hashchange', () => {
+        selectedTab = getTabFromHash()
+        console.log(selectedTab)
+        if (selectedTab) {
+            selectedTab.checked = true
+            updateTabPanels()
+        }
+    })
 }
-docReady(initTabs)
+
+if (document.querySelector(TAB_SELECTOR)) {
+  initTabs()
+}

@@ -9,6 +9,7 @@
 {% load rules %}
 
 {% block stylesheets %}
+    {{ block.super }}
     {% compress css %}
         <link rel="stylesheet" type="text/css" href="{% static "common/css/lightbox.css" %}">
     {% endcompress %}

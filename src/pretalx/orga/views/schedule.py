@@ -113,6 +113,14 @@ class ScheduleExportView(EventPermissionRequired, FormView):
             if exporter.group != "speaker"
         ]
 
+    @context
+    def tablist(self):
+        return {
+            "custom": _("CSV/JSON exports"),
+            "general": _("More exports"),
+            "api": _("API"),
+        }
+
     def form_valid(self, form):
         result = form.export_data()
         if not result:

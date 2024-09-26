@@ -753,6 +753,13 @@ class ReviewAssignment(EventPermissionRequired, FormView):
     def review_teams(self):
         return self.request.event.teams.filter(is_reviewer=True)
 
+    @context
+    def tablist(self):
+        return {
+            "group": _("Assign reviewer teams"),
+            "individual": _("Assign reviewers individually"),
+        }
+
     def get_form(self):
         if self.form_type == "submission":
             form_class = ReviewerForProposalForm
@@ -792,6 +799,13 @@ class ReviewExport(EventPermissionRequired, FormView):
     permission_required = "orga.change_settings"
     template_name = "orga/review/export.html"
     form_class = ReviewExportForm
+
+    @context
+    def tablist(self):
+        return {
+            "custom": _("CSV/JSON exports"),
+            "api": _("API"),
+        }
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()

@@ -13,16 +13,9 @@
     {% endcompress %}
     <h2>{% translate "Assign reviewers" %}</h2>
 
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="group-tab" data-toggle="tab" href="#group" role="tab" aria-controls="group" aria-selected="true">{% translate "Assign reviewer teams" %}</a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" id="individual-tab" data-toggle="tab" href="#individual" role="tab" aria-controls="individual" aria-selected="false">{% translate "Assign reviewers individually" %}</a>
-        </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="group" role="tabpanel" aria-labelledby="group-tab">
+    {% include "orga/includes/tablist.html" %}
+
+    <div role="tabpanel" id="tabpanel-group" aria-labelledby="tab-group" tabindex="0" aria-hidden="false">
             <p>
                 {% blocktranslate trimmed %}
                     Reviewers can be assigned to tracks by way of review teams. If you require more
@@ -97,7 +90,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="tab-pane fade show" id="individual" role="tabpanel" aria-labelledby="individual-tab">
+        <div role="tabpanel" id="tabpanel-individual" aria-labelledby="tab-individual" tabindex="0" aria-hidden="false">
 
             <div class="alert alert-info"><p>
                 {% if request.event.active_review_phase.proposal_visibility == "assigned" %}
@@ -148,6 +141,5 @@
                 {% include "orga/includes/submit_row.html" %}
             </form>
         </div>
-    </div>
 {% endblock content %}
 
