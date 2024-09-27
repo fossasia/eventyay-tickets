@@ -3,12 +3,11 @@ from urllib.parse import urlparse
 import vobject
 from django.conf import settings
 from django.contrib import messages
-from django.db.models import Q
-from django.http import Http404, HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView, FormView, TemplateView
+from django.views.generic import FormView, TemplateView, View
 from django_context_decorator import context
 
 from pretalx.agenda.signals import register_recording_provider
@@ -20,38 +19,36 @@ from pretalx.submission.forms import FeedbackForm
 from pretalx.submission.models import QuestionTarget, Submission, SubmissionStates
 
 
-class TalkView(PermissionRequired, TemplateView):
-    model = Submission
-    slug_field = "code"
-    template_name = "agenda/talk.html"
+class TalkMixin(PermissionRequired):
     permission_required = "agenda.view_submission"
 
-    def get_object(self, queryset=None):
-        talk = (
-            self.request.event.talks.prefetch_related("slots", "answers", "resources")
-            .filter(
-                code__iexact=self.kwargs["slug"],
-            )
-            .first()
+    def get_queryset(self):
+        return self.request.event.submissions.prefetch_related(
+            "slots",
+            "answers",
+            "resources",
+            "slots__room",
+            "speakers",
+        ).select_related("submission_type")
+
+    @cached_property
+    def object(self):
+        return get_object_or_404(
+            self.get_queryset(),
+            code__iexact=self.kwargs["slug"],
         )
-        if talk:
-            return talk
-        if getattr(self.request, "is_orga", False):
-            return get_object_or_404(
-                self.request.event.submissions.prefetch_related(
-                    "speakers", "slots", "answers", "resources"
-                ).select_related("submission_type"),
-                code__iexact=self.kwargs["slug"],
-            )
-        raise Http404()
 
     @context
     @cached_property
     def submission(self):
-        return self.get_object()
+        return self.object
 
     def get_permission_object(self):
         return self.submission
+
+
+class TalkView(TalkMixin, TemplateView):
+    template_name = "agenda/talk.html"
 
     @cached_property
     def recording(self):
@@ -85,7 +82,7 @@ class TalkView(PermissionRequired, TemplateView):
         if self.request.event.current_schedule:
             schedule = self.request.event.current_schedule
             qs = schedule.talks.filter(is_visible=True).select_related("room")
-        elif self.request.is_orga:
+        elif self.request.user.has_perm("orga.view_schedule", self.request.event):
             schedule = self.request.event.wip_schedule
             qs = schedule.talks.filter(room__isnull=False).select_related("room")
         ctx["talk_slots"] = (
@@ -132,14 +129,13 @@ class TalkView(PermissionRequired, TemplateView):
 
 
 class TalkReviewView(TalkView):
-    model = Submission
-    slug_field = "review_code"
     template_name = "agenda/talk.html"
 
     def has_permission(self):
         return True
 
-    def get_object(self):
+    @cached_property
+    def object(self):
         return get_object_or_404(
             Submission.all_objects.filter(event=self.request.event),
             review_code=self.kwargs["slug"],
@@ -160,17 +156,11 @@ class TalkReviewView(TalkView):
         return True
 
 
-class SingleICalView(EventPageMixin, DetailView):
-    model = Submission
-    slug_field = "code"
+class SingleICalView(EventPageMixin, TalkMixin, View):
 
     def get(self, request, event, **kwargs):
-        try:
-            submission = self.get_object()
-        except Exception:
-            raise Http404()
-        code = submission.code
-        talk_slots = submission.slots.filter(
+        code = self.submission.code
+        talk_slots = self.submission.slots.filter(
             schedule=self.request.event.current_schedule, is_visible=True
         )
 
@@ -188,18 +178,20 @@ class SingleICalView(EventPageMixin, DetailView):
         )
 
 
-class FeedbackView(PermissionRequired, FormView):
+class FeedbackView(TalkMixin, FormView):
     form_class = FeedbackForm
-    template_name = "agenda/feedback_form.html"
-    permission_required = "agenda.view_submission"
+    permission_required = "agenda.view_feedback_page"
 
-    def get_object(self):
-        return self.request.event.talks.filter(code__iexact=self.kwargs["slug"]).first()
+    def get_queryset(self):
+        return self.request.event.submissions.prefetch_related(
+            "slots",
+            "feedback",
+        ).select_related("submission_type")
 
     @context
     @cached_property
     def talk(self):
-        return self.get_object()
+        return self.submission
 
     @context
     @cached_property
@@ -244,9 +236,9 @@ class FeedbackView(PermissionRequired, FormView):
         return result
 
     def get_success_url(self):
-        return self.get_object().urls.public
+        return self.submission.urls.public
 
 
 class TalkSocialMediaCard(SocialMediaCardMixin, TalkView):
     def get_image(self):
-        return self.get_object().image
+        return self.submission.image
