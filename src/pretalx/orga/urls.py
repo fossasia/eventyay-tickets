@@ -74,7 +74,7 @@ urlpatterns = [
                     name="organiser.delete",
                 ),
                 path(
-                    "api/users", person.UserList.as_view(), name="organiser.user_list"
+                    "api/users", organiser.speaker_search, name="organiser.user_list"
                 ),
                 path("teams/", organiser.TeamList.as_view(), name="organiser.teams"),
                 path(
@@ -147,7 +147,6 @@ urlpatterns = [
                 path("delete", event.EventDelete.as_view(), name="event.delete"),
                 path("live", event.EventLive.as_view(), name="event.live"),
                 path("history/", event.EventHistory.as_view(), name="event.history"),
-                path("api/users", person.UserList.as_view(), name="event.user_list"),
                 path(
                     "cfp/",
                     RedirectView.as_view(pattern_name="orga:cfp.text.view"),

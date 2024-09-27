@@ -12,15 +12,22 @@
     {% has_perm "submission.edit_speaker_list" request.user submission as can_edit_speakers %}
     {% has_perm "orga.send_mails" request.user request.event as can_send_mails %}
     {% if can_edit_speakers %}<div class="alert">
-        <form method="POST" action="{{ submission.orga_urls.new_speaker }}" class="form flex-row">
+        <form method="POST" class="form flex-row">
             <label>
                 {% translate "Add a speaker – if the email address isn’t registered yet, an account will be created for them and an invitation sent." %}:<br>
             </label>
             {% csrf_token %}
-            <div class="input-group" id="speaker-typeahead">
-                <input type="text" name="speaker" id="id_speaker" class="form-control" placeholder="{% translate "E-mail address" %}"/>
-                <input type="text" name="name" id="id_speaker_name" class="form-control" placeholder="{% translate "Name" %}" />
-                <button type="submit" class="btn btn-sm btn-success float-right"><i class="fa fa-plus"></i> {% translate "Add speaker" %}</button>
+            {% if form.errors.email %}
+              <div class="text-danger">{% for error in form.errors.email %}
+                  {{ error }}
+                  {% if not forloop.last %}<br>
+                {% endif %}
+                  {% endfor %}
+              </div>
+            {% endif %}
+            <div class="input-group">
+              <select multiple name="email" id="id_email" class="form-control" placeholder="{% translate "E-mail address" %}"> </select>
+              <button type="submit" class="btn btn-sm btn-success float-right"><i class="fa fa-plus"></i> {% translate "Add speaker" %}</button>
             </div>
         </form>
     </div>{% endif %}
@@ -76,9 +83,8 @@
         </div></div>
     {% endfor %}
 
-    <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
+    <span id="vars" remoteUrl="{{ request.event.organiser.orga_urls.user_search }}"></span>
     {% compress js %}
-        <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
         <script defer src="{% static "orga/js/speakers.js" %}"></script>
     {% endcompress %}
 {% endblock submission_content %}

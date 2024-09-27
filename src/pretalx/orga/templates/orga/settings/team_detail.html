@@ -81,9 +81,9 @@
                                     <br>
                                     <small><em><a id="bulk-email" href="">{% translate "Add multiple team members?" %}</a></em></small>
                                 </td>
-                                <td>
+                                <td class="w-50">
                                     {% csrf_token %}
-                                    {% bootstrap_field invite_form.email layout="inline" form_group_class="single-email-group" %}
+                                    <select multiple name="invite-email" id="id_invite-email" class="form-control" placeholder="{{ invite_form.email.label }}"> </select>
                                     {% bootstrap_field invite_form.bulk_email layout="inline" form_group_class="d-none bulk-email-group" %}
                                     <div class="text-muted bulk-email-help-text d-none">
                                         {{ invite_form.bulk_email.help_text }}
@@ -130,9 +130,8 @@
         </form>
     </div>
 
-    <span id="vars" remoteUrl="{{ request.organiser.orga_urls.base }}api/users?orga=true&search=%QUERY"></span>
+    <span id="vars" remoteUrl="{{ request.organiser.orga_urls.user_search }}"></span>
     {% compress js %}
-        <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
         <script defer src="{% static "orga/js/speakers.js" %}"></script>
         <script defer src="{% static "orga/js/teamSettings.js" %}"></script>
     {% endcompress %}

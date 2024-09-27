@@ -21,6 +21,7 @@ from pretalx.common.forms.mixins import (
     JsonSubfieldMixin,
     ReadOnlyFlag,
 )
+from pretalx.common.forms.widgets import EnhancedSelect, EnhancedSelectMultiple
 from pretalx.common.text.css import validate_css
 from pretalx.common.text.phrases import phrases
 from pretalx.event.models.event import Event
@@ -60,7 +61,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
     content_locales = forms.MultipleChoiceField(
         label=_("Content languages"),
         choices=[],
-        widget=forms.SelectMultiple(attrs={"class": "select2"}),
+        widget=EnhancedSelectMultiple,
         help_text=_("Users will be able to submit proposals in these languages."),
     )
     custom_css_text = forms.CharField(
@@ -342,8 +343,8 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
             "date_to": forms.DateInput(
                 attrs={"type": "date", "data-date-after": "#id_date_from"}
             ),
-            "locale": forms.Select(attrs={"class": "select2"}),
-            "timezone": forms.Select(attrs={"class": "select2"}),
+            "locale": EnhancedSelect,
+            "timezone": EnhancedSelect,
         }
         json_fields = {
             "imprint_url": "display_settings",
@@ -576,7 +577,7 @@ class WidgetGenerationForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ["locale"]
-        widgets = {"locale": forms.Select(attrs={"class": "select2"})}
+        widgets = {"locale": EnhancedSelect}
 
 
 class ReviewPhaseForm(I18nHelpText, I18nModelForm):
@@ -705,4 +706,4 @@ class ReviewScoreCategoryForm(I18nHelpText, I18nModelForm):
         field_classes = {
             "limit_tracks": SafeModelMultipleChoiceField,
         }
-        widgets = {"limit_tracks": forms.SelectMultiple(attrs={"class": "select2"})}
+        widgets = {"limit_tracks": EnhancedSelectMultiple}

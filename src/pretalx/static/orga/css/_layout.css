@@ -376,14 +376,6 @@ aside.sidebar {
   }
 }
 
-#speaker-typeahead {
-  span.twitter-typeahead,
-  input {
-    width: 350px;
-    margin-right: 8px;
-  }
-}
-
 footer {
   margin-top: var(--size-spacer);
   text-align: center;
@@ -1337,27 +1329,6 @@ div.mail-preview {
   padding: 5px;
 }
 
-.adder-textbox {
-  height: 2rem;
-
-  padding-top: 2px;
-  display: block;
-
-  input {
-    max-width: 250px;
-    display: inline-block;
-  }
-
-  span.twitter-typeahead {
-    display: inline !important;
-  }
-
-  .btn {
-    text-align: center;
-    vertical-align: top;
-    margin-left: 5px;
-  }
-}
 @media print {
   body,
   #page-content,
@@ -1386,12 +1357,6 @@ div.mail-preview {
   }
 }
 @media (max-width: 768px) {
-  nav input,
-  nav #navigate,
-  nav .twiter-typeahead {
-    display: none !important;
-  }
-
   .navbar {
     padding: 0.1rem 1rem;
 

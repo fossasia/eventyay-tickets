@@ -1176,6 +1176,9 @@ nav.navbar {
 .w-25, .col-md-3 {
   width: 25% !important;
 }
+.w-50, .col-md-6 {
+  width: 50% !important;
+}
 .w-75, .col-md-9 {
   width: 75% !important;
 }
