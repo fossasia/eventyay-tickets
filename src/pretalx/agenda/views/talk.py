@@ -242,9 +242,9 @@ class FeedbackView(TalkMixin, FormView):
     def feedback(self):
         if not self.is_speaker:
             return
-        return self.talk.feedback.filter(speaker=self.request.user).select_related(
-            "speaker"
-        )
+        return self.talk.feedback.filter(
+            Q(speaker=self.request.user) | Q(speaker__isnull=True)
+        ).select_related("speaker")
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
