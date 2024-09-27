@@ -338,9 +338,9 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
             "header_image": ImageField,
         }
         widgets = {
-            "date_from": forms.DateInput(attrs={"class": "datepickerfield"}),
+                "date_from": forms.DateInput(attrs={"type": "date", "data-date-before": "#id_date_to"}),
             "date_to": forms.DateInput(
-                attrs={"class": "datepickerfield", "data-date-after": "#id_date_from"}
+                attrs={"type": "date", "data-date-after": "#id_date_from"}
             ),
             "locale": forms.Select(attrs={"class": "select2"}),
             "timezone": forms.Select(attrs={"class": "select2"}),
@@ -610,8 +610,8 @@ class ReviewPhaseForm(I18nHelpText, I18nModelForm):
             "speakers_can_change_submissions",
         ]
         widgets = {
-            "start": forms.DateInput(attrs={"class": "datetimepickerfield"}),
-            "end": forms.DateInput(attrs={"class": "datetimepickerfield"}),
+            "start": forms.DateInput(attrs={"type": "datetime-local"}),
+            "end": forms.DateInput(attrs={"type": "datetime-local"}),
         }
 
 

@@ -236,7 +236,7 @@ class EventWizardTimelineForm(forms.ModelForm):
 
     def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["deadline"].widget.attrs["class"] = "datetimepickerfield"
+        self.fields["deadline"].widget.attrs["type"] = "datetime-local"
 
     def clean(self):
         data = super().clean()
@@ -251,8 +251,8 @@ class EventWizardTimelineForm(forms.ModelForm):
         model = Event
         fields = ("date_from", "date_to")
         widgets = {
-            "date_from": forms.DateInput(attrs={"class": "datepickerfield"}),
-            "date_to": forms.DateInput(attrs={"class": "datepickerfield"}),
+            "date_from": forms.DateInput(attrs={"type": "date"}),
+            "date_to": forms.DateInput(attrs={"type": "date"}),
         }
 
 

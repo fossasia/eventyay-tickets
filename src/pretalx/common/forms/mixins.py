@@ -326,7 +326,7 @@ class QuestionFieldsMixin:
             field.widget.attrs["placeholder"] = ""  # XSS
             return field
         if question.variant == QuestionVariant.DATE:
-            attrs = {"class": "datepickerfield"}
+            attrs = {"type": "date"}
             if question.min_date:
                 attrs["data-date-start-date"] = question.min_date.isoformat()
             if question.max_date:
@@ -347,11 +347,11 @@ class QuestionFieldsMixin:
                 field.validators.append(MaxDateValidator(question.max_date))
             return field
         elif question.variant == QuestionVariant.DATETIME:
-            attrs = {"class": "datetimepickerfield"}
+            attrs = {"type": "datetime-local"}
             if question.min_datetime:
-                attrs["data-date-start-date"] = question.min_datetime.isoformat()
+                attrs["min"] = question.min_datetime.isoformat()
             if question.max_datetime:
-                attrs["data-date-end-date"] = question.max_datetime.isoformat()
+                attrs["max"] = question.max_datetime.isoformat()
             field = forms.DateTimeField(
                 label=question.question,
                 required=question.required,
