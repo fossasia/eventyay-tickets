@@ -63,7 +63,7 @@ def compile_scss(object, file="main.scss", fonts=True):
         sassrules.append('$border-radius-small: 0;')
 
     font = object.settings.get('primary_font')
-    if font != 'Open Sans' and fonts:
+    if font != 'Open Sans' and fonts and font:
         sassrules.append(get_font_stylesheet(font))
         sassrules.append(
             '$font-family-sans-serif: "{}", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif '
