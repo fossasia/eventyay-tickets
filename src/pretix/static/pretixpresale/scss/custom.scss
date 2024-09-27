@@ -42,7 +42,7 @@
         }
         a:hover {
             color: #fff;
-            color: darken($btn-primary-bg, 10%) !important;
+            background-color: $hover-button-color !important;
         }
         .popover-content {
             .options {

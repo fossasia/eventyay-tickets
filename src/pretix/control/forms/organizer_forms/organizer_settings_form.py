@@ -44,6 +44,7 @@ class OrganizerSettingsForm(SettingsForm):
         'theme_color_success',
         'theme_color_danger',
         'theme_color_background',
+        'hover_button_color',
         'theme_round_borders',
         'primary_font',
         'privacy_policy'
