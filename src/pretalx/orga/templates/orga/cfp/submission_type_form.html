@@ -5,15 +5,6 @@
 {% load i18n %}
 {% load static %}
 
-{% block scripts %}
-    {% compress js %}
-        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-        <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
-        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
-    {% endcompress %}
-{% endblock scripts %}
-
 {% block extra_title %}{% if form.instance.name %}{{ form.instance.name }}{% else %}{% translate "New Session Type" %}{% endif %} :: {% endblock extra_title %}
 
 {% block content %}

@@ -155,7 +155,7 @@ class CfPForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         model = CfP
         fields = ["headline", "text", "deadline"]
         widgets = {
-            "deadline": forms.DateTimeInput(attrs={"class": "datetimepickerfield"})
+            "deadline": forms.DateTimeInput(attrs={"type": "datetime-local"})
         }
         # These are JSON fields on cfp.settings
         json_fields = {
@@ -309,13 +309,13 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             "max_datetime",
         ]
         widgets = {
-            "deadline": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
+            "deadline": forms.DateTimeInput(attrs={"type": "datetime-local"}),
             "question_required": forms.RadioSelect(),
-            "freeze_after": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
-            "min_datetime": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
-            "max_datetime": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
-            "min_date": forms.DateInput(attrs={"class": "datepickerfield"}),
-            "max_date": forms.DateInput(attrs={"class": "datepickerfield"}),
+            "freeze_after": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+            "min_datetime": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+            "max_datetime": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+            "min_date": forms.DateInput(attrs={"type": "date"}),
+            "max_date": forms.DateInput(attrs={"type": "date"}),
             "tracks": forms.SelectMultiple(attrs={"class": "select2"}),
             "submission_types": forms.SelectMultiple(attrs={"class": "select2"}),
         }
@@ -357,7 +357,7 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         model = SubmissionType
         fields = ("name", "default_duration", "deadline", "requires_access_code")
         widgets = {
-            "deadline": forms.DateTimeInput(attrs={"class": "datetimepickerfield"})
+            "deadline": forms.DateTimeInput(attrs={"type": "datetime-local"})
         }
 
 
@@ -416,7 +416,7 @@ class SubmitterAccessCodeForm(forms.ModelForm):
             "submission_type": SafeModelChoiceField,
         }
         widgets = {
-            "valid_until": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
+            "valid_until": forms.DateTimeInput(attrs={"type": "datetime-local"}),
             "track": forms.Select(attrs={"class": "select2"}),
             "submission_type": forms.Select(attrs={"class": "select2"}),
         }

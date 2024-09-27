@@ -104,9 +104,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 required=False,
                 label=TalkSlot._meta.get_field("start").verbose_name,
                 widget=forms.DateInput(
-                    attrs={
-                        "class": "datetimepickerfield",
-                    }
+                    attrs={"type": "datetime-local"}
                 ),
                 initial=initial_slot.get("start"),
             )
@@ -114,9 +112,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 required=False,
                 label=TalkSlot._meta.get_field("end").verbose_name,
                 widget=forms.DateInput(
-                    attrs={
-                        "class": "datetimepickerfield",
-                    }
+                    attrs={"type": "datetime-local"}
                 ),
                 initial=initial_slot.get("end"),
             )
