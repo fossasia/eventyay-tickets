@@ -2,7 +2,6 @@ import json
 import random
 import uuid
 from contextlib import suppress
-from functools import cache
 from hashlib import md5
 from urllib.parse import urljoin
 
@@ -157,6 +156,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.permission_cache = {}
+        self.event_profile_cache = {}
         self.team_permissions = {}
 
     def has_perm(self, perm, obj, *args, **kwargs):
@@ -187,7 +187,6 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
             gravatar_cache.apply_async(args=(self.pk,), ignore_result=True)
         return result
 
-    @cache  # noqa: B019
     def event_profile(self, event):
         """Retrieve (and/or create) the event.
 
@@ -196,15 +195,21 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         :type event: :class:`pretalx.event.models.event.Event`
         :retval: :class:`pretalx.person.models.profile.EventProfile`
         """
-        from pretalx.person.models.profile import SpeakerProfile
+        if event.pk and (profile := self.event_profile_cache.get(event.pk)):
+            return profile
 
         try:
-            return self.profiles.select_related("event").get(event=event)
+            profile = self.profiles.select_related("event").get(event=event)
         except Exception:
+            from pretalx.person.models.profile import SpeakerProfile
+
             profile = SpeakerProfile(event=event, user=self)
             if self.pk:
                 profile.save()
-            return profile
+
+        if event.pk:
+            self.event_profile_cache[event.pk] = profile
+        return profile
 
     def get_locale_for_event(self, event):
         if self.locale in event.locales:
