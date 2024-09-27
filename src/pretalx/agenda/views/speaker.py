@@ -71,8 +71,12 @@ class SpeakerView(PermissionRequired, TemplateView):
     def talks(self):
         if not self.request.event.current_schedule:
             return []
-        return self.request.event.current_schedule.talks.filter(
-            submission__speakers__code=self.kwargs["code"], is_visible=True
+        return (
+            self.request.event.current_schedule.talks.filter(
+                submission__speakers__code=self.kwargs["code"], is_visible=True
+            )
+            .select_related("submission", "room", "submission__event")
+            .prefetch_related("submission__speakers")
         )
 
     def get_permission_object(self):

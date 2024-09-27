@@ -134,7 +134,7 @@ def test_speaker_page(
         other_submission.slots.all().update(is_visible=True)
         slot.submission.slots.all().update(is_visible=True)
     url = reverse("agenda:speaker", kwargs={"code": speaker.code, "event": event.slug})
-    with django_assert_num_queries(23):
+    with django_assert_num_queries(15):
         response = client.get(url, follow=True)
     assert response.status_code == 200
     assert len(response.context["talks"]) == 2, response.context["talks"]
@@ -165,7 +165,7 @@ def test_speaker_page_other_submissions_only_if_visible(
         )
 
     url = reverse("agenda:speaker", kwargs={"code": speaker.code, "event": event.slug})
-    with django_assert_num_queries(18):
+    with django_assert_num_queries(14):
         response = client.get(url, follow=True)
 
     assert response.status_code == 200
