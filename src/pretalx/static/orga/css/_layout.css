@@ -633,8 +633,8 @@ h2 .submission-state-dropdown {
 .submission-state-accepted {
   color: var(--color-success-light);
   background-color: white;
-  --submission-color-primary: --color-success-light;
-  --submission-color-secondary: --color-success-light;
+  --submission-color-primary: var(--color-success-light);
+  --submission-color-secondary: var(--color-success-light);
 }
 .submission-state-dropdown.submission-state-pending-accepted {
   --submission-color-secondary: var(--color-success-light);

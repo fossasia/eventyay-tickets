@@ -36,7 +36,7 @@ header {
   height: 180px;
 }
 
-#header-row {
+.header-row {
   padding-bottom: 4px;
   color: white;
 
@@ -71,13 +71,6 @@ header {
 
   main {
     padding: var(--size-spacer);
-  }
-}
-
-#user-dropdown-label .dropdown-content {
-  a,
-  a:hover {
-    color: var(--color-primary);
   }
 }
 

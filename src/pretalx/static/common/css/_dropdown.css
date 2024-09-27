@@ -7,11 +7,16 @@ details.dropdown {
 
   summary {
     list-style: none;
+    cursor: pointer;
     &::before,
     &::marker {
       display: none;
       list-style: none;
     }
+  }
+
+  &[open] .dropdown-content {
+      animation: dropdown 0.2s ease-in-out;
   }
 
   .dropdown-content {
@@ -20,13 +25,14 @@ details.dropdown {
     z-index: 1000;
     min-width: 160px;
     max-width: 400px;
-    padding: 4px 0;
+    padding: 0;
     margin-top: 2px;
     list-style: none;
     background: white;
     border: 1px var(--grey-lighter) solid;
     border-radius: 0.25rem;
-    box-shadow: 0 8px 24px rgba(149, 157, 165, 0.2);
+    z-index: 1000;
+    box-shadow: var(--shadow-light);
 
     &::before,
     &::after {
@@ -44,22 +50,37 @@ details.dropdown {
       border-bottom-color: white;
     }
 
-    .dropdown-item {
+    .dropdown-item, a.dropdown-item {
       display: block;
       padding: 4px 16px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      color: var(--color-grey-dark);
+      text-decoration: none;
+      i {
+          margin-right: 8px;
+      }
+      &:hover {
+        background-color: var(--color-primary-lighter);
+        text-decoration: none;
+      }
+      &:first-child {
+        border-top-left-radius: var(--size-border-radius);
+        border-top-right-radius: var(--size-border-radius);
+      }
+      &:last-child {
+        border-bottom-left-radius: var(--size-border-radius);
+        border-bottom-right-radius: var(--size-border-radius);
+      }
     }
-    .dropdown-divider {
-      display: block;
-      height: 0;
-      margin: 8px 0;
-      border-top: 1px #e1e4e8 solid;
+    hr {
+        width: 100%;
+        margin-top: 4px;
+        padding-bottom: 4px;
+        border: none;
+        border-top: 1px solid var(--color-border);
     }
-  }
-  .dropdown-content.dropdown-front {
-    z-index: 1000;
   }
   .dropdown-content-w {
     top: 0;
@@ -166,4 +187,10 @@ details.dropdown {
     top: -14px;
     left: 10px;
   }
+}
+
+
+@keyframes dropdown {
+  0%    { opacity: 0; }
+  100%  { opacity: 1; }
 }

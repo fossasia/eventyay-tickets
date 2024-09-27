@@ -86,9 +86,9 @@
                         <span class="calendar-text"> Add to Calendar </span>
                     <i class="fa fa-caret-down"></i>
                 </summary>
-                <ul class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
+                <div class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
                     {% for exporter in exporters %}
-                        <li><a class="dropdown-item" href="{{ exporter.urls.base }}">
+                        <a class="dropdown-item" href="{{ exporter.urls.base }}">
                             {% if exporter.icon|slice:":3" == "fa-" %}
                                 <span class="fa {{ exporter.icon }} export-icon"></span>
                             {% else %}

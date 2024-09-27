@@ -122,10 +122,10 @@
                         {% translate "Actions" %} <i class="fa fa-caret-down"></i>
                     </summary>
 
-                    <ul class="dropdown-content dropdown-front dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-                        <li><a class="dropdown-item" href="{{ request.path }}import" target="_blank" rel="noopener">
-                            <i class="fa fa-link"></i> {% translate "Import assignments" %}
-                        </a></li>
+                    <div class="dropdown-content dropdown-front dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
+                        <a class="dropdown-item" href="{{ request.path }}import" target="_blank" rel="noopener">
+                            <i class="fa fa-upload"></i> {% translate "Import assignments" %}
+                        </a>
                     </ul>
                 </details>
             </div>

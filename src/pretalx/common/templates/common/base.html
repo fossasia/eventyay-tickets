@@ -85,7 +85,7 @@
                         {% endif %}
                     </a>
                 </h1>
-                <div class="d-flex" id="header-row">
+                <div class="d-flex header-row">
                     {% if request.event and request.event.locales|length > 1 and not is_html_export %}
                         <div class="locales">
                             {% for l, name in request.event.named_locales %}
@@ -101,34 +101,32 @@
                             <summary>
                                 {{ request.user.get_display_name }} <i class="fa fa-caret-down ml-1"></i>
                             </summary>
-                            <ul id="user-dropdown" class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-                                <li><a href="{% url "cfp:event.user.submissions" event=request.event.slug %}" class="dropdown-item">
+                            <div id="user-dropdown" class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
+                                <a href="{% url "cfp:event.user.submissions" event=request.event.slug %}" class="dropdown-item">
                                     <i class="fa fa-sticky-note-o mr-2"></i>
                                     {% translate "My proposals" %}
-                                </a></li>
-                                <li><a href="{{ request.event.urls.user_mails }}" class="dropdown-item">
+                                </a>
+                                <a href="{{ request.event.urls.user_mails }}" class="dropdown-item">
                                     <i class="fa fa-envelope mr-2"></i>
                                     {% translate "My E-mails" %}
-                                </a></li>
-                                <li><a href="{{ request.event.urls.user }}" class="dropdown-item">
+                                </a>
+                                <a href="{{ request.event.urls.user }}" class="dropdown-item">
                                     <i class="fa fa-address-card-o mr-2"></i>
                                     {% translate "My profile" %}
-                                </a></li>
+                                </a>
                                 {% if can_see_orga_area %}
-                                    <li class="dropdown-divider"></li>
-                                    <li>
+                                        <hr>
                                         <a href="{{ request.event.orga_urls.base }}" class="dropdown-item">
                                             <i class="fa fa-gears mr-2"></i>
                                             {% translate "Organiser area" %}
                                         </a>
-                                    </li>
                                 {% endif %}
-                                <li class="dropdown-divider"></li>
-                                <li><a href="{% url "cfp:event.logout" event=request.event.slug %}" class="dropdown-item">
+                                <hr>
+                                <a href="{% url "cfp:event.logout" event=request.event.slug %}" class="dropdown-item">
                                     <i class="fa fa-sign-out mr-2"></i>
                                     {% translate "Logout" %}
-                                </a></li>
-                            </ul>
+                                </a>
+                            </div>
                         </details>
                     {% elif request.event and not is_html_export %}
                         <a href="{{ request.event.urls.login }}">login</a>
