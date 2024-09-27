@@ -31,13 +31,22 @@ def test_orga_create_organiser(administrator_client):
 @pytest.mark.django_db
 def test_orga_edit_organiser(orga_client, organiser):
     response = orga_client.post(
-        organiser.orga_urls.base,
+        organiser.orga_urls.settings,
         data={"name_0": "The bestest organiser", "name_1": "The bestest organiser"},
         follow=True,
     )
     organiser.refresh_from_db()
     assert response.status_code == 200, response.content.decode()
     assert str(organiser.name) == "The bestest organiser", response.content.decode()
+    assert str(organiser) == str(organiser.name)
+
+
+@pytest.mark.django_db
+def test_orga_see_organiser(orga_client, organiser):
+    response = orga_client.get(organiser.orga_urls.base)
+    organiser.refresh_from_db()
+    assert response.status_code == 200, response.content.decode()
+    assert str(organiser.name) in response.content.decode()
     assert str(organiser) == str(organiser.name)
 
 

@@ -395,7 +395,11 @@
                         {% endfor %}
                     {% endif %}
                 {% elif request.organiser %}  {# if request.event #}
-                    <a class="nav-link {% if "/settings/" in request.path %} active{% endif %}" href="{% url "orga:organiser.view" organiser=request.organiser.slug %}">
+                    <a class="nav-link {% if url_name == "organiser.dashboard" %} active{% endif %}" href="{{ request.organiser.orga_urls.settings }}">
+                        <i class="fa fa-tachometer"></i>
+                        <span>{% translate "Dashboard" %}</span>
+                    </a>
+                    <a class="nav-link {% if "/settings/" in request.path %} active{% endif %}" href="{{ request.organiser.orga_urls.settings }}">
                         <i class="fa fa-cog"></i>
                         <span>{% translate "Settings" %}</span>
                     </a>
@@ -414,14 +418,12 @@
                         </a>
                     {% endif %}
                 {% else %}  {# elif request.organiser #}
-                    {% if request.orga_events|length > 1 %}
+                    {% has_perm "orga.view_organiser_lists" request.user request as can_see_organiser_lists %}
+                    {% if can_see_organiser_lists %}
                         <a class="nav-link {% if request.path == "/orga/event/" %} active{% endif %}" href="{% url "orga:event.list" %}">
                             <i class="fa fa-calendar-o"></i>
                             <span>{% translate "Events" %}</span>
                         </a>
-                    {% endif %}
-                    {% has_perm "orga.view_organisers" request.user request as can_see_organisers %}
-                    {% if can_see_organisers %}
                         <a class="nav-link {% if "/orga/organiser/" in request.path %} active{% endif %}" href="{% url "orga:organiser.list" %}">
                             <i class="fa fa-users"></i>
                             <span>{% translate "Organisers" %}</span>

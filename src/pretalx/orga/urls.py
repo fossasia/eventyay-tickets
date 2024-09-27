@@ -59,9 +59,14 @@ urlpatterns = [
         include(
             [
                 path(
+                    "",
+                    dashboard.DashboardOrganiserEventListView.as_view(),
+                    name="organiser.dashboard",
+                ),
+                path(
                     "settings/",
                     organiser.OrganiserDetail.as_view(),
-                    name="organiser.view",
+                    name="organiser.settings",
                 ),
                 path(
                     "settings/delete",

@@ -41,18 +41,13 @@ class StartView(TemplateView):
 class DashboardEventListView(TemplateView):
     template_name = "orga/event_list.html"
 
-    def filter_event(self, event):
-        query = self.request.GET.get("q")
-        if not query:
-            return True
-        query = query.lower().strip()
-        name = {"en": event.name} if isinstance(event.name, str) else event.name.data
-        name = {"en": name} if isinstance(name, str) else name
-        return query in event.slug or any(query in value for value in name.values())
+    @property
+    def base_queryset(self):
+        return self.request.user.get_events_with_any_permission()
 
     @cached_property
     def queryset(self):
-        return self.request.orga_events.annotate(
+        qs = self.base_queryset.annotate(
             submission_count=Count(
                 "submissions",
                 filter=Q(
@@ -65,22 +60,25 @@ class DashboardEventListView(TemplateView):
                 ),
             )
         )
+        if search := self.request.GET.get("q"):
+            qs = qs.filter(Q(name__icontains=search) | Q(slug__icontains=search))
+        return qs
 
     @context
     def current_orga_events(self):
-        return [
-            e
-            for e in self.queryset
-            if e.date_to >= now().date() and self.filter_event(e)
-        ]
+        return [e for e in self.queryset if e.date_to >= now().date()]
 
     @context
     def past_orga_events(self):
-        return [
-            e
-            for e in self.queryset
-            if e.date_to < now().date() and self.filter_event(e)
-        ]
+        return [e for e in self.queryset if e.date_to < now().date()]
+
+
+class DashboardOrganiserEventListView(PermissionRequired, DashboardEventListView):
+    permission_required = "orga.view_organisers"
+
+    @property
+    def base_queryset(self):
+        return self.request.organiser.events.all()
 
 
 class DashboardOrganiserListView(PermissionRequired, TemplateView):
