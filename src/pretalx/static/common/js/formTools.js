@@ -80,7 +80,52 @@ window.onload = () => {
       }
     }
     element.addEventListener("change", checkFileSize, false)
-  })
+}
+
+const isVisible = (element) => {
+    if (!element) return false
+    return (!element.hidden && !element.classList.contains("d-none"))
+}
+
+const initSelect = (element) => {
+    const removeItemButton = (!element.readonly && (!element.required || element.multiple))
+    let showPlaceholder = !!element.title
+    console.log(element)
+    console.log("showPlaceholder", showPlaceholder)
+    if (showPlaceholder) {
+        // Make sure we don't show a placeholder that is obvious from context
+        if (element.getAttribute("aria-describedby")) {
+            const describedBy = document.getElementById(element.getAttribute("aria-describedby"))
+            if (isVisible(describedBy)) {
+                showPlaceholder = describedBy.textContent !== element.title
+            }
+        }
+    }
+    console.log("showPlaceholder", showPlaceholder)
+    if (showPlaceholder) {
+        const label = document.querySelector(`label[for=${element.id}]`)
+        if (isVisible(label)) {
+            showPlaceholder = label.textContent !== element.title
+        }
+    }
+    console.log("showPlaceholder", showPlaceholder)
+    new Choices(element, {
+        removeItems: !element.readonly,
+        removeItemButton: !element.readonly && (!element.required || element.multiple),
+        removeItemButtonAlignLeft: true,
+        searchFields: ["label"],
+        searchEnabled: true,
+        searchResultLimit: -1,
+        resetScrollPosition: false,
+        shouldSort: false,
+        placeholderValue: showPlaceholder ? element.title : null,
+        renderSelectedChoices: true,
+        itemSelectText: "",
+        addItemText: "",
+        removeItemLabelText: "×",
+        removeItemIconText: "×",
+        maxItemText: "",
+    })
 }
 
 // Make sure the main form doesn't have unsaved changes before leaving
