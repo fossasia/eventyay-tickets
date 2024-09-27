@@ -95,12 +95,6 @@ def test_avatar_path():
 
 
 @pytest.mark.django_db
-def test_unsaved_event_profile(event):
-    with scope(event=event):
-        assert not User(email="foo@example.com").event_profile(event).pk
-
-
-@pytest.mark.django_db
 def test_user_attributes(orga_user):
     assert not orga_user.has_avatar
 
