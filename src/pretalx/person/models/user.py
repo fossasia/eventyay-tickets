@@ -2,6 +2,7 @@ import json
 import random
 import uuid
 from contextlib import suppress
+from functools import cache
 from hashlib import md5
 from urllib.parse import urljoin
 
@@ -186,6 +187,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
             gravatar_cache.apply_async(args=(self.pk,), ignore_result=True)
         return result
 
+    @cache  # noqa: B019
     def event_profile(self, event):
         """Retrieve (and/or create) the event.
 

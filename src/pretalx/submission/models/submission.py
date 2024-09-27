@@ -742,7 +742,9 @@ class Submission(GenerateCode, PretalxModel):
         Note that this slot is not guaranteed to be visible.
         """
         return (
-            self.event.current_schedule.talks.filter(submission=self).first()
+            self.event.current_schedule.talks.filter(submission=self)
+            .select_related("room", "submission", "submission__event")
+            .first()
             if self.event.current_schedule
             else None
         )
