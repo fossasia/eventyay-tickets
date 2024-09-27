@@ -229,25 +229,24 @@ class FeedbackView(PermissionRequired, FormView):
     def speakers(self):
         return self.talk.speakers.all()
 
-    def dispatch(self, request, *args, **kwargs):
-        if not request.event.feature_flags["use_feedback"]:
-            raise Http404()
-        return super().dispatch(request, *args, **kwargs)
+    @cached_property
+    def is_speaker(self):
+        return self.request.user in self.speakers
 
-    def get(self, *args, **kwargs):
-        talk = self.talk
-        if talk and self.request.user in self.speakers:
-            return render(
-                self.request,
-                "agenda/feedback.html",
-                context={
-                    "talk": talk,
-                    "feedback": talk.feedback.filter(
-                        Q(speaker__isnull=True) | Q(speaker=self.request.user)
-                    ).select_related("speaker"),
-                },
-            )
-        return super().get(*args, **kwargs)
+    @cached_property
+    def template_name(self):
+        if self.is_speaker:
+            return "agenda/feedback.html"
+        return "agenda/feedback_form.html"
+
+    @context
+    @cached_property
+    def feedback(self):
+        if not self.is_speaker:
+            return
+        return self.talk.feedback.filter(speaker=self.request.user).select_related(
+            "speaker"
+        )
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
