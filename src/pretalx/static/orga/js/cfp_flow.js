@@ -1,129 +1,134 @@
 var api = {
-  submit(data) {
-    var fullHeaders = {}
-    fullHeaders["Content-Type"] = "application/json"
-    fullHeaders["X-CSRFToken"] = getCookie("pretalx_csrftoken")
+    submit(data) {
+        var fullHeaders = {}
+        fullHeaders["Content-Type"] = "application/json"
+        fullHeaders["X-CSRFToken"] = getCookie("pretalx_csrftoken")
 
-    let options = {
-      method: "POST",
-      headers: fullHeaders,
-      credentials: "include",
-      body: JSON.stringify(data),
-    }
-    return window
-      .fetch(window.location, options)
-      .then(response => {
-        if (response.status === 204) {
-          return Promise.resolve()
+        let options = {
+            method: "POST",
+            headers: fullHeaders,
+            credentials: "include",
+            body: JSON.stringify(data),
         }
-        return response.json().then(json => {
-          if (!response.ok) {
-            return Promise.reject({ response, json })
-          }
-          return Promise.resolve(json)
-        })
-      })
-      .catch(error => {
-        return Promise.reject(error)
-      })
-  },
+        return window
+            .fetch(window.location, options)
+            .then((response) => {
+                if (response.status === 204) {
+                    return Promise.resolve()
+                }
+                return response.json().then((json) => {
+                    if (!response.ok) {
+                        return Promise.reject({ response, json })
+                    }
+                    return Promise.resolve(json)
+                })
+            })
+            .catch((error) => {
+                return Promise.reject(error)
+            })
+    },
 }
 
 let currentLanguage = "en"
 let currentModal = Vue.observable({
-  type: null,
-  data: null,
-  show: false,
+    type: null,
+    data: null,
+    show: false,
 })
 const markedOptions = {
-  baseUrl: null,
-  breaks: false,
-  gfm: true,
-  headerIds: true,
-  headerPrefix: "",
-  highlight: null,
-  langPrefix: "language-",
-  mangle: true,
-  pedantic: false,
-  sanitize: false,
-  sanitizer: null,
-  silent: false,
-  smartLists: true,
-  smartypants: false,
-  tables: true,
-  xhtml: false,
+    baseUrl: null,
+    breaks: false,
+    gfm: true,
+    headerIds: true,
+    headerPrefix: "",
+    highlight: null,
+    langPrefix: "language-",
+    mangle: true,
+    pedantic: false,
+    sanitize: false,
+    sanitizer: null,
+    silent: false,
+    smartLists: true,
+    smartypants: false,
+    tables: true,
+    xhtml: false,
 }
 document.onclick = (event) => {
-  if (currentModal.data) {
-    currentModal.data = null;
-  }
+    if (currentModal.data) {
+        currentModal.data = null
+    }
 }
 document.onkeypress = (event) => {
-  if (!currentModal.data) return
-  let isEscape = false;
-  if ("key" in evt) {
-    isEscape = (evt.key === "Escape" || evt.key === "Esc");
-  } else {
-    isEscape = (evt.keyCode === 27);
-  }
-  currentModal.data = null
+    if (!currentModal.data) return
+    let isEscape = false
+    if ("key" in evt) {
+        isEscape = evt.key === "Escape" || evt.key === "Esc"
+    } else {
+        isEscape = evt.keyCode === 27
+    }
+    currentModal.data = null
 }
 
-function areEqual () {
-  var i, l, leftChain, rightChain;
+function areEqual() {
+    var i, l, leftChain, rightChain
 
-  function compare2Objects (x, y) {
-    var p;
-    if (isNaN(x) && isNaN(y) && typeof x === 'number' && typeof y === 'number') return true;
-    if (x === y) return true;
-    if (!(x instanceof Object && y instanceof Object)) return false;
-    if (x.isPrototypeOf(y) || y.isPrototypeOf(x)) return false;
-    if (x.constructor !== y.constructor) return false;
-    if (x.prototype !== y.prototype) return false;
+    function compare2Objects(x, y) {
+        var p
+        if (
+            isNaN(x) &&
+            isNaN(y) &&
+            typeof x === "number" &&
+            typeof y === "number"
+        )
+            return true
+        if (x === y) return true
+        if (!(x instanceof Object && y instanceof Object)) return false
+        if (x.isPrototypeOf(y) || y.isPrototypeOf(x)) return false
+        if (x.constructor !== y.constructor) return false
+        if (x.prototype !== y.prototype) return false
 
-    for (p in y) {
-        if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) return false;
-        else if (typeof y[p] !== typeof x[p]) return false;
-    }
-    for (p in x) {
-        if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) return false;
-        else if (typeof y[p] !== typeof x[p]) return false;
-
-        switch (typeof (x[p])) {
-            case 'object':
-            case 'function':
-
-                leftChain.push(x);
-                rightChain.push(y);
-
-                if (!compare2Objects (x[p], y[p])) {
-                    return false;
-                }
-
-                leftChain.pop();
-                rightChain.pop();
-                break;
-
-            default:
-                if (x[p] !== y[p]) {
-                    return false;
-                }
-                break;
+        for (p in y) {
+            if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) return false
+            else if (typeof y[p] !== typeof x[p]) return false
         }
-    }
-    return true;
-  }
+        for (p in x) {
+            if (y.hasOwnProperty(p) !== x.hasOwnProperty(p)) return false
+            else if (typeof y[p] !== typeof x[p]) return false
 
-  for (i = 1, l = arguments.length; i < l; i++) {
-      leftChain = [];
-      rightChain = [];
-      if (!compare2Objects(arguments[0], arguments[i])) return false;
-  }
-  return true;
+            switch (typeof x[p]) {
+                case "object":
+                case "function":
+                    leftChain.push(x)
+                    rightChain.push(y)
+
+                    if (!compare2Objects(x[p], y[p])) {
+                        return false
+                    }
+
+                    leftChain.pop()
+                    rightChain.pop()
+                    break
+
+                default:
+                    if (x[p] !== y[p]) {
+                        return false
+                    }
+                    break
+            }
+        }
+        return true
+    }
+
+    for (i = 1, l = arguments.length; i < l; i++) {
+        leftChain = []
+        rightChain = []
+        if (!compare2Objects(arguments[0], arguments[i])) return false
+    }
+    return true
 }
 
 Vue.component("field", {
-  template: `
+    template: `
     <div>
       <h2 v-if="isModal" class="mb-4">Change input field</h2>
       <div :class="['form-group', 'row', field.field_source].concat(isModal ? '' : 'editable')" v-bind:style="style" @click.stop="makeModal" v-if="!(isModal && isQuestion)">
@@ -179,60 +184,73 @@ Vue.component("field", {
       </div>
     </div>
   `,
-  data() {
-    return {
-      editRequirement: false,
-      fixed_help_text: "",
-    }
-  },
-  props: {
-    field: Object,
-    isModal: { type: Boolean, default: false },
-    locales: Array,
-  },
-  computed: {
-    style () {
-      return ""
+    data() {
+        return {
+            editRequirement: false,
+            fixed_help_text: "",
+        }
     },
-    currentLanguage () {
-      return currentLanguage
+    props: {
+        field: Object,
+        isModal: { type: Boolean, default: false },
+        locales: Array,
     },
-    editable () {
-      return !currentModal.data
+    computed: {
+        style() {
+            return ""
+        },
+        currentLanguage() {
+            return currentLanguage
+        },
+        editable() {
+            return !currentModal.data
+        },
+        display_help_text() {
+            if (this.isQuestion)
+                return marked.parse(this.fixed_help_text, markedOptions)
+            return marked.parse(
+                this.field.help_text[currentLanguage] +
+                    " " +
+                    this.fixed_help_text,
+                markedOptions,
+            )
+        },
+        isQuestion() {
+            return this.field.key.startsWith("question_")
+        },
+        questionUrl() {
+            return (
+                window.location.pathname.replace(
+                    "flow/",
+                    this.field.key.replace("question_", "questions/"),
+                ) + "/edit"
+            )
+        },
     },
-    display_help_text () {
-      if (this.isQuestion) return marked.parse(this.fixed_help_text, markedOptions)
-      return marked.parse(this.field.help_text[currentLanguage] + " " + this.fixed_help_text, markedOptions)
+    methods: {
+        makeModal(event) {
+            if (this.isModal) return
+            if (!this.isModal && !this.editable) {
+                Vue.set(currentModal, "data", null)
+                currentModal.type = null
+                currentModal.show = false
+            } else {
+                currentModal.data = this.field
+                currentModal.type = "field"
+                currentModal.show = true
+            }
+        },
     },
-    isQuestion () {
-      return this.field.key.startsWith("question_")
+    created() {
+        this.fixed_help_text = this.field.full_help_text.replace(
+            this.field.help_text[currentLanguage],
+            "",
+        )
     },
-    questionUrl () {
-      return window.location.pathname.replace('flow/', this.field.key.replace('question_', 'questions/')) + '/edit'
-    }
-  },
-  methods: {
-    makeModal(event) {
-      if (this.isModal) return
-      if (!this.isModal && !this.editable) {
-        Vue.set(currentModal, 'data', null)
-        currentModal.type = null
-        currentModal.show = false
-      } else {
-        currentModal.data = this.field
-        currentModal.type = "field"
-        currentModal.show = true
-      }
-    },
-  },
-  created() {
-    this.fixed_help_text = this.field.full_help_text.replace(this.field.help_text[currentLanguage], "")
-
-  }
 })
 
 Vue.component("step", {
-  template: `
+    template: `
     <div class="step" @click="editingTitle = false; editingText = false">
       <div :class="['step-header', 'header', eventConfiguration.header_pattern]" :style="headerStyle">
         <img :src="eventConfiguration.header_image" v-if="eventConfiguration.header_image">
@@ -293,70 +311,76 @@ Vue.component("step", {
       </div>
     </div>
   `,
-  data() {
-    return {
-      editingTitle: false,
-      editingText: false,
-    }
-  },
-  props: {
-    eventConfiguration: Object,
-    step: Object,
-    steps: Array,
-    locales: Array,
-  },
-  methods: {
-    editTitle() {
-      if (this.editable) this.editingTitle = true
-    },
-    editText() {
-      if (this.editable) this.editingText = true
-    },
-    marked (value) {
-      return marked.parse(value, markedOptions)
-    },
-  },
-  computed: {
-    currentLanguage () {
-      return currentLanguage
-    },
-    headerStyle () {
-      // logo_image, header_image, header_pattern
-      return {
-        "background-color": this.eventConfiguration.primary_color,
-      }
-    },
-    editable () {
-      return !currentModal.data
-    },
-    stepPosition () {
-      return this.steps.findIndex((element) => { return element.identifier === this.step.identifier })
-    },
-    headerSteps () {
-      let result = this.steps.map((element, index) => {
-        let state = null;
-        if (index < this.stepPosition) { state = "done" }
-        else if (index === this.stepPosition) { state = "current" }
-        else { state = "todo" }
+    data() {
         return {
-          "icon": state === "done" ? "check" : element.icon,
-          "label": element.header_label,
-          "phase": state,
+            editingTitle: false,
+            editingText: false,
         }
-      })
-      result.push({
-        "icon": "check",
-        "label": "",
-        "phase": "todo"
-      })
-      return result
-    }
-  },
+    },
+    props: {
+        eventConfiguration: Object,
+        step: Object,
+        steps: Array,
+        locales: Array,
+    },
+    methods: {
+        editTitle() {
+            if (this.editable) this.editingTitle = true
+        },
+        editText() {
+            if (this.editable) this.editingText = true
+        },
+        marked(value) {
+            return marked.parse(value, markedOptions)
+        },
+    },
+    computed: {
+        currentLanguage() {
+            return currentLanguage
+        },
+        headerStyle() {
+            // logo_image, header_image, header_pattern
+            return {
+                "background-color": this.eventConfiguration.primary_color,
+            }
+        },
+        editable() {
+            return !currentModal.data
+        },
+        stepPosition() {
+            return this.steps.findIndex((element) => {
+                return element.identifier === this.step.identifier
+            })
+        },
+        headerSteps() {
+            let result = this.steps.map((element, index) => {
+                let state = null
+                if (index < this.stepPosition) {
+                    state = "done"
+                } else if (index === this.stepPosition) {
+                    state = "current"
+                } else {
+                    state = "todo"
+                }
+                return {
+                    icon: state === "done" ? "check" : element.icon,
+                    label: element.header_label,
+                    phase: state,
+                }
+            })
+            result.push({
+                icon: "check",
+                label: "",
+                phase: "todo",
+            })
+            return result
+        },
+    },
 })
 
 var app = new Vue({
-  el: "#flow",
-  template: `
+    el: "#flow",
+    template: `
     <div :class="currentModal.data ? 'defocused' : 'focused'" :style="{'--color': eventConfiguration.primary_color || '#3aa57c'}">
       <div id="flow-modal" v-if="currentModal.data">
         <form>
@@ -400,52 +424,67 @@ var app = new Vue({
       </div>
     </div>
   `,
-  data() {
-    return {
-      steps: null,
-      fieldLookup: null,
-      unassignedFields: null,
-      search: "",
-      loading: true,
-      saving: false,
-      eventSlug: "",
-      eventConfiguration: null,
-      stepsConfiguration: null,
-      originalConfiguration: null,
-      locales: null
-    }
-  },
-  created() {
-    this.eventConfiguration = JSON.parse(document.getElementById('eventConfiguration').textContent);
-    this.locales = this.eventConfiguration.locales;
-    if (!this.locales.includes("en")) currentLanguage = this.locales[0];
-    let currentConfiguration = JSON.parse(document.getElementById('currentConfiguration').textContent);
-    this.eventSlug = currentConfiguration.event
-    this.stepsConfiguration = currentConfiguration
-    this.originalConfiguration = JSON.parse(JSON.stringify(this.stepsConfiguration))
-    this.loading = false
-  },
-  computed: {
-    filteredFields() {
-      if (!this.unassignedFields) return []
-      return Object.values(this.unassignedFields).filter(field => {
-        return field.title.toLowerCase().indexOf(this.search.toLowerCase()) > -1
-      })
+    data() {
+        return {
+            steps: null,
+            fieldLookup: null,
+            unassignedFields: null,
+            search: "",
+            loading: true,
+            saving: false,
+            eventSlug: "",
+            eventConfiguration: null,
+            stepsConfiguration: null,
+            originalConfiguration: null,
+            locales: null,
+        }
     },
-    configurationChanged() {
-      return !areEqual(this.stepsConfiguration, this.originalConfiguration)
+    created() {
+        this.eventConfiguration = JSON.parse(
+            document.getElementById("eventConfiguration").textContent,
+        )
+        this.locales = this.eventConfiguration.locales
+        if (!this.locales.includes("en")) currentLanguage = this.locales[0]
+        let currentConfiguration = JSON.parse(
+            document.getElementById("currentConfiguration").textContent,
+        )
+        this.eventSlug = currentConfiguration.event
+        this.stepsConfiguration = currentConfiguration
+        this.originalConfiguration = JSON.parse(
+            JSON.stringify(this.stepsConfiguration),
+        )
+        this.loading = false
     },
-    currentModal () {
-      return currentModal
+    computed: {
+        filteredFields() {
+            if (!this.unassignedFields) return []
+            return Object.values(this.unassignedFields).filter((field) => {
+                return (
+                    field.title
+                        .toLowerCase()
+                        .indexOf(this.search.toLowerCase()) > -1
+                )
+            })
+        },
+        configurationChanged() {
+            return !areEqual(
+                this.stepsConfiguration,
+                this.originalConfiguration,
+            )
+        },
+        currentModal() {
+            return currentModal
+        },
     },
-  },
-  methods: {
-    save() {
-      this.saving = true
-      api.submit(this.stepsConfiguration).then((response) => {
-        this.originalConfiguration = JSON.parse(JSON.stringify(this.stepsConfiguration))
-        this.saving = false
-      })
+    methods: {
+        save() {
+            this.saving = true
+            api.submit(this.stepsConfiguration).then((response) => {
+                this.originalConfiguration = JSON.parse(
+                    JSON.stringify(this.stepsConfiguration),
+                )
+                this.saving = false
+            })
+        },
     },
-  },
 })

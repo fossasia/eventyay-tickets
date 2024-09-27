@@ -15,7 +15,6 @@
                 {% endblocktranslate %}</small>
             </span>
         </legend>
-        {{ wizard.form.media }}
         {% block wizard_content %}{% endblock wizard_content %}
         {% csrf_token %}
         {{ wizard.management_form }}
