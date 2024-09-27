@@ -19,8 +19,8 @@ from pretalx.submission.models import Review, Submission, SubmissionStates
 
 
 def start_redirect_view(request):
-    orga_events = set(request.orga_events)
     with scopes_disabled():
+        orga_events = set(request.user.get_events_with_any_permission())
         speaker_events = set(
             Event.objects.filter(submissions__speakers__in=[request.user])
         )

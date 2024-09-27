@@ -14,7 +14,7 @@ from django.utils.translation.trans_real import (
 )
 from django_scopes import scope, scopes_disabled
 
-from pretalx.event.models import Event, Organiser, Team
+from pretalx.event.models import Event, Organiser
 
 
 def get_login_redirect(request):
@@ -49,28 +49,6 @@ class EventPermissionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
-    @staticmethod
-    def _set_orga_events(request):
-        request.is_orga = False
-        request.orga_events = []
-        if not request.user.is_anonymous:
-            if request.user.is_administrator:
-                request.orga_events = Event.objects.order_by("date_from")
-                request.is_orga = True
-            else:
-                request.orga_events = request.user.get_events_for_permission().order_by(
-                    "date_from"
-                )
-                event = getattr(request, "event", None)
-                if event:
-                    request.is_orga = event in request.orga_events
-                    request.is_reviewer = event.teams.filter(
-                        members__in=[request.user], is_reviewer=True
-                    ).exists()
-                    request.user.team_permissions[event.slug] = (
-                        request.user.get_permissions_for_event(event)
-                    )
-
     def _handle_orga_url(self, request, url):
         if request.uses_custom_domain:
             return redirect(urljoin(settings.SITE_URL, request.get_full_path()))
@@ -89,18 +67,6 @@ class EventPermissionMiddleware:
             request.organiser = get_object_or_404(
                 Organiser, slug__iexact=organiser_slug
             )
-            has_perms = (
-                Team.objects.filter(
-                    organiser=request.organiser,
-                    members__in=[request.user],
-                    can_change_organiser_settings=True,
-                ).exists()
-                if not request.user.is_anonymous
-                else False
-            )
-            request.is_orga = (
-                getattr(request.user, "is_administrator", False) or has_perms
-            )
 
         event_slug = url.kwargs.get("event")
         if event_slug:
@@ -115,7 +81,6 @@ class EventPermissionMiddleware:
                     raise Http404()
         event = getattr(request, "event", None)
 
-        self._set_orga_events(request)
         self._select_locale(request)
         is_exempt = (
             url.url_name == "export"
