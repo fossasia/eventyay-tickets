@@ -70,7 +70,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
         self.is_creating = False
         if not self.instance.pk:
             self.is_creating = True
-            self.fields["speaker"] = forms.EmailField(
+            self.fields["email"] = forms.EmailField(
                 label=phrases.cfp.speaker_email,
                 help_text=_(
                     "The email address of the speaker holding the session. They will be invited to create an account."
@@ -275,3 +275,7 @@ class SubmissionStateChangeForm(forms.Form):
         required=False,
         initial=False,
     )
+
+
+class AddCreateUserForm(forms.Form):
+    email = forms.EmailField()
