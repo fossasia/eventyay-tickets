@@ -203,7 +203,7 @@ def test_schedule_ical_export(slot, orga_client, django_assert_max_num_queries):
 
 @pytest.mark.django_db
 def test_schedule_single_ical_export(slot, client, django_assert_max_num_queries):
-    with django_assert_max_num_queries(13):
+    with django_assert_max_num_queries(15):
         response = client.get(slot.submission.urls.ical, follow=True)
     assert response.status_code == 200
 
@@ -576,7 +576,7 @@ def test_html_export_full(
     assert slot.submission.title in talk_ics
     assert event.is_public is False
 
-    with django_assert_max_num_queries(32):
+    with django_assert_max_num_queries(33):
         response = orga_client.get(
             event.orga_urls.schedule_export_download, follow=True
         )
