@@ -40,6 +40,7 @@ from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms.submission import (
     AnonymiseForm,
     SubmissionForm,
+    AddCreateUserForm,
     SubmissionStateChangeForm,
 )
 from pretalx.person.forms import OrgaSpeakerForm
@@ -60,6 +61,7 @@ from pretalx.submission.models import (
 
 
 def create_user_as_orga(email, submission=None, name=None):
+    name = name or "-"
     form = OrgaSpeakerForm({"name": name, "email": email})
     form.is_valid()
 
@@ -286,40 +288,6 @@ class SubmissionStateChange(SubmissionViewMixin, FormView):
         return self.request.GET.get("next")
 
 
-class SubmissionSpeakersAdd(SubmissionViewMixin, View):
-    permission_required = "submission.edit_speaker_list"
-
-    def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
-        submission = self.object
-        email = request.POST.get("speaker")
-        name = request.POST.get("name")
-        speaker = None
-        try:
-            speaker = User.objects.get(email__iexact=email)
-        except User.DoesNotExist:
-            with suppress(Exception):
-                speaker = create_user_as_orga(email, submission=submission, name=name)
-        if not speaker:
-            messages.error(request, _("Please provide a valid email address!"))
-        else:
-            if submission not in speaker.submissions.all():
-                speaker.submissions.add(submission)
-                submission.log_action(
-                    "pretalx.submission.speakers.add", person=request.user, orga=True
-                )
-                messages.success(
-                    request, _("The speaker has been added to the proposal.")
-                )
-            else:
-                messages.warning(
-                    request, _("The speaker was already part of the proposal.")
-                )
-            if not speaker.profiles.filter(event=request.event).exists():
-                SpeakerProfile.objects.create(user=speaker, event=request.event)
-        return redirect(submission.orga_urls.speakers)
-
-
 class SubmissionSpeakersDelete(SubmissionViewMixin, View):
     permission_required = "submission.edit_speaker_list"
 
@@ -341,11 +309,13 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
         return redirect(submission.orga_urls.speakers)
 
 
-class SubmissionSpeakers(ReviewerSubmissionFilter, SubmissionViewMixin, TemplateView):
+class SubmissionSpeakers(ReviewerSubmissionFilter, SubmissionViewMixin, FormView):
     template_name = "orga/submission/speakers.html"
     permission_required = "orga.view_speakers"
+    form_class = AddCreateUserForm
 
     @context
+    @cached_property
     def speakers(self):
         submission = self.object
         return [
@@ -359,9 +329,41 @@ class SubmissionSpeakers(ReviewerSubmissionFilter, SubmissionViewMixin, Template
             for speaker in submission.speakers.all()
         ]
 
-    @context
-    def users(self):
-        return User.objects.all()
+    def form_valid(self, form):
+        email = form.cleaned_data.get("email")
+        created = False
+        speaker = None
+        submission = self.object
+        try:
+            speaker = User.objects.get(email__iexact=email.lower().strip())
+        except User.DoesNotExist:
+            with suppress(Exception):
+                speaker = create_user_as_orga(email, submission=submission)
+                created = True
+
+        if not speaker:
+            messages.error(request, _("Failed to create the new speaker."))
+            return self.form_invalid(form)
+
+        if submission in speaker.submissions.all():
+            messages.warning(
+                self.request, _("The speaker was already part of the proposal.")
+            )
+            return super().form_valid(form)
+
+        speaker.submissions.add(submission)
+        submission.log_action(
+            "pretalx.submission.speakers.add", person=self.request.user, orga=True
+        )
+        messages.success(self.request, _("The speaker has been added to the proposal."))
+        if not speaker.profiles.filter(event=self.request.event).exists():
+            SpeakerProfile.objects.create(user=speaker, event=self.request.event)
+        if created:
+            return redirect(speaker.event_profile(self.request.event).orga_urls.base)
+        return redirect(submission.orga_urls.speakers)
+
+    def get_success_url(self):
+        return self.object.orga_urls.speakers
 
 
 class SubmissionContent(

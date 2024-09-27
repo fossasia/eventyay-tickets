@@ -273,7 +273,6 @@ class Submission(GenerateCode, PretalxModel):
         withdraw = "{base}withdraw"
         cancel = "{base}cancel"
         speakers = "{base}speakers/"
-        new_speaker = "{speakers}add"
         delete_speaker = "{speakers}delete"
         reviews = "{base}reviews/"
         feedback = "{base}feedback/"
