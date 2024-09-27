@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-09-23 07:10+0000\n"
-"PO-Revision-Date: 2024-08-06 08:55+0000\n"
-"Last-Translator: Lucie Anglade <lucie@courtbouillon.org>\n"
+"PO-Revision-Date: 2024-09-27 13:37+0000\n"
+"Last-Translator: Harrissou Sant-anna <delazj@gmail.com>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -50,7 +50,7 @@ msgstr ""
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:14
 msgid "We have new sessions!"
-msgstr "Nous avons des nouvelles interventions !"
+msgstr "Nous avons de nouvelles interventions !"
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:24
 msgid "We have a new session: "
@@ -157,9 +157,9 @@ msgid ""
 "personal scheduling, please enable JavaScript and go <a "
 "href=\"%(href)s\">here</a>."
 msgstr ""
-"Pour consulter notre agenda en profitant de toutes les fonctionalités, comme "
-"la conversion de fuseau horaire, merci d'activer JavaScript et de vous "
-"dirigez vers <a href=\"%(href)s\">ici</a>."
+"Pour consulter notre agenda avec toutes ses fonctionnalités, comme la "
+"conversion de fuseau horaire, merci d'activer JavaScript et de vous rendre "
+"<a href=\"%(href)s\">ici</a>."
 
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:73
 #, python-format
@@ -213,18 +213,25 @@ msgid ""
 "You're currently not logged in, so your favourited talks can't be saved (but "
 "they are stored locally in your browser)."
 msgstr ""
+"Vous n'êtes actuellement pas connecté, vos préférences de présentations "
+"n'ont donc pas pu être sauvegardés (mais ils sont stockés en local dans "
+"votre navigateur)."
 
 #: pretalx/agenda/views/schedule.py:229
 msgid ""
 "Your favourites could not be loaded from the server, but they are stored "
 "locally in your browser."
 msgstr ""
+"Vos favoris n'ont pas pu être chargés depuis le serveur, mais ils sont "
+"stockés en local dans votre navigateur."
 
 #: pretalx/agenda/views/schedule.py:232
 msgid ""
 "Your favourites could not be saved on the server, but they are stored "
 "locally in your browser."
 msgstr ""
+"Vos favoris n'ont pas pu être sauvegardés sur le serveur, mais ils sont "
+"stockés en local dans votre navigateur."
 
 #: pretalx/agenda/views/talk.py:119
 #, python-brace-format
@@ -318,8 +325,8 @@ msgid ""
 "always edit for as long as proposals are still open."
 msgstr ""
 "Ces informations seront affichées publiquement avec vos interventions - vous "
-"pourrez toujours les modifier tant que l'appel à participation n'est pas "
-"clôt."
+"pourrez toujours les modifier tant que l'appel à propositions n'est pas "
+"close."
 
 #: pretalx/cfp/phrases.py:7
 msgid "Go to CfP"
@@ -1095,7 +1102,7 @@ msgstr "La taille des fichiers ne doit pas dépasser {size} !"
 #: pretalx/common/forms/fields.py:91
 #, python-brace-format
 msgid "Allowed filetypes: {extensions}"
-msgstr ""
+msgstr "Types de fichiers autorisés : {extensions}"
 
 #: pretalx/common/forms/fields.py:106
 #, python-brace-format
@@ -1659,16 +1666,12 @@ msgid "Other"
 msgstr "Autre"
 
 #: pretalx/common/templates/400.html:18
-#, fuzzy
-#| msgid ""
-#| "It looks as if the communication between you and pretalx went wrong in "
-#| "some way.<br>Please return to the last page and try again!"
 msgid ""
 "It looks as if the communication between you and pretalx went wrong in some "
 "way. <br> Please return to the last page and try again!"
 msgstr ""
-"Il semblerait que la communication entre vous et pretalx ait rencontrée un "
-"problème.<br>Veuillez retourner sur la dernière page et réessayer !"
+"Il semblerait que la communication entre vous et pretalx ait rencontré un "
+"problème. <br>Veuillez retourner sur la page précédente et réessayer !"
 
 #: pretalx/common/templates/403_csrf.html:7
 #: pretalx/common/templates/403_csrf.html:11
@@ -1676,19 +1679,14 @@ msgid "Verification failed."
 msgstr "Échec de vérification."
 
 #: pretalx/common/templates/403_csrf.html:17
-#, fuzzy
-#| msgid ""
-#| "We could not verify that this request really was sent by you. For "
-#| "security reasons, we cannot process it.<br> Please go back to the last "
-#| "page, refresh, and then try again."
 msgid ""
 "We could not verify that this request really was sent by you. For security "
 "reasons, we cannot process it. <br> Please go back to the last page, "
 "refresh, and then try again."
 msgstr ""
 "Nous n'avons pas pu vérifier que cette requête a bien été effectuée par "
-"vous. Pour des raisons de sécurité, nous ne pouvons pas la traiter."
-"<br>Veuillez revenir en arrière, rafraîchir la page et réessayer."
+"vous. Pour des raisons de sécurité, nous ne pouvons pas la traiter. "
+"<br>Veuillez retourner en arrière, rafraîchir la page et réessayer."
 
 #: pretalx/common/templates/500.html:7
 msgid "Internal server error."
@@ -2435,15 +2433,20 @@ msgid ""
 "There must be at least one team with the permission to change teams, as "
 "otherwise nobody can create new teams or grant permissions to existing teams."
 msgstr ""
+"Il doit y avoir au moins une équipe ayant les droits de modification sur les "
+"équipes, autrement personne ne pourra créer de nouvelles équipes ou accorder "
+"des droits aux existantes."
 
 #: pretalx/event/models/organiser.py:41
 msgid "Nobody on your teams has the permission to create new events."
-msgstr ""
+msgstr "Personne dans vos équipes n'a le droit de créer de nouveaux événements."
 
 #: pretalx/event/models/organiser.py:49
 msgid ""
 "Nobody on your teams has the permission to change organiser-level settings."
 msgstr ""
+"Personne dans vos équipes n'a le droit de modifier les paramètres de niveau "
+"organisateur."
 
 #: pretalx/event/models/organiser.py:64
 #, python-brace-format
@@ -2451,6 +2454,8 @@ msgid ""
 "There must be at least one team with access to every event. Currently, "
 "nobody has access to {event_name}."
 msgstr ""
+"Il doit y avoir au moins une équipe ayant accès à tous les événements. "
+"Actuellement, personne n'a accès à l'événement {event_name}."
 
 #: pretalx/event/models/organiser.py:74
 #, python-brace-format
@@ -2458,6 +2463,8 @@ msgid ""
 "Nobody on your teams has the permissions to change settings for the event "
 "{event_name}"
 msgstr ""
+"Personne dans vos équipes n'a les droits de modification des paramètres de "
+"l'événement {event_name}"
 
 #: pretalx/event/models/organiser.py:103
 msgid ""
@@ -2628,12 +2635,10 @@ msgstr "Informer les intervenants sur vos infrastructures"
 #: pretalx/orga/templates/orga/mails/_placeholder_group.html:14
 #: pretalx/orga/templates/orga/organiser/list.html:26
 #: pretalx/orga/views/event.py:751
-#, fuzzy
-#| msgid "Event"
 msgid "Event"
 msgid_plural "Events"
 msgstr[0] "Évènement"
-msgstr[1] "Évènement"
+msgstr[1] "Évènements"
 
 #: pretalx/event/stages.py:102
 msgid "Provide a point of contact for the speakers"
@@ -3410,6 +3415,8 @@ msgstr ""
 #, python-brace-format
 msgid "Make sure to point a CNAME record from your domain to {site_url}."
 msgstr ""
+"Assurez-vous de pointer un enregistrement CNAME depuis votre domaine vers "
+"{site_url}."
 
 #: pretalx/orga/forms/event.py:150
 #, python-brace-format
@@ -4334,16 +4341,12 @@ msgid "Update check settings"
 msgstr "Paramètres des vérifications des mises à jour"
 
 #: pretalx/orga/templates/orga/admin/user_detail.html:21
-#, fuzzy
-#| msgid "Deactivate event"
 msgid "Deactivate account"
-msgstr "Désactiver l'évènement"
+msgstr "Désactiver le compte"
 
 #: pretalx/orga/templates/orga/admin/user_detail.html:26
-#, fuzzy
-#| msgid "Activate question"
 msgid "Activate account"
-msgstr "Activer la question"
+msgstr "Activer le compte"
 
 #: pretalx/orga/templates/orga/admin/user_detail.html:40
 #: pretalx/orga/templates/orga/admin/user_list.html:29
@@ -5537,13 +5540,11 @@ msgid "Delete organiser"
 msgstr "Supprimer l'organisateur"
 
 #: pretalx/orga/templates/orga/organiser/list.html:34
-#, fuzzy
-#| msgid "Team"
 msgctxt "number of teams"
 msgid "Team"
 msgid_plural "Teams"
 msgstr[0] "Équipe"
-msgstr[1] "Équipe"
+msgstr[1] "Équipes"
 
 #: pretalx/orga/templates/orga/organiser/list.html:45
 msgid "There are no organisers you can edit."
@@ -5559,17 +5560,13 @@ msgstr[1] "intervenants"
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:32
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:37
-#, fuzzy
-#| msgid "Sort by title (a-z)"
 msgid "Sort (a-z)"
-msgstr "Trier par titre (a-z)"
+msgstr "Trier (a-z)"
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:33
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:38
-#, fuzzy
-#| msgid "Sort by title (z-a)"
 msgid "Sort (z-a)"
-msgstr "Trier par titre (z-a)"
+msgstr "Trier (z-a)"
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:41
 #: pretalx/orga/templates/orga/speaker/list.html:48
@@ -5579,12 +5576,12 @@ msgstr "Propositions acceptées"
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:42
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:47
 msgid "Sort (high-low)"
-msgstr ""
+msgstr "Trier (descendant)"
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:43
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:48
 msgid "Sort (low-high)"
-msgstr ""
+msgstr "Trier (ascendant)"
 
 #: pretalx/orga/templates/orga/organiser/team_list.html:16
 #: pretalx/orga/templates/orga/review/assignment.html:46
@@ -5794,11 +5791,8 @@ msgid "Reviews are currently closed."
 msgstr "Les évaluations sont actuellement désactivées."
 
 #: pretalx/orga/templates/orga/review/dashboard.html:42
-#, fuzzy
-#| msgid "You do not have permission to perform this action."
 msgid "You don’t have reviewer permissions for this event."
-msgstr ""
-"Vous n'avez pas les permissions nécessaires pour effectuer cette action."
+msgstr "Vous n'avez pas les droits d'évaluateur pour cet évènement."
 
 #: pretalx/orga/templates/orga/review/dashboard.html:69
 msgid "Number of reviews"
@@ -6038,26 +6032,20 @@ msgid "HTML Export"
 msgstr "Export HTML"
 
 #: pretalx/orga/templates/orga/schedule/export.html:99
-#, fuzzy
-#| msgid ""
-#| "The event schedule can be exported to a static HTML dump, so you can "
-#| "upload it to a normal file-serving web server like nginx. This is done "
-#| "automatically on schedule release, but you can also trigger that action "
-#| "here."
 msgid ""
 "The event schedule can be exported to a static HTML dump, so you can upload "
 "it to a normal file-serving web server like nginx."
 msgstr ""
 "Le planning de l'évènement peut être exporté en HTML statique, que vous "
-"pouvez servir avec un serveur Web, tel que nginx. Cette opération est "
-"réalisée automatiquement à chaque publication du planning, mais vous pouvez "
-"aussi déclencher cette action ici."
+"pouvez servir avec un serveur Web, tel que nginx."
 
 #: pretalx/orga/templates/orga/schedule/export.html:104
 msgid ""
 "This is done automatically on schedule release, but you can also trigger "
 "that action here."
 msgstr ""
+"Ceci est effectué automatiquement lors de la publication de version, mais "
+"vous pouvez aussi déclencher cette action ici."
 
 #: pretalx/orga/templates/orga/schedule/export.html:114
 msgid "Download ZIP"
@@ -6286,7 +6274,7 @@ msgid ""
 "recommend that you add email settings here explicitly."
 msgstr ""
 "Si vous ne configurez par les paramètres des courriels, la configuration "
-"global du serveur sera utilisée (demandez plus de détails à votre "
+"globale du serveur sera utilisée (demandez plus de détails à votre "
 "administrateur).<br> Nous vous recommandons de configurer les courriels "
 "explicitement."
 
@@ -6298,7 +6286,7 @@ msgstr "Sauvegarder et tester la connexion SMTP personnalisée"
 #: pretalx/orga/templates/orga/settings/review.html:29
 #: pretalx/orga/templates/orga/settings/team_detail.html:122
 msgid "Review settings"
-msgstr "Paramètres des évalutations"
+msgstr "Paramètres des évaluations"
 
 #: pretalx/orga/templates/orga/settings/review.html:34
 #, python-format
@@ -6550,20 +6538,15 @@ msgstr[0] "Information pour les intervenants"
 msgstr[1] "Informations pour les intervenants"
 
 #: pretalx/orga/templates/orga/speaker/information_list.html:27
-#, fuzzy
-#| msgid ""
-#| "Add important messages (e.g. “Please bring an HDMI adapter if required.”) "
-#| "or files (e.g. a conference styleguide).<br> They are shown to the "
-#| "selected speakers above the list of their submitted sessions."
 msgid ""
 "Add important messages (e.g. “Please bring an HDMI adapter if required.”) or "
 "files (e.g. a conference styleguide). <br> They are shown to the selected "
 "speakers above the list of their submitted sessions."
 msgstr ""
-"Ajoutez des messages importants (e.g. \"Veuillez amener un adaptateur HDMI "
-"avec vous si besoin.\") ou des fichiers importants (e.g. un guide de style)."
-"<br> Ils sont affichés aux intervenants sélectionnés juste au dessus de la "
-"liste de leurs propositions d'intervention."
+"Ajoutez des messages importants (par ex. \"Veuillez amener un adaptateur "
+"HDMI avec vous si besoin.\") ou des fichiers importants (par ex. un guide de "
+"style). <br> Ils sont affichés aux intervenants sélectionnés juste au dessus "
+"de la liste de leurs propositions d'intervention."
 
 #: pretalx/orga/templates/orga/speaker/information_list.html:37
 msgid "Add a new note"
@@ -6647,8 +6630,6 @@ msgid "There are no pending changes to apply right now."
 msgstr "Il n'y a pas de changements en cours à appliquer pour l'instant."
 
 #: pretalx/orga/templates/orga/submission/base.html:85
-#, fuzzy
-#| msgid "Send mail to speakers"
 msgid "Send email to speakers"
 msgstr "Envoyer un courriel aux intervenants"
 
@@ -6919,16 +6900,12 @@ msgstr ""
 "dessous."
 
 #: pretalx/orga/views/admin.py:142
-#, fuzzy
-#| msgid "The user has been deleted."
 msgid "The user has been deactivated."
-msgstr "L'utilisateur a été supprimé."
+msgstr "L'utilisateur a été désactivé."
 
 #: pretalx/orga/views/admin.py:147
-#, fuzzy
-#| msgid "The user has been deleted."
 msgid "The user has been activated."
-msgstr "L'utilisateur a été supprimé."
+msgstr "L'utilisateur a été activé."
 
 #: pretalx/orga/views/admin.py:182
 msgid "The user has been deleted."
@@ -7140,10 +7117,8 @@ msgid "This event is now hidden."
 msgstr "Cet évènement est maintenant caché."
 
 #: pretalx/orga/views/event.py:311
-#, fuzzy
-#| msgid "The order of review phases has been updated."
 msgid "Only the last review phase may be open-ended."
-msgstr "L'ordre des phases d'évaluation a été mis à jour."
+msgstr "Seule la dernière phase d'évaluation peut être ouverte/fermée."
 
 #: pretalx/orga/views/event.py:316
 #, python-brace-format
@@ -7151,6 +7126,9 @@ msgid ""
 "The review phases '{phase1}' and '{phase2}' overlap. Please make sure that "
 "review phases do not overlap, then save again."
 msgstr ""
+"Les phases d'évaluation '{phase1}' et '{phase2}' se superposent. Veuillez "
+"vous assurer que ces phases d'évaluation ne se superposent pas, et "
+"sauvegardez à nouveau."
 
 #: pretalx/orga/views/event.py:377
 msgid "Score category"
@@ -7356,16 +7334,12 @@ msgid "The team was removed."
 msgstr "L'équipe a été supprimée."
 
 #: pretalx/orga/views/organiser.py:207
-#, fuzzy
-#| msgid "Accept invitation"
 msgid "Retract invitation"
-msgstr "Accepter l'invitation"
+msgstr "Annuler l'invitation"
 
 #: pretalx/orga/views/organiser.py:208
-#, fuzzy
-#| msgid "Are you sure you want to resend the invitation to this user?"
 msgid "Are you sure you want to retract the invitation to this user?"
-msgstr "Voulez-vous vraiment renvoyer l’invitation à cet utilisateur ?"
+msgstr "Voulez-vous vraiment annuler l’invitation à cet utilisateur ?"
 
 #: pretalx/orga/views/organiser.py:219
 msgid "The team invitation was retracted."
@@ -7852,13 +7826,13 @@ msgstr "Pas d'intervenants"
 
 #: pretalx/schedule/exporters.py:302
 msgid "iCal (full event)"
-msgstr ""
+msgstr "iCal (événement complet)"
 
 #: pretalx/schedule/exporters.py:332
 #, fuzzy
 #| msgid "Welcome to our list of featured sessions!"
 msgid "iCal (your starred sessions)"
-msgstr "Bienvenue dans notre liste des interventions !"
+msgstr "iCal (les sessions suivies)"
 
 #: pretalx/schedule/forms.py:20
 msgid ""
