@@ -1,5 +1,6 @@
+const basePath = process.env.BASE_PATH || '/talk';
 const api = {
-	eventSlug: window.location.pathname.split("/")[3],
+	eventSlug: basePath ? window.location.pathname.split("/")[4] : window.location.pathname.split("/")[3],
 	http (verb, url, body) {
 		var fullHeaders = {}
 		fullHeaders['Content-Type'] = 'application/json'
@@ -42,7 +43,7 @@ const api = {
 	},
 	fetchTalks (options) {
 		options = options || {}
-		let url = `/orga/event/${api.eventSlug}/schedule/api/talks/`
+		let url = `${basePath}/orga/event/${api.eventSlug}/schedule/api/talks/`
 		if (window.location.search) {
 			url += window.location.search + '&'
 		} else {
@@ -57,15 +58,15 @@ const api = {
 		return api.http('GET', url, null)
 	},
 	fetchAvailabilities () {
-		const url = `/orga/event/${api.eventSlug}/schedule/api/availabilities/`
+		const url = `${basePath}/orga/event/${api.eventSlug}/schedule/api/availabilities/`
 		return api.http('GET', url, null)
 	},
 	fetchWarnings () {
-		const url = `/orga/event/${api.eventSlug}/schedule/api/warnings/`
+		const url = `${basePath}/orga/event/${api.eventSlug}/schedule/api/warnings/`
 		return api.http('GET', url, null)
 	},
 	fetchRooms () {
-		return api.getList(`/api/events/${api.eventSlug}/rooms`)
+		return api.getList(`${basePath}/api/events/${api.eventSlug}/rooms`)
 	},
 	saveTalk (talk, {action = 'PATCH'} = {}) {
 		// Only call from App.saveTalk, which knows which data to update

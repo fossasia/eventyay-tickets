@@ -19,6 +19,7 @@ RUN apt-get update && \
     echo 'pretalxuser ALL=(ALL) NOPASSWD: /usr/bin/supervisord' >> /etc/sudoers
 
 ENV LC_ALL=C.UTF-8
+ENV BASE_PATH=/talk
 
 COPY pyproject.toml /pretalx
 COPY src /pretalx/src
