@@ -134,7 +134,8 @@ legend {
 
 button,
 [role="button"],
-a.btn {
+a.btn,
+summary.btn {
   display: inline-block;
   font-size: 1rem;
   font-weight: 400;
@@ -144,6 +145,7 @@ a.btn {
   text-align: center;
   user-select: none;
   text-decoration: none;
+  font-family: var(--font-family-title);
 
   border: 1px solid var(--highlight-color);
   border-radius: var(--size-border-radius);
@@ -206,6 +208,10 @@ a.btn {
       background: var(--highlight-color);
       color: white;
     }
+  }
+
+  &:focus {
+      box-shadow: none !important;
   }
 
   &:disabled,
