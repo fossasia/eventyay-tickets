@@ -82,8 +82,8 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         ).values_list("version")
         return result
 
-    def get_exporter(self, request):
-        url = resolve(request.path_info)
+    def get_exporter(self, public=True):
+        url = resolve(self.request.path_info)
 
         if url.url_name == "export":
             exporter = url.kwargs.get("name") or unquote(
@@ -95,20 +95,22 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         exporter = (
             exporter[len("export.") :] if exporter.startswith("export.") else exporter
         )
-        return find_schedule_exporter(request, exporter)
+        return find_schedule_exporter(self.request, exporter, public=public)
 
     def get(self, request, *args, **kwargs):
-        exporter = self.get_exporter(request)
+        is_organiser = self.request.user.has_perm(
+            "orga.view_schedule", self.request.event
+        )
+        exporter = self.get_exporter(public=not is_organiser)
         if not exporter:
             raise Http404()
+        exporter.schedule = self.schedule
+        exporter.is_orga = is_organiser
         lang_code = request.GET.get("lang")
         if lang_code and lang_code in request.event.locales:
             activate(lang_code)
         elif "lang" in request.GET:
             activate(request.event.locale)
-
-        exporter.schedule = self.schedule
-        exporter.is_orga = getattr(self.request, "is_orga", False)
 
         try:
             file_name, file_type, data = exporter.render(request=request)
@@ -208,7 +210,7 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
 
     @context
     def exporters(self):
-        return get_schedule_exporters(self.request, require_public=True)
+        return get_schedule_exporters(self.request, public=True)
 
     @context
     def show_talk_list(self):
