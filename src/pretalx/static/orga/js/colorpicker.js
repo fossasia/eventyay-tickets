@@ -1,47 +1,47 @@
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".colorpickerfield").forEach((field) => {
-        // We're creating a parent element to hold the colorpicker/preview and the input field
-        const parentEl = document.createElement("div")
-        parentEl.classList.add("colorpicker-wrapper", "input-group")
-        const pickerEl = document.createElement("div")
-        pickerEl.classList.add("input-group-prepend")
-        const wrapperEl = document.createElement("div")
-        wrapperEl.classList.add("input-group-text")
-        const previewEl = document.createElement("div")
-        previewEl.classList.add("colorpicker-preview")
-        previewEl.style.backgroundColor = field.value
+const initColorPicker = (field) => {
+    // We're creating a parent element to hold the colorpicker/preview and the input field
+    const parentEl = document.createElement("div")
+    parentEl.classList.add("colorpicker-wrapper", "input-group")
+    const pickerEl = document.createElement("div")
+    pickerEl.classList.add("input-group-prepend")
+    const wrapperEl = document.createElement("div")
+    wrapperEl.classList.add("input-group-text")
+    const previewEl = document.createElement("div")
+    previewEl.classList.add("colorpicker-preview")
+    previewEl.style.backgroundColor = field.value
 
-        wrapperEl.appendChild(previewEl)
-        pickerEl.appendChild(wrapperEl)
-        parentEl.appendChild(pickerEl)
-        const fieldParent = field.parentNode
-        fieldParent.replaceChild(parentEl, field)
-        parentEl.appendChild(field)
+    wrapperEl.appendChild(previewEl)
+    pickerEl.appendChild(wrapperEl)
+    parentEl.appendChild(pickerEl)
+    const fieldParent = field.parentNode
+    fieldParent.replaceChild(parentEl, field)
+    parentEl.appendChild(field)
 
-        const picker = new Picker({
-            parent: pickerEl,
-            color: field.value,
-            popup: "left",
-            alpha: false,
-            editor: false,
-            onChange: (color) => updateContrast(field, color),
-        })
-
-        field.addEventListener("focus", () => {
-            picker.openHandler()
-        })
-        previewEl.addEventListener("click", () => {
-            picker.openHandler()
-        })
-
-        field.addEventListener("input", () => {
-            picker.setColor(field.value)
-        })
+    const picker = new Picker({
+        parent: pickerEl,
+        color: field.value,
+        popup: "left",
+        alpha: false,
+        editor: false,
+        onChange: (color) => updateContrast(field, color),
     })
-})
+
+    field.addEventListener("focus", () => {
+        picker.openHandler()
+    })
+    previewEl.addEventListener("click", () => {
+        picker.openHandler()
+    })
+
+    field.addEventListener("input", () => {
+        picker.setColor(field.value)
+    })
+}
 
 const updateContrast = (field, color) => {
-    field.parentNode.parentNode.querySelector(".colorpicker-preview").style.backgroundColor = color.hex
+    field.parentNode.parentNode.querySelector(
+        ".colorpicker-preview",
+    ).style.backgroundColor = color.hex
     // We're getting RRGGBBAA, but we don't want the alpha channel
     field.value = color.hex.slice(0, 7)
     const c = contrast([255, 255, 255], color.rgba.slice(0, 3))
@@ -51,18 +51,23 @@ const updateContrast = (field, color) => {
         field.parentNode.parentNode.appendChild(note)
     }
     const note = field.parentNode.parentNode.querySelector(".contrast-state")
-    const goal = field.parentNode.parentNode.querySelector(".color-visible") ? "visible" : "readable"
+    const goal = field.parentNode.parentNode.querySelector(".color-visible")
+        ? "visible"
+        : "readable"
     note.classList.remove("text-success")
     note.classList.remove("text-warning")
     note.classList.remove("text-danger")
     if (c > 7) {
-        note.innerHTML = "<span class='fa fa-fw fa-check-circle'></span> Your color has great contrast and is very easy to read!"
+        note.innerHTML =
+            "<span class='fa fa-fw fa-check-circle'></span> Your color has great contrast and is very easy to read!"
         note.classList.add("text-success")
     } else if (c > 2.5) {
-        note.innerHTML = "<span class='fa fa-fw fa-info-circle'></span> Your color has decent contrast and is probably easy enough to read!"
+        note.innerHTML =
+            "<span class='fa fa-fw fa-info-circle'></span> Your color has decent contrast and is probably easy enough to read!"
         note.classList.add("text-warning")
     } else {
-        note.innerHTML = "<span class='fa fa-fw fa-warning'></span> Your color has bad contrast and will be hard to read."
+        note.innerHTML =
+            "<span class='fa fa-fw fa-warning'></span> Your color has bad contrast and will be hard to read."
         note.classList.add("text-danger")
     }
     if (goal === "visible") {
@@ -72,7 +77,7 @@ const updateContrast = (field, color) => {
 }
 
 const luminanace = (r, g, b) => {
-    const a = [r, g, b].map(function (v) {
+    const a = [r, g, b].map((v) => {
         v /= 255
         return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)
     })
@@ -88,3 +93,9 @@ const contrast = (rgb1, rgb2) => {
     }
     return ratio.toFixed(1)
 }
+
+onReady(() => {
+    document.querySelectorAll(".colorpickerfield").forEach((field) => {
+        initColorPicker(field)
+    })
+})

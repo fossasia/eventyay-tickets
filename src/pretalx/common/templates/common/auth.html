@@ -14,6 +14,7 @@
 {% csrf_token %}
 {% compress js %}
     <script defer src="{% static "vendored/zxcvbn.js" %}"></script>
+    <script defer src="{% static "common/js/base.js" %}"></script>
     <script defer src="{% static "common/js/password_strength.js" %}"></script>
 {% endcompress %}
 <div class="panel-group" id="accordion">

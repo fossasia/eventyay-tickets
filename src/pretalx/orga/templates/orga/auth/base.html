@@ -14,10 +14,6 @@
 
         {% include "common/includes/favicon.html" %}
 
-        {% compress js %}
-            <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
-            <script defer src="{% static "vendored/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
-        {% endcompress %}
     </head>
     <body>
         <div id="wrapper"{% if request.event.primary_color %} style="background-color: {{ request.event.primary_color }}"{% endif %}>

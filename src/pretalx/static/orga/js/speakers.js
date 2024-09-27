@@ -1,51 +1,77 @@
-if (document.querySelector("#id_speaker")) {
-  var speakers = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace("value"),
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    limit: Infinity,
-    remote: {
-      url: document.getElementById("vars").getAttribute("remoteUrl"),
-      wildcard: "%QUERY",
-      transform: function(object) {
-        var results = object.results
-        var suggestions = []
-        var i = 0
-        for (i = 0; i < results.length; i++) {
-          suggestions.push({ value: results[i].email, name: results[i].name })
+const initUserSearch = () => {
+    const remoteURL = document.getElementById("vars").getAttribute("remoteUrl")
+    let select = document.querySelector("#id_email")
+    if (!select) select = document.querySelector("#id_invite-email")
+    if (!select) return
+
+    const choices = new Choices(select, {
+        maxItemCount: 1,
+        singleModeForMultiSelect: true,
+        closeDropdownOnSelect: true,
+        addChoices: true,
+        removeItems: true,
+        removeItemButton: true,
+        removeItemButtonAlignLeft: true,
+        searchEnabled: true,
+        searchFloor: 3,
+        searchResultLimit: -1,
+        placeholder: true,
+        placeholderValue: select.getAttribute("placeholder"),
+        itemSelectText: "",
+        noResultsText: "",
+        noChoicesText: "",
+        addItemText: "",
+        removeItemLabelText: "×",
+        removeItemIconText: "×",
+        maxItemText: "",
+    })
+    select.addEventListener("search", (ev) => {
+        fetch(`${remoteURL}?search=${ev.detail.value}`)
+            .then((r) => r.json())
+            .then((data) => {
+                choices.setChoices(
+                    data.results.map(
+                        (item) => ({
+                            value: item.email,
+                            label: `${item.name} <${item.email}>`,
+                            customProperties: {
+                                name: item.name,
+                            },
+                        }),
+                        "id",
+                        "name",
+                        true,
+                    ),
+                )
+            })
+    })
+    // when an item is selected, optionally set other fields
+    select.addEventListener("addItem", (ev) => {
+        if (ev.detail.customProperties && ev.detail.customProperties.name) {
+            let nameInput = document.querySelector("#id_name")
+            if (!nameInput) nameInput = document.querySelector("#id_speaker")
+            if (!nameInput)
+                nameInput = document.querySelector("#id_speaker_name")
+            if (!nameInput || nameInput.value.length) return
+            nameInput.value = ev.detail.customProperties.name
         }
-        return suggestions
-      },
-    },
-  })
-
-  let selector = ""
-  if (document.querySelector("#id_speaker")) {
-    selector = "#id_speaker"
-  } else if (document.querySelector("#id_email")) {
-    selector = "#id_email"
-  }
-
-  $(selector).typeahead(null, {
-    name: "email",
-    display: "value",
-    source: speakers,
-    templates: {
-      suggestion: function(data) {
-        return (
-          '<div class="tt-suggestion tt-selectable">' +
-          data.value +
-          " (" +
-          data.name +
-          ")" +
-          "</div>"
-        )
-      },
-    },
-  })
-  $(selector).bind("typeahead:select", function(ev, suggestion) {
-    $(selector).text(suggestion.value)
-    if (selector == "#id_speaker") {
-      document.querySelector("#id_speaker_name").value = suggestion.name
-    }
-  })
+    })
+    select.parentElement
+        .querySelector("input")
+        .addEventListener("blur", (ev) => {
+            unfinishedInput = ev.target.value
+            if (!unfinishedInput) return
+            if (select.value != unfinishedInput) {
+                select.value = unfinishedInput
+                choices.setChoices([
+                    {
+                        value: unfinishedInput,
+                        label: unfinishedInput,
+                        selected: true,
+                    },
+                ])
+                ev.target.value = ""
+            }
+        })
 }
+initUserSearch()

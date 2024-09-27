@@ -98,6 +98,5 @@ const pageSetup = async () => {
     if (loggedIn) saveLocalFavs()
 }
 
-document.addEventListener('DOMContentLoaded', pageSetup)
-if (document.readyState === 'complete') pageSetup()
+onReady(pageSetup)
 setTimeout(() => { if (!setupRun) pageSetup() }, 500)

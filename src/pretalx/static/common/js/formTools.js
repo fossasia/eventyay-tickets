@@ -1,31 +1,40 @@
+/* This script will be included on all pages with forms.
+ * (And on all pages on the backend in general). */
+
 /* Handle Markdown: run marked on change and activate tabs */
 let dirtyInputs = []
 const options = {
-  breaks: true,
-  gfm: true,
-  pedantic: false,  // Drawback: will render lists without blank lines correctly
-  silent: false,
-  smartLists: true,
-  tables: true,
+    breaks: true,
+    gfm: true,
+    pedantic: false, // Drawback: will render lists without blank lines correctly
+    silent: false,
+    smartLists: true,
+    tables: true,
 }
 
 const checkForChanges = () => {
-  if (dirtyInputs.length) {
-    dirtyInputs.forEach(element => {
-      const inputElement = element.querySelector("textarea")
-      const outputElement = element.querySelector(".preview")
-      outputElement.innerHTML = DOMPurify.sanitize(marked.parse(inputElement.value, options))
-    })
-    dirtyInputs = []
-  }
-  window.setTimeout(checkForChanges, 100)
+    if (dirtyInputs.length) {
+        dirtyInputs.forEach((element) => {
+            const inputElement = element.querySelector("textarea")
+            const outputElement = element.querySelector(".preview")
+            outputElement.innerHTML = DOMPurify.sanitize(
+                marked.parse(inputElement.value, options),
+            )
+        })
+        dirtyInputs = []
+    }
+    window.setTimeout(checkForChanges, 100)
 }
 
 const initMarkdown = (element) => {
     const inputElement = element.querySelector("textarea")
     const outputElement = element.querySelector(".markdown-preview")
-    outputElement.innerHTML = DOMPurify.sanitize(marked.parse(inputElement.value, options))
-    const handleInput = () => { dirtyInputs.push(element) }
+    outputElement.innerHTML = DOMPurify.sanitize(
+        marked.parse(inputElement.value, options),
+    )
+    const handleInput = () => {
+        dirtyInputs.push(element)
+    }
     inputElement.addEventListener("change", handleInput, false)
     inputElement.addEventListener("keyup", handleInput, false)
     inputElement.addEventListener("keypress", handleInput, false)
@@ -33,85 +42,92 @@ const initMarkdown = (element) => {
 
     // Activate tabs
     const updateTabPanels = (ev) => {
-        const selectedTab = ev.target.closest("[role=tablist]").querySelector("input[role=tab]:checked")
+        const selectedTab = ev.target
+            .closest("[role=tablist]")
+            .querySelector("input[role=tab]:checked")
         if (!selectedTab) return
-        const selectedPanel = document.getElementById(selectedTab.getAttribute("aria-controls"))
+        const selectedPanel = document.getElementById(
+            selectedTab.getAttribute("aria-controls"),
+        )
         if (!selectedPanel) return
-        selectedTab.parentElement.querySelectorAll(`[role=tab][aria-selected=true]`).forEach((element) => {
-            element.setAttribute("aria-selected", "false")
-        })
-        selectedPanel.parentElement.querySelectorAll("[role=tabpanel][aria-hidden=false]").forEach((element) => {
-            element.setAttribute("aria-hidden", "true")
-        })
+        selectedTab.parentElement
+            .querySelectorAll(`[role=tab][aria-selected=true]`)
+            .forEach((element) => {
+                element.setAttribute("aria-selected", "false")
+            })
+        selectedPanel.parentElement
+            .querySelectorAll("[role=tabpanel][aria-hidden=false]")
+            .forEach((element) => {
+                element.setAttribute("aria-hidden", "true")
+            })
         selectedTab.setAttribute("aria-selected", "true")
         selectedPanel.setAttribute("aria-hidden", "false")
     }
     element.parentElement.querySelectorAll("input[role=tab]").forEach((tab) => {
-        tab.addEventListener('change', updateTabPanels)
+        tab.addEventListener("change", updateTabPanels)
     })
 }
 
 const warnFileSize = (element) => {
-  const warning = document.createElement("div")
-  warning.classList = ["invalid-feedback"]
-  warning.textContent = element.dataset.sizewarning
-  element.parentElement.appendChild(warning)
-  element.classList.add("is-invalid")
+    const warning = document.createElement("div")
+    warning.classList = ["invalid-feedback"]
+    warning.textContent = element.dataset.sizewarning
+    element.parentElement.appendChild(warning)
+    element.classList.add("is-invalid")
 }
 const unwarnFileSize = (element) => {
-  element.classList.remove("is-invalid")
-  const warning = element.parentElement.querySelector(".invalid-feedback")
-  if (warning) element.parentElement.removeChild(warning)
+    element.classList.remove("is-invalid")
+    const warning = element.parentElement.querySelector(".invalid-feedback")
+    if (warning) element.parentElement.removeChild(warning)
 }
 
-/* Register handlers */
-window.onload = () => {
-  document.querySelectorAll(".markdown-wrapper").forEach(element => initMarkdown(element))
-  checkForChanges()
-
-  document.querySelectorAll("input[data-maxsize][type=file]").forEach(element => {
+const initFileSizeCheck = (element) => {
     const checkFileSize = () => {
-      const files = element.files
-      if (!files || !files.length) {
-        unwarnFileSize(element)
-      } else {
-        maxsize = parseInt(element.dataset.maxsize)
-        if (files[0].size > maxsize) { warnFileSize(element) } else { unwarnFileSize(element) }
-      }
+        const files = element.files
+        if (!files || !files.length) {
+            unwarnFileSize(element)
+        } else {
+            maxsize = parseInt(element.dataset.maxsize)
+            if (files[0].size > maxsize) {
+                warnFileSize(element)
+            } else {
+                unwarnFileSize(element)
+            }
+        }
     }
     element.addEventListener("change", checkFileSize, false)
 }
 
 const isVisible = (element) => {
     if (!element) return false
-    return (!element.hidden && !element.classList.contains("d-none"))
+    return !element.hidden && !element.classList.contains("d-none")
 }
 
 const initSelect = (element) => {
-    const removeItemButton = (!element.readonly && (!element.required || element.multiple))
+    const removeItemButton =
+        !element.readonly && (!element.required || element.multiple)
     let showPlaceholder = !!element.title
-    console.log(element)
-    console.log("showPlaceholder", showPlaceholder)
     if (showPlaceholder) {
         // Make sure we don't show a placeholder that is obvious from context
         if (element.getAttribute("aria-describedby")) {
-            const describedBy = document.getElementById(element.getAttribute("aria-describedby"))
+            const describedBy = document.getElementById(
+                element.getAttribute("aria-describedby"),
+            )
             if (isVisible(describedBy)) {
                 showPlaceholder = describedBy.textContent !== element.title
             }
         }
     }
-    console.log("showPlaceholder", showPlaceholder)
     if (showPlaceholder) {
         const label = document.querySelector(`label[for=${element.id}]`)
         if (isVisible(label)) {
             showPlaceholder = label.textContent !== element.title
         }
     }
-    console.log("showPlaceholder", showPlaceholder)
     new Choices(element, {
         removeItems: !element.readonly,
-        removeItemButton: !element.readonly && (!element.required || element.multiple),
+        removeItemButton:
+            !element.readonly && (!element.required || element.multiple),
         removeItemButtonAlignLeft: true,
         searchFields: ["label"],
         searchEnabled: true,
@@ -129,35 +145,32 @@ const initSelect = (element) => {
 }
 
 // Make sure the main form doesn't have unsaved changes before leaving
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('form[method="post"]')
-    if (!form) return
-
+const initFormChanges = (form) => {
     const originalData = {}
     // Populate original data after a short delay to make sure the form is fully loaded
     // and that any script interactions have run
     setTimeout(() => {
-        new FormData(form).forEach((value, key) => originalData[key] = value)
+        new FormData(form).forEach((value, key) => (originalData[key] = value))
     }, 1000)
 
-    const isDirty = () => {
+    const isDirty = (form) => {
         if (Object.keys(originalData).length === 0) return false
         const currentData = {}
-        new FormData(form).forEach((value, key) => currentData[key] = value)
+        new FormData(form).forEach((value, key) => (currentData[key] = value))
         return JSON.stringify(originalData) !== JSON.stringify(currentData)
     }
+
     const handleUnload = (e) => {
-        if (isDirty()) {
+        if (isDirty(form)) {
             e.preventDefault()
         }
-    };
+    }
 
-    form.addEventListener('submit', () => {
-        window.removeEventListener('beforeunload', handleUnload)
-    });
-    window.addEventListener('beforeunload', handleUnload)
+    form.addEventListener("submit", () => {
+        window.removeEventListener("beforeunload", handleUnload)
+    })
+    window.addEventListener("beforeunload", handleUnload)
 }
-
 
 const addDateLimit = (element, other, limit) => {
     const otherElement = document.querySelector(other)
@@ -174,11 +187,35 @@ const addDateLimit = (element, other, limit) => {
 // - Make sure the picker opens on focus
 // - Use the data-date-after and data-date-before attributes to set min/max dynamically on change
 const initDateFields = () => {
-    document.querySelectorAll("input[type=date], input[type=datetime-local]").forEach((element) => {
-        if (element.readOnly || element.disabled) return
-        // Delay, because otherwise clicking the *icon* in FF will make the picker immediately disappear again
-        element.addEventListener("focus", () => setTimeout(() => element.showPicker(), 70))
-        if (element.dataset.dateBefore) addDateLimit(element, element.dataset.dateBefore, "max")
-        if (element.dataset.dateAfter) addDateLimit(element, element.dataset.dateAfter, "min")
-    })
+    document
+        .querySelectorAll("input[type=date], input[type=datetime-local]")
+        .forEach((element) => {
+            if (element.readOnly || element.disabled) return
+            // Delay, because otherwise clicking the *icon* in FF will make the picker immediately disappear again
+            element.addEventListener("focus", () =>
+                setTimeout(() => element.showPicker(), 70),
+            )
+            if (element.dataset.dateBefore)
+                addDateLimit(element, element.dataset.dateBefore, "max")
+            if (element.dataset.dateAfter)
+                addDateLimit(element, element.dataset.dateAfter, "min")
+        })
 }
+
+/* Register handlers */
+onReady(() => {
+    document
+        .querySelectorAll(".markdown-wrapper")
+        .forEach((element) => initMarkdown(element))
+    document
+        .querySelectorAll("input[data-maxsize][type=file]")
+        .forEach((element) => initFileSizeCheck(element))
+    document
+        .querySelectorAll(".select2")
+        .forEach((element) => initSelect(element))
+    document
+        .querySelectorAll("form[method=post]")
+        .forEach((form) => initFormChanges(form))
+    checkForChanges()
+    initDateFields()
+})
