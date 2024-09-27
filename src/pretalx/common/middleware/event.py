@@ -22,6 +22,7 @@ from pretalx.event.models import Event, Organiser, Team
 from pretalx.person.models import User
 
 logger = logging.getLogger(__name__)
+from pretalx.event.models import Event, Organiser
 
 
 def get_login_redirect(request):
@@ -138,18 +139,6 @@ class EventPermissionMiddleware:
         if organiser_slug:
             request.organiser = get_object_or_404(
                 Organiser, slug__iexact=organiser_slug
-            )
-            has_perms = (
-                Team.objects.filter(
-                    organiser=request.organiser,
-                    members__in=[request.user],
-                    can_change_organiser_settings=True,
-                ).exists()
-                if not request.user.is_anonymous
-                else False
-            )
-            request.is_orga = (
-                getattr(request.user, "is_administrator", False) or has_perms
             )
 
         event_slug = url.kwargs.get("event")
