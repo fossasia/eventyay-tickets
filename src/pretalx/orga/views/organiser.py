@@ -4,7 +4,7 @@ from allauth.socialaccount.models import SocialApp
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Count, Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -410,6 +410,26 @@ class OrganiserDelete(PermissionRequired, ActionConfirmMixin, DetailView):
         return HttpResponseRedirect(reverse("orga:event.list"))
 
 
+def get_speaker_access_events_for_user(*, user, organiser):
+    events = set()
+    for team in user.teams.filter(organiser=organiser):
+        if team.can_change_submissions:
+            if team.all_events:
+                # This user has access to all speakers for all events,
+                # so we can cut our logic short here.
+                return organiser.events.all()
+            else:
+                events.update(team.events.values_list("pk", flat=True))
+        elif team.is_reviewer:
+            # Reviewers *can* have access to speakers, but they do not necessarily
+            # do, so we need to check permissions for each event.
+            if not team.limit_tracks.exists():
+                for event in team.events:
+                    if user.has_perm("orga.view_speakers", event):
+                        events.add(event.pk)
+    return Event.objects.filter(pk__in=events)
+
+
 @method_decorator(scopes_disabled(), "dispatch")
 class OrganiserSpeakerList(
     PermissionRequired, Sortable, Filterable, PaginationMixin, ListView
@@ -432,22 +452,9 @@ class OrganiserSpeakerList(
     @context
     @cached_property
     def events(self):
-        events = set()
-        for team in self.request.organiser.teams.all():
-            if team.can_change_submissions:
-                if team.all_events:
-                    # This user has access to all speakers for all events,
-                    # so we can cut our logic short here.
-                    return self.request.organiser.events.all()
-                else:
-                    events.update(team.events.values_list("pk", flat=True))
-            elif team.is_reviewer:
-                # Reviewers *can* have access to speakers, but they do not necessarily
-                # do, so we need to check permissions for each event.
-                for event in team.events:
-                    if self.request.user.has_perm("orga.view_speakers", event):
-                        events.add(event.pk)
-        return Event.objects.filter(pk__in=events)
+        return get_speaker_access_events_for_user(
+            user=self.request.user, organiser=self.request.organiser
+        )
 
     def get_queryset(self):
         events = self.events
@@ -490,3 +497,28 @@ class OrganiserSpeakerList(
         context = super().get_context_data(**kwargs)
         context[self.context_object_name] = list(context[self.context_object_name])
         return context
+
+
+def speaker_search(request, *args, **kwargs):
+    search = request.GET.get("search")
+    if not search or len(search) < 3:
+        return JsonResponse({"count": 0, "results": []})
+
+
+    with scopes_disabled():
+        events = get_speaker_access_events_for_user(
+            user=request.user, organiser=request.organiser
+        )
+        users = (
+            User.objects.filter(profiles__event__in=events)
+            .filter(Q(name__icontains=search) | Q(email__icontains=search))
+            .distinct()[:8]
+        )
+        users = list(users)
+
+    return JsonResponse(
+        {
+            "count": len(users),
+            "results": [{"email": user.email, "name": user.name} for user in users],
+        }
+    )

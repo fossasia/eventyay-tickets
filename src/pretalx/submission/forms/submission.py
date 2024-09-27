@@ -7,7 +7,7 @@ from django_scopes.forms import SafeModelChoiceField
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.mixins import PublicContent, RequestRequire
-from pretalx.common.forms.widgets import MarkdownWidget
+from pretalx.common.forms.widgets import MarkdownWidget, SelectMultipleWithCount
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views.mixins import Filterable
 from pretalx.submission.forms.track_select_widget import TrackSelectWidget
@@ -207,38 +207,6 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         }
 
 
-class SelectMultipleWithCount(forms.SelectMultiple):
-    """A widget for multi-selects that correspond to countable values.
-
-    This widget doesn't support some of the options of the default
-    SelectMultiple, most notably it doesn't support optgroups. In
-    return, it takes a third value per choice, makes zero-values
-    disabled and sorts options by numerical value.
-    """
-
-    def optgroups(self, name, value, attrs=None):
-        choices = sorted(self.choices, key=lambda choice: choice[1].count, reverse=True)
-        result = []
-        for index, (option_value, label) in enumerate(choices):
-            selected = str(option_value) in value
-            result.append(
-                self.create_option(
-                    name,
-                    value=option_value,
-                    label=label,
-                    selected=selected,
-                    index=index,
-                )
-            )
-        return [(None, result, 0)]
-
-    def create_option(self, name, value, label, *args, count=0, **kwargs):
-        option = super().create_option(name, value, str(label), *args, **kwargs)
-        if label.count == 0:
-            option["attrs"]["class"] = "hidden"
-        return option
-
-
 class CountableOption:
     def __init__(self, name, count):
         self.name = name
@@ -251,16 +219,12 @@ class CountableOption:
 class SubmissionFilterForm(forms.Form):
     state = forms.MultipleChoiceField(
         required=False,
-        widget=SelectMultipleWithCount(
-            attrs={"class": "select2", "title": _("Proposal states")}
-        ),
         choices=SubmissionStates.get_choices(),
+        widget=SelectMultipleWithCount(attrs={"title": _("Proposal states")}),
     )
     submission_type = forms.MultipleChoiceField(
         required=False,
-        widget=SelectMultipleWithCount(
-            attrs={"class": "select2", "title": _("Session types")}
-        ),
+        widget=SelectMultipleWithCount(attrs={"title": _("Session types")}),
     )
     pending_state__isnull = forms.BooleanField(
         required=False,
@@ -268,19 +232,15 @@ class SubmissionFilterForm(forms.Form):
     )
     content_locale = forms.MultipleChoiceField(
         required=False,
-        widget=SelectMultipleWithCount(
-            attrs={"class": "select2", "title": phrases.base.language}
-        ),
+        widget=SelectMultipleWithCount(attrs={"title": phrases.base.language}),
     )
     track = forms.MultipleChoiceField(
         required=False,
-        widget=SelectMultipleWithCount(
-            attrs={"class": "select2", "title": _("Tracks")}
-        ),
+        widget=SelectMultipleWithCount(attrs={"title": _("Tracks")}),
     )
     tags = forms.MultipleChoiceField(
         required=False,
-        widget=SelectMultipleWithCount(attrs={"class": "select2", "title": _("Tags")}),
+        widget=SelectMultipleWithCount(attrs={"title": _("Tags")}),
     )
     question = SafeModelChoiceField(queryset=Question.objects.none(), required=False)
     unanswered = forms.BooleanField(required=False)

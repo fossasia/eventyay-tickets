@@ -45,7 +45,12 @@
             {% csrf_token %}
             {% bootstrap_field form.title layout="event" %}
             {% if action == "create" %}
-                {% bootstrap_field form.speaker layout="event" %}
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="id_email">{{ form.email.label }}</label>
+                <div class="col-md-9">
+                  <select multiple name="email" id="id_email" class="form-control" placeholder=""> </select>
+                </div>
+              </div>
                 {% bootstrap_field form.speaker_name layout="event" %}
                 {% bootstrap_field form.state layout="event" %}
             {% endif %}
@@ -102,5 +107,5 @@
             {% endif %}
         </fieldset></form>
 
-    <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
+    <span id="vars" remoteUrl="{{ request.event.organiser.orga_urls.user_search }}"></span>
 {% endblock submission_content %}

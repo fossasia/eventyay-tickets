@@ -7,6 +7,7 @@ from django_scopes import scopes_disabled
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nModelForm
 
+from pretalx.common.forms.widgets import EnhancedSelect, EnhancedSelectMultiple
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
 from pretalx.common.text.phrases import phrases
@@ -81,8 +82,8 @@ class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             "limit_tracks",
         ]
         widgets = {
-            "limit_events": forms.SelectMultiple(attrs={"class": "select2"}),
-            "limit_tracks": forms.SelectMultiple(attrs={"class": "select2"}),
+            "limit_events": EnhancedSelectMultiple,
+            "limit_tracks": EnhancedSelectMultiple,
         }
         field_classes = {
             "limit_tracks": SafeModelMultipleChoiceField,
@@ -175,7 +176,7 @@ class EventWizardInitialForm(forms.Form):
                 if not user.is_administrator
                 else Organiser.objects.all()
             ),
-            widget=forms.Select(attrs={"class": "select2"}),
+            widget=EnhancedSelect,
             empty_label=None,
             required=True,
             help_text=_(
@@ -221,8 +222,8 @@ class EventWizardBasicsForm(I18nHelpText, I18nModelForm):
         model = Event
         fields = ("name", "slug", "timezone", "email", "locale")
         widgets = {
-            "locale": forms.Select(attrs={"class": "select2"}),
-            "timezone": forms.Select(attrs={"class": "select2"}),
+            "locale": EnhancedSelect,
+            "timezone": EnhancedSelect,
         }
 
 
