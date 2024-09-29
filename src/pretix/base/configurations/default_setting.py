@@ -1929,6 +1929,26 @@ Your {organizer} team"""))
             widget=forms.TextInput(attrs={'class': 'colorpickerfield no-contrast'})
         ),
     },
+    'hover_button_color': {
+        'default': '#2185d0',
+        'type': str,
+        'form_class': forms.CharField,
+        'serializer_class': serializers.CharField,
+        'serializer_kwargs': dict(
+            validators=[
+                RegexValidator(regex='^#[0-9a-fA-F]{6}$',
+                               message=_('Please enter the hexadecimal code of a color, e.g. #990000.')),
+            ],
+        ),
+        'form_kwargs': dict(
+            label=_("Scroll-over color"),
+            validators=[
+                RegexValidator(regex='^#[0-9a-fA-F]{6}$',
+                               message=_('Please enter the hexadecimal code of a color, e.g. #990000.')),
+            ],
+            widget=forms.TextInput(attrs={'class': 'colorpickerfield no-contrast'})
+        ),
+    },
     'theme_round_borders': {
         'default': 'True',
         'type': bool,
@@ -2427,7 +2447,7 @@ Your {organizer} team"""))
 
 CSS_SETTINGS = {
     'primary_color', 'theme_color_success', 'theme_color_danger', 'primary_font',
-    'theme_color_background', 'theme_round_borders'
+    'theme_color_background', 'theme_round_borders', 'hover_button_color'
 }
 
 TITLE_GROUP = OrderedDict([
