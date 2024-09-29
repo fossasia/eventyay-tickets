@@ -392,3 +392,88 @@ article .pretalx-session .pretalx-session-info .abstract {
     margin-top: 8px;
   }
 }
+
+
+#join-video-popupmodal, #join-video-popupmodal-missing-config {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, .7);
+  opacity: 0;
+  z-index: 900000;
+  visibility: hidden;
+  padding: 10px;
+
+  .modal-card {
+      margin: 50px auto 0;
+      top: 50px;
+      width: 90%;
+      max-width: 900px;
+      background: white;
+      border-radius: 0;
+      box-shadow: 0 7px 14px 0 rgba(78, 50, 92, 0.1),0 3px 6px 0 rgba(0,0,0,.07);
+      padding: 20px;
+      min-height: 160px;
+
+      .modal-card-icon {
+          float: left;
+          width: 150px;
+          text-align: center;
+      }
+      .modal-card-content {
+          margin-left: 160px;
+          text-align: left;
+          h3 {
+              margin-top: 0;
+          }
+      }
+      .modal-card-content-join {
+        text-align: left;
+        h3 {
+            margin-top: 0;
+        }
+        .btn-link {
+          box-shadow: 0px 0px 0px 1px $btn-primary-border inset;
+          box-sizing: border-box;
+        }
+      }
+      .join-online-close {
+          display: flex;
+          .join-online-close-button {
+              margin-left: auto;
+          }
+      }
+  }
+}
+
+.btn-default {
+  box-shadow: 0px 0px 0px 1px #cccccc inset;
+  box-sizing: border-box;
+}
+
+@media (max-width: 700px) {
+  #join-video-popupmodal, #join-video-popupmodal-missing-config {
+      .modal-card {
+          .modal-card-icon {
+              float: none;
+              width: 100%;
+          }
+          .modal-card-content {
+              text-align: center;
+              margin-left: 0;
+              margin-right: 0;
+              margin-top: 10px;
+          }
+      }
+  }
+}
+
+.has-join-popup #join-video-popupmodal, .has-join-popup #join-video-popupmodal-missing-config {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .5s ease-in-out;
+  -moz-transition: opacity .5s ease-in-out;
+  -webkit-transition: opacity .5s ease-in-out;
+}

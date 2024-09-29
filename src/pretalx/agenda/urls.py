@@ -113,6 +113,11 @@ urlpatterns = [
                     EventSocialMediaCard.as_view(),
                     name="event-social",
                 ),
+                path(
+                    "online-video/join/",
+                    talk.OnlineVideoJoin.as_view(),
+                    name="event.onlinevideo.join",
+                ),
             ]
         ),
     ),
