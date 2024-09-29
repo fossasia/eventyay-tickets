@@ -100,6 +100,7 @@ export default {
 			await this.$store.dispatch('updateUser', {profile: this.profile})
 			this.$store.dispatch('notifications/updateSettings', this.notificationSettings)
 			this.$store.dispatch('setAutoplay', this.autoplay)
+			this.$store.dispatch('schedule/setCurrentLanguage', this.interfaceLanguage)
 			localStorage.userLanguage = this.interfaceLanguage
 			try {
 				await this.$store.dispatch('updateUserLocale', this.interfaceLanguage)

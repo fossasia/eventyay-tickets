@@ -129,27 +129,12 @@ export default {
 	computed: {
 		...mapState(['now']),
 		...mapState('schedule', ['schedule', 'errorLoading']),
-		...mapGetters('schedule', ['days', 'rooms', 'sessions', 'favs']),
+		...mapGetters('schedule', ['days', 'rooms', 'sessions', 'favs', 'filterSessionTypesByLanguage', 'filterItemsByLanguage', 'filteredSessions']),
 		exportType() {
 			return exportTypeSet
 		},
 		filteredTracks() {
-			let results = null
-			const self = this
-			Object.keys(this.filter).forEach(key => {
-				const refKey = this.filter[key].refKey
-				const selectedIds = this.filter[key].data.filter(t => t.selected).map(t => t.value)
-				let founds = null
-				if (selectedIds.length) {
-					if (results && results.length) {
-						founds = self.schedule.talks.filter(t => selectedIds.includes(t[refKey]) && results && results.includes(t.id))?.map(i => i.id) || []
-					} else {
-						founds = self.schedule.talks.filter(t => { return selectedIds.includes(t[refKey]) })?.map(i => i.id) || []
-					}
-					results = founds
-				}
-			})
-			return results
+			return this.filteredSessions(this.filter)
 		},
 		tracksLookup() {
 			if (!this.schedule) return {}
@@ -192,9 +177,10 @@ export default {
 		},
 		filter() {
 			const filter = this.defaultFilter
-			filter.tracks.data = this.schedule.tracks.map(t => { t.value = t.id; t.label = t.name; return t })
-			filter.rooms.data = this.schedule.rooms.map(t => { t.value = t.id; t.label = t.name; return t })
-			filter.types.data = this.schedule.session_type.map(t => { t.value = t.session_type; t.label = t.session_type; return t })
+
+			filter.types.data = this.filterSessionTypesByLanguage(this?.schedule?.session_type)
+			filter.rooms.data = this.filterItemsByLanguage(this?.schedule?.rooms)
+			filter.tracks.data = this.filterItemsByLanguage(this?.schedule?.tracks)
 			return filter
 		}
 	},
@@ -284,7 +270,7 @@ export default {
 		},
 		resetOnlyFavs() {
 			this.onlyFavs = false
-		}
+		},
 	}
 }
 </script>
