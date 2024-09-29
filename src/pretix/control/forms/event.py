@@ -489,6 +489,7 @@ class EventSettingsForm(SettingsForm):
         'theme_color_danger',
         'theme_color_background',
         'theme_round_borders',
+        'hover_button_color',
         'primary_font',
         'logo_image',
         'logo_image_large',

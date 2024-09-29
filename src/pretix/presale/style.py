@@ -57,6 +57,8 @@ def compile_scss(object, file="main.scss", fonts=True):
         sassrules.append('$brand-danger: {};'.format(object.settings.get('theme_color_danger')))
     if object.settings.get('theme_color_background'):
         sassrules.append('$body-bg: {};'.format(object.settings.get('theme_color_background')))
+    if object.settings.get('hover_button_color'):
+       sassrules.append('$hover-button-color: {};'.format(object.settings.get('hover_button_color')))
     if not object.settings.get('theme_round_borders'):
         sassrules.append('$border-radius-base: 0;')
         sassrules.append('$border-radius-large: 0;')
@@ -82,6 +84,7 @@ def compile_scss(object, file="main.scss", fonts=True):
             sassrules.append(resp)
 
     sasssrc = "\n".join(sassrules)
+
     srcchecksum = hashlib.sha1(sasssrc.encode('utf-8')).hexdigest()
 
     cp = cache.get_or_set('sass_compile_prefix', now().isoformat())
