@@ -23,7 +23,7 @@
             {% if eventyay_exists %}
                 {% if not no_buttons %}
                 <div class="text-center">
-                    <a class="btn btn-lg btn-primary btn-block mt-3" href="{% provider_login_url request.event.organiser.slug %}?next=/{{ request.event.slug }}/schedule/">
+                    <a class="btn btn-lg btn-primary btn-block mt-3" href="{% provider_login_url request.event.organiser.slug %}?next={{ request.path }}">
                         {% translate "Login as Attendee with Eventyay-Ticket" %}
                     </a>
                 </div>
