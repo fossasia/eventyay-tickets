@@ -8,7 +8,8 @@ export default {
 		schedule: null,
 		errorLoading: null,
 		filter: {},
-		now: moment()
+		now: moment(),
+		currentLanguage: localStorage.getItem('userLanguage') || 'en'
 	},
 	getters: {
 		favs(state, getters, rootState) {
@@ -125,6 +126,95 @@ export default {
 		},
 		schedule(state) {
 			return state.schedule
+		},
+		getSessionType: (state, getters) => (item) => {
+			if (typeof item?.session_type === 'string') {
+				return item.session_type
+			} else if (typeof item?.session_type === 'object') {
+				const sessionTypeKeys = Object.keys(item.session_type)
+				const keyLanguage = sessionTypeKeys.find(key => key === state.currentLanguage) ||
+					sessionTypeKeys.find(key => key === 'en') ||
+					sessionTypeKeys[0]
+
+				return item.session_type[keyLanguage]
+			}
+			return null
+		},
+		getSelectedName: (state, getters) => (item) => {
+			if (typeof item?.name === 'string') {
+				return item.name
+			} else if (typeof item?.name === 'object') {
+				const keys = Object.keys(item.name)
+				const keyLanguage = keys.find(key => key === state.currentLanguage) ||
+					keys.find(key => key === 'en') ||
+					keys[0]
+
+				return item.name[keyLanguage]
+			}
+			return null
+		},
+		filterSessionTypesByLanguage: (state, getters) => (data) => {
+			const uniqueSessionTypes = new Set()
+
+			data.forEach(item => {
+				const sessionType = getters.getSessionType(item)
+				if (sessionType) {
+					uniqueSessionTypes.add(sessionType)
+				}
+			})
+
+			return Array.from(uniqueSessionTypes).map(sessionType => ({
+				value: sessionType,
+				label: sessionType
+			}))
+		},
+		filterItemsByLanguage: (state, getters) => (data) => {
+			const languageMap = new Map()
+
+			data.forEach(item => {
+				const selectedName = getters.getSelectedName(item)
+				if (selectedName) {
+					languageMap.set(item.id, selectedName)
+				}
+			})
+
+			return Array.from(languageMap).map(([id, name]) => ({ value: id, label: name }));
+		},
+		matchesSessionTypeFilter: (state) => (talk, selectedIds) => {
+			if (typeof talk?.session_type === 'string') {
+				return selectedIds.includes(talk.session_type)
+			} else if (typeof talk?.session_type === 'object') {
+				return Object.keys(talk.session_type).some(key => selectedIds.includes(talk.session_type[key]))
+			}
+			return false
+		},
+		filterTalk: (state, getter) => (refKey, selectedIds, previousResults) => {
+			const talks = state.schedule.talks
+
+			return talks
+				.filter(talk => {
+					const matchesSessionType = refKey === 'session_type' && getter.matchesSessionTypeFilter(talk, selectedIds)
+					const matchesRefKey = selectedIds.includes(talk[refKey])
+
+					return (matchesSessionType || matchesRefKey) && (!previousResults || previousResults.includes(talk.id))
+				})
+				.map(talk => talk.id) || []
+		},
+		filteredSessions: (state, getters) => (filter) => {
+			let filteredResults = null
+
+			Object.keys(filter).forEach(key => {
+				const refKey = filter[key].refKey
+				const selectedIds = filter[key].data
+					.filter(item => item.selected)
+					.map(item => item.value) || []
+
+				if (selectedIds.length) {
+					filteredResults = getters.filterTalk(refKey, selectedIds, filteredResults)
+				}
+			})
+
+			return filteredResults
 		}
 	},
 	actions: {
@@ -176,8 +266,16 @@ export default {
 			})
 			// TODO error handling
 		},
+		setCurrentLanguage({commit}, language) {
+			commit('setCurrentLanguage', language)
+		},
 		filter({ state }, filter) {
 			state.filter = filter
+		},
+	},
+	mutations: {
+		setCurrentLanguage(state, language) {
+			state.currentLanguage = language
 		}
 	}
 }
