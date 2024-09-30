@@ -9,7 +9,7 @@
     {% with cfp=request.event.cfp %}
         {% has_perm "agenda.view_featured_submissions" request.user request.event as can_view_featured_submissions %}
         {% has_perm "orga.edit_cfp" request.user request.event as can_edit_cfp %}
-        <div class="d-flex">
+        <div class="d-flex align-items-start">
             <h1>{{ cfp.headline|default:"" }}</h1>
             {% if can_edit_cfp %}
                 {% orga_edit_link request.event.cfp.urls.text %}
