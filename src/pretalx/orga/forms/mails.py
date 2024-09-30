@@ -10,6 +10,7 @@ from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
+from pretalx.common.forms.widgets import EnhancedSelectMultiple
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
 from pretalx.common.language import language
@@ -179,7 +180,7 @@ class MailDetailForm(ReadOnlyFlag, forms.ModelForm):
         if not self.instance or not self.instance.to_users.all().count():
             self.fields.pop("to_users")
         else:
-            self.fields["to_users"].queryset = self.instance.to_users.all()
+            self.fields["to_users"].queryset = self.instance.event.submitters.all()
             self.fields["to_users"].required = False
 
     def clean(self, *args, **kwargs):
@@ -218,7 +219,7 @@ class MailDetailForm(ReadOnlyFlag, forms.ModelForm):
     class Meta:
         model = QueuedMail
         fields = ["to", "to_users", "reply_to", "cc", "bcc", "subject", "text"]
-        widgets = {"to_users": forms.SelectMultiple(attrs={"class": "select2"})}
+        widgets = {"to_users": EnhancedSelectMultiple}
 
 
 class WriteMailBaseForm(MailTemplateForm):
@@ -243,11 +244,9 @@ class WriteMailBaseForm(MailTemplateForm):
 
 class WriteTeamsMailForm(WriteMailBaseForm):
     recipients = forms.MultipleChoiceField(
-        label=_("Teams"),
+        label=_("Recipient groups"),
         required=False,
-        widget=forms.SelectMultiple(
-            attrs={"class": "select2", "title": _("Recipient groups")}
-        ),
+        widget=EnhancedSelectMultiple,
     )
 
     def __init__(self, *args, **kwargs):
@@ -313,7 +312,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         help_text=_(
             "Select proposals that should receive the email regardless of the other filters."
         ),
-        widget=forms.SelectMultiple(attrs={"class": "select2"}),
+        widget=EnhancedSelectMultiple,
     )
     speakers = forms.ModelMultipleChoiceField(
         queryset=User.objects.none(),
@@ -322,7 +321,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         help_text=_(
             "Select speakers that should receive the email regardless of the other filters."
         ),
-        widget=forms.SelectMultiple(attrs={"class": "select2"}),
+        widget=EnhancedSelectMultiple,
     )
 
     def __init__(self, **kwargs):

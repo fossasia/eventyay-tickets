@@ -14,7 +14,7 @@ const makePlaceholderInactive = (placeholder) => {
 }
 
 const updateVisiblePlaceholders = () => {
-    if (document.querySelector("#id_speakers") === 0) {
+    if (document.querySelector("#id_speakers").selectedOptions.length === 0) {
         makePlaceholderActive(document.querySelector("#placeholder-submission"))
         makePlaceholderActive(document.querySelector("#placeholder-slot"))
     } else {

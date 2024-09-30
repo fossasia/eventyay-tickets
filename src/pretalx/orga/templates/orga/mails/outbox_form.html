@@ -30,17 +30,17 @@
             {% bootstrap_field form.text layout="event" %}
         {% else %}
             <div class="d-flex flex-column">
-                <div class="row mb-3">
+                <div class="row form-group">
                     <div class="col col-md-3 flip text-right font-weight-bold">
-                        <label>To</label>
+                        <div class="font-weight-bold">To</div>
                     </div>
                     <div class="col col-md-9">{{ form.instance.to|default:"-" }}</div>
                 </div>
 
                 {% if form.to_users %}
-                    <div class="row mb-3">
+                    <div class="row form-group">
                         <div class="col col-md-3 flip text-right font-weight-bold">
-                            <label>To Users</label>
+                            <div class="font-weight-bold">To Users</div>
                         </div>
                         <div class="col col-md-9">
                             {% for user in form.instance.to_users.all %}
@@ -54,37 +54,37 @@
                     </div>
                 {% endif %}
 
-                <div class="row mb-3">
+                <div class="row form-group">
                     <div class="col col-md-3 flip text-right font-weight-bold">
-                        <label>Reply-To</label>
+                        <div class="font-weight-bold">Reply-To</div>
                     </div>
                     <div class="col col-md-9">{{ form.instance.reply_to|default:"-" }}</div>
                 </div>
 
-                <div class="row mb-3">
+                <div class="row form-group">
                     <div class="col col-md-3 flip text-right font-weight-bold">
-                        <label>CC</label>
+                        <div class="font-weight-bold">CC</div>
                     </div>
                     <div class="col col-md-9">{{ form.instance.cc|default:"-" }}</div>
                 </div>
 
-                <div class="row mb-3">
+                <div class="row form-group">
                     <div class="col col-md-3 flip text-right font-weight-bold">
-                        <label>BCC</label>
+                        <div class="font-weight-bold">BCC</div>
                     </div>
                     <div class="col col-md-9">{{ form.instance.bcc|default:"-" }}</div>
                 </div>
 
-                <div class="row mb-3">
+                <div class="row form-group">
                     <div class="col col-md-3 flip text-right font-weight-bold">
-                        <label>Subject</label>
+                        <div class="font-weight-bold">Subject</div>
                     </div>
                     <div class="col col-md-9">{{ form.instance.subject }}</div>
                 </div>
 
-                <div class="row mb-3">
+                <div class="row form-group">
                     <div class="col col-md-3 flip text-right font-weight-bold">
-                        <label>Text</label>
+                        <div class="font-weight-bold">Text</div>
                     </div>
                     <div class="col col-md-9">{{ form.instance.text|rich_text }}</div>
                 </div>
