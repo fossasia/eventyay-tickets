@@ -93,6 +93,23 @@ table.table-sticky thead {
     align-items: baseline;
     color: var(--color-text);
   }
+  border-radius: 0;
+  border-top-width: 0;
+  .card-header {
+      border-bottom-width: 0;
+  }
+  &:first-child {
+    border-top-width: 1px;
+    border-top-left-radius: var(--size-border-radius);
+    border-top-right-radius: var(--size-border-radius);
+  }
+  &:last-child {
+    border-bottom-left-radius: var(--size-border-radius);
+    border-bottom-right-radius: var(--size-border-radius);
+  }
+  .collapse[aria-hidden="false"] {
+      border-top: 1px solid var(--color-border);
+  }
 }
 .accordion .card button[data-toggle="collapse"]::before,
 details summary.card-header::before {
@@ -189,6 +206,11 @@ aside.sidebar {
       i {
         padding-top: 4px;
         margin-right: 0;
+        transform: rotate(90deg);
+        transition: transform 0.2s;
+      }
+      &[aria-expanded="true"] i {
+        transform: rotate(0);
       }
     }
   }
