@@ -1,3 +1,7 @@
+.form-inline {
+    display: flex;
+    flex-wrap: wrap;
+}
 .form-group {
   margin-bottom: var(--size-spacer);
   display: flex;

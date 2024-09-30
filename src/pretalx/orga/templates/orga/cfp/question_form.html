@@ -117,13 +117,13 @@
                                 {{ form.id }}
                                 {% bootstrap_field form.DELETE form_group_class="" layout="inline" %}
                             </div>
-                            <div class="question-option-row flip ml-auto col-md-9 pb-2 d-flex">
-                                <div class="question-option-input{% if action == "view" %} disabled{% endif %}">
+                            <div class="question-option-row flip ml-auto col-md-9 mb-2 d-flex">
+                                <div class="question-option-input w-100{% if action == "view" %} disabled{% endif %}">
                                     {% bootstrap_form_errors form %}
                                     {% bootstrap_field form.answer layout="inline" form_group_class="" %}
                                 </div>
                                 {% if action != "view" %}
-                                    <div class="question-option-delete">
+                                    <div class="question-option-delete ml-2">
                                         <button type="button" class="btn btn-danger" data-formset-delete-button>
                                             <i class="fa fa-trash"></i>
                                         </button>
@@ -140,11 +140,11 @@
                         {{ formset.empty_form.id }}
                         {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
                         </div>
-                        <div class="question-option-row flip ml-auto col-md-9">
-                        <div class="question-option-input">
+                        <div class="question-option-row flip ml-auto col-md-9 mb-2 d-flex">
+                        <div class="question-option-input w-100">
                         {% bootstrap_field formset.empty_form.answer layout="inline" form_group_class="" %}
                         </div>
-                        <div class="question-option-delete">
+                        <div class="question-option-delete ml-2">
                         <button type="button" class="btn btn-danger" data-formset-delete-button>
                         <i class="fa fa-trash"></i></button>
                         </div>
