@@ -207,6 +207,14 @@
                 {% endif %}
             </h2>
         {% endif %}
+        {% if not event_logo %}
+            <h2 class="content-header">
+                {{ event.name }}
+                {% if request.event.settings.show_dates_on_frontpage %}
+                    <small>{{ event.get_date_range_display }}</small>
+                {% endif %}
+            </h2>
+        {% endif %}
         {% if frontpage_text and not cart_namespace %}
             <div>
                 {{ frontpage_text|rich_text }}
