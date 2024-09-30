@@ -89,6 +89,15 @@ class EventDetail(EventSettingsPermission, ActionFromUrl, UpdateView):
     def url_placeholder(self):
         return f"https://{self.request.host}/"
 
+    @context
+    def tablist(self):
+        return {
+            "general": _("General information"),
+            "localisation": _("Localisation"),
+            "display": _("Display settings"),
+            "texts": _("Texts"),
+        }
+
     def get_success_url(self) -> str:
         return self.object.orga_urls.settings
 
@@ -228,6 +237,14 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
 
     def get_success_url(self) -> str:
         return self.request.event.orga_urls.review_settings
+
+    @context
+    def tablist(self):
+        return {
+            "general": _("General information"),
+            "scores": _("Review scoring"),
+            "phases": _("Review phases"),
+        }
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

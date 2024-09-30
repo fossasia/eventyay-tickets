@@ -646,29 +646,26 @@ details.submission-state-dropdown {
 }
 
 .cfp-option-table {
-  width: 75%;
   display: table;
   input:not([type="checkbox"]):not([type="radio"]),
-  select,
-  textarea {
-    margin-bottom: 4px;
-    margin-top: 4px;
-    input {
-      margin-left: auto;
-      margin-right: auto;
-    }
+  select {
+      margin: 4px auto;
   }
   thead th {
     line-height: 1;
     vertical-align: top;
     text-align: center;
   }
+  tbody th {
+    text-align: right;
+    padding-right: 8px;
+    padding-top: 16px;
+  }
   input[type="number"] {
     width: 64px;
   }
-  tr,
-  tr td {
-    line-height: 2.5;
+  .form-group {
+      margin-bottom: 0;
   }
 }
 #id_locales.checkbox,

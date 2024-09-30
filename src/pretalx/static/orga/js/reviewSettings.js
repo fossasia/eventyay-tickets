@@ -26,7 +26,7 @@ const addNewScores = (ev) => {
         .id.split("-")[1]
     const newID = `new` + Math.floor(Math.random() * 1000)
     const newRow = `
-    <div class="row">
+    <div class="row form-group">
         <div class="col-md-9 ml-auto d-flex">
             <div class="mr-2 ml-0 pl-0 col-md-1">
                 <input type="number" name="scores-${formID}-value_${newID}" step="0.1" class="form-control" id="id_scores-${formID}-value_${newID}">

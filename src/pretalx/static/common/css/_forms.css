@@ -23,6 +23,7 @@ textarea {
   padding: 0.375rem 0.75rem;
   color: var(--color-text-input);
   caret-color: var(--color-text-input);
+  font-size: 1rem;
 
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -106,6 +107,7 @@ input[type="radio"] {
   box-shadow: var(--shadow-checkbox);
   background-image: none !important;
   cursor: pointer;
+  font-size: 1rem;
 
   &:checked {
     background: var(--color-primary);
@@ -117,6 +119,7 @@ input[type="radio"] {
       font-weight: normal;
       padding-left: 8px;
       vertical-align: super;
+      font-size: 1rem;
       & ~ a .badge, & ~ .badge {
           /* This is primarily for the multi_languages_widget.html badges */
           vertical-align: super;
@@ -223,11 +226,11 @@ select {
 }
 
 input[type="number"] {
-  -moz-appearance: textfield;
+  -moz-appearance: textfield !important;
 
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+    -webkit-appearance: none !important;
     margin: 0;
   }
 }

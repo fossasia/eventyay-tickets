@@ -54,6 +54,13 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     write_permission_required = "orga.edit_cfp"
 
     @context
+    def tablist(self):
+        return {
+            "general": _("General information"),
+            "fields": _("Fields"),
+        }
+
+    @context
     @cached_property
     def sform(self):
         return CfPSettingsForm(

@@ -48,8 +48,8 @@
                 {% csrf_token %}
                 {% bootstrap_form_errors form %}
                 {% bootstrap_form_errors sform %}
-                <fieldset>
-                    <legend id="text">{% translate "Text and deadline" %}</legend>
+        {% include "orga/includes/tablist.html" %}
+        <div role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
                     {% bootstrap_field form.headline layout="event" %}
                     {% bootstrap_field form.text layout="event" %}
                     {% bootstrap_field form.deadline layout="event" %}
@@ -74,9 +74,12 @@
                     {% bootstrap_field sform.use_tracks layout="event" %}
                     {% bootstrap_field sform.present_multiple_times layout="event" %}
                     {% bootstrap_field sform.mail_on_new_submission layout="event" %}
-                </fieldset>
+                </div>
 
-                <fieldset>
+        <div role="tabpanel" id="tabpanel-fields" aria-labelledby="tab-fields" tabindex="0" aria-hidden="true">
+                    {% bootstrap_field form.count_length_in layout="event" %}
+          <fieldset>
+
                     <legend id="information"><div>
                         {% translate "Proposal information" %}
                         <span class="dialog-anchor" data-target="#proposal-info-dialog" data-toggle="dialog">
@@ -84,12 +87,12 @@
                         </span>
                     </div></legend>
                     <dialog class="info-dialog" id="proposal-info-dialog">
-                        <div class="offset-md-3 alert alert-info"><span>
+                        <div class="alert alert-info"><span>
                             {% translate "Select which information should be requested and/or required during CfP proposal." %}
                             <a href="{{ request.event.cfp.urls.editor }}">{% translate "Click here to view the proposal form." %}</a>
                         </span></div>
                     </dialog>
-                    <div class="table-responsive-sm"><table class="table offset-md-3 table-sm table-hover table-flip table-sticky cfp-option-table">
+                    <div class="table-responsive-sm offset-md-3"><table class="table table-sm table-hover table-flip table-sticky cfp-option-table">
                         <thead>
                             <tr>
                                 <th></th>
@@ -173,7 +176,7 @@
                             </span>
                         </div>
                     </legend>
-                    <div class="table-responsive-sm"><table class="table offset-md-3 table-sm table-hover table-flip table-sticky cfp-option-table">
+                    <div class="table-responsive-sm offset-md-3"><table class="table table-sm table-hover table-flip table-sticky cfp-option-table">
                         <thead>
                             <tr>
                                 <th></th>
@@ -203,8 +206,8 @@
                             </tr>
                         </tbody>
                     </table></div>
-                    {% bootstrap_field form.count_length_in layout="event" %}
                 </fieldset>
+                </div>
 
                 {% include "orga/includes/submit_row.html" %}
 
