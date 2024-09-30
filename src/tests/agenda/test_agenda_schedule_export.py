@@ -94,7 +94,7 @@ def test_schedule_frab_xml_export(
                 "agenda:export.schedule.xml",
                 kwargs={"event": slot.submission.event.slug},
             ),
-            HTTP_IF_NONE_MATCH=response["ETag"],
+            HTTP_IF_NONE_MATCH=response["ETag"].strip('"'),
             follow=True,
         )
     assert response.status_code == 304
