@@ -13,7 +13,7 @@
 
     {% for submission in feedbacks_list %}
         <h4>
-            {% translate "Feedback" %}: {{ quotation_open }}<a href="{{ submission.list.1.talk.orga_urls.base }}">{{ submission.grouper }}</a>{{ quotation_close }}
+            {% translate "Feedback" %}: {{ quotation_open }}<a href="{{ submission.list.0.talk.orga_urls.feedback }}">{{ submission.grouper }}</a>{{ quotation_close }}
         </h4>
 
         {% for entry in submission.list %}
