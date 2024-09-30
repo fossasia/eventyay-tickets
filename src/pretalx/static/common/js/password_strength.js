@@ -1,5 +1,3 @@
-/* TODO rewrite without jquery */
-
 const matchPasswords = (passwordField, confirmationFields) => {
     // Optional parameter: if no specific confirmation field is given, check all
     if (confirmationFields === undefined) {
@@ -66,15 +64,12 @@ const updatePasswordStrength = (passwordField) => {
         if (result.score < 1) {
             passwordStrengthBar.classList.remove("bg-success")
             passwordStrengthBar.classList.add("bg-danger")
-            // passwordStrengthInfo.querySelector(".label").classList.remove("d-none")
         } else if (result.score < 3) {
             passwordStrengthBar.classList.remove("bg-danger")
             passwordStrengthBar.classList.add("bg-warning")
-            // passwordStrengthInfo.querySelector(".label").classList.remove("d-none")
         } else {
             passwordStrengthBar.classList.remove("bg-warning")
             passwordStrengthBar.classList.add("bg-success")
-            // passwordStrengthInfo.querySelector(".label").classList.add("d-none")
         }
 
         passwordStrengthBar.style.width = `${((result.score + 1) / 5) * 100}%`

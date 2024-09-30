@@ -8,63 +8,68 @@ function setImage(url) {
     imageWrapper.classList.remove('d-none');
 }
 
-$(function () {
-    const $imageLink = $(".avatar-form .form-image-preview a");
-    const $image = $(".avatar-form img");
-    const $fileInput = $(".avatar-form .avatar-upload input[type=file]");
-    const $resetCheckbox = $(".avatar-form .avatar-upload input[type=checkbox]");
-    const $useGravatar = $('.avatar-form #id_get_gravatar');
+/* TODO: rewrite without jquery */
 
-    $fileInput.on('change', function () {
-        let imageSelected = $fileInput.val() !== '';
+const updateFileInput = (ev) => {
+    const imateSelected = ev.target.value !== '';
 
-        if (imageSelected) {
-            $useGravatar.prop('checked', false);
-
-            let files = $fileInput.prop('files');
-            if (files) {
-                const reader = new FileReader();
-                reader.onload = function (e) { setImage(e.target.result); };
-                reader.readAsDataURL(files[0]);
-                $resetCheckbox.prop('checked', false);
-            } else if ($image.data('avatar')) {
-                setImage($image.data('avatar'));
-                $resetCheckbox.prop('checked', false);
-            } else {
-                $imageWrapper.addClass('d-none');
-            }
-        } else if ($image.data('avatar')) {
-            setImage($image.data('avatar'));
-            $resetCheckbox.prop('checked', false);
+    if (imageSelected) {
+        ev.target.closest('.avatar-form').querySelector('input[type=checkbox]').checked = false;
+        const files = ev.target.files;
+        if (files) {
+            const reader = new FileReader();
+            reader.onload = (e) => setImage(e.target.result);
+            reader.readAsDataURL(files[0]);
+            ev.target.closest('.avatar-form').querySelector('input[type=checkbox]').checked = false;
+        } else if (ev.target.closest('.avatar-form').querySelector('img').dataset.avatar) {
+            setImage(ev.target.closest('.avatar-form').querySelector('img').dataset.avatar);
+            ev.target.closest('.avatar-form').querySelector('input[type=checkbox]').checked = false;
         } else {
-            $imageWrapper.addClass('d-none');
+            ev.target.closest('.avatar-form').querySelector('.form-image-preview').classList.add('d-none');
         }
-    });
+    } else if (ev.target.closest('.avatar-form').querySelector('img').dataset.avatar) {
+        setImage(ev.target.closest('.avatar-form').querySelector('img').dataset.avatar);
+        ev.target.closest('.avatar-form').querySelector('input[type=checkbox]').checked = false;
+    } else {
+        ev.target.closest('.avatar-form').querySelector('.form-image-preview').classList.add('d-none');
+    }
+}
 
-    $useGravatar.on('change', function () {
-        let gravatarSelected = $useGravatar.prop('checked');
+const updateCheckbox = (ev) => {
+    if (ev.target.checked) {
+        ev.target.closest('.avatar-form').querySelector('input[type=file]').value = '';
+        ev.target.closest('.avatar-form').querySelector('.form-image-preview').classList.add('d-none');
+    } else if (ev.target.closest('.avatar-form').querySelector('img').dataset.avatar) {
+        setImage(ev.target.closest('.avatar-form').querySelector('img').dataset.avatar);
+    } else {
+        ev.target.closest('.avatar-form').querySelector('.form-image-preview').classList.add('d-none');
+    }
+}
 
-        if (gravatarSelected) {
-            $fileInput.val('');
-            setImage("https://www.gravatar.com/avatar/" + $image.data('gravatar') + '?s=512');
-            $resetCheckbox.prop('checked', true);
-        } else if ($image.data('avatar')) {
-            setImage($image.data('avatar'));
-            $resetCheckbox.prop('checked', false);
-        } else {
-            $imageWrapper.addClass('d-none');
-        }
-    });
+const updateGravatarInput = (ev) => {
+    if (ev.target.checked) {
+        ev.target.closest('.avatar-form').querySelector('input[type=file]').value = '';
+        setImage(`https://www.gravatar.com/avatar/${ev.target.closest('.avatar-form').querySelector('img').dataset.gravatar}?s=512`);
+    } else if (ev.target.closest('.avatar-form').querySelector('img').dataset.avatar) {
+        setImage(ev.target.closest('.avatar-form').querySelector('img').dataset.avatar);
+    } else {
+        ev.target.closest('.avatar-form').querySelector('.form-image-preview').classList.add('d-none');
+    }
+}
 
-    $resetCheckbox.on('change', function () {
-        let isResetSelected = $resetCheckbox.prop('checked');
-        if (isResetSelected) {
-            $fileInput.val('');
-            $imageWrapper.addClass('d-none');
-        } else if ($image.data('avatar')) {
-            setImage($image.data('avatar'));
-        } else {
-            $imageWrapper.addClass('d-none');
-        }
+const initFileInput = function () {
+    document.querySelectorAll('.avatar-form .avatar-upload input[type=file]').forEach((element) => {
+        element.addEventListener('change', updateFileInput)
     })
-});
+    document.querySelectorAll('.avatar-form #id_get_gravatar').forEach((element) => {
+        element.addEventListener('change', updateGravatarInput)
+    })
+    document.querySelectorAll('.avatar-form .avatar-upload input[type=checkbox]').forEach((element) => {
+        element.addEventListener('change', updateCheckbox)
+    })
+    document.querySelectorAll('.avatar-form .form-group .form-image-preview').forEach((element) => {
+        element.classList.add('d-none')
+    })
+}
+
+onReady(initFileInput)
