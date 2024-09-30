@@ -20,7 +20,7 @@
                 {% translate "New room" %}
             {% endif %}
         </h2>
-        {{ form }}
+        {% bootstrap_form form layout="event" %}
         <details>
             <summary class="col-md-9 ml-auto mb-4">
                 <h3 class="d-inline">{% translate "Advanced settings" %}</h3>
