@@ -9,6 +9,11 @@
 
 {% block cfp_header %}
   {% include "cfp/includes/forms_header.html" %}
+  {% compress js %}
+    <script defer src="{% static 'vendored/zxcvbn.js' %}"></script>
+    <script defer src="{% static 'common/js/base.js' %}"></script>
+    <script defer src="{% static 'common/js/password_strength.js' %}"></script>
+  {% endcompress %}
 {% endblock cfp_header %}
 
 {% block content %}

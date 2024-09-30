@@ -1,5 +1,5 @@
 body {
-  background: color-mix(in hsl, var(--color-primary), hsl(0 0 0) 10%);
+  background: color-mix(in hsl, var(--color-primary), hsl(120 0 0) 20%);
   a,
   a:hover {
     font-weight: bold;
@@ -15,7 +15,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   z-index: 1000;
-  color: $white;
+  color: white;
 }
 
 .img {
