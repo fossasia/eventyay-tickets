@@ -25,73 +25,76 @@
 
 {% block settings_content %}
     <h2>{% translate "Settings" %}</h2>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <fieldset>
-                <legend id="general">
-                    {% translate "General information" %}
-                </legend>
-                {% bootstrap_form_errors form %}
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-                {% bootstrap_field form.name layout="event" %}
-                {% bootstrap_field form.slug layout="event" addon_before=url_placeholder addon_before_class="input-group-prepend input-group-text" %}
-                {% bootstrap_field form.date_from layout="event" %}
-                {% bootstrap_field form.date_to layout="event" %}
-                {% bootstrap_field form.email layout="event" %}
-                {% bootstrap_field form.custom_domain layout="event" %}
-                {% bootstrap_field form.timezone layout="event" %}
-                {% bootstrap_field form.locale layout="event" %}
-                {% bootstrap_field form.locales layout="event" %}
-                {% bootstrap_field form.content_locales layout="event" %}
-                {% bootstrap_field form.show_schedule layout="event" %}
-                {% bootstrap_field form.show_featured layout="event" %}
-                {% bootstrap_field form.featured_sessions_text layout="event" %}
-                {% bootstrap_field form.use_feedback layout="event" %}
-                {% bootstrap_field form.schedule layout="event" %}
-                {% bootstrap_field form.export_html_on_release layout="event" %}
-                {% bootstrap_field form.html_export_url layout="event" %}
-                {% bootstrap_field form.meta_noindex layout="event" %}
-                {% bootstrap_field form.ticket_link layout="event" %}
-                {% bootstrap_field form.video_link layout="event" %}
+        {% include "orga/includes/tablist.html" %}
 
-            </fieldset>
-            <fieldset>
-                <legend id="display">
-                    {% translate "Display settings" %}
-                </legend>
-                {% bootstrap_field form.landing_page_text layout="event" %}
-                {% bootstrap_field form.imprint_url layout="event" %}
-                {% bootstrap_field form.primary_color layout="event" %}
-                <div id="csswrap">
-                    {% bootstrap_field form.custom_css layout="event" %}
-                    <button class="btn btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseCSSBox" aria-expanded="false" aria-controls="collapseCSSBox">
-                        <i class="fa fa-code"></i>
-                    </button>
-                </div>
-                <div class="collapse" id="collapseCSSBox">
-                    {% bootstrap_field form.custom_css_text layout="event" %}
-                </div>
-                {% bootstrap_field form.logo layout="event" %}
-                {% bootstrap_field form.header_image layout="event" %}
-                <div {% if request.event.primary_color %}style="--color: {{ request.event.primary_color }}"{% endif %} class="colorpicker-update">
-                    {% bootstrap_field form.header_pattern layout="event" %}
-                </div>
-            </fieldset>
-            <div class="submit-group panel">
-                <span>
-                    {% has_perm "person.is_administrator" request.user request.event as can_delete_event %}
-                    {% if can_delete_event %}
-                        <a class="btn btn-outline-danger btn-lg" href="{{ request.event.orga_urls.delete }}">
-                            {% translate "Delete event" %}
-                        </a>
-                    {% endif %}
-                </span>
-                <span>
-                    <button type="submit" class="btn btn-success btn-lg">
-                        <i class="fa fa-check"></i>
-                        {{ phrases.base.save }}
-                    </button>
-                </span>
+        <div role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
+            {% bootstrap_form_errors form %}
+
+            {% bootstrap_field form.name layout="event" %}
+            {% bootstrap_field form.slug layout="event" addon_before=url_placeholder addon_before_class="input-group-prepend input-group-text" %}
+            {% bootstrap_field form.date_from layout="event" %}
+            {% bootstrap_field form.date_to layout="event" %}
+            {% bootstrap_field form.email layout="event" %}
+            {% bootstrap_field form.custom_domain layout="event" %}
+            {% bootstrap_field form.meta_noindex layout="event" %}
+            {% bootstrap_field form.imprint_url layout="event" %}
+
+
+
+        </div>
+        <div role="tabpanel" id="tabpanel-localisation" aria-labelledby="tab-localisation" tabindex="0" aria-hidden="true">
+            {% bootstrap_field form.locale layout="event" %}
+            {% bootstrap_field form.locales layout="event" %}
+            {% bootstrap_field form.content_locales layout="event" %}
+            {% bootstrap_field form.timezone layout="event" %}
+        </div>
+        <div role="tabpanel" id="tabpanel-texts" aria-labelledby="tab-texts" tabindex="0" aria-hidden="true">
+            {% bootstrap_field form.landing_page_text layout="event" %}
+            {% bootstrap_field form.featured_sessions_text layout="event" %}
+        </div>
+        <div role="tabpanel" id="tabpanel-display" aria-labelledby="tab-display" tabindex="0" aria-hidden="true">
+            {% bootstrap_field form.primary_color layout="event" %}
+            <div id="csswrap">
+                {% bootstrap_field form.custom_css layout="event" %}
+                <button class="btn btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseCSSBox" aria-expanded="false" aria-controls="collapseCSSBox">
+                    <i class="fa fa-code"></i>
+                </button>
             </div>
-        </form>
+            <div class="collapse" id="collapseCSSBox">
+                {% bootstrap_field form.custom_css_text layout="event" %}
+            </div>
+            {% bootstrap_field form.logo layout="event" %}
+            {% bootstrap_field form.header_image layout="event" %}
+            <div {% if request.event.primary_color %}style="--color: {{ request.event.primary_color }}"{% endif %} class="colorpicker-update">
+                {% bootstrap_field form.header_pattern layout="event" %}
+            </div>
+            {% bootstrap_field form.show_schedule layout="event" %}
+            {% bootstrap_field form.schedule layout="event" %}
+            {% bootstrap_field form.show_featured layout="event" %}
+            {% bootstrap_field form.use_feedback layout="event" %}
+            {% bootstrap_field form.export_html_on_release layout="event" %}
+            {% bootstrap_field form.html_export_url layout="event" %}
+            {% bootstrap_field form.ticket_link layout="event" %}
+            {% bootstrap_field form.video_link layout="event" %}
+        </div>
+        <div class="submit-group panel">
+            <span>
+                {% has_perm "person.is_administrator" request.user request.event as can_delete_event %}
+                {% if can_delete_event %}
+                    <a class="btn btn-outline-danger btn-lg" href="{{ request.event.orga_urls.delete }}">
+                        {% translate "Delete event" %}
+                    </a>
+                {% endif %}
+            </span>
+            <span>
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fa fa-check"></i>
+                    {{ phrases.base.save }}
+                </button>
+            </span>
+        </div>
+    </form>
 {% endblock settings_content %}
