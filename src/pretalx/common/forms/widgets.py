@@ -1,7 +1,13 @@
 from pathlib import Path
 
 from django.core.files import File
-from django.forms import ClearableFileInput, PasswordInput, Textarea, Select, SelectMultiple
+from django.forms import (
+    ClearableFileInput,
+    PasswordInput,
+    Select,
+    SelectMultiple,
+    Textarea,
+)
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
@@ -26,7 +32,7 @@ class PasswordStrengthInput(PasswordInput):
                      aria-valuemax="4">
                 </div>
             </div>
-            <p class="text-muted password_strength_info hidden">
+            <p class="text-muted password_strength_info d-none">
                 <span style="margin-left:5px;">
                     {message}
                 </span>
@@ -51,7 +57,7 @@ class PasswordConfirmationInput(PasswordInput):
         self.attrs["data-confirm-with"] = str(self.confirm_with)
 
         markup = """
-        <div class="hidden password_strength_info">
+        <div class="d-none password_strength_info">
             <p class="text-muted">
                 <span class="label label-danger">{warning}</span>
                 <span>{content}</span>
@@ -111,12 +117,14 @@ class EnhancedSelectMixin(Select):
             ctx["widget"]["attrs"]["required"] = ""
         return ctx
 
+
 class EnhancedSelect(EnhancedSelectMixin, Select):
     pass
 
 
 class EnhancedSelectMultiple(EnhancedSelectMixin, SelectMultiple):
     pass
+
 
 class SelectMultipleWithCount(EnhancedSelectMultiple):
     """A widget for multi-selects that correspond to countable values.
@@ -146,5 +154,5 @@ class SelectMultipleWithCount(EnhancedSelectMultiple):
     def create_option(self, name, value, label, *args, count=0, **kwargs):
         option = super().create_option(name, value, str(label), *args, **kwargs)
         if label.count == 0:
-            option["attrs"]["class"] = "hidden"
+            option["attrs"]["class"] = "d-none"
         return option

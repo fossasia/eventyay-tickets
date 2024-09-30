@@ -7,12 +7,19 @@
     <head>
         <title>{% block title %}{% endblock %} :: {{site_name}} </title>
         {% compress css %}
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_reset.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/base.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_variables.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_fonts.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_forms.css" %}" />
             <link rel="stylesheet" type="text/css" href="{% static "orga/css/auth.css" %}" />
         {% endcompress %}
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#2185d0">
 
         {% include "common/includes/favicon.html" %}
+
+        {% block scripts %}{% endblock scripts %}
 
     </head>
     <body>
