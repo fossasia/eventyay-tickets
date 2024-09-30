@@ -7,7 +7,9 @@
             {% include "cfp/event/fragment_state.html" with state=submission.state %}
 
             {% if submission.pending_state %}
+              <span class="pending-indicator">
                 (<i class="fa fa-arrow-right"></i> {% include "cfp/event/fragment_state.html" with state=submission.pending_state %})
+              </span>
             {% endif %}
         </h4>
         <i class="fa fa-caret-down"></i>
