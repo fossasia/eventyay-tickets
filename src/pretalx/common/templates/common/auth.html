@@ -11,7 +11,9 @@
 {% else %}
     <form id="auth-form" class="password-input-form" method="post" autocomplete="off">
 {% endif %}
+
 {% csrf_token %}
+
 {% compress js %}
     <script defer src="{% static "vendored/zxcvbn.js" %}"></script>
     <script defer src="{% static "common/js/base.js" %}"></script>

@@ -32,14 +32,16 @@
 
         {% include "common/includes/favicon.html" %}
 
-        <link rel="stylesheet" type="text/css" href="{% static "common/css/uncompressed.css" %}" />
+        {% if request.event.display_settings.header_pattern %}
+          <link rel="stylesheet" type="text/css" href="{% static "common/css/headers-uncompressed.css" %}" />
+        {% endif %}
             {% compress css %}
                 <link rel="stylesheet" type="text/x-scss" href="{% static "vendored/forkawesome/scss/fork-awesome.scss" %}" />
                 <link rel="stylesheet" type="text/css" href="{% static "common/css/_reset.css" %}" />
+                <link rel="stylesheet" type="text/css" href="{% static "common/css/base.css" %}" />
                 <link rel="stylesheet" type="text/css" href="{% static "common/css/_variables.css" %}" />
                 <link rel="stylesheet" type="text/css" href="{% static "common/css/_fonts.css" %}" />
                 <link rel="stylesheet" type="text/css" href="{% static "common/css/_dropdown.css" %}" />
-                <link rel="stylesheet" type="text/css" href="{% static "common/css/_forms.css" %}" />
                 <link rel="stylesheet" type="text/css" href="{% static "common/css/_tooltip.css" %}" />
                 <link rel="stylesheet" type="text/css" href="{% static "common/css/_pretalx.css" %}" />
                 <link rel="stylesheet" type="text/css" href="{% static "common/css/_rtl.css" %}" />

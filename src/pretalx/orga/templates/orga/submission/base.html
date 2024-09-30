@@ -14,12 +14,6 @@
     <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.talks.full }}{{ submission.code }}" />
 {% endblock alternate_link %}
 
-{% block stylesheets %}
-  {% compress css %}
-    <link rel="stylesheet" type="text/css" href="{% static "common/css/tabs.css" %}">
-  {% endcompress %}
-{% endblock stylesheets %}
-
 {% block content %}
     {% if submission %}
         {% has_perm "submission.edit_submission" request.user submission as can_edit_submission %}

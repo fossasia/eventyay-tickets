@@ -235,5 +235,5 @@ def event_css(request, event):
     # root colours for the event.
     result = ""
     if request.event.primary_color:
-        result = ":root {" + f"--primary-color: {request.event.primary_color};" + "}"
+        result = ":root {" + f"--color-primary: {request.event.primary_color};" + "}"
     return HttpResponse(result, content_type="text/css")
