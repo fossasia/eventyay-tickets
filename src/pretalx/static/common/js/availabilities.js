@@ -36,7 +36,7 @@ const initAvailabilities = (element) => {
         element.setAttribute("value", JSON.stringify(data))
     }
 
-    const editable = !Boolean(element.attr("disabled"))
+    const editable = !Boolean(element.getAttribute("disabled"))
     const constraints = data.constraints || null
 
     const slotDuration = data.resolution || "00:30:00"
@@ -65,7 +65,7 @@ const initAvailabilities = (element) => {
     }
     const localeData = document.querySelector("#calendar-locale")
     const locale = localeData ? localeData.dataset.locale : "en"
-    const calendar = new FullCalendar.Calendar(editor[0], {
+    const calendar = new FullCalendar.Calendar(editor, {
         timeZone: data.event.timezone,
         locale: locale,
         initialView: "timeGrid",

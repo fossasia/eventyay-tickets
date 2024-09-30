@@ -14,8 +14,7 @@ const makePlaceholderInactive = (placeholder) => {
 }
 
 const updateVisiblePlaceholders = () => {
-    const speakerCount = $("#id_speakers").val().length
-    if (speakerCount === 0) {
+    if (document.querySelector("#id_speakers") === 0) {
         makePlaceholderActive(document.querySelector("#placeholder-submission"))
         makePlaceholderActive(document.querySelector("#placeholder-slot"))
     } else {
@@ -74,6 +73,8 @@ onReady(() => {
     })
 
     // When an individual speaker is added, hide all placeholders that are proposal-specific
-    $("#id_speakers").on("change", () => updateVisiblePlaceholders())
+    document.querySelector("#id_speakers").addEventListener("change", () => {
+        updateVisiblePlaceholders()
+    })
     updateVisiblePlaceholders()
 })
