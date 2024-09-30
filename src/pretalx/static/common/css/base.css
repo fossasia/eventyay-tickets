@@ -181,7 +181,6 @@ summary.btn {
     font-weight: normal;
     --highlight-color: transparent;
     color: var(--color-primary-text);
-    text-decoration: underline;
 
     &:hover {
       color: var(--color-primary-text-dark);
