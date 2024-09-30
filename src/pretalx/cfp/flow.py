@@ -15,7 +15,7 @@ from django.forms import ValidationError
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.functional import cached_property
+from django.utils.functional import cached_property, Promise
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateResponseMixin
@@ -42,11 +42,11 @@ def i18n_string(data, locales):
         return data
     data = copy.deepcopy(data)
     with language("en"):
-        if getattr(data, "_proxy____prepared", None):
+        if isinstance(data, Promise):
             data = str(data)
         if isinstance(data, str):
             data = {"en": str(data)}
-        if not isinstance(data, dict):
+        elif not isinstance(data, dict):
             data = {"en": ""}
         english = data.get("en", "")
 
