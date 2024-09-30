@@ -15,7 +15,7 @@
 {% endblock cfp_submission_header %}
 
 {% block inner %}
-    <div class="d-flex">
+    <div class="d-flex align-items-start">
         <h2>{{ title }}</h2>
         {% has_perm "orga.edit_cfp" request.user request.event as can_edit_cfp %}
         {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.editor %}{% endif %}
