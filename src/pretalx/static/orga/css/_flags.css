@@ -1,12 +1,11 @@
-input[type="text"][lang] {
+input[type="text"][lang], textarea[lang] {
   background-repeat: no-repeat;
   background-position: 10px center;
   padding-left: 34px;
 }
 
-div[lang], textarea[lang] {
-  background: no-repeat 10px 10px !default;
-  padding-left: 34px;
+textarea[lang] {
+  background: no-repeat 10px 12px;
 }
 
 .i18n-form-single-language {
