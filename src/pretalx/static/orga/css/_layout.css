@@ -923,31 +923,39 @@ details.submission-state-dropdown {
       cursor: pointer;
     }
     .radio {
-      padding: 4px;
-      label {
-        margin-left: 6px;
-        margin-bottom: 0;
-        height: 24px;
-        width: 24px;
-        &::before {
-          font-family: ForkAwesome;
-          font-weight: bold;
-          color: rgba(0, 0, 0, 0.3);
-          text-align: center;
-        }
+      input {
+        position: relative;
+          &:before {
+              font-family: ForkAwesome;
+              font-weight: bold;
+              color: rgba(0, 0, 0, 0.3);
+              text-align: center;
+              position: absolute;
+          }
       }
-      &.reject {
-        label::after {
-          background: var(--color-danger);
-        }
-        label::before {
-          content: "\f00d";
-        }
+      &.reject input {
+          &:checked {
+              background: var(--color-danger);
+          }
+          &:before {
+              content: "\f00d";
+              left: 6px;
+          }
+          &:checked:before {
+            left: 2px;
+            top: -4px;
+          }
       }
-      &.accept {
-        label::before {
-          content: "\f00c";
-        }
+      &.accept input {
+
+          &:before {
+            content: "\f00c";
+            left: 5px;
+          }
+            &:checked:before {
+                left: 0;
+                top: -4px;
+            }
       }
     }
     &:hover .unmark-radio.active {
