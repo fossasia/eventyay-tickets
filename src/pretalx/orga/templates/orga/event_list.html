@@ -19,9 +19,9 @@
         <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% translate "Search" %}">
     </form>
     <h2>{% translate "Your upcoming events" %}</h2>
-    <div class="event-blocks dashboard-list">
+    <div class="dashboard-list">
         {% if not current_orga_events and not past_orga_events and not can_create_event %}
-            <div class="event-block dashboard-block">
+            <div class="dashboard-block">
                 <h2>{% translate "No events" %}</h2>
                 <div class="dashboard-description">
                     {% translate "Please ask an organiser to invite you to an event." %}
@@ -39,7 +39,7 @@
     </div>
     {% if past_orga_events %}
         <h2>{% translate "Your most recent events" %}</h2>
-        <div class="event-blocks dashboard-list">
+        <div class="dashboard-list">
             {% for event in past_orga_events %}
                 {% include "orga/includes/dashboard_block_event.html" %}
             {% endfor %}
