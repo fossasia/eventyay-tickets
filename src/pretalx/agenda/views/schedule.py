@@ -136,7 +136,7 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
             raise Http404()
         if request.headers.get("If-None-Match") == etag:
             return HttpResponseNotModified()
-        headers = {"ETag": etag}
+        headers = {"ETag": f'"{etag}"'}
         if file_type not in ("application/json", "text/xml"):
             headers["Content-Disposition"] = (
                 f'attachment; filename="{safe_filename(file_name)}"'
