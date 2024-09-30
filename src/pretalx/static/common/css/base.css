@@ -711,19 +711,19 @@ small {
 
 /* Conventions and custom elements */
 
-.color-success, .btn-success {
+.color-success, .btn-success, .alert.success {
   --highlight-color: var(--color-success);
   --highlight-color-text: var(--color-success-text-dark);
 }
-.color-info, .btn-info {
+.color-info, .btn-info, .alert-info {
   --highlight-color: var(--color-info);
   --highlight-color-text: var(--color-info-text-dark);
 }
-.color-warning, .btn-warning {
+.color-warning, .btn-warning, .alert-warning {
   --highlight-color: var(--color-warning);
   --highlight-color-text: var(--color-warning-text-dark);
 }
-.color-danger, .btn-danger {
+.color-danger, .btn-danger, .alert-danger {
   --highlight-color: var(--color-danger);
   --highlight-color-text: var(--color-danger-text-dark);
 }
@@ -1072,6 +1072,8 @@ nav.navbar {
       padding: 0.5rem 0.75rem;
       line-height: 1.25;
       border: 1px solid var(--color-border);
+      border-left-width: 0;
+      border-right-width: 0;
 
       &:hover {
         z-index: 2;
@@ -1085,6 +1087,10 @@ nav.navbar {
         outline: 0;
         box-shadow: 0 0 0 0.2rem rgba(58, 165, 124, 0.25);
       }
+    }
+    &:first-child .page-link, &:last-child .page-link {
+        border-left-width: 1px;
+        border-right-width: 1px;
     }
     &:first-child .page-link {
       margin-left: 0;
@@ -1175,6 +1181,9 @@ nav.navbar {
 }
 .mw-100 {
   max-width: 100% !important;
+}
+.offset-md-3 {
+  margin-left: 25% !important;
 }
 .w-25, .col-md-3 {
   width: 25% !important;
