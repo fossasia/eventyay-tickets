@@ -1,5 +1,5 @@
 input.availabilities-editor-data {
-  display: none;
+  display: none !important;
 }
 
 .availability-form .form-group {
@@ -37,4 +37,8 @@ input.availabilities-editor-data {
 .fc-day-grid-event.delete::before {
   font-size: 100%;
   top: 0;
+}
+
+table table {
+    margin-bottom: 0;
 }
