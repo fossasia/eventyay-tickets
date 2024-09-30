@@ -13,7 +13,6 @@
 
 {% block scripts %}
     {{ current_configuration|json_script:"currentConfiguration" }}
-    {{ all_fields|json_script:"allFields" }}
     {{ event_configuration|json_script:"eventConfiguration" }}
 
     {% if debug %}
