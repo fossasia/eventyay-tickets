@@ -488,17 +488,17 @@ small {
     padding: 0.75rem 1.25rem;
     margin-bottom: 0;
     background-color: var(--color-card-header);
-    .card-header {
-      border-bottom: 1px solid var(--color-card-border);
-      &:first-child {
-        border-radius: var(--inner-border-radius) var(--inner-border-radius) 0 0;
-      }
+  }
+  .card-header {
+    border-bottom: 1px solid var(--color-card-border);
+    &:first-child {
+      border-radius: var(--inner-border-radius) var(--inner-border-radius) 0 0;
     }
-    .card-footer {
-      border-top: 1px solid var(--color-card-border);
-      &:last-child {
-        border-radius: 0 0 var(--inner-border-radius) var(--inner-border-radius);
-      }
+  }
+  .card-footer {
+    border-top: 1px solid var(--color-card-border);
+    &:last-child {
+      border-radius: 0 0 var(--inner-border-radius) var(--inner-border-radius);
     }
   }
 

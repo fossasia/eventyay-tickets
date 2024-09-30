@@ -1,3 +1,6 @@
+.export-qrcode {
+    display: inline-block;
+}
 .export-qrcode-image,
 .qrcode-image {
   display: none;

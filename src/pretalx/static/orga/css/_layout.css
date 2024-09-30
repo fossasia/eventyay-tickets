@@ -91,6 +91,7 @@ table.table-sticky thead {
   }
   button {
     align-items: baseline;
+    color: var(--color-text);
   }
 }
 .accordion .card button[data-toggle="collapse"]::before,
