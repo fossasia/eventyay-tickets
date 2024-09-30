@@ -63,7 +63,9 @@ class EventPermissionMiddleware:
             return
 
         # Check for the presence of the SSO token
-        sso_token = request.COOKIES.get("sso_token")
+        sso_token = request.COOKIES.get("sso_token") or request.COOKIES.get(
+            "customer_sso_token"
+        )
         if sso_token:
             try:
                 # Decode and validate the JWT token
@@ -76,8 +78,8 @@ class EventPermissionMiddleware:
                 user.name = payload.get("name", "")
                 user.is_active = True
                 user.is_staff = payload.get("is_staff", False)
-                user.locale = payload.get("locale", None)
-                user.timezone = payload.get("timezone", None)
+                user.locale = payload.get("locale", user.locale)
+                user.timezone = payload.get("timezone", user.timezone)
                 user.save()
                 login(
                     request, user, backend="django.contrib.auth.backends.ModelBackend"
@@ -89,6 +91,12 @@ class EventPermissionMiddleware:
             except jwt.InvalidTokenError as e:
                 # Invalid token
                 logger.error(f"Invalid SSO token: {str(e)}\n{traceback.format_exc()}")
+                pass
+            except Exception as e:
+                # Invalid token
+                logger.error(
+                    f"Unexpected error happened: {str(e)}\n{traceback.format_exc()}"
+                )
                 pass
 
     @staticmethod

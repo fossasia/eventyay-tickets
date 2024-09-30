@@ -46,6 +46,7 @@ def logout_view(request):
     )
     # Remove the JWT cookie
     response.delete_cookie("sso_token")  # Same domain used when setting the cookie
+    response.delete_cookie("customer_sso_token")
     return response
 
 
