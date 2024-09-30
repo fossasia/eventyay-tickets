@@ -135,7 +135,6 @@ const initSelect = (element) => {
         resetScrollPosition: false,
         shouldSort: false,
         placeholderValue: showPlaceholder ? element.title : null,
-        renderSelectedChoices: true,
         itemSelectText: "",
         addItemText: "",
         removeItemLabelText: "×",
