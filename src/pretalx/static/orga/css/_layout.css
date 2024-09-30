@@ -56,17 +56,16 @@ body {
 
 .submission_featured {
   position: relative;
+  text-align: center;
 
   i {
     position: absolute;
-    left: 50%;
-    right: 50%;
-    top: 16px;
+    right: 30%;
+    top: 12px;
   }
 
-  input[type="checkbox"] + label {
-      width: 0;
-      margin: 0 auto;
+  input[type="checkbox"] {
+      margin-right: 16px;
   }
 
   .done {
@@ -428,10 +427,17 @@ footer {
     margin-bottom: 0;
   }
   #pending label {
+    display: inline-block;
     color: #6c757d;
   }
 }
 .filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    &> * {
+        flex: 1;
+    }
   .form-group {
     margin-right: 8px;
     .form-control.is-valid {

@@ -11,6 +11,12 @@ dialog {
   &[open] {
     opacity: 1;
     animation: fade-in 0.3s ease-out;
+    /* dialogs are supposed to auto-centre on the page
+     * and I can't be arsed to debug why they aren't */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0 auto;
   }
 
   &,

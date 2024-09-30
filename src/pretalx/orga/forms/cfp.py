@@ -10,6 +10,7 @@ from i18nfield.forms import I18nFormMixin, I18nModelForm
 from i18nfield.strings import LazyI18nString
 
 from pretalx.common.forms.mixins import I18nHelpText, JsonSubfieldMixin, ReadOnlyFlag
+from pretalx.common.forms.widgets import EnhancedSelect, EnhancedSelectMultiple
 from pretalx.common.text.phrases import phrases
 from pretalx.submission.models import (
     AnswerOption,
@@ -303,8 +304,8 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             "max_datetime": forms.DateTimeInput(attrs={"type": "datetime-local"}),
             "min_date": forms.DateInput(attrs={"type": "date"}),
             "max_date": forms.DateInput(attrs={"type": "date"}),
-            "tracks": forms.SelectMultiple(attrs={"class": "select2"}),
-            "submission_types": forms.SelectMultiple(attrs={"class": "select2"}),
+            "tracks": EnhancedSelectMultiple,
+            "submission_types": EnhancedSelectMultiple,
         }
         field_classes = {
             "variant": SafeModelChoiceField,
@@ -404,8 +405,8 @@ class SubmitterAccessCodeForm(forms.ModelForm):
         }
         widgets = {
             "valid_until": forms.DateTimeInput(attrs={"type": "datetime-local"}),
-            "track": forms.Select(attrs={"class": "select2"}),
-            "submission_type": forms.Select(attrs={"class": "select2"}),
+            "track": EnhancedSelect,
+            "submission_type": EnhancedSelect,
         }
 
 
@@ -492,10 +493,11 @@ class QuestionFilterForm(forms.Form):
         ),
         required=False,
         label=_("Recipients"),
+        widget=EnhancedSelect,
     )
-    track = SafeModelChoiceField(Track.objects.none(), required=False)
+    track = SafeModelChoiceField(Track.objects.none(), required=False, widget=EnhancedSelect)
     submission_type = SafeModelChoiceField(
-        SubmissionType.objects.none(), required=False
+        SubmissionType.objects.none(), required=False, widget=EnhancedSelect
     )
 
     def __init__(self, *args, event, **kwargs):
