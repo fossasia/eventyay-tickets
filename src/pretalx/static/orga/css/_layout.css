@@ -566,33 +566,25 @@ details.submission-state-dropdown {
   summary {
     color: var(--submission-color-primary);
     background-color: white;
-    border-radius: 3px;
     padding: 0.25rem 0.5rem;
-    line-height: 1.5;
-    display: flex;
-    align-items: center;
     h4 {
       font-size: 0.875rem;
-      font-weight: 400;
       margin-bottom: 0;
       display: inline-flex;
-      padding: 4px 0 3px 0;
       align-items: baseline;
+      &> i.fa:first-child {
+        padding: 0 6px 0 3px;
+      }
+    }
+    .pending-indicator {
+        padding-left: 2px;
     }
     &:hover {
       background-color: inherit;
       color: white;
     }
-    summary.btn {
-        &:hover {
-            color: white;
-        }
-    }
 
-    i.fa:first-child {
-      padding: 0 6px 0 3px;
-    }
-    i.fa.fa-caret-down {
+    &> i.fa.fa-caret-down {
       margin-left: 10px;
     }
   }

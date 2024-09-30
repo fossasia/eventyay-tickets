@@ -7,7 +7,6 @@ details.dropdown {
 
   summary {
     list-style: none;
-    cursor: pointer;
     &::before,
     &::marker {
       display: none;
