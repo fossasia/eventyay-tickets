@@ -492,30 +492,26 @@ form #id_display-header_pattern {
   padding: 0;
   overflow-x: auto;
 
-  .form-check {
-    padding-left: 0;
+  &> div {
+    position: relative;
   }
 
-  label {
-    width: 100px;
-    position: relative;
-    margin-right: 8px;
-
-    &:before {
-      left: 40px;
-      top: 8px;
-    }
-
-    &:after {
-      left: 44px;
-      top: 8px;
-    }
+  input[type="radio"] {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      & + label.header-pattern-label {
+          padding: 0;
+      }
   }
 
   .mini-header {
     width: 100px;
     height: 100px;
     background-color: var(--color, var(--color-primary));
+    border-radius: var(--size-border-radius);
+    margin-right: 8px;
+    margin-bottom: -10px;
   }
 }
 
@@ -981,8 +977,8 @@ details.submission-state-dropdown {
   position: relative;
   button {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 6px;
+    right: 6px;
   }
 }
 .progress {
