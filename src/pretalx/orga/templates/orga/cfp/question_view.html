@@ -80,7 +80,7 @@
                             </i>
                         </td>
                         <td class="numeric">{{ question.answer_count }}</td>
-                        <td class="action-column">
+                        <td class="text-right">
 
                             {% include "orga/includes/order_object.html" with object=question %}
                             <a href="{{ question.urls.edit }}" class="btn btn-sm btn-info" title="{{ phrases.base.edit }}">

@@ -100,6 +100,7 @@ table {
     vertical-align: bottom;
     border-bottom: 2px solid var(--color-grey-light);
     white-space: nowrap;
+    text-align: left;
   }
   th {
     font-weight: bold;
@@ -107,16 +108,12 @@ table {
   tr {
     vertical-align: middle;
     &:hover {
-      backdrop-filter: brightness(0.95);
+      background-color: var(--color-grey-lightest);
     }
   }
   a:hover {
     text-decoration: none;
   }
-}
-
-table td.action-column {
-  text-align: right;
 }
 
 label,

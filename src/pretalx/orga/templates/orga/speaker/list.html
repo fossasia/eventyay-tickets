@@ -58,7 +58,7 @@
                         <td class="numeric">{{ profile.accepted_submission_count }}</td>
                         <td class="numeric">{{ profile.submission_count }}</td>
                         {% if can_mark_speaker or can_see_speaker_status %}
-                            <td class="action-column">
+                            <td class="text-right">
                                 {% if profile.accepted_submission_count %}
                                     {% if can_mark_speaker %}
                                         <a class="btn btn-sm btn-{{ profile.has_arrived|yesno:"success,info" }}" href="{{ profile.orga_urls.toggle_arrived }}?from=list">
