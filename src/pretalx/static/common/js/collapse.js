@@ -1,24 +1,38 @@
 // Re-implement Bootstrap's collapse API in minimal vanilla JS
-const collapseSelector = '[data-toggle="collapse"]';
-const collapseTriggers = Array.from(document.querySelectorAll(collapseSelector));
-
-window.addEventListener('click', (ev) => {
-  const elm = ev.target.closest(collapseSelector);
-  if (collapseTriggers.includes(elm)) {
-    const selector = elm.getAttribute('data-target');
-    collapse(selector, 'toggle');
-  }
-}, false);
-
-
-const fnmap = {
-  'toggle': 'toggle',
-  'show': 'add',
-  'hide': 'remove'
-};
-const collapse = (selector, cmd) => {
-  const targets = Array.from(document.querySelectorAll(selector));
-  targets.forEach(target => {
-    target.classList[fnmap[cmd]]('show');
-  });
+const makeCollapsed = (controller, element, collapsed) => {
+    controller.setAttribute('aria-expanded', !collapsed)
+    element.setAttribute('aria-hidden', collapsed)
+    if (collapsed) {
+        element.classList.remove('show')
+    } else {
+        element.classList.add('show')
+    }
 }
+
+
+const handleCollapse = (controller, target) => {
+    const wasVisible = controller.getAttribute('aria-expanded') === 'true'
+    const accordion = target.getAttribute('data-parent')
+    if (accordion) {
+        document.querySelectorAll(`[data-parent="${accordion}"]`).forEach(element => {
+            makeCollapsed(document.querySelector(`[data-target="#${element.id}"]`), element, true)
+        })
+    }
+    makeCollapsed(controller, target, wasVisible)
+}
+
+const setupCollapse = (element) => {
+    const target = document.querySelector(element.getAttribute('data-target'))
+    if (!target) return
+    element.addEventListener('click', () => handleCollapse(element, target))
+    if (target.classList.contains('show')) {
+        makeCollapsed(element, target, false)
+    }
+}
+
+const initCollapse = () => {
+    document.querySelectorAll('[data-toggle="collapse"]').forEach(element => {
+        setupCollapse(element)
+    })
+}
+onReady(initCollapse)
