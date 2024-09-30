@@ -56,15 +56,15 @@
 </div>
   <nav id="schedule-nav"{% if with_margin %} class="p-3"{% endif %}>
       <div class="navigation">
-          <a href="{{ request.event.urls.schedule }}" class="btn btn-outline-success {% if "/schedule/" in request.path %} active{% endif %}">
+          <a href="{{ request.event.urls.schedule }}" class="btn btn-outline-success {% if "/schedule/" in request.path_info %} active{% endif %}">
               <i class="fa fa-calendar"></i> {% translate "Schedule" %}
           </a>
           {% if request.event.display_settings.schedule_display != "list" %}
-              <a href="{{ request.event.urls.talks }}" class="btn btn-outline-success {% if "/talk/" in request.path %} active{% endif %}">
+              <a href="{{ request.event.urls.talks }}" class="btn btn-outline-success {% if "/talk/" in request.path_info %} active{% endif %}">
                   <i class="fa fa-comments-o"></i> {% translate "Sessions" %}
               </a>
           {% endif %}
-          <a href="{{ request.event.urls.speakers }}" class="btn btn-outline-success {% if "/speaker/" in request.path %} active{% endif %}">
+          <a href="{{ request.event.urls.speakers }}" class="btn btn-outline-success {% if "/speaker/" in request.path_info %} active{% endif %}">
               <i class="fa fa-group"></i> {% translate "Speakers" %}
           </a>
           {% if request.event.display_settings.ticket_link %}

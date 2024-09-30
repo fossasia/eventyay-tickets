@@ -676,8 +676,7 @@ class Schedule(PretalxModel):
                         ),
                         "do_not_record": talk.submission.do_not_record,
                         "tags": talk.submission.get_tag(),
-                        "session_type":
-                            talk.submission.submission_type.name
+                        "session_type": talk.submission.submission_type.name,
                     }
                 )
             else:
