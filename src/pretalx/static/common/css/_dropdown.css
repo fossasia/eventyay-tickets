@@ -22,7 +22,6 @@ details.dropdown {
   .dropdown-content {
     position: absolute;
     top: 100%;
-    z-index: 1000;
     min-width: 160px;
     max-width: 400px;
     padding: 0;

@@ -548,10 +548,10 @@ form #id_display-header_pattern {
 }
 
 h2 .submission-state-dropdown {
-  padding: 4px;
+  padding: 2px;
 }
 
-.submission-state-dropdown {
+details.submission-state-dropdown {
   display: inline-block;
   border-radius: 6px;
   background-image: repeating-linear-gradient(
@@ -564,6 +564,7 @@ h2 .submission-state-dropdown {
   padding: 3px;
 
   summary {
+    color: var(--submission-color-primary);
     background-color: white;
     border-radius: 3px;
     padding: 0.25rem 0.5rem;
@@ -578,6 +579,15 @@ h2 .submission-state-dropdown {
       padding: 4px 0 3px 0;
       align-items: baseline;
     }
+    &:hover {
+      background-color: inherit;
+      color: white;
+    }
+    summary.btn {
+        &:hover {
+            color: white;
+        }
+    }
 
     i.fa:first-child {
       padding: 0 6px 0 3px;
@@ -586,9 +596,15 @@ h2 .submission-state-dropdown {
       margin-left: 10px;
     }
   }
-  &:hover summary {
-    background-color: inherit;
-    color: inherit;
+  .dropdown-content {
+    z-index: 1000;
+    a.dropdown-item {
+        color: var(--submission-color-primary);
+        &:hover {
+            background-color: var(--submission-color-primary);
+            color: white;
+        }
+    }
   }
 
   a {
@@ -600,7 +616,6 @@ h2 .submission-state-dropdown {
 .submission-state-deleted,
 .submission-state-withdrawn,
 .submission-state-canceled {
-  color: var(--color-grey);
   --submission-color-primary: var(--color-grey);
   --submission-color-secondary: var(--color-grey);
 }
@@ -609,67 +624,37 @@ h2 .submission-state-dropdown {
 .submission-state-dropdown.submission-state-pending-canceled {
   --submission-color-secondary: var(--color-grey);
 }
-.submission-state-deleted:hover,
-.submission-state-withdrawn:hover,
-.submission-state-canceled:hover {
-  color: white;
-  background-color: var(--color-grey);
-}
 
 .submission-state-submitted {
-  color: var(--color-info);
-  background-color: white;
   --submission-color-primary: var(--color-info);
   --submission-color-secondary: var(--color-info);
 }
 .submission-state-dropdown.submission-state-pending-submitted {
   --submission-color-secondary: var(--color-info);
 }
-.submission-state-submitted:hover {
-  color: white;
-  background-color: var(--color-info);
-}
 
 .submission-state-accepted {
-  color: var(--color-success-light);
-  background-color: white;
-  --submission-color-primary: var(--color-success-light);
-  --submission-color-secondary: var(--color-success-light);
-}
-.submission-state-dropdown.submission-state-pending-accepted {
-  --submission-color-secondary: var(--color-success-light);
-}
-.submission-state-accepted:hover {
-  background-color: var(--color-success-light);
-  color: white;
-}
-
-.submission-state-confirmed {
-  color: var(--color-primary);
-  background-color: white;
   --submission-color-primary: var(--color-primary);
   --submission-color-secondary: var(--color-primary);
 }
-.submission-state-dropdown.submission-state-pending-confirmed {
+.submission-state-dropdown.submission-state-pending-accepted {
   --submission-color-secondary: var(--color-primary);
 }
-.submission-state-confirmed:hover {
-  color: white;
-  background-color: var(--color-primary);
+
+.submission-state-confirmed {
+  --submission-color-primary: var(--color-primary-text);
+  --submission-color-secondary: var(--color-primary-text);
+}
+.submission-state-dropdown.submission-state-pending-confirmed {
+  --submission-color-secondary: var(--color-primary-text);
 }
 
 .submission-state-rejected {
-  color: var(--color-danger);
-  background-color: white;
   --submission-color-primary: var(--color-danger);
   --submission-color-secondary: var(--color-danger);
 }
 .submission-state-dropdown.submission-state-pending-rejected {
   --submission-color-secondary: var(--color-danger);
-}
-.submission-state-rejected:hover {
-  color: white;
-  background-color: var(--color-danger);
 }
 
 .cfp-option-table {

@@ -78,7 +78,7 @@
                             <td class="numeric">
                                 {{ code.redeemed|default:0 }} / {{ code.maximum_uses|default:"∞" }}
                             </td>
-                            <td class="action-column">
+                            <td class="text-right">
                                 <div data-destination="{{ code.urls.cfp_url.full }}"
                                      title="{% translate "Copy access code link" %}"
                                      class="btn btn-sm btn-info copyable-text">
