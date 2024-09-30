@@ -1,15 +1,13 @@
 a[data-lightbox] img,
 img[data-lightbox],
 dialog#lightbox-dialog img {
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.12),
-    0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: var(--shadow-lighter);
 }
 a[data-lightbox] img:hover,
 img[data-lightbox]:hover {
   box-shadow:
-    0 2px 5px rgba(0, 0, 0, 0.25),
-    0 3px 5px rgba(0, 0, 0, 0.22);
+    0 2px 5px rgb(0 0 0 / 0.25),
+    0 3px 5px rgb(0 0 0 / 0.22);
 }
 
 @keyframes fadein {
@@ -25,11 +23,11 @@ dialog#lightbox-dialog {
   border: none;
   background: #fff;
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-dialog);
   padding: 0;
 
   &::backdrop {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgb(0 0, 0 / 0.7);
     backdrop-filter: blur(2px);
   }
   &[open] {
@@ -49,7 +47,7 @@ dialog#lightbox-dialog {
       top: -4px;
       right: 0;
       cursor: pointer;
-      color: rgba(0, 0, 0, 0.7);
+      color: rgb(0 0 0 / 0.7);
       font-size: 20px;
       border: none;
       background: transparent;

@@ -55,7 +55,7 @@
       &:has(input:focus) {
         border-color: var(--color-primary-light);
         outline: 0;
-        box-shadow: 0 0 0 1px rgba(58, 165, 124, 0.25);
+        box-shadow: var(--shadow-focus);
       }
 
     }

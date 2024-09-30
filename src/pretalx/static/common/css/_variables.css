@@ -63,10 +63,12 @@
   --size-border-radius: 0.25rem;
   --size-spacer: 1rem;
 
-  --shadow-lightest: 0 1px 2px rgba(0, 0, 0, 0.24);
-  --shadow-lighter: 0 1px 3px rgba(0, 0, 0, 0.12), var(--shadow-lightest);
-  --shadow-light: 0 0 6px 1px rgba(0, 0, 0, 0.1), var(--shadow-lighter);
-  --shadow-focus: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  --shadow-lightest: 0 1px 2px rgb(0  0  0  / 0.24);
+  --shadow-lighter: 0 1px 3px rgb(0  0  0  / 0.12), var(--shadow-lightest);
+  --shadow-light: 0 0 6px 1px rgb(0  0  0  / 0.1), var(--shadow-lighter);
+  --shadow-wide: 0 0 10px 1px rgb(0  0  0  / 0.2), var(--shadow-lighter);
+  --shadow-focus: 0 0 0 0.2rem rgb(0  123 255 / 0.25);
+  --shadow-dialog: 0 0 10px rgb(0 0 0 / 0.5), var(--shadow-lightest);
   --shadow-checkbox: 0 0 2px var(--color-grey-medium-lighter);
 
   --breakpoint-sm: 576px;
