@@ -5,6 +5,7 @@ from urllib.parse import unquote
 from csp.decorators import csp_exempt
 from django.contrib.staticfiles import finders
 from django.http import Http404, HttpResponse, JsonResponse
+from django.views.decorators.cache import cache_page
 from django.utils.timezone import now
 from django.views.decorators.http import condition
 from i18nfield.utils import I18nJSONEncoder
@@ -17,6 +18,10 @@ from pretalx.schedule.exporters import ScheduleData
 
 WIDGET_JS_CHECKSUM = None
 WIDGET_PATH = "agenda/js/pretalx-schedule.min.js"
+
+
+def color_etag(request, event, **kwargs):
+    return event.primary_color or "none"
 
 
 def widget_js_etag(request, event, **kwargs):
