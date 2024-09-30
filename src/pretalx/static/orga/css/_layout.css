@@ -758,72 +758,54 @@ details.submission-state-dropdown {
     max-width: 500px;
     margin: 0 auto;
   }
+}
+
+.toggle-group {
+  display: flex;
+  align-items: center;
+  label.toggle-label {
+      color: var(--color-grey);
+      font-family: var(--font-family-title);
+      font-size: 16px;
+      margin: 0;
+      padding: 0;
+      font-weight: bold;
+  }
+  label.toggle-label:has(+ input[type="checkbox"]:not(:checked)), input[type="checkbox"]:checked + label.toggle-label {
+      color: var(--color-primary);
+  }
   #toggle-button {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+    height: 1.5rem;
+    width: 3rem;
     color: var(--color-success);
     background: var(--color-success);
-    &:before,
-    &:after {
-      color: var(--color-success);
-    }
-    margin: 0 8rem 0 4rem;
+    margin: 0 8px;
     padding: 0;
     position: relative;
     border: none;
-    height: 1.5rem;
-    width: 3rem;
     border-radius: 1.5rem;
+    position: relative;
 
-    &:before,
     &:after {
-      line-height: 1.5rem;
-      text-align: center;
-      font-weight: 600;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
+      border-radius: 50%;
+      width: 15px;
+      height: 15px;
+      background: var(--color-offwhite);
+      box-shadow: inset var(--shadow-lightest);
+      content: "";
+      display: block;
       position: absolute;
-      bottom: 0;
-      transition: opacity 0.25s;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 6px;
+      transition: left 0.2s;
     }
-    &:before {
-      content: attr(data-left);
-      right: 4rem;
-    }
-    &:after {
-      content: attr(data-right);
-      left: 4rem;
-      opacity: 0.5;
-    }
-
-    > .handle {
-      position: absolute;
-      top: 0.1875rem;
-      left: 0.1875rem;
-      width: 1.125rem;
-      height: 1.135rem;
-      border-radius: 1.125rem;
-      background: #fff;
-      transition: left 0.25s;
-    }
-    &.active {
-      transition: background-color 0.25s;
-      > .handle {
-        left: 1.6875rem;
-        transition: left 0.25s;
-      }
-      &:before {
-        opacity: 0.5;
-      }
-      &:after {
-        opacity: 1;
-      }
+    &:checked:after {
+      left: calc(100% - 21px);
     }
   }
 }
+
 #question-stats {
   display: flex;
   flex-wrap: wrap;
