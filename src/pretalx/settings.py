@@ -640,7 +640,7 @@ COMPRESS_FILTERS = {
     "js": ["compressor.filters.jsmin.rJSMinFilter"],
     "css": (
         'compressor.filters.css_default.CssAbsoluteFilter',
-        "compressor.filters.cssmin.CSSCompressorFilter",
+        'compressor.filters.cssmin.rCSSMinFilter',
     ),
 }
 
