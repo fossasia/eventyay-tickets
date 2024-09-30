@@ -3,7 +3,7 @@
 }
 dialog {
   padding: 0;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-dialog);
   border-radius: 0.27rem;
   opacity: 0;
   max-width: 70vw;
@@ -27,7 +27,7 @@ dialog {
     outline: none;
   }
   &::backdrop {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgb(0 0 0 / 0.3);
   }
 
   /* Special treatment for dialogs that are just there to show an alert box */

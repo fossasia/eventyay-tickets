@@ -79,9 +79,7 @@
     .step-links {
       display: none;
       position: absolute;
-      box-shadow:
-        0 1px 3px rgba(0, 0, 0, 0.12),
-        0 1px 2px rgba(0, 0, 0, 0.24);
+      box-shadow: var(--shadow-lighter);
       text-align: left;
       z-index: 10;
       padding: 8px 0;

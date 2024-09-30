@@ -19,7 +19,7 @@
     }
 
     &:after {
-      background: rgba(17, 17, 17, .9);
+      background: rgb(17 17 17 / .9);
       border-radius: var(--size-border-radius);
       color: #ffffff;
       content: attr(title);

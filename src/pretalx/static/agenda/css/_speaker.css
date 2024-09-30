@@ -38,7 +38,7 @@
 
     .quote {
       font-size: 1.5rem;
-      color: rgba(0, 0, 0, 0.56);
+      color: rgb(0 0 0 / 0.56);
       border: var(--color-border) 1px solid;
       border-radius: var(--size-border-radius);
       padding: 20px;

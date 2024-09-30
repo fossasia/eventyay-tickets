@@ -868,7 +868,7 @@ details.submission-state-dropdown {
   padding: 16px 24px;
   position: relative;
   border-radius: 3px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-light);
   .i18n-form-group {
     width: 100%;
   }
@@ -928,7 +928,7 @@ details.submission-state-dropdown {
           &:before {
               font-family: ForkAwesome;
               font-weight: bold;
-              color: rgba(0, 0, 0, 0.3);
+              color: rgb(0 0 0 / 0.3);
               text-align: center;
               position: absolute;
           }
@@ -1035,7 +1035,8 @@ details.submission-state-dropdown {
     padding: 0;
     margin: 0;
     border: none;
-    background-color: rgba(0, 0, 0, 0.72);
+    --anon-color: rgb(0 0 0 / 0.72);
+    background-color: var(--anon-color);
     color: white;
     padding: 8px 16px;
     border-radius: 8px;
@@ -1046,7 +1047,7 @@ details.submission-state-dropdown {
       border-left: 12px solid transparent;
       border-right: 12px solid transparent;
       content: " ";
-      border-top: 12px solid rgba(0, 0, 0, 0.72);
+      border-top: 12px solid var(--anon-color);
       position: absolute;
       right: 70%;
       bottom: -12px;
@@ -1143,7 +1144,7 @@ div.mail-preview {
   padding: 0 12px;
   top: 50px;
   border-left: 1px solid var(--color-grey-lighter);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-wide);
 
   legend {
     background: white;
@@ -1223,9 +1224,7 @@ div.mail-preview {
       padding-right: 20px;
       margin-top: 8px;
       background: white;
-      box-shadow:
-        0 1px 3px rgba(0, 0, 0, 0.12),
-        0 1px 2px rgba(0, 0, 0, 0.24);
+      box-shadow: var(--shadow-lighter);
       opacity: 1;
     }
 

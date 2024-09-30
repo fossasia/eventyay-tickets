@@ -141,7 +141,7 @@ header {
   font-size: 14px;
   &.break {
     .pretalx-session-info .title {
-      color: rgba(0, 0, 0, 0.54);
+      color: rgb(0 0 0 / 0.54);
     }
   }
   &:hover {
@@ -163,7 +163,7 @@ header {
       width: auto;
       background-color: white;
       border: 1px solid;
-      border-color: rgba(0, 0, 0, 0.12);
+      border-color: var(--color-border);
       border-right: none;
       .avatar-wrapper {
         width: 100px;
@@ -199,19 +199,19 @@ header {
     display: flex;
     flex-direction: column;
     padding: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    border: 1px solid var(--color-border);
     border-left: none;
     border-radius: 0 6px 6px 0;
     background-color: #fff;
     min-width: 0;
-    color: rgba(0, 0, 0, 0.87);
+    color: rgb(0 0 0 / 0.87);
     .title {
       font-size: 16px;
       font-weight: 500;
       margin-bottom: 4px;
     }
     .speakers {
-      color: rgba(0, 0, 0, 0.54);
+      color: rgb(0 0 0 / 0.54);
     }
     .abstract {
       margin: 8px 0 12px 0;
@@ -240,7 +240,7 @@ header {
       }
       .room {
         text-align: right;
-        color: rgba(0, 0, 0, 0.54);
+        color: rgb(0 0 0 / 0.54);
       }
     }
   }
@@ -337,7 +337,7 @@ article .pretalx-session .pretalx-session-info .abstract {
     justify-content: center;
     text-decoration: none;
     i.fa-star::before {
-      filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.17));
+      filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.17));
     }
   }
 }

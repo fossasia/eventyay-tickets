@@ -13,9 +13,7 @@
     padding-left: 0;
     flex-direction: column;
     > .step {
-      box-shadow:
-        0 1px 3px rgba(0, 0, 0, 0.12),
-        0 1px 2px rgba(0, 0, 0, 0.24);
+      box-shadow: var(--shadow-lighter);
       margin: 18px;
       margin-bottom: 24px;
 
@@ -74,8 +72,8 @@
               font-weight: bold;
               font-size: 22px;
               box-shadow:
-                3px 3px 5px rgba(0, 0, 0, 0.18),
-                3px 1px 4px rgba(0, 0, 0, 0.3);
+                3px 3px 5px rgb(0 0 0 / 0.18),
+                3px 1px 4px rgb(0 0 0 / 0.3);
               border: var(--color-danger) 4px solid;
               background-color: white;
             }
@@ -106,9 +104,7 @@
   bottom: 1px;
   left: 250px;
   right: 0;
-  box-shadow:
-    1px 1px 3px rgba(0, 0, 0, 0.12),
-    1px 1px 5px rgba(0, 0, 0, 0.24);
+  box-shadow: var(--shadow-dialog);
   button {
     margin-left: auto;
   }
@@ -125,9 +121,7 @@
   padding: 16px 32px;
   background: white;
   z-index: 50;
-  box-shadow:
-    0 5px 11px 0 rgba(0, 0, 0, 0.18),
-    0 4px 15px 0 rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-dialog);
   .i18n-form-group {
     margin-top: 8px;
   }
