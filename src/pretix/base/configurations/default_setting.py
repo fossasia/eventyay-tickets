@@ -1117,6 +1117,16 @@ DEFAULT_SETTINGS = {
                         "the email. Does not affect orders performed through other sales channels."),
         )
     },
+    'ticket_buying_settings' : {
+        'default': 'False',
+        'type': bool,
+        'serializer_class': serializers.BooleanField,
+        'form_class': forms.BooleanField,
+        'form_kwargs': dict(
+            label=_("Only allow registered accounts to get a ticket"),
+            help_text=_("If this option is turned on, only registered accounts will be allowed to purchase tickets. The 'Continue as a Guest' option will not be available for attendees."),
+        )
+    },
     'event_list_availability': {
         'default': 'True',
         'type': bool,
