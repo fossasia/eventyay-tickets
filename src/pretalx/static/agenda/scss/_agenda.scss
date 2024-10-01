@@ -43,20 +43,55 @@ header {
   }
 }
 
-#schedule-nav {
-  display: flex;
-  flex-direction: row;
-  align-content: space-between;
-  z-index: 900;
+@function is-dark($color) {
+  $luminance: (0.2126 * red($color) + 0.7152 * green($color) + 0.0722 * blue($color)) / 255;
+  @return $luminance < 0.5;
+}
 
-  a {
-    font-size: 16px;
-    font-weight: normal;
-    border-radius: 0;
-    margin: 0;
-    &.active {
-    }
+@mixin contrast-color($bg-color) {
+  @if is-dark($bg-color) {
+    color: #fff;
+  } @else {
+    color: #000;
   }
+}
+
+@mixin active-state($color) {
+    background-color: $color;
+    @include contrast-color($color);
+}
+
+@mixin outline-button($color) {
+  color: $color;
+  border-color: $color;
+
+  &:hover, &.active {
+    @include active-state($color);
+  }
+}
+
+#schedule-nav {
+    display: flex;
+    flex-direction: row;
+    align-content: space-between;
+    z-index: 900;
+
+    a {
+        font-size: 16px;
+        font-weight: normal;
+        border-radius: 0;
+        margin: 0;
+        &.active {
+        }
+    }
+
+    .btn-outline-success {
+      @include outline-button($brand-primary);
+    }
+
+    .btn-outline-info {
+      @include outline-button($brand-primary);
+    }
 
   form {
     max-width: 250px;
@@ -73,6 +108,8 @@ header {
       summary {
         height: 100%;
         margin-bottom: 3px;
+        color: $brand-primary;
+        border-color: $brand-primary;
       }
     }
   }
