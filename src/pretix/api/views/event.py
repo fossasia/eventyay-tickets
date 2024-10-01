@@ -1,8 +1,16 @@
+import json
+import logging
+
 import django_filters
+import jwt
+from django.conf import settings
 from django.db import transaction
 from django.db.models import ProtectedError, Q
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from django_scopes import scopes_disabled
 from rest_framework import filters, serializers, views, viewsets
@@ -16,13 +24,15 @@ from pretix.api.serializers.event import (
 )
 from pretix.api.views import ConditionalListView
 from pretix.base.models import (
-    CartPosition, Device, Event, TaxRule, TeamAPIToken, Organizer, Customer, Order,
+    CartPosition, Device, Event, TaxRule, TeamAPIToken, Organizer, Customer, Order, User,
 )
 from pretix.base.models.event import SubEvent
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.helpers.dicts import merge_dicts
 from pretix.presale.style import regenerate_css
 from pretix.presale.views.organizer import filter_qs_by_attr
+
+logger = logging.getLogger(__name__)
 
 with scopes_disabled():
     class EventFilter(FilterSet):
@@ -439,3 +449,55 @@ class CustomerOrderCheckView(views.View):
                 return JsonResponse(status=200, data={"message": "Customer has paid orders."})
 
         return JsonResponse(status=400, data={"message": "Customer did not paid orders."})
+
+
+def check_token_permission(token, permission_required):
+    # Decode and validate the JWT token
+    decoded_data = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+    # Check if user existed
+    User.objects.get(email=decoded_data["email"])
+    if decoded_data.get("has_perms") not in permission_required:
+        return False
+    return True
+
+
+@csrf_exempt
+@require_POST
+@scopes_disabled()
+def talk_schedule_public(request, *args, **kwargs):
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ")[1]
+        try:
+            if not check_token_permission(token, 'orga.edit_schedule'):
+                return JsonResponse(
+                    {"status": "User does not have permission to show schedule on menu"},
+                    status=403,
+                )
+            organiser = get_object_or_404(Organizer, slug=kwargs['organizer'])
+            event = get_object_or_404(Event, slug=kwargs['event'], organizer=organiser)
+            request_data = json.loads(request.body)
+            event.settings.talk_schedule_public = request_data.get('is_show_schedule') or False
+
+            return JsonResponse({"status": "success"}, status=200)
+
+        except jwt.ExpiredSignatureError:
+            logger.error("Token has expired")
+            return JsonResponse({"status": "Token has expired"}, status=401)
+        except jwt.InvalidTokenError:
+            logger.error("Invalid token")
+            return JsonResponse({"status": "Invalid token"}, status=401)
+        except Organizer.DoesNotExist:
+            logger.error("Organizer not found")
+            return JsonResponse({"status": "Organizer not found"}, status=404)
+        except Event.DoesNotExist:
+            logger.error("Event not found")
+            return JsonResponse({"status": "Event not found"}, status=404)
+        except Exception as e:
+            logger.error("Internal server error: %s", e)
+            return JsonResponse({"status": "Internal server error"}, status=500)
+    else:
+        logger.error("Authorization header missing or invalid")
+        return JsonResponse(
+            {"status": "Authorization header missing or invalid"}, status=403
+        )

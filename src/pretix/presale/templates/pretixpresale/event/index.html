@@ -36,23 +36,19 @@
     <main aria-label="{% if show_cart %}{% trans "Your cart, general information, add products to your cart" %}{% else %}{% trans "General information, add products to your cart" %}{% endif %}">
         <nav id="schedule-nav"{% if with_margin %} class="p-3"{% endif %}>
             <div class="navigation">
-                {% if request.event.settings.schedule_link %}
+                {% if request.event.settings.talk_schedule_public %}
                     <div class="navigation-button">
-                        <a href="{{ request.event.settings.schedule_link }}" class="header-nav btn btn-outline-success">
+                        <a href="{{ request.event.talk_schedule_url }}" class="header-nav btn btn-outline-success">
                             <i class="fa fa-calendar"></i> {% trans "Schedule" %}
                         </a>
                     </div>
-                {% endif %}
-                {% if request.event.settings.session_link %}
                     <div class="navigation-button">
-                        <a href="{{ request.event.settings.session_link }}" class="header-nav btn btn-outline-success">
+                        <a href="{{ request.event.talk_session_url }}" class="header-nav btn btn-outline-success">
                             <i class="fa fa-comments-o"></i> {% trans "Sessions" %}
                         </a>
                     </div>
-                {% endif %}
-                {% if request.event.settings.speaker_link %}
                     <div class="navigation-button">
-                        <a href="{{ request.event.settings.speaker_link }}" class="header-nav btn btn-outline-success">
+                        <a href="{{ request.event.talk_speaker_url }}" class="header-nav btn btn-outline-success">
                             <i class="fa fa-group"></i> {% trans "Speakers" %}
                         </a>
                     </div>
