@@ -660,7 +660,7 @@ class EventSettingsSerializer(SettingsSerializer):
         'ticket_download_nonadm',
         'ticket_download_pending',
         'ticket_download_require_validated_email',
-        'ticket_buying_settings',
+        'require_registered_account_for_tickets',
         'mail_prefix',
         'mail_from',
         'mail_from_name',

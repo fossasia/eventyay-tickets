@@ -1117,7 +1117,7 @@ DEFAULT_SETTINGS = {
                         "the email. Does not affect orders performed through other sales channels."),
         )
     },
-    'ticket_buying_settings' : {
+    'require_registered_account_for_tickets' : {
         'default': 'False',
         'type': bool,
         'serializer_class': serializers.BooleanField,

@@ -46,7 +46,7 @@ class CustomerStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
 
     @cached_property
     def guest_allowed(self):
-        if self.request.event.settings.ticket_buying_settings == False:
+        if not self.request.event.settings.require_registered_account_for_tickets:
             return True
         return False
 
