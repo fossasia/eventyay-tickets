@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-06 12:08+0000\n"
-"PO-Revision-Date: 2024-08-06 08:55+0000\n"
-"Last-Translator: Lucie Anglade <lucie@courtbouillon.org>\n"
+"POT-Creation-Date: 2024-09-23 07:10+0000\n"
+"PO-Revision-Date: 2024-10-01 09:55+0000\n"
+"Last-Translator: Harrissou Sant-anna <delazj@gmail.com>\n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -632,7 +632,7 @@ msgid ""
 "also visible to reviewers."
 msgstr ""
 "Ces données seront publiques, si votre intervention est acceptée. Elles sont "
-"aussi accessibles par les évaluateurs."
+"aussi accessibles aux évaluateurs."
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:61
 msgid "We have some questions"
@@ -3881,7 +3881,7 @@ msgstr "Score moyen"
 
 #: pretalx/orga/forms/schedule.py:117
 msgid "Average review score, if there have been reviews yet"
-msgstr "Score d'évaluation myen, si des évaluations ont été faites"
+msgstr "Score d'évaluation moyen, si des évaluations ont été faites"
 
 #: pretalx/orga/forms/schedule.py:123
 msgid "Resources provided by the speaker, either as links or as uploaded files"
@@ -5502,7 +5502,61 @@ msgstr[1] "Équipe"
 msgid "There are no organisers you can edit."
 msgstr "Il n'y a pas d'organisateur que vous pouvez éditer."
 
-#: pretalx/orga/templates/orga/plugins.html:28
+#: pretalx/orga/templates/orga/organiser/speaker_list.html:6
+#: pretalx/orga/templates/orga/organiser/speaker_list.html:11
+#: pretalx/orga/views/dashboard.py:334
+msgid "speaker"
+msgid_plural "speakers"
+msgstr[0] "intervenant"
+msgstr[1] "intervenants"
+
+#: pretalx/orga/templates/orga/organiser/speaker_list.html:32
+#: pretalx/orga/templates/orga/organiser/speaker_list.html:37
+msgid "Sort (a-z)"
+msgstr "Trier (a-z)"
+
+#: pretalx/orga/templates/orga/organiser/speaker_list.html:33
+#: pretalx/orga/templates/orga/organiser/speaker_list.html:38
+msgid "Sort (z-a)"
+msgstr "Trier (z-a)"
+
+#: pretalx/orga/templates/orga/organiser/speaker_list.html:41
+#: pretalx/orga/templates/orga/speaker/list.html:48
+msgid "Accepted Proposals"
+msgstr "Propositions acceptées"
+
+#: pretalx/orga/templates/orga/organiser/speaker_list.html:42
+#: pretalx/orga/templates/orga/organiser/speaker_list.html:47
+msgid "Sort (high-low)"
+msgstr "Trier (descendant)"
+
+#: pretalx/orga/templates/orga/organiser/speaker_list.html:43
+#: pretalx/orga/templates/orga/organiser/speaker_list.html:48
+msgid "Sort (low-high)"
+msgstr "Trier (ascendant)"
+
+#: pretalx/orga/templates/orga/organiser/team_list.html:16
+#: pretalx/orga/templates/orga/review/assignment.html:46
+#: pretalx/orga/templates/orga/settings/team_detail.html:14
+msgid "Members"
+msgstr "Membres"
+
+#: pretalx/orga/templates/orga/organiser/team_list.html:18
+msgid "Reviewer"
+msgstr "Évaluateur"
+
+#: pretalx/orga/templates/orga/organiser/team_list.html:29
+#: pretalx/orga/templates/orga/review/assignment.html:60
+msgid "You are a member of this team"
+msgstr "Vous êtes membre de cette équipe"
+
+#: pretalx/orga/templates/orga/organiser/team_list.html:57
+#: pretalx/orga/templates/orga/review/assignment.html:39
+#: pretalx/orga/templates/orga/settings/team_detail.html:104
+msgid "New team"
+msgstr "Nouvelle équipe"
+
+#: pretalx/orga/templates/orga/plugins.html:29
 msgid "Disable"
 msgstr "Désactiver"
 
@@ -6181,8 +6235,8 @@ msgid ""
 "offered an additional %(quotation_open)sAbstain%(quotation_close)s button "
 "when reviewing proposals."
 msgstr ""
-"Si ni le score d'évaluation ni le texte d'évaluation sont obligatoires, les "
-"évaluateurs se verront proposer un bouton "
+"Si ni le score d'évaluation ni le texte d'évaluation ne sont obligatoires, "
+"les évaluateurs se verront proposer un bouton "
 "%(quotation_open)sAbstention%(quotation_close)s lors de l'évaluation des "
 "propositions."
 
@@ -6197,10 +6251,10 @@ msgid ""
 "this total score can be weighted. Currently, the total score is calculated "
 "as:"
 msgstr ""
-"Vous pouvez demander au évaluateurs de fournir un seul ou plusieurs scores. "
+"Vous pouvez demander aux évaluateurs de fournir un seul ou plusieurs scores. "
 "Si vous demandez plusieurs scores, ils seront ajoutés au score total final. "
 "Si vous le souhaitez, des poids peuvent être appliqués à ce score total. "
-"Actuellement, le score total est calculé de la façon suivante :"
+"Actuellement, le score total est calculé de la façon suivante :"
 
 #: pretalx/orga/templates/orga/settings/review.html:53
 msgid "Review Score category"
@@ -6289,10 +6343,10 @@ msgid ""
 "additional access rights (e.g. due to being member in another team) will "
 "still be able to see all proposals."
 msgstr ""
-"Les équipes d'évaluation peuvent être restreintes à des parcours, pour que "
+"Les équipes d'évaluation peuvent être restreintes à des parcours, afin que "
 "les évaluateurs ne puissent voir que les évaluations de ce parcours. "
-"Veuillez noter que les évaluateurs avec des droits d'accès supplémentaires "
-"(e.g. parce qu'ils appartiennent aussi à une autre équipe) pourront quand "
+"Veuillez noter que les évaluateurs avec des droits d'accès supplémentaires ("
+"par ex. parce qu'ils appartiennent aussi à une autre équipe) pourront quand "
 "même voir toutes les propositions."
 
 #: pretalx/orga/templates/orga/settings/team_tracks.html:23
@@ -6901,7 +6955,7 @@ msgstr "Envoyer un rappel"
 
 #: pretalx/orga/views/dashboard.py:188
 msgid "Active reviewers"
-msgstr "Évaluateurs actif"
+msgstr "Évaluateurs actifs"
 
 #: pretalx/orga/views/dashboard.py:209
 msgid "proposal is waiting for your review."
@@ -8353,7 +8407,7 @@ msgstr ""
 "Si vous sélectionnez “tous”, les évaluateurs peuvent examiner toutes les "
 "propositions auxquelles leur équipe a accès (soit toutes, soit des parcours "
 "spécifiques). Dans ce mode, les propositions attribuées sont mises en "
-"évidence et s'affichent en premier dans le flux de travail de l'évaluation. "
+"évidence et s'affichent en premier dans le flux du travail d'évaluation. "
 
 #: pretalx/submission/models/review.py:288
 msgid "Reviewers can see other reviews"
