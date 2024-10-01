@@ -1,3 +1,8 @@
+from django.conf import settings
+
+from pretix.helpers.cookies import set_cookie_without_samesite
+from pretix.helpers.jwt_generate import generate_customer_sso_token
+from pretix.multidomain.middlewares import get_cookie_domain
 from pretix.presale.views.customer import RedirectBackMixin
 from django.views.generic import FormView, View
 from pretix.presale.forms.customer_forms import (AuthenticationForm, RegistrationForm)
@@ -63,7 +68,9 @@ class LoginView(RedirectBackMixin, FormView):
     def form_valid(self, form):
         """Security check complete. Log the user in."""
         customer_login(self.request, form.get_customer())
-        return HttpResponseRedirect(self.get_success_url())
+        response = HttpResponseRedirect(self.get_success_url())
+        response = set_cookie_after_logged_in(self.request, response)
+        return response
 
 
 class LogoutView(View):
@@ -188,3 +195,20 @@ class RegistrationView(RedirectBackMixin, FormView):
               'account and choose a password.')
         )
         return HttpResponseRedirect(self.get_success_url())
+
+
+def set_cookie_after_logged_in(request, response):
+    if response.status_code == 302 and request.customer:
+        # Set JWT as a cookie in the response
+        token = generate_customer_sso_token(request.customer)
+        set_cookie_without_samesite(
+            request, response,
+            "customer_sso_token",
+            token,
+            max_age=settings.CSRF_COOKIE_AGE,
+            domain=get_cookie_domain(request),
+            path=settings.CSRF_COOKIE_PATH,
+            secure=request.scheme == 'https',
+            httponly=settings.CSRF_COOKIE_HTTPONLY
+        )
+    return response
