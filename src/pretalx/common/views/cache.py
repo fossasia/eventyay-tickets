@@ -14,7 +14,7 @@ from django.views.decorators.cache import cache_page
 def get_requested_etag(request):
     """Return the ETag requested by the client, or None if not found."""
     if if_none_match := request.headers.get("If-None-Match"):
-        return if_none_match.strip('""')
+        return if_none_match.strip('"')
 
 
 def get_etag(response):
