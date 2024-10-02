@@ -15,7 +15,7 @@ from django.forms import ValidationError
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.functional import cached_property, Promise
+from django.utils.functional import Promise, cached_property
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateResponseMixin
