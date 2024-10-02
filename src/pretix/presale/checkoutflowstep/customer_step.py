@@ -46,8 +46,9 @@ class CustomerStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
 
     @cached_property
     def guest_allowed(self):
-        # To Do - check if guest checkout is allowed
-        return True
+        if not self.request.event.settings.require_registered_account_for_tickets:
+            return True
+        return False
 
     @cached_property
     def register_form(self):
@@ -120,6 +121,7 @@ class CustomerStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
             self.cart_session['customer_mode'] = 'guest'
             return redirect_to_url(self.get_next_url(request))
         else:
+            messages.error(request, _('By continue, please log in or continue as guest.'))
             return self.render()
 
     def is_completed(self, request, warn=False):
