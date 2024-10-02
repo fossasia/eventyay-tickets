@@ -1105,6 +1105,7 @@ class TicketSettingsForm(SettingsForm):
         'ticket_download_nonadm',
         'ticket_download_pending',
         'ticket_download_require_validated_email',
+        'require_registered_account_for_tickets'
     ]
     ticket_secret_generator = forms.ChoiceField(
         label=_("Ticket code generator"),
