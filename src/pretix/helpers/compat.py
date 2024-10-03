@@ -17,23 +17,22 @@ def date_fromisocalendar(isoyear, isoweek, isoday):
 
 class CompatDeleteView(SingleObjectTemplateResponseMixin, DeletionMixin, FormMixin, BaseDetailView):
     """
-    This view combines the functionality of displaying a confirmation template,
-    handling form validation, and deleting the object upon form submission.
+    This view integrates the ability to show a confirmation template, manage form validation, and delete the object when the form is submitted.
     """
     form_class = Form
     template_name_suffix = "_confirm_delete"
 
     def post(self, request, *args, **kwargs):
         """
-        Validate the form and delete the object if the form is valid.
+        Validate the form and delete the object if it is valid.
 
         Parameters:
-            request (HttpRequest): The HTTP request object.
+            request (HttpRequest): The HTTP request object
             *args: Additional positional arguments.
             **kwargs: Additional keyword arguments.
 
         Returns:
-            HttpResponse: The response after form validation.
+            HttpResponse: The response following form validation.
         """
         self.object = self.get_object()
         form = self.get_form()
@@ -44,6 +43,6 @@ class CompatDeleteView(SingleObjectTemplateResponseMixin, DeletionMixin, FormMix
 
     def form_valid(self, form):
         """
-        Delete the object and redirect to the success URL.
+        Remove the object and redirect to the success URL.
         """
         return self.delete(self.request, self.args, self.kwargs)

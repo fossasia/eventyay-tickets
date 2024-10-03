@@ -1466,11 +1466,11 @@ class QuickSetupView(FormView):
 
 class EventQRCode(EventPermissionRequiredMixin, View):
     """
-    View to generate QR codes for event URLs. This class requires event-specific
-    permissions and can generate QR codes in various formats (SVG, JPEG, PNG, GIF).
+    Access the view to generate QR codes for event URLs. This class requires specific permissions for each event and can produce QR codes in
+    multiple formats (SVG, JPEG, PNG, GIF).
 
     Attributes:
-        permission (str): Required permissions for accessing this view.
+        permission (str): Permissions needed to access this view.
     """
     permission = None
 
@@ -1499,7 +1499,7 @@ class EventQRCode(EventPermissionRequiredMixin, View):
         qr.add_data(url)
         qr.make(fit=True)
 
-        # Generate the QR code in the requested format
+        #  Generate the QR code in the specified format
         if filetype == 'svg':
             return self._generate_svg_response(qr, request.event.slug, filetype)
         elif filetype in ('jpeg', 'png', 'gif'):
@@ -1513,11 +1513,11 @@ class EventQRCode(EventPermissionRequiredMixin, View):
 
         Parameters:
             qr (QRCode): The QRCode object.
-            event_slug (str): The event slug to be used in the filename.
-            filetype (str): The file type (should be 'svg').
+            event_slug (str): The slug for the event to be included in the filename.
+            filetype (str): The desired file type (must be 'svg').
 
         Returns:
-            HttpResponse: An HTTP response containing the SVG QR code.
+            HttpResponse: An HTTP response that contains the SVG QR code.
         """
         factory = qrcode.image.svg.SvgPathImage
         img = qr.make_image(image_factory=factory)
