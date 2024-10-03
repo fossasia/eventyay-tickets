@@ -394,7 +394,7 @@
                         {% endfor %}
                     {% endif %}
                 {% elif request.organiser %}  {# if request.event #}
-                    <a class="nav-link {% if url_name == "organiser.dashboard" %} active{% endif %}" href="{{ request.organiser.orga_urls.settings }}">
+                    <a class="nav-link {% if url_name == "organiser.dashboard" %} active{% endif %}" href="{{ request.organiser.orga_urls.base }}">
                         <i class="fa fa-tachometer"></i>
                         <span>{% translate "Dashboard" %}</span>
                     </a>
