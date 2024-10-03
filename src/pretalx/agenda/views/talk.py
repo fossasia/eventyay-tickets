@@ -19,8 +19,6 @@ from pretalx.agenda.signals import register_recording_provider
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.mixins.views import (
     EventPermissionRequired,
-    PermissionRequired,
-    SocialMediaCardMixin,
 )
 from pretalx.common.mixins.views import PermissionRequired, SocialMediaCardMixin
 from pretalx.common.text.phrases import phrases
