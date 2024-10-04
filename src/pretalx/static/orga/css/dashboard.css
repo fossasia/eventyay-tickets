@@ -14,6 +14,7 @@
     border-radius: 4px;
     box-shadow: var(--shadow-lighter);
     border-radius: var(--size-border-radius);
+    user-select: none;
 
     &:hover {
       box-shadow: var(--shadow-light);
