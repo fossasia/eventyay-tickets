@@ -59,7 +59,10 @@ class EventPermissionMiddleware:
     @staticmethod
     def _handle_login(request):
         # If the user is already authenticated, no need to auto-login
-        if request.user.is_authenticated:
+
+        if request.user.is_authenticated or any(
+            path in request.path for path in ["/callback", "/signup"]
+        ):
             return
 
         # Check for the presence of the SSO token
@@ -80,6 +83,7 @@ class EventPermissionMiddleware:
                 user.is_staff = payload.get("is_staff", False)
                 user.locale = payload.get("locale", user.locale)
                 user.timezone = payload.get("timezone", user.timezone)
+                user.code = payload.get("customer_identifier", user.code)
                 user.save()
                 login(
                     request, user, backend="django.contrib.auth.backends.ModelBackend"
