@@ -36,6 +36,7 @@ def generate_customer_sso_token(customer):
         jwt_payload = {
             'email': customer.email,
             'name': customer.name,
+            'customer_identifier': customer.identifier,
             'is_active': customer.is_active,
             'locale': customer.locale,
             'exp': datetime.utcnow() + timedelta(hours=1),  # Token expiration
