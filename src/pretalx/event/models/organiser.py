@@ -116,7 +116,7 @@ class Organiser(PretalxModel):
         delete = "{settings}delete"
         teams = "{base}teams/"
         new_team = "{teams}new"
-        user_search = "{_base}api/users"
+        user_search = "{base}api/users"
 
     @transaction.atomic
     def shred(self, person=None):

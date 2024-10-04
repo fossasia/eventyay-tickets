@@ -168,16 +168,19 @@
                                 <span class="context-name">{{ request.user.get_display_name }}</span>
                             {% endif %}
                         </div>
-                        <div id="nav-search-dropdown" class="dropdown-menu dropdown-menu-left d-none" aria-labelledby="nav-search" data-source="{% url "orga:nav.typeahead" %}" data-event-typeahead{% if request.event %} data-organiser="{{ request.event.organiser.pk }}"{% elif request.organiser %} data-organiser="{{ request.organiser.pk }}"{% endif %}>
-                            <div class="query-holder">
-                                <div class="form-box">
-                                    <input type="text" class="form-control" placeholder="{% translate "Search" %}" data-typeahead-query>
-                                </div>
-                            </div>
-                            <ul id="search-results">
-                            </ul>
+                        <div class="arrow">
+                          <i class="fa fa-angle-down"></i>
                         </div>
                     </summary>
+                    <div id="nav-search-input-wrapper" class="dropdown-content dropdown-menu dropdown-menu-left" aria-labelledby="nav-search" data-source="{% url "orga:nav.typeahead" %}" data-event-typeahead{% if request.event %} data-organiser="{{ request.event.organiser.pk }}"{% elif request.organiser %} data-organiser="{{ request.organiser.pk }}"{% endif %}>
+                        <div class="query-holder">
+                            <div class="form-box">
+                                <input type="search" class="form-control" placeholder="{% translate "Search" %}" data-typeahead-query>
+                            </div>
+                        </div>
+                        <ul id="search-results">
+                        </ul>
+                    </div>
                 </details>
                 {% if request.event %}
                     {% has_perm "orga.view_orga_area" request.user request.event as can_see_orga_area %}
