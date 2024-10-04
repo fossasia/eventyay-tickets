@@ -9,7 +9,7 @@ from django.utils.translation import ngettext as _n
 from django_scopes.forms import SafeModelMultipleChoiceField
 
 from pretalx.common.forms.mixins import ReadOnlyFlag
-from pretalx.common.forms.widgets import MarkdownWidget
+from pretalx.common.forms.widgets import MarkdownWidget, EnhancedSelectMultiple
 from pretalx.common.text.phrases import phrases
 from pretalx.orga.forms.export import ExportForm
 from pretalx.person.models import User
@@ -32,7 +32,7 @@ class TagsForm(ReadOnlyFlag, forms.ModelForm):
             "tags",
         ]
         widgets = {
-            "tags": forms.SelectMultiple(attrs={"class": "select2"}),
+            "tags": EnhancedSelectMultiple(color_field="color"),
         }
         field_classes = {
             "tags": SafeModelMultipleChoiceField,
@@ -204,7 +204,7 @@ class ReviewerForProposalForm(ReviewAssignmentForm):
         for submission in self.submissions:
             self.fields[submission.code] = forms.MultipleChoiceField(
                 choices=review_choices,
-                widget=forms.SelectMultiple(attrs={"class": "select2"}),
+                widget=EnhancedSelectMultiple,
                 initial=list(
                     submission.assigned_reviewers.values_list("id", flat=True)
                 ),
@@ -224,7 +224,7 @@ class ProposalForReviewerForm(ReviewAssignmentForm):
         for reviewer in self.reviewers:
             self.fields[reviewer.code] = forms.MultipleChoiceField(
                 choices=submission_choices,
-                widget=forms.SelectMultiple(attrs={"class": "select2"}),
+                widget=EnhancedSelectMultiple,
                 initial=list(reviewer.assigned_reviews.values_list("id", flat=True)),
                 label=reviewer.name,
                 required=False,

@@ -21,7 +21,7 @@ from pretalx.common.forms.mixins import (
     ReadOnlyFlag,
     RequestRequire,
 )
-from pretalx.common.forms.widgets import MarkdownWidget
+from pretalx.common.forms.widgets import MarkdownWidget, EnhancedSelectMultiple
 from pretalx.common.text.phrases import phrases
 from pretalx.event.models import Event
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
@@ -385,8 +385,8 @@ class SpeakerInformationForm(I18nHelpText, I18nModelForm):
             "resource": SizeFileField,
         }
         widgets = {
-            "limit_tracks": forms.SelectMultiple(attrs={"class": "select2"}),
-            "limit_types": forms.SelectMultiple(attrs={"class": "select2"}),
+            "limit_tracks": EnhancedSelectMultiple(color_field="color"),
+            "limit_types": EnhancedSelectMultiple,
         }
 
 
@@ -420,7 +420,7 @@ class UserSpeakerFilterForm(forms.Form):
     events = SafeModelMultipleChoiceField(
         queryset=Event.objects.none(),
         required=False,
-        widget=forms.SelectMultiple(attrs={"class": "select2"}),
+        widget=EnhancedSelectMultiple,
     )
 
     def __init__(self, *args, events=None, **kwargs):
