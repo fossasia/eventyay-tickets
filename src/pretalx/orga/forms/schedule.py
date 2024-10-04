@@ -1,13 +1,12 @@
 from django import forms
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from django_scopes.forms import SafeModelMultipleChoiceField
-from i18nfield.forms import I18nFormMixin, I18nModelForm
+from i18nfield.forms import I18nModelForm
 
 from pretalx.common.forms.mixins import I18nHelpText
 from pretalx.common.text.phrases import phrases
 from pretalx.orga.forms.export import ExportForm
-from pretalx.schedule.models import Room, Schedule, TalkSlot
+from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.models.submission import Submission, SubmissionStates
 
 
@@ -205,38 +204,3 @@ class ScheduleExportForm(ExportForm):
 
     def _get_resources_value(self, obj):
         return [resource.url for resource in obj.active_resources if resource.url]
-
-
-class ScheduleRoomForm(I18nFormMixin, forms.Form):
-    room = SafeModelMultipleChoiceField(
-        label=_("Rooms"),
-        required=False,
-        queryset=Room.objects.none(),
-        widget=forms.SelectMultiple(
-            attrs={"class": "select2", "data-placeholder": _("Rooms")}
-        ),
-    )
-
-    def __init__(self, *args, event=None, **kwargs):
-        self.event = event
-        super().__init__(*args, **kwargs)
-        self.fields["room"].queryset = self.event.rooms.all()
-
-
-class ScheduleVersionForm(forms.Form):
-    version = forms.ChoiceField(
-        label=phrases.schedule.version,
-        required=False,
-        choices=[],
-        widget=forms.SelectMultiple(
-            attrs={"class": "select2", "data-placeholder": phrases.schedule.version}
-        ),
-    )
-
-    def __init__(self, *args, event=None, **kwargs):
-        self.event = event
-        super().__init__(*args, **kwargs)
-        self.fields["version"].choices = [
-            (schedule.version, schedule.version)
-            for schedule in self.event.schedules.filter(version__isnull=False)
-        ]

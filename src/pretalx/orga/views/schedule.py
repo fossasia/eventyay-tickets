@@ -35,8 +35,6 @@ from pretalx.common.views.mixins import (
 from pretalx.orga.forms.schedule import (
     ScheduleExportForm,
     ScheduleReleaseForm,
-    ScheduleRoomForm,
-    ScheduleVersionForm,
 )
 from pretalx.schedule.forms import QuickScheduleForm, RoomForm
 from pretalx.schedule.models import Availability, Room, TalkSlot
@@ -70,18 +68,6 @@ class ScheduleView(EventPermissionRequired, TemplateView):
         result["gettext_language"] = path.replace("-", "_")
 
         result["schedule_version"] = version
-        result["schedule_version_form"] = ScheduleVersionForm(
-            {"version": version} if version else None,
-            event=self.request.event,
-        )
-        result["schedule_room_form"] = ScheduleRoomForm(
-            (
-                {"room": self.request.GET.getlist("room")}
-                if "room" in self.request.GET
-                else None
-            ),
-            event=self.request.event,
-        )
         result["active_schedule"] = (
             self.request.event.schedules.filter(version=version).first()
             if version
