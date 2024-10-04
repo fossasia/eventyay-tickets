@@ -407,6 +407,7 @@ class EventSettingsView(views.APIView):
 
 class CustomerOrderCheckView(views.View):
 
+    @scopes_disabled
     def get(self, request, *args, **kwargs):
         if (not kwargs.get("customer_id")
                 or not kwargs.get("event")
