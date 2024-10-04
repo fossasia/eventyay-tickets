@@ -363,6 +363,12 @@ article .pretalx-session .pretalx-session-info .abstract {
 @media (max-width: 1000px) {
   #fahrplan #schedule-nav {
     flex-direction: column;
+    .navigation {
+        flex-wrap: wrap;
+        .btn-outline-success {
+            margin: 5px;
+        }
+    }
   }
   #main-container.main-schedule {
     max-width: 100%;

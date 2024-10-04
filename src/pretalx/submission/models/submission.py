@@ -910,8 +910,8 @@ class Submission(GenerateCode, PretalxModel):
                 field_content = _("Yes") if field_content else _("No")
             elif isinstance(field_content, FieldFile):
                 field_content = (
-                    self.event.custom_domain or settings.SITE_URL
-                ) + field_content.url
+                                    self.event.custom_domain or settings.SITE_URL
+                                ) + field_content.url
             result += f"**{field_name}**: {field_content}\n\n"
         return result
 
@@ -962,7 +962,6 @@ class SubmissionFavouriteDeprecated(models.Model):
 
 
 class SubmissionFavouriteDeprecatedSerializer(serializers.ModelSerializer):
-
     user = serializers.SlugRelatedField(slug_field="id", read_only=True)
 
     def __init__(self, user_id=None, **kwargs):
@@ -982,6 +981,8 @@ class SubmissionFavouriteDeprecatedSerializer(serializers.ModelSerializer):
             submission_fav.talk_list = talk_code
             submission_fav.save()
             return submission_fav
+
+
 class SubmissionFavourite(PretalxModel):
     user = models.ForeignKey(
         to="person.User",
