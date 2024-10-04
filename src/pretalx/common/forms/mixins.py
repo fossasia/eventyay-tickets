@@ -297,7 +297,7 @@ class QuestionFieldsMixin:
                 widget=(
                     forms.RadioSelect
                     if len(choices) < 4
-                    else forms.Select(attrs={"class": "select2"})
+                    else forms.Select(attrs={"class": "enhanced"})
                 ),
             )
             field.original_help_text = original_help_text
@@ -312,7 +312,7 @@ class QuestionFieldsMixin:
                 widget=(
                     forms.CheckboxSelectMultiple
                     if len(choices) < 8
-                    else forms.SelectMultiple(attrs={"class": "select2"})
+                    else forms.SelectMultiple(attrs={"class": "enhanced"})
                 ),
                 initial=(
                     initial_object.options.all()

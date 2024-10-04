@@ -228,7 +228,7 @@ onReady(() => {
         .querySelectorAll("input[data-maxsize][type=file]")
         .forEach((element) => initFileSizeCheck(element))
     document
-        .querySelectorAll(".select2")
+        .querySelectorAll("select.enhanced")
         .forEach((element) => initSelect(element))
     document
         .querySelectorAll("form[method=post]")

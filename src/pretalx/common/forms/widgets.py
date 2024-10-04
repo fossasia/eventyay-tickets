@@ -106,7 +106,7 @@ class MarkdownWidget(Textarea):
 
 
 class EnhancedSelectMixin(Select):
-    # - add the "class: select2" attribute to the select widget
+    # - add the "class: enhanced" attribute to the select widget
     # - if `description_field` is set, set data-description on options
     # - if `color_field` is set, set data-color on options
     def __init__(
@@ -118,7 +118,7 @@ class EnhancedSelectMixin(Select):
 
     def get_context(self, name, value, attrs):
         ctx = super().get_context(name, value, attrs)
-        ctx["widget"]["attrs"] = add_class(ctx["widget"]["attrs"], "select2")
+        ctx["widget"]["attrs"] = add_class(ctx["widget"]["attrs"], "enhanced")
         if self.is_required:
             ctx["widget"]["attrs"]["required"] = ""
         return ctx
