@@ -114,6 +114,16 @@ const initNavSearch = () => {
             return true
         }
     })
+
+    // Open search dropdown with alt+k
+    document.addEventListener("keydown", (ev) => {
+        if (ev.altKey && ev.key === "k") {
+            if (summary.open) return
+            summary.click()
+            ev.preventDefault()
+            ev.stopPropagation()
+        }
+    })
 }
 
 onReady(initNavSearch)

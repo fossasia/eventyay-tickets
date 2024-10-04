@@ -174,7 +174,7 @@
                     <div id="nav-search-input-wrapper" class="dropdown-content dropdown-menu dropdown-menu-left" aria-labelledby="nav-search" data-source="{% url "orga:nav.typeahead" %}" data-event-typeahead{% if request.event %} data-organiser="{{ request.event.organiser.pk }}"{% elif request.organiser %} data-organiser="{{ request.organiser.pk }}"{% endif %}>
                         <div class="query-holder">
                             <div class="form-box">
-                                <input type="search" class="form-control" placeholder="{% translate "Search" %}" data-typeahead-query>
+                                <input type="search" class="form-control" placeholder="{% translate "Search" %} (Alt + k)" data-typeahead-query>
                             </div>
                         </div>
                         <ul id="search-results">
