@@ -7,7 +7,11 @@ from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceFie
 
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.mixins import ReadOnlyFlag, RequestRequire
-from pretalx.common.forms.widgets import MarkdownWidget
+from pretalx.common.forms.widgets import (
+    EnhancedSelect,
+    EnhancedSelectMultiple,
+    MarkdownWidget,
+)
 from pretalx.common.text.phrases import phrases
 from pretalx.schedule.models import TalkSlot
 from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
@@ -103,17 +107,13 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             self.fields["start"] = forms.DateTimeField(
                 required=False,
                 label=TalkSlot._meta.get_field("start").verbose_name,
-                widget=forms.DateInput(
-                    attrs={"type": "datetime-local"}
-                ),
+                widget=forms.DateInput(attrs={"type": "datetime-local"}),
                 initial=initial_slot.get("start"),
             )
             self.fields["end"] = forms.DateTimeField(
                 required=False,
                 label=TalkSlot._meta.get_field("end").verbose_name,
-                widget=forms.DateInput(
-                    attrs={"type": "datetime-local"}
-                ),
+                widget=forms.DateInput(attrs={"type": "datetime-local"}),
                 initial=initial_slot.get("end"),
             )
         if "abstract" in self.fields:
@@ -204,9 +204,9 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             "is_featured",
         ]
         widgets = {
-            "tags": forms.SelectMultiple(attrs={"class": "select2"}),
-            "track": forms.Select(attrs={"class": "select2"}),
-            "submission_type": forms.Select(attrs={"class": "select2"}),
+            "tags": EnhancedSelectMultiple(color_field="color"),
+            "track": EnhancedSelect(color_field="color"),
+            "submission_type": EnhancedSelect,
             "abstract": MarkdownWidget,
             "description": MarkdownWidget,
             "notes": MarkdownWidget,

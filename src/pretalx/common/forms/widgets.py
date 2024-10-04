@@ -106,9 +106,15 @@ class MarkdownWidget(Textarea):
 
 
 class EnhancedSelectMixin(Select):
-    # Just add the "class: select2" attribute to the select widget
-    # This is really annoying to do on the fly, because we can only override
-    # widget attrs, not add them, otherwise.
+    # - add the "class: select2" attribute to the select widget
+    # - if `description_field` is set, set data-description on options
+    # - if `color_field` is set, set data-color on options
+    def __init__(
+        self, attrs=None, choices=(), description_field=None, color_field=None
+    ):
+        self.description_field = description_field
+        self.color_field = color_field
+        super().__init__(attrs, choices)
 
     def get_context(self, name, value, attrs):
         ctx = super().get_context(name, value, attrs)
@@ -117,6 +123,23 @@ class EnhancedSelectMixin(Select):
             ctx["widget"]["attrs"]["required"] = ""
         return ctx
 
+    def create_option(
+        self, name, value, label, selected, index, subindex=None, attrs=None
+    ):
+        option = super().create_option(
+            name, value, label, selected, index, subindex, attrs
+        )
+        if value and getattr(value, "instance", None):
+            if self.description_field and (
+                description := getattr(value.instance, self.description_field, None)
+            ):
+                option["attrs"]["data-description"] = description
+            if self.color_field and (
+                color := getattr(value.instance, self.color_field, None)
+            ):
+                option["attrs"]["data-color"] = color
+        return option
+
 
 class EnhancedSelect(EnhancedSelectMixin, Select):
     pass
@@ -124,6 +147,17 @@ class EnhancedSelect(EnhancedSelectMixin, Select):
 
 class EnhancedSelectMultiple(EnhancedSelectMixin, SelectMultiple):
     pass
+
+
+def get_count(value, label):
+    count = None
+    instance = getattr(value, "instance", None)
+    if instance:
+        count = getattr(instance, "count", 0)
+    count = count or getattr(label, "count", 0)
+    if callable(count):
+        return count(label)
+    return count
 
 
 class SelectMultipleWithCount(EnhancedSelectMultiple):
@@ -136,9 +170,14 @@ class SelectMultipleWithCount(EnhancedSelectMultiple):
     """
 
     def optgroups(self, name, value, attrs=None):
-        choices = sorted(self.choices, key=lambda choice: choice[1].count, reverse=True)
+        choices = sorted(
+            self.choices, key=lambda choice: get_count(*choice), reverse=True
+        )
         result = []
         for index, (option_value, label) in enumerate(choices):
+            count = get_count(option_value, label)
+            if count == 0:
+                continue
             selected = str(option_value) in value
             result.append(
                 self.create_option(
@@ -147,12 +186,11 @@ class SelectMultipleWithCount(EnhancedSelectMultiple):
                     label=label,
                     selected=selected,
                     index=index,
+                    count=count,
                 )
             )
         return [(None, result, 0)]
 
     def create_option(self, name, value, label, *args, count=0, **kwargs):
-        option = super().create_option(name, value, str(label), *args, **kwargs)
-        if label.count == 0:
-            option["attrs"]["class"] = "d-none"
-        return option
+        label = f"{label} ({count})"
+        return super().create_option(name, value, label, *args, **kwargs)

@@ -101,6 +101,22 @@
       .choices__item {
         font-size: 1rem;
         color: var(--color-text-input);
+
+        &.choice-item-color:before {
+            content: "";
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            margin-right: 5px;
+            border-radius: 50%;
+            background-color: var(--choice-color);
+        }
+
+          .choice-item-description {
+              color: var(--color-grey);
+              font-style: italic;
+              font-size: 0.8rem;
+          }
       }
   }
 }
