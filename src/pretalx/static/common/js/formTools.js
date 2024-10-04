@@ -124,7 +124,7 @@ const initSelect = (element) => {
             showPlaceholder = label.textContent !== element.title
         }
     }
-    new Choices(element, {
+    const choicesOptions = {
         removeItems: !element.readonly,
         removeItemButton:
             !element.readonly && (!element.required || element.multiple),
@@ -140,7 +140,25 @@ const initSelect = (element) => {
         removeItemLabelText: "×",
         removeItemIconText: "×",
         maxItemText: "",
-    })
+    }
+    if (element.querySelectorAll("option[data-description]").length || element.querySelectorAll("option[data-color]").length) {
+        choicesOptions.callbackOnCreateTemplates = (strToEl, escapeForTemplates, getClassNames) => ({
+            choice: (allowHTML, classNames, choice, selectedText, groupName) => {
+                let originalResult = Choices.defaults.templates.choice(allowHTML, classNames, choice, selectedText, groupName)
+                if (classNames.element && classNames.element.dataset.description) {
+                    console.log(originalResult)
+                    console.log(classNames.element)
+                    originalResult.innerHTML += `<div class="choice-item-description">${classNames.element.dataset.description}</div>`
+                }
+                if (classNames.element && classNames.element.dataset.color) {
+                    originalResult.classList.add("choice-item-color")
+                    originalResult.style.setProperty("--choice-color", classNames.element.dataset.color)
+                }
+                return originalResult
+            }
+        })
+    }
+    new Choices(element, choicesOptions)
 }
 
 // Make sure the main form doesn't have unsaved changes before leaving

@@ -7,11 +7,10 @@ from django_scopes.forms import SafeModelChoiceField
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.mixins import PublicContent, RequestRequire
-from pretalx.common.forms.widgets import MarkdownWidget, SelectMultipleWithCount
+from pretalx.common.forms.widgets import MarkdownWidget, SelectMultipleWithCount, EnhancedSelect
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views.mixins import Filterable
-from pretalx.submission.forms.track_select_widget import TrackSelectWidget
-from pretalx.submission.models import Answer, Question, Submission, SubmissionStates
+from pretalx.submission.models import Answer, Question, Submission, SubmissionStates, Track, Tag
 
 
 class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
@@ -199,7 +198,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             "abstract": MarkdownWidget,
             "description": MarkdownWidget,
             "notes": MarkdownWidget,
-            "track": TrackSelectWidget,
+            "track": EnhancedSelect(description_field="description", color_field="color"),
         }
         field_classes = {
             "submission_type": SafeModelChoiceField,
@@ -213,7 +212,7 @@ class CountableOption:
         self.count = count
 
     def __str__(self):
-        return f"{self.name} ({self.count})"
+        return str(self.name)
 
 
 class SubmissionFilterForm(forms.Form):
@@ -234,13 +233,15 @@ class SubmissionFilterForm(forms.Form):
         required=False,
         widget=SelectMultipleWithCount(attrs={"title": phrases.base.language}),
     )
-    track = forms.MultipleChoiceField(
+    track = forms.ModelMultipleChoiceField(
         required=False,
-        widget=SelectMultipleWithCount(attrs={"title": _("Tracks")}),
+        queryset=Track.objects.none(),
+        widget=SelectMultipleWithCount(attrs={"title": _("Tracks")}, color_field="color"),
     )
-    tags = forms.MultipleChoiceField(
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.none(),
         required=False,
-        widget=SelectMultipleWithCount(attrs={"title": _("Tags")}),
+        widget=SelectMultipleWithCount(attrs={"title": _("Tags")}, color_field="color"),
     )
     question = SafeModelChoiceField(queryset=Question.objects.none(), required=False)
     unanswered = forms.BooleanField(required=False)
@@ -297,14 +298,9 @@ class SubmissionFilterForm(forms.Form):
         else:
             self.fields.pop("submission_type", None)
         if len(tracks) > 1:
-            track_count = {
-                d["track"]: d["track__count"]
-                for d in qs.order_by("track").values("track").annotate(Count("track"))
-            }
-            self.fields["track"].choices = [
-                (track.pk, CountableOption(track.name, track_count.get(track.pk, 0)))
-                for track in tracks
-            ]
+            self.fields["track"].queryset = tracks.annotate(
+                count=Count("submissions", distinct=True, filter=Q(event=event))
+            ).order_by("-count")
         else:
             self.fields.pop("track", None)
         if len(languages) > 1:
@@ -324,14 +320,9 @@ class SubmissionFilterForm(forms.Form):
         if not self.event.tags.all().exists():
             self.fields.pop("tags", None)
         else:
-            tag_count = event.tags.prefetch_related("submissions").annotate(
+            self.fields["tags"].queryset = event.tags.prefetch_related("submissions").annotate(
                 submission_count=Count("submissions", distinct=True)
             )
-            tag_count = {tag.tag: tag.submission_count for tag in tag_count}
-            self.fields["tags"].choices = [
-                (tag.pk, CountableOption(tag.tag, tag_count.get(tag.tag, 0)))
-                for tag in self.event.tags.all()
-            ]
 
         if usable_states:
             usable_states = [
