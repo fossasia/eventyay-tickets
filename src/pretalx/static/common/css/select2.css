@@ -98,6 +98,11 @@
       z-index: 500;
       border-bottom-right-radius: var(--size-border-radius);
       border-bottom-left-radius: var(--size-border-radius);
+      border-color: var(--color-border);
+      /* Make the corner radius look slightly less silly */
+      margin-top: -2px;
+      margin-bottom: -2px;
+
       .choices__item {
         font-size: 1rem;
         color: var(--color-text-input);
@@ -119,4 +124,8 @@
           }
       }
   }
+}
+
+.submit-group .choices {
+    align-self: flex-start;
 }

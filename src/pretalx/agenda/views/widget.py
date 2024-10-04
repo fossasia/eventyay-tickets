@@ -21,7 +21,7 @@ WIDGET_PATH = "agenda/js/pretalx-schedule.min.js"
 
 
 def color_etag(request, event, **kwargs):
-    return event.primary_color or "none"
+    return request.event.primary_color or "none"
 
 
 def widget_js_etag(request, event, **kwargs):

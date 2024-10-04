@@ -100,7 +100,7 @@ const initFileSizeCheck = (element) => {
 
 const isVisible = (element) => {
     if (!element) return false
-    return !element.hidden && !element.classList.contains("d-none")
+    return !element.hidden && !element.classList.contains("d-none") && !element.style.display === "none"
 }
 
 const initSelect = (element) => {

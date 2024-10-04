@@ -18,6 +18,6 @@ if (titleParts.length !== 3) {
         "Could not parse site title while adding proposal title change listener."
     )
 } else {
-    onLoad(checkForTitle)
+    onReady(checkForTitle)
     document.getElementById("id_title").addEventListener("change", (ev) => { updateTitle(ev.target.value) })
 }

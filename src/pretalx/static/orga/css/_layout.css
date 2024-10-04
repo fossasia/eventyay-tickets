@@ -762,8 +762,12 @@ details.submission-state-dropdown {
   align-self: baseline;
   width: 20px;
   height: 20px;
-  border: 2px solid var(--color-grey-light);
+  border: 2px solid var(--color-border);
+  border-radius: var(--size-border-radius);
   margin-right: 2px;
+}
+table .color-square {
+  margin-top: 3px;
 }
 .phase-option-row .row,
 .score-row .row {
