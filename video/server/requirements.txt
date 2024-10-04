@@ -43,7 +43,7 @@ daphne==4.1.*
 black==23.7
 isort==5.13.2
 flake8==7.0.0
-pytest==8.2.0
+pytest==8.3.3
 pytest-django==4.9.0
 pytest-asyncio==0.23.7
 pytest-cov==5.0.0
