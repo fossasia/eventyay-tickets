@@ -174,7 +174,7 @@ aside.sidebar {
       #search-context-icon .fa-stack-2x {
         margin-left: 0;
       }
-      #search-context-text {
+      #search-context-text, .arrow {
         display: flex;
       }
     }
@@ -207,6 +207,9 @@ aside.sidebar {
       .arrow[aria-expanded="true"] i, &[open] .arrow i {
         transform: rotate(0);
       }
+  }
+  #nav-search-wrapper .arrow {
+      display: none;
   }
 
   .nav-fold span.has-children {

@@ -4,14 +4,14 @@
 
 {% block extra_title %}{% translate "Invitation" %} :: {{ invitation.team.name }} :: {% endblock extra_title %}
 {% block content %}
-    <h2 class="col-sm-6 ml-auto mr-auto">
+    <h2 class="col-md-6 ml-auto mr-auto">
         {% blocktranslate with organiser=invitation.team.organiser.name name=invitation.team.name trimmed %}
             Invitation to the {{ organiser }} team “{{ name }}”
         {% endblocktranslate %}
     </h2>
 
     {% if request.user.is_anonymous %}
-        <div class="col-sm-6 ml-auto mr-auto">
+        <div class="col-md-6 ml-auto mr-auto">
             <p>
                 {% blocktranslate trimmed with name=invitation.team.name link=request.path %}
                     You have been invited to join the organiser team {{ name }}.
@@ -28,7 +28,7 @@
         {% include "common/auth.html" %}
 
     {% else %}
-        <form method="post" class="col-sm-6 ml-auto mr-auto">
+        <form method="post" class="col-md-6 ml-auto mr-auto">
             {% csrf_token %}
             <p></p>
             <p>
