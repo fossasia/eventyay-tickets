@@ -4,8 +4,7 @@ from urllib.parse import quote
 
 from django.conf import settings
 from django.db import models, transaction
-from django.db.models import Count, TextField
-from django.db.models.functions import Cast
+from django.db.models import Count
 from django.db.utils import DatabaseError
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -21,10 +20,7 @@ from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.notifications import render_notifications
 from pretalx.schedule.signals import schedule_release
 from pretalx.submission.models import SubmissionStates
-from pretalx.submission.models.submission import (
-    SubmissionFavourite,
-    SubmissionFavouriteDeprecated,
-)
+from pretalx.submission.models.submission import SubmissionFavourite
 
 
 class Schedule(PretalxModel):

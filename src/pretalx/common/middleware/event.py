@@ -20,8 +20,6 @@ from django_scopes import scope, scopes_disabled
 
 from pretalx.event.models import Event, Organiser, Team
 from pretalx.person.models import User
-from pretalx.event.models import Event, Organiser
-
 
 logger = logging.getLogger(__name__)
 
