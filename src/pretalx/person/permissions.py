@@ -53,9 +53,7 @@ def person_can_view_information(user, obj):
         return qs.exists()
     if obj.target_group == "confirmed":
         return qs.filter(state=SubmissionStates.CONFIRMED).exists()
-    return qs.filter(
-        state__in=[SubmissionStates.CONFIRMED, SubmissionStates.ACCEPTED]
-    ).exists()
+    return qs.filter(state__in=SubmissionStates.accepted_states).exists()
 
 
 rules.add_perm("person.is_administrator", is_administrator)
