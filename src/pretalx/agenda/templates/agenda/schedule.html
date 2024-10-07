@@ -10,6 +10,40 @@
 {% block agenda_custom_header %}
     <script id="pretalx-messages" data-logged-in="{% if request.user.is_anonymous %}false{% else %}true{% endif %}" src="{{ request.event.urls.schedule }}widget/messages.js"></script>
 {% endblock agenda_custom_header %}
+{% include "agenda/header_row.html" with with_margin=True with_extra=True %}
+{% block header_right %}
+    <details class="dropdown mr-2">
+        <summary>
+            <span>{{ phrases.schedule.version }} {{ schedule.version|default:'-' }}</span>
+            <i class="fa fa-caret-down ml-1"></i>
+        </summary>
+        <div class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
+            <a class="dropdown-item" href="{{ request.event.urls.changelog }}">
+                <i class="fa fa-book"></i>
+                {% translate "Changelog" %}
+            </a>
+            <hr>
+            {% for exporter in exporters %}
+                <a class="dropdown-item" href="{{ exporter.urls.base }}">
+                    {% if exporter.icon|slice:":3" == "fa-" %}
+                        <span class="fa {{ exporter.icon }} export-icon"></span>
+                    {% else %}
+                        <span class="export-icon">{{ exporter.icon }}</span>
+                    {% endif %}
+                    {{ exporter.verbose_name }}
+                    {% if exporter.show_qrcode %}
+                        <span class="export-qrcode">
+                            <div class="btn btn-default btn-sm">
+                                <i class="fa fa-qrcode"></i>
+                            </div>
+                            <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
+                        </span>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    </details>
+{% endblock header_right %}
 
 {% block agenda_content %}
     <div id="fahrplan" class="{% if show_talk_list %}list{% else %}grid{% endif %}">
@@ -27,37 +61,7 @@
                 </span>
             </div>
         {% endif %}
-        {% include "agenda/header_row.html" with with_margin=True with_extra=True %}
-        <div class="p-3 d-print-none d-flex">
-            <div class="header-right">
-                <span>{{ phrases.schedule.version }} <a href="{{ request.event.urls.changelog }}">{{ schedule.version|default:"–" }}</a></span>
-                <details class="dropdown">
-                    <summary class="btn btn-sm btn-outline-info">
-                        <i class="fa fa-code"></i><i class="fa fa-caret-down"></i>
-                    </summary>
-                    <div class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-                        {% for exporter in exporters %}
-                            <a class="dropdown-item" href="{{ exporter.urls.base }}">
-                                {% if exporter.icon|slice:":3" == "fa-" %}
-                                    <span class="fa {{ exporter.icon }} export-icon"></span>
-                                {% else %}
-                                    <span class="export-icon">{{ exporter.icon }}</span>
-                                {% endif %}
-                                {{ exporter.verbose_name }}
-                                {% if exporter.show_qrcode %}
-                                    <span class="export-qrcode">
-                                        <div class="btn btn-default btn-sm">
-                                            <i class="fa fa-qrcode"></i>
-                                        </div>
-                                        <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
-                                    </span>
-                                {% endif %}
-                            </a>
-                        {% endfor %}
-                    </div>
-                </details>
-            </div>
-        </div>
+
         <script type="text/javascript" src="{{ request.event.urls.schedule_widget_script }}" async></script>
 
         <pretalx-schedule

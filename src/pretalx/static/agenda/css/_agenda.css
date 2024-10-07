@@ -1,6 +1,6 @@
 /* This file contains styles for the schedule and other attendee-facing components */
 
-#main-container.main-schedule, #main-container.list-schedule {
+#main-container.list-schedule {
   min-width: 0;
   #main-card main {
     /* make this the scrollparent so that the schedule widget knows where to go */
@@ -9,6 +9,7 @@
 }
 
 #main-container.main-schedule {
+  min-width: min-content;
   margin: 0 auto;
   padding-left: 0;
   padding-right: 0;

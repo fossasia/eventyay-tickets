@@ -83,7 +83,7 @@ def screenshot_bare_schedule_editor(live_server, logged_in_client, event):
         logged_in_client.get(live_server.url + f"/orga/event/{event.slug}/schedule/")
         logged_in_client.execute_script(
             """
-    const selectors = [".alert", ".schedule-header"]
+    const selectors = [".alert"]
     for (selector of selectors) {
         var element = document.querySelector(selector);
         if (element)
