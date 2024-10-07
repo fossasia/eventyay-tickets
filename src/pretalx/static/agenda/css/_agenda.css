@@ -14,22 +14,10 @@
       width: 100%;
     }
   }
-  header,
-  #fahrplan.grid #schedule-nav {
-    margin: 0;
-    padding: 0;
+  header {
     position: sticky;
     left: 0;
-    box-sizing: border-box;
-    max-width: calc(100vw - 16px);
   }
-  header > * {
-    padding: 0 16px;
-    margin-bottom: 8px;
-  }
-}
-header {
-  word-break: normal;
 }
 .schedule-header {
   display: flex;
@@ -112,6 +100,17 @@ header {
         color: $brand-primary;
         border-color: $brand-primary;
       }
+.header-right {
+  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  & > * {
+    margin-right: 8px;
+    height: 90%;
+    summary {
+      height: 100%;
+      margin-bottom: 3px;
     }
   }
 }
