@@ -5,37 +5,34 @@ from django.urls import reverse
 
 
 @pytest.mark.parametrize(
-    "search,results,orga_results",
+    "search,orga_results",
     (
-        ("a", 0, 0),
-        ("aa", 0, 0),
-        ("aaa", 0, 0),
-        ("Jane S", 1, 0),
+        ("a", 0),
+        ("aa", 0),
+        ("aaa", 0),
+        ("Jane S", 1),
     ),
 )
 @pytest.mark.django_db
 def test_user_typeahead(
-    orga_client, event, speaker, other_orga_user, search, results, orga_results
+    orga_client,
+    event,
+    speaker,
+    submission,
+    other_orga_user,
+    search,
+    orga_results,
 ):
-    response = orga_client.get(
-        reverse("orga:event.user_list", kwargs={"event": event.slug}),
-        data={"search": search},
-        follow=True,
-    )
     orga_response = orga_client.get(
-        reverse("orga:event.user_list", kwargs={"event": event.slug}),
+        reverse("orga:organiser.user_list", kwargs={"organiser": event.organiser.slug}),
         data={"search": search, "orga": True},
         follow=True,
     )
-    assert response.status_code == 200
     assert orga_response.status_code == 200
-    content = json.loads(response.content.decode())
     orga_content = json.loads(orga_response.content.decode())
-    assert content["count"] == results
     assert orga_content["count"] == orga_results
-
-    if results:
-        assert "name" in content["results"][0]
+    if orga_results:
+        assert "name" in orga_content["results"][0]
 
 
 @pytest.mark.django_db

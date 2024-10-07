@@ -2439,7 +2439,8 @@ msgstr ""
 
 #: pretalx/event/models/organiser.py:41
 msgid "Nobody on your teams has the permission to create new events."
-msgstr "Personne dans vos équipes n'a le droit de créer de nouveaux événements."
+msgstr ""
+"Personne dans vos équipes n'a le droit de créer de nouveaux événements."
 
 #: pretalx/event/models/organiser.py:49
 msgid ""

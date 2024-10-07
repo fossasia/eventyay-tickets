@@ -294,8 +294,8 @@ def test_orga_can_add_speakers(orga_client, submission, other_orga_user, user):
         user = "some_unused@mail.org"
 
     response = orga_client.post(
-        submission.orga_urls.new_speaker,
-        data={"speaker": user, "name": "Name"},
+        submission.orga_urls.speakers,
+        data={"email": user},
         follow=True,
     )
     submission.refresh_from_db()
@@ -308,7 +308,7 @@ def test_orga_can_add_speakers(orga_client, submission, other_orga_user, user):
 def test_orga_can_add_speakers_with_incorrect_address(orga_client, submission):
     assert submission.speakers.count() == 1
     response = orga_client.post(
-        submission.orga_urls.new_speaker,
+        submission.orga_urls.speakers,
         data={"speaker": "foooobaaaaar", "name": "Name"},
         follow=True,
     )
@@ -321,7 +321,7 @@ def test_orga_can_add_speakers_with_incorrect_address(orga_client, submission):
 def test_orga_can_readd_speaker(orga_client, submission):
     assert submission.speakers.count() == 1
     response = orga_client.post(
-        submission.orga_urls.new_speaker,
+        submission.orga_urls.speakers,
         data={"speaker": submission.speakers.first().email, "name": "Name"},
         follow=True,
     )
@@ -374,7 +374,7 @@ def test_orga_can_create_submission(orga_client, event, known_speaker, orga_user
             "slot_count": 1,
             "notes": "notes",
             "internal_notes": "internal_notes",
-            "speaker": "foo@bar.com" if not known_speaker else orga_user.email,
+            "email": "foo@bar.com" if not known_speaker else orga_user.email,
             "speaker_name": "Foo Speaker",
             "title": "title",
             "submission_type": type_pk,
