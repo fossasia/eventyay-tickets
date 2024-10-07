@@ -74,6 +74,12 @@ def is_feedback_ready(user, submission):
 
 
 @rules.predicate
+def event_uses_feedback(user, event):
+    event = getattr(event, "event", event)
+    return event and event.feature_flags["use_feedback"]
+
+
+@rules.predicate
 def is_speaker_viewable(user, profile):
     if not profile:
         return False
@@ -93,6 +99,7 @@ rules.add_perm(
 rules.add_perm("agenda.view_submission", is_submission_visible | can_change_submissions)
 rules.add_perm("agenda.view_speaker", is_speaker_viewable | can_change_submissions)
 rules.add_perm("agenda.give_feedback", is_feedback_ready)
+rules.add_perm("agenda.view_feedback_page", event_uses_feedback & is_submission_visible)
 rules.add_perm(
     "agenda.view_widget",
     is_agenda_visible | is_widget_always_visible | can_change_submissions,
