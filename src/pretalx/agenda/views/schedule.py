@@ -120,7 +120,9 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
                 exporter.talk_ids = request.GET.get("talks").split(",")
             else:
                 return HttpResponseRedirect(self.request.event.urls.login)
-        favs_talks = SubmissionFavouriteDeprecated.objects.filter(user=self.request.user.id)
+        favs_talks = SubmissionFavouriteDeprecated.objects.filter(
+            user=self.request.user.id
+        )
         if favs_talks.exists():
             exporter.talk_ids = favs_talks[0].talk_list
 

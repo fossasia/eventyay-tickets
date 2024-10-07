@@ -385,6 +385,8 @@ class MyICalExporter(ICalExporter):
     identifier = "schedule-my.ics"
     verbose_name = "My ⭐ Sessions iCal"
     favs_retrieve = True
+
+
 class FavedICalExporter(BaseExporter):
     identifier = "faved.ics"
     verbose_name = _("iCal (your starred sessions)")

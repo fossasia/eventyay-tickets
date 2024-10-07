@@ -20,9 +20,10 @@ from django_scopes import scope, scopes_disabled
 
 from pretalx.event.models import Event, Organiser, Team
 from pretalx.person.models import User
+from pretalx.event.models import Event, Organiser
+
 
 logger = logging.getLogger(__name__)
-from pretalx.event.models import Event, Organiser
 
 
 def get_login_redirect(request):

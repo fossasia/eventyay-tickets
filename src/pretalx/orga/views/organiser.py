@@ -16,8 +16,7 @@ from django_scopes import scopes_disabled
 
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.text.phrases import phrases
-from pretalx.common.views import CreateOrUpdateView
-from pretalx.common.views import is_form_bound
+from pretalx.common.views import CreateOrUpdateView, is_form_bound
 from pretalx.common.views.mixins import (
     ActionConfirmMixin,
     Filterable,
@@ -37,7 +36,6 @@ from pretalx.orga.forms.sso_client_form import SSOClientForm
 from pretalx.person.forms import UserSpeakerFilterForm
 from pretalx.person.models import User
 from pretalx.submission.models.submission import SubmissionStates
-
 
 logger = logging.getLogger(__name__)
 

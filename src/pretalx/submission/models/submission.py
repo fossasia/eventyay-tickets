@@ -15,8 +15,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy as _n
 from django.utils.translation import pgettext_lazy
-from django_scopes import ScopedManager
-from django_scopes import scopes_disabled
+from django_scopes import ScopedManager, scopes_disabled
 from rest_framework import serializers
 
 from pretalx.common.exceptions import SubmissionError
@@ -910,8 +909,8 @@ class Submission(GenerateCode, PretalxModel):
                 field_content = _("Yes") if field_content else _("No")
             elif isinstance(field_content, FieldFile):
                 field_content = (
-                                    self.event.custom_domain or settings.SITE_URL
-                                ) + field_content.url
+                    self.event.custom_domain or settings.SITE_URL
+                ) + field_content.url
             result += f"**{field_name}**: {field_content}\n\n"
         return result
 
@@ -975,8 +974,8 @@ class SubmissionFavouriteDeprecatedSerializer(serializers.ModelSerializer):
     def save(self, user_id, talk_code):
         with scopes_disabled():
             user = get_object_or_404(User, id=user_id)
-            submission_fav, created = SubmissionFavouriteDeprecated.objects.get_or_create(
-                user=user
+            submission_fav, created = (
+                SubmissionFavouriteDeprecated.objects.get_or_create(user=user)
             )
             submission_fav.talk_list = talk_code
             submission_fav.save()

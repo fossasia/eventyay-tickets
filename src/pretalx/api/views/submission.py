@@ -5,11 +5,10 @@ import logging
 import jwt
 import requests
 from django.db import IntegrityError
+from django.db.models import Count
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
-from django.db.models import Count
-from django.http import Http404
 from django.utils.functional import cached_property
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -17,7 +16,6 @@ from django_filters import rest_framework as filters
 from django_scopes import scopes_disabled
 from rest_framework import status, viewsets
 from rest_framework.authentication import get_authorization_header
-from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 

@@ -4,7 +4,7 @@ from urllib.parse import quote
 
 from django.conf import settings
 from django.db import models, transaction
-from django.db.models import TextField, Count
+from django.db.models import Count, TextField
 from django.db.models.functions import Cast
 from django.db.utils import DatabaseError
 from django.utils.functional import cached_property
@@ -21,8 +21,10 @@ from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.notifications import render_notifications
 from pretalx.schedule.signals import schedule_release
 from pretalx.submission.models import SubmissionStates
-from pretalx.submission.models.submission import SubmissionFavouriteDeprecated, \
-    SubmissionFavourite
+from pretalx.submission.models.submission import (
+    SubmissionFavourite,
+    SubmissionFavouriteDeprecated,
+)
 
 
 class Schedule(PretalxModel):
@@ -737,5 +739,5 @@ class Schedule(PretalxModel):
 def count_fav_talk(submission_code):
     count = SubmissionFavourite.objects.filter(
         submission__code=submission_code
-    ).aggregate(count=Count('id'))['count']
+    ).aggregate(count=Count("id"))["count"]
     return count

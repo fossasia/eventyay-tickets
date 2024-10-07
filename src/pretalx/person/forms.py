@@ -10,9 +10,10 @@ from i18nfield.forms import I18nModelForm
 
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import (
+    ImageField,
     PasswordConfirmationField,
     PasswordField,
-    SizeFileField, ImageField,
+    SizeFileField,
 )
 from pretalx.common.forms.mixins import (
     I18nHelpText,

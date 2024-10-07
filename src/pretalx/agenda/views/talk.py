@@ -12,19 +12,17 @@ from django.shortcuts import get_object_or_404, render
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.generic import DetailView, FormView, TemplateView
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from django.utils.functional import cached_property
-from django.utils.translation import gettext_lazy as _
-from django.views.generic import FormView, TemplateView, View
+from django.views.generic import DetailView, FormView, TemplateView, View
 from django_context_decorator import context
 
 from pretalx.agenda.signals import register_recording_provider
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.text.phrases import phrases
-from pretalx.common.views.mixins import PermissionRequired, SocialMediaCardMixin, \
-    EventPermissionRequired
+from pretalx.common.views.mixins import (
+    EventPermissionRequired,
+    PermissionRequired,
+    SocialMediaCardMixin,
+)
 from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.submission.forms import FeedbackForm
 from pretalx.submission.models import QuestionTarget, Submission, SubmissionStates
