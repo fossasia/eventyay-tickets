@@ -56,7 +56,7 @@ dependencies = [
   "python-dateutil~=2.9.0",
   "qrcode~=7.0",
   "reportlab~=4.2.0",
-  "requests~=2.31.0",
+  "requests~=2.32.0",
   "rules~=3.5.0",
   "urlman~=2.0.1",
   "vobject~=0.9.0",
@@ -92,7 +92,7 @@ dev = [
   "urllib3",
 ]
 postgres = ["psycopg2-binary~=2.9.0"]
-redis = ["redis~=5.0.0"]
+redis = ["redis~=5.1.0"]
 
 [build-system]
 build-backend = "setuptools.build_meta"
