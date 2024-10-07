@@ -1,48 +1,26 @@
 body {
-  font-family: "Muli", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica,
-    Arial, sans-serif;
   font-size: 16px;
-}
-h1,
-h2,
-h3,
-h4,
-legend {
-  font-family: "Titillium Web", "Open Sans", "OpenSans", "Helvetica Neue",
-    Helvetica, Arial, sans-serif;
-}
-body pre {
-  font-size: 14px;
-}
-body .pun,
-body .opn,
-body .clo {
-  color: #7a899a;
-}
-body a {
-  color: #3aa57c;
 }
 .navbar {
   height: 50px;
-  color: #3aa57c;
-  background-color: #f8f9fa;
-  border-bottom: 4px #3aa57c solid;
+  color: var(--color-primary);
+  background-color: var(--color-offwhite);
+  border-bottom: 4px var(--color-primary) solid;
   border-top: none;
   padding: 0.25rem;
-  box-shadow:
-    1px 1px 3px rgb(0 0 0 / 0.12),
-    1px 1px 2px rgb(0 0 0 / 0.24);
+  box-shadow: var(--shadow-lighter);
   z-index: 200;
+  font-family: var(--font-family-title);
 }
 .navbar .nav li.navbar-text,
 .navbar .navbar-brand,
 .navbar .navbar-brand:hover {
-  color: #3aa57c;
+  color: var(--color-primary);
 }
 .navbar .navbar-brand {
   display: flex;
   align-items: center;
-  color: #3aa57c;
+  color: var(--color-primary);
   padding: 0 !important;
   font-size: 20px;
   line-height: 30px;
@@ -58,4 +36,16 @@ body a {
 }
 .navbar .container {
   width: 100%;
+}
+.navbar-nav.pull-right {
+  font-family: var(--font-family);
+  li {
+    margin-top: 8px;
+  }
+}
+a.js-tooltip,
+.btn-group {
+  height: 34px;
+  font-size: 14px;
+  border-radius: var(--size-border-radius);
 }
