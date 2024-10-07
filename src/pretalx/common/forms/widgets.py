@@ -119,8 +119,6 @@ class EnhancedSelectMixin(Select):
     def get_context(self, name, value, attrs):
         ctx = super().get_context(name, value, attrs)
         ctx["widget"]["attrs"] = add_class(ctx["widget"]["attrs"], "enhanced")
-        if self.is_required:
-            ctx["widget"]["attrs"]["required"] = ""
         return ctx
 
     def create_option(
