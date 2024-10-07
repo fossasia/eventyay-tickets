@@ -511,7 +511,7 @@ class SubmissionContent(
         self._questions_form.save()
 
         if created:
-            email = form.cleaned_data["speaker"]
+            email = form.cleaned_data["email"]
             if email:
                 try:
                     speaker = User.objects.get(email__iexact=email)  # TODO: send email!

@@ -55,8 +55,10 @@ class ResetView(GenericResetView):
     form_class = ResetForm
 
     def get_success_url(self):
-        if self.event:
-            return reverse("orga:event.login", kwargs={"event": self.event.slug})
+        if getattr(self.request, "event", None):
+            return reverse(
+                "orga:event.login", kwargs={"event": self.request.event.slug}
+            )
         return reverse("orga:login")
 
 

@@ -2385,7 +2385,46 @@ msgstr "Oui"
 msgid "News from your content system"
 msgstr "Actualité de votre gestionnaire de contenus"
 
-#: pretalx/event/models/organiser.py:40
+#: pretalx/event/models/organiser.py:34
+msgid ""
+"There must be at least one team with the permission to change teams, as "
+"otherwise nobody can create new teams or grant permissions to existing teams."
+msgstr ""
+"Il doit y avoir au moins une équipe ayant les droits de modification sur les "
+"équipes, autrement personne ne pourra créer de nouvelles équipes ou accorder "
+"des droits aux existantes."
+
+#: pretalx/event/models/organiser.py:41
+msgid "Nobody on your teams has the permission to create new events."
+msgstr ""
+"Personne dans vos équipes n'a le droit de créer de nouveaux événements."
+
+#: pretalx/event/models/organiser.py:49
+msgid ""
+"Nobody on your teams has the permission to change organiser-level settings."
+msgstr ""
+"Personne dans vos équipes n'a le droit de modifier les paramètres de niveau "
+"organisateur."
+
+#: pretalx/event/models/organiser.py:64
+#, python-brace-format
+msgid ""
+"There must be at least one team with access to every event. Currently, "
+"nobody has access to {event_name}."
+msgstr ""
+"Il doit y avoir au moins une équipe ayant accès à tous les événements. "
+"Actuellement, personne n'a accès à l'événement {event_name}."
+
+#: pretalx/event/models/organiser.py:74
+#, python-brace-format
+msgid ""
+"Nobody on your teams has the permissions to change settings for the event "
+"{event_name}"
+msgstr ""
+"Personne dans vos équipes n'a les droits de modification des paramètres de "
+"l'événement {event_name}"
+
+#: pretalx/event/models/organiser.py:103
 msgid ""
 "Should be short, only contain lowercase letters and numbers, and must be "
 "unique, as it is used in URLs."

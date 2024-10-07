@@ -55,6 +55,7 @@ installable
 integrations
 iterable
 Jorian
+jQuery
 libffi
 lightbox
 linters
@@ -74,6 +75,7 @@ plugins
 prepend
 prepended
 pretalx
+pretix
 pytest
 queryset
 redis
