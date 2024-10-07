@@ -223,6 +223,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             "description",
             "notes",
             "image",
+            "track",
             "do_not_record",
             "content_locale",
         }
