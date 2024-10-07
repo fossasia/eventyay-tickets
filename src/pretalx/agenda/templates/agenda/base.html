@@ -20,6 +20,20 @@
     {% endif %}
 {% endblock nav_link %}
 
+{% block header_tabs %}
+    <a href="{{ request.event.urls.schedule }}" class="header-tab {% if "/schedule/" in request.path %}active{% endif %}">
+        <i class="fa fa-calendar"></i> {{ phrases.schedule.schedule }}
+    </a>
+    {% if request.event.display_settings.schedule_display != "list" %}
+        <a href="{{ request.event.urls.talks }}" class="header-tab {% if "/talk/" in request.path %} active{% endif %}">
+            <i class="fa fa-comments-o"></i> {{ phrases.schedule.sessions }}
+        </a>
+    {% endif %}
+    <a href="{{ request.event.urls.speakers }}" class="header-tab {% if "/speaker/" in request.path %} active{% endif %}">
+        <i class="fa fa-group"></i> {{ phrases.schedule.speakers }}
+    </a>
+{% endblock header_tabs %}
+
 {% block content %}
     {% if not request.event.feature_flags.show_schedule and not request.user.is_anonymous and not hide_visibility_warning %}
         <div id="event-nonpublic" class="d-print-none">
