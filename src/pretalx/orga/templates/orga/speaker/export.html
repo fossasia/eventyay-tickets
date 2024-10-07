@@ -81,10 +81,8 @@
                         {{ exporter.verbose_name }}
                         {% if exporter.show_qrcode %}
                             <span class="export-qrcode">
-                                <div class="btn btn-default btn-sm">
-                                    <i class="fa fa-qrcode"></i>
-                                </div>
-                                <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
+                                <i class="fa fa-qrcode"></i>
+                                <div class="export-qrcode-image">{{ exporter.get_qrcode }}</div>
                             </span>
                         {% endif %}
                     </a>
