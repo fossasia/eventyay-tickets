@@ -2,15 +2,15 @@
 <div class="form-group row{% if field.errors %} has-error{% endif %}">
   {% if field.label %}
     <label class="col-md-3 col-form-label d-flex flex-column">
-        {{ field.label }}
-        {% if not field.required %}<span class="optional">{% translate "Optional" %}</span>{% endif %}
+      {{ field.label }}
+      {% if not field.required %}<span class="optional">{% translate "Optional" %}</span>{% endif %}
     </label>
   {% else %}
     <div class="col-md-3"></div>
   {% endif %}
   <div class="col-md-9{% if field.css_classes %} {{ field.css_classes }}{% endif %}{% if field.errors %} has-error{% endif %}">
-      {{ field }}
-      {% if field.help_text %}<div class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</div>{% endif %}
-      {{ field.errors }}
-    </div>
+    {{ field }}
+    {% if field.help_text %}<div class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</div>{% endif %}
+    {{ field.errors }}
+  </div>
 </div>

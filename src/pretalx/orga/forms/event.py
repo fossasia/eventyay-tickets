@@ -339,7 +339,9 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
             "header_image": ImageField,
         }
         widgets = {
-                "date_from": forms.DateInput(attrs={"type": "date", "data-date-before": "#id_date_to"}),
+            "date_from": forms.DateInput(
+                attrs={"type": "date", "data-date-before": "#id_date_to"}
+            ),
             "date_to": forms.DateInput(
                 attrs={"type": "date", "data-date-after": "#id_date_from"}
             ),

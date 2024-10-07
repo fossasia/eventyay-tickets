@@ -164,11 +164,11 @@
                         {% endescapescript %}
                     </script>
                 </div>
-                    <div class="d-flex lg-action">
-                        <button type="button" id="score-add" class="btn btn btn-info flip ml-auto m-3" data-formset-add>
-                            <i class="fa fa-plus"></i> {% translate "Add another score category" %}
-                        </button>
-                    </div>
+                <div class="d-flex lg-action">
+                    <button type="button" id="score-add" class="btn btn btn-info flip ml-auto m-3" data-formset-add>
+                        <i class="fa fa-plus"></i> {% translate "Add another score category" %}
+                    </button>
+                </div>
             </div>
         </div>
         <div role="tabpanel" id="tabpanel-phases" aria-labelledby="tab-phases" tabindex="0" aria-hidden="true">
@@ -199,25 +199,25 @@
                                     </span>
                                 {% endif %}
                                 {% if action != "view" %}
-                                <div class="phase-option-delete flip ml-auto">
-                                    {% if not form.instance.is_active %}
-                                        <a href="{{ form.instance.urls.activate }}"
-                                           class="btn btn-outline-warning flip ml-auto mr-2 keep-scroll-position"
-                                           title="{% translate "Activate phase" %}">
-                                            <i class="fa fa-star"></i>
-                                        </a>
-                                    {% else %}
-                                        <a href=""
-                                           class="btn btn-warning flip ml-auto mr-2 keep-scroll-position"
-                                           title="{% translate "Phase is active" %}">
-                                            <i class="fa fa-star"></i>
-                                        </a>
-                                    {% endif %}
-                                    {% include "orga/includes/order_object.html" with object=form.instance attrs="mr-2 keep-scroll-position" %}
-                                    <button type="button" class="btn btn-xs btn-danger ml-auto" data-formset-delete-button>
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
+                                    <div class="phase-option-delete flip ml-auto">
+                                        {% if not form.instance.is_active %}
+                                            <a href="{{ form.instance.urls.activate }}"
+                                               class="btn btn-outline-warning flip ml-auto mr-2 keep-scroll-position"
+                                               title="{% translate "Activate phase" %}">
+                                                <i class="fa fa-star"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href=""
+                                               class="btn btn-warning flip ml-auto mr-2 keep-scroll-position"
+                                               title="{% translate "Phase is active" %}">
+                                                <i class="fa fa-star"></i>
+                                            </a>
+                                        {% endif %}
+                                        {% include "orga/includes/order_object.html" with object=form.instance attrs="mr-2 keep-scroll-position" %}
+                                        <button type="button" class="btn btn-xs btn-danger ml-auto" data-formset-delete-button>
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
                                 {% endif %}
                             </h3>
                             <div class="sr-only">
@@ -255,13 +255,13 @@
                     </script>
                 </div>
                 </div>
-                    <div class="d-flex lg-action">
-                        <button type="button" id="phase-add" class="btn btn btn-info flip ml-auto m-3" data-formset-add>
-                            <i class="fa fa-plus"></i> {% translate "Add another phase" %}
-                        </button>
-                    </div>
+                <div class="d-flex lg-action">
+                    <button type="button" id="phase-add" class="btn btn btn-info flip ml-auto m-3" data-formset-add>
+                        <i class="fa fa-plus"></i> {% translate "Add another phase" %}
+                    </button>
+                </div>
             </div>
-          </div>
-            {% include "orga/includes/submit_row.html" %}
-        </form>
+        </div>
+        {% include "orga/includes/submit_row.html" %}
+    </form>
 {% endblock settings_content %}

@@ -21,7 +21,7 @@ from pretalx.common.forms.mixins import (
     ReadOnlyFlag,
     RequestRequire,
 )
-from pretalx.common.forms.widgets import MarkdownWidget, EnhancedSelectMultiple
+from pretalx.common.forms.widgets import EnhancedSelectMultiple, MarkdownWidget
 from pretalx.common.text.phrases import phrases
 from pretalx.event.models import Event
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User

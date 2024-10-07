@@ -15,13 +15,13 @@
             <input id="id_version" class="form-control d-inline-flex w-auto" name="version" maxlength="200" title="" type="text" placeholder="{{ phrases.schedule.version }}" value="{{ suggested_version }}" required>
         </h2>
         {% if warnings.unconfirmed or warnings.unscheduled or warnings.no_track or warnings.talk_warnings %}
-        <div class="alert alert-warning">
-            <span></span><span>
-                {% blocktranslate trimmed %}
-                    There are still warnings about the release of this schedule. Please review them carefully!
-                {% endblocktranslate %}
-            </span>
-        </div>
+            <div class="alert alert-warning">
+                <span></span><span>
+                    {% blocktranslate trimmed %}
+                        There are still warnings about the release of this schedule. Please review them carefully!
+                    {% endblocktranslate %}
+                </span>
+            </div>
         {% endif %}
 
         <ul>

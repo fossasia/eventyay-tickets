@@ -7,7 +7,7 @@
 
 {% block scripts %}
     {% compress css %}
-      <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+        <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
     {% endcompress %}
     <script defer src="{% static "common/js/modalDialog.js" %}"></script>
 {% endblock scripts %}
@@ -108,45 +108,45 @@
             </div>
         </div>
 
-            <div class="card">
-                <div class="card-header" id="heading{{ update.instance.id }}">
-                    <h2>
-                        <button class="btn btn-block text-left d-flex" type="button" data-toggle="collapse" data-target="#collapse{{ update.instance.id }}" aria-expanded="false" aria-controls="collapse{{ update.instance.id }}">
-                            {% translate "New schedule version" %}
-                            <i class="fa fa-2x ml-auto"></i>
-                        </button>
-                    </h2>
-                </div>
-                <div id="collapse{{ update.instance.id }}" class="collapse" aria-labelledby="heading{{ update.instance.id }}" data-parent="#template-accordion">
-                    <div class="card-body">
+        <div class="card">
+            <div class="card-header" id="heading{{ update.instance.id }}">
+                <h2>
+                    <button class="btn btn-block text-left d-flex" type="button" data-toggle="collapse" data-target="#collapse{{ update.instance.id }}" aria-expanded="false" aria-controls="collapse{{ update.instance.id }}">
+                        {% translate "New schedule version" %}
+                        <i class="fa fa-2x ml-auto"></i>
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse{{ update.instance.id }}" class="collapse" aria-labelledby="heading{{ update.instance.id }}" data-parent="#template-accordion">
+                <div class="card-body">
 
-                        <div class="row mt-2 mb-4 mr-1">
-                            <a href="{{ update.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
-                        </div>
-                        {% bootstrap_form update layout="event" %}
+                    <div class="row mt-2 mb-4 mr-1">
+                        <a href="{{ update.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
                     </div>
+                    {% bootstrap_form update layout="event" %}
                 </div>
             </div>
+        </div>
 
-            <div class="card">
-                <div class="card-header" id="heading{{ remind.instance.id }}">
-                    <h2>
-                        <button class="btn btn-block text-left d-flex" type="button" data-toggle="collapse" data-target="#collapse{{ remind.instance.id }}" aria-expanded="false" aria-controls="collapse{{ remind.instance.id }}">
-                            {% translate "Unanswered questions reminder" %}
-                            <i class="fa fa-2x ml-auto"></i>
-                        </button>
-                    </h2>
-                </div>
-                <div id="collapse{{ remind.instance.id }}" class="collapse" aria-labelledby="heading{{ remind.instance.id }}" data-parent="#template-accordion">
-                    <div class="card-body">
+        <div class="card">
+            <div class="card-header" id="heading{{ remind.instance.id }}">
+                <h2>
+                    <button class="btn btn-block text-left d-flex" type="button" data-toggle="collapse" data-target="#collapse{{ remind.instance.id }}" aria-expanded="false" aria-controls="collapse{{ remind.instance.id }}">
+                        {% translate "Unanswered questions reminder" %}
+                        <i class="fa fa-2x ml-auto"></i>
+                    </button>
+                </h2>
+            </div>
+            <div id="collapse{{ remind.instance.id }}" class="collapse" aria-labelledby="heading{{ remind.instance.id }}" data-parent="#template-accordion">
+                <div class="card-body">
 
-                        <div class="row mt-2 mb-4 mr-1">
-                            <a href="{{ remind.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
-                        </div>
-                        {% bootstrap_form remind layout="event" %}
+                    <div class="row mt-2 mb-4 mr-1">
+                        <a href="{{ remind.instance.urls.edit }}" class="btn btn-info flip ml-auto">{% translate "Edit template" %}</a>
                     </div>
+                    {% bootstrap_form remind layout="event" %}
                 </div>
             </div>
+        </div>
 
         {% for template in other %}
             <div class="card">

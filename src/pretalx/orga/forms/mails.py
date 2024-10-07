@@ -10,9 +10,9 @@ from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.forms.widgets import EnhancedSelectMultiple
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
+from pretalx.common.forms.widgets import EnhancedSelectMultiple
 from pretalx.common.language import language
 from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.common.text.phrases import phrases

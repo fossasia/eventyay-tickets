@@ -64,7 +64,7 @@
             <div class="d-flex flex-column form-group">
                 {% bootstrap_field filter_form.state layout="inline" %}
                 <div class="ml-4">
-                <div id="pending" class="d-none">{% bootstrap_field filter_form.pending_state__isnull layout="inline" %}</div>
+                    <div id="pending" class="d-none">{% bootstrap_field filter_form.pending_state__isnull layout="inline" %}</div>
                 </div>
             </div>
             {% if filter_form.track %}{% bootstrap_field filter_form.track %}{% endif %}

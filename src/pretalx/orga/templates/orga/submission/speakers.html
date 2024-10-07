@@ -18,16 +18,16 @@
             </label>
             {% csrf_token %}
             {% if form.errors.email %}
-              <div class="text-danger">{% for error in form.errors.email %}
-                  {{ error }}
-                  {% if not forloop.last %}<br>
-                {% endif %}
-                  {% endfor %}
-              </div>
+                <div class="text-danger">{% for error in form.errors.email %}
+                    {{ error }}
+                    {% if not forloop.last %}<br>
+                    {% endif %}
+                {% endfor %}
+                </div>
             {% endif %}
             <div class="input-group">
-              <select multiple name="email" id="id_email" class="form-control" placeholder="{% translate "E-mail address" %}"> </select>
-              <button type="submit" class="btn btn-sm btn-success float-right"><i class="fa fa-plus"></i> {% translate "Add speaker" %}</button>
+                <select multiple name="email" id="id_email" class="form-control" placeholder="{% translate "E-mail address" %}"> </select>
+                <button type="submit" class="btn btn-sm btn-success float-right"><i class="fa fa-plus"></i> {% translate "Add speaker" %}</button>
             </div>
         </form>
     </div>{% endif %}

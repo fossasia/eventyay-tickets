@@ -168,7 +168,7 @@
                             {% endif %}
                         </div>
                         <div class="arrow">
-                          <i class="fa fa-angle-down"></i>
+                            <i class="fa fa-angle-down"></i>
                         </div>
                     </summary>
                     <div id="nav-search-input-wrapper" class="dropdown-content dropdown-menu dropdown-menu-left" aria-labelledby="nav-search" data-source="{% url "orga:nav.typeahead" %}" data-event-typeahead{% if request.event %} data-organiser="{{ request.event.organiser.pk }}"{% elif request.organiser %} data-organiser="{{ request.organiser.pk }}"{% endif %}>

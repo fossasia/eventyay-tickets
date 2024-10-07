@@ -7,10 +7,21 @@ from django_scopes.forms import SafeModelChoiceField
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.mixins import PublicContent, RequestRequire
-from pretalx.common.forms.widgets import MarkdownWidget, SelectMultipleWithCount, EnhancedSelect
+from pretalx.common.forms.widgets import (
+    EnhancedSelect,
+    MarkdownWidget,
+    SelectMultipleWithCount,
+)
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views.mixins import Filterable
-from pretalx.submission.models import Answer, Question, Submission, SubmissionStates, Track, Tag
+from pretalx.submission.models import (
+    Answer,
+    Question,
+    Submission,
+    SubmissionStates,
+    Tag,
+    Track,
+)
 
 
 class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
@@ -198,7 +209,9 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             "abstract": MarkdownWidget,
             "description": MarkdownWidget,
             "notes": MarkdownWidget,
-            "track": EnhancedSelect(description_field="description", color_field="color"),
+            "track": EnhancedSelect(
+                description_field="description", color_field="color"
+            ),
         }
         field_classes = {
             "submission_type": SafeModelChoiceField,
@@ -236,7 +249,9 @@ class SubmissionFilterForm(forms.Form):
     track = forms.ModelMultipleChoiceField(
         required=False,
         queryset=Track.objects.none(),
-        widget=SelectMultipleWithCount(attrs={"title": _("Tracks")}, color_field="color"),
+        widget=SelectMultipleWithCount(
+            attrs={"title": _("Tracks")}, color_field="color"
+        ),
     )
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.none(),
@@ -320,9 +335,9 @@ class SubmissionFilterForm(forms.Form):
         if not self.event.tags.all().exists():
             self.fields.pop("tags", None)
         else:
-            self.fields["tags"].queryset = event.tags.prefetch_related("submissions").annotate(
-                submission_count=Count("submissions", distinct=True)
-            )
+            self.fields["tags"].queryset = event.tags.prefetch_related(
+                "submissions"
+            ).annotate(submission_count=Count("submissions", distinct=True))
 
         if usable_states:
             usable_states = [

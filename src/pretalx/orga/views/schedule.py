@@ -32,10 +32,7 @@ from pretalx.common.views.mixins import (
     EventPermissionRequired,
     PermissionRequired,
 )
-from pretalx.orga.forms.schedule import (
-    ScheduleExportForm,
-    ScheduleReleaseForm,
-)
+from pretalx.orga.forms.schedule import ScheduleExportForm, ScheduleReleaseForm
 from pretalx.schedule.forms import QuickScheduleForm, RoomForm
 from pretalx.schedule.models import Availability, Room, TalkSlot
 from pretalx.schedule.utils import guess_schedule_version
