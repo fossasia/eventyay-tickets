@@ -31,12 +31,14 @@
     box-sizing: content-box;
   }
 
-  &:hover:before,
-  &:hover:after,
-  &:focus:before,
-  &:focus:after {
-    opacity: 1;
-    pointer-events: auto;
+  &:hover,
+  &:focus,
+  &[data-visibility="always"] {
+    &:before,
+    &:after {
+      opacity: 1;
+      pointer-events: auto;
+    }
   }
 }
 
@@ -59,7 +61,8 @@
     left: 50%;
   }
 
-  &:hover:before {
+  &:hover:before,
+  &[data-visibility="always"]:before {
     transform: translate3d(-50%, -5px, 0);
   }
 
@@ -69,7 +72,8 @@
     left: 50%;
   }
 
-  &:hover:after {
+  &:hover:after,
+  &[data-visibility="always"]:after {
     transform: translate3d(-50%, -5px, 0);
   }
 }
@@ -80,7 +84,8 @@
     bottom: 100%;
   }
 
-  &:hover:after {
+  &:hover:after,
+  &[data-visibility="always"]:after {
     transform: translate3d(calc(-100% + 16px), -5px, 0);
   }
 }
@@ -91,7 +96,8 @@
     bottom: 100%;
   }
 
-  &:hover:after {
+  &:hover:after,
+  &[data-visibility="always"]:after {
     transform: translate3d(calc(0% + -16px), -5px, 0);
   }
 }
@@ -117,7 +123,8 @@
     top: 100%;
   }
 
-  &:hover:before {
+  &:hover:before,
+  &[data-visibility="always"]:before {
     transform: translate3d(-50%, 0, 0);
   }
 
@@ -127,7 +134,8 @@
     left: 50%;
   }
 
-  &:hover:after {
+  &:hover:after,
+  &[data-visibility="always"]:after {
     transform: translate3d(-50%, 0, 0);
   }
 }
@@ -138,7 +146,8 @@
     top: 100%;
   }
 
-  &:hover:after {
+  &:hover:after,
+  &[data-visibility="always"]:after {
     transform: translate3d(calc(-100% + 16px), 0, 0);
   }
 }
@@ -149,7 +158,8 @@
     top: 100%;
   }
 
-  &:hover:after {
+  &:hover:after,
+  &[data-visibility="always"]:after {
     transform: translate3d(calc(0% + -16px), 0, 0);
   }
 }
@@ -178,7 +188,9 @@
   }
 
   &:hover:before,
-  &:hover:after {
+  &[data-visibility="always"]:before,
+  &:hover:after,
+  &[data-visibility="always"]:after {
     transform: translate3d(0, -50%, 0);
   }
 }
@@ -206,7 +218,9 @@
   }
 
   &:hover:before,
-  &:hover:after {
+  &[data-visibility="always"]:before,
+  &:hover:after,
+  &[data-visibility="always"]:after {
     transform: translate3d(0, -50%, 0);
   }
 }
