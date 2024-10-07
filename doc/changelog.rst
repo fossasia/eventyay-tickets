@@ -5,7 +5,7 @@ Release Notes
 
 - :bug:`orga` Deleting review phases and review score categories was broken.
 - :feature:`schedule` The schedule page makes even better use of several caching methods in order to be smaller and faster to load and re-load.
-- :announcement:`admin` Due to a potentially tricky update in Django, and maintenance cost, pretalx is dropping support for MySQL/MariaDB. Please use either PostgreSQL or SQLite. If you are currently running MySLQ, please take a look at this exemplary `MySQL migration guide<https://pretix.readthedocs.io/en/latest/admin/mysql2postgres.html>`_ by the pretix project **BEFORE** starting your pretalx update, in order to migrate your data with ``pgloader`` to PostgreSQL!
+- :announcement:`admin` Due to a potentially tricky update in Django, and maintenance cost, pretalx is dropping support for MySQL/MariaDB. Please use either PostgreSQL or SQLite. If you are currently running MySLQ.
 - :announcement:`admin` pretalx now requires Python 3.10 or newer.
 - :feature:`orga` Organisers now have access to a list of all speakers / submitters for all of their events.
 - :bug:`orga:schedule,1828` When exporting an event to a HTML export, files with umlauts or other non-ascii characters in their file name were saved with the encoded version of that name, so when the export was served by a webserver, these files wouldn't be shown.
@@ -34,12 +34,8 @@ Release Notes
 - :feature:`cfp,1574` pretalx now supports the ``~~`` strikethrough syntax in Markdown.
 - :bug:`orga:schedule,1702` Sessions starting at exactly midnight of the first day of the event would not show up in the schedule editor (but could be scheduled there by dropping them on the day heading).
 - :feature:`orga:schedule,1730` The schedule editor now allows you to schedule talks that are only "pending accepted" (i.e. the speaker has not yet received the acceptance email), so that organisers can try out how their schedule would look with a given number of tentatively accepted proposals.
-- :feature:`orga:schedule` The schedule editor now allows you to schedule talks that are only "pending accepted" (i.e. the speaker has not yet received the acceptance email), so that organisers can try out how their schedule would look with a given number of tentatively accepted proposals.
-- :bug:`orga:schedule,1702` Sessions starting at exactly midnight of the first day of the event would not show up in the schedule editor (but could be scheduled there by dropping them on the day heading).
-- :feature:`orga:schedule,1730` The schedule editor now allows you to schedule talks that are only "pending accepted" (i.e. the speaker has not yet received the acceptance email), so that organisers can try out how their schedule would look with a given number of tentatively accepted proposals.
 - :feature:`orga` Administrators (i.e. instance owners) can now search a list of all users, which includes their teams and permissions, and links to trigger account deletion and password resets.
 - :bug:`orga:review` Assigning reviewers could lead to incorrect assignments when browsers cached the form, but new reviewers were added to the team, shifting the overall order of input fields.
-- :feature:`cfp` Choice and multiple choice questions now use a drop-down with typeahead (search for options) when they have a lot of options.
 - :feature:`cfp` Choice and multiple choice questions now use a drop-down with typeahead (search for options) when they have a lot of options.
 - :feature:`orga,1079` All images in forms in the organiser area now include a preview of the saved image, and open a lightbox instead of the image file when clicked.
 - :announcement:`admin` We now recommend that you use a virtualenv instead of the ``pip --user`` installation method, and have updated our install and upgrade documentation accordingly.
@@ -656,7 +652,7 @@ Release Notes
 - :bug:`-` There was no possibility to reset a user’s API token.
 - :bug:`-` If an organiser changed a speaker’s email address, they could assign an address already in use in the pretalx instance, resulting in buggy behaviour all around.
 - :release:`0.5.0 <2018-03-07>`
-- :feature:`-` pretalx now features a Plugin API, allowing to install custom plugins. Plugins can add their own exporters, and hook into plugin hooks. You can enable or disable plugins per event. You can find the plugin developer documentation :ref:`here<plugin-index>`.
+- :feature:`-` pretalx now features a Plugin API, allowing to install custom plugins. Plugins can add their own exporters, and hook into plugin hooks. You can enable or disable plugins per event.
 - :feature:`340` Organisers can now decide if reviewers should have to submit a score or a text with their review.
 - :feature:`93` Organisers can provide room-based information for speakers, and send it automatically in the emails about talk scheduling.
 - :feature:`318` The list of submissions is now better searchable.

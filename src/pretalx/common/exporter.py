@@ -1,6 +1,5 @@
 from io import StringIO
 from urllib.parse import quote
-from xml.etree import ElementTree
 
 import qrcode
 import qrcode.image.svg

@@ -305,11 +305,11 @@ class SubmissionFavouriteDeprecatedView(View):
             raise Http404
         if auth_header and auth_header[0].lower() == b"bearer":
             if len(auth_header) == 1:
-                raise exceptions.AuthenticationFailed(
+                raise exceptions.AuthenticationFailedError(
                     "Invalid token header. No credentials provided."
                 )
             elif len(auth_header) > 2:
-                raise exceptions.AuthenticationFailed(
+                raise exceptions.AuthenticationFailedError(
                     "Invalid token header. Token string should not contain spaces."
                 )
         token_decode = jwt.decode(

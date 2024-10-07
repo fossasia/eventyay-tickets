@@ -315,20 +315,6 @@ class InfoStep(GenericFlowStep, FormFlowStep):
     form_class = InfoForm
     priority = 0
 
-    @property
-    def label(self):
-        return phrases.base.general
-
-    @property
-    def _title(self):
-        return _("Hey, nice to meet you!")
-
-    @property
-    def _text(self):
-        return _(
-            "We’re glad that you want to contribute to our event with your proposal. Let’s get started, this won’t take long."
-        )
-
     def get_form_kwargs(self):
         result = super().get_form_kwargs()
         result["access_code"] = getattr(self.request, "access_code", None)
@@ -412,20 +398,6 @@ class QuestionsStep(GenericFlowStep, FormFlowStep):
     form_class = QuestionsForm
     template_name = "cfp/event/submission_questions.html"
     priority = 25
-
-    @property
-    def label(self):
-        return phrases.cfp.questions
-
-    @property
-    def _title(self):
-        return _("Tell us more!")
-
-    @property
-    def _text(self):
-        return _(
-            "Before we can save your proposal, we have some more questions for you."
-        )
 
     def is_applicable(self, request):
         self.request = request

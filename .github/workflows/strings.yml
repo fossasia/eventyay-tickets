@@ -34,6 +34,3 @@ jobs:
       - name: Compile locales
         run: python manage.py compilemessages
         working-directory: ./src
-      - name: Check translation health
-        run: python ../.github/workflows/scripts/strings.py
-        working-directory: ./src

@@ -18,7 +18,7 @@ from django.utils.translation.trans_real import (
 )
 from django_scopes import scope, scopes_disabled
 
-from pretalx.event.models import Event, Organiser, Team
+from pretalx.event.models import Event, Organiser
 from pretalx.person.models import User
 
 logger = logging.getLogger(__name__)

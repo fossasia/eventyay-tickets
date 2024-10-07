@@ -141,7 +141,7 @@ moment_locales = {
 
 JS_REGEX = re.compile(r"(?<!\w)(" + "|".join(date_conversion_to_moment.keys()) + r")\b")
 
-toJavascript_re = re.compile(
+to_javascript_re = re.compile(
     r"(?<!\w)(" + "|".join(date_conversion_to_moment.keys()) + r")\b"
 )
 

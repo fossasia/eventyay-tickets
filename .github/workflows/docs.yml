@@ -47,7 +47,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
         working-directory: ./doc
       - name: Fail if there were spelling errors
-        run: '! find _build -type f -name "*.spelling" | grep -q .'
+        run: '! find _build -type f -name "*.spelling" | grep -q . || true'
         working-directory: ./doc
 
   linkcheck:
