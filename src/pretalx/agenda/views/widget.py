@@ -5,8 +5,8 @@ from urllib.parse import unquote
 from csp.decorators import csp_exempt
 from django.contrib.staticfiles import finders
 from django.http import Http404, HttpResponse, JsonResponse
-from django.views.decorators.cache import cache_page
 from django.utils.timezone import now
+from django.views.decorators.cache import cache_page
 from django.views.decorators.http import condition
 from i18nfield.utils import I18nJSONEncoder
 

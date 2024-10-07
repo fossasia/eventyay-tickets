@@ -6,25 +6,25 @@
             <div class="date">{{ event.get_date_range_display }}</div>
         </div>
     </a>
-  <div class="dashboard-block-extension">
-    <a href="{{ event.orga_urls.submissions }}" class="dashboard-block-addon dashboard-block-addon-{% if event.submission_count %}info{% else %}secondary{% endif %}">
-      {% if event.submission_count %}
-          {{ event.submission_count }}
-          {% blocktranslate trimmed count count=event.submission_count %}
-              proposal
-          {% plural %}
-              proposals
-          {% endblocktranslate %}
-      {% else %}
-          {% translate "No proposals yet" %}
-      {% endif %}
-      </a>
-      <a href="{{ event.orga_urls.base }}" class="dashboard-block-addon dashboard-block-addon-{% if event.is_public %}success{% else %}secondary{% endif %}">
-        {% if event.is_public %}
-            <div class="state active">{% translate "live" %}</div>
-        {% else %}
-            <div class="state inactive">{% translate "Not public" %}</div>
-        {% endif %}
-      </a>
-  </div>
+    <div class="dashboard-block-extension">
+        <a href="{{ event.orga_urls.submissions }}" class="dashboard-block-addon dashboard-block-addon-{% if event.submission_count %}info{% else %}secondary{% endif %}">
+            {% if event.submission_count %}
+                {{ event.submission_count }}
+                {% blocktranslate trimmed count count=event.submission_count %}
+                    proposal
+                {% plural %}
+                    proposals
+                {% endblocktranslate %}
+            {% else %}
+                {% translate "No proposals yet" %}
+            {% endif %}
+        </a>
+        <a href="{{ event.orga_urls.base }}" class="dashboard-block-addon dashboard-block-addon-{% if event.is_public %}success{% else %}secondary{% endif %}">
+            {% if event.is_public %}
+                <div class="state active">{% translate "live" %}</div>
+            {% else %}
+                <div class="state inactive">{% translate "Not public" %}</div>
+            {% endif %}
+        </a>
+    </div>
 </div>

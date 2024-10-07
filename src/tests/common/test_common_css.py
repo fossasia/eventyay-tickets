@@ -1,10 +1,7 @@
 import pytest
-from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.test import override_settings
 
 from pretalx.common.text.css import validate_css
-from pretalx.event.models import Event
 
 
 @pytest.fixture

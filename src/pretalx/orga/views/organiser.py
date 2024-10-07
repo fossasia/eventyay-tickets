@@ -504,7 +504,6 @@ def speaker_search(request, *args, **kwargs):
     if not search or len(search) < 3:
         return JsonResponse({"count": 0, "results": []})
 
-
     with scopes_disabled():
         events = get_speaker_access_events_for_user(
             user=request.user, organiser=request.organiser

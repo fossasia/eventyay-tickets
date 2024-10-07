@@ -46,12 +46,12 @@
             {% csrf_token %}
             {% bootstrap_field form.title layout="event" %}
             {% if action == "create" %}
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label" for="id_email">{{ form.email.label }}</label>
-                <div class="col-md-9">
-                  <select multiple name="email" id="id_email" class="form-control" placeholder=""> </select>
+                <div class="form-group row">
+                    <label class="col-md-3 col-form-label" for="id_email">{{ form.email.label }}</label>
+                    <div class="col-md-9">
+                        <select multiple name="email" id="id_email" class="form-control" placeholder=""> </select>
+                    </div>
                 </div>
-              </div>
                 {% bootstrap_field form.speaker_name layout="event" %}
                 {% bootstrap_field form.state layout="event" %}
             {% endif %}

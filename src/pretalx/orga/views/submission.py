@@ -38,9 +38,9 @@ from pretalx.common.views.mixins import (
 )
 from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms.submission import (
+    AddCreateUserForm,
     AnonymiseForm,
     SubmissionForm,
-    AddCreateUserForm,
     SubmissionStateChangeForm,
 )
 from pretalx.person.forms import OrgaSpeakerForm
@@ -344,7 +344,7 @@ class SubmissionSpeakers(ReviewerSubmissionFilter, SubmissionViewMixin, FormView
                 created = True
 
         if not speaker:
-            messages.error(request, _("Failed to create the new speaker."))
+            messages.error(self.request, _("Failed to create the new speaker."))
             return self.form_invalid(form)
 
         if submission in speaker.submissions.all():

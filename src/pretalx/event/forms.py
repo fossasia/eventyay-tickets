@@ -7,9 +7,9 @@ from django_scopes import scopes_disabled
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.forms.widgets import EnhancedSelect, EnhancedSelectMultiple
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
+from pretalx.common.forms.widgets import EnhancedSelect, EnhancedSelectMultiple
 from pretalx.common.text.phrases import phrases
 from pretalx.event.models import Event, Organiser, Team, TeamInvite
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget

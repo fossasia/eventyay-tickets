@@ -155,9 +155,7 @@ class CfPForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
     class Meta:
         model = CfP
         fields = ["headline", "text", "deadline"]
-        widgets = {
-            "deadline": forms.DateTimeInput(attrs={"type": "datetime-local"})
-        }
+        widgets = {"deadline": forms.DateTimeInput(attrs={"type": "datetime-local"})}
         # These are JSON fields on cfp.settings
         json_fields = {
             "show_deadline": "settings",
@@ -357,9 +355,7 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     class Meta:
         model = SubmissionType
         fields = ("name", "default_duration", "deadline", "requires_access_code")
-        widgets = {
-            "deadline": forms.DateTimeInput(attrs={"type": "datetime-local"})
-        }
+        widgets = {"deadline": forms.DateTimeInput(attrs={"type": "datetime-local"})}
 
 
 class TrackForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
@@ -508,7 +504,9 @@ class QuestionFilterForm(forms.Form):
         label=_("Recipients"),
         widget=EnhancedSelect,
     )
-    track = SafeModelChoiceField(Track.objects.none(), required=False, widget=EnhancedSelect)
+    track = SafeModelChoiceField(
+        Track.objects.none(), required=False, widget=EnhancedSelect
+    )
     submission_type = SafeModelChoiceField(
         SubmissionType.objects.none(), required=False, widget=EnhancedSelect
     )

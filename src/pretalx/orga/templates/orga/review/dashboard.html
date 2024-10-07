@@ -8,7 +8,7 @@
 {% load static %}
 
 {% block stylesheets %}
-  <link rel="stylesheet" type="text/css" href="{% static "vendored/rslider/rSlider.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/rslider/rSlider.min.css" %}" />
 {% endblock stylesheets %}
 
 {% block scripts %}
@@ -112,12 +112,12 @@
                 {% translate "Actions" %} <i class="fa fa-caret-down"></i>
             </summary>
             <div class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-                    <a class="dropdown-item" href="{{ request.event.orga_urls.reviews }}regenerate">
-                        <i class="fa fa-link"></i> {% translate "Regenerate decision emails" %}
-                    </a>
-                    <a class="dropdown-item" href="{{ request.event.orga_urls.apply_pending }}?next={{ request.path }}">
-                        <i class="fa fa-link"></i> {% translate "Apply pending changes" %}
-                    </a>
+                <a class="dropdown-item" href="{{ request.event.orga_urls.reviews }}regenerate">
+                    <i class="fa fa-link"></i> {% translate "Regenerate decision emails" %}
+                </a>
+                <a class="dropdown-item" href="{{ request.event.orga_urls.apply_pending }}?next={{ request.path }}">
+                    <i class="fa fa-link"></i> {% translate "Apply pending changes" %}
+                </a>
             </div>
         </details>
     </div>

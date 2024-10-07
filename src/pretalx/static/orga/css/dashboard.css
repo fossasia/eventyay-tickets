@@ -4,7 +4,8 @@
   align-items: stretch;
   padding-bottom: 20px;
 
-  > .dashboard-block, > .dashboard-block-wrapper {
+  > .dashboard-block,
+  > .dashboard-block-wrapper {
     /* Outermost unit, either with wrapper or without */
     margin: 8px;
     padding: 12px 4px;
@@ -41,7 +42,7 @@
         flex: 1;
         font-weight: 400;
         &:first-child {
-            border-right: 2px solid var(--color-grey-light);
+          border-right: 2px solid var(--color-grey-light);
         }
         &:hover {
           background: var(--color-grey-lightest);
@@ -69,9 +70,9 @@
   }
 
   .dashboard-block {
-  color: var(--color-primary);
-  background: var(--color-grey-lightest);
-  overflow-wrap: break-word;
+    color: var(--color-primary);
+    background: var(--color-grey-lightest);
+    overflow-wrap: break-word;
     &.dashboard-block-extended {
       min-height: 100px;
     }

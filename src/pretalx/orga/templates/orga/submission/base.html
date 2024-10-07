@@ -33,28 +33,28 @@
         </h2>
 
         <div role="tablist" class="mb-4">
-          <a role="tab" href="{{ submission.orga_urls.base }}" {% if "submissions.content" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
-            {% translate "Content" %}
-          </a>
+            <a role="tab" href="{{ submission.orga_urls.base }}" {% if "submissions.content" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                {% translate "Content" %}
+            </a>
             {% if can_view_speakers %}
-              <a role="tab" href="{{ submission.orga_urls.speakers }}" {% if "submissions.speakers" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
-                {{ phrases.schedule.speakers }}
-              </a>
+                <a role="tab" href="{{ submission.orga_urls.speakers }}" {% if "submissions.speakers" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                    {{ phrases.schedule.speakers }}
+                </a>
             {% endif %}
             {% if can_edit_submission and has_anonymised_review %}
-              <a role="tab" href="{{ submission.orga_urls.anonymise }}" {% if "submissions.anonymise" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
-                {% translate "Anonymisation" %}
-              </a>
+                <a role="tab" href="{{ submission.orga_urls.anonymise }}" {% if "submissions.anonymise" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                    {% translate "Anonymisation" %}
+                </a>
             {% endif %}
             {% if submission.feedback.count and request.event.feature_flags.use_feedback %}
-              <a role="tab" href="{{ submission.orga_urls.feedback }}" {% if "submissions.feedback" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
-                {% translate "Feedback" %}
-              </a>
+                <a role="tab" href="{{ submission.orga_urls.feedback }}" {% if "submissions.feedback" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                    {% translate "Feedback" %}
+                </a>
             {% endif %}
             {% if can_view_reviews or can_review %}
-              <a role="tab" href="{{ submission.orga_urls.reviews }}" {% if "submissions.reviews" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
-                {% translate "Reviews" %}
-              </a>
+                <a role="tab" href="{{ submission.orga_urls.reviews }}" {% if "submissions.reviews" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
+                    {% translate "Reviews" %}
+                </a>
             {% endif %}
             <div class="ml-auto flip d-flex">
                 {% if can_send_mails %}
@@ -70,19 +70,19 @@
                         </summary>
                         <div class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
                             {% if is_publicly_visible or submission.state == "accepted" or submission.state == "confirmed" %}
-                                    <a href="{{ submission.urls.public.full }}" class="dropdown-item" target=_blank>
-                                      <i class="fa fa-link"></i>
-                                        {% translate "Public link" %}
-                                        {% if not is_publicly_visible %}
-                                            ({% translate "not public yet" %})
-                                        {% endif %}
-                                    </a>
+                                <a href="{{ submission.urls.public.full }}" class="dropdown-item" target=_blank>
+                                    <i class="fa fa-link"></i>
+                                    {% translate "Public link" %}
+                                    {% if not is_publicly_visible %}
+                                        ({% translate "not public yet" %})
+                                    {% endif %}
+                                </a>
                             {% endif %}
                             {% if can_view_speakers %}
-                              <a href="{{ submission.urls.review.full }}" class="dropdown-item" target="_blank">
-                                <i class="fa fa-eye"></i>
-                                {% translate "Secret public link" %}
-                              </a>
+                                <a href="{{ submission.urls.review.full }}" class="dropdown-item" target="_blank">
+                                    <i class="fa fa-eye"></i>
+                                    {% translate "Secret public link" %}
+                                </a>
                             {% endif %}
                         </div>
                     </details>
