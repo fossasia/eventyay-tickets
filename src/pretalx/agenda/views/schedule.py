@@ -1,4 +1,5 @@
 import hashlib
+import json
 import logging
 import textwrap
 from contextlib import suppress
@@ -16,15 +17,17 @@ from django.urls import resolve, reverse
 from django.utils.functional import cached_property
 from django.utils.translation import activate
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
-from pretalx.common.mixins.views import EventPermissionRequired
-from pretalx.common.signals import register_data_exporters, register_my_data_exporters
-from pretalx.common.utils import safe_filename
+from pretalx.agenda.views.utils import find_schedule_exporter, get_schedule_exporters
+from pretalx.common.signals import register_my_data_exporters
+from pretalx.common.text.path import safe_filename
+from pretalx.common.views.mixins import EventPermissionRequired
 from pretalx.schedule.ascii import draw_ascii_schedule
 from pretalx.schedule.exporters import ScheduleData
-from pretalx.submission.models.submission import SubmissionFavourite
+from pretalx.submission.models.submission import SubmissionFavouriteDeprecated
 
 logger = logging.getLogger(__name__)
 
@@ -81,8 +84,8 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         ).values_list("version")
         return result
 
-    def get_exporter(self, request):
-        url = resolve(request.path_info)
+    def get_exporter(self, public=True):
+        url = resolve(self.request.path_info)
 
         if url.url_name == "export":
             exporter = url.kwargs.get("name") or unquote(
@@ -94,18 +97,17 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
         exporter = (
             exporter[len("export.") :] if exporter.startswith("export.") else exporter
         )
-        responses = register_data_exporters.send(
-            request.event
-        ) + register_my_data_exporters.send(request.event)
-        for __, response in responses:
-            ex = response(request.event)
-            if ex.identifier == exporter and (ex.public or request.is_orga):
-                return ex
+        return find_schedule_exporter(self.request, exporter, public=public)
 
     def get(self, request, *args, **kwargs):
-        exporter = self.get_exporter(request)
+        is_organiser = self.request.user.has_perm(
+            "orga.view_schedule", self.request.event
+        )
+        exporter = self.get_exporter(public=not is_organiser)
         if not exporter:
             raise Http404()
+        exporter.schedule = self.schedule
+        exporter.is_orga = is_organiser
         lang_code = request.GET.get("lang")
         if lang_code and lang_code in request.event.locales:
             activate(lang_code)
@@ -118,14 +120,16 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
                 exporter.talk_ids = request.GET.get("talks").split(",")
             else:
                 return HttpResponseRedirect(self.request.event.urls.login)
-        favs_talks = SubmissionFavourite.objects.filter(user=self.request.user.id)
+        favs_talks = SubmissionFavouriteDeprecated.objects.filter(
+            user=self.request.user.id
+        )
         if favs_talks.exists():
             exporter.talk_ids = favs_talks[0].talk_list
 
         exporter.is_orga = getattr(self.request, "is_orga", False)
 
         try:
-            file_name, file_type, data = exporter.render()
+            file_name, file_type, data = exporter.render(request=request)
             etag = hashlib.sha1(str(data).encode()).hexdigest()
         except Exception:
             logger.exception(
@@ -134,7 +138,7 @@ class ExporterView(EventPermissionRequired, ScheduleMixin, TemplateView):
             raise Http404()
         if request.headers.get("If-None-Match") == etag:
             return HttpResponseNotModified()
-        headers = {"ETag": etag}
+        headers = {"ETag": f'"{etag}"'}
         if file_type not in ("application/json", "text/xml"):
             headers["Content-Disposition"] = (
                 f'attachment; filename="{safe_filename(file_name)}"'
@@ -222,10 +226,7 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
 
     @context
     def exporters(self):
-        return [
-            exporter(self.request.event)
-            for _, exporter in register_data_exporters.send(self.request.event)
-        ]
+        return get_schedule_exporters(self.request, public=True)
 
     @context
     def my_exporters(self):
@@ -240,6 +241,27 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
             self.request.path.endswith("/talk/")
             or self.request.event.display_settings["schedule"] == "list"
         )
+
+
+@cache_page(60 * 60 * 24)
+def schedule_messages(request, **kwargs):
+    """This view is cached for a day, as it is small and non-critical, but loaded synchronously."""
+    strings = {
+        "favs_not_logged_in": _(
+            "You're currently not logged in, so your favourited talks can't be saved (but they are stored locally in your browser)."
+        ),
+        "favs_not_loaded": _(
+            "Your favourites could not be loaded from the server, but they are stored locally in your browser."
+        ),
+        "favs_not_saved": _(
+            "Your favourites could not be saved on the server, but they are stored locally in your browser."
+        ),
+    }
+    strings = {key: str(value) for key, value in strings.items()}
+    return HttpResponse(
+        f"const PRETALX_MESSAGES = {json.dumps(strings)};",
+        content_type="application/javascript",
+    )
 
 
 def talk_sort_key(talk):

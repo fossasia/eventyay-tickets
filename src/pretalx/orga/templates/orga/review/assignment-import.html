@@ -1,9 +1,12 @@
 {% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load formset_tags %}
 {% load static %}
+
+{% block extra_title %}{% translate "Assign reviewers" %} :: {% endblock extra_title %}
 
 {% block content %}
     <h2>{% translate "Assign reviewers" %}</h2>
@@ -26,4 +29,4 @@
             </span>
         </div>
     </form>
-{% endblock %}
+{% endblock content %}

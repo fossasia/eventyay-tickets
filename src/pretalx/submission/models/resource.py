@@ -6,9 +6,9 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 
-from pretalx.common.mixins.models import PretalxModel
+from pretalx.common.models.mixins import PretalxModel
+from pretalx.common.text.path import path_with_hash
 from pretalx.common.urls import get_base_url
-from pretalx.common.utils import path_with_hash
 
 
 def resource_path(instance, filename):

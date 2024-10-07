@@ -3,11 +3,12 @@
 {% load rules %}
 {% load static %}
 {% load vite %}
+
 <!DOCTYPE html>
 <html lang="{{ html_locale }}"{% if rtl %} dir="rtl" class="rtl"{% endif %}>
     <head>
         <meta charset="utf-8">
-        <title>{% block title %}{% if request.event %}{{ request.event.name }}{% endif %}{% endblock %} :: {{ site_config.name }}</title>
+        <title>{% block title %}{% block extra_title %}{% endblock %}{% if request.event %}{{ request.event.name }} :: {% endif %}{% endblock %} {{ site_config.name }}</title>
         <meta name="title" content="{% block meta_title %}{% endblock %} {% if request.event %} - {{ request.event.name }} {% endif %} {{ site_config.name }}">
         <meta name="description" content="{% block meta_description %}{% if request.event %}Schedule, talks and talk submissions for {{ request.event.name }}{% else %}Talks and talk submissions by {{ site_config.name }} {% endif %}{% endblock %}">
         <meta name="application-name" content={{ site_config.name }}>
@@ -20,28 +21,28 @@
         {% if request.event and request.event.logo %}<meta property="thumbnail" content="{{ request.event.urls.logo.full }}">{% endif %}
         {% block alternate_link %}
             <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.base.full }}" />
-        {% endblock %}
+        {% endblock alternate_link %}
 
         {% include "common/includes/favicon.html" %}
 
         <link rel="stylesheet" type="text/css" href="{% static "common/scss/uncompressed.css" %}" />
         {% compress css %}
-            <link rel="stylesheet" type="text/css" href="{% static "vendored/typeahead.css" %}"/>
-            <link rel="stylesheet" type="text/css" href="{% static "vendored/select2.min.css" %}"/>
-            <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
-            <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}"/>
+            <link rel="stylesheet" type="text/css" href="{% static "vendored/typeahead.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "vendored/select2.min.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}" />
+            <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}" />
         {% endcompress %}
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheets %}{% endblock stylesheets %}
         {% compress js %}
             <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
             <script defer src="{% static "vendored/tether/tether.min.js" %}"></script>
             <script defer src="{% static "vendored/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
             <script defer src="{% static "orga/js/main.js" %}"></script>
             <script defer src="{% static "orga/js/typeahead.js" %}"></script>
-            <script defer src="{% static 'vendored/select2.min.js' %}"></script>
+            <script defer src="{% static "vendored/select2.min.js" %}"></script>
             <script src="{% static "common/js/formTools.js" %}" async></script>
         {% endcompress %}
-        {% block scripts %}{% endblock %}
+        {% block scripts %}{% endblock scripts %}
         {{ html_head|safe }}
     </head>
     <body data-datetimeformat="{{ js_datetime_format }}" data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}">
@@ -53,7 +54,7 @@
                     </a>
                 </li>
             </ul>
-            <a class="navbar-brand d-none d-md-block" href='{% url "orga:base" %}'>
+            <a class="navbar-brand d-none d-md-block" href="{% url "orga:event.list" %}">
                 <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}" alt="{% translate "The {{ site_config.name }} logo" %}"> {{ site_config.name }}
             </a>
             <div class="navbar-collapse" id="navbartoggle">
@@ -61,8 +62,10 @@
                     {% if request.event %}
                         <li class="nav-item">
                             {% if request.event.custom_domain and not request.event.is_public %}
-                                <form action="{{ request.event.urls.auth.full }}" method="post"
-                                      target="_blank" class="mobile-navbar-view-form visible-xs-block d-flex align-items-center">
+                                <form action="{{ request.event.urls.auth.full }}"
+                                      method="post"
+                                      target="_blank"
+                                      class="mobile-navbar-view-form visible-xs-block d-flex align-items-center">
                                     <input type="hidden" value="{{ new_session }}" name="session">
                                     <input type="hidden" value="{{ go_to_target }}" name="target">
                                     <button type="submit" class="btn btn-link navbar-toggle">
@@ -71,10 +74,10 @@
                                     </button>
                                 </form>
                             {% else %}
-                                <a
-                                    class="nav-link d-flex align-items-center" target="_blank" rel="noopener"
-                                    href="{% if go_to_target == 'schedule' %}{{ request.event.urls.schedule }}{% else %}{{ request.event.cfp.urls.public }}{% endif %}"
-                                >
+                                <a class="nav-link d-flex align-items-center"
+                                   target="_blank"
+                                   rel="noopener"
+                                   href="{% if go_to_target == "schedule" %}{{ request.event.urls.schedule }}{% else %}{{ request.event.cfp.urls.public }}{% endif %}">
                                     <i class="fa fa-eye mr-2 mt-0"></i>
                                     {% translate "View event" %}
                                 </a>
@@ -86,13 +89,12 @@
             <ul class="navbar-nav">
                 {% if warning_update_available %}
                     <li class="nav-item">
-                        <a href="{% url 'orga:admin.update' %}" class="text-danger nav-link">
+                        <a href="{% url "orga:admin.update" %}" class="text-danger nav-link">
                             <i class="fa fa-bell"></i>
                         </a>
                     </li>
                 {% endif %}
-                {% block navbar_right %}
-                {% endblock %}
+                {% block navbar_right %}{% endblock navbar_right %}
                 <li class="nav-item d-none d-md-block">
                     <a class="nav-link active" href="{% url "orga:user.view" %}">
                         <i class="fa fa-user"></i>
@@ -161,11 +163,11 @@
                     </div>
                 </a>
                 {% if request.event %}
-                    {% has_perm 'orga.view_orga_area' request.user request.event as can_see_orga_area %}
-                    {% has_perm 'orga.change_submissions' request.user request.event as can_see_orga_exclusive %}
-                    {% has_perm 'orga.change_teams' request.user request.event as can_change_teams %}
-                    {% has_perm 'orga.change_settings' request.user request.event as can_change_settings %}
-                    {% has_perm 'orga.view_speakers' request.user request.event as can_view_speakers %}
+                    {% has_perm "orga.view_orga_area" request.user request.event as can_see_orga_area %}
+                    {% has_perm "orga.change_submissions" request.user request.event as can_see_orga_exclusive %}
+                    {% has_perm "orga.change_teams" request.user request.event as can_change_teams %}
+                    {% has_perm "orga.change_settings" request.user request.event as can_change_settings %}
+                    {% has_perm "orga.view_speakers" request.user request.event as can_view_speakers %}
                     {% if can_see_orga_area %}
                         <a class="nav-link {% if url_name == "event.dashboard" %}active{% endif %}" href="{{ request.event.orga_urls.base }}">
                             <i class="fa fa-tachometer"></i>
@@ -186,10 +188,10 @@
                                 </span>
                                 <div class="collapse in{% if "settings." in url_name %} show{% endif %}" aria-expand="true" id="collapseSettings">
                                     <a href="{{ request.event.orga_urls.settings }}" class="nav-link nav-link-second-level{% if "settings.event." in url_name %} active{% endif %}">
-                                        <span>{% translate "General" %}</span>
+                                        <span>{{ phrases.base.general }}</span>
                                     </a>
                                     {% if can_change_teams %}
-                                        <a href="{{ request.event.organiser.orga_urls.base }}" class="nav-link nav-link-second-level{% if "settings.team." in url_name %} active{% endif %}">
+                                        <a href="{{ request.event.organiser.orga_urls.teams }}" class="nav-link nav-link-second-level{% if "settings.team." in url_name %} active{% endif %}">
                                             <span>{% translate "Teams" %}</span>
                                         </a>
                                     {% endif %}
@@ -197,7 +199,7 @@
                                         <span>{% translate "Review" %}</span>
                                     </a>
                                     <a href="{{ request.event.orga_urls.mail_settings }}" class="nav-link nav-link-second-level{% if "settings.mail" in url_name %} active{% endif %}">
-                                        <span>{% translate "E-mail" %}</span>
+                                        <span>{% translate "Email" %}</span>
                                     </a>
                                     <a href="{{ request.event.orga_urls.widget_settings }}" class="nav-link nav-link-second-level{% if "settings.widget" in url_name %} active{% endif %}">
                                         <span>{% translate "Widget" %}</span>
@@ -230,7 +232,7 @@
                                         <span>{% translate "Editor" %}</span>
                                     </a>
                                     <a href="{{ request.event.cfp.urls.questions }}" class="nav-link nav-link-second-level{% if "cfp.question" in url_name %} active{% endif %}">
-                                        <span>{% translate "Questions" %}</span>
+                                        <span>{{ phrases.cfp.questions }}</span>
                                     </a>
                                     {% if request.event.feature_flags.use_tracks %}
                                         <a href="{{ request.event.cfp.urls.tracks }}" class="nav-link nav-link-second-level{% if "cfp.track" in url_name %} active{% endif %}">
@@ -252,15 +254,15 @@
                             <span class="has-children">
                                 <a class="nav-link nav-link-inner" href="{{ request.event.orga_urls.submissions }}">
                                     <i class="fa fa-sticky-note-o"></i>
-                                    <span class="sidebar-text">{% translate "Sessions" %}</span>
+                                    <span class="sidebar-text">{{ phrases.schedule.sessions }}</span>
                                 </a>
                                 <a class="arrow nav-link" data-toggle="collapse" href="#collapseSubmissions" aria-controls="collapseSubmissions">
                                     <i class="fa fa-angle-down"></i>
                                 </a>
                             </span>
                             <div class="collapse in{% if "submissions." in url_name|slice:":13" %} show{% endif %}" aria-expand="true" id="collapseSubmissions">
-                                <a href="{{ request.event.orga_urls.submissions }}" class="nav-link nav-link-second-level{% if "submissions." in url_name and "submissions.statistics" not in url_name  and "submissions.feedback" not in url_name and "submissions.tag" not in url_name %} active{% endif %}">
-                                    <span>{% translate "Sessions" %}</span>
+                                <a href="{{ request.event.orga_urls.submissions }}" class="nav-link nav-link-second-level{% if "submissions." in url_name and "submissions.statistics" not in url_name and "submissions.feedback" not in url_name and "submissions.tag" not in url_name %} active{% endif %}">
+                                    <span>{{ phrases.schedule.sessions }}</span>
                                 </a>
                                 <a href="{{ request.event.orga_urls.tags }}" class="nav-link nav-link-second-level{% if "submissions.tag" in url_name %} active{% endif %}">
                                     <span>{% translate "Tags" %}</span>
@@ -312,7 +314,7 @@
                                 <span class="has-children">
                                     <a class="nav-link nav-link-inner" href="{{ request.event.orga_urls.speakers }}">
                                         <i class="fa fa-address-card-o"></i>
-                                        <span class="sidebar-text">{% translate "Speakers" %}</span>
+                                        <span class="sidebar-text">{{ phrases.schedule.speakers }}</span>
                                     </a>
                                     <a class="arrow nav-link" data-toggle="collapse" href="#collapseSpeakers" aria-controls="collapseSpeakers">
                                         <i class="fa fa-angle-down"></i>
@@ -320,7 +322,7 @@
                                 </span>
                                 <div class="collapse in{% if "speakers." in url_name|slice:":9" %} show{% endif %}" aria-expand="true" id="collapseSpeakers">
                                     <a href="{{ request.event.orga_urls.speakers }}" class="nav-link nav-link-second-level{% if "speakers.list" in url_name or "speakers.view" in url_name %} active{% endif %}">
-                                        <span>{% translate "Speakers" %}</span>
+                                        <span>{{ phrases.schedule.speakers }}</span>
                                     </a>
                                     {% if can_see_orga_exclusive %}
                                         <a href="{{ request.event.orga_urls.information }}" class="nav-link nav-link-second-level{% if "speakers.information" in url_name %} active{% endif %}">
@@ -331,6 +333,7 @@
                                         <span>{% translate "Export" %}</span>
                                     </a>
                                 </div>
+                            </div>
                         {% endif %}
                     {% endif %}
                     {% if can_see_orga_exclusive %}
@@ -339,7 +342,7 @@
                             <span class="has-children">
                                 <a class="nav-link nav-link-inner" href="{{ request.event.orga_urls.schedule }}">
                                     <i class="fa fa-calendar-o"></i>
-                                    <span class="sidebar-text">{% translate "Schedule" %}</span>
+                                    <span class="sidebar-text">{{ phrases.schedule.schedule }}</span>
                                 </a>
                                 <a class="arrow nav-link" data-toggle="collapse" href="#collapseSchedule" aria-controls="collapseSchedule">
                                     <i class="fa fa-angle-down"></i>
@@ -375,14 +378,14 @@
                                 <a href="{{ request.event.orga_urls.outbox }}" class="nav-link nav-link-second-level{% if "mails.outbox" in url_name %} {% if not form or not form.instance.sent %}active{% endif %}{% endif %}">
                                     <span>{% translate "Outbox" %}</span>
                                 </a>
-                                <a href="{{ request.event.orga_urls.mail_templates }}" class="nav-link nav-link-second-level{% if "mails.templates" in url_name %} active{% endif %}">
-                                    <span>{% translate "Templates" %}</span>
-                                </a>
                                 <a href="{% if can_change_teams %}{{ request.event.orga_urls.compose_mails }}{% else %}{{ request.event.orga_urls.compose_mails_sessions }}{% endif %}" class="nav-link nav-link-second-level{% if "mails.compose" in url_name %} active{% endif %}">
-                                    <span>{% translate "Compose E-mails" %}</span>
+                                    <span>{% translate "Compose emails" %}</span>
                                 </a>
                                 <a href="{{ request.event.orga_urls.sent_mails }}" class="nav-link nav-link-second-level{% if "mails.sent" in url_name %} active{% elif url_name == "mails.outbox.mail.view" and form.instance.sent %} active{% endif %}">
-                                    <span>{% translate "Sent E-mails" %}</span>
+                                    <span>{% translate "Sent emails" %}</span>
+                                </a>
+                                <a href="{{ request.event.orga_urls.mail_templates }}" class="nav-link nav-link-second-level{% if "mails.templates" in url_name %} active{% endif %}">
+                                    <span>{% translate "Templates" %}</span>
                                 </a>
                             </div>
                         </div>
@@ -390,14 +393,38 @@
                             {% include "orga/includes/sidebar_nav.html" %}
                         {% endfor %}
                     {% endif %}
-                {% else %}  {# if request.event #}
-                    {% if request.orga_events|length > 1 %}
-                        <a class='nav-link {% if request.path == "/orga/event/" %} active{% endif %}' href='{% url "orga:base" %}'>
+                {% elif request.organiser %}  {# if request.event #}
+                    <a class="nav-link {% if url_name == "organiser.dashboard" %} active{% endif %}" href="{{ request.organiser.orga_urls.base }}">
+                        <i class="fa fa-tachometer"></i>
+                        <span>{% translate "Dashboard" %}</span>
+                    </a>
+                    <a class="nav-link {% if "/settings/" in request.path %} active{% endif %}" href="{{ request.organiser.orga_urls.settings }}">
+                        <i class="fa fa-cog"></i>
+                        <span>{% translate "Settings" %}</span>
+                    </a>
+                    {% has_perm "orga.change_teams" request.user request.organiser as can_change_teams %}
+                    {% has_perm "orga.view_organiser_speakers" request.user request.organiser as can_view_speakers %}
+                    {% if can_change_teams %}
+                        <a class="nav-link {% if "/teams/" in request.path %} active{% endif %}" href="{% url "orga:organiser.teams" organiser=request.organiser.slug %}">
+                            <i class="fa fa-users"></i>
+                            <span>{% translate "Teams" %}</span>
+                        </a>
+                    {% endif %}
+                    {% if can_view_speakers %}
+                        <a class="nav-link {% if "/speakers/" in request.path %} active{% endif %}" href="{% url "orga:organiser.speakers" organiser=request.organiser.slug %}">
+                            <i class="fa fa-address-card-o"></i>
+                            <span>{% translate "Speakers" %}</span>
+                        </a>
+                    {% endif %}
+                {% else %}  {# elif request.organiser #}
+                    {% has_perm "orga.view_organiser_lists" request.user request as can_see_organiser_lists %}
+                    {% if can_see_organiser_lists %}
+                        <a class="nav-link {% if request.path == "/orga/event/" %} active{% endif %}" href="{% url "orga:event.list" %}">
                             <i class="fa fa-calendar-o"></i>
                             <span>{% translate "Events" %}</span>
                         </a>
                     {% endif %}
-                    {% has_perm 'orga.view_organisers' request.user request as can_see_organisers %}
+                    {% has_perm "orga.view_organisers" request.user request as can_see_organisers %}
                     {% if can_see_organisers %}
                         <a class='nav-link {% if "/orga/organiser/" in request.path %} active{% endif %}' href='{% url "orga:organiser.list" %}'>
                             <i class="fa fa-users"></i>
@@ -405,10 +432,27 @@
                         </a>
                     {% endif %}
                     {% if request.user.is_administrator %}
-                        <a class='nav-link {% if "/orga/admin/" in request.path %} active{% endif %}' href='{% url "orga:admin.dashboard" %}'>
-                            <i class="fa fa-users"></i>
-                            <span>{% translate "Admin information" %}</span>
-                        </a>
+                        <div class="nav-fold">
+                            <span class="has-children">
+                                <a class="nav-link nav-link-inner" href='{% url "orga:admin.dashboard" %}'>
+                                    <i class="fa fa-cogs"></i>
+                                    <span class="sidebar-text">
+                                        {% translate "Administration" %}
+                                    </span>
+                                </a>
+                                <a class="arrow nav-link" data-toggle="collapse" href="#collapseAdmin" aria-controls="collapseAdmin">
+                                    <i class="fa fa-angle-down"></i>
+                                </a>
+                            </span>
+                            <div class="collapse in{% if "/orga/admin/" in request.path_info %} show{% endif %}" aria-expand="true" id="collapseAdmin">
+                                <a class="nav-link nav-link-second-level {% if "/orga/admin/" == request.path_info %} active{% endif %}" href='{% url "orga:admin.dashboard" %}'>
+                                    <span>{% translate "Admin information" %}</span>
+                                </a>
+                                <a href='{% url "orga:admin.user.list" %}' class="nav-link nav-link-second-level{% if "/orga/admin/users" in request.path_info %} active{% endif %}">
+                                    <span>{% translate "Users" %}</span>
+                                </a>
+                            </div>
+                        </div>
                     {% endif %}
                     {% for nav_element in nav_global %}
                         {% include "orga/includes/sidebar_nav.html" %}
@@ -426,7 +470,7 @@
                     {% endif %}
 
                     {% block content %}
-                    {% endblock %}
+                    {% endblock content %}
                 </main>
                 <footer class="no-print">
                     {% include "common/powered_by.html" %}

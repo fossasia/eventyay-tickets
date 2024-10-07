@@ -3,7 +3,7 @@ from pathlib import Path
 from django.core.files import File
 from django.forms import ClearableFileInput, PasswordInput, Textarea
 from django.utils.safestring import mark_safe
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 
 class PasswordStrengthInput(PasswordInput):
@@ -88,6 +88,8 @@ class ClearableBasenameFileInput(ClearableFileInput):
 
 
 class ImageInput(ClearableBasenameFileInput):
+    template_name = "common/widgets/image_input.html"
+
     def get_context(self, name, value, attrs):
         attrs["accept"] = "image/*"
         return super().get_context(name, value, attrs)

@@ -279,7 +279,7 @@ def base_placeholders(sender, **kwargs):
             ),
             _(
                 "- Your session “Title” will take place at {time} in Room 101.\n"
-                "- Your session “Other Title” has been moved to {time2} in Room 102."
+                "- Your session “Other Title” will take place at {time2} in Room 102."
             ).format(time=time, time2=time2),
             _("A list of time and place for this user’s publicly visible sessions."),
         ),

@@ -8,3 +8,4 @@ class SubmissionConfig(AppConfig):
         from . import exporters  # noqa
         from . import permissions  # noqa
         from . import signals  # noqa
+        from .phrases import SubmissionPhrases  # noqa

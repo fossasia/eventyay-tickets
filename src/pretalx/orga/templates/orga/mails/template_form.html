@@ -1,10 +1,12 @@
 {% extends "orga/mails/_mail_editor.html" %}
+
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block title %}{% translate "Email template" %}{% endblock %}
-{% block email_editor_title %}{% translate "Email template" %}{% endblock %}
+{% block extra_title %}{% translate "Email template" %} :: {% endblock extra_title %}
 
-{% block email_editor_preview %}{% endblock %}
+{% block email_editor_title %}{% translate "Email template" %}{% endblock email_editor_title %}
 
-{% block email_editor_actions %}{% include "orga/includes/submit_row.html" %}{% endblock %}
+{% block email_editor_preview %}{% endblock email_editor_preview %}
+
+{% block email_editor_actions %}{% include "orga/includes/submit_row.html" %}{% endblock email_editor_actions %}

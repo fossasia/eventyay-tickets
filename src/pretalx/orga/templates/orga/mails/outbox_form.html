@@ -3,6 +3,8 @@
 {% load i18n %}
 {% load rich_text %}
 
+{% block extra_title %}{% translate "Mail Editor" %} :: {% endblock extra_title %}
+
 {% block mail_content %}
     {% if form.instance.sent %}
         <div class="alert alert-info">
@@ -17,22 +19,22 @@
         {% bootstrap_form_errors form %}
 
         {% if not form.read_only %}
-            {% bootstrap_field form.to layout='event' %}
-            {% if form.to_users %}{% bootstrap_field form.to_users layout='event' %}{% endif %}
-            {% bootstrap_field form.reply_to layout='event' %}
-            {% bootstrap_field form.cc layout='event' %}
-            {% bootstrap_field form.bcc layout='event' %}
-            {% bootstrap_field form.subject layout='event' %}
-            {% bootstrap_field form.text layout='event' %}
+            {% bootstrap_field form.to layout="event" %}
+            {% if form.to_users %}
+                {% bootstrap_field form.to_users layout="event" %}
+            {% endif %}
+            {% bootstrap_field form.reply_to layout="event" %}
+            {% bootstrap_field form.cc layout="event" %}
+            {% bootstrap_field form.bcc layout="event" %}
+            {% bootstrap_field form.subject layout="event" %}
+            {% bootstrap_field form.text layout="event" %}
         {% else %}
             <div class="container">
                 <div class="row mb-3">
                     <div class="col col-md-3 flip text-right font-weight-bold">
                         <label>To</label>
                     </div>
-                    <div class="col col-md-9">
-                        {{ form.instance.to|default:"-" }}
-                    </div>
+                    <div class="col col-md-9">{{ form.instance.to|default:"-" }}</div>
                 </div>
 
                 {% if form.to_users %}
@@ -43,9 +45,7 @@
                         <div class="col col-md-9">
                             {% for user in form.instance.to_users.all %}
                                 {% if user in request.event.submitters %}
-                                    <a href="{% url "orga:speakers.view" event=request.event.slug code=user.code %}">
-                                        {{ user }}
-                                    </a>
+                                    <a href="{% url "orga:speakers.view" event=request.event.slug code=user.code %}">{{ user }}</a>
                                 {% else %}
                                     {{ user }}{% endif %}{% if not forloop.last %},
                                     {% endif %}
@@ -58,45 +58,35 @@
                     <div class="col col-md-3 flip text-right font-weight-bold">
                         <label>Reply-To</label>
                     </div>
-                    <div class="col col-md-9">
-                        {{ form.instance.reply_to|default:"-" }}
-                    </div>
+                    <div class="col col-md-9">{{ form.instance.reply_to|default:"-" }}</div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col col-md-3 flip text-right font-weight-bold">
                         <label>CC</label>
                     </div>
-                    <div class="col col-md-9">
-                        {{ form.instance.cc|default:"-" }}
-                    </div>
+                    <div class="col col-md-9">{{ form.instance.cc|default:"-" }}</div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col col-md-3 flip text-right font-weight-bold">
                         <label>BCC</label>
                     </div>
-                    <div class="col col-md-9">
-                        {{ form.instance.bcc|default:"-" }}
-                    </div>
+                    <div class="col col-md-9">{{ form.instance.bcc|default:"-" }}</div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col col-md-3 flip text-right font-weight-bold">
                         <label>Subject</label>
                     </div>
-                    <div class="col col-md-9">
-                        {{ form.instance.subject }}
-                    </div>
+                    <div class="col col-md-9">{{ form.instance.subject }}</div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col col-md-3 flip text-right font-weight-bold">
                         <label>Text</label>
                     </div>
-                    <div class="col col-md-9">
-                        {{ form.instance.text|rich_text }}
-                    </div>
+                    <div class="col col-md-9">{{ form.instance.text|rich_text }}</div>
                 </div>
             </div>
         {% endif %}
@@ -105,9 +95,11 @@
             {% if action == "edit" %}
                 <a class="btn btn-lg btn-danger ml-1 mr-1" href={{ form.instance.urls.delete }}>{% translate "Discard" %}</a>
                 <a class="btn btn-lg btn-outline-danger flip mr-auto" href="{{ form.instance.urls.delete }}?all">{% translate "Discard all from this template" %}</a>
-                </span><span>
-                    <button type="submit" class="btn btn-lg btn-success" name="form" value="save">{% translate "Save" %}</button>
-                    <button class="btn btn-lg btn-info" name="form" value="send">{% translate "Save and send" %}</button>
+                <span></span>
+                <button type="submit" class="btn btn-lg btn-success" name="form" value="save">
+                    {{ phrases.base.save }}
+                </button>
+                <button class="btn btn-lg btn-info" name="form" value="send">{% translate "Save and send" %}</button>
             {% elif action == "view" %}
                 {% if form.instance.sent %}
                     <a class="btn btn-lg btn-success ml-auto flip" href="{% if form.instance.template %}{{ request.event.orga_urls.compose_mails_sessions }}?template={{ form.instance.template.pk }}{% else %}{{ form.instance.urls.copy }}{% endif %}">
@@ -118,4 +110,4 @@
         </div>
     </form>
 
-{% endblock %}
+{% endblock mail_content %}

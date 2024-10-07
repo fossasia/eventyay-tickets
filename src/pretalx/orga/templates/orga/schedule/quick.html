@@ -1,4 +1,5 @@
 {% extends "orga/schedule/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -8,13 +9,19 @@
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/quick_schedule.scss" %}">
     {% endcompress %}
-{% endblock %}
+{% endblock stylesheets %}
+
+{% block extra_title %}{% translate "Schedule session" %} {{ quotation_open }}{{ form.instance.submission.title }}{{ quotation_close }} :: {% endblock extra_title %}
 
 {% block schedule_content %}
-    <h2>{% translate "Schedule session" %} {{ quotation_close }}{{ form.instance.submission.title }}{{ quotation_open }}</h2>
+    <h2>
+        {% translate "Schedule session" %} {{ quotation_close }}{{ form.instance.submission.title }}{{ quotation_open }}
+    </h2>
     <form method="post">
         {% csrf_token %}
-        {% bootstrap_form form layout='event' %}
-        <button id="quick-schedule-submit" type="submit" class="btn btn-success btn-lg offset-md-3"><i class="fa fa-tick"></i> {% translate "Save" %}</button>
+        {% bootstrap_form form layout="event" %}
+        <button id="quick-schedule-submit" type="submit" class="btn btn-success btn-lg offset-md-3"><i class="fa fa-tick"></i>
+            {{ phrases.base.save }}
+        </button>
     </form>
-{% endblock %}
+{% endblock schedule_content %}

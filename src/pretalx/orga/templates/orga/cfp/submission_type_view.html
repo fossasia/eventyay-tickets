@@ -1,15 +1,31 @@
-{% extends "orga/cfp/base.html" %}
-{% load i18n %}
+{% extends "orga/base.html" %}
 
-{% block cfp_content %}
-    <h2>{% translate "Session Types" %}</h2>
-    <div class="alert alert-info">
-        {% blocktranslate trimmed %}
-            Different session types may help to guide speakers into different slot
-            lengths (short sessions vs long sessions) or different presentation formats
-            (talk vs workshop vs metal concert).
-        {% endblocktranslate %}
-    </div>
+{% load i18n %}
+{% load static %}
+
+{% block scripts %}
+    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
+    <script defer src="{% static "common/js/modalDialog.js" %}"></script>
+{% endblock scripts %}
+
+{% block extra_title %}{% translate "Session types" %} :: {% endblock extra_title %}
+
+{% block content %}
+    <h2>
+        {% translate "Session types" %}
+        <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
+            <i class="fa fa-question-circle-o text-info"></i>
+        </span>
+    </h2>
+    <dialog class="info-dialog" id="info-dialog">
+        <div class="alert alert-info">
+            {% blocktranslate trimmed %}
+                Different session types may help to guide speakers into different slot
+                lengths (short sessions vs long sessions) or different presentation formats
+                (talk vs workshop vs metal concert).
+            {% endblocktranslate %}
+        </div>
+    </dialog>
     <div class="d-flex justify-content-end mb-3">
         <a class="btn btn-info" href="{{ request.event.cfp.urls.new_type }}">
             <i class="fa fa-plus"></i>
@@ -33,36 +49,27 @@
                             {% if type.requires_access_code %}
                                 <i class="fa fa-lock" title="{% translate "Requires access code" %}"></i>
                             {% endif %}
-                            <a href="{{ type.urls.edit }}">
-                                {{ type.name }}
-                            </a>
+                            <a href="{{ type.urls.edit }}">{{ type.name }}</a>
                         </td>
                         <td class="pl-4 numeric">
-                            <a href="{{ request.event.orga_urls.submissions }}?submission_type={{ type.id }}">
-                                {{ type.submissions.all.count }}
-                            </a>
+                            <a href="{{ request.event.orga_urls.submissions }}?submission_type={{ type.id }}">{{ type.submissions.all.count }}</a>
                         </td>
                         <td class="numeric">{{ type.default_duration }}</td>
                         <td class="action-column">
                             {% if request.event.cfp.default_type == type %}
                                 <a><i class="fa fa-check"></i> {% translate "Default" %}</a>
                             {% else %}
-                                <a href="{{ type.urls.default }}"
-                                   class="btn btn-sm btn-info">
-                                    Make default
-                                </a>
+                                <a href="{{ type.urls.default }}" class="btn btn-sm btn-info">Make default</a>
                             {% endif %}
                             <a href="{{ type.urls.prefilled_cfp.full }}"
-                               title="{% translate 'Go to pre-filled CfP form' %}"
+                               title="{% translate "Go to pre-filled CfP form" %}"
                                class="btn btn-sm btn-info">
                                 <i class="fa fa-link"></i>
                             </a>
-                            <a href="{{ type.urls.edit }}"
-                               class="btn btn-sm btn-info">
+                            <a href="{{ type.urls.edit }}" class="btn btn-sm btn-info">
                                 <i class="fa fa-edit"></i>
                             </a>
-                            <a href="{{ type.urls.delete }}"
-                               class="btn btn-sm btn-danger">
+                            <a href="{{ type.urls.delete }}" class="btn btn-sm btn-danger">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </td>
@@ -71,5 +78,7 @@
             </tbody>
         </table>
     </div>
+
     {% include "orga/includes/pagination.html" %}
-{% endblock %}
+
+{% endblock content %}

@@ -1,6 +1,6 @@
 import pytest
 
-from pretalx.common.serialize import serialize_duration
+from pretalx.common.text.serialize import serialize_duration
 
 
 @pytest.mark.parametrize(

@@ -11,7 +11,7 @@ class SubmissionError(Exception):
     pass
 
 
-class AuthenticationFailed(Exception):
+class AuthenticationFailedError(Exception):
     pass
 
 

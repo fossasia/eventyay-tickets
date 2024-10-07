@@ -1,7 +1,7 @@
 import pytest
 from django.forms import ValidationError
 
-from pretalx.common.forms.utils import validate_field_length
+from pretalx.common.forms.mixins import RequestRequire
 
 
 @pytest.mark.parametrize(
@@ -26,7 +26,7 @@ from pretalx.common.forms.utils import validate_field_length
 def test_validate_field_length(value, min_length, max_length, count_in, valid):
     if valid:
         assert (
-            validate_field_length(
+            RequestRequire.validate_field_length(
                 value=value,
                 min_length=min_length,
                 max_length=max_length,
@@ -36,7 +36,7 @@ def test_validate_field_length(value, min_length, max_length, count_in, valid):
         )
     else:
         with pytest.raises(ValidationError):
-            validate_field_length(
+            RequestRequire.validate_field_length(
                 value=value,
                 min_length=min_length,
                 max_length=max_length,

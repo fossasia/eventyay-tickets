@@ -1,9 +1,8 @@
 {% load i18n %}
 {% load rich_text %}
+
 <tr>
-    <td class="numeric-left">
-        {{ review.score }}
-    </td>
+    <td class="numeric-left">{{ review.score }}</td>
     {% if score_categories|length > 1 %}
         {% for score in review.scores %}
             <td class="numeric-left">
@@ -23,7 +22,7 @@
         {% if show_reviewer_name %}
             {{ review.user }}
         {% elif not read_only %}
-            <div class="btn btn-success" id="edit-review">{% translate "Edit" %}</div>
+            <div class="btn btn-success" id="edit-review">{{ phrases.base.edit }}</div>
         {% endif %}
     </td>
 </tr>

@@ -45,3 +45,7 @@ $theme-colors: (
   dark: $gray-800,
 );
 $enable-validation-icons: false;
+
+:root {
+  --color-danger: #b23e65;
+}

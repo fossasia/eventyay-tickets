@@ -1,15 +1,16 @@
 {% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load i18n %}
 {% load rules %}
 
-{% block title %}Organisers{% endblock %}
+{% block extra_title %}{% translate "Teams" %} :: {% endblock extra_title %}
 
 {% block content %}
     <form class="mb-4 m-2">
         <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% translate "Search" %}">
     </form>
-    {% has_perm 'orga.change_organiser_settings' request.user None as can_create_organiser %}
+    {% has_perm "orga.change_organiser_settings" request.user None as can_create_organiser %}
     <div class="dashboard-list event-blocks">
         {% if can_create_organiser %}
             <a class="dashboard-block symbol" href="{% url "orga:organiser.create" %}">
@@ -23,17 +24,17 @@
                     <div class="submissions">
                         {{ organiser.event_count }}
                         {% blocktranslate trimmed count count=organiser.event_count %}
-                            event
+                            Event
                         {% plural %}
-                            events
+                            Events
                         {% endblocktranslate %}
                     </div>
                     <div class="state inactive">
                         {{ organiser.team_count }}
-                        {% blocktranslate trimmed count count=organiser.team_count %}
-                            team
+                        {% blocktranslate trimmed count count=organiser.team_count context "number of teams" %}
+                            Team
                         {% plural %}
-                            teams
+                            Teams
                         {% endblocktranslate %}
                     </div>
                 </div>
@@ -41,8 +42,6 @@
         {% endfor %}
     </div>
     {% if not organisers and not can_create_organiser %}
-        <div class="alert alert-info">
-            {% translate "There are no organisers you can edit." %}
-        </div>
+        <div class="alert alert-info">{% translate "There are no organisers you can edit." %}</div>
     {% endif %}
-{% endblock %}
+{% endblock content %}

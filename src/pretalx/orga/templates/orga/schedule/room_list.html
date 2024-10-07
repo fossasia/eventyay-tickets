@@ -1,5 +1,8 @@
 {% extends "orga/base.html" %}
+
 {% load i18n %}
+
+{% block extra_title %}{{ request.event.rooms.count }} {% blocktranslate trimmed count count=request.event.rooms.count context "Number of rooms" %}Room{% plural %}Rooms{% endblocktranslate %} :: {% endblock extra_title %}
 
 {% block content %}
     <div>
@@ -25,25 +28,27 @@
                     {% for room in request.event.rooms.all %}
                         <tr>
                             <td>
-                                <a href="{{ room.urls.settings_base }}">
-                                    {{ room.name }}
-                                </a>
+                                <a href="{{ room.urls.settings_base }}">{{ room.name }}</a>
                             </td>
-                            <td class="numeric">{% if room.capacity %}{{ room.capacity }}{% endif %}</td>
+                            <td class="numeric">
+                                {% if room.capacity %}{{ room.capacity }}{% endif %}
+                            </td>
                             <td class="action-column">
+
                                 {% include "orga/includes/order_object.html" with object=room %}
-                                <a href="{{ room.urls.edit }}"
-                                   class="btn btn-sm btn-info">
+
+                                <a href="{{ room.urls.edit }}" class="btn btn-sm btn-info">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a href="{{ room.urls.delete }}"
-                                   class="btn btn-sm btn-danger">
+                                <a href="{{ room.urls.delete }}" class="btn btn-sm btn-danger">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </td>
                         </tr>
                     {% empty %}
-                        <tr><td> {% translate "Please add at least one place in which sessions can take place." %} </td></tr>
+                        <tr>
+                            <td>{% translate "Please add at least one place in which sessions can take place." %}</td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -56,4 +61,4 @@
             </a>
         </div>
     </div>
-{% endblock %}
+{% endblock content %}

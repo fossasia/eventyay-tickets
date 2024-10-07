@@ -10,10 +10,12 @@ import vobject
 from django.conf import settings
 from django.db import models
 from django.utils.functional import cached_property
+from django.utils.translation import gettext_lazy as _
 from django_scopes import ScopedManager
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins.models import PretalxModel
+from pretalx.common.models.mixins import PretalxModel
+from pretalx.common.text.serialize import serialize_duration
 from pretalx.common.urls import get_base_url
 
 INSTANCE_IDENTIFIER = None
@@ -44,6 +46,8 @@ class TalkSlot(PretalxModel):
         to="schedule.Room",
         on_delete=models.PROTECT,
         related_name="talks",
+        verbose_name=_("Room"),
+        help_text=_("The room this talk is scheduled in, if any"),
         null=True,
         blank=True,
     )
@@ -51,8 +55,16 @@ class TalkSlot(PretalxModel):
         to="schedule.Schedule", on_delete=models.PROTECT, related_name="talks"
     )
     is_visible = models.BooleanField(default=False)
-    start = models.DateTimeField(null=True)
-    end = models.DateTimeField(null=True)
+    start = models.DateTimeField(
+        null=True,
+        verbose_name=_("Start"),
+        help_text=_("When the talk starts, if it is currently scheduled"),
+    )
+    end = models.DateTimeField(
+        null=True,
+        verbose_name=_("End"),
+        help_text=_("When the talk ends, if it is currently scheduled"),
+    )
     description = I18nCharField(null=True)
 
     objects = ScopedManager(event="schedule__event")
@@ -80,8 +92,6 @@ class TalkSlot(PretalxModel):
 
     @cached_property
     def export_duration(self):
-        from pretalx.common.serialize import serialize_duration
-
         return serialize_duration(minutes=self.duration)
 
     @cached_property

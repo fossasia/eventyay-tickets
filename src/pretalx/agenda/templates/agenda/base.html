@@ -1,4 +1,5 @@
 {% extends "common/base.html" %}
+
 {% load i18n %}
 {% load rules %}
 
@@ -6,14 +7,18 @@
     {% block alternate_link %}
         <link rel="alternate" type="application/atom+xml" title="{{ request.event.name }} Schedule Versions" href="{{ request.event.urls.feed }}" />
         <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.base.full }}" />
-    {% endblock %}
-    {% block agenda_custom_header %}
-    {% endblock %}
-{% endblock %}
+    {% endblock alternate_link %}
+    {% block agenda_custom_header %}{% endblock agenda_custom_header %}
+{% endblock custom_header %}
 
 {% block nav_link %}
-    {% has_perm 'agenda.view_schedule' request.user request.event as can_view_schedule %}{% if can_view_schedule %}{{ request.event.urls.schedule }}{% else %}{{ request.event.urls.base }}{% endif %}
-{% endblock %}
+    {% has_perm "agenda.view_schedule" request.user request.event as can_view_schedule %}
+    {% if can_view_schedule %}
+        {{ request.event.urls.schedule }}
+    {% else %}
+        {{ request.event.urls.base }}
+    {% endif %}
+{% endblock nav_link %}
 
 {% block content %}
     {% if not request.event.feature_flags.show_schedule and not request.user.is_anonymous and not hide_visibility_warning %}
@@ -24,6 +29,5 @@
             {% endblocktranslate %}
         </div>
     {% endif %}
-    {% block agenda_content %}
-    {% endblock %}
-{% endblock %}
+    {% block agenda_content %}{% endblock agenda_content %}
+{% endblock content %}

@@ -1,17 +1,19 @@
 {% load compress %}
 {% load i18n %}
 {% load static %}
+
 <!DOCTYPE html>
 <html>
     <head>
         <title>{% block title %}{% endblock %} :: {{site_name}} </title>
         {% compress css %}
-            <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/auth.scss" %}"/>
+            <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/auth.scss" %}" />
         {% endcompress %}
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#2185d0">
 
         {% include "common/includes/favicon.html" %}
+
         {% compress js %}
             <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
             <script defer src="{% static "vendored/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
@@ -27,16 +29,13 @@
             <p>
                 {% if messages %}
                     {% for message in messages %}
-                        <div class="card card-inverse card-{{ message.tags }} mb-3 text-center">
-                            {{ message }}
-                        </div>
+                        <div class="card card-inverse card-{{ message.tags }} mb-3 text-center">{{ message }}</div>
                     {% endfor %}
                 {% endif %}
-                <p>
-                    <div class="card card-login">
-                        {% block content %}
-                        {% endblock %}
-                    </div>
-                </div>
-            </body>
-        </html>
+            </p>
+            <div class="card card-login">
+                {% block content %}{% endblock content %}
+            </div>
+        </div>
+    </body>
+</html>

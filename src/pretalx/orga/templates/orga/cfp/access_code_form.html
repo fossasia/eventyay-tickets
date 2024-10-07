@@ -1,4 +1,5 @@
-{% extends "orga/cfp/base.html" %}
+{% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -11,9 +12,11 @@
         <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
         <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
-{% block cfp_content %}
+{% block extra_title %}{% if form.instance.pk %}{{ form.instance.code }}{% else %}{% translate "New access code" %}{% endif %} :: {% endblock extra_title %}
+
+{% block content %}
     <h2>
         {% if form.instance.pk %}
             {% translate "Edit access code" %}
@@ -29,7 +32,9 @@
                 {% endblocktranslate %}
                 <ul>
                     {% for submission in form.instance.submissions.all %}
-                        <li><a href="{{ submission.orga_urls.base }}">{{ submission.title }} ({{submission.display_speaker_names}})</a></li>
+                        <li>
+                            <a href="{{ submission.orga_urls.base }}">{{ submission.title }} ({{ submission.display_speaker_names }})</a>
+                        </li>
                     {% endfor %}
                 </ul>
             </span>
@@ -38,23 +43,23 @@
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        {% bootstrap_form form layout='event' %}
+        {% bootstrap_form form layout="event" %}
         <div class="submit-group panel">
             <span>
                 {% if form.instance.pk and not form.instance.submissions.exists %}
                     <a class="btn btn-outline-danger btn-lg" href="{{ form.instance.urls.delete }}">
-                        <i class="fa fa-trash"></i> {% translate "Delete" %}
+                        <i class="fa fa-trash"></i>
+                        {{ phrases.base.delete_button }}
                     </a>
                 {% endif %}
             </span>
             <span>
                 <button type="submit" class="btn btn-success btn-lg">
                     <i class="fa fa-check"></i>
-                    {% translate "Save" %}
+                    {{ phrases.base.save }}
                 </button>
             </span>
         </div>
     </form>
 
-{% endblock %}
-
+{% endblock content %}

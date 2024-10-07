@@ -11,8 +11,12 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, TemplateView
 from django_context_decorator import context
 
-from pretalx.common.mixins.views import EventPermissionRequired, PermissionRequired
 from pretalx.common.views import CreateOrUpdateView
+from pretalx.common.views.mixins import (
+    ActionConfirmMixin,
+    EventPermissionRequired,
+    PermissionRequired,
+)
 from pretalx.orga.forms.review import (
     DirectionForm,
     ProposalForReviewerForm,
@@ -23,6 +27,7 @@ from pretalx.orga.forms.review import (
     TagsForm,
 )
 from pretalx.orga.forms.submission import SubmissionStateChangeForm
+from pretalx.orga.permissions import reviews_are_open
 from pretalx.orga.views.submission import BaseSubmissionList
 from pretalx.submission.forms import QuestionsForm, SubmissionFilterForm
 from pretalx.submission.models import Review, Submission, SubmissionStates
@@ -248,6 +253,11 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
             self.request.event.feature_flags["use_tracks"]
             and self.request.event.tracks.all().count() > 1
         )
+
+    @context
+    @cached_property
+    def reviews_open(self):
+        return reviews_are_open(None, self.request.event)
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
@@ -652,7 +662,9 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
         return self.request.event.orga_urls.reviews
 
 
-class ReviewSubmissionDelete(EventPermissionRequired, ReviewViewMixin, TemplateView):
+class ReviewSubmissionDelete(
+    EventPermissionRequired, ReviewViewMixin, ActionConfirmMixin, TemplateView
+):
     template_name = "orga/submission/review_delete.html"
     permission_required = "orga.remove_review"
 
@@ -673,9 +685,15 @@ class ReviewSubmissionDelete(EventPermissionRequired, ReviewViewMixin, TemplateV
         return redirect(self.submission.orga_urls.reviews)
 
 
-class RegenerateDecisionMails(EventPermissionRequired, TemplateView):
-    template_name = "orga/review/regenerate_decision_mails.html"
+class RegenerateDecisionMails(
+    EventPermissionRequired, ActionConfirmMixin, TemplateView
+):
     permission_required = "orga.change_submissions"
+    action_title = _("Regenerate decision emails")
+    action_confirm_label = _("Regenerate decision emails")
+    action_confirm_color = "success"
+    action_confirm_icon = "envelope"
+    action_object_name = ""
 
     def get_queryset(self):
         return (

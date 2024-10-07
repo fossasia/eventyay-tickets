@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 from contextlib import suppress
@@ -11,7 +12,7 @@ from pkg_resources import iter_entry_points
 
 from pretalx import __version__
 from pretalx.common.settings.config import build_config
-from pretalx.common.settings.utils import log_initial
+from pretalx.common.text.console import log_initial
 
 config, CONFIG_FILES = build_config()
 CONFIG = config
@@ -190,16 +191,15 @@ else:
 HAS_CELERY = bool(config.get("celery", "broker", fallback=None))
 if HAS_CELERY:
     CELERY_BROKER_URL = config.get("celery", "broker")
+    CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
     CELERY_RESULT_BACKEND = config.get("celery", "backend")
+    CELERY_RESULT_BACKEND_THREAD_SAFE = True
 else:
     CELERY_TASK_ALWAYS_EAGER = True
 
 ## DATABASE SETTINGS
 db_backend = config.get("database", "backend")
 db_name = config.get("database", "name", fallback=str(DATA_DIR / "db.sqlite3"))
-
-db_opts = {}
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends." + db_backend,
@@ -208,8 +208,13 @@ DATABASES = {
         "PASSWORD": config.get("database", "password"),
         "HOST": config.get("database", "host"),
         "PORT": config.get("database", "port"),
-        "CONN_MAX_AGE": 0 if db_backend == "sqlite3" or HAS_CELERY else 120,
-        "OPTIONS": db_opts,
+        "CONN_MAX_AGE": 0 if db_backend == "sqlite3" else 120,
+        "CONN_HEALTH_CHECKS": db_backend != "sqlite3",
+        "OPTIONS": (
+            {"init_command": "PRAGMA synchronous=3; PRAGMA cache_size=2000;"}
+            if db_backend == "sqlite3"
+            else {}
+        ),
         "TEST": {},
     }
 }
@@ -265,6 +270,7 @@ LOGGING = {
         },
     },
 }
+logging.getLogger("MARKDOWN").setLevel(logging.WARNING)
 
 email_level = config.get("logging", "email_level", fallback="ERROR") or "ERROR"
 emails = config.get("logging", "email", fallback="").split(",")
@@ -340,7 +346,6 @@ MESSAGE_TAGS = {
 
 ## I18N SETTINGS
 USE_I18N = True
-USE_TZ = True
 TIME_ZONE = config.get("locale", "time_zone")
 LOCALE_PATHS = (Path(__file__).resolve().parent / "locale",)
 FORMAT_MODULE_PATH = ["pretalx.common.formats"]
@@ -508,6 +513,13 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
 ]
 
 
@@ -682,7 +694,7 @@ else:
         config_files=CONFIG_FILES,
         db_name=db_name,
         db_backend=db_backend,
-        LOG_DIR=LOG_DIR,
+        log_dir=LOG_DIR,
         plugins=PLUGINS,
     )
 

@@ -2,12 +2,12 @@ from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
-from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from django_context_decorator import context
 
-from pretalx.common.mixins.views import EventPermissionRequired
 from pretalx.common.plugins import get_all_plugins_grouped
+from pretalx.common.text.phrases import phrases
+from pretalx.common.views.mixins import EventPermissionRequired
 
 
 class EventPluginsView(EventPermissionRequired, TemplateView):
@@ -49,5 +49,5 @@ class EventPluginsView(EventPermissionRequired, TemplateView):
                             orga=True,
                         )
             self.request.event.save()
-            messages.success(self.request, _("Your changes have been saved."))
+            messages.success(self.request, phrases.base.saved)
         return redirect(self.request.event.orga_urls.plugins)

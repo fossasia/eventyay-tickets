@@ -1,25 +1,29 @@
-{% extends "orga/cfp/base.html" %}
+{% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{% static "vendored/colorpicker/css/bootstrap-colorpicker.min.css" %}"/>
-{% endblock %}
+    <link rel="stylesheet" type="text/css" href="{% static "vendored/colorpicker/css/bootstrap-colorpicker.min.css" %}" />
+{% endblock stylesheets %}
 
 {% block scripts %}
     {% compress js %}
         <script defer src="{% static "vendored/colorpicker/js/bootstrap-colorpicker.min.js" %}"></script>
         <script defer src="{% static "orga/js/colorpicker.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
+{% block extra_title %}
+    {% if form.instance.name %}{% translate "Tag" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}{% else %}{% translate "New tag" %}{% endif %} ::
+{% endblock extra_title %}
 
-{% block cfp_content %}
+{% block content %}
     <h2>
         {% if form.instance.name %}
-            {% translate "Tag" %}: {{ form.instance.name }}
+            {% translate "Tag" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}
         {% else %}
             {% translate "New tag" %}
         {% endif %}
@@ -27,12 +31,13 @@
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        {% bootstrap_field form.tag layout='event' %}
-        {% bootstrap_field form.description layout='event' %}
-        {% bootstrap_field form.color layout='event' addon_before="<i></i>" addon_before_class="colorpicker-input-addon color-visible" %}
-        {% bootstrap_field form.public layout='event' %}
+        {% bootstrap_field form.tag layout="event" %}
+        {% bootstrap_field form.description layout="event" %}
+        {% bootstrap_field form.color layout="event" addon_before="<i></i>" addon_before_class="colorpicker-input-addon color-visible" %}
+        {% bootstrap_field form.public layout="event" %}
+
         {% include "orga/includes/submit_row.html" %}
+
     </form>
 
-{% endblock %}
-
+{% endblock content %}

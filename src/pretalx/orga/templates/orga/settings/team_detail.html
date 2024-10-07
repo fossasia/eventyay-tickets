@@ -1,8 +1,11 @@
 {% extends "orga/settings/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
+
+{% block extra_title %}{% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }} :: {% endblock extra_title %}
 
 {% block settings_content %}
     <div>
@@ -11,7 +14,8 @@
                 {% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Members" %}
             </h2>
 
-            <form method="post">{% csrf_token %}
+            <form method="post">
+                {% csrf_token %}
                 <div class="table-responsive-sm">
                     <table class="table table-sm table-hover table-flip table-sticky">
                         <thead>
@@ -25,13 +29,15 @@
                             {% for member in members %}
                                 <tr>
                                     <td>{{ member.get_display_name }}</td>
-                                    <td><a href="mailto:{{ member.email }}">{{ member.email }}</a></td>
+                                    <td>
+                                        <a href="mailto:{{ member.email }}">{{ member.email }}</a>
+                                    </td>
                                     <td class="flip text-right">
                                         <a
                                             href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ team.id }}/reset/{{ member.id }}"
                                             class="btn btn-sm btn-warning"
                                         >
-                                            {% translate "Reset password" %}
+                                            {{ phrases.base.password_reset_heading }}
                                         </a>
                                         <a
                                             href="{% if request.event %}{{ request.event.orga_urls.team_settings }}{% else %}{{ request.organiser.orga_urls.teams }}{% endif %}{{ team.id }}/delete/{{ member.id }}"
@@ -71,13 +77,14 @@
                             {% endfor %}
                             <tr>
                                 <td>
-                                    <strong>{% translate "Add member" %}</strong><br>
+                                    <strong>{% translate "Add member" %}</strong>
+                                    <br>
                                     <small><em><a id="bulk-email" href="">{% translate "Add multiple team members?" %}</a></em></small>
                                 </td>
                                 <td>
                                     {% csrf_token %}
-                                    {% bootstrap_field invite_form.email layout='inline' form_group_class="single-email-group" %}
-                                    {% bootstrap_field invite_form.bulk_email layout='inline' form_group_class="d-none bulk-email-group" %}
+                                    {% bootstrap_field invite_form.email layout="inline" form_group_class="single-email-group" %}
+                                    {% bootstrap_field invite_form.bulk_email layout="inline" form_group_class="d-none bulk-email-group" %}
                                     <small class="form-text text-muted bulk-email-help-text d-none">
                                         {{ invite_form.bulk_email.help_text }}
                                     </small>
@@ -100,24 +107,26 @@
         <form method="post">
             {% csrf_token %}
             {% bootstrap_form_errors form %}
-            {% bootstrap_field form.name layout='event' %}
-            {% bootstrap_field form.all_events layout='event' %}
-            {% bootstrap_field form.limit_events layout='event' %}
-            {% bootstrap_field form.can_create_events layout='event' %}
-            {% bootstrap_field form.can_change_teams layout='event' %}
-            {% bootstrap_field form.can_change_organiser_settings layout='event' %}
-            {% bootstrap_field form.can_change_event_settings layout='event' %}
-            {% bootstrap_field form.can_change_submissions layout='event' %}
-            {% bootstrap_field form.is_reviewer layout='event' %}
+            {% bootstrap_field form.name layout="event" %}
+            {% bootstrap_field form.all_events layout="event" %}
+            {% bootstrap_field form.limit_events layout="event" %}
+            {% bootstrap_field form.can_create_events layout="event" %}
+            {% bootstrap_field form.can_change_teams layout="event" %}
+            {% bootstrap_field form.can_change_organiser_settings layout="event" %}
+            {% bootstrap_field form.can_change_event_settings layout="event" %}
+            {% bootstrap_field form.can_change_submissions layout="event" %}
+            {% bootstrap_field form.is_reviewer layout="event" %}
             <div class="form-group row">
                 <div class="col-md-3"></div>
                 <div class="col-md-9">
                     <h3 id="review-settings">{% translate "Review settings" %}</h3>
                 </div>
             </div>
-            {% bootstrap_field form.force_hide_speaker_names layout='event' %}
-            {% bootstrap_field form.limit_tracks layout='event' %}
+            {% bootstrap_field form.force_hide_speaker_names layout="event" %}
+            {% bootstrap_field form.limit_tracks layout="event" %}
+
             {% include "orga/includes/submit_row.html" with submit_value="team" submit_name="form" %}
+
         </form>
     </div>
 
@@ -127,4 +136,4 @@
         <script defer src="{% static "orga/js/speakers.js" %}"></script>
         <script defer src="{% static "orga/js/teamSettings.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock settings_content %}

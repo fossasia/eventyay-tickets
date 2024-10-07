@@ -8,13 +8,76 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.translation import get_language
 from django.utils.translation import gettext_lazy as _
-from django_scopes import scope, scopes_disabled
+from django_scopes import scope
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins.models import PretalxModel
+from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.urls import EventUrls, build_absolute_uri
 from pretalx.event.models.event import FULL_SLUG_REGEX
 from pretalx.person.models import User
+
+
+def check_access_permissions(organiser):
+    """We run this method when team permissions are changed, inside a transaction.
+
+    We need to make sure that after the change is made, there is still somebody who has
+    administrator access to every event and the organiser itself.
+    """
+    warnings = []
+    teams = (
+        organiser.teams.all()
+        .annotate(member_count=models.Count("members"))
+        .filter(member_count__gt=0)
+    )
+    if not [t for t in teams if t.can_change_teams]:
+        raise Exception(
+            _(
+                "There must be at least one team with the permission to change teams, as otherwise nobody can create new teams or grant permissions to existing teams."
+            )
+        )
+    if not [t for t in teams if t.can_create_events]:
+        warnings.append(
+            (
+                "no_can_create_events",
+                _("Nobody on your teams has the permission to create new events."),
+            )
+        )
+    if not [t for t in teams if t.can_change_organiser_settings]:
+        warnings.append(
+            (
+                "no_can_change_organiser_settings",
+                _(
+                    "Nobody on your teams has the permission to change organiser-level settings."
+                ),
+            )
+        )
+
+    for event in organiser.events.all():
+        event_teams = (
+            event.teams.all()
+            .annotate(member_count=models.Count("members"))
+            .filter(member_count__gt=0)
+        )
+        if not event_teams:
+            raise Exception(
+                str(
+                    _(
+                        "There must be at least one team with access to every event. Currently, nobody has access to {event_name}."
+                    )
+                ).format(event_name=event.name)
+            )
+        if not [t for t in event_teams if t.can_change_event_settings]:
+            warnings.append(
+                (
+                    "no_can_cange_event_settings",
+                    str(
+                        _(
+                            "Nobody on your teams has the permissions to change settings for the event {event_name}"
+                        )
+                    ).format(event_name=event.name),
+                )
+            )
+    return warnings
 
 
 class Organiser(PretalxModel):
@@ -51,7 +114,8 @@ class Organiser(PretalxModel):
     class orga_urls(EventUrls):
         base_path = settings.BASE_PATH
         base = "{base_path}/orga/organiser/{self.slug}/"
-        delete = "{base}delete"
+        settings = "{base_path}/orga/organiser/{self.slug}/settings/"
+        delete = "{settings}delete"
         teams = "{base}teams/"
         new_team = "{teams}new"
 
@@ -75,9 +139,8 @@ class Organiser(PretalxModel):
         )
         for event in self.events.all():
             with scope(event=event):
-                event.shred()
-        with scopes_disabled():
-            self.logged_actions().delete()
+                event.shred(person=person)
+        # We keep our logged actions, even with the now-broken content type
         self.delete()
 
     shred.alters_data = True
@@ -154,6 +217,12 @@ class Team(PretalxModel):
             if (attr.startswith("can_") or attr.startswith("is_"))
             and getattr(self, attr, False) is True
         }
+
+    @cached_property
+    def events(self):
+        if self.all_events:
+            return self.organiser.events.all()
+        return self.limit_events.all()
 
     class orga_urls(EventUrls):
         base = "{self.organiser.orga_urls.teams}{self.pk}/"

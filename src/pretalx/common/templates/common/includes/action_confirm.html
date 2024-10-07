@@ -1,0 +1,33 @@
+{% load i18n %}
+<h2>{{ action_title }}</h2>
+<hr>
+<p><b>{{ action_object_name }}</b></p>
+<p>{{ action_text }}</p>
+<form method="post">
+    {% csrf_token %}
+    <div class="submit-group">
+        <a href="{{ action_back_url }}" class="btn btn-lg btn-{{ action_back_color }}">
+            {% if action_back_icon %}<i class="fa fa-{{ action_back_icon }}"></i>{% endif %}
+            {{ action_back_label }}
+        </a>
+        <div>
+            {% for action in additional_actions %}
+                {% if action.href %}
+                    <a href="{{ action.href }}" class="btn btn-lg btn-{{ action.color }}">
+                        <i class="fa fa-{{ action.icon }}"></i>
+                        {{ action.label }}
+                    </a>
+                {% else %}
+                    <button type="submit" class="btn btn-lg btn-{{ action.color }}" name="{{ action.name }}" value="{{ action.value }}">
+                        {% if action.icon %}<i class="fa fa-{{ action.icon }}"></i>{% endif %}
+                        {{ action.label }}
+                    </button>
+                {% endif %}
+            {% endfor %}
+            <button type="submit" class="btn btn-lg btn-{{ action_confirm_color }}" {% if action_confirm_name %}name="{{ action_confirm_name }}"{% endif %} {% if action_confirm_value %}value="{{ action_confirm_value }}"{% endif %}>
+                {% if action_confirm_icon %}<i class="fa fa-{{ action_confirm_icon }}"></i>{% endif %}
+                {{ action_confirm_label }}
+            </button>
+        </div>
+    </div>
+</form>

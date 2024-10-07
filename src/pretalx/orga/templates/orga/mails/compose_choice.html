@@ -1,5 +1,9 @@
 {% extends "orga/base.html" %}
+
 {% load i18n %}
+
+{% block extra_title %}{% translate "Send emails" %} :: {% endblock extra_title %}
+
 {% block content %}
   <h1>{% translate "Send emails" %}</h1>
   <ul class="list-group">
@@ -8,7 +12,7 @@
         {% translate "Sessions, proposals, speakers" %}
         <i class="fa fa-chevron-right"></i>
       </h4>
-      <p>{% translate "Send an email to speakers, authors, submitters, based on their proposal status and other filters."%}</p>
+      <p>{% translate "Send an email to speakers, authors, submitters, based on their proposal status and other filters." %}</p>
     </a>
     <a class="list-group-item list-group-item-action" href="{{ request.event.orga_urls.compose_mails_teams }}">
       <h4>
@@ -18,4 +22,4 @@
       <p>{% translate "Send an email to your reviewers or other team members." %}</p>
     </a>
   </ul>
-{% endblock %}
+{% endblock content %}

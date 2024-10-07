@@ -5,6 +5,7 @@ import logging
 import jwt
 import requests
 from django.db import IntegrityError
+from django.db.models import Count
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
@@ -15,6 +16,8 @@ from django_filters import rest_framework as filters
 from django_scopes import scopes_disabled
 from rest_framework import status, viewsets
 from rest_framework.authentication import get_authorization_header
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from pretalx.api.serializers.submission import (
     ScheduleListSerializer,
@@ -29,8 +32,8 @@ from pretalx.person.models import User
 from pretalx.schedule.models import Schedule
 from pretalx.submission.models import Submission, SubmissionStates, Tag
 from pretalx.submission.models.submission import (
-    SubmissionFavourite,
-    SubmissionFavouriteSerializer,
+    SubmissionFavouriteDeprecated,
+    SubmissionFavouriteDeprecatedSerializer,
 )
 
 with scopes_disabled():
@@ -52,8 +55,15 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = "code__iexact"
     search_fields = ("title", "speakers__name")
     filterset_class = SubmissionFilter
+    permission_map = {
+        "favourite": "agenda.view_schedule",
+        "favourite_object": "agenda.view_submission",
+    }
 
     def get_queryset(self):
+        base_qs = self.request.event.submissions.all().annotate(
+            favourite_count=Count("favourites")
+        )
         if self.request._request.path.endswith(
             "/talks/"
         ) or not self.request.user.has_perm(
@@ -66,12 +76,12 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
                 or not self.request.event.current_schedule
             ):
                 return Submission.objects.none()
-            return self.request.event.submissions.filter(
+            return base_qs.filter(
                 pk__in=self.request.event.current_schedule.talks.filter(
                     is_visible=True
                 ).values_list("submission_id", flat=True)
             )
-        return self.request.event.submissions.all()
+        return base_qs
 
     def get_serializer_class(self):
         if self.request.user.has_perm("orga.change_submissions", self.request.event):
@@ -97,6 +107,33 @@ class SubmissionViewSet(viewsets.ReadOnlyModelViewSet):
             questions=self.serializer_questions,
             **kwargs,
         )
+
+    @action(detail=False, methods=["GET"])
+    def favourites(self, request, **kwargs):
+        if not request.user.is_authenticated:
+            raise Http404
+        # Return ical file if accept header is set to text/calendar
+        if request.accepted_renderer.format == "ics":
+            return self.favourites_ical(request)
+        return Response(
+            [
+                sub.code
+                for sub in Submission.objects.filter(
+                    favourites__user__in=[request.user], event=request.event
+                )
+            ]
+        )
+
+    @action(detail=True, methods=["POST", "DELETE"])
+    def favourite(self, request, **kwargs):
+        if not request.user.is_authenticated:
+            raise Http404
+        submission = self.get_object()
+        if request.method == "POST":
+            submission.add_favourite(request.user)
+        elif request.method == "DELETE":
+            submission.remove_favourite(request.user)
+        return Response({})
 
 
 class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
@@ -151,7 +188,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
         return Tag.objects.none()
 
 
-class SubmissionFavouriteView(View):
+class SubmissionFavouriteDeprecatedView(View):
     """
     A view for handling user's favourite talks.
 
@@ -170,7 +207,7 @@ class SubmissionFavouriteView(View):
         try:
             user_id = request.user.id
             # user_id = 52
-            fav_talks = get_object_or_404(SubmissionFavourite, user=user_id)
+            fav_talks = get_object_or_404(SubmissionFavouriteDeprecated, user=user_id)
             return JsonResponse(fav_talks.talk_list, safe=False)
         except Http404:
             # As user not have any favourite talk yet
@@ -191,7 +228,7 @@ class SubmissionFavouriteView(View):
         try:
             user_id = request.user.id
             if user_id is None:
-                user_id = SubmissionFavouriteView.get_user_from_token(
+                user_id = SubmissionFavouriteDeprecatedView.get_user_from_token(
                     request, request.event.venueless_settings
                 )
             talk_list = json.loads(request.body.decode())
@@ -202,11 +239,11 @@ class SubmissionFavouriteView(View):
                         talk_list_valid.append(talk)
 
             data = {"user": user_id, "talk_list": talk_list_valid}
-            serializer = SubmissionFavouriteSerializer(data=data)
+            serializer = SubmissionFavouriteDeprecatedSerializer(data=data)
             if serializer.is_valid():
                 fav_talks = serializer.save(user_id, talk_list_valid)
                 # call to video for update favourite talks
-                token = SubmissionFavouriteView.get_user_video_token(
+                token = SubmissionFavouriteDeprecatedView.get_user_video_token(
                     request.user.code, request.event.venueless_settings
                 )
                 video_url = request.event.venueless_settings.url + "favourite-talk/"
@@ -268,11 +305,11 @@ class SubmissionFavouriteView(View):
             raise Http404
         if auth_header and auth_header[0].lower() == b"bearer":
             if len(auth_header) == 1:
-                raise exceptions.AuthenticationFailed(
+                raise exceptions.AuthenticationFailedError(
                     "Invalid token header. No credentials provided."
                 )
             elif len(auth_header) > 2:
-                raise exceptions.AuthenticationFailed(
+                raise exceptions.AuthenticationFailedError(
                     "Invalid token header. Token string should not contain spaces."
                 )
         token_decode = jwt.decode(

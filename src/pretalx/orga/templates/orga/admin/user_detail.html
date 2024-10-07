@@ -1,0 +1,131 @@
+{% extends "orga/base.html" %}
+
+{% load bootstrap4 %}
+{% load copyable %}
+{% load i18n %}
+
+{% block extra_title %}{{ user.name }} :: {% endblock extra_title %}
+
+{% block content %}
+  <h2 class="d-flex">{{ user.name }}
+    <form method="post">
+      {% csrf_token %}
+      <button class="btn btn-warning btn-sm ml-2 mr-2" type="submit" name="action" value="pw-reset">
+        <i class="fa fa-key"></i>
+        {{ phrases.base.password_reset_heading }}
+      </button>
+      {% if user.is_active %}
+        <button class="btn btn-danger btn-sm ml-2 mr-2" type="submit" name="action" value="deactivate">
+          <i class="fa fa-ban"></i>
+          {% translate "Deactivate account" %}
+        </button>
+      {% else %}
+        <button class="btn btn-success btn-sm ml-2 mr-2" type="submit" name="action" value="activate">
+          <i class="fa fa-check"></i>
+          {% translate "Activate account" %}
+        </button>
+      {% endif %}
+      <a href="{% url "orga:admin.user.delete" code=user.code %}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+    </form>
+  </h2>
+
+  <div class="d-flex justify-content-between">
+    <table class="table table-sm table-flip col-4">
+      <tr>
+        <th>{% translate "Email" %}</th>
+        <td>{{ user.email|copyable }}</td>
+      </tr>
+      <tr>
+        <th>{% translate "Last login" %}</th>
+        <td>{{ user.last_login|default:"-" }}</td>
+      </tr>
+      <tr>
+        <th>{% translate "Password reset time" %}</th>
+        <td>{{ user.pw_reset_time|default:"-" }}</td>
+      </tr>
+      <tr>
+        <th>{{ phrases.base.language }}</th>
+        <td>{{ user.locale }}</td>
+      </tr>
+      <tr>
+        <th>{% translate "Timezone" %}</th>
+        <td>{{ user.timezone }}</td>
+      </tr>
+    </table>
+    <div class="ml-auto">
+      <img height=160 src="https://www.gravatar.com/avatar/{{ user.gravatar_parameter }}?s=512" alt="{% translate "Profile picture" %}">
+    </div>
+  </div>
+
+  <h4>{% translate "Teams" %}</h4>
+  <div class="table-responsive">
+    <table class="table table-sm table-hover table-flip">
+      <thead>
+        <tr>
+          <th>{% translate "Team" %}</th>
+          <th>{% translate "Organiser" %}</th>
+          <th>{% translate "Events" %}</th>
+          <th>{% translate "Permissions" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for team in user.teams.all %}
+          <tr>
+            <td><a href="{{ team.urls.base }}">{{ team.name }}</a></td>
+            <td><a href="{{ team.organiser.orga_urls.base }}">{{ team.organiser.name }}</a></td>
+            <td>
+              {% if team.limit_events.all %}
+                {% for event in team.limit_events.all %}
+                  <a href="{{ event.orga_urls.base }}">{{ event.name }}</a>{% if not forloop.last %},{% endif %}
+                {% endfor %}
+              {% else %}
+                {% translate "All events" %}:
+                {% for event in team.organiser.events.all %}
+                  <a href="{{ event.orga_urls.base }}">{{ event.name }}</a>{% if not forloop.last %},{% endif %}
+                {% endfor %}
+              {% endif %}
+            </td>
+
+            <td>{{ team.permission_set }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4">{% translate "User isn't in any teams" %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <hr>
+
+  <h4>{% translate "Proposals" %}</h4>
+
+  <div class="table-responsive">
+    <table class="table table-sm table-hover table-flip">
+      <thead>
+        <tr>
+          <th>{% translate "Title" %}</th>
+          <th>{% blocktranslate trimmed count count=1 %}Event{% plural %}Events{% endblocktranslate %}</th>
+          <th>{% translate "State" %}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for submission in submissions %}
+          <tr>
+            <td><a href="{{ submission.orga_urls.base }}">{{ submission.title }}</a></td>
+            <td><a href="{{ submission.event.orga_urls.base }}">{{ submission.event.name }}</a></td>
+            <td>{% include "cfp/event/fragment_state.html" with state=submission.state %}</td>
+            <td>{{ submission.created | date:"SHORT_DATE_FORMAT" }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4">{% translate "User hasn't submitted any proposals" %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+{% endblock content %}

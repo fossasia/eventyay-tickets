@@ -13,13 +13,13 @@ from django.views.decorators.cache import cache_page
 from django.views.generic import DetailView, ListView, TemplateView
 from django_context_decorator import context
 
-from pretalx.common.mixins.views import (
+from pretalx.common.text.path import safe_filename
+from pretalx.common.views.mixins import (
     EventPermissionRequired,
     Filterable,
     PermissionRequired,
     SocialMediaCardMixin,
 )
-from pretalx.common.utils import safe_filename
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.submission.models import QuestionTarget
 
@@ -71,8 +71,12 @@ class SpeakerView(PermissionRequired, TemplateView):
     def talks(self):
         if not self.request.event.current_schedule:
             return []
-        return self.request.event.current_schedule.talks.filter(
-            submission__speakers__code=self.kwargs["code"], is_visible=True
+        return (
+            self.request.event.current_schedule.talks.filter(
+                submission__speakers__code=self.kwargs["code"], is_visible=True
+            )
+            .select_related("submission", "room", "submission__event")
+            .prefetch_related("submission__speakers")
         )
 
     def get_permission_object(self):

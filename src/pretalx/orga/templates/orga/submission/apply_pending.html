@@ -1,14 +1,23 @@
 {% extends "orga/base.html" %}
+
 {% load i18n %}
 {% load bootstrap4 %}
+
+{% block extra_title %}{% translate "Apply pending changes" %} :: {% endblock extra_title %}
 
 {% block content %}
     <form method="post">
         {% if submission_count %}
-            <h3>{% blocktranslate with count=submission_count trimmed %}Apply {{ count }} pending changes?{% endblocktranslate %}</h3>
+            <h3>
+                {% blocktranslate with count=submission_count trimmed %}
+                    Apply {{ count }} pending changes?
+                {% endblocktranslate %}
+            </h3>
 
             <p>
-                {% blocktranslate trimmed %} Please confirm that you really want to change the state of these {{ count }} proposals.{% endblocktranslate %}
+                {% blocktranslate trimmed %}
+                    Please confirm that you really want to change the state of these {{ count }} proposals.
+                {% endblocktranslate %}
             </p>
 
             {% csrf_token %}
@@ -19,7 +28,7 @@
                     class="btn btn-lg btn-outline-info"
                     href="{% if request.GET.next %}{{ request.GET.next }}{% else %}{{ request.event.orga_urls.submissions }}{% endif %}"
                 >
-                    {% translate "Back" %}
+                    {{ phrases.base.back_button }}
                 </a>
                 <button type="submit" class="btn btn-lg btn-success">
                     {% translate "Do it" %}
@@ -34,10 +43,9 @@
                     class="btn btn-lg btn-outline-info"
                     href="{% if request.GET.next %}{{ request.GET.next }}{% else %}{{ request.event.orga_urls.submissions }}{% endif %}"
                 >
-                    {% translate "Back" %}
+                    {{ phrases.base.back_button }}
                 </a>
             </span></div>
         {% endif %}
     </form>
-{% endblock %}
-
+{% endblock content %}

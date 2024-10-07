@@ -1,31 +1,35 @@
-{% extends "orga/cfp/base.html" %}
+{% extends "orga/base.html" %}
+
 {% load i18n %}
 {% load rich_text %}
 {% load rules %}
 
+{% block extra_title %}{% translate "Attendee feedback" %} :: {% endblock extra_title %}
+
 {% block content %}
-    <h2 class="d-flex w-100 justify-content-between align-items-start">
-        {% translate "Attendee feedback" %}
-    </h2>
+    <h2 class="d-flex w-100 justify-content-between align-items-start">{% translate "Attendee feedback" %}</h2>
 
     {% regroup feedback|dictsort:"talk.title" by talk.title as feedbacks_list %}
 
     {% for submission in feedbacks_list %}
-        <h4>{% translate "Feedback for" %} {{ quotation_open }}<a href="{{ submission.list.1.talk.orga_urls.base }}">{{ submission.grouper }}</a>{{ quotation_close }}</h4>
+        <h4>
+            {% translate "Feedback" %}: {{ quotation_open }}<a href="{{ submission.list.1.talk.orga_urls.base }}">{{ submission.grouper }}</a>{{ quotation_close }}
+        </h4>
 
         {% for entry in submission.list %}
-            {% has_perm 'submission.view_feedback' request.user entry.talk as can_see_feedback %}
+            {% has_perm "submission.view_feedback" request.user entry.talk as can_see_feedback %}
             {% if can_see_feedback %}
                 <div class="card feedback-card">
-                    <div class="card-body">
-                        {{ entry.review|rich_text }}
-                    </div>
+                    <div class="card-body">{{ entry.review|rich_text }}</div>
                 </div>
             {% endif %}
         {% endfor %}
-        <br><br>
+        <br>
+        <br>
     {% empty %}
         {% translate "There has been no feedback for sessions in this event yet." %}
     {% endfor %}
+
     {% include "orga/includes/pagination.html" %}
-{% endblock %}
+
+{% endblock content %}

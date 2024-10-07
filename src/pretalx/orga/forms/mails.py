@@ -6,13 +6,15 @@ from bs4 import BeautifulSoup
 from django import forms
 from django.db import transaction
 from django.utils.functional import cached_property
+from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
 from pretalx.common.exceptions import SendMailException
-from pretalx.common.mixins.forms import I18nHelpText, ReadOnlyFlag
+from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
+from pretalx.common.language import language
 from pretalx.common.templatetags.rich_text import rich_text
-from pretalx.common.utils import language
+from pretalx.common.text.phrases import phrases
 from pretalx.mail.context import get_available_placeholders
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.mail.placeholders import SimpleFunctionalMailTextPlaceholder
@@ -89,7 +91,7 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         for placeholder in placeholders.values():
             if not placeholder.is_visible:
                 continue
-            placeholder.rendered_sample = placeholder.render_sample(self.event)
+            placeholder.rendered_sample = escape(placeholder.render_sample(self.event))
             for arg in specificity:
                 if arg in placeholder.required_context:
                     grouped[arg].append(placeholder)
@@ -121,7 +123,7 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                 preview_text = rich_text(
                     message.format_map(
                         {
-                            key: value.render_sample(self.event)
+                            key: escape(value.render_sample(self.event))
                             for key, value in valid_placeholders.items()
                         }
                     )
@@ -316,7 +318,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
     speakers = forms.ModelMultipleChoiceField(
         queryset=User.objects.none(),
         required=False,
-        label=_("Speakers"),
+        label=phrases.schedule.speakers,
         help_text=_(
             "Select speakers that should receive the email regardless of the other filters."
         ),
@@ -334,7 +336,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
             )
             if self.filter_question:
                 self.filter_option = self.filter_question.options.filter(
-                    pk=initial.get("option")
+                    pk=initial.get("answer__options")
                 ).first()
                 self.filter_answer = initial.get("answer")
                 self.filter_unanswered = initial.get("unanswered")
@@ -420,7 +422,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
     def clean_question(self):
         return getattr(self, "filter_question", None)
 
-    def clean_option(self):
+    def clean_answer__options(self):
         return getattr(self, "filter_option", None)
 
     def clean_answer(self):

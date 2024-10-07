@@ -1,7 +1,7 @@
 {% extends "cfp/event/base.html" %}
 {% load i18n %}
 
-{% block title %}{% translate "Your E-mails" %} :: {% endblock %}
+{% block title %}{% translate "Your E-mails" %} :: {% endblock title %}
 
 {% block content %}
     <h2>{% translate "Your E-mails" %}</h2>
@@ -10,4 +10,5 @@
     </p>
 
     {% include "common/mail_log.html" %}
-{% endblock %}
+
+{% endblock content %}

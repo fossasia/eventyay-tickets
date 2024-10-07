@@ -2,17 +2,19 @@ import json
 
 from django import forms
 from django.utils.formats import get_format
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 
 from pretalx.common.forms.fields import ImageField
+from pretalx.common.forms.mixins import ReadOnlyFlag, RequestRequire
 from pretalx.common.forms.widgets import MarkdownWidget
-from pretalx.common.mixins.forms import ReadOnlyFlag, RequestRequire
+from pretalx.common.text.phrases import phrases
+from pretalx.schedule.models import TalkSlot
 from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
 
 
 class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
-    content_locale = forms.ChoiceField(label=_("Language"))
+    content_locale = forms.ChoiceField(label=phrases.base.language)
 
     def __init__(self, event, anonymise=False, **kwargs):
         self.event = event
@@ -69,7 +71,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
         if not self.instance.pk:
             self.is_creating = True
             self.fields["speaker"] = forms.EmailField(
-                label=_("Speaker email"),
+                label=phrases.cfp.speaker_email,
                 help_text=_(
                     "The email address of the speaker holding the session. They will be invited to create an account."
                 ),
@@ -88,19 +90,19 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                     choices=SubmissionStates.get_choices(),
                     initial=SubmissionStates.SUBMITTED,
                 )
-        if not self.instance.pk or self.instance.state in (
-            SubmissionStates.ACCEPTED,
-            SubmissionStates.CONFIRMED,
+        if (
+            not self.instance.pk
+            or self.instance.state in SubmissionStates.accepted_states
         ):
             self.fields["room"] = forms.ModelChoiceField(
                 required=False,
                 queryset=event.rooms.all(),
-                label=_("Room"),
+                label=TalkSlot._meta.get_field("room").verbose_name,
                 initial=initial_slot.get("room"),
             )
             self.fields["start"] = forms.DateTimeField(
                 required=False,
-                label=_("Start"),
+                label=TalkSlot._meta.get_field("start").verbose_name,
                 widget=forms.DateInput(
                     attrs={
                         "class": "datetimepickerfield",
@@ -110,7 +112,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             )
             self.fields["end"] = forms.DateTimeField(
                 required=False,
-                label=_("End"),
+                label=TalkSlot._meta.get_field("end").verbose_name,
                 widget=forms.DateInput(
                     attrs={
                         "class": "datetimepickerfield",
@@ -171,11 +173,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             if "slot_count" in self.changed_data and "slot_count" in self.initial:
                 instance.update_talk_slots()
         if (
-            instance.state
-            in (
-                SubmissionStates.ACCEPTED,
-                SubmissionStates.CONFIRMED,
-            )
+            instance.state in SubmissionStates.accepted_states
             and self.cleaned_data.get("room")
             and self.cleaned_data.get("start")
             and any(field in self.changed_data for field in ("room", "start", "end"))

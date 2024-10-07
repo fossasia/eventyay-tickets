@@ -1,4 +1,5 @@
-{% extends "orga/cfp/base.html" %}
+{% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -7,18 +8,20 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" type="text/css" href="{% static "vendored/apexcharts/apexcharts.css" %}" />
-{% endblock %}
+{% endblock stylesheets %}
 
 {% block scripts %}
     {% compress js %}
         <script defer src="{% static "vendored/apexcharts/apexcharts.min.js" %}"></script>
         <script defer src="{% static "orga/js/question_stats.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
-{% block cfp_content %}
+{% block extra_title %}{{ quotation_open }}{{ question.question }}{{ quotation_close }} :: {% endblock extra_title %}
+
+{% block content %}
     <h4>
-        {{ quotation_open }}{{ question.question }}{{ qutoation_close }}
+        {{ quotation_open }}{{ question.question }}{{ quotation_close }}
         <small>({{ question.get_variant_display }})</small>
         <a href="{{ question.urls.edit }}" class="btn btn-sm btn-outline-info">
             <i class="fa fa-edit"></i>
@@ -28,7 +31,7 @@
     {% if answer_count %}
         <div class="pb-4">
             <form class="form-inline filter-form">
-                {% bootstrap_form filter_form layout='inline' %}
+                {% bootstrap_form filter_form layout="inline" %}
                 <button class="btn btn-info" type="submit">{% translate "Filter" %}</button>
             </form>
         </div>
@@ -80,17 +83,15 @@
                                         {% if question.target != "reviewer" %}
                                             <a href="{{ base_search_url }}{% if answer.answer %}answer={{ answer.answer|urlencode }}{% else %}answer__options={{ answer.options|urlencode }}{% endif %}">
                                         {% endif %}
-                                        {% if answer.answer %}{{ answer.answer|truncatechars:140 }}{% else %}{{ answer.options__answer|truncatechars:140 }}{% endif %}
-                                        {% if question.target != "reviewer" %}
-                                            </a>
+                                        {% if answer.answer %}
+                                            {{ answer.answer|truncatechars:140 }}
+                                        {% else %}
+                                            {{ answer.options__answer|truncatechars:140 }}
                                         {% endif %}
+                                        {% if question.target != "reviewer" %}</a>{% endif %}
                                     </td>
-                                    <td class="numeric">
-                                        {{ answer.count }}
-                                    </td>
-                                    <td class="numeric">
-                                        {% widthratio answer.count answer_count 100 %}&nbsp;%
-                                    </td>
+                                    <td class="numeric">{{ answer.count }}</td>
+                                    <td class="numeric">{% widthratio answer.count answer_count 100 %}&nbsp;%</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -99,4 +100,4 @@
                 </div>
             {% endif %}
     {% endif %}
-{% endblock %}
+{% endblock content %}

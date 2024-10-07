@@ -7,6 +7,7 @@ from django.utils.translation import ngettext_lazy as _n
 
 from pretalx.common.models.log import ActivityLog
 from pretalx.common.signals import activitylog_display, activitylog_object_link
+from pretalx.common.text.phrases import phrases
 from pretalx.event.models.event import Event
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.submission.models import (
@@ -18,6 +19,11 @@ from pretalx.submission.models import (
     SubmissionStates,
 )
 
+# Usually, we don't have to include the object name in activity log
+# strings, because we use ActivityLog.content_object to get the object
+# and display it above the message. However, in some cases, like when
+# we log the deletion of an object, we don't have the object anymore,
+# so we'll want to format the message instead.
 TEMPLATE_LOG_NAMES = {
     "pretalx.event.delete": _("The event {name} ({slug}) by {organiser} was deleted."),
     "pretalx.organiser.delete": _("The organiser {name} was deleted."),
@@ -54,22 +60,7 @@ LOG_NAMES = {
         "The invitation to the review team was retracted."
     ),
     "pretalx.invite.reviewer.send": _("The invitation to the review team was sent."),
-    "pretalx.event.invite.orga.accept": _(
-        "The invitation to the event orga was accepted."
-    ),  # compat
-    "pretalx.event.invite.orga.retract": _(
-        "An invitation to the event orga was retracted."
-    ),  # compat
-    "pretalx.event.invite.orga.send": _(
-        "An invitation to the event orga was sent."
-    ),  # compat
-    "pretalx.event.invite.reviewer.retract": _(
-        "The invitation to the review team was retracted."
-    ),  # compat
-    "pretalx.event.invite.reviewer.send": _(
-        "The invitation to the review team was sent."
-    ),  # compat
-    "pretalx.mail.create": _("An email was modified."),
+    "pretalx.mail.create": _("An email was created."),
     "pretalx.mail.delete": _("A pending email was deleted."),
     "pretalx.mail.delete_all": _("All pending emails were deleted."),
     "pretalx.mail.sent": _("An email was sent."),
@@ -91,7 +82,6 @@ LOG_NAMES = {
     "pretalx.submission.accept": _("The proposal was accepted."),
     "pretalx.submission.cancel": _("The proposal was cancelled."),
     "pretalx.submission.confirm": _("The proposal was confirmed."),
-    "pretalx.submission.confirmation": _("The proposal was confirmed."),  # Legacy
     "pretalx.submission.create": _("The proposal was added."),
     "pretalx.submission.deleted": _("The proposal was deleted."),
     "pretalx.submission.reject": _("The proposal was rejected."),
@@ -104,10 +94,8 @@ LOG_NAMES = {
     "pretalx.submission.unconfirm": _("The proposal was unconfirmed."),
     "pretalx.submission.update": _("The proposal was modified."),
     "pretalx.submission.withdraw": _("The proposal was withdrawn."),
-    "pretalx.submission.answer.update": _("A proposal answer was modified."),  # Legacy
-    "pretalx.submission.answerupdate": _("A proposal answer was modified."),  # Legacy
-    "pretalx.submission.answer.create": _("A proposal answer was added."),  # Legacy
-    "pretalx.submission.answercreate": _("A proposal answer was added."),  # Legacy
+    "pretalx.submission.answer.update": _("A proposal answer was modified."),
+    "pretalx.submission.answer.create": _("A proposal answer was added."),
     "pretalx.submission_type.create": _("A session type was added."),
     "pretalx.submission_type.delete": _("A session type was deleted."),
     "pretalx.submission_type.make_default": _("The session type was made default."),
@@ -122,7 +110,7 @@ LOG_NAMES = {
     "pretalx.speaker.arrived": _("A speaker has been marked as arrived."),
     "pretalx.speaker.unarrived": _("A speaker has been marked as not arrived."),
     "pretalx.user.token.reset": _("The API token was reset."),
-    "pretalx.user.password.reset": _("The password was reset."),
+    "pretalx.user.password.reset": phrases.base.password_reset_success,
     "pretalx.user.password.update": _("The password was modified."),
     "pretalx.user.profile.update": _("The profile was modified."),
 }

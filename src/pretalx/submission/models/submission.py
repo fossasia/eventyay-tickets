@@ -14,16 +14,17 @@ from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy as _n
-from django.utils.translation import pgettext
+from django.utils.translation import pgettext_lazy
 from django_scopes import ScopedManager, scopes_disabled
 from rest_framework import serializers
 
-from pretalx.common.choices import Choices
 from pretalx.common.exceptions import SubmissionError
-from pretalx.common.mixins.models import GenerateCode, PretalxModel
+from pretalx.common.models.choices import Choices
+from pretalx.common.models.mixins import GenerateCode, PretalxModel
+from pretalx.common.text.path import path_with_hash
 from pretalx.common.text.phrases import phrases
+from pretalx.common.text.serialize import serialize_duration
 from pretalx.common.urls import EventUrls
-from pretalx.common.utils import path_with_hash
 from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.person.models import User
 from pretalx.submission.signals import submission_state_change
@@ -50,7 +51,7 @@ class SubmissionStates(Choices):
     DRAFT = "draft"
 
     display_values = {
-        SUBMITTED: _("submitted"),
+        SUBMITTED: pgettext_lazy("proposal status", "submitted"),
         ACCEPTED: _("accepted"),
         CONFIRMED: _("confirmed"),
         REJECTED: _("rejected"),
@@ -81,6 +82,8 @@ class SubmissionStates(Choices):
         WITHDRAWN: "withdraw",
         DELETED: "remove",
     }
+
+    accepted_states = (ACCEPTED, CONFIRMED)
 
 
 class SubmissionManager(models.Manager):
@@ -301,7 +304,7 @@ class Submission(GenerateCode, PretalxModel):
             )
         if self.state == SubmissionStates.DRAFT:
             return self.cfp_open
-        return self.state in (SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED)
+        return self.state in SubmissionStates.accepted_states
 
     @property
     def anonymised(self):
@@ -403,7 +406,7 @@ class Submission(GenerateCode, PretalxModel):
             )
 
             # build an error message mentioning all states, which are valid source states for the desired new state.
-            trans_or = pgettext(
+            trans_or = pgettext_lazy(
                 'used in talk confirm/accept/reject/...-errors, like "... must be accepted OR foo OR bar ..."',
                 " or ",
             )
@@ -430,7 +433,12 @@ class Submission(GenerateCode, PretalxModel):
         """
         from pretalx.schedule.models import TalkSlot
 
-        if self.state not in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]:
+        scheduling_allowed = (
+            self.state in SubmissionStates.accepted_states
+            or self.pending_state in SubmissionStates.accepted_states
+        )
+
+        if not scheduling_allowed:
             TalkSlot.objects.filter(
                 submission=self, schedule=self.event.wip_schedule
             ).delete()
@@ -482,7 +490,7 @@ class Submission(GenerateCode, PretalxModel):
         if self.event.mail_settings["mail_on_new_submission"]:
             MailTemplate(
                 event=self.event,
-                subject=str(_("New proposal: {title}")).format(title=self.title),
+                subject=str(_("New proposal")) + f": {self.title}",
                 text=self.event.settings.mail_text_new_submission,
             ).to_mail(
                 user=self.event.email,
@@ -696,8 +704,8 @@ class Submission(GenerateCode, PretalxModel):
             raise SubmissionError(
                 "Submission is not in draft mode and cannot be deleted completely. Set the deleted flag instead."
             )
-        for answer in self.answers.all():
-            answer.delete()
+        self.answers.all().delete()
+        self.resources.all().delete()
         super().delete(**kwargs)
 
     @cached_property
@@ -733,7 +741,9 @@ class Submission(GenerateCode, PretalxModel):
         Note that this slot is not guaranteed to be visible.
         """
         return (
-            self.event.current_schedule.talks.filter(submission=self).first()
+            self.event.current_schedule.talks.filter(submission=self)
+            .select_related("room", "submission", "submission__event")
+            .first()
             if self.event.current_schedule
             else None
         )
@@ -763,6 +773,18 @@ class Submission(GenerateCode, PretalxModel):
     def display_speaker_names(self):
         """Helper method for a consistent speaker name display."""
         return ", ".join(speaker.get_display_name() for speaker in self.speakers.all())
+
+    @cached_property
+    def display_title_with_speakers(self):
+        title = (
+            f"{phrases.base.quotation_open}{self.title}{phrases.base.quotation_close}"
+        )
+        if not self.speakers.exists():
+            return title
+        return _("{title_in_quotes} by {list_of_speakers}").format(
+            title_in_quotes=title,
+            list_of_speakers=self.display_speaker_names,
+        )
 
     @cached_property
     def does_accept_feedback(self):
@@ -824,8 +846,6 @@ class Submission(GenerateCode, PretalxModel):
 
     @cached_property
     def export_duration(self):
-        from pretalx.common.serialize import serialize_duration
-
         return serialize_duration(minutes=self.get_duration())
 
     @cached_property
@@ -898,31 +918,15 @@ class Submission(GenerateCode, PretalxModel):
         if not _from and (not subject or not text):
             raise Exception("Please enter a sender for this invitation.")
 
-        subject = subject or _("{speaker} invites you to join their session!").format(
+        subject = subject or phrases.cfp.invite_subject.format(
             speaker=_from.get_display_name()
         )
         subject = f"[{self.event.slug}] {subject}"
-        text = (
-            text
-            or _(
-                """Hi!
-
-I’d like to invite you to be a speaker in the session
-
-  “{title}”
-
-at {event}. Please follow this link to join:
-
-  {url}
-
-I’m looking forward to it!
-{speaker}"""
-            ).format(
-                event=self.event.name,
-                title=self.title,
-                url=self.urls.accept_invitation.full(),
-                speaker=_from.get_display_name(),
-            )
+        text = text or phrases.cfp.invite_text.format(
+            event=self.event.name,
+            title=self.title,
+            url=self.urls.accept_invitation.full(),
+            speaker=_from.get_display_name(),
         )
         to = to.split(",") if isinstance(to, str) else to
         for invite in to:
@@ -936,8 +940,14 @@ I’m looking forward to it!
 
     send_invite.alters_data = True
 
+    def add_favourite(self, user):
+        SubmissionFavourite.objects.get_or_create(user=user, submission=self)
 
-class SubmissionFavourite(models.Model):
+    def remove_favourite(self, user):
+        SubmissionFavourite.objects.filter(user=user, submission=self).delete()
+
+
+class SubmissionFavouriteDeprecated(models.Model):
     user = models.OneToOneField(
         to="person.User",
         related_name="submission_favorites",
@@ -950,8 +960,7 @@ class SubmissionFavourite(models.Model):
         db_table = '"submission_submission_favourites"'
 
 
-class SubmissionFavouriteSerializer(serializers.ModelSerializer):
-
+class SubmissionFavouriteDeprecatedSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(slug_field="id", read_only=True)
 
     def __init__(self, user_id=None, **kwargs):
@@ -959,15 +968,32 @@ class SubmissionFavouriteSerializer(serializers.ModelSerializer):
         self.user = user_id
 
     class Meta:
-        model = SubmissionFavourite
+        model = SubmissionFavouriteDeprecated
         fields = ["user", "talk_list"]
 
     def save(self, user_id, talk_code):
         with scopes_disabled():
             user = get_object_or_404(User, id=user_id)
-            submission_fav, created = SubmissionFavourite.objects.get_or_create(
-                user=user
+            submission_fav, created = (
+                SubmissionFavouriteDeprecated.objects.get_or_create(user=user)
             )
             submission_fav.talk_list = talk_code
             submission_fav.save()
             return submission_fav
+
+
+class SubmissionFavourite(PretalxModel):
+    user = models.ForeignKey(
+        to="person.User",
+        on_delete=models.CASCADE,
+        related_name="submission_favourites",
+    )
+    submission = models.ForeignKey(
+        to="submission.Submission",
+        on_delete=models.CASCADE,
+        related_name="favourites",
+    )
+    objects = ScopedManager(event="submission__event")
+
+    class Meta:
+        unique_together = (("user", "submission"),)

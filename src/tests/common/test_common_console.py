@@ -1,6 +1,6 @@
 import pytest
 
-from pretalx.common.console import get_separator, print_line
+from pretalx.common.text.console import get_separator, print_line
 
 
 @pytest.mark.parametrize(

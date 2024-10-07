@@ -15,7 +15,7 @@ from django.forms import ValidationError
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.functional import cached_property
+from django.utils.functional import Promise, cached_property
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateResponseMixin
@@ -24,8 +24,8 @@ from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.cfp.signals import cfp_steps
 from pretalx.common.exceptions import SendMailException
+from pretalx.common.language import language
 from pretalx.common.text.phrases import phrases
-from pretalx.common.utils import language
 from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
 from pretalx.submission.forms import InfoForm, QuestionsForm
@@ -42,11 +42,11 @@ def i18n_string(data, locales):
         return data
     data = copy.deepcopy(data)
     with language("en"):
-        if getattr(data, "_proxy____prepared", None):
+        if isinstance(data, Promise):
             data = str(data)
         if isinstance(data, str):
             data = {"en": str(data)}
-        if not isinstance(data, dict):
+        elif not isinstance(data, dict):
             data = {"en": ""}
         english = data.get("en", "")
 
@@ -160,6 +160,9 @@ class BaseCfPStep:
         return HttpResponseNotAllowed([])
 
     def done(self, request, draft=False):
+        pass
+
+    def get_csp_update(self, request):
         pass
 
 
@@ -546,6 +549,9 @@ class ProfileStep(GenericFlowStep, FormFlowStep):
         return _(
             "This information will be publicly displayed next to your session - you can always edit for as long as proposals are still open."
         )
+
+    def get_csp_update(self, request):
+        return {"img-src": "https://www.gravatar.com"}
 
 
 DEFAULT_STEPS = (

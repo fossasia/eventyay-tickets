@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <p>
-    {% if obj.changes.action == 'update' %}
+    {% if obj.changes.action == "update" %}
         {% blocktranslate trimmed with event_name=obj.event.name %}
             A new {{ event_name }} schedule has been released!
         {% endblocktranslate %}

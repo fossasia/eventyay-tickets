@@ -18,7 +18,7 @@ from django.utils.translation.trans_real import (
 )
 from django_scopes import scope, scopes_disabled
 
-from pretalx.event.models import Event, Organiser, Team
+from pretalx.event.models import Event, Organiser
 from pretalx.person.models import User
 
 logger = logging.getLogger(__name__)
@@ -142,18 +142,6 @@ class EventPermissionMiddleware:
         if organiser_slug:
             request.organiser = get_object_or_404(
                 Organiser, slug__iexact=organiser_slug
-            )
-            has_perms = (
-                Team.objects.filter(
-                    organiser=request.organiser,
-                    members__in=[request.user],
-                    can_change_organiser_settings=True,
-                ).exists()
-                if not request.user.is_anonymous
-                else False
-            )
-            request.is_orga = (
-                getattr(request.user, "is_administrator", False) or has_perms
             )
 
         event_slug = url.kwargs.get("event")

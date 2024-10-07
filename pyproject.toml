@@ -14,7 +14,7 @@ maintainers = [
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Web Environment",
-  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.1",
   "Intended Audience :: Developers",
   "Intended Audience :: Other Audience",
   "License :: OSI Approved :: Apache Software License",
@@ -26,19 +26,19 @@ classifiers = [
 dependencies = [
   "beautifulsoup4[lxml]~=4.12.0",
   "bleach~=6.1.0",
-  "celery~=5.3.0",
-  "css_inline~=0.13.0",
+  "celery~=5.4.0",
+  "css_inline~=0.14.0",
   "csscompressor~=0.9.0",
-  "cssutils~=2.9.0",
+  "cssutils~=2.10.0",
   "defusedcsv~=2.0.0",
   "defusedxml~=0.7.0",
-  "Django[argon2]~=4.2.0",
+  "Django[argon2]~=5.1.0",
   "django-bootstrap4~=3.0.0",
-  "django-compressor~=4.4.0",
+  "django-compressor~=4.5.0",
   "django-context-decorator",
   "django-countries~=7.0",
   "django-csp~=3.8.0",
-  "django-filter==24.1",
+  "django-filter==24.2",
   "django-formset-js-improved==0.5.0.3",
   "django-formtools~=2.5.1",
   "django-hierarkey~=1.1.0",
@@ -46,22 +46,19 @@ dependencies = [
   "django-libsass~=0.8",
   "django-scopes~=2.0.0",
   "django-pdb~=0.6.2",
-  "djangorestframework~=3.14.0",
+  "djangorestframework~=3.15.0",
   "libsass~=0.23.0",
-  "Markdown~=3.5.0",  # https://python-markdown.github.io/change_log/
-  # We can upgrade markdown again once django-bootstrap4 upgrades or once we drop Python 3.6 and 3.7
-  # 3.3.5 requires importlib-metadata>=4.4, but django-bootstrap3 requires importlib-metadata<3.
-  # see also https://github.com/zostera/django-bootstrap4/issues/380
-  "Pillow~=10.2.0",
+  "Markdown~=3.6.0",
+  "Pillow~=10.3.0",
   "publicsuffixlist~=0.10.0",
   "python-dateutil~=2.9.0",
   "qrcode~=7.0",
-  "reportlab~=4.1.0",
+  "reportlab~=4.2.0",
   "requests~=2.31.0",
-  "rules~=3.3.0",
+  "rules~=3.5.0",
   "urlman~=2.0.1",
   "vobject~=0.9.0",
-  "whitenoise~=6.6.0",
+  "whitenoise~=6.7.0",
   "zxcvbn~=4.4.0",
   'pretalx_pages @ git+https://github.com/fossasia/eventyay-talk-pages.git@main',
   'pretalx_venueless @ git+https://github.com/fossasia/eventyay-talk-video.git@main',
@@ -88,6 +85,7 @@ dev = [
   "isort",
   "jsonschema",
   "lxml",
+  "pep8-naming",
   "pytest",
   "pytest-cov",
   "pytest-django",
@@ -100,7 +98,7 @@ dev = [
   "rich",
   "urllib3",
 ]
-postgres = ["psycopg2-binary"]
+postgres = ["psycopg2-binary~=2.9.0"]
 redis = ["redis~=5.0.0"]
 
 [build-system]
@@ -108,10 +106,10 @@ build-backend = "setuptools.build_meta"
 requires = ["setuptools", "wheel"]
 
 [project.urls]
-homepage = "https://pretalx.com"
-documentation = "https://docs.pretalx.org"
-repository = "https://github.com/pretalx/pretalx.git"
-Changelog = "https://docs.pretalx.org/en/latest/changelog.html"
+Homepage = "https://pretalx.com"
+Documentation = "https://docs.pretalx.org"
+Repository = "https://github.com/pretalx/pretalx"
+Changelog = "https://docs.pretalx.org/changelog/"
 Issues = "https://github.com/pretalx/pretalx/issues"
 
 [tool.setuptools]
@@ -139,3 +137,12 @@ ignore = [
   "src/tests/*",
   "SECURITY.md",
 ]
+
+[tool.djlint]
+blank_line_after_tag="load,extends,include"
+blank_line_before_tag="load,extends,include"
+close_void_tags=false
+extend_exclude="static,docs"
+max_blank_lines=1
+preserve_blank_lines=1
+profile="django"

@@ -1,12 +1,13 @@
 {% extends "orga/settings/base.html" %}
+
 {% load bootstrap4 %}
 {% load i18n %}
 
+{% block extra_title %}{% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Tracks" %} :: {% endblock extra_title %}
+
 {% block settings_content %}
     <div>
-        <h2>
-            {% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Tracks" %}
-        </h2>
+        <h2>{% translate "Team" %} {{ quotation_open }}{{ team.name }}{{ quotation_close }}: {% translate "Tracks" %}</h2>
         <div class="alert alert-info">
             {% blocktranslate trimmed %}
                 Review teams can be restricted to tracks, so that reviewers will only be able to see reviews from that track. Please note that reviewers with additional access rights (e.g. due to being member in another team) will still be able to see all proposals.
@@ -15,8 +16,10 @@
         {% if form.fields.limit_tracks.queryset.count %}
             <form method="post">
                 {% csrf_token %}
-                {% bootstrap_form form layout='event' %}
+                {% bootstrap_form form layout="event" %}
+
                 {% include "orga/includes/submit_row.html" with submit_value="team" submit_name="form" %}
+
             </form>
         {% else %}
             <div class="alert alert-danger">
@@ -26,4 +29,4 @@
             </div>
         {% endif %}
     </div>
-{% endblock %}
+{% endblock settings_content %}

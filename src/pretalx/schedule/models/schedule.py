@@ -4,16 +4,16 @@ from urllib.parse import quote
 
 from django.conf import settings
 from django.db import models, transaction
-from django.db.models import TextField
-from django.db.models.functions import Cast
+from django.db.models import Count
 from django.db.utils import DatabaseError
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 from i18nfield.fields import I18nTextField
 
 from pretalx.agenda.tasks import export_schedule_html
-from pretalx.common.mixins.models import PretalxModel
+from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
 from pretalx.person.models import SpeakerProfile, User
@@ -36,7 +36,10 @@ class Schedule(PretalxModel):
         to="event.Event", on_delete=models.PROTECT, related_name="schedules"
     )
     version = models.CharField(
-        max_length=190, null=True, blank=True, verbose_name=_("Version")
+        max_length=190,
+        null=True,
+        blank=True,
+        verbose_name=pgettext_lazy("Version of the conference schedule", "Version"),
     )
     published = models.DateTimeField(null=True, blank=True)
     comment = I18nTextField(
@@ -371,7 +374,7 @@ class Schedule(PretalxModel):
                                 "Room {room_name} is not available at the scheduled time."
                             )
                         ).format(
-                            room_name=str(_("“")) + str(talk.room.name) + str(_("”"))
+                            room_name=f"{phrases.base.quotation_open}{talk.room.name}{phrases.base.quotation_close}"
                         ),
                         "url": url,
                     }
@@ -433,10 +436,12 @@ class Schedule(PretalxModel):
                 TalkSlot.objects.filter(
                     schedule=self, submission__speakers__in=[speaker]
                 )
+                .exclude(pk=talk.pk)
                 .filter(
                     models.Q(start__lt=talk.start, end__gt=talk.start)
                     | models.Q(start__lt=talk.real_end, end__gt=talk.real_end)
                     | models.Q(start__gt=talk.start, end__lt=talk.real_end)
+                    | models.Q(start=talk.start, end=talk.real_end)
                 )
                 .exists()
             )
@@ -709,11 +714,14 @@ class Schedule(PretalxModel):
             for room in self.event.rooms.all()
             if room in rooms
         ]
+        include_avatar = self.event.cfp.request_avatar
         result["speakers"] = [
             {
                 "code": user.code,
                 "name": user.name,
-                "avatar": user.get_avatar_url(event=self.event),
+                "avatar": (
+                    user.get_avatar_url(event=self.event) if include_avatar else None
+                ),
             }
             for user in speakers
         ]
@@ -725,12 +733,7 @@ class Schedule(PretalxModel):
 
 
 def count_fav_talk(submission_code):
-    # Cast talk_list to TextField for using the contains lookup
-    count = (
-        SubmissionFavourite.objects.annotate(
-            talk_list_str=Cast("talk_list", TextField())
-        )
-        .filter(talk_list_str__contains=str(submission_code))
-        .count()
-    )
+    count = SubmissionFavourite.objects.filter(
+        submission__code=submission_code
+    ).aggregate(count=Count("id"))["count"]
     return count

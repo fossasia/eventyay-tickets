@@ -1,12 +1,16 @@
 {% extends "orga/submission/base.html" %}
+
 {% load compress %}
 {% load i18n %}
 {% load rich_text %}
 {% load rules %}
 {% load static %}
 
+{% block submission_title %}{% translate "Speakers" %} :: {% endblock submission_title %}
+
 {% block submission_content %}
-    {% has_perm 'submission.edit_speaker_list' request.user submission as can_edit_speakers %}
+    {% has_perm "submission.edit_speaker_list" request.user submission as can_edit_speakers %}
+    {% has_perm "orga.send_mails" request.user request.event as can_send_mails %}
     {% if can_edit_speakers %}<div class="alert">
         <form method="POST" action="{{ submission.orga_urls.new_speaker }}" class="form flex-row">
             <label>
@@ -22,16 +26,23 @@
     </div>{% endif %}
 
     {% for speaker in speakers %}
-        <div class="card"><div class="card-body">
+        <div class="card mb-3"><div class="card-body">
             <h3 class="card-title">
-                <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.code %}">
-                    {{ speaker.name }}
+                <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.user.code %}">
+                    {{ speaker.user.get_display_name }}
                 </a>
+                {% if speaker.user.avatar %}
+                    <div class="speaker-avatar">
+                        <a href="{{ speaker.user.avatar.url }}" data-lightbox="{{ speaker.user.avatar.url }}">
+                            <img loading="lazy" width="100%" src="{{ speaker.user.avatar.url }}" alt="{% translate "The speaker’s profile picture" %}">
+                        </a>
+                    </div>
+                {% endif %}
             </h3>
             {% if request.event.cfp.request_biography %}
                 <p class="card-text">
                     <h5>{% translate "Biography" %}:</h5>
-                    {{ speaker.biography|rich_text|default:"-" }}
+                    {{ speaker.profile.biography|rich_text|default:"-" }}
                 </p>
             {% endif %}
             <p class="card-text">
@@ -47,11 +58,17 @@
                 {% endif %}
             </p>
             {% if can_edit_speakers %}
-                <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.code %}"
+                {% if can_send_mails %}
+                    <a class="btn btn-outline-info" href="{{ request.event.orga_urls.compose_mails_sessions }}?speakers={{ speaker.user.code }}">
+                        <i class="fa fa-envelope"></i>
+                        {% translate "Send email" %}
+                    </a>
+                {% endif %}
+                <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.user.code %}"
                    class="btn btn-info">
-                    <i class="fa fa-edit"></i> {% translate "Edit" %}
+                    <i class="fa fa-edit"></i> {{ phrases.base.edit }}
                 </a>
-                <a href="{{ submission.orga_urls.delete_speaker }}?id={{ speaker.id }}"
+                <a href="{{ submission.orga_urls.delete_speaker }}?id={{ speaker.user.id }}"
                    class="btn btn-danger">
                     <i class="fa fa-trash"></i> {% translate "Remove" %}
                 </a>
@@ -59,10 +76,9 @@
         </div></div>
     {% endfor %}
 
-
     <span id="vars" remoteUrl="{{ request.event.orga_urls.users }}?search=%QUERY"></span>
     {% compress js %}
         <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
         <script defer src="{% static "orga/js/speakers.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock submission_content %}

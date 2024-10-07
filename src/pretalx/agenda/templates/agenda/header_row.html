@@ -57,15 +57,15 @@
   <nav id="schedule-nav"{% if with_margin %} class="p-3"{% endif %}>
       <div class="navigation">
           <a href="{{ request.event.urls.schedule }}" class="btn btn-outline-success {% if "/schedule/" in request.path_info %} active{% endif %}">
-              <i class="fa fa-calendar"></i> {% translate "Schedule" %}
+              <i class="fa fa-calendar"></i> {{ phrases.schedule.schedule }}
           </a>
           {% if request.event.display_settings.schedule_display != "list" %}
               <a href="{{ request.event.urls.talks }}" class="btn btn-outline-success {% if "/talk/" in request.path_info %} active{% endif %}">
-                  <i class="fa fa-comments-o"></i> {% translate "Sessions" %}
+                  <i class="fa fa-comments-o"></i> {{ phrases.schedule.sessions }}
               </a>
           {% endif %}
           <a href="{{ request.event.urls.speakers }}" class="btn btn-outline-success {% if "/speaker/" in request.path_info %} active{% endif %}">
-              <i class="fa fa-group"></i> {% translate "Speakers" %}
+              <i class="fa fa-group"></i> {{ phrases.schedule.speakers }}
           </a>
           {% if request.event.display_settings.ticket_link %}
               <a href="{{ request.event.display_settings.ticket_link }}" class="btn btn-outline-success">
@@ -79,7 +79,7 @@
       </div>
       <div class="header-right">
         {% if with_extra %}
-            <span>{% translate "Version" %} <a href="{{ request.event.urls.changelog }}">{{ schedule.version|default:"–" }}</a></span>
+            <span>{{ phrases.schedule.version }} <a href="{{ request.event.urls.changelog }}">{{ schedule.version|default:"–" }}</a></span>
             <details class="dropdown">
                 <summary class="btn btn-sm btn-outline-info">
                     <i class="fa fa-calendar-plus-o"></i>
@@ -87,7 +87,7 @@
                     <i class="fa fa-caret-down"></i>
                 </summary>
                 <ul class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-                    {% for exporter in exporters %}{% if exporter.public %}
+                    {% for exporter in exporters %}
                         <li><a class="dropdown-item" href="{{ exporter.urls.base }}">
                             {% if exporter.icon|slice:":3" == "fa-" %}
                                 <span class="fa {{ exporter.icon }} export-icon"></span>
@@ -104,7 +104,7 @@
                                 </span>
                             {% endif %}
                         </a></li>
-                    {% endif %}{% endfor %}
+                    {% endfor %}
                     <div class="export-break" style="grid-area: slice-08-07-00-00 / 1 / slice-08-08-00-00;"></div>
                     {% for exporter in my_exporters %}{% if exporter.public %}
                         <li><a class="dropdown-item" href="{{ exporter.urls.base }}">

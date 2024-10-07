@@ -1,19 +1,18 @@
+const dateFormat = $("body").attr("data-dateformat")
+
 const setDates = (picker) => {
-  const format = $("body").attr("data-dateformat")
   const minDate = $(picker).attr("data-date-start-date")
   const maxDate = $(picker).attr("data-date-end-date")
-  if (minDate) $(picker).data("DateTimePicker").minDate(moment(minDate, format))
-  if (maxDate) $(picker).data("DateTimePicker").maxDate(moment(maxDate, format))
+  if (minDate) $(picker).data("DateTimePicker").minDate(moment(minDate, dateFormat))
+  if (maxDate) $(picker).data("DateTimePicker").maxDate(moment(maxDate, dateFormat))
 }
-$(function() {
-  "use strict"
 
-  $(".datetimepickerfield").each(function() {
-    $(this).datetimepicker({
+const activateDateTimePicker = (field) => {
+    $(field).datetimepicker({
       format: $("body").attr("data-datetimeformat"),
       locale: $("body").attr("data-datetimelocale"),
       useCurrent: false,
-      showClear: !$(this).prop("required"),
+      showClear: !$(field).prop("required"),
       icons: {
         time: "fa fa-clock-o",
         date: "fa fa-calendar",
@@ -26,15 +25,15 @@ $(function() {
         close: "fa fa-times",
       },
     })
-    setDates(this)
-  })
+    setDates(field)
+}
 
-  $(".datepickerfield").each(function() {
+const activateDatePicker = (field) => {
     var opts = {
       format: $("body").attr("data-dateformat"),
       locale: $("body").attr("data-datetimelocale"),
       useCurrent: false,
-      showClear: !$(this).prop("required"),
+      showClear: !$(field).prop("required"),
       icons: {
         time: "fa fa-clock-o",
         date: "fa fa-calendar",
@@ -47,8 +46,17 @@ $(function() {
         close: "fa fa-times",
       },
     }
-    $(this).datetimepicker(opts)
-    setDates(this)
+    $(field).datetimepicker(opts)
+    setDates(field)
+}
+
+$(function() {
+  $(".datetimepickerfield").each(function() {
+      activateDateTimePicker(this)
+  })
+
+  $(".datepickerfield").each(function() {
+      activateDatePicker(this)
   })
 
   $(".datetimepickerfield[data-date-after], .datepickerfield[data-date-after], .datetimepickerfield[data-date-before], .datepicker[data-date-after]").each(

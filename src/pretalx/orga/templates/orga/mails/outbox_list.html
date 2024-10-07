@@ -1,6 +1,6 @@
 {% extends "orga/mails/base.html" %}
+
 {% load i18n %}
-{% load url_replace %}
 
 {% block mail_content %}
     <h2>
@@ -15,7 +15,9 @@
     </h2>
     <div class="submit-group">
         <span>
+
             {% include "common/search_form.html" %}
+
         </span>
         <span>
             {% if is_paginated and page_obj.paginator.num_pages > 1 %}
@@ -36,14 +38,14 @@
             <thead>
                 <tr>
                     <th>
-                        {% translate "Subject" %}
-                        <a href="?{% url_replace request 'sort' 'subject' %}"><i class="fa fa-caret-down" title="{% translate "Sort by subject (a-z)" %}"></i></a>
-                        <a href="?{% url_replace request 'sort' '-subject' %}"><i class="fa fa-caret-up" title="{% translate "Sort by subject (z-a)" %}"></i></a>
+                        {{ phrases.base.email_subject }}
+                        <a href="{% querystring sort="subject" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                        <a href="{% querystring sort="-subject" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
                     </th>
                     <th>
                         {% translate "To" %}
-                        <a href="?{% url_replace request 'sort' 'to' %}"><i class="fa fa-caret-down" title="{% translate "Sort by recipient (a-z)" %}"></i></a>
-                        <a href="?{% url_replace request 'sort' '-to' %}"><i class="fa fa-caret-up" title="{% translate "Sort by recipient (z-a)" %}"></i></a>
+                        <a href="{% querystring sort="to" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                        <a href="{% querystring sort="-to" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
                     </th>
                     <th></th>
                     <th></th>
@@ -53,9 +55,7 @@
                 {% for mail in mails %}
                     <tr>
                         <td>
-                            <a href="{{ mail.urls.base }}">
-                                {{ mail.subject }}
-                            </a>
+                            <a href="{{ mail.urls.base }}">{{ mail.subject }}</a>
                         </td>
                         <td>
                             {% for user in mail.to_users.all %}
@@ -64,9 +64,7 @@
                                         {{ user }}
                                     </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
                             {% endfor %}
-                            {% if mail.to %}
-                                {{ mail.to }}
-                            {% endif %}
+                            {% if mail.to %}{{ mail.to }}{% endif %}
                         </td>
                         <td class="text-right">
                             {% if mail.attachments %}
@@ -85,19 +83,13 @@
                             {% endif %}
                         </td>
                         <td class="action-column">
-                            <a href="{{ mail.urls.send }}"
-                               title="{% translate "Send" %}"
-                               class="btn btn-sm btn-success">
+                            <a href="{{ mail.urls.send }}" title="{{ phrases.base.send }}" class="btn btn-sm btn-success">
                                 <i class="fa fa-mail-forward"></i>
                             </a>
-                            <a href="{{ mail.urls.edit }}"
-                               title="{% translate "edit" %}"
-                               class="btn btn-sm btn-info">
+                            <a href="{{ mail.urls.edit }}" title="{{ phrases.base.edit }}" class="btn btn-sm btn-info">
                                 <i class="fa fa-edit"></i>
                             </a>
-                            <a href="{{ mail.urls.delete }}"
-                               title="{% translate "Delete" %}"
-                               class="btn btn-sm btn-danger">
+                            <a href="{{ mail.urls.delete }}" title="{{ phrases.base.delete_button }}" class="btn btn-sm btn-danger">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </td>
@@ -106,5 +98,7 @@
             </tbody>
         </table>
     </div>
+
     {% include "orga/includes/pagination.html" %}
-{% endblock %}
+
+{% endblock mail_content %}

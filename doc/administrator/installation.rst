@@ -26,10 +26,10 @@ and configuration here, but please have a look at the linked pages.
 
 * **Python 3.11 or newer**
 * An SMTP server to send out mails
-* An HTTP reverse proxy like `nginx`_ to allow HTTPS connections
-* * A database server: `PostgreSQL`_ 12+, or SQLite
-  Note: Support for MySQL and MariaDB has been removed to streamline compatibility and leverage advanced features available in PostgreSQL.
-  3. Given the choice, we’d recommend to use PostgreSQL.
+* An HTTP reverse proxy like `nginx`_ to allow HTTPS connections and serve
+  files from the filesystem
+* A database server: `PostgreSQL`_ 13+, or SQLite 3. Given the choice, we’d
+  recommend to use PostgreSQL.
 * A `redis`_ server, if you want to use pretalx with an asynchronous task
   runner or improved caching.
 * `nodejs`_ and npm (usually bundled with nodejs). You’ll need a `supported
@@ -59,8 +59,8 @@ As we do not want to run pretalx as root, we first create a new unprivileged use
 Step 2: Database setup
 ----------------------
 
-pretalx runs with PostgreSQL or SQLite. If you’re using
-SQLite, you can skip this step, as there is no need to set up the database.
+pretalx runs with PostgreSQL or SQLite. If you’re using SQLite, you can skip
+this step, as there is no need to set up the database.
 
 We recommend using PostgreSQL. This is how you can set up a database for your
 pretalx installation – if you do not use PostgreSQL, please refer to the
@@ -72,8 +72,6 @@ appropriate documentation on how to set up a database::
 Make sure that your database encoding is UTF-8. You can check with this command::
 
   # sudo -u postgres psql -c 'SHOW SERVER_ENCODING'
-
-.. highlight:: sql
 
 
 Step 3: Package dependencies
@@ -138,7 +136,7 @@ Now, upgrade your pip and then install the required Python packages::
 +=================+========================================================================+
 | SQLite          | ``pip install --user --upgrade-strategy eager -U pretalx``             |
 +-----------------+------------------------------------------------------------------------+
-| PostgreSQL      | ``pip install --user --upgrade-strategy eager -U "pretalx[postgres]"`` |
+| PostgreSQL      | ``pip install --upgrade-strategy eager -U "pretalx[postgres]"``        |
 +-----------------+------------------------------------------------------------------------+
 
 If you intend to run pretalx with asynchronous task runners or with redis as
@@ -211,72 +209,28 @@ You can now run the following commands to enable and start the services::
     # systemctl enable pretalx-web pretalx-worker
     # systemctl start pretalx-web pretalx-worker
 
-Step 7: SSL
------------
+Step 7: Reverse proxy
+---------------------
 
-.. highlight:: nginx
+You’ll need to set up an HTTP reverse proxy to handle HTTPS connections. It
+does not particularly matter which one you use, as long as you make sure to use
+`strong encryption settings`_. Your proxy should
 
-You’ll need to set up an HTTP reverse proxy to handle HTTPS connections. It doesn’t
-particularly matter which one you use, as long as you make sure to use `strong
-encryption settings`_. Your proxy should
-
-* serve all requests exclusively over HTTPS
-* set the ``X-Forwarded-For`` and ``X-Forwarded-Proto`` headers
-* set the ``Host`` header
+* serve all requests exclusively over HTTPS,
+* follow established security practices regarding protocols and ciphers.
+* optionally set best-practice headers like ``Referrer-Policy`` and
+  ``X-Content-Type-Options``,
+* set the ``X-Forwarded-For`` and ``X-Forwarded-Proto`` headers,
+* set the ``Host`` header,
 * serve all requests for the ``/static/`` and ``/media/`` paths from the
   directories you set up in the previous step, without permitting directory
-  listings or traversal
-* pass requests to the gunicorn server you set up in the previous step
-
-The following snippet is an example on how to configure an nginx proxy for pretalx::
-
-    server {
-        listen 80 default_server;
-        listen [::]:80 ipv6only=on default_server;
-        server_name pretalx.mydomain.com;
-    }
-    server {
-        listen 443 default_server;
-        listen [::]:443 ipv6only=on default_server;
-        server_name pretalx.mydomain.com;
-
-        ssl on;
-        ssl_certificate /path/to/cert.chain.pem;
-        ssl_certificate_key /path/to/key.pem;
-
-        gzip off;
-        add_header Referrer-Policy same-origin;
-        add_header X-Content-Type-Options nosniff;
-
-        location / {
-            proxy_pass http://localhost:8345/;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto https;
-            proxy_set_header Host $http_host;
-        }
-
-        location /media/ {
-            gzip on;
-            alias /var/pretalx/data/media/;
-            add_header Content-Disposition 'attachment; filename="$1"';
-            expires 7d;
-            access_log off;
-        }
-
-        location /static/ {
-            gzip on;
-            alias /path/to/static.dist/;
-            access_log off;
-            expires 365d;
-            add_header Cache-Control "public";
-        }
-    }
+  listings or traversal. Files in the ``/media/`` directory should be served
+  as attachments. You can use fairly aggressive cache settings for these URLs, and
+* pass all other requests to the gunicorn server you set up in the previous step.
 
 
 Step 8: Check the installation
 -------------------------------
-
-.. highlight:: console
 
 You can make sure the web interface is up and look for any issues with::
 
@@ -297,7 +251,7 @@ Step 9: Provide periodic tasks
 ------------------------------
 
 There are a couple of things in pretalx that should be run periodically. It
-doesn’t matter how you run them, so you can go with your choice of periodic
+does not matter how you run them, so you can go with your choice of periodic
 tasks, be they systemd timers, cron, or something else entirely.
 
 In the same environment as you ran the previous pretalx commands (e.g. the
@@ -328,10 +282,10 @@ If you want to read about updates, backups, and monitoring, head over to our
 .. _nginx: https://botleg.com/stories/https-with-lets-encrypt-and-nginx/
 .. _Let’s Encrypt: https://letsencrypt.org/
 .. _PostgreSQL: https://www.postgresql.org/docs/
-.. _redis: https://redis.io/documentation
+.. _redis: https://redis.io/docs/latest/
 .. _ufw: https://en.wikipedia.org/wiki/Uncomplicated_Firewall
 .. _strong encryption settings: https://mozilla.github.io/server-side-tls/ssl-config-generator/
 .. _docker-compose setup: https://github.com/pretalx/pretalx-docker
-.. _pretalx.com: https://pretalx.com
+.. _pretalx.com: https://pretalx.com/p/about/
 .. _nodejs: https://github.com/nodesource/distributions/blob/master/README.md
 .. _supported version of nodejs: https://nodejs.org/en/about/previous-releases

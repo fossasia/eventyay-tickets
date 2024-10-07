@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 import urllib3
 from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management.base import CommandError
 from django.test import override_settings
 from django.urls import reverse
@@ -15,6 +16,7 @@ from lxml import etree
 from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.tasks import regenerate_css
 from pretalx.event.models import Event
+from pretalx.submission.models import Resource
 
 
 @pytest.mark.skipif(
@@ -92,7 +94,7 @@ def test_schedule_frab_xml_export(
                 "agenda:export.schedule.xml",
                 kwargs={"event": slot.submission.event.slug},
             ),
-            HTTP_IF_NONE_MATCH=response["ETag"],
+            HTTP_IF_NONE_MATCH=response["ETag"].strip('"'),
             follow=True,
         )
     assert response.status_code == 304
@@ -201,7 +203,7 @@ def test_schedule_ical_export(slot, orga_client, django_assert_max_num_queries):
 
 @pytest.mark.django_db
 def test_schedule_single_ical_export(slot, client, django_assert_max_num_queries):
-    with django_assert_max_num_queries(13):
+    with django_assert_max_num_queries(15):
         response = client.get(slot.submission.urls.ical, follow=True)
     assert response.status_code == 200
 
@@ -465,6 +467,21 @@ def test_html_export_full(
     other_event.primary_color = "#222222"
     other_event.save()
 
+    nonascii_filename = "lüstíg.jpg"
+    f = SimpleUploadedFile(nonascii_filename, b"file_content")
+    with scope(event=event):
+        speaker = slot.submission.speakers.first()
+        speaker.avatar.save(nonascii_filename, f)
+        speaker.save()
+        avatar_filename = speaker.avatar.name.split("/")[-1]
+        resource = Resource.objects.create(submission=slot.submission)
+        resource.resource.save(nonascii_filename, f)
+        resource.save()
+        resource_filename = resource.resource.name.split("/")[-1]
+        slot.submission.image.save(nonascii_filename, f)
+        slot.submission.save()
+        image_filename = slot.submission.image.name.split("/")[-1]
+
     with override_settings(COMPRESS_ENABLED=True, COMPRESS_OFFLINE=True):
         call_command("rebuild")
         regenerate_css(event.pk)
@@ -484,6 +501,9 @@ def test_html_export_full(
     paths = [
         "static/common/img/icons/favicon.ico",
         f'media/test/{event.settings.agenda_css_file.split("/")[-1]}',
+        f"media/test/submissions/{slot.submission.code}/resources/{resource_filename}",
+        f"media/test/submissions/{slot.submission.code}/{image_filename}",
+        f"media/avatars/{avatar_filename}",
         "test/schedule/index.html",
         "test/schedule/export/schedule.json",
         "test/schedule/export/schedule.xcal",
@@ -556,7 +576,7 @@ def test_html_export_full(
     assert slot.submission.title in talk_ics
     assert event.is_public is False
 
-    with django_assert_max_num_queries(32):
+    with django_assert_max_num_queries(33):
         response = orga_client.get(
             event.orga_urls.schedule_export_download, follow=True
         )

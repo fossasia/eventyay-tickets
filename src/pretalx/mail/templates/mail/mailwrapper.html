@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load rich_text %}
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -111,25 +112,23 @@
         @media (max-width: 480px) {
         }
 
-        {% block addcss %}{% endblock %}
+        {% block addcss %}{% endblock addcss %}
     </style>
     <body{% if rtl %} dir="rtl" class="rtl"{% endif %}>
         <table width="600" cellspacing="0" border="0" class="layout">
             <tr>
                 <td class="header" background="" align="center">
                     {% if event %}
-                        <h2><a href="{{ event.urls.base.full }}" target="_blank" rel="noopener">{{ event.name }}</a></h2>
+                        <h2>
+                            <a href="{{ event.urls.base.full }}" target="_blank" rel="noopener">{{ event.name }}</a>
+                        </h2>
                     {% endif %}
-                    {% block header %}
-                        <h1>{{ subject }}</h1>
-                    {% endblock %}
+                    {% block header %}<h1>{{ subject }}</h1>{% endblock header %}
                 </td>
             </tr>
             <tr>
                 <td class="containertd">
-                    <div class="content">
-                        {{ body|safe }}
-                    </div>
+                    <div class="content">{{ body|safe }}</div>
                 </td>
             </tr>
             {% if signature and signature.strip %}
@@ -141,9 +140,11 @@
             {% endif %}
         </table>
         <div class="footer">
+
             {% include "common/powered_by.html" %}
+
         </div>
-        <br/>
-        <br/>
+        <br />
+        <br />
     </body>
 </html>

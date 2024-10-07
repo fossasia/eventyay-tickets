@@ -8,6 +8,9 @@
 	.info
 		.title {{ getLocalizedString(session.title) }}
 		.speakers(v-if="session.speakers") {{ session.speakers.map(s => s.name).join(', ') }}
+		.pending-line(v-if="session.state && session.state !== 'confirmed' && session.state !== 'accepted'")
+			i.fa.fa-exclamation-circle
+			span {{ $t('Pending proposal state') }}
 		.bottom-info(v-if="!isBreak")
 			.track(v-if="session.track") {{ getLocalizedString(session.track.name) }}
 	.warning.no-print(v-if="warnings?.length")
@@ -64,7 +67,8 @@ export default {
 			if (this.isBreak) classes.push('isbreak')
 			else {
 				classes.push('istalk')
-				if (this.session.state !== "confirmed") classes.push('unconfirmed')
+				if (this.session.state !== "confirmed" && this.session.state !== "accepted") classes.push('pending')
+				else if (this.session.state !== "confirmed") classes.push('unconfirmed')
 			}
 			if (this.isDragged) classes.push('dragging')
 			if (this.isDragClone) classes.push('clone')
@@ -125,11 +129,6 @@ export default {
 	&.dragging
 		filter: opacity(0.3)
 		cursor: inherit
-	&.unconfirmed
-		.time-box
-			opacity: 0.5
-		.info
-			background-image: repeating-linear-gradient(-38deg, $clr-grey-100, $clr-grey-100 10px, $clr-white 10px, $clr-white 20px)
 	&.isbreak
 		background-color: $clr-grey-200
 		border-radius: 6px
@@ -167,6 +166,20 @@ export default {
 				border-left: none
 				.title
 					color: var(--pretalx-clr-primary)
+	&.pending, &.unconfirmed
+		.time-box
+			opacity: 0.5
+		.info
+			background-image: repeating-linear-gradient(-38deg, $clr-grey-100, $clr-grey-100 10px, $clr-white 10px, $clr-white 20px)
+		&:hover
+			.info
+				border: 1px solid var(--track-color)
+				border-left: none
+				.title
+					color: var(--pretalx-clr-primary)
+	&.pending
+		.info
+			border-style: dashed dashed dashed none
 	.time-box
 		width: 69px
 		box-sizing: border-box
@@ -206,6 +219,10 @@ export default {
 				color: var(--track-color)
 				ellipsis()
 				margin-right: 4px
+	.pending-line
+		color: $clr-warning
+		.fa
+			margin-right: 4px
 	.warning
 		position: absolute
 		top: 0

@@ -1,4 +1,5 @@
 {% extends "orga/mails/base.html" %}
+
 {% load bootstrap4 %}
 {% load i18n %}
 
@@ -14,12 +15,10 @@
             {% endblocktranslate %}
         </div>
         {% bootstrap_form_errors form %}
-        {% bootstrap_field form.subject layout='event' %}
-        {% bootstrap_field form.text layout='event' %}
-        <div class="submit-group mt-3"><span></span>
-            <span>
-                <button type="submit" class="btn btn-lg btn-success">{% translate "Send" %}</button>
-            </span>
-        </div>
+        {% bootstrap_field form.subject layout="event" %}
+        {% bootstrap_field form.text layout="event" %}
+
+        {% include "orga/includes/submit_row.html" with submit_label=phrases.base.send %}
+
     </form>
-{% endblock %}
+{% endblock mail_content %}

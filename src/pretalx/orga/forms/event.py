@@ -14,14 +14,14 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.fields import I18nFormField, I18nTextarea
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
-from pretalx.common.css import validate_css
 from pretalx.common.forms.fields import ImageField
-from pretalx.common.mixins.forms import (
+from pretalx.common.forms.mixins import (
     HierarkeyMixin,
     I18nHelpText,
     JsonSubfieldMixin,
     ReadOnlyFlag,
 )
+from pretalx.common.text.css import validate_css
 from pretalx.common.text.phrases import phrases
 from pretalx.event.models.event import Event
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
@@ -29,6 +29,11 @@ from pretalx.schedule.models import Availability, TalkSlot
 from pretalx.submission.models import ReviewPhase, ReviewScore, ReviewScoreCategory
 
 ENCRYPTED_PASSWORD_PLACEHOLDER = "*******"
+
+SCHEDULE_DISPLAY_CHOICES = (
+    ("grid", _("Grid")),
+    ("list", _("List")),
+)
 
 
 def make_naive(moment):
@@ -79,11 +84,8 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         required=False,
     )
     schedule = forms.ChoiceField(
-        label=_("Schedule display format"),
-        choices=(
-            ("grid", _("Grid")),
-            ("list", _("List")),
-        ),
+        label=phrases.orga.event_schedule_format_label,
+        choices=SCHEDULE_DISPLAY_CHOICES,
         required=True,
     )
     show_featured = forms.ChoiceField(
@@ -139,19 +141,9 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         required=False,
     )
     header_pattern = forms.ChoiceField(
-        label=_("Frontpage header pattern"),
-        help_text=_(
-            "Choose how the frontpage header banner will be styled if you don’t upload an image. Pattern source: "
-            '<a href="http://www.heropatterns.com/">heropatterns.com</a>, CC BY 4.0.'
-        ),
-        choices=(
-            ("", _("Plain")),
-            ("pcb", _("Circuits")),
-            ("bubbles", _("Circles")),
-            ("signal", _("Signal")),
-            ("topo", _("Topography")),
-            ("graph", _("Graph Paper")),
-        ),
+        label=phrases.orga.event_header_pattern_label,
+        help_text=phrases.orga.event_header_pattern_help_text,
+        choices=Event.HEADER_PATTERN_CHOICES,
         required=False,
         widget=HeaderSelect,
     )
@@ -162,6 +154,11 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
     def __init__(self, *args, **kwargs):
         self.is_administrator = kwargs.pop("is_administrator", False)
         super().__init__(*args, **kwargs)
+        site_url = settings.SITE_URL.split("://")[-1]
+        site_url = f"<code>{site_url}</code>"
+        self.fields["custom_domain"].help_text += ". " + _(
+            "Make sure to point a CNAME record from your domain to {site_url}."
+        ).format(site_url=site_url)
         self.initial["locales"] = self.instance.locale_array.split(",")
         self.initial["content_locales"] = self.instance.content_locale_array.split(",")
         year = str(now().year)
@@ -246,9 +243,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         date_from = data.get("date_from")
         date_to = data.get("date_to")
         if date_from and date_to and date_from > date_to:
-            error = forms.ValidationError(
-                _("The event end cannot be before the start.")
-            )
+            error = forms.ValidationError(phrases.orga.event_date_start_invalid)
             self.add_error("date_from", error)
         if data.get("locale") not in data.get("locales", []):
             error = forms.ValidationError(
@@ -589,11 +584,8 @@ class WidgetSettingsForm(JsonSubfieldMixin, forms.Form):
 
 class WidgetGenerationForm(forms.ModelForm):
     schedule_display = forms.ChoiceField(
-        label=_("Schedule display format"),
-        choices=(
-            ("grid", _("Grid")),
-            ("list", _("List")),
-        ),
+        label=phrases.orga.event_schedule_format_label,
+        choices=SCHEDULE_DISPLAY_CHOICES,
         required=True,
     )
 

@@ -1,22 +1,17 @@
 {% extends "cfp/event/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% translate "Your proposal" %} :: {% endblock %}
+{% block title %}{{ submission.title }} :: {% endblock title %}
 
 {% block content %}
     <div class="col-md-10 ml-auto mr-auto">
-        <h2>{% translate "Your proposal:" %} {{ submission.title }}</h2>
-        <p>
-            {% translate "Current state of your proposal:" %}
-            {% include "cfp/event/fragment_state.html" with state=submission.state %}
-        </p>
-        {% if submission.submission_type and request.event.submission_types.all|length > 1 %}<p><strong>{% translate "Session type" %}</strong>: {{ submission.submission_type.name }}</p>{% endif %}
-        {% if submission.track and request.event.tracks.all|length > 1 %}<p><strong>{% translate "Track" %}</strong> {{ submission.track.name }}</p>{% endif %}
-        {% if request.event.is_multilingual and request.event.cfp.request_content_locale %}<p><strong>{% translate "Language" %}</strong> {{ submission.get_content_locale_display }}</p>{% endif %}
-        <p><strong>{% translate "Duration" %}</strong> {{ submission.export_duration }}</p>
+
+        {% include "cfp/includes/user_submission_header.html" %}
+
         <div class="text">
             {% blocktranslate trimmed %}
                 Congratulations on your acceptance!
@@ -31,8 +26,10 @@
         <form method="post" class="availability-form">
             {% csrf_token %}
             {% if form.availabilities %}
+
                 {% include "common/availabilities.html" %}
-                {% bootstrap_field form.availabilities layout='inline' %}
+
+                {% bootstrap_field form.availabilities layout="inline" %}
                 <small class="form-text text-muted">{{ form.availabilities.help_text }}</small>
             {% endif %}
             <p></p>
@@ -43,22 +40,15 @@
                 publicly available once the proposal is confirmed.
             {% endblocktranslate %}
             <p></p>
-            <div class="submit-group"><span>
-                <a href="{{ submission.urls.user_base }}"
-                   class="btn btn-lg btn-info">
-                    {% translate "Go back" %}
-                </a>
-                <a href="{{ submission.urls.withdraw }}"
-                   class="btn btn-lg btn-danger">
-                    {% translate "Withdraw" %}
-                </a>
-            </span>
+            <div class="submit-group">
                 <span>
-                    <button type="submit"
-                            class="btn btn-lg btn-success">
-                        {% translate "Confirm" %}
-                    </button>
-                </span></div>
+                    <a href="{{ submission.urls.user_base }}" class="btn btn-lg btn-info">{{ phrases.base.back_button }}</a>
+                    <a href="{{ submission.urls.withdraw }}" class="btn btn-lg btn-danger">{% translate "Withdraw" %}</a>
+                </span>
+                <span>
+                    <button type="submit" class="btn btn-lg btn-success">{% translate "Confirm" %}</button>
+                </span>
+            </div>
         </form>
     </div>
-{% endblock %}
+{% endblock content %}

@@ -1,13 +1,15 @@
 import datetime as dt
 import json
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ElementTree
 from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
 
 import vobject
+from django.conf import settings
 from django.template.loader import get_template
 from django.utils.functional import cached_property
 from django.utils.safestring import SafeString
+from django.utils.translation import gettext_lazy as _
 from i18nfield.utils import I18nJSONEncoder
 
 from pretalx import __version__
@@ -133,14 +135,14 @@ class FrabXmlExporter(ScheduleData):
         }
         content = get_template("agenda/schedule.xml").render(context=context)
         if self.favs_retrieve:
-            root = ET.fromstring(content)
+            root = ElementTree.fromstring(content)
             for day in root.findall("day"):
                 for room in day.findall("room"):
                     for event in room.findall("event"):
                         event_slug = event.find("url").text.split("/")[-2]
                         if event_slug not in self.talk_ids:
                             room.remove(event)
-            filtered_xml_data = ET.tostring(root, encoding="unicode")
+            filtered_xml_data = ElementTree.tostring(root, encoding="unicode")
             content = SafeString(filtered_xml_data)
         return f"{self.event.slug}-schedule.xml", "text/xml", content
 
@@ -165,13 +167,13 @@ class FrabXCalExporter(ScheduleData):
         context = {"data": self.data, "url": url, "domain": urlparse(url).netloc}
         content = get_template("agenda/schedule.xcal").render(context=context)
         if self.favs_retrieve:
-            root = ET.fromstring(content)
+            root = ElementTree.fromstring(content)
             for vcalendar in root.findall("vcalendar"):
                 for vevent in vcalendar.findall("vevent"):
                     event_uid = vevent.find("uid").text.split("@@")[0]
                     if event_uid not in self.talk_ids:
                         vcalendar.remove(vevent)
-            filtered_xcal_data = ET.tostring(root, encoding="unicode")
+            filtered_xcal_data = ElementTree.tostring(root, encoding="unicode")
             content = SafeString(filtered_xcal_data)
         return f"{self.event.slug}.xcal", "text/xml", content
 
@@ -347,7 +349,7 @@ class MyFrabJsonExporter(FrabJsonExporter):
 
 class ICalExporter(BaseExporter):
     identifier = "schedule.ics"
-    verbose_name = "iCal"
+    verbose_name = _("iCal (full event)")
     public = False
     show_qrcode = True
     favs_retrieve = False
@@ -383,3 +385,38 @@ class MyICalExporter(ICalExporter):
     identifier = "schedule-my.ics"
     verbose_name = "My ⭐ Sessions iCal"
     favs_retrieve = True
+
+
+class FavedICalExporter(BaseExporter):
+    identifier = "faved.ics"
+    verbose_name = _("iCal (your starred sessions)")
+    public = False
+    show_qrcode = False
+    icon = "fa-calendar"
+    cors = "*"
+
+    def is_public(self, request, **kwargs):
+        return (
+            "agenda" in request.resolver_match.namespaces
+            and request.user.is_authenticated
+            and request.user.has_perm("agenda.view_schedule", request.event)
+        )
+
+    def render(self, request, **kwargs):
+        if not request.user.is_authenticated:
+            return None
+
+        netloc = urlparse(settings.SITE_URL).netloc
+        submissions = request.event.submissions.filter(
+            favourites__user__in=[request.user]
+        ).prefetch_related("speakers", "slots", "slots__room")
+
+        cal = vobject.iCalendar()
+        cal.add("prodid").value = f"-//pretalx//{netloc}//{request.event.slug}//faved"
+
+        for submission in submissions:
+            for slot in submission.slots.filter(
+                schedule=request.event.current_schedule
+            ):
+                slot.build_ical(cal)
+        return f"{self.event.slug}-favs.ics", "text/calendar", cal.serialize()

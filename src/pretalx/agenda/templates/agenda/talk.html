@@ -1,22 +1,27 @@
 {% extends "agenda/base.html" %}
+
 {% load compress %}
 {% load static %}
 {% load html_signal %}
 {% load i18n %}
 {% load rich_text %}
+{% load phrases %}
 
-{% block title %}{{ submission.title }} ::{% endblock %}
-{% block meta_title %}{{ submission.title }}{% endblock %}
-{% block social_title %}{{ submission.title }}{% endblock %}
-{% block meta_description %}{{ submission_description }}{% endblock %}
-{% block social_description %}{{ submission_description }}{% endblock %}
-{% block meta_image %}<meta property="thumbnail" content="{{ submission.urls.social_image.full }}">
-    <meta property="og:image" content="{{ submission.urls.social_image.full }}">{% endblock %}
+{% block title %}{{ submission.title }} ::{% endblock title %}
+{% block meta_title %}{{ submission.title }}{% endblock meta_title %}
+{% block social_title %}{{ submission.title }}{% endblock social_title %}
+{% block meta_description %}{{ submission_description }}{% endblock meta_description %}
+{% block social_description %}{{ submission_description }}{% endblock social_description %}
+{% block meta_image %}
+    <meta property="thumbnail" content="{{ submission.urls.social_image.full }}">
+    <meta property="og:image" content="{{ submission.urls.social_image.full }}">
+{% endblock meta_image %}
 {% block alternate_link %}
     <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.talks.full }}{{ submission.code }}" />
-{% endblock %}
+{% endblock alternate_link %}
 
 {% block agenda_custom_header %}
+    <script id="pretalx-messages" data-logged-in="{% if request.user.is_anonymous %}false{% else %}true{% endif %}" src="{{ request.event.urls.schedule }}widget/messages.js"></script>
     {% compress js %}
         <script src="{% static "agenda/js/favourite.js" %}" async></script>
         <script src="{% static "common/js/lightbox.js" %}"></script>
@@ -24,7 +29,7 @@
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/lightbox.scss" %}">
     {% endcompress %}
-{% endblock %}
+{% endblock agenda_custom_header %}
 
 {% block agenda_content %}
     <article>
@@ -39,20 +44,18 @@
                     </button>
                 </span>
                 <div class="buttons" id="talk-buttons">
-                    {% if submission.state == 'confirmed' and request.event.current_schedule %}
+                    {% if submission.state == "confirmed" and request.event.current_schedule %}
                         <a class="btn btn-outline-primary" href="{{ submission.urls.ical }}">
                             <i class="fa fa-calendar"></i> .ical
                         </a>
                     {% endif %}
                     {% if submission.does_accept_feedback and request.event.feature_flags.use_feedback and not is_html_export %}
-                        <a href="{{ submission.urls.feedback }}"
-                           class="btn btn-success">
+                        <a href="{{ submission.urls.feedback }}" class="btn btn-success">
                             <i class="fa fa-comments"></i> {{ phrases.agenda.feedback }}
                         </a>
                     {% endif %}
                     {% if request.user in submission.speakers.all %}
-                        <a href="{{ submission.urls.user_base }}"
-                           class="btn btn-info">
+                        <a href="{{ submission.urls.user_base }}" class="btn btn-info">
                             <i class="fa fa-edit"></i> {{ phrases.base.edit }}
                         </a>
                     {% endif %}
@@ -60,11 +63,14 @@
             </div>
             <small>
                 {% if talk_slots|length == 1 %}
-                    {{ talk_slots.0.start|date:DAY_MONTH_DATE_FORMAT }}, {{ talk_slots.0.start|date:"TIME_FORMAT" }}–{{ talk_slots.0.end|date:"TIME_FORMAT" }} ({{ request.event.timezone }}), {{ talk_slots.0.room.name }} {% if talk_slots.0.room.description %}<i class="fa fa-question-circle" data-toggle="tooltip" title="{{ talk_slots.0.room.description }}"></i>{% endif %}
+                    {{ talk_slots.0.start|date:DAY_MONTH_DATE_FORMAT }}, {{ talk_slots.0.start|date:"TIME_FORMAT" }}–{{ talk_slots.0.end|date:"TIME_FORMAT" }} ({{ request.event.timezone }}), {{ talk_slots.0.room.name }}
+                    {% if talk_slots.0.room.description %}
+                        <i class="fa fa-question-circle" data-toggle="tooltip" title="{{ talk_slots.0.room.description }}"></i>
+                    {% endif %}
                 {% endif %}
                 {% if request.event.is_multilingual and request.event.cfp.request_content_locale %}
                     <div class="speakers">
-                        <strong>{% translate "Language" %}:</strong> {{ submission.get_content_locale_display }}
+                        <strong>{{ phrases.base.language }}:</strong> {{ submission.get_content_locale_display }}
                     </div>
                 {% endif %}
                 {% if submission.do_not_record %}
@@ -78,13 +84,14 @@
         </h3>
         <div class="talk row">
             <div class="talk-content">
-                {% if recording_iframe %}
-                    {{ recording_iframe|safe }}
-                {% endif %}
+                {% if recording_iframe %}{{ recording_iframe|safe }}{% endif %}
                 {% if submission.image %}
                     <div class="talk-image">
-                        <a href="{{ submission.image.url }}" data-lightbox="{{ submission.image.url }}">
-                            <img loading="lazy" src="{{ submission.image.url }}" alt="{% translate "This session’s header image" %}">
+                        <a href="{{ submission.image.url }}"
+                           data-lightbox="{{ submission.image.url }}">
+                            <img loading="lazy"
+                                 src="{{ submission.image.url }}"
+                                 alt="{% translate "This session’s header image" %}">
                         </a>
                     </div>
                 {% endif %}
@@ -92,18 +99,21 @@
                     <ul class="talk-slots">
                         {% for talk in talk_slots %}
                             <li class="talk-slot">
-                                {{ talk.start|date:DAY_MONTH_DATE_FORMAT }}, {{ talk.start|date:"TIME_FORMAT" }}–{{ talk.end|date:"TIME_FORMAT" }}, {{ talk.room.name }} {% if room.description %}<i class="fa fa-question-circle" data-toggle="tooltip" title="{{ room.description }}"></i>{% endif %}
+                                {{ talk.start|date:DAY_MONTH_DATE_FORMAT }}, {{ talk.start|date:"TIME_FORMAT" }}–{{ talk.end|date:"TIME_FORMAT" }}, {{ talk.room.name }}
+                                {% if room.description %}
+                                    <i class="fa fa-question-circle" data-toggle="tooltip" title="{{ room.description }}"></i>
+                                {% endif %}
                             </li>
                         {% endfor %}
                     </ul>
-                    <p><i>{% blocktranslate trimmed with tz=request.event.timezone %}All times in {{ tz }}{% endblocktranslate %}</i></p>
+                    <p>
+                        <i>{% phrase "phrases.schedule.timezone_hint" tz=request.event.timezone %}</i>
+                    </p>
                 {% endif %}
                 <section class="abstract">
                     {{ submission.abstract|rich_text }}
                 </section>
-                {% if submission.abstract and submission.description %}
-                    <hr />
-                {% endif %}
+                {% if submission.abstract and submission.description %}<hr />{% endif %}
                 <section class="description">
                     {{ submission.description|rich_text }}
                 </section>
@@ -147,9 +157,9 @@
                     <a href="{{ speaker.talk_profile.urls.public }}">
                         <div class="avatar-wrapper">
                             {% if speaker.avatar_url and request.event.cfp.request_avatar %}
-                                <img loading="lazy" src="{{ speaker.avatar_url }}">
+                                <img loading="lazy" src="{{ speaker.avatar_url }}" alt="The speaker’s profile picture">
                             {% else %}
-                                <img loading="lazy" src="{{ request.event.urls.speakers }}avatar.svg">
+                                <img loading="lazy" src="{{ request.event.urls.speakers }}avatar.svg" alt="The speaker’s profile picture">
                             {% endif %}
                         </div>
                     </a>
@@ -158,7 +168,7 @@
                     <div class="title">
                         <a href="{{ speaker.talk_profile.urls.public }}">{{ speaker.get_display_name }}</a>
                     </div>
-                    <div class="abstract">{{ speaker.talk_profile.biography|default:''|rich_text }}</div>
+                    <div class="abstract">{{ speaker.talk_profile.biography|default:""|rich_text }}</div>
                     {% if speaker.other_submissions %}
                         {% translate "This speaker also appears in:" %}
                         <ul>
@@ -174,4 +184,4 @@
         {% endfor %}
     {% endif %}
     </article>
-{% endblock %}
+{% endblock agenda_content %}

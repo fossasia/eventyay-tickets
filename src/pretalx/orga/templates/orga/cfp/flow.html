@@ -1,4 +1,5 @@
-{% extends "orga/cfp/base.html" %}
+{% extends "orga/base.html" %}
+
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -16,9 +17,11 @@
     <script defer src="{% static "vendored/marked.min.js" %}"></script> {# do not compress #}
     <script defer src="{% static "vendored/purify.min.js" %}"></script>
     <script defer src="{% static "orga/js/cfp_flow.js" %}"></script>
-{% endblock %}
+{% endblock scripts %}
 
-{% block cfp_content %}
+{% block extra_title %}{% translate "CfP Editor" %} :: {% endblock extra_title %}
+
+{% block content %}
     <h1>{% translate "CfP Editor" %}</h1>
     <p>
         {% blocktranslate trimmed %}
@@ -28,6 +31,5 @@
             item you want to change!
         {% endblocktranslate %}
     </p>
-    <div id="flow">
-    </div>
-{% endblock %}
+    <div id="flow"></div>
+{% endblock content %}

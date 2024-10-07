@@ -12,8 +12,8 @@ from django.test import Client, override_settings
 from django.utils.timezone import override as override_timezone
 from django_scopes import scope, scopes_disabled
 
+from pretalx.common.models.transaction import rolledback_transaction
 from pretalx.common.signals import register_data_exporters
-from pretalx.common.utils import rolledback_transaction
 from pretalx.event.models import Event
 
 
@@ -71,7 +71,11 @@ def event_speaker_urls(event):
 
 def event_exporter_urls(event):
     for _, exporter in register_data_exporters.send(event):
-        if exporter.public:
+        # Skip exporters that are not public, and also skip exporters
+        # that dynamically determine if they are public, as we won't
+        # be able to serve dynamic content, and the risk of data leakage
+        # is too high.
+        if not hasattr(exporter, "is_public") and exporter.public:
             yield exporter(event).urls.base
 
 
@@ -85,6 +89,7 @@ def schedule_version_urls(event):
 def event_urls(event):
     yield event.urls.base
     yield event.urls.schedule
+    yield event.urls.schedule + "widget/messages.js"
     yield event.urls.schedule_nojs
     yield event.urls.schedule_widget_data
     yield from schedule_version_urls(event)
@@ -109,22 +114,29 @@ def get_content(response):
 
 
 def dump_content(destination, path, getter):
+    destination = Path(destination)
     logging.debug(path)
-    content = getter(path)
-    if path.endswith("/"):
-        path += "index.html"
 
-    path = (Path(destination) / path.lstrip("/")).resolve()
-    if Path(destination) not in path.parents:
+    # We need to urldecode the file path, as otherwise we will end up with a file name
+    # that won't be found when the export is served by a web server.
+    file_path = urllib.parse.unquote(path)
+    if file_path.endswith("/"):
+        file_path += "index.html"
+    file_path = (destination / file_path.lstrip("/")).resolve()
+    if destination not in file_path.parents:
         raise CommandError("Path traversal detected, aborting.")
-    path.parent.mkdir(parents=True, exist_ok=True)
+    file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(path, "wb") as output_file:
+    content = getter(path)
+
+    with open(file_path, "wb") as output_file:
         output_file.write(content)
     return content
 
 
 def get_mediastatic_content(url):
+    # We have to unquote the URL to successfully find the file on disk
+    url = urllib.parse.unquote(url)
     if url.startswith(settings.STATIC_URL):
         local_path = settings.STATIC_ROOT / url[len(settings.STATIC_URL) :]
     elif url.startswith(settings.MEDIA_URL):

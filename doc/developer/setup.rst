@@ -17,7 +17,7 @@ Please make sure you have the following dependencies installed:
 +----------------------------------+------------------+
 | Tool                             | Debian package   |
 +==================================+==================+
-| Python 3.9(!) or newer           |                  |
+| Python 3.10(!) or newer          |                  |
 +----------------------------------+------------------+
 | pip for Python 3                 | ``python3-pip``  |
 +----------------------------------+------------------+
@@ -39,7 +39,7 @@ Some Python dependencies might also need a compiler during installation, the Deb
 Local Python environment
 ------------------------
 
-Please execute ``python -V`` or ``python3 -V`` to make sure you have Python 3.9
+Please execute ``python -V`` or ``python3 -V`` to make sure you have Python 3.10
 (or newer) installed. Also make sure you have pip for Python 3 installed, by
 running ``pip3 -V``. Then use Python’s internal tools to create a virtual
 environment and activate it for your current session::
@@ -54,7 +54,7 @@ do so automatically).
 If you are working on Ubuntu or Debian, we strongly recommend upgrading your pip and setuptools
 installation inside the virtual environment, otherwise some of the dependencies might fail::
 
-    sudo pip3 install -U pip setuptools wheel
+    (env)$ pip install -U pip setuptools wheel
 
 
 Get a copy of the source code
@@ -121,7 +121,7 @@ compile the JavaScript files::
     (env)$ python manage.py rebuild --npm-install
 
 If you want to change the JavaScript code, you can run the following command, which combines
-the Python and the JavaScript dev servers::
+the Python and the JavaScript development servers::
 
     (env)$ python manage.py devserver
 

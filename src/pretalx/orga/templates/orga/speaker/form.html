@@ -1,11 +1,25 @@
-{% extends "orga/cfp/base.html" %}
+{% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load rules %}
 {% load static %}
 
-{% block title %}{{ form.instance.user.get_display_name }} :: {{ request.event.name }}{% endblock %}
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "common/scss/lightbox.scss" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "common/js/lightbox.js" %}"></script>
+    {% endcompress %}
+{% endblock scripts %}
+
+{% block extra_title %}{{ form.instance.user.get_display_name }} :: {% endblock extra_title %}
+
 {% block content %}
     {% if form.biography %}
         <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
@@ -13,17 +27,18 @@
     {% endif %}
     {% block alternate_link %}
         <link rel="alternate" type="application/json" title="{{ request.event.name }} API" href="{{ request.event.api_urls.speakers.full }}{{ form.instance.code }}" />
-    {% endblock %}
+    {% endblock alternate_link %}
 
-    {% has_perm 'orga.change_speaker' request.user form.instance as can_edit_speaker %}
-    {% has_perm 'orga.send_mails' request.user request.event as can_send_mails %}
+    {% has_perm "orga.change_speaker" request.user form.instance as can_edit_speaker %}
+    {% has_perm "orga.send_mails" request.user request.event as can_send_mails %}
     <h2 class="d-flex justify-content-space-between">
         {{ form.instance.user.get_display_name }} ({{ submissions.count }}
-        {% blocktranslate trimmed count count=submissions.count %}
+        {% blocktranslate asvar proposal_title trimmed count count=submissions.count %}
             proposal
         {% plural %}
             proposals
-        {% endblocktranslate %})
+        {% endblocktranslate %}
+        {{ proposal_title }})
         {% if can_send_mails %}
             <a class="btn btn-outline-info ml-auto mb-1" href="{{ request.event.orga_urls.compose_mails_sessions }}?speakers={{ form.instance.user.code }}">
                 <i class="fa fa-envelope"></i>
@@ -34,18 +49,14 @@
     <div class="alert alert-info col-md-9 flip offset-md-3">
         <span>
             <h5>
-                {% blocktranslate trimmed count count=submissions.count %}
-                    Proposal
-                {% plural %}
-                    Proposals
-                {% endblocktranslate %})
+                {{ proposal_title|capfirst }}
             </h5>
             <ul>
                 {% for submission in submissions %}
                     <li>
                         <a href="{{ submission.orga_urls.base }}">
                             {{ submission.title }}
-                            ({% include "cfp/event/fragment_state.html" with state=submission.state %}{% if submission.pending_state %}, {% translate "pending" %}{% include "cfp/event/fragment_state.html"  with state=submission.pending_state %}{% endif %})
+                            ({% include "cfp/event/fragment_state.html" with state=submission.state %}{% if submission.pending_state %}, {% translate "pending" %}{% include "cfp/event/fragment_state.html" with state=submission.pending_state %}{% endif %})
                         </a>
                     </li>
                 {% endfor %}
@@ -57,45 +68,42 @@
         {% bootstrap_form_errors form %}
 
         {% if form.avatar %}
+
             {% include "common/avatar.html" with user=form.instance.user form=form %}
+
         {% endif %}
-        {% if form.avatar_source %}{% bootstrap_field form.avatar_source layout='event' %}{% endif %}
-        {% if form.avatar_license %}{% bootstrap_field form.avatar_license layout='event' %}{% endif %}
-        {% bootstrap_field form.name layout='event' %}
-        {% bootstrap_field form.email layout='event' %}
+        {% bootstrap_field form.name layout="event" %}
+        {% bootstrap_field form.email layout="event" %}
         <div class="d-flex mb-4">
-            <a href="{{ form.instance.orga_urls.password_reset }}" class="btn btn-info flip flip ml-auto">{% translate "Reset password" %}</a>
+            <a href="{{ form.instance.orga_urls.password_reset }}" class="btn btn-info flip flip ml-auto">{{ phrases.base.password_reset_heading }}</a>
         </div>
-        {% if form.biography %}{% bootstrap_field form.biography layout='event' %}{% endif %}
+        {% if form.biography %}
+            {% bootstrap_field form.biography layout="event" %}
+        {% endif %}
         {% if form.availabilities %}
             {% compress js %}
                 <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
                 <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
             {% endcompress %}
+
             {% include "common/availabilities.html" %}
-            {% bootstrap_field form.availabilities layout='event' %}
+
+            {% bootstrap_field form.availabilities layout="event" %}
         {% endif %}
-        {% bootstrap_form questions_form layout='event' %}
-        <div class="submit-group panel">
-            <span>
-            </span>
-            <span>
-                <button type="submit" class="btn btn-success btn-lg">
-                    <i class="fa fa-check"></i>
-                    {% translate "Save" %}
-                </button>
-            </span>
-        </div>
+        {% bootstrap_form questions_form layout="event" %}
+
+        {% include "orga/includes/submit_row.html" %}
+
     </form>
 
-
-    <h3>{% translate 'Emails' %}</h3>
+    <h3>{% translate "Emails" %}</h3>
     {% if mails %}
-        {% include 'common/mail_log.html' %}
+
+        {% include "common/mail_log.html" %}
+
     {% else %}
         {% translate "No mails were sent to this speaker yet." %}
     {% endif %}
 
-
     <script defer src="{% static "cfp/js/profile.js" %}"></script>
-{% endblock %}
+{% endblock content %}

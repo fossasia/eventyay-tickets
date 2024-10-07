@@ -1,7 +1,8 @@
 {% extends "orga/base.html" %}
+
 {% load i18n %}
 
-{% block title %}{% translate "Plugins" %}{% endblock %}
+{% block extra_title %}{% translate "Plugins" %} :: {% endblock extra_title %}
 {% block content %}
     <h2>{% translate "Plugins" %}</h2>
 
@@ -33,13 +34,17 @@
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item">
                                             {% if plugin.author %}
-                                                <p class="meta">{% blocktranslate trimmed with v=plugin.version a=plugin.author %}
-                                                    Version {{ v }} by <em>{{ a }}</em>
-                                                {% endblocktranslate %}</p>
+                                                <p class="meta">
+                                                    {% blocktranslate trimmed with v=plugin.version a=plugin.author %}
+                                                        Version {{ v }} by <em>{{ a }}</em>
+                                                    {% endblocktranslate %}
+                                                </p>
                                             {% else %}
-                                                <p class="meta">{% blocktranslate trimmed with v=plugin.version a=plugin.author %}
-                                                    Version {{ v }}
-                                                {% endblocktranslate %}</p>
+                                                <p class="meta">
+                                                    {% blocktranslate trimmed with v=plugin.version a=plugin.author %}
+                                                        Version {{ v }}
+                                                    {% endblocktranslate %}
+                                                </p>
                                             {% endif %}
                                             {{ plugin.description }}
                                         </li>
@@ -49,10 +54,11 @@
                         </div>
                     </div>
                 {% endfor %}
-            </form>
+            </div>
+        </form>
     {% else %}
         <div class="alert alert-info">
             {% translate "This instance does currently not have any plugins installed." %}
         </div>
     {% endif %}
-{% endblock %}
+{% endblock content %}

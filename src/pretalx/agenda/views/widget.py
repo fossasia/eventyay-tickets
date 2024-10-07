@@ -1,27 +1,33 @@
 import datetime as dt
+import hashlib
 from urllib.parse import unquote
 
 from csp.decorators import csp_exempt
-from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.http import Http404, HttpResponse, JsonResponse
 from django.utils.timezone import now
-from django.views.decorators.cache import cache_page
 from django.views.decorators.http import condition
 from i18nfield.utils import I18nJSONEncoder
 
+from pretalx.agenda.permissions import is_agenda_visible, is_widget_always_visible
 from pretalx.agenda.views.schedule import ScheduleView
-from pretalx.common.utils import language
+from pretalx.common.language import language
 from pretalx.common.views import conditional_cache_page
 from pretalx.schedule.exporters import ScheduleData
 
+WIDGET_JS_CHECKSUM = None
+WIDGET_PATH = "agenda/js/pretalx-schedule.min.js"
+
 
 def widget_js_etag(request, event, **kwargs):
-    return request.event.settings.widget_checksum
-
-
-def widget_data_etag(request, **kwargs):
-    return request.event.settings.widget_data_checksum
+    # The widget is stable across all events, we just return a checksum of the JS file
+    # to make sure clients reload the widget when it changes.
+    global WIDGET_JS_CHECKSUM
+    if not WIDGET_JS_CHECKSUM:
+        file_path = finders.find(WIDGET_PATH)
+        with open(file_path, encoding="utf-8") as fp:
+            WIDGET_JS_CHECKSUM = hashlib.md5(fp.read().encode()).hexdigest()
+    return WIDGET_JS_CHECKSUM
 
 
 class WidgetData(ScheduleView):
@@ -129,40 +135,51 @@ class WidgetData(ScheduleView):
             return response
 
 
-def cache_control(request, event, version=None):
-    """We don't want cache headers on unversioned and WIP schedule sites.
-
-    This differs from where we actually cache: We cache unversioned
-    sites, but we don't want clients to know about it, to make sure
-    they'll get the most recent content upon cache invalidation.
-    """
-    if version:
-        return version != "wip"
-    return False
-
-
-def cache_version(request, event, version=None):
-    """We want to cache all pages except for the WIP schedule site.
-
-    Note that unversioned pages will be cached, but no cache headers
-    will be sent to make sure users will always see the most recent
-    changes.
-    """
-    return not (version and version == "wip")
+def is_public_and_versioned(request, event, version=None):
+    if version and version == "wip":
+        # We never cache the wip schedule
+        return False
+    if not (
+        is_widget_always_visible(None, request.event)
+        or is_agenda_visible(None, request.event)
+    ):
+        # This will be either a 404, or a page only accessible to the user
+        # due to their logged-in status, so we don't want to cache it.
+        return False
+    return True
 
 
 def version_prefix(request, event, version=None):
     """On non-versioned pages, we want cache-invalidation on schedule
     release."""
     if not version and request.event.current_schedule:
-        return request.event.current_schedule.published.isoformat()
+        return request.event.current_schedule.version
+    return version
 
 
 @conditional_cache_page(
-    60, cache_version, cache_control=cache_control, key_prefix=version_prefix
+    60,
+    key_prefix=version_prefix,
+    condition=is_public_and_versioned,
+    server_timeout=5 * 60,
 )
 @csp_exempt
 def widget_data(request, event, version=None):
+    # Caching this page is tricky: We need the user to occasionally
+    # ask for new data, and we definitely need to give them new data on schedule
+    # release. This is because some information can change at any time, not just
+    # in a new schedule version (like talk titles, speaker info etc).
+    # So we:
+    #  - tell the user a relatively short cache time that is safe to completely
+    #    ignore new data for (1 minute)
+    #  - simultaneously build a server-side cache that is invalidated on schedule
+    #    release (by using the schedule version as key prefix), and that we keep
+    #    around for a longer time (5 minutes), and that will be used for all users
+    #  - also save a checksum of this server-side cache, and hand it to the client
+    #    as an eTag, so they can ask for new data without it being too expensive
+    #    on the server side
+    # All this can ONLY take place if the schedule *has* a version (never caching
+    # the WIP schedule page), and if anonymous users can see the schedule.
     event = request.event
     if request.method == "OPTIONS":
         response = JsonResponse({})
@@ -193,17 +210,17 @@ def widget_data(request, event, version=None):
 
 
 @condition(etag_func=widget_js_etag)
-@cache_page(60)
 @csp_exempt
 def widget_script(request, event):
+    # This page basically just serves a static file under a known path (ideally, the
+    # administrators could and should even turn on gzip compression for the
+    # /<event>/widget/schedule.js path, as it cuts down the transferred data
+    # by about 80% for the schedule.js file, which is the largest file on the
+    # main schedule page).
     if not request.user.has_perm("agenda.view_widget", request.event):
         raise Http404()
 
-    if settings.DEBUG:
-        widget_file = "agenda/js/pretalx-schedule.js"
-    else:
-        widget_file = "agenda/js/pretalx-schedule.min.js"
-    file_path = finders.find(widget_file)
+    file_path = finders.find(WIDGET_PATH)
     with open(file_path, encoding="utf-8") as fp:
         code = fp.read()
     data = code.encode()

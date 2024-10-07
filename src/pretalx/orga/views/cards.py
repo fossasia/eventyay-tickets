@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils.html import conditional_escape
 from django.utils.timezone import now
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import View
 from reportlab.graphics import renderPDF
 from reportlab.graphics.barcode import qr
@@ -20,7 +20,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import BaseDocTemplate, Flowable, Frame, PageTemplate, Paragraph
 
-from pretalx.common.mixins.views import EventPermissionRequired
+from pretalx.common.views.mixins import EventPermissionRequired
 from pretalx.submission.models import SubmissionStates
 
 reportlab.rl_config.TTFSearchPath.append(finders.find("fonts"))

@@ -12,16 +12,16 @@ from django_context_decorator import context
 from django_scopes import scopes_disabled
 
 from pretalx.celery_app import app
-from pretalx.common.mixins.views import ActionConfirmMixin, PermissionRequired
 from pretalx.common.models.settings import GlobalSettings
 from pretalx.common.text.phrases import phrases
 from pretalx.common.update_check import check_result_table, update_check
+from pretalx.common.views.mixins import ActionConfirmMixin, PermissionRequired
 from pretalx.orga.forms.admin import UpdateSettingsForm
 from pretalx.person.models import User
 
 
 class AdminDashboard(PermissionRequired, TemplateView):
-    template_name = "orga/admin.html"
+    template_name = "orga/admin/admin.html"
     permission_required = "person.is_administrator"
 
     def get_context_data(self, **kwargs):
@@ -51,7 +51,7 @@ class AdminDashboard(PermissionRequired, TemplateView):
 
 
 class UpdateCheckView(PermissionRequired, FormView):
-    template_name = "orga/update.html"
+    template_name = "orga/admin/update.html"
     permission_required = "person.is_administrator"
     form_class = UpdateSettingsForm
 
@@ -63,7 +63,7 @@ class UpdateCheckView(PermissionRequired, FormView):
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, _("Your changes have been saved."))
+        messages.success(self.request, phrases.base.saved)
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -121,10 +121,6 @@ class AdminUserList(PermissionRequired, ListView):
         if action == "reset":
             user.reset_password(event=None)
             messages.success(request, phrases.base.password_reset_success)
-        elif action == "delete":
-            return redirect(
-                reverse("orga:admin.user.delete", kwargs={"code": user.code})
-            )
         return super().get(request, *args, **kwargs)
 
 
@@ -172,7 +168,7 @@ class AdminUserDelete(ActionConfirmMixin, AdminUserDetail):
 
     @property
     def action_back_url(self):
-        return f"/orga/admin/users/{self.get_object().code}/"
+        return reverse("orga:admin.user.view", kwargs={"code": self.get_object().code})
 
     def dispatch(self, *args, **kwargs):
         with scopes_disabled():

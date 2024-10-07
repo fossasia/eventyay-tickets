@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block title %}{% translate "Invitation" %} :: {{ invitation.team.name }}{% endblock %}
+{% block extra_title %}{% translate "Invitation" %} :: {{ invitation.team.name }} :: {% endblock extra_title %}
 {% block content %}
     <h2 class="col-sm-6 ml-auto mr-auto">
         {% blocktranslate with organiser=invitation.team.organiser.name name=invitation.team.name trimmed %}
@@ -24,7 +24,9 @@
             </p>
         </div>
         <hr>
+
         {% include "common/auth.html" %}
+
     {% else %}
         <form method="post" class="col-sm-6 ml-auto mr-auto">
             {% csrf_token %}
@@ -46,4 +48,4 @@
         </form>
     {% endif %}
 
-{% endblock %}
+{% endblock content %}

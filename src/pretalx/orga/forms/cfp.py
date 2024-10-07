@@ -9,7 +9,8 @@ from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceFie
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 from i18nfield.strings import LazyI18nString
 
-from pretalx.common.mixins.forms import I18nHelpText, JsonSubfieldMixin, ReadOnlyFlag
+from pretalx.common.forms.mixins import I18nHelpText, JsonSubfieldMixin, ReadOnlyFlag
+from pretalx.common.text.phrases import phrases
 from pretalx.submission.models import (
     AnswerOption,
     Question,
@@ -423,8 +424,8 @@ class SubmitterAccessCodeForm(forms.ModelForm):
 
 class AccessCodeSendForm(forms.Form):
     to = forms.EmailField(label=_("To"))
-    subject = forms.CharField(label=_("Subject"))
-    text = forms.CharField(widget=forms.Textarea(), label=_("Text"))
+    subject = forms.CharField(label=phrases.base.email_subject)
+    text = forms.CharField(widget=forms.Textarea(), label=phrases.base.text_body)
 
     def __init__(self, *args, instance, user, **kwargs):
         self.access_code = instance
@@ -498,7 +499,7 @@ I’m looking forward to your proposal!
 class QuestionFilterForm(forms.Form):
     role = forms.ChoiceField(
         choices=(
-            ("", _("all")),
+            ("", phrases.base.all_choices),
             ("accepted", _("Accepted or confirmed speakers")),
             ("confirmed", _("Confirmed speakers")),
         ),
@@ -572,7 +573,7 @@ class ReminderFilterForm(QuestionFilterForm):
         Question.objects.none(),
         required=False,
         help_text=_("If you select no question, all questions will be used."),
-        label=_("Questions"),
+        label=phrases.cfp.questions,
     )
 
     def get_question_queryset(self):

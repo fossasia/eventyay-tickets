@@ -44,6 +44,8 @@ jobs:
           cache: "pip"
       - name: Install Dependencies
         run: python -m pip install -Ue ".[dev]"
+      - name: Setup flake8 annotations
+        uses: rbialon/flake8-annotations@v1
       - name: Run flake8
         run: flake8 .
         working-directory: ./src
@@ -56,11 +58,11 @@ jobs:
         with:
           python-version-file: ".github/workflows/python-version.txt"
           cache: "pip"
-      - name: Install Dependencies
-        run: python -m pip install -Ue ".[dev]"
-      - name: Run black
-        run: black --check .
-        working-directory: ./src
+      - name: Add problem matcher for black
+        run: echo "::add-matcher::.github/workflows/matchers/black.json"
+      - uses: psf/black@stable
+        with:
+          src: "./src"
   html:
     name: HTML checks
     runs-on: ubuntu-latest

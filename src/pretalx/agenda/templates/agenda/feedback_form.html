@@ -1,4 +1,5 @@
 {% extends "agenda/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -10,9 +11,7 @@
     <script src="{% static "common/js/formTools.js" %}" defer></script>
 
     <h3 class="talk-title">
-        <a href="{{ talk.urls.public }}">
-            {{ quotation_open }}{{ talk.title }}{{ quotation_close }}
-        </a>
+        <a href="{{ talk.urls.public }}">{{ quotation_open }}{{ talk.title }}{{ quotation_close }}</a>
     </h3>
     <div class="talk row col-lg-12">
         <div class="talk-content">
@@ -30,18 +29,14 @@
                         {% bootstrap_form_errors form %}
                         {% csrf_token %}
                         {% if speakers|length > 1 %}
-                            {% bootstrap_field form.speaker layout='inline' %}
+                            {% bootstrap_field form.speaker layout="inline" %}
                         {% endif %}
-                        <div class="markdown-column">
-                            {% bootstrap_field form.review layout='inline' %}
-                        </div>
+                        <div class="markdown-column">{% bootstrap_field form.review layout="inline" %}</div>
 
-                        <button type="submit" class="btn btn-success float-right">
-                            {{ phrases.agenda.feedback_send }}
-                        </button>
+                        <button type="submit" class="btn btn-success float-right">{{ phrases.base.send }}</button>
                     </form>
                 {% endif %}
             </div>
         </div>
     </div>
-{% endblock %}
+{% endblock content %}

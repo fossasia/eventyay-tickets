@@ -1,15 +1,17 @@
 {% extends "rest_framework/base.html" %}
+
+{% load i18n %}
 {% load static %}
 
 {% block bootstrap_theme %}
-    <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap.min.css" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap-tweaks.css" %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static "api/css/api.css" %}"/>
-{% endblock %}
+    <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap.min.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "rest_framework/css/bootstrap-tweaks.css" %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "api/css/api.css" %}" />
+{% endblock bootstrap_theme %}
 
 {% block branding %}
-    <a class='navbar-brand' rel="nofollow" href='https://docs.pretalx.org/en/latest/api/index.html'>
-        <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}">
+    <a class="navbar-brand" rel="nofollow" href="https://docs.pretalx.org/en/latest/api/index.html">
+        <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}" alt="{% translate "The pretalx logo" %}">
         <span>pretalx API</span>
     </a>
-{% endblock %}
+{% endblock branding %}

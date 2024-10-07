@@ -1,18 +1,23 @@
 {% extends "orga/submission/base.html" %}
+
 {% load i18n %}
 {% load bootstrap4 %}
+
+{% block submission_title %}→ {{ target }} :: {% endblock submission_title %}
 
 {% block submission_content %}
     <form method="post">
         <div class="ml-auto mr-auto col-md-8">
             <h3>
+
                 {% include "cfp/event/fragment_state.html" with state=submission.state %}
+
                 <i class="fa fa-arrow-right"></i>
+
                 {% include "cfp/event/fragment_state.html" with state=target %}
+
             </h3>
-            <p>
-                {% translate "Please confirm that you really want to change the state of this proposal." %}
-            </p>
+            <p>{% translate "Please confirm that you really want to change the state of this proposal." %}</p>
 
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next }}">
@@ -24,11 +29,11 @@
                 class="btn btn-lg btn-outline-info"
                 href="{% if request.GET.next %}{{ request.GET.next }}{% else %}{{ submission.orga_urls.base }}{% endif %}"
             >
-                {% translate "Back" %}
+                {{ phrases.base.back_button }}
             </a>
             <button type="submit" class="btn btn-lg submission-state-{{ target }}">
                 {% translate "Do it" %}
             </button>
         </span></div>
     </form>
-{% endblock %}
+{% endblock submission_content %}

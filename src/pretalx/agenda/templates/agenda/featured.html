@@ -1,4 +1,5 @@
 {% extends "agenda/base.html" %}
+
 {% load compress %}
 {% load i18n %}
 {% load rich_text %}
@@ -10,7 +11,9 @@
             {{ request.event.featured_sessions_text|rich_text }}
         {% else %}
             {% if talks %}
-                <b>{% translate "Welcome to our list of featured sessions!" %}</b><br><br>
+                <b>{% translate "Welcome to our list of featured sessions!" %}</b>
+                <br>
+                <br>
                 {% blocktranslate trimmed %}
                     We prepared a list of exciting sessions, so you can get a feel for our
                     conference. Please keep in mind that this is not our full schedule.
@@ -35,13 +38,9 @@
                         <i>{{ talk.submission_type.name }}</i>
                     </small>
                 </h3>
-                <p>
-                    {{ talk.abstract|default:talk.description|default:""|rich_text }}
-                </p>
-                {% if not forloop.last %}
-                    <hr>
-                {% endif %}
+                <p>{{ talk.abstract|default:talk.description|default:""|rich_text }}</p>
+                {% if not forloop.last %}<hr>{% endif %}
             </section>
         {% endfor %}
     </article>
-{% endblock %}
+{% endblock agenda_content %}

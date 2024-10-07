@@ -1,16 +1,19 @@
 {% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% translate "User settings" %}{% endblock %}
+{% block extra_title %}{% translate "User settings" %} :: {% endblock extra_title %}
 {% block content %}
     <form method="post">
         {% csrf_token %}
         <fieldset class="m-2">
             <legend>{% translate "User settings" %}</legend>
-            {% bootstrap_form profile_form layout='event' %}
+            {% bootstrap_form profile_form layout="event" %}
+
             {% include "orga/includes/submit_row.html" with submit_name="form" submit_value="profile" %}
+
         </fieldset>
     </form>
     <form method="post" class="password-input-form">
@@ -18,9 +21,13 @@
         <fieldset class="m-2">
             <legend>{% translate "Login settings" %}</legend>
             {{ login_form.media }}
-            {% bootstrap_form login_form layout='event' %}
+            {% bootstrap_form login_form layout="event" %}
+
             {% include "orga/includes/submit_row.html" with submit_name="form" submit_value="login" %}
+
         </fieldset>
     </form>
+
     {% include "common/user_api_token.html" with orga="true" %}
-{% endblock %}
+
+{% endblock content %}

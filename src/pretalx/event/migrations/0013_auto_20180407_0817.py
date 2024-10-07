@@ -5,7 +5,7 @@ import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
 import i18nfield.fields
-import pretalx.common.mixins.models
+import pretalx.common.models.mixins
 import pretalx.event.models.organiser
 
 
@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
+            bases=(pretalx.common.models.mixins.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="Team",
@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=(pretalx.common.mixins.models.LogMixin, models.Model),
+            bases=(pretalx.common.models.mixins.LogMixin, models.Model),
         ),
         migrations.CreateModel(
             name="TeamInvite",

@@ -1,7 +1,7 @@
 {% extends "common/base.html" %}
 {% load i18n %}
 
-{% block title %}{% translate "Events" %}{% endblock %}
+{% block title %}{% translate "Events" %}{% endblock title %}
 
 {% block content %}
     {% if current_events or future_events or past_events %}
@@ -10,10 +10,12 @@
     {% if current_events %}
         <ul>
             {% for event in current_events %}
-                <li><a href="{{ event.urls.base }}">
-                    {{ event.name }}
-                    ({{ event.get_date_range_display }})
-                </a></li>
+                <li>
+                    <a href="{{ event.urls.base }}">
+                        {{ event.name }}
+                        ({{ event.get_date_range_display }})
+                    </a>
+                </li>
             {% endfor %}
         </ul>
     {% else %}
@@ -23,10 +25,12 @@
         <h2>{% translate "Upcoming events" %}</h2>
         <ul>
             {% for event in future_events %}
-                <li><a href="{{ event.urls.base }}">
-                    {{ event.name }}
-                    ({{ event.get_date_range_display }})
-                </a></li>
+                <li>
+                    <a href="{{ event.urls.base }}">
+                        {{ event.name }}
+                        ({{ event.get_date_range_display }})
+                    </a>
+                </li>
             {% endfor %}
         </ul>
     {% endif %}
@@ -34,11 +38,13 @@
         <h2>{% translate "Past events" %}</h2>
         <ul>
             {% for event in past_events %}
-                <li><a href="{{ event.urls.base }}">
-                    {{ event.name }}
-                    ({{ event.get_date_range_display }})
-                </a></li>
+                <li>
+                    <a href="{{ event.urls.base }}">
+                        {{ event.name }}
+                        ({{ event.get_date_range_display }})
+                    </a>
+                </li>
             {% endfor %}
         </ul>
     {% endif %}
-{% endblock %}
+{% endblock content %}

@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% if submission_title %}{{ submission_title }}{% else %}{% translate "Create proposal" %}{% endif %} :: {{ request.event.name }}{% endblock %}
+{% block title %}{% if submission_title %}{{ submission_title }}{% else %}{% translate "Create proposal" %}{% endif %} :: {{ request.event.name }}{% endblock title %}
 
 {% block cfp_header %}
     <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
@@ -12,8 +12,8 @@
         <script src="{% static "common/js/formTools.js" %}" defer></script>
         <script src="{% static "cfp/js/trackDescriptions.js" %}" defer></script>
     {% endcompress %}
-    {% block cfp_submission_header %}{% endblock %}
-{% endblock %}
+    {% block cfp_submission_header %}{% endblock cfp_submission_header %}
+{% endblock cfp_header %}
 
 {% block content %}
     <div id="submission-steps" class="stages">
@@ -22,13 +22,13 @@
                 <div class="step-icon">
                     <span class="fa {% if stp.is_before %}fa-check{% elif stp.icon %}fa-{{ stp.icon }}{% else %}fa-pencil{% endif %}"></span>
                 </div>
-                <div class="step-label">
-                    {{ stp.label }}
-                </div>
+                <div class="step-label">{{ stp.label }}</div>
             </a>
         {% endfor %}
         <div class="step step-tbd">
-            <div class="step-icon"><span class="fa fa-check"></span></div>
+            <div class="step-icon">
+                <span class="fa fa-check"></span>
+            </div>
             <div class="step-label">{% translate "Done!" %}</div>
         </div>
     </div>
@@ -36,8 +36,7 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ wizard.management_form }}
-            {% block inner %}
-            {% endblock %}
+            {% block inner %}{% endblock inner %}
             {% block buttons %}
                 <div class="row wizard-row">
                     <div class="col-md-3 flip ml-auto d-flex flex-column">
@@ -48,9 +47,9 @@
                         {% else %}
                             <button type="submit" class="btn btn-block btn-success btn-lg" name="action" value="submit">
                                 {% if next_url %}
-                                    {% translate "Continue" %} &raquo;
+                                    {% translate "Continue" %} »
                                 {% else %}
-                                    {% translate "Submit proposal!" %} &raquo;
+                                    {% translate "Submit proposal!" %} »
                                 {% endif %}
                             </button>
                             <button type="submit" class="btn btn-link text-center" name="action" value="draft">
@@ -62,12 +61,12 @@
                     <div class="col-md-3">
                         {% if prev_url %}
                             <a href="{{ prev_url }}" class="btn btn-block btn-info btn-lg">
-                                &laquo; {% translate "Back" %}
+                                « {{ phrases.base.back_button }}
                             </a>
                         {% endif %}
                     </div>
                 </div>
-            {% endblock %}
+            {% endblock buttons %}
         </form>
-    {% endblock %}
-{% endblock %}
+    {% endblock cfp_form %}
+{% endblock content %}

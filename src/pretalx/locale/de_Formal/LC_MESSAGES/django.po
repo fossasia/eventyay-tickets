@@ -4917,7 +4917,7 @@ msgstr "Deaktivieren"
 #: pretalx/orga/templates/orga/event/wizard/base.html:9
 #: pretalx/orga/templates/orga/event/wizard/basics.html:15
 msgid "New event"
-msgstr "Neue Veranstaltung erstellen"
+msgstr "Neue Veranstaltung"
 
 #: pretalx/orga/templates/orga/event/wizard/base.html:10
 #: pretalx/orga/templates/orga/event/wizard/basics.html:16

@@ -139,7 +139,7 @@ The database section
 - **Default:** ``sqlite3``
 
 +------------+----------------------+-----------------------+
-| Database   | Configuration string | pip packag  e         |
+| Database   | Configuration string | pip package           |
 +============+======================+=======================+
 | PostgresQL | ``postgresql``       | ``pretalx[postgres]`` |
 +------------+----------------------+-----------------------+

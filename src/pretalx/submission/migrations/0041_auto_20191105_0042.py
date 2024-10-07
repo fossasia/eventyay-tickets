@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import pretalx.common.mixins.models
+import pretalx.common.models.mixins
 
 
 class Migration(migrations.Migration):
@@ -71,8 +71,8 @@ class Migration(migrations.Migration):
                 "unique_together": {("event", "code")},
             },
             bases=(
-                pretalx.common.mixins.models.LogMixin,
-                pretalx.common.mixins.models.GenerateCode,
+                pretalx.common.models.mixins.LogMixin,
+                pretalx.common.models.mixins.GenerateCode,
                 models.Model,
             ),
         ),

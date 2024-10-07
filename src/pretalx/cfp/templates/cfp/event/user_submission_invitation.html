@@ -1,19 +1,14 @@
 {% extends "cfp/event/base.html" %}
+
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block title %}{% translate "Your proposal" %} :: {% endblock %}
+{% block title %}{{ submission.title }} :: {% endblock title %}
 
 {% block content %}
-    <h2>
-        <a href="{{ submission.urls.user_base }}">
-            {% translate "Your proposal:" %} {{ submission.title }}
-        </a>
-    </h2>
-    <p>
-        {% translate "Current state of your proposal:" %}
-        {% include "cfp/event/fragment_state.html" with state=submission.user_state %}
-    </p>
+
+    {% include "cfp/includes/user_submission_header.html" %}
+
     <div class="alert alert-info">
         {% blocktranslate trimmed %}
             Invite another speaker to your proposal here. Instead of letting us send an email,
@@ -24,16 +19,16 @@
     </div>
     <form method="post">
         {% csrf_token %}
-        {% bootstrap_form form layout='event' %}
+        {% bootstrap_form form layout="event" %}
         <div class="row">
             <div class="col-md-3 flip ml-auto url-links">
                 <a class="btn btn-block btn-info btn-lg" href="{{ submission.urls.user_base }}">
-                    {% translate "Cancel" %}
+                    {{ phrases.base.cancel }}
                 </a>
                 <button type="submit" class="btn btn-block btn-success btn-lg">
-                    {% translate "Send" %}
+                    {{ phrases.base.send }}
                 </button>
             </div>
         </div>
     </form>
-{% endblock %}
+{% endblock content %}

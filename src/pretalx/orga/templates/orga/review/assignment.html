@@ -1,8 +1,11 @@
 {% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
+
+{% block extra_title %}{% translate "Assign reviewers" %} :: {% endblock extra_title %}
 
 {% block content %}
     {% compress js %}
@@ -41,7 +44,9 @@
                     <tr>
                         <th class="col col-md-4">{% translate "Team" %}</th>
                         <th class="col col-md-3">{% translate "Members" %}</th>
-                        {% if request.event.feature_flags.use_tracks %}<th class="col col-md-3">{% translate "Limited to tracks" %}</th>{% endif %}
+                        {% if request.event.feature_flags.use_tracks %}
+                            <th class="col col-md-3">{% translate "Limited to tracks" %}</th>
+                        {% endif %}
                         <th></th>
                     </tr>
                 </thead>
@@ -59,7 +64,7 @@
                             <td>
                                 {% if team.members.count %}
                                     <details>
-                                        <summary> {{ team.members.count }} </summary>
+                                        <summary>{{ team.members.count }}</summary>
                                         <ul>
                                             {% for member in team.members.all %}
                                                 <li>{{ member.get_display_name }}</li>
@@ -79,69 +84,70 @@
                                     {% endfor %}
                                 </td>
                             {% endif %}
-                        </td>
-                        <td class="text-right">
-                            <a href="{{ team.orga_urls.base }}?next={{ request.path }}" class="btn btn-sm btn-info" title="{% translate "Edit" %}">
-                                <i class="fa fa-edit"></i>
-                            </a>
-                            <a href="{{ team.orga_urls.delete }}?next={{ request.path }}" class="btn btn-sm btn-danger" title="{% translate "Delete" %}">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </td>
+                            <td class="text-right">
+                                <a href="{{ team.orga_urls.base }}?next={{ request.path }}" class="btn btn-sm btn-info" title="{{ phrases.base.edit }}">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <a href="{{ team.orga_urls.delete }}?next={{ request.path }}" class="btn btn-sm btn-danger" title="{{ phrases.base.delete_button }}">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
-                </table>
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade show" id="individual" role="tabpanel" aria-labelledby="individual-tab">
+
+            <div class="alert alert-info"><p>
+                {% if request.event.active_review_phase.proposal_visibility == "assigned" %}
+                    {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
+                        Reviewers will be able to see and review <b>only their assigned</b> proposals.
+                        You can change this in your <a href="{{ href }}">review settings</a>.
+                    {% endblocktranslate %}
+                {% else %}
+                    {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
+                        Reviewers will be able to see and review <b>all proposals</b>,
+                        but their assigned reviews will appear highlighted, and they
+                        will be directed to them first. You can change this in your <a
+                            href="{{ href }}">review settings</a>.
+                    {% endblocktranslate %}
+                {% endif %}
+            </p></div>
+            <p>
+                {% blocktranslate trimmed %}
+                    This is where you can assign reviewers to specific proposals! Please use this drop-down to
+                    switch between the two assignment modes (assigning reviewers to proposals or proposals to reviewers).
+                {% endblocktranslate %}
+                {% blocktranslate trimmed %}
+                    You can also use the Actions menu above to import your assignments from a prepared file.
+                {% endblocktranslate %}
+            </p>
+            <div class="float-right">
+                <details class="dropdown">
+                    <summary class="btn btn-info" id="review-actions">
+                        {% translate "Actions" %} <i class="fa fa-caret-down"></i>
+                    </summary>
+
+                    <ul class="dropdown-content dropdown-front dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
+                        <li><a class="dropdown-item" href="{{ request.path }}import" target="_blank" rel="noopener">
+                            <i class="fa fa-link"></i> {% translate "Import assignments" %}
+                        </a></li>
+                    </ul>
+                </details>
             </div>
-            <div class="tab-pane fade show" id="individual" role="tabpanel" aria-labelledby="individual-tab">
-
-                <div class="alert alert-info"><p>
-                    {% if request.event.active_review_phase.proposal_visibility == "assigned" %}
-                        {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
-                            Reviewers will be able to see and review <b>only their assigned</b> proposals.
-                            You can change this in your <a href="{{ href }}">review settings</a>.
-                        {% endblocktranslate %}
-                    {% else %}
-                        {% blocktranslate trimmed with href=request.event.orga_urls.review_settings %}
-                            Reviewers will be able to see and review <b>all proposals</b>,
-                            but their assigned reviews will appear highlighted, and they
-                            will be directed to them first. You can change this in your <a
-                                href="{{ href }}">review settings</a>.
-                        {% endblocktranslate %}
-                    {% endif %}
-                </p></div>
-                <p>
-                    {% blocktranslate trimmed %}
-                        This is where you can assign reviewers to specific proposals! Please use this drop-down to
-                        switch between the two assignment modes (assigning reviewers to proposals or proposals to reviewers).
-                    {% endblocktranslate %}
-                    {% blocktranslate trimmed %}
-                        You can also use the Actions menu above to import your assignments from a prepared file.
-                    {% endblocktranslate %}
-                </p>
-                <div class="float-right">
-                    <details class="dropdown">
-                        <summary class="btn btn-info" id="review-actions">
-                            {% translate "Actions" %} <i class="fa fa-caret-down"></i>
-                        </summary>
-
-                        <ul class="dropdown-content dropdown-front dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-                            <li><a class="dropdown-item" href="{{ request.path }}import" target="_blank" rel="noopener">
-                                <i class="fa fa-link"></i> {% translate "Import assignments" %}
-                            </a></li>
-                        </ul>
-                    </details>
-                </div>
-                <div class="ml-auto mr-auto col-md-4">
-                    <form id="direction">
-                        {% bootstrap_form direction_form layout='inline' %}
-                    </form>
-                </div>
-                <form method="post" class="d-flex flex-column select2-textbox">
-                    {% csrf_token %}
-
-                    {% bootstrap_form form layout="event" %}
-                    {% include "orga/includes/submit_row.html" %}
+            <div class="ml-auto mr-auto col-md-4">
+                <form id="direction">
+                    {% bootstrap_form direction_form layout="inline" %}
                 </form>
             </div>
+            <form method="post" class="d-flex flex-column select2-textbox">
+                {% csrf_token %}
+
+                {% bootstrap_form form layout="event" %}
+                {% include "orga/includes/submit_row.html" %}
+            </form>
         </div>
-{% endblock %}
+    </div>
+{% endblock content %}
+

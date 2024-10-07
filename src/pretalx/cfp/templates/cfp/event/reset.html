@@ -1,17 +1,18 @@
 {% extends "cfp/event/base.html" %}
+
 {% load bootstrap4 %}
 {% load i18n %}
 
-{% block title %}{% translate "Password reset" %} :: {% endblock %}
+{% block title %}{{ phrases.base.password_reset_heading }}{% endblock title %}
 {% block content %}
     <div class="col-md-6 mx-auto">
-        <h2 class="text-center">{% translate "Forgot your password?" %}</h2>
+        <h2 class="text-center">{{ phrases.base.password_reset_question }}</h2>
         <p></p>
         <form method="post">
             {% csrf_token %}
             {% bootstrap_form_errors form %}
-            {% bootstrap_field form.login_email layout='inline' %}
-            <button type="submit" class="btn btn-block btn-success">{% translate "Let me set a new one!" %}</button>
+            {% bootstrap_field form.login_email layout="inline" %}
+            <button type="submit" class="btn btn-block btn-success">{{ phrases.base.password_reset_action }}</button>
         </form>
     </div>
-{% endblock %}
+{% endblock content %}

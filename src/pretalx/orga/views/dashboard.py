@@ -10,16 +10,17 @@ from django.views.generic import TemplateView
 from django_context_decorator import context
 from django_scopes import scopes_disabled
 
-from pretalx.common.mixins.views import EventPermissionRequired, PermissionRequired
 from pretalx.common.models.log import ActivityLog
+from pretalx.common.text.phrases import phrases
+from pretalx.common.views.mixins import EventPermissionRequired, PermissionRequired
 from pretalx.event.models import Event, Organiser
 from pretalx.event.stages import get_stages
 from pretalx.submission.models import Review, Submission, SubmissionStates
 
 
 def start_redirect_view(request):
-    orga_events = set(request.orga_events)
     with scopes_disabled():
+        orga_events = set(request.user.get_events_with_any_permission())
         speaker_events = set(
             Event.objects.filter(submissions__speakers__in=[request.user])
         )
@@ -40,18 +41,13 @@ class StartView(TemplateView):
 class DashboardEventListView(TemplateView):
     template_name = "orga/event_list.html"
 
-    def filter_event(self, event):
-        query = self.request.GET.get("q")
-        if not query:
-            return True
-        query = query.lower().strip()
-        name = {"en": event.name} if isinstance(event.name, str) else event.name.data
-        name = {"en": name} if isinstance(name, str) else name
-        return query in event.slug or any(query in value for value in name.values())
+    @property
+    def base_queryset(self):
+        return self.request.user.get_events_with_any_permission()
 
     @cached_property
     def queryset(self):
-        return self.request.orga_events.annotate(
+        qs = self.base_queryset.annotate(
             submission_count=Count(
                 "submissions",
                 filter=Q(
@@ -64,22 +60,25 @@ class DashboardEventListView(TemplateView):
                 ),
             )
         )
+        if search := self.request.GET.get("q"):
+            qs = qs.filter(Q(name__icontains=search) | Q(slug__icontains=search))
+        return qs
 
     @context
     def current_orga_events(self):
-        return [
-            e
-            for e in self.queryset
-            if e.date_to >= now().date() and self.filter_event(e)
-        ]
+        return [e for e in self.queryset if e.date_to >= now().date()]
 
     @context
     def past_orga_events(self):
-        return [
-            e
-            for e in self.queryset
-            if e.date_to < now().date() and self.filter_event(e)
-        ]
+        return [e for e in self.queryset if e.date_to < now().date()]
+
+
+class DashboardOrganiserEventListView(PermissionRequired, DashboardEventListView):
+    permission_required = "orga.view_organisers"
+
+    @property
+    def base_queryset(self):
+        return self.request.organiser.events.all()
 
 
 class DashboardOrganiserListView(PermissionRequired, TemplateView):
@@ -129,7 +128,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
             result.append(
                 {
                     "url": self.request.event.cfp.urls.public,
-                    "large": _("Go to CfP"),
+                    "large": phrases.cfp.go_to_cfp,
                     "priority": 20,
                 }
             )
@@ -285,7 +284,9 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
         talk_count = event.talks.count()
         submission_count = event.submissions.count()
         if talk_count:
-            accepted_count = event.talks.filter(state=SubmissionStates.ACCEPTED).count()
+            accepted_count = event.submissions.filter(
+                state=SubmissionStates.ACCEPTED
+            ).count()
             result["tiles"].append(
                 {
                     "large": talk_count,
@@ -300,7 +301,8 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                         "color": "error" if accepted_count else "info",
                     },
                     "left": {
-                        "text": str(_("submitted")) + f": {submission_count}",
+                        "text": str(phrases.submission.submitted)
+                        + f": {submission_count}",
                         "url": event.orga_urls.submissions,
                         "color": "success",
                     },
@@ -336,7 +338,7 @@ class EventDashboardView(EventPermissionRequired, TemplateView):
                         "color": "error",
                     },
                     "left": {
-                        "text": _("submitted") + f": {submitter_count}",
+                        "text": phrases.submission.submitted + f": {submitter_count}",
                         "url": event.orga_urls.speakers,
                         "color": "success",
                     },

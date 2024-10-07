@@ -16,30 +16,25 @@ from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy
-from django.views.generic import (
-    DeleteView,
-    FormView,
-    ListView,
-    TemplateView,
-    UpdateView,
-    View,
-)
+from django.views.generic import FormView, ListView, TemplateView, UpdateView, View
 from django_context_decorator import context
 from django_scopes import scope, scopes_disabled
 from formtools.wizard.views import SessionWizardView
 from rest_framework.authtoken.models import Token
 
 from pretalx.common.forms import I18nEventFormSet, I18nFormSet
-from pretalx.common.mixins.views import (
+from pretalx.common.models import ActivityLog
+from pretalx.common.tasks import regenerate_css
+from pretalx.common.templatetags.rich_text import render_markdown
+from pretalx.common.text.phrases import phrases
+from pretalx.common.views import OrderModelView, is_form_bound
+from pretalx.common.views.mixins import (
+    ActionConfirmMixin,
     ActionFromUrl,
     EventPermissionRequired,
     PermissionRequired,
     SensibleBackWizardMixin,
 )
-from pretalx.common.models import ActivityLog
-from pretalx.common.tasks import regenerate_css
-from pretalx.common.templatetags.rich_text import render_markdown
-from pretalx.common.views import OrderModelView, is_form_bound
 from pretalx.event.forms import (
     EventWizardBasicsForm,
     EventWizardCopyForm,
@@ -249,7 +244,7 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
             phases = self.save_phases()
             scores = self.save_scores()
         except ValidationError as e:
-            messages.error(self.request, str(e))
+            messages.error(self.request, e.message)
             return self.get(self.request, *self.args, **self.kwargs)
         if not phases or not scores:
             return self.get(self.request, *self.args, **self.kwargs)
@@ -284,20 +279,47 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
     def save_phases(self):
         if not self.phases_formset.is_valid():
             return False
-        for form in self.phases_formset.initial_forms:
-            # Deleting is handled elsewhere, so we skip it here
-            if form.has_changed():
+
+        with transaction.atomic():
+            for form in self.phases_formset.initial_forms:
+                # Deleting is handled elsewhere, so we skip it here
+                if form.has_changed():
+                    form.instance.event = self.request.event
+                    form.save()
+
+            extra_forms = [
+                form
+                for form in self.phases_formset.extra_forms
+                if form.has_changed
+                and not self.phases_formset._should_delete_form(form)
+            ]
+            for form in extra_forms:
                 form.instance.event = self.request.event
                 form.save()
 
-        extra_forms = [
-            form
-            for form in self.phases_formset.extra_forms
-            if form.has_changed and not self.phases_formset._should_delete_form(form)
-        ]
-        for form in extra_forms:
-            form.instance.event = self.request.event
-            form.save()
+            for form in self.phases_formset.deleted_forms:
+                form.instance.delete()
+
+            # Now that everything is saved, check for overlapping review phases,
+            # and show an error message if any exist. Raise an exception to
+            # get out of the transaction.
+            # We sort manually, as the review phase with start=None needs to be first
+            review_phases = sorted(
+                list(self.request.event.review_phases.all()),
+                key=lambda phase: (bool(phase.start), phase.start),
+            )
+            for phase, next_phase in zip(review_phases, review_phases[1:]):
+                if not phase.end:
+                    raise ValidationError(
+                        _("Only the last review phase may be open-ended.")
+                    )
+                if phase.end > next_phase.start:
+                    raise ValidationError(
+                        _(
+                            "The review phases '{phase1}' and '{phase2}' overlap. "
+                            "Please make sure that review phases do not overlap, then save again."
+                        ).format(phase1=phase.name, phase2=next_phase.name)
+                    )
         return True
 
     @context
@@ -341,31 +363,15 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
             form.instance.event = self.request.event
             form.save()
 
+        for form in self.scores_formset.deleted_forms:
+            if not form.instance.is_independent:
+                weights_changed = True
+            form.instance.scores.all().delete()
+            form.instance.delete()
+
         if weights_changed:
             ReviewScoreCategory.recalculate_scores(self.request.event)
         return True
-
-
-class ScoreCategoryDelete(PermissionRequired, View):
-    permission_required = "orga.change_settings"
-
-    def get_object(self):
-        return get_object_or_404(
-            ReviewScoreCategory, event=self.request.event, pk=self.kwargs.get("pk")
-        )
-
-    def action_object_name(self):
-        return _("Score category") + f": {self.get_object().name}"
-
-    @property
-    def action_back_url(self):
-        return self.request.event.orga_urls.review_settings
-
-    def post(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
-        category = self.get_object()
-        category.delete()
-        return redirect(self.request.event.orga_urls.review_settings)
 
 
 class ReviewPhaseOrderView(OrderModelView):
@@ -374,27 +380,6 @@ class ReviewPhaseOrderView(OrderModelView):
 
     def get_success_url(self):
         return self.request.event.orga_urls.review_settings
-
-
-class PhaseDelete(PermissionRequired, View):
-    permission_required = "orga.change_settings"
-
-    def get_object(self):
-        return get_object_or_404(
-            ReviewPhase, event=self.request.event, pk=self.kwargs.get("pk")
-        )
-
-    def action_object_name(self):
-        return _("Review phase") + f": {self.get_object().name}"
-
-    @property
-    def action_back_url(self):
-        return self.request.event.orga_urls.review_settings
-
-    def post(self, request, *args, **kwargs):
-        phase = self.get_object()
-        phase.delete()
-        return redirect(self.request.event.orga_urls.review_settings)
 
 
 class PhaseActivate(PermissionRequired, View):
@@ -479,7 +464,7 @@ class InvitationView(FormView):
     def post(self, *args, **kwargs):
         if not self.request.user.is_anonymous:
             self.accept_invite(self.request.user)
-            return redirect(settings.BASE_PATH + "/orga/event/")
+            return redirect(reverse("orga:event.list"))
         return super().post(*args, **kwargs)
 
     def form_valid(self, form):
@@ -496,7 +481,7 @@ class InvitationView(FormView):
 
         self.accept_invite(user)
         login(self.request, user, backend="django.contrib.auth.backends.ModelBackend")
-        return redirect(settings.BASE_PATH + "/orga/event/")
+        return redirect(reverse("orga:event.list"))
 
     @transaction.atomic()
     def accept_invite(self, user):
@@ -542,20 +527,15 @@ class UserSettings(TemplateView):
     def post(self, request, *args, **kwargs):
         if self.login_form.is_bound and self.login_form.is_valid():
             self.login_form.save()
-            messages.success(request, _("Your changes have been saved."))
+            messages.success(request, phrases.base.saved)
             request.user.log_action("pretalx.user.password.update")
         elif self.profile_form.is_bound and self.profile_form.is_valid():
             self.profile_form.save()
-            messages.success(request, _("Your changes have been saved."))
+            messages.success(request, phrases.base.saved)
             request.user.log_action("pretalx.user.profile.update")
         elif request.POST.get("form") == "token":
             request.user.regenerate_token()
-            messages.success(
-                request,
-                _(
-                    "Your API token has been regenerated. The previous token will not be usable any longer."
-                ),
-            )
+            messages.success(request, phrases.cfp.token_regenerated)
         else:
             messages.error(
                 self.request,
@@ -718,10 +698,17 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
         return redirect(event.orga_urls.base + "?congratulations")
 
 
-class EventDelete(PermissionRequired, DeleteView):
-    template_name = "orga/event/delete.html"
+class EventDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
     permission_required = "person.is_administrator"
     model = Event
+    action_text = (
+        _(
+            "ALL related data, such as proposals, and speaker profiles, and "
+            "uploads, will also be deleted and cannot be restored."
+        )
+        + " "
+        + phrases.base.delete_warning
+    )
 
     def get_object(self):
         return self.request.event
@@ -735,7 +722,7 @@ class EventDelete(PermissionRequired, DeleteView):
 
     def post(self, request, *args, **kwargs):
         self.get_object().shred(person=self.request.user)
-        return redirect(settings.BASE_PATH + "/orga/")
+        return redirect(reverse("orga:event.list"))
 
 
 @method_decorator(csp_update(SCRIPT_SRC="'self' 'unsafe-eval'"), name="dispatch")

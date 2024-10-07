@@ -22,15 +22,16 @@ from i18nfield.utils import I18nJSONEncoder
 
 from pretalx.agenda.management.commands.export_schedule_html import get_export_zip_path
 from pretalx.agenda.tasks import export_schedule_html
+from pretalx.agenda.views.utils import get_schedule_exporters
 from pretalx.common.language import get_current_language_information
-from pretalx.common.mixins.views import (
+from pretalx.common.text.path import safe_filename
+from pretalx.common.text.phrases import phrases
+from pretalx.common.views import CreateOrUpdateView, OrderModelView
+from pretalx.common.views.mixins import (
     ActionFromUrl,
     EventPermissionRequired,
     PermissionRequired,
 )
-from pretalx.common.signals import register_data_exporters
-from pretalx.common.utils import safe_filename
-from pretalx.common.views import CreateOrUpdateView, OrderModelView
 from pretalx.orga.forms.schedule import (
     ScheduleExportForm,
     ScheduleReleaseForm,
@@ -102,8 +103,8 @@ class ScheduleExportView(EventPermissionRequired, FormView):
     @context
     def exporters(self):
         return [
-            exporter(self.request.event)
-            for _, exporter in register_data_exporters.send(self.request.event)
+            exporter
+            for exporter in get_schedule_exporters(self.request)
             if exporter.group != "speaker"
         ]
 
@@ -249,9 +250,7 @@ class ScheduleResendMailsView(EventPermissionRequired, View):
             )
             messages.success(
                 self.request,
-                _(
-                    "{count} emails have been saved to the outbox – you can make individual changes there or just send them all."
-                ).format(count=len(mails)),
+                phrases.orga.mails_in_outbox.format(count=len(mails)),
             )
         else:
             messages.warning(
@@ -341,7 +340,7 @@ class TalkList(EventPermissionRequired, View):
         result["locales"] = request.event.locales
         return JsonResponse(result, encoder=I18nJSONEncoder)
 
-    @method_decorator(csrf_exempt)
+    @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -466,7 +465,7 @@ class TalkUpdate(PermissionRequired, View):
             pk=self.kwargs.get("pk")
         ).first()
 
-    @method_decorator(csrf_exempt)
+    @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 

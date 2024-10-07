@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nCharField
 
-from pretalx.common.mixins.models import OrderedModel, PretalxModel
+from pretalx.common.models.mixins import OrderedModel, PretalxModel
 from pretalx.common.models.settings import GlobalSettings
 from pretalx.common.urls import EventUrls
 

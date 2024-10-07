@@ -21,10 +21,10 @@ from django.utils.translation import override
 from django_scopes import scopes_disabled
 from rest_framework.authtoken.models import Token
 
-from pretalx.common.mixins.models import FileCleanupMixin, GenerateCode
 from pretalx.common.models import TIMEZONE_CHOICES
+from pretalx.common.models.mixins import FileCleanupMixin, GenerateCode
+from pretalx.common.text.path import path_with_hash
 from pretalx.common.urls import build_absolute_uri
-from pretalx.common.utils import path_with_hash
 
 
 def avatar_path(instance, filename):
@@ -83,7 +83,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
     )
     email = models.EmailField(
         unique=True,
-        verbose_name=_("E-mail"),
+        verbose_name=_("Email"),
         help_text=_(
             "Your email address will be used for password resets and notification about your event/proposals."
         ),
@@ -156,6 +156,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.permission_cache = {}
+        self.event_profile_cache = {}
         self.team_permissions = {}
 
     def has_perm(self, perm, obj, *args, **kwargs):
@@ -170,7 +171,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
 
     def get_display_name(self) -> str:
         """Returns a user's name or 'Unnamed user'."""
-        return self.name if self.name else str(_("Unnamed user"))
+        return str(self)
 
     def save(self, *args, **kwargs):
         self.email = self.email.lower().strip()
@@ -194,15 +195,21 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         :type event: :class:`pretalx.event.models.event.Event`
         :retval: :class:`pretalx.person.models.profile.EventProfile`
         """
-        from pretalx.person.models.profile import SpeakerProfile
+        if event.pk and (profile := self.event_profile_cache.get(event.pk)):
+            return profile
 
         try:
-            return self.profiles.select_related("event").get(event=event)
+            profile = self.profiles.select_related("event").get(event=event)
         except Exception:
+            from pretalx.person.models.profile import SpeakerProfile
+
             profile = SpeakerProfile(event=event, user=self)
             if self.pk:
                 profile.save()
-            return profile
+
+        if event.pk:
+            self.event_profile_cache[event.pk] = profile
+        return profile
 
     def get_locale_for_event(self, event):
         if self.locale in event.locales:

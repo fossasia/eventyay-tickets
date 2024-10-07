@@ -1,4 +1,5 @@
-{% extends "orga/cfp/base.html" %}
+{% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
@@ -11,12 +12,14 @@
         <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
         <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
     {% endcompress %}
-{% endblock %}
+{% endblock scripts %}
 
-{% block cfp_content %}
+{% block extra_title %}{% if form.instance.name %}{{ form.instance.name }}{% else %}{% translate "New Session Type" %}{% endif %} :: {% endblock extra_title %}
+
+{% block content %}
     <h2>
         {% if form.instance.name %}
-            {% translate "Session Type" %}: {{ form.instance.name }}
+            {% translate "Session type" %}: {{ form.instance.name }}
         {% else %}
             {% translate "New Session Type" %}
         {% endif %}
@@ -24,11 +27,13 @@
     <form method="post">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
-        {% bootstrap_field form.name layout='event' %}
-        {% bootstrap_field form.default_duration addon_after="minutes" layout='event' addon_after_class="input-group-append input-group-text" %}
-        {% bootstrap_field form.deadline layout='event' %}
-        {% bootstrap_field form.requires_access_code layout='event' %}
+        {% bootstrap_field form.name layout="event" %}
+        {% bootstrap_field form.default_duration addon_after="minutes" layout="event" addon_after_class="input-group-append input-group-text" %}
+        {% bootstrap_field form.deadline layout="event" %}
+        {% bootstrap_field form.requires_access_code layout="event" %}
+
         {% include "orga/includes/submit_row.html" %}
+
     </form>
 
-{% endblock %}
+{% endblock content %}

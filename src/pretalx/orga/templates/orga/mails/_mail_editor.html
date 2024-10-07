@@ -1,53 +1,57 @@
 {% extends "orga/mails/base.html" %}
+
 {% load bootstrap4 %}
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% translate "Email editor" %}{% endblock %}
+{% block extra_title %}{% translate "Email editor" %} :: {% endblock extra_title %}
 
 {% block mail_content %}
     <form method="post" class="form-with-placeholder">
         {% csrf_token %}
         <div class="mb-2">
             <h2 class="d-inline">
-                {% block email_editor_title %}{% translate "Email editor" %}{% endblock %}
+                {% block email_editor_title %}
+                    {% translate "Email editor" %}
+                {% endblock email_editor_title %}
             </h2>
-            <h3 class="d-inline ml-1"><small class="text-muted">{% block email_editor_title_detail %}{% endblock %}</small></h3>
+            <h3 class="d-inline ml-1">
+                <small class="text-muted">
+                    {% block email_editor_title_detail %}{% endblock email_editor_title_detail %}
+                </small>
+            </h3>
         </div>
         <div id="placeholder-neighbour">
             {% bootstrap_form_errors form %}
             <fieldset>
-                <legend>
-                    {% translate "Recipients" %}
-                </legend>
-                {% block recipient_form %}
-                {% endblock %}
+                <legend>{% translate "Recipients" %}</legend>
+                {% block recipient_form %}{% endblock recipient_form %}
                 <details class="card card-default">
                     <summary class="card-header">{% translate "Advanced settings" %}</summary>
                     <div class="card-body">
                         {% block advanced_recipient_form %}
-                            {% bootstrap_field form.reply_to layout='event' %}
-                            {% bootstrap_field form.bcc layout='event' %}
-                        {% endblock %}
+                            {% bootstrap_field form.reply_to layout="event" %}
+                            {% bootstrap_field form.bcc layout="event" %}
+                        {% endblock advanced_recipient_form %}
                     </div>
                 </details>
             </fieldset>
             <fieldset>
-                <legend>
-                    {% translate "Content" %}
-                </legend>
-                {% bootstrap_field form.subject layout='event' %}
-                {% bootstrap_field form.text layout='event' %}
+                <legend>{% translate "Content" %}</legend>
+                {% bootstrap_field form.subject layout="event" %}
+                {% bootstrap_field form.text layout="event" %}
             </fieldset>
         </div>
 
         <div class="col col-md-2" id="placeholder-column">
             <legend>{% translate "Placeholders" %}</legend>
+
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.submission tag="submission" %}
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.slot tag="slot" %}
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.user tag="user" %}
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.event tag="event" %}
             {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.other tag="other" %}
+
         </div>
 
         {% block email_editor_preview %}
@@ -65,7 +69,10 @@
                                 {% blocktranslate trimmed %}
                                     You have placeholders in your email that are either not valid or not valid for every email!
                                 {% endblocktranslate %}
-                                <ul>{% for w in form.warnings %}<li>&#123;{{w}}}</li>{% endfor %}</ul>
+                                <ul>
+                                    {# &#123; is the HTML entity for {, which would break django template syntax #}
+                                    {% for w in form.warnings %}<li>&#123;{{ w }}}</li>{% endfor %}
+                                </ul>
                                 {% blocktranslate trimmed %}
                                     Emails where placeholders are invalid will <b>not</b> be created!
                                     For example, if you are using {session_room}, but some proposals don’t have a room yet, only emails for proposals with a scheduled room will be created.
@@ -76,21 +83,23 @@
                     <div class="tab-pane mail-preview-group">
                         {% for locale, out in output.items %}
                             <div lang="{{ locale }}" class="mail-preview">
-                                <strong>{{ out.subject|safe }}</strong><br><br>
+                                <strong>{{ out.subject|safe }}</strong>
+                                <br>
+                                <br>
                                 {{ out.html|safe }}
                             </div>
                         {% endfor %}
                     </div>
                 </fieldset>
             {% endif %}
-        {% endblock %}
+        {% endblock email_editor_preview %}
 
         {% block skip_queue %}
             {% if form.skip_queue and request.method == "POST" %}
                 <hr />
-                {% bootstrap_field form.skip_queue layout='event' %}
+                {% bootstrap_field form.skip_queue layout="event" %}
             {% endif %}
-        {% endblock %}
+        {% endblock skip_queue %}
 
         {% block email_editor_actions %}
             <div class="submit-group mt-3">
@@ -100,12 +109,16 @@
                         {% translate "Preview email" %}
                     </button>
                     {% if request.method == "POST" %}
-                        <button type="submit" class="btn btn-lg btn-success">{% block send_button_label %}{% translate "Send to outbox" %}{% endblock %}</button>
+                        <button type="submit" class="btn btn-lg btn-success">
+                            {% block send_button_label %}
+                                {% translate "Send to outbox" %}
+                            {% endblock send_button_label %}
+                        </button>
                     {% endif %}
                 </span>
             </div>
-        {% endblock %}
+        {% endblock email_editor_actions %}
     </form>
 
-    <script src="{% static 'orga/js/placeholder.js' %}" defer></script>
-{% endblock %}
+    <script src="{% static "orga/js/placeholder.js" %}" defer></script>
+{% endblock mail_content %}

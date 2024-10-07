@@ -28,6 +28,17 @@ urlpatterns = [
     path("", RedirectView.as_view(url="event", permanent=False), name="base"),
     path("admin/", admin.AdminDashboard.as_view(), name="admin.dashboard"),
     path("admin/update/", admin.UpdateCheckView.as_view(), name="admin.update"),
+    path(
+        "admin/users/<slug:code>/",
+        admin.AdminUserDetail.as_view(),
+        name="admin.user.view",
+    ),
+    path(
+        "admin/users/<slug:code>/delete/",
+        admin.AdminUserDelete.as_view(),
+        name="admin.user.delete",
+    ),
+    path("admin/users/", admin.AdminUserList.as_view(), name="admin.user.list"),
     path("me", event.UserSettings.as_view(), name="user.view"),
     path("me/subuser", person.SubuserView.as_view(), name="user.subuser"),
     path(
@@ -47,16 +58,25 @@ urlpatterns = [
         "organiser/<slug:organiser>/",
         include(
             [
-                path("", organiser.OrganiserDetail.as_view(), name="organiser.view"),
                 path(
-                    "delete",
+                    "",
+                    dashboard.DashboardOrganiserEventListView.as_view(),
+                    name="organiser.dashboard",
+                ),
+                path(
+                    "settings/",
+                    organiser.OrganiserDetail.as_view(),
+                    name="organiser.settings",
+                ),
+                path(
+                    "settings/delete",
                     organiser.OrganiserDelete.as_view(),
                     name="organiser.delete",
                 ),
                 path(
                     "api/users", person.UserList.as_view(), name="organiser.user_list"
                 ),
-                path("teams/", organiser.TeamDetail.as_view(), name="organiser.teams"),
+                path("teams/", organiser.TeamList.as_view(), name="organiser.teams"),
                 path(
                     "teams/new",
                     organiser.TeamDetail.as_view(),
@@ -98,6 +118,11 @@ urlpatterns = [
                             ),
                         ]
                     ),
+                ),
+                path(
+                    "speakers/",
+                    organiser.OrganiserSpeakerList.as_view(),
+                    name="organiser.speakers",
                 ),
             ]
         ),
@@ -621,22 +646,12 @@ urlpatterns = [
                         [
                             *event.ReviewPhaseOrderView.get_urls(),
                             path(
-                                "delete",
-                                event.PhaseDelete.as_view(),
-                                name="settings.review.phasedelete",
-                            ),
-                            path(
                                 "activate",
                                 event.PhaseActivate.as_view(),
-                                name="settings.review.phasedelete",
+                                name="settings.review.phase.activate",
                             ),
                         ]
                     ),
-                ),
-                path(
-                    "settings/review/category/<int:pk>/delete",
-                    event.ScoreCategoryDelete.as_view(),
-                    name="settings.review.categorydelete",
                 ),
                 path(
                     "schedule/", schedule.ScheduleView.as_view(), name="schedule.main"

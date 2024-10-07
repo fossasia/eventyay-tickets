@@ -6,9 +6,10 @@ from django_scopes.forms import SafeModelChoiceField
 
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import ImageField
+from pretalx.common.forms.mixins import PublicContent, RequestRequire
 from pretalx.common.forms.widgets import MarkdownWidget
-from pretalx.common.mixins.forms import PublicContent, RequestRequire
-from pretalx.common.mixins.views import Filterable
+from pretalx.common.text.phrases import phrases
+from pretalx.common.views.mixins import Filterable
 from pretalx.submission.forms.track_select_widget import TrackSelectWidget
 from pretalx.submission.models import Answer, Question, Submission, SubmissionStates
 
@@ -26,9 +27,9 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         label=_("Session image"),
         help_text=_("Use this if you want an illustration to go with your proposal."),
     )
-    content_locale = forms.ChoiceField(label=_("Language"))
+    content_locale = forms.ChoiceField(label=phrases.base.language)
 
-    def __init__(self, event, **kwargs):
+    def __init__(self, event, remove_additional_speaker=False, **kwargs):
         self.event = event
         self.readonly = kwargs.pop("readonly", False)
         self.access_code = kwargs.pop("access_code", None)
@@ -48,6 +49,8 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
 
         super().__init__(initial=initial, **kwargs)
 
+        if remove_additional_speaker and "additional_speaker" in self.fields:
+            self.fields.pop("additional_speaker")
         if "abstract" in self.fields:
             self.fields["abstract"].widget.attrs["rows"] = 2
 
@@ -150,8 +153,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
         elif (
             "slot_count" in self.fields
             and instance
-            and instance.state
-            in [SubmissionStates.ACCEPTED, SubmissionStates.CONFIRMED]
+            and instance.state in SubmissionStates.accepted_states
         ):
             self.fields["slot_count"].disabled = True
             self.fields["slot_count"].help_text += " " + str(
@@ -267,7 +269,7 @@ class SubmissionFilterForm(forms.Form):
     content_locale = forms.MultipleChoiceField(
         required=False,
         widget=SelectMultipleWithCount(
-            attrs={"class": "select2", "title": _("Language")}
+            attrs={"class": "select2", "title": phrases.base.language}
         ),
     )
     track = forms.MultipleChoiceField(
@@ -400,6 +402,7 @@ class SubmissionFilterForm(forms.Form):
     ):
         if question and (answer or option):
             if option:
+                option = option.pk if hasattr(option, "pk") else option
                 answers = Answer.objects.filter(
                     submission_id=OuterRef("pk"),
                     question_id=question,

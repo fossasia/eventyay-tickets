@@ -63,14 +63,13 @@ Backups
 There are two things which you should create backups of:
 
 Database
-    Your SQL database (SQLite, PostgreSQL). This is critical and you
-    must **always always create automatic backups of your database**. There are
-    tons of tutorials on the internet on how to do this, and the process
-    depends on the choice of your database.
-    For PostgreSQL, see the ``pg_dump`` tool. For SQLite, it is sufficient to
-    create a backup of the database file. You should create a cronjob or
-    timer that does the backups for you on a regular schedule. Do not forget to
-    add another one to rotate your backups.
+    Your SQL database (SQLite or PostgreSQL). This is critical and you must
+    **always always create automatic backups of your database**. There are tons
+    of tutorials on the internet on how to do this, and the process depends on
+    the choice of your database. For PostgreSQL, see the ``pg_dump`` tool. For
+    SQLite, it is sufficient to create a backup of the database file. You
+    should create a cronjob or timer that does the backups for you on a regular
+    schedule. Do not forget to add another one to rotate your backups.
 
 Data directory
     The data directory of your pretalx configuration may contain files that you

@@ -1,11 +1,12 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 from i18nfield.fields import I18nCharField, I18nTextField
 
-from pretalx.common.mixins.models import PretalxModel
+from pretalx.common.models.mixins import PretalxModel
+from pretalx.common.text.path import path_with_hash
 from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
-from pretalx.common.utils import path_with_hash
 
 
 def resource_path(instance, filename):
@@ -21,7 +22,7 @@ class SpeakerInformation(PretalxModel):
     )
     target_group = models.CharField(
         choices=(
-            ("submitters", _("All submitters")),
+            ("submitters", phrases.base.all_choices),
             ("accepted", _("All accepted speakers")),
             ("confirmed", _("Only confirmed speakers")),
         ),
@@ -40,7 +41,9 @@ class SpeakerInformation(PretalxModel):
         blank=True,
         help_text=_("Leave empty to show this information for all proposal types."),
     )
-    title = I18nCharField(verbose_name=_("Subject"), max_length=200)
+    title = I18nCharField(
+        verbose_name=pgettext_lazy("email subject", "Subject"), max_length=200
+    )
     text = I18nTextField(verbose_name=_("Text"), help_text=phrases.base.use_markdown)
     resource = models.FileField(
         verbose_name=_("File"),

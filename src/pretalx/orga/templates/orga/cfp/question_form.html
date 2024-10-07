@@ -1,11 +1,14 @@
-{% extends "orga/cfp/base.html" %}
+{% extends "orga/base.html" %}
+
 {% load bootstrap4 %}
 {% load compress %}
 {% load formset_tags %}
 {% load i18n %}
 {% load static %}
 
-{% block cfp_content %}
+{% block extra_title %}{% if form.instance.question %}{{ form.instance.question }}{% else %}{% translate "New question" %}{% endif %} :: {% endblock extra_title %}
+
+{% block content %}
     {% compress js %}
         <script defer src="{% static "js/jquery.formset.js" %}"></script>
         <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
@@ -16,7 +19,11 @@
         <script defer src="{% static "orga/js/questionForm.js" %}"></script>
     {% endcompress %}
     <h2>
-        {% if form.instance.question %}{% translate "Question" %}: {{ form.instance.question }}{% else %}{% translate "New question" %}{% endif %}
+        {% if form.instance.question %}
+            {% translate "Question" %}: {{ form.instance.question }}
+        {% else %}
+            {% translate "New question" %}
+        {% endif %}
     </h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -31,7 +38,7 @@
             </div>
         {% endif %}
 
-        {% if action != 'create' %}
+        {% if action != "create" %}
             {% if question.active %}
                 <div class="alert alert-info col-md-9 offset-md-3">
                     <span>
@@ -44,61 +51,54 @@
                 <div class="alert alert-info col-md-9 offset-md-3">
                     <span>
                         {% translate "This question is currently inactive, and will not be asked during submission." %}
-                        <a class="btn btn-sm btn-success"
-                           href="{{ question.urls.toggle }}">{% translate "Activate question" %}</a>
+                        <a class="btn btn-sm btn-success" href="{{ question.urls.toggle }}">{% translate "Activate question" %}</a>
                     </span>
                 </div>
             {% endif %}
         {% endif %}
 
-        {% bootstrap_field form.target layout='event' %}
-        {% bootstrap_field form.variant layout='event' %}
-        {% bootstrap_field form.question layout='event' %}
-        {% bootstrap_field form.help_text layout='event' %}
+        {% bootstrap_field form.target layout="event" %}
+        {% bootstrap_field form.variant layout="event" %}
+        {% bootstrap_field form.question layout="event" %}
+        {% bootstrap_field form.help_text layout="event" %}
         <div class="alert alert-info col-md-9 offset-md-3" id="alert-required-boolean">
             {% blocktranslate trimmed %}
                 If you mark a Yes/No question as required, it means that the user has to select Yes and No is not
                 accepted. If you want to allow both options, do not make this field required.
             {% endblocktranslate %}
         </div>
-        {% bootstrap_field form.is_public layout='event' %}
-        {% bootstrap_field form.contains_personal_data layout='event' %}
-        <span id="is-visible-to-reviewers">
-            {% bootstrap_field form.is_visible_to_reviewers layout='event' %}
-        </span>
+        {% bootstrap_field form.is_public layout="event" %}
+        {% bootstrap_field form.contains_personal_data layout="event" %}
+        <span id="is-visible-to-reviewers">{% bootstrap_field form.is_visible_to_reviewers layout="event" %}</span>
         <fieldset class="limit-submission">
             <legend>{% translate "Limit to specific proposals" %}</legend>
             {% if form.tracks %}
-                <span class="limit-submission">
-                    {% bootstrap_field form.tracks layout='event' %}
-                </span>
+                <span class="limit-submission">{% bootstrap_field form.tracks layout="event" %}</span>
             {% endif %}
             {% if form.submission_types %}
-                <span class="limit-submission">
-                    {% bootstrap_field form.submission_types layout='event' %}
-                </span>
+                <span class="limit-submission">{% bootstrap_field form.submission_types layout="event" %}</span>
             {% endif %}
         </fieldset>
         <fieldset>
             <legend>{% translate "Input validation" %}</legend>
-            {% bootstrap_field form.question_required layout='event' %}
-            {% bootstrap_field form.deadline layout='event' %}
-            {% bootstrap_field form.freeze_after layout='event' %}
+            {% bootstrap_field form.question_required layout="event" %}
+            {% bootstrap_field form.deadline layout="event" %}
+            {% bootstrap_field form.freeze_after layout="event" %}
             <span id="limit-length">
-                {% bootstrap_field form.min_length layout='event' %}
-                {% bootstrap_field form.max_length layout='event' %}
+                {% bootstrap_field form.min_length layout="event" %}
+                {% bootstrap_field form.max_length layout="event" %}
             </span>
             <span id="limit-number">
-                {% bootstrap_field form.min_number layout='event' %}
-                {% bootstrap_field form.max_number layout='event' %}
+                {% bootstrap_field form.min_number layout="event" %}
+                {% bootstrap_field form.max_number layout="event" %}
             </span>
             <span id="limit-date">
-                {% bootstrap_field form.min_date layout='event' %}
-                {% bootstrap_field form.max_date layout='event' %}
+                {% bootstrap_field form.min_date layout="event" %}
+                {% bootstrap_field form.max_date layout="event" %}
             </span>
             <span id="limit-datetime">
-                {% bootstrap_field form.min_datetime layout='event' %}
-                {% bootstrap_field form.max_datetime layout='event' %}
+                {% bootstrap_field form.min_datetime layout="event" %}
+                {% bootstrap_field form.max_datetime layout="event" %}
             </span>
         </fieldset>
 
@@ -107,8 +107,8 @@
             <details class="col-md-9 offset-md-3 mb-3" {% if form.errors.options or form.errors.options_replace %}open{% endif %}>
                 <summary>{% translate "Upload answer options" %}</summary>
                 <div class="pt-3"></div>
-                {% bootstrap_field form.options layout='event' %}
-                {% bootstrap_field form.options_replace layout='event' %}
+                {% bootstrap_field form.options layout="event" %}
+                {% bootstrap_field form.options_replace layout="event" %}
             </details>
             <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
@@ -121,14 +121,15 @@
                                 {% bootstrap_field form.DELETE form_group_class="" layout="inline" %}
                             </div>
                             <div class="question-option-row flip ml-auto col-md-9">
-                                <div class="question-option-input{% if action == 'view' %} disabled{% endif %}">
+                                <div class="question-option-input{% if action == "view" %} disabled{% endif %}">
                                     {% bootstrap_form_errors form %}
-                                    {% bootstrap_field form.answer layout='inline' form_group_class="" %}
+                                    {% bootstrap_field form.answer layout="inline" form_group_class="" %}
                                 </div>
-                                {% if action != 'view' %}
+                                {% if action != "view" %}
                                     <div class="question-option-delete">
                                         <button type="button" class="btn btn-danger" data-formset-delete-button>
-                                            <i class="fa fa-trash"></i></button>
+                                            <i class="fa fa-trash"></i>
+                                        </button>
                                     </div>
                                 {% endif %}
                             </div>
@@ -144,7 +145,7 @@
                         </div>
                         <div class="question-option-row flip ml-auto col-md-9">
                         <div class="question-option-input">
-                        {% bootstrap_field formset.empty_form.answer layout='inline' form_group_class="" %}
+                        {% bootstrap_field formset.empty_form.answer layout="inline" form_group_class="" %}
                         </div>
                         <div class="question-option-delete">
                         <button type="button" class="btn btn-danger" data-formset-delete-button>
@@ -154,14 +155,17 @@
                         </div>
                     {% endescapescript %}
                 </script>
-                {% if action != 'view' %}
+                {% if action != "view" %}
                     <p class="col-md-9 flip ml-auto">
                         <button type="button" class="btn btn-info" data-formset-add>
-                            <i class="fa fa-plus"></i> {% translate "Add a new option" %}</button>
+                            <i class="fa fa-plus"></i> {% translate "Add a new option" %}
+                        </button>
                     </p>
                 {% endif %}
             </div>
         </fieldset>
+
         {% include "orga/includes/submit_row.html" %}
+
     </form>
-{% endblock %}
+{% endblock content %}
