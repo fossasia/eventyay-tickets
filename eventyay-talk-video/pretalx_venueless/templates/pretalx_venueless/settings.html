@@ -5,18 +5,11 @@
 {% load i18n %}
 {% load static %}
 {% block scripts %}
-
     {% compress js %}
-        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-        <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
-        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
         <script defer src="{% static "pretalx_venueless/settings.js" %}"></script>
     {% endcompress %}
 {% endblock %}
-
 {% block content %}
-
     {% if connect_in_progress %}
         <h2>{% trans "Confirm your Eventyay video connection" %}</h2>
         <div class="alert alert-info">
