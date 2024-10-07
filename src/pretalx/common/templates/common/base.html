@@ -99,6 +99,7 @@
                                 •&nbsp;
                             </div>
                         {% endif %}
+                        {% block header_right %}{% endblock header_right %}
                         {% if request.event and request.user.is_authenticated and not is_html_export %}
                             <details id="user-dropdown-label" class="dropdown">
                                 {% has_perm "orga.view_orga_area" request.user request.event as can_see_orga_area %}
