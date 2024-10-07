@@ -5,7 +5,7 @@
 {% load static %}
 {% load phrases %}
 
-{% block container_width %}{% if not show_talk_list %} main-schedule{% endif %}{% endblock container_width %}
+{% block container_width %} {% if not show_talk_list %}main-schedule{% else %}list-schedule{% endif %}{% endblock container_width %}
 
 {% block agenda_custom_header %}
     <script id="pretalx-messages" data-logged-in="{% if request.user.is_anonymous %}false{% else %}true{% endif %}" src="{{ request.event.urls.schedule }}widget/messages.js"></script>
