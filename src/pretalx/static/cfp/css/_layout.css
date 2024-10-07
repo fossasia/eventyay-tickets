@@ -213,6 +213,10 @@ footer {
 @media (max-width: 768px) {
   #main-container {
     max-width: 720px;
+    header .header-wrapper {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+    }
   }
 }
 
@@ -228,7 +232,7 @@ footer {
     }
 
     header {
-      padding: 10px 20px;
+      padding: 0;
       #event-logo {
         max-height: 120px;
       }
