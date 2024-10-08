@@ -1139,6 +1139,13 @@ pr-0 {
     page-break-after: avoid;
   }
 
+  a[href]::after {
+    content: " (" attr(href) ")";
+  }
+  a[href^="#"]::after {
+    content: "";
+  }
+
   nav.navbar {
     display: none;
   }
