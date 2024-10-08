@@ -1046,6 +1046,12 @@ pr-0 {
   box-shadow: var(--shadow-light);
 }
 
+::selection {
+    background-color: var(--color-primary);
+    color: white;
+    text-shadow: none;
+}
+
 @media (min-width: 992px) {
   nav.navbar {
     flex-flow: row nowrap;
