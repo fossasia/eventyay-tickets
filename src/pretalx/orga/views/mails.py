@@ -464,36 +464,68 @@ class TemplateList(EventPermissionRequired, TemplateView):
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
-        accept = self.request.event.accept_template
-        ack = self.request.event.ack_template
-        reject = self.request.event.reject_template
-        update = self.request.event.update_template
-        remind = self.request.event.question_template
-        result["accept"] = MailTemplateForm(
-            instance=accept, read_only=True, event=self.request.event
-        )
-        result["ack"] = MailTemplateForm(
-            instance=ack, read_only=True, event=self.request.event
-        )
-        result["reject"] = MailTemplateForm(
-            instance=reject, read_only=True, event=self.request.event
-        )
-        result["update"] = MailTemplateForm(
-            instance=update, read_only=True, event=self.request.event
-        )
-        result["remind"] = MailTemplateForm(
-            instance=remind, read_only=True, event=self.request.event
-        )
+        result["templates"] = [
+            {
+                "title": _("Acknowledge Mail"),
+                "obj": self.request.event.ack_template,
+                "form": MailTemplateForm(
+                    instance=self.request.event.ack_template,
+                    read_only=True,
+                    event=self.request.event,
+                ),
+            },
+            {
+                "title": _("Accept Mail"),
+                "obj": self.request.event.accept_template,
+                "form": MailTemplateForm(
+                    instance=self.request.event.accept_template,
+                    read_only=True,
+                    event=self.request.event,
+                ),
+            },
+            {
+                "title": _("Reject Mail"),
+                "obj": self.request.event.reject_template,
+                "form": MailTemplateForm(
+                    instance=self.request.event.reject_template,
+                    read_only=True,
+                    event=self.request.event,
+                ),
+            },
+            {
+                "title": _("New schedule version"),
+                "obj": self.request.event.update_template,
+                "form": MailTemplateForm(
+                    instance=self.request.event.update_template,
+                    read_only=True,
+                    event=self.request.event,
+                ),
+            },
+            {
+                "title": _("Unanswered questions reminder"),
+                "obj": self.request.event.question_template,
+                "form": MailTemplateForm(
+                    instance=self.request.event.question_template,
+                    read_only=True,
+                    event=self.request.event,
+                ),
+            },
+        ]
         pks = [
             template.pk if template else None
-            for template in (accept, ack, reject, update, remind)
+            for template in self.request.event.fixed_templates
         ]
-        result["other"] = [
-            MailTemplateForm(
-                instance=template, read_only=True, event=self.request.event
-            )
+        result["templates"] += [
+            {
+                "title": str(template.subject),
+                "obj": template,
+                "form": MailTemplateForm(
+                    instance=template, read_only=True, event=self.request.event
+                ),
+                "custom": True,
+            }
             for template in self.request.event.mail_templates.exclude(
-                pk__in=[pk for pk in pks if pk]
+                pk__in=pks
             ).exclude(is_auto_created=True)
         ]
         return result
