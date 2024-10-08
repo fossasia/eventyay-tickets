@@ -24,6 +24,7 @@
     </head>
     <body>
         <div id="wrapper"{% if request.event.primary_color %} style="background-color: {{ request.event.primary_color }}"{% endif %}>
+            {# we're not lazy-loading these images, because they are central and immediately visible, and having them flash in 100ms later looks bad #}
             {% if not request.event.logo %}
                 <img src="{% static "common/img/logo_white.svg" %}" class="logo" alt="{% translate "The eventyay logo" %}">
             {% else %}
