@@ -39,10 +39,11 @@ class PaymentStep(CartMixin, TemplateFlowStep):
 
             # Calculate fee and form
             fee = provider.calculate_fee(self._total_order_value)
-            form_params = self._total_order_value + fee if 'total' in inspect.signature(
-                provider.payment_form_render).parameters else None
 
-            form = provider.payment_form_render(self.request, form_params)
+            if 'total' in inspect.signature(provider.payment_form_render).parameters:
+                form = provider.payment_form_render(self.request, self._total_order_value + fee)
+            else:
+                form = provider.payment_form_render(self.request)
 
             # Append provider info to list
             providers.append({
