@@ -48,9 +48,11 @@ class EventWizardFoundationForm(forms.Form):
         label=_("This is an event series"),
         required=False,
     )
-    add_video = forms.BooleanField(
-        label= _("Add video"),
+    is_video_create = forms.BooleanField(
+        label=_("Create Video platform for this Event."),
+        help_text=_("This will create a new Video platform for this event."),
         required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
     )
 
     def __init__(self, *args, **kwargs):
@@ -143,7 +145,7 @@ class EventWizardBasicsForm(I18nModelForm):
         self.organizer = kwargs.pop('organizer')
         self.locales = kwargs.get('locales')
         self.has_subevents = kwargs.pop('has_subevents')
-        self.add_video = kwargs.pop('add_video')
+        self.is_video_create = kwargs.pop('is_video_create')
         self.user = kwargs.pop('user')
         kwargs.pop('session')
         super().__init__(*args, **kwargs)
@@ -306,7 +308,7 @@ class EventMetaValueForm(forms.ModelForm):
 
 
 class EventUpdateForm(I18nModelForm):
-    add_video = forms.BooleanField(
+    is_video_create = forms.BooleanField(
         required=False,
     )
     def __init__(self, *args, **kwargs):
@@ -345,9 +347,9 @@ class EventUpdateForm(I18nModelForm):
             widget=forms.CheckboxSelectMultiple
         )
 
-        self.add_video = self.initial.get('add_video')
-        if self.add_video:
-            self.fields['add_video'].disabled = True
+        self.is_video_create = self.initial.get('is_video_create')
+        if self.is_video_create:
+            self.fields['is_video_create'].disabled = True
 
     def clean_domain(self):
         d = self.cleaned_data['domain']
@@ -405,7 +407,7 @@ class EventUpdateForm(I18nModelForm):
             'geo_lat',
             'geo_lon',
             'sales_channels',
-            'add_video'
+            'is_video_create'
         ]
         field_classes = {
             'date_from': SplitDateTimeField,
