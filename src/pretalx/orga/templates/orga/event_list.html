@@ -15,6 +15,23 @@
 
 {% block content %}
     {% has_perm "orga.create_events" request.user request.user as can_create_event %}
+
+    {% if not hide_speaker_events and speaker_events %}
+        <div class="alert alert-info">
+            <div>
+                {% translate "You are currently in the organiser area of pretalx. To view your submitted proposals, please go directly to the event page:" %}
+                {% if speaker_events|length == 1 %}
+                    <a href="{{ event.urls.user_submissions.full }}">{{ event.name }}</a>
+                {% else %}
+                    <ul class="mb-0">
+                        {% for event in speaker_events %}
+                            <li><a href="{{ event.urls.user_submissions.full }}">{{ event.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
     <form class="mb-4 m-2">
         <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% translate "Search" %}">
     </form>
