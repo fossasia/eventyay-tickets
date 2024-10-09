@@ -1,0 +1,22 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %} 
+{% block content %}
+<h1>{% trans "Delete Exhibitor" %}</h1>
+
+<p>
+  {% trans "Are you sure you want to delete this exhibitor? This action cannot be undone." %}
+</p>
+
+<form action="" method="post">
+  {% csrf_token %}
+  <div class="form-actions">
+    <button type="submit" class="btn btn-danger">{% trans "Delete" %}</button>
+    <a
+      class="btn btn-default"
+      href="{% url 'plugins:exhibitors:info' organizer=request.event.organizer.slug event=request.event.slug %}"
+    >
+      {% trans "Cancel" %}
+    </a>
+  </div>
+</form>
+{% endblock %}

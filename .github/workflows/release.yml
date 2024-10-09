@@ -1,0 +1,51 @@
+name: Release to PyPI
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install wheel setuptools twine check-manifest
+          XDG_CACHE_HOME=/cache pip install -e ".[dev]"
+
+      - name: Check manifest
+        run: check-manifest
+
+      - name: Build package
+        run: |
+          python setup.py sdist bdist_wheel
+          ls -l dist
+
+      - name: Upload to PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          twine check dist/*
+          twine upload dist/*
+
+    artifacts:
+      paths:
+        - dist/

@@ -1,0 +1,5 @@
+recursive-include exhibitors/static *
+recursive-include exhibitors/templates *
+recursive-include exhibitors/locale *
+include LICENSE
+exclude .gitlab-ci.yml

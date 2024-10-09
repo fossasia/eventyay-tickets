@@ -1,0 +1,43 @@
+[project]
+name = "exhibitors"
+dynamic = ["version"]
+description = "Eventyay-tickets plugin to add and manage exhibitors"
+readme = "README.rst"
+requires-python = ">=3.11"
+license = {file = "LICENSE"}
+keywords = ["Eventyay-tickets"]
+authors = [
+    {name = "eventyay team", email = "support@eventyay.com"},
+]
+maintainers = [
+    {name = "eventyay team", email = "support@eventyay.com"},
+]
+
+dependencies = [
+
+]
+
+[project.entry-points."pretix.plugin"]
+exhibitors = "exhibitors:PretixPluginMeta"
+
+[project.entry-points."distutils.commands"]
+build = "pretix_plugin_build.build:CustomBuild"
+
+[build-system]
+requires = [
+    "setuptools",
+    "pretix-plugin-build",
+]
+
+[project.urls]
+homepage = "https://github.com/fossasia/eventyay-tickets-exhibitors"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "exhibitors.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["exhibitors*"]
+namespaces = false
