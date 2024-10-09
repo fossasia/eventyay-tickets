@@ -71,6 +71,7 @@ dev = [
   "check-manifest",
   "coverage",
   "djhtml",
+  "Faker",
   "flake8",
   "flake8-bugbear",
   "freezegun",

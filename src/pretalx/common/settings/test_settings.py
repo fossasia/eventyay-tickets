@@ -3,6 +3,7 @@ import os
 import tempfile
 from contextlib import suppress
 from pathlib import Path
+from urllib.parse import urlparse
 
 tmpdir = tempfile.TemporaryDirectory()
 os.environ.setdefault("DATA_DIR", tmpdir.name)
@@ -18,6 +19,8 @@ LOG_DIR = DATA_DIR / "logs"
 MEDIA_ROOT = DATA_DIR / "media"
 STATIC_ROOT = DATA_DIR / "static"
 HTMLEXPORT_ROOT = DATA_DIR / "htmlexport"
+SITE_URL = "http://testserver"
+SITE_NETLOC = urlparse(SITE_URL).netloc
 
 for directory in (BASE_DIR, DATA_DIR, LOG_DIR, MEDIA_ROOT, HTMLEXPORT_ROOT):
     directory.mkdir(parents=True, exist_ok=True)
