@@ -189,9 +189,9 @@ class EventCreateView(SafeSessionWizardView):
                 event.plugins = settings.PRETIX_PLUGINS_DEFAULT
                 event.has_subevents = foundation_data['has_subevents']
                 if check_create_permission(self.request):
-                   event.add_video = foundation_data['add_video']
+                    event.is_video_create = foundation_data['is_video_create']
                 else:
-                   event.add_video = False
+                    event.is_video_create = False
                 event.testmode = True
                 form_dict['basics'].save()
 
@@ -218,10 +218,11 @@ class EventCreateView(SafeSessionWizardView):
                     send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='create')
                 event.settings.set('create_for', create_for)
 
-       ## The user automatically creates a world when selecting the add video option in the create ticket form.
-        data = dict(id=basics_data.get('slug'), title=basics_data.get('name').data, timezone=basics_data.get('timezone'),
+        # The user automatically creates a world when selecting the add video option in the create ticket form.
+        data = dict(id=basics_data.get('slug'), title=basics_data.get('name').data,
+                    timezone=basics_data.get('timezone'),
                     locale=basics_data.get('locale'))
-        create_world(self.request, foundation_data['add_video'], data)
+        create_world(self.request, foundation_data['is_video_create'], data)
 
         return redirect(reverse('eventyay_common:events') + '?congratulations=1')
 
@@ -263,17 +264,17 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
         tickets.invalidate_cache.apply_async(kwargs={'event': self.request.event.pk})
 
         if check_create_permission(self.request):
-            form.instance.add_video = form.cleaned_data.get('add_video')
-        elif not check_create_permission(self.request) and form.cleaned_data.get('add_video'):
-            form.instance.add_video = True
+            form.instance.is_video_create = form.cleaned_data.get('is_video_create')
+        elif not check_create_permission(self.request) and form.cleaned_data.get('is_video_create'):
+            form.instance.is_video_create = True
         else:
-            form.instance.add_video = False
+            form.instance.is_video_create = False
 
         ## The user automatically creates a world when selecting the add video option in the update ticket form.
         data = dict(id=form.cleaned_data.get('slug'), title=form.cleaned_data.get('name').data,
                     timezone=self.sform.cleaned_data.get('timezone'), locale=self.sform.cleaned_data.get('locale'))
 
-        create_world(self.request, form.cleaned_data.get('add_video'), data)
+        create_world(self.request, form.cleaned_data.get('is_video_create'), data)
 
         messages.success(self.request, _('Your changes have been saved.'))
         return super().form_valid(form)
