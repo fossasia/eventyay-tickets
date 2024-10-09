@@ -13,6 +13,24 @@
     padding-left: 15px;
     padding-right: 15px;
   }
+  &.form-group-inline {
+    flex-direction: column;
+    label {
+      text-align: left;
+    }
+  }
+}
+.hide-label {
+  label {
+    display: none;
+  }
+  .form-group > .col-md-9 {
+    max-width: 100%;
+    flex: 0 0 100%;
+    label {
+      display: inline-block;
+    }
+  }
 }
 .row {
   display: flex;
@@ -23,7 +41,8 @@
 
 /* non-input styles */
 label {
-  display: inline-block;
+  display: inline-flex;
+  flex-direction: column;
   padding-top: 4px;
   padding-bottom: calc(0.375rem + 1px);
   margin-bottom: 0;
@@ -35,12 +54,34 @@ label {
     font-weight: normal;
     color: var(--color-grey);
   }
+  &.col-form-label.col-md-3 {
+    padding-top: 8px;
+    padding-right: 0;
+  }
+  &.inline-form-label {
+    flex-direction: row;
+    .optional {
+      padding-left: 0.25rem;
+      &:before {
+        content: "(";
+      }
+      &:after {
+        content: ")";
+      }
+    }
+  }
 }
 
 small.form-text {
   font-size: inherit;
   margin-top: 0.25rem;
   display: block;
+}
+.invalid-feedback {
+  font-size: 0.875rem;
+  color: var(--color-danger);
+  font-weight: normal;
+  font-family: var(--font-family);
 }
 
 fieldset {
@@ -99,7 +140,7 @@ textarea {
     border-color: var(--color-success);
   }
 
-  &.is-invalid {
+  &[aria-invalid] {
     border-color: var(--color-danger);
   }
 
@@ -145,6 +186,19 @@ input[type="file"] {
   pointer-events: none;
   border-width: 0;
   border-radius: var(--size-border-radius);
+}
+.form-group-inline {
+  input[type="file"] {
+    padding: 0.15rem 0.5rem;
+  }
+  ::file-selector-button {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    margin-top: -3px;
+    margin-left: -5px;
+    font-size: 0.875rem;
+    border-radius: 0.2rem;
+  }
 }
 
 input[type="checkbox"],
