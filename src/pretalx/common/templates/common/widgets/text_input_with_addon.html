@@ -1,0 +1,17 @@
+<div class="input-group">
+  {% if widget.addon_before %}
+    <div class="input-group-prepend">
+      <span class="input-group-text">
+        {{ widget.addon_before }}
+      </span>
+    </div>
+  {% endif %}
+  {% include "django/forms/widgets/input.html" %}
+  {% if widget.addon_after %}
+    <div class="input-group-append">
+      <span class="input-group-text">
+        {{ widget.addon_after }}
+      </span>
+    </div>
+  {% endif %}
+</div>

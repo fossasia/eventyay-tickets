@@ -21,7 +21,11 @@ from pretalx.common.forms.mixins import (
     JsonSubfieldMixin,
     ReadOnlyFlag,
 )
-from pretalx.common.forms.widgets import EnhancedSelect, EnhancedSelectMultiple
+from pretalx.common.forms.widgets import (
+    EnhancedSelect,
+    EnhancedSelectMultiple,
+    TextInputWithAddon,
+)
 from pretalx.common.text.css import validate_css
 from pretalx.common.text.phrases import phrases
 from pretalx.event.models.event import Event
@@ -173,6 +177,8 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         self.fields["name"].widget.attrs["placeholder"] = (
             _("The name of your conference, e.g. My Conference") + " " + year
         )
+        if self.instance.custom_domain:
+            self.fields["slug"].widget.addon_before = f"{self.instance.custom_domain}/"
         if not self.is_administrator:
             self.fields["slug"].disabled = True
             self.fields["slug"].help_text = _(
@@ -365,6 +371,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
             ),
             "locale": EnhancedSelect,
             "timezone": EnhancedSelect,
+            "slug": TextInputWithAddon(addon_before=settings.SITE_URL + "/"),
         }
         json_fields = {
             "imprint_url": "display_settings",
