@@ -24,7 +24,6 @@ from rest_framework.authtoken.models import Token
 
 from pretalx.common.forms import I18nEventFormSet, I18nFormSet
 from pretalx.common.models import ActivityLog
-from pretalx.common.templatetags.rich_text import render_markdown
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views import OrderModelView, is_form_bound
 from pretalx.common.views.mixins import (
@@ -187,6 +186,8 @@ class EventLive(EventSettingsPermission, TemplateView):
                     if isinstance(response[1], Exception)
                 ]
                 if exceptions:
+                    from pretalx.common.templatetags.rich_text import render_markdown
+
                     messages.error(
                         request,
                         mark_safe("\n".join(render_markdown(e) for e in exceptions)),

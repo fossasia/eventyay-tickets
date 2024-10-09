@@ -11,7 +11,6 @@ from django_context_decorator import context
 
 from pretalx.common.language import language
 from pretalx.common.mail import TolerantDict
-from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
@@ -359,6 +358,8 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                     _("There are no recipients matching this selection."),
                 )
                 return self.get(self.request, *self.args, **self.kwargs)
+            from pretalx.common.templatetags.rich_text import rich_text
+
             for locale in self.request.event.locales:
                 with language(locale):
                     context_dict = TolerantDict()
