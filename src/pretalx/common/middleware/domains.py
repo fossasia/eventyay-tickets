@@ -71,6 +71,12 @@ class MultiDomainMiddleware:
                 if event_domain == domain and event_port == port:
                     request.uses_custom_domain = True
                     return None
+            elif domain == default_domain:
+                return None
+            # We are on an event page, but under the incorrect domain. Redirecting
+            # to the proper domain would leak information, so we will show a 404
+            # instead.
+            raise Http404()
 
         if domain == default_domain:
             return None
@@ -79,18 +85,14 @@ class MultiDomainMiddleware:
             return None
 
         if request.path_info.startswith("/orga"):  # pragma: no cover
-            if default_port not in (80, 443):
-                default_domain = f"{default_domain}:{default_port}"
-            return redirect(urljoin(default_domain, request.get_full_path()))
+            return redirect(urljoin(settings.SITE_URL, request.get_full_path()))
 
-        # If this domain is used as custom domain, redirect to most recent event
-        events = (
-            Event.objects.filter(
-                Q(custom_domain=f"{request.scheme}://{domain}")
-                | Q(custom_domain=f"{request.scheme}://{host}"),
-            )
-            .order_by("-date_from")
-        )
+        # If this domain is used as custom domain, but we are trying to view a
+        # non-event page, try to redirect to the most recent event instead.
+        events = Event.objects.filter(
+            Q(custom_domain=f"{request.scheme}://{domain}")
+            | Q(custom_domain=f"{request.scheme}://{host}"),
+        ).order_by("-date_from")
         if events:
             request.uses_custom_domain = True
             public_event = events.filter(is_public=True).first()
