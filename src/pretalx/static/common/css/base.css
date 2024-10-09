@@ -1063,6 +1063,9 @@ pr-0 {
   .d-md-block {
     display: block !important;
   }
+  .d-md-flex {
+    display: flex !important;
+  }
 }
 
 @media (max-width: 768px) {
