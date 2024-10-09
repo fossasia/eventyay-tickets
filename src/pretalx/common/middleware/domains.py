@@ -76,7 +76,8 @@ class MultiDomainMiddleware:
             # We are on an event page, but under the incorrect domain. Redirecting
             # to the proper domain would leak information, so we will show a 404
             # instead.
-            raise Http404()
+            if not request.path.startswith("/orga"):
+                raise Http404()
 
         if domain == default_domain:
             return None
