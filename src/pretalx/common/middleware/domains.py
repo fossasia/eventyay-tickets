@@ -92,6 +92,7 @@ class MultiDomainMiddleware:
             .order_by("-date_from")
         )
         if events:
+            request.uses_custom_domain = True
             public_event = events.filter(is_public=True).first()
             if public_event:
                 return redirect(public_event.urls.base.full())
