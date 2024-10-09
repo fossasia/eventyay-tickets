@@ -134,7 +134,11 @@
                                 </div>
                             </details>
                         {% elif not is_html_export %}
-                            <a href="{{ request.event.urls.login }}">login</a>
+                            {% if request.event %}
+                                <a href="{{ request.event.urls.login }}">login</a>
+                            {% else %}
+                                <a href="{% url "orga:login" %}">login</a>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
