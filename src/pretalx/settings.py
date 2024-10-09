@@ -526,7 +526,7 @@ template_loaders = (
 if not DEBUG:
     template_loaders = (("django.template.loaders.cached.Loader", template_loaders),)
 
-FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
+FORM_RENDERER = "pretalx.common.forms.renderers.TabularFormRenderer"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
