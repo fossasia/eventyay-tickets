@@ -203,3 +203,18 @@ class SearchInput(TextInput):
         context = super().get_context(name, value, attrs)
         context["widget"]["attrs"]["placeholder"] = _("Search")
         return context
+
+
+class TextInputWithAddon(TextInput):
+    template_name = "common/widgets/text_input_with_addon.html"
+
+    def __init__(self, attrs=None, addon_before=None, addon_after=None):
+        super().__init__(attrs)
+        self.addon_before = addon_before
+        self.addon_after = addon_after
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["widget"]["addon_before"] = self.addon_before
+        context["widget"]["addon_after"] = self.addon_after
+        return context

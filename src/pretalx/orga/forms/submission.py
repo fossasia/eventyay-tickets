@@ -11,6 +11,7 @@ from pretalx.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
     MarkdownWidget,
+    TextInputWithAddon,
 )
 from pretalx.common.text.phrases import phrases
 from pretalx.schedule.models import TalkSlot
@@ -210,6 +211,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             "abstract": MarkdownWidget,
             "description": MarkdownWidget,
             "notes": MarkdownWidget,
+            "duration": TextInputWithAddon(addon_after=_("minutes")),
         }
         field_classes = {
             "submission_type": SafeModelChoiceField,
