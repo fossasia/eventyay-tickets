@@ -1,12 +1,19 @@
 {% extends "cfp/event/base.html" %}
+
 {% load compress %}
 {% load i18n %}
+{% load orga_edit_link %}
+{% load rich_text %}
+{% load rules %}
 {% load static %}
 
 {% block title %}{% if submission_title %}{{ submission_title }}{% else %}{% translate "Create proposal" %}{% endif %} :: {{ request.event.name }}{% endblock title %}
 
 {% block cfp_header %}
     {% include "cfp/includes/forms_header.html" %}
+    {% compress js %}
+        <script defer src="{% static "cfp/js/proposalTabTitles.js" %}"></script>
+    {% endcompress %}
     {% block cfp_submission_header %}{% endblock cfp_submission_header %}
 {% endblock cfp_header %}
 
@@ -28,12 +35,20 @@
         </div>
     </div>
     {% block cfp_form %}
-        <form method="post" enctype="multipart/form-data">
+        <form method="post"{% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
             {% csrf_token %}
             {{ wizard.management_form }}
-            {% block inner %}{% endblock inner %}
+            <div class="d-flex align-items-start">
+                <h2>{% block submission_step_title %}{{ title|default:'' }}{% endblock submission_step_title %}</h2>
+                {% has_perm "orga.edit_cfp" request.user request.event as can_edit_cfp %}
+                {% if can_edit_cfp %}{% block orga_edit_link %}{% orga_edit_link request.event.cfp.urls.editor %}{% endblock %}{% endif %}
+            </div>
+            {% block submission_step_text %}<p>{{ text|rich_text }}</p>{% endblock %}
+            {% block inner %}
+                {{ form }}
+            {% endblock inner %}
             {% block buttons %}
-                <div class="row wizard-row">
+                <div class="row flex-row-reverse">
                     <div class="col-md-3 flip ml-auto d-flex flex-column">
                         {% if request.GET.draft == "1" %}
                             <button type="submit" class="btn btn-block btn-success btn-lg" name="action" value="draft">

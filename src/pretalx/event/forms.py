@@ -310,7 +310,11 @@ class EventWizardCopyForm(forms.Form):
         self.fields["copy_from_event"] = forms.ModelChoiceField(
             label=_("Copy configuration from"),
             queryset=EventWizardCopyForm.copy_from_queryset(user),
-            widget=forms.RadioSelect,
+            widget=EnhancedSelect,
+            help_text=_(
+                "You can copy settings from previous events here, such as mail settings, session types, and email templates. "
+                "Please check those settings once the event has been created!"
+            ),
             empty_label=_("Do not copy"),
             required=False,
         )

@@ -1,15 +1,17 @@
 {% extends "cfp/event/submission_base.html" %}
 
-{% load bootstrap4 %}
 {% load i18n %}
 {% load rich_text %}
 
-{% block inner %}
+{% block submission_step_title %}
     {% if request.GET.draft == "1" %}
-        <h2>{% translate "Sign in or register to save your draft" %}</h2>
+        {% translate "Sign in or register to save your draft" %}
     {% else %}
-        <h2>{{ title }}</h2>
+        {{ title }}
     {% endif %}
+{% endblock submission_step_title %}
+
+{% block submission_step_text %}
     <p>
         {% if request.GET.draft == "1" %}
             {% blocktranslate trimmed %}
@@ -19,7 +21,8 @@
             {{ text|rich_text }}
         {% endif %}
     </p>
+{% endblock submission_step_text %}
 
+{% block inner %}
     {% include "common/auth.html" with form=form no_form=True no_buttons=True %}
-
 {% endblock inner %}
