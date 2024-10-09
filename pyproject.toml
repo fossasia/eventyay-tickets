@@ -78,14 +78,12 @@ dev = [
   "check-manifest",
   "coverage",
   "djhtml",
-  "Faker",
   "flake8",
   "flake8-bugbear",
   "freezegun",
   "isort",
   "jsonschema",
   "lxml",
-  "pep8-naming",
   "pytest",
   "pytest-cov",
   "pytest-django",
@@ -95,7 +93,6 @@ dev = [
   "pytest-xdist",
   "pywatchman",
   "responses",
-  "rich",
   "urllib3",
 ]
 postgres = ["psycopg2-binary~=2.9.0"]

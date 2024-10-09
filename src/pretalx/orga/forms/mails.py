@@ -14,7 +14,6 @@ from pretalx.common.exceptions import SendMailException
 from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
 from pretalx.common.forms.widgets import EnhancedSelectMultiple
 from pretalx.common.language import language
-from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.common.text.phrases import phrases
 from pretalx.mail.context import get_available_placeholders
 from pretalx.mail.models import MailTemplate, QueuedMail
@@ -117,6 +116,8 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         if warnings:
             warnings = ", ".join("{" + warning + "}" for warning in warnings)
             raise forms.ValidationError(str(_("Unknown placeholder!")) + " " + warnings)
+
+        from pretalx.common.templatetags.rich_text import rich_text
 
         for locale in self.event.locales:
             with language(locale):

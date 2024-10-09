@@ -19,7 +19,6 @@ from pretalx.common.forms.validators import (
     MinDateTimeValidator,
     MinDateValidator,
 )
-from pretalx.common.templatetags.rich_text import rich_text
 from pretalx.common.text.phrases import phrases
 from pretalx.submission.models.cfp import default_fields
 
@@ -143,6 +142,7 @@ class RequestRequire:
 
 class QuestionFieldsMixin:
     def get_field(self, *, question, initial, initial_object, readonly):
+        from pretalx.common.templatetags.rich_text import rich_text
         from pretalx.submission.models import QuestionVariant
 
         read_only = readonly or question.read_only
