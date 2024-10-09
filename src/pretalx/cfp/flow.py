@@ -167,7 +167,7 @@ class BaseCfPStep:
 
 
 class TemplateFlowStep(TemplateResponseMixin, BaseCfPStep):
-    template_name = "cfp/event/submission_step.html"
+    template_name = "cfp/event/submission_base.html"
 
     def get_context_data(self, **kwargs):
         kwargs.setdefault("step", self)

@@ -2,17 +2,12 @@
 
 {% load i18n %}
 {% load orga_edit_link %}
-{% load rich_text %}
-{% load rules %}
-{% load static %}
+
+{% block orga_edit_link %}
+    {% orga_edit_link request.event.cfp.urls.text "information" %}
+{% endblock orga_edit_link %}
 
 {% block inner %}
-    <div class="d-flex align-items-start">
-        <h2>{{ title }}</h2>
-        {% has_perm "orga.edit_cfp" request.user request.event as can_edit_cfp %}
-        {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text "information" %}{% endif %}
-    </div>
-    <p>{{ text|rich_text }}</p>
 
     {{ form.name.as_field_group }}
     {% if form.biography %}

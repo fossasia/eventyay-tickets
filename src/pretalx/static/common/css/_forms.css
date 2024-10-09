@@ -544,11 +544,6 @@ input.password_strength {
     }
   }
 }
-.wizard-row {
-  display: flex;
-  flex-direction: row-reverse;
-  padding: 0 15px;
-}
 
 .markdown-wrapper {
   max-height: 160px;
