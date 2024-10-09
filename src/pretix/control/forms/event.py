@@ -48,6 +48,10 @@ class EventWizardFoundationForm(forms.Form):
         label=_("This is an event series"),
         required=False,
     )
+    add_video = forms.BooleanField(
+        label= _("Add video"),
+        required=False,
+    )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
@@ -139,6 +143,7 @@ class EventWizardBasicsForm(I18nModelForm):
         self.organizer = kwargs.pop('organizer')
         self.locales = kwargs.get('locales')
         self.has_subevents = kwargs.pop('has_subevents')
+        self.add_video = kwargs.pop('add_video')
         self.user = kwargs.pop('user')
         kwargs.pop('session')
         super().__init__(*args, **kwargs)
@@ -301,7 +306,9 @@ class EventMetaValueForm(forms.ModelForm):
 
 
 class EventUpdateForm(I18nModelForm):
-
+    add_video = forms.BooleanField(
+        required=False,
+    )
     def __init__(self, *args, **kwargs):
         self.change_slug = kwargs.pop('change_slug', False)
         self.domain = kwargs.pop('domain', False)
@@ -337,6 +344,10 @@ class EventUpdateForm(I18nModelForm):
             ),
             widget=forms.CheckboxSelectMultiple
         )
+
+        self.add_video = self.initial.get('add_video')
+        if self.add_video:
+            self.fields['add_video'].disabled = True
 
     def clean_domain(self):
         d = self.cleaned_data['domain']
@@ -393,7 +404,8 @@ class EventUpdateForm(I18nModelForm):
             'location',
             'geo_lat',
             'geo_lon',
-            'sales_channels'
+            'sales_channels',
+            'add_video'
         ]
         field_classes = {
             'date_from': SplitDateTimeField,

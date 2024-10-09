@@ -433,6 +433,10 @@ class Event(EventMixin, LoggedModel):
         help_text=_('Only sell tickets for this event on the following sales channels.'),
         default=['web'],
     )
+    add_video = models.BooleanField(
+        verbose_name=_('Add video call'),
+        default=False
+    )
     objects = ScopedManager(organizer='organizer')
 
     class Meta:

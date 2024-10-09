@@ -23,6 +23,10 @@
                 {% bootstrap_field form.date_to layout="control" %}
                 {% bootstrap_field form.currency layout="control" %}
                 {% bootstrap_field form.sales_channels layout="control" %}
+                <div>
+                    <label class="col-md-3 control-label">{% trans "Create video for this event" %}</label>
+                    {% bootstrap_field form.add_video %}
+                </div>
             </fieldset>
             <fieldset>
                 <legend>{% trans "Localization" %}</legend>

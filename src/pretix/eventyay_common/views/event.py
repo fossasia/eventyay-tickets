@@ -23,6 +23,7 @@ from pretix.control.views.event import DecoupleMixin, EventSettingsViewMixin
 from pretix.control.views.item import MetaDataEditorMixin
 from pretix.eventyay_common.forms.event import EventCommonSettingsForm
 from pretix.eventyay_common.tasks import send_event_webhook
+from pretix.eventyay_common.utils import check_create_permission, create_world
 
 
 class EventList(PaginationMixin, ListView):
@@ -165,6 +166,8 @@ class EventCreateView(SafeSessionWizardView):
 
         create_for = self.storage.extra_data.get('create_for')
 
+        self.request.organizer = foundation_data['organizer']
+
         if create_for == "talk":
             event_dict = {
                 'organiser_slug': foundation_data.get('organizer').slug if foundation_data.get('organizer') else None,
@@ -185,6 +188,10 @@ class EventCreateView(SafeSessionWizardView):
                 event.organizer = foundation_data['organizer']
                 event.plugins = settings.PRETIX_PLUGINS_DEFAULT
                 event.has_subevents = foundation_data['has_subevents']
+                if check_create_permission(self.request):
+                   event.add_video = foundation_data['add_video']
+                else:
+                   event.add_video = False
                 event.testmode = True
                 form_dict['basics'].save()
 
@@ -210,6 +217,11 @@ class EventCreateView(SafeSessionWizardView):
                     }
                     send_event_webhook.delay(user_id=self.request.user.id, event=event_dict, action='create')
                 event.settings.set('create_for', create_for)
+
+        data = dict(id=basics_data.get('slug'), title=basics_data['name'].data, timezone=basics_data['timezone'],
+                    locale=basics_data['locale'])
+        create_world(self.request, foundation_data['add_video'], data)
+
         return redirect(reverse('eventyay_common:events') + '?congratulations=1')
 
 
@@ -248,6 +260,19 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
         self.sform.save()
 
         tickets.invalidate_cache.apply_async(kwargs={'event': self.request.event.pk})
+
+        if check_create_permission(self.request):
+            form.instance.add_video = form.cleaned_data.get('add_video')
+        elif not check_create_permission(self.request) and form.cleaned_data.get('add_video'):
+            form.instance.add_video = True
+        else:
+            form.instance.add_video = False
+
+        data = dict(id=form.cleaned_data.get('slug'), title=form.cleaned_data.get('name').data,
+                    timezone=self.sform.cleaned_data.get('timezone'), locale=self.sform.cleaned_data.get('locale'))
+
+        create_world(self.request, form.cleaned_data.get('add_video'), data)
+
         messages.success(self.request, _('Your changes have been saved.'))
         return super().form_valid(form)
 

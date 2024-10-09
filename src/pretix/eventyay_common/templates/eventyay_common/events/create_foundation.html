@@ -30,6 +30,10 @@
             </div>
         </div>
     </div>
+    <div>
+        <label class="col-md-3 control-label">{% trans "Create video for this event" %}</label>
+        {% bootstrap_field form.add_video %}
+    </div>
     {% bootstrap_field form.organizer layout="horizontal" %}
     <div class="form-group">
         <label class="col-md-3 control-label">{% trans "Event type" %}</label>
