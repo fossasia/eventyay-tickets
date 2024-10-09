@@ -21,9 +21,15 @@ def _populate_app_cache():
 class EventPluginSignal(django.dispatch.Signal):
     """
     This is an extension to Django's built-in signals which differs in a way that it sends
-    out it's events only to receivers which belong to plugins that are enabled for the given
+    out its events only to receivers which belong to plugins that are enabled for the given
     Event.
     """
+
+    def get_live_receivers(self, sender):
+        receivers = self._live_receivers(sender)
+        if not receivers:
+            return []
+        return receivers[0]
 
     def _is_active(self, sender, receiver):
         if sender is None:
@@ -65,7 +71,7 @@ class EventPluginSignal(django.dispatch.Signal):
         if not app_cache:
             _populate_app_cache()
 
-        for receiver in self._sorted_receivers(sender):
+        for receiver in self.get_live_receivers(sender):
             if self._is_active(sender, receiver):
                 response = receiver(signal=self, sender=sender, **named)
                 responses.append((receiver, response))
@@ -89,7 +95,7 @@ class EventPluginSignal(django.dispatch.Signal):
         if not app_cache:
             _populate_app_cache()
 
-        for receiver in self._sorted_receivers(sender):
+        for receiver in self.get_live_receivers(sender):
             if self._is_active(sender, receiver):
                 named[chain_kwarg_name] = response
                 response = receiver(signal=self, sender=sender, **named)
@@ -116,7 +122,7 @@ class EventPluginSignal(django.dispatch.Signal):
         if not app_cache:
             _populate_app_cache()
 
-        for receiver in self._sorted_receivers(sender):
+        for receiver in self.get_live_receivers(sender):
             if self._is_active(sender, receiver):
                 try:
                     response = receiver(signal=self, sender=sender, **named)
@@ -125,18 +131,6 @@ class EventPluginSignal(django.dispatch.Signal):
                 else:
                     responses.append((receiver, response))
         return responses
-
-    def _sorted_receivers(self, sender):
-        orig_list = self._live_receivers(sender)
-        sorted_list = sorted(
-            orig_list,
-            key=lambda receiver: (
-                0 if any(receiver.__module__.startswith(m) for m in settings.CORE_MODULES) else 1,
-                receiver.__module__,
-                receiver.__name__,
-            )
-        )
-        return sorted_list
 
 
 class GlobalSignal(django.dispatch.Signal):
