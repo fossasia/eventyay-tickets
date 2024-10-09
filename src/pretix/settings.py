@@ -113,7 +113,7 @@ if config.has_section('replica'):
     }
     DATABASE_ROUTERS = ['pretix.helpers.database.ReplicaRouter']
 
-BASE_PATH = config.get('pretix', 'base_path', fallback='/tickets')
+BASE_PATH = config.get('pretix', 'base_path', fallback='')
 
 FORCE_SCRIPT_NAME = BASE_PATH
 
@@ -132,6 +132,7 @@ PRETIX_SESSION_TIMEOUT_RELATIVE = 3600 * 3
 PRETIX_SESSION_TIMEOUT_ABSOLUTE = 3600 * 12
 PRETIX_PRIMARY_COLOR = '#2185d0'
 TALK_HOSTNAME = config.get('pretix', 'talk_hostname', fallback='https://wikimania-dev.eventyay.com/')
+VIDEO_SERVER_HOSTNAME = config.get('pretix', 'video_server_hostname', fallback='')
 
 SITE_URL = config.get('pretix', 'url', fallback='http://localhost')
 if SITE_URL.endswith('/'):

@@ -11,20 +11,17 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+## Generate token for video system
 def generate_token(request):
     uid_token = encode_email(request.user.email)
     iat = datetime.now(timezone.utc)
     exp = iat + timedelta(days=30)
 
-    permissions_list = list(request.user.get_organizer_permission_set(request.organizer))
-    is_active_staff_session = request.user.has_active_staff_session(request.session.session_key)
-
     payload = {
         "exp": exp,
         "iat": iat,
         "uid": uid_token,
-        "permissions": permissions_list,
-        "is_active_staff_session": is_active_staff_session
+        "has_permission": check_create_permission(request),
     }
     token = jwt.encode(
         payload, settings.SECRET_KEY, algorithm="HS256"
@@ -41,21 +38,23 @@ def encode_email(email):
     final_result = short_hash + random_suffix
     return final_result.upper()
 
-
+## Check if the user has permission to create videos ('can_create_events' permission) and has admin session mode (admin session mode has full permissions)
 def check_create_permission(request):
-    is_create_permission = request.user.get_organizer_permission_set(request.organizer)
+    is_create_permission = 'can_create_events' in request.user.get_organizer_permission_set(request.organizer)
     is_active_staff_session= request.user.has_active_staff_session(request.session.session_key)
 
     if is_create_permission or is_active_staff_session:
         return True
     return False
 
+## user create automatically world when choosing add video option in create ticket form
 def create_world(request, is_add_video, data):
     id = data.get('id')
     title = data.get('title')
     timezone = data.get('timezone')
     locale = data.get('locale')
 
+    ## check if user choose add video option and has permission to create video system ('can_create_events' permission)
     if is_add_video and check_create_permission(request):
         try:
             requests.post("{}/api/v1/create-world/".format(settings.VIDEO_SERVER_HOSTNAME), json={
