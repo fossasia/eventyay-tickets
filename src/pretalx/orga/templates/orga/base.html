@@ -80,11 +80,11 @@
                                 <form action="{{ request.event.urls.auth.full }}"
                                       method="post"
                                       target="_blank"
-                                      class="mobile-navbar-view-form visible-xs-block d-flex align-items-center">
+                                      class="mobile-navbar-view-form d-flex align-items-center">
                                     <input type="hidden" value="{{ new_session }}" name="session">
                                     <input type="hidden" value="{{ go_to_target }}" name="target">
-                                    <button type="submit" class="btn btn-link navbar-toggle">
-                                        <i class="fa fa-eye"></i>
+                                    <button type="submit" class="btn btn-link navbar-toggle pl-2">
+                                        <i class="fa fa-eye mr-1"></i>
                                         {% translate "View event" %}
                                     </button>
                                 </form>

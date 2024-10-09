@@ -459,6 +459,10 @@ nav.navbar,
       text-decoration: none;
     }
   }
+  form.mobile-navbar-view-form button {
+    font-family: var(--font-family);
+    font-weight: normal;
+  }
 }
 
 .speaker-info {
