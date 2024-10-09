@@ -108,9 +108,20 @@ class MultiDomainMiddleware:
         # when caches (DNS or otherwise) are involved.
         raise DisallowedHost(f"Unknown host: {host}")
 
+    def process_response(self, request, response):
+        if request.path.startswith("/orga"):
+            if (event := getattr(request, "event", None)) and event.custom_domain:
+                # We need to update the CSP in order to make our fancy login form work
+                response._csp_update = getattr(response, "_csp_update", None) or {}
+                response._csp_update["form-action"] = [event.urls.base.full()]
+        return response
+
     def __call__(self, request):
         response = self.process_request(request)
-        return response or self.get_response(request)
+        if response:
+            # This is used to return redirects directly
+            return response
+        return self.process_response(request, self.get_response(request))
 
 
 class SessionMiddleware(BaseSessionMiddleware):
