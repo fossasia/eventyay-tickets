@@ -133,7 +133,7 @@
                                     </a>
                                 </div>
                             </details>
-                        {% elif request.event and not is_html_export %}
+                        {% elif not is_html_export %}
                             <a href="{{ request.event.urls.login }}">login</a>
                         {% endif %}
                     </div>
