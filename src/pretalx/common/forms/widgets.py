@@ -45,6 +45,7 @@ class PasswordStrengthInput(PasswordInput):
         )
 
         self.attrs = add_class(self.attrs, "password_strength")
+        self.attrs["autocomplete"] = "new-password"
         return mark_safe(super().render(name, value, self.attrs) + markup)
 
 

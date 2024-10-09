@@ -25,7 +25,7 @@ class GlobalValidator:
         return validate_password(value)
 
 
-class PasswordField(CharField):
+class NewPasswordField(CharField):
     default_validators = [GlobalValidator()]
 
     def __init__(self, *args, **kwargs):
@@ -35,7 +35,7 @@ class PasswordField(CharField):
         super().__init__(*args, **kwargs)
 
 
-class PasswordConfirmationField(CharField):
+class NewPasswordConfirmationField(CharField):
     def __init__(self, *args, **kwargs):
         kwargs["widget"] = kwargs.get(
             "widget",

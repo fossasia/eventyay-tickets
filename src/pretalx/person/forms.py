@@ -11,8 +11,8 @@ from i18nfield.forms import I18nModelForm
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import (
     ImageField,
-    PasswordConfirmationField,
-    PasswordField,
+    NewPasswordConfirmationField,
+    NewPasswordField,
     SizeFileField,
 )
 from pretalx.common.forms.mixins import (
@@ -53,12 +53,11 @@ class UserForm(CfPFormMixin, forms.Form):
         required=False,
         widget=forms.EmailInput(attrs={"autocomplete": "email"}),
     )
-    register_password = PasswordField(
+    register_password = NewPasswordField(
         label=_("Password"),
         required=False,
-        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
     )
-    register_password_repeat = PasswordConfirmationField(
+    register_password_repeat = NewPasswordConfirmationField(
         label=_("Password (again)"),
         required=False,
         confirm_with="register_password",
@@ -299,8 +298,8 @@ class LoginInfoForm(forms.ModelForm):
     old_password = forms.CharField(
         widget=forms.PasswordInput, label=_("Password (current)"), required=True
     )
-    password = PasswordField(label=phrases.base.new_password, required=False)
-    password_repeat = PasswordConfirmationField(
+    password = NewPasswordField(label=phrases.base.new_password, required=False)
+    password_repeat = NewPasswordConfirmationField(
         label=phrases.base.password_repeat, required=False, confirm_with="password"
     )
 
