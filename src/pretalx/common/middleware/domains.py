@@ -45,7 +45,7 @@ class MultiDomainMiddleware:
     def process_request(self, request):
         host = self.get_host(request)
         domain, port = split_domain_port(host)
-        default_domain, default_port = split_domain_port(settings.SITE_NETLOC)
+        default_domain, _ = split_domain_port(settings.SITE_NETLOC)
 
         request.host = domain
         request.port = int(port) if port else None
@@ -71,6 +71,10 @@ class MultiDomainMiddleware:
                 if event_domain == domain and event_port == port:
                     request.uses_custom_domain = True
                     return None
+                elif domain == default_domain:
+                    return redirect(
+                        urljoin(event.urls.base.full(), request.get_full_path())
+                    )
             elif domain == default_domain:
                 return None
             # We are on an event page, but under the incorrect domain. Redirecting
