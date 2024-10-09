@@ -7,6 +7,7 @@ from django.forms import (
     Select,
     SelectMultiple,
     Textarea,
+    TextInput,
 )
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -193,3 +194,12 @@ class SelectMultipleWithCount(EnhancedSelectMultiple):
     def create_option(self, name, value, label, *args, count=0, **kwargs):
         label = f"{label} ({count})"
         return super().create_option(name, value, label, *args, **kwargs)
+
+
+class SearchInput(TextInput):
+    input_type = "search"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context["widget"]["attrs"]["placeholder"] = _("Search")
+        return context

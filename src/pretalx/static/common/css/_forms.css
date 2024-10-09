@@ -278,9 +278,13 @@ select {
   }
 }
 
-[type="search"] {
+input[type="search"] {
   -webkit-appearance: textfield;
   outline-offset: -2px; /* Safari */
+  height: fit-content;
+  &.form-control.is-valid {
+    border-color: var(--color-border);
+  }
 }
 ::-webkit-search-decoration {
   -webkit-appearance: none;
