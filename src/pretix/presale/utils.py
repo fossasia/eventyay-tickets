@@ -1,5 +1,5 @@
-import warnings
 import time
+import warnings
 from importlib import import_module
 from urllib.parse import urljoin
 
@@ -19,7 +19,7 @@ from django.views.defaults import permission_denied
 from django_scopes import scope
 
 from pretix.base.middleware import LocaleMiddleware
-from pretix.base.models import Event, Organizer, Customer
+from pretix.base.models import Customer, Event, Organizer
 from pretix.multidomain.urlreverse import (
     get_event_domain, get_organizer_domain,
 )
@@ -232,9 +232,9 @@ def _detect_event(request, require_live=True, require_plugin=None):
                     .select_related('organizer') \
                     .using(db) \
                     .get(
-                    slug=url.kwargs['event'],
-                    organizer__slug=url.kwargs['organizer']
-                )
+                        slug=url.kwargs['event'],
+                        organizer__slug=url.kwargs['organizer']
+                    )
                 request.organizer = request.event.organizer
 
                 domain = get_event_domain(request.event)
@@ -267,11 +267,11 @@ def _detect_event(request, require_live=True, require_plugin=None):
 
             if require_live and not request.event.live:
                 can_access = (
-                        url.url_name == 'event.auth'
-                        or (
-                                request.user.is_authenticated
-                                and request.user.has_event_permission(request.organizer, request.event, request=request)
-                        )
+                    url.url_name == 'event.auth'
+                    or (
+                        request.user.is_authenticated
+                        and request.user.has_event_permission(request.organizer, request.event, request=request)
+                    )
 
                 )
                 if not can_access and 'pretix_event_access_{}'.format(request.event.pk) in request.session:

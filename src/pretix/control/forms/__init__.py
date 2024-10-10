@@ -371,4 +371,3 @@ class SMTPSettingsMixin(forms.Form):
         if data.get('smtp_use_tls') and data.get('smtp_use_ssl'):
             raise ValidationError(_('SSL and STARTTLS can not be enabled at the same time.'))
         return data
-

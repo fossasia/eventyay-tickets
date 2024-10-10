@@ -1,8 +1,7 @@
 import importlib
 
 from django.apps import apps
-from django.urls import include
-from django.urls import re_path as url
+from django.urls import include, re_path as url
 from rest_framework import routers
 
 from pretix.api.views import cart

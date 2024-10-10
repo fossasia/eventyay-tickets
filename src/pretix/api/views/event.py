@@ -16,7 +16,8 @@ from pretix.api.serializers.event import (
 )
 from pretix.api.views import ConditionalListView
 from pretix.base.models import (
-    CartPosition, Device, Event, TaxRule, TeamAPIToken, Organizer, Customer, Order,
+    CartPosition, Customer, Device, Event, Order, Organizer, TaxRule,
+    TeamAPIToken,
 )
 from pretix.base.models.event import SubEvent
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
@@ -429,7 +430,7 @@ class CustomerOrderCheckView(views.View):
         # Get all orders of customer which belong to this event
         order_list = (Order.objects.filter(Q(event=event)
                                            & (Q(customer=customer) | Q(
-            email__iexact=customer.email))).select_related('event').order_by('-datetime'))
+                                               email__iexact=customer.email))).select_related('event').order_by('-datetime'))
 
         if not order_list:
             return JsonResponse(status=404, data={"error": "Customer has no orders for this event."})
