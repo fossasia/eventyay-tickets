@@ -16,6 +16,17 @@ const updateTotal = () => {
     document.querySelector("#total-score").textContent = summands.join(" + ")
 }
 
+const hideScoreWeight = (input) => {
+    const scoreWeight = input.closest(".score-group").querySelector('input[name$="-weight"]')
+    scoreWeight.closest(".form-group").classList.toggle("d-none", input.checked)
+}
+const updateIndependentScoreWeight = () => {
+    document.querySelectorAll('input[name$="is_independent"]').forEach((input) => {
+        input.addEventListener("change", () => hideScoreWeight(input))
+        hideScoreWeight(input)
+    })
+}
+
 const addNewScores = (ev) => {
     const parentElement = event.target.closest(".score-group")
     const scoresList = parentElement.querySelector(
@@ -87,6 +98,7 @@ document.querySelector("#phase-add").addEventListener("click", () => {
     }, 100)
 })
 
-addListener()
-updateTotal()
-clearOldNewScores()
+onReady(addListener)
+onReady(updateTotal)
+onReady(clearOldNewScores)
+onReady(updateIndependentScoreWeight)
