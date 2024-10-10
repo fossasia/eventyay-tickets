@@ -1,28 +1,33 @@
 import django_filters
-from django.core.exceptions import ValidationError
+import operator
+from functools import reduce
+from django.core.exceptions import ValidationError as BaseValidationError
 from django.db.models import (
-    Count, Exists, F, Max, OuterRef, Prefetch, Q, Subquery,
+    Count, Exists, F, Max, OuterRef, Prefetch, Q, Subquery, OrderBy,prefetch_related_objects
 )
 from django.db.models.functions import Coalesce
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
 from django.utils.timezone import now
+from django.utils.translation import gettext, gettext_lazy
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from django_scopes import scopes_disabled
-from rest_framework import viewsets
+from rest_framework import views, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import DateTimeField
 from rest_framework.response import Response
+from rest_framework.generics import ListAPIView
 
-from pretix.api.serializers.checkin import CheckinListSerializer
+from pretix.api.serializers.checkin import CheckinListSerializer,CheckinRPCRedeemInputSerializer, MiniCheckinListSerializer
 from pretix.api.serializers.item import QuestionSerializer
 from pretix.api.serializers.order import CheckinListOrderPositionSerializer
 from pretix.api.views import RichOrderingFilter
 from pretix.api.views.order import OrderPositionFilter
 from pretix.base.i18n import language
 from pretix.base.models import (
-    CachedFile, Checkin, CheckinList, Event, Order, OrderPosition, Question,
+    CachedFile, Checkin, CheckinList, Event, Order, OrderPosition, Question, Device, TeamAPIToken, RevokedTicketSecret,
 )
 from pretix.base.services.checkin import (
     CheckInError, RequiredQuestionsError, SQLLogic, perform_checkin,
@@ -188,6 +193,254 @@ with scopes_disabled():
             return queryset.filter(SQLLogic(self.checkinlist).apply(self.checkinlist.rules))
 
 
+def _checkin_list_position_queryset(checkinlists, ignore_status=False, ignore_products=False, pdf_data=False, expand=None):
+    list_by_event = {cl.event_id: cl for cl in checkinlists}
+    if not checkinlists:
+        raise BaseValidationError('No check-in list passed.')
+    if len(list_by_event) != len(checkinlists):
+        raise BaseValidationError('Selecting two check-in lists from the same event is unsupported.')
+
+    cqs = Checkin.objects.filter(
+        position_id=OuterRef('pk'),
+        list_id__in=[cl.pk for cl in checkinlists]
+    ).order_by().values('position_id').annotate(
+        m=Max('datetime')
+    ).values('m')
+
+    qs = OrderPosition.objects.filter(
+        order__event__in=list_by_event.keys(),
+    ).annotate(
+        last_checked_in=Subquery(cqs)
+    ).prefetch_related('order__event', 'order__event__organizer')
+
+    lists_qs = []
+    for checkinlist in checkinlists:
+        list_q = Q(order__event_id=checkinlist.event_id)
+        if checkinlist.subevent:
+            list_q &= Q(subevent=checkinlist.subevent)
+        if not ignore_status:
+            if checkinlist.include_pending:
+                list_q &= Q(order__status__in=[Order.STATUS_PAID, Order.STATUS_PENDING])
+            else:
+                list_q &= Q(
+                    Q(order__status=Order.STATUS_PAID) |
+                    Q(order__status=Order.STATUS_PENDING, order__valid_if_pending=True)
+                )
+        if not checkinlist.all_products and not ignore_products:
+            list_q &= Q(item__in=checkinlist.limit_products.values_list('id', flat=True))
+        lists_qs.append(list_q)
+
+    qs = qs.filter(reduce(operator.or_, lists_qs))
+
+    if pdf_data:
+        qs = qs.prefetch_related(
+            Prefetch(
+                lookup='checkins',
+                queryset=Checkin.objects.filter(list_id__in=[cl.pk for cl in checkinlists])
+            ),
+            'answers', 'answers__options', 'answers__question',
+            Prefetch('addons', OrderPosition.objects.select_related('item', 'variation')),
+            Prefetch('order', Order.objects.select_related('invoice_address').prefetch_related(
+                Prefetch(
+                    'event',
+                    Event.objects.select_related('organizer')
+                ),
+                Prefetch(
+                    'positions',
+                    OrderPosition.objects.prefetch_related(
+                        Prefetch('checkins', queryset=Checkin.objects.all()),
+                        'item', 'variation', 'answers', 'answers__options', 'answers__question',
+                    )
+                )
+            ))
+        ).select_related(
+            'item', 'variation', 'item__category', 'addon_to', 'order', 'order__invoice_address', 'seat'
+        )
+    else:
+        qs = qs.prefetch_related(
+            Prefetch(
+                lookup='checkins',
+                queryset=Checkin.objects.filter(list_id__in=[cl.pk for cl in checkinlists])
+            ),
+            'answers', 'answers__options', 'answers__question',
+            Prefetch('addons', OrderPosition.objects.select_related('item', 'variation'))
+        ).select_related('item', 'variation', 'order', 'addon_to', 'order__invoice_address', 'order', 'seat')
+
+    if expand and 'subevent' in expand:
+        qs = qs.prefetch_related(
+            'subevent', 'subevent__event', 'subevent__subeventitem_set', 'subevent__subeventitemvariation_set',
+            'subevent__seat_category_mappings', 'subevent__meta_values'
+        )
+
+    if expand and 'item' in expand:
+        qs = qs.prefetch_related('item', 'item__addons', 'item__bundles', 'item__meta_values',
+                                 'item__variations').select_related('item__tax_rule')
+
+    if expand and 'variation' in expand:
+        qs = qs.prefetch_related('variation', 'variation__meta_values')
+
+    return qs
+
+
+def _handle_file_upload(data, user, auth):
+    try:
+        cf = CachedFile.objects.get(
+            session_key=f'api-upload-{str(type(user or auth))}-{(user or auth).pk}',
+            file__isnull=False,
+            pk=data[len("file:"):],
+        )
+    except (BaseValidationError, BaseBaseValidationError, IndexError):  # invalid uuid
+        raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
+    except CachedFile.DoesNotExist:
+        raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
+
+    allowed_types = (
+        'image/png', 'image/jpeg', 'image/gif', 'application/pdf'
+    )
+    if cf.type not in allowed_types:
+        raise BaseValidationError('The submitted file "{fid}" has a file type that is not allowed in this field.'.format(fid=data))
+    if cf.file.size > settings.FILE_UPLOAD_MAX_SIZE_OTHER:
+        raise BaseValidationError('The submitted file "{fid}" is too large to be used in this field.'.format(fid=data))
+
+    return cf.file
+
+def _redeem_process(*, checkinlists, raw_barcode, answers_data, datetime, force, checkin_type, ignore_unpaid, nonce,
+                    untrusted_input, user, auth, expand, pdf_data, request, questions_supported, canceled_supported,
+                    source_type='barcode', legacy_url_support=False, simulate=False, gate=None):
+    if not checkinlists:
+        raise BaseValidationError('No check-in list passed.')
+
+    list_by_event = {checkinlist.event_id: checkinlist for checkinlist in checkinlists}
+    prefetch_related_objects([checkinlist for checkinlist in checkinlists if not checkinlist.all_products], 'limit_products') # prefetch_related
+
+    device = auth if isinstance(auth, Device) else None
+    gate = gate or (auth.gate if isinstance(auth, Device) else None)
+
+    context = {
+            'request': request,
+            'expand': expand,
+    }
+
+    def _make_context(context, event):
+        return{
+            **context,
+            'event': event,
+            'pdf_data': pdf_data and (
+                user if user and user.is_authenticated else auth
+            ).has_event_permission(request.organizer, event, 'can_view_orders', request),
+        }
+
+    common_checkin_args = dict(
+        raw_barcode=raw_barcode,
+        raw_source_type=source_type,
+        type=checkin_type,
+        list=checkinlists[0],
+        datetime=datetime,
+        device=device,
+        gate=gate,
+        nonce=nonce,
+        forced=force,
+    )
+    raw_barcode_for_checkin = None
+    from_revoked_secret = False
+    if simulate:
+        common_checkin_args['__fake_arg_to_prevent_this_from_being_saved'] = True
+
+    queryset = _checkin_list_position_queryset(checkinlists, pdf_data=pdf_data, ignore_status=True, ignore_products=True).order_by(
+        F('addon_to').asc(nulls_first=True)
+    )
+
+
+
+    q = Q(secret=raw_barcode)
+
+    if raw_barcode.isnumeric() and not untrusted_input and legacy_url_support:
+        q |= Q(pk=raw_barcode)
+
+
+    op_candidates = list(queryset.filter(q)) #filtering queryset with q to fetch orderposition
+
+    print('\n',op_candidates,'\n')
+
+    op = op_candidates[0]
+    common_checkin_args['list'] = list_by_event[op.order.event_id]
+
+    # 5. Pre-validate all incoming answers, handle file upload
+    given_answers = {}
+    if answers_data:
+        for q in op.item.questions.filter(ask_during_checkin=True):
+            if str(q.pk) in answers_data:
+                try:
+                    if q.type == Question.TYPE_FILE:
+                        given_answers[q] = _handle_file_upload(answers_data[str(q.pk)], user, auth)
+                    else:
+                        given_answers[q] = q.clean_answer(answers_data[str(q.pk)])
+                except (BaseValidationError):
+                    pass
+
+    with language(op.order.event.settings.locale):
+        try:
+            perform_checkin(
+                    op=op,
+                    clist=list_by_event[op.order.event_id],
+                    given_answers=given_answers,
+                    force=force,
+                    ignore_unpaid=ignore_unpaid,
+                    nonce=nonce,
+                    datetime=datetime,
+                    questions_supported=questions_supported,
+                    canceled_supported=canceled_supported,
+                    user=user,
+                    auth=auth,
+                    type=checkin_type,
+            )
+        except RequiredQuestionsError as e:
+            return Response({
+                'status': 'incomplete',
+                'require_attention': op.require_checkin_attention,
+                'position': CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data,
+                'questions': [
+                    QuestionSerializer(q).data for q in e.questions
+                ],
+                'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
+            }, status=400)
+        except CheckInError as e:
+            if not simulate:
+                op.order.log_action('pretix.event.checkin.denied', data={
+                    'position': op.id,
+                    'positionid': op.positionid,
+                    'errorcode': e.code,
+                    'reason_explanation': e.reason,
+                    'force': force,
+                    'datetime': datetime,
+                    'type': checkin_type,
+                    'list': list_by_event[op.order.event_id].pk,
+                }, user=user, auth=auth)
+                Checkin.objects.create(
+                    position=op,
+                    successful=False,
+                    error_reason=e.code,
+                    error_explanation=e.reason,
+                    **common_checkin_args,
+                )
+            return Response({
+                'status': 'error',
+                'reason': e.code,
+                'reason_explanation': e.reason,
+                'require_attention': op.require_checkin_attention,
+                'position': CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data,
+                'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
+            }, status=400)
+        else:
+            return Response({
+                'status': 'ok',
+                'require_attention': op.require_checkin_attention,
+                'position': CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data,
+                'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
+            }, status=201)
+
+
+
 class ExtendedBackend(DjangoFilterBackend):
     def get_filterset_kwargs(self, request, queryset, view):
         kwargs = super().get_filterset_kwargs(request, queryset, view)
@@ -322,7 +575,7 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
         force = bool(self.request.data.get('force', False))
         type = self.request.data.get('type', None) or Checkin.TYPE_ENTRY
         if type not in dict(Checkin.CHECKIN_TYPES):
-            raise ValidationError("Invalid check-in type.")
+            raise BaseValidationError("Invalid check-in type.")
         ignore_unpaid = bool(self.request.data.get('ignore_unpaid', False))
         nonce = self.request.data.get('nonce')
 
@@ -366,7 +619,7 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
                             given_answers[q] = self._handle_file_upload(aws[str(q.pk)])
                         else:
                             given_answers[q] = q.clean_answer(aws[str(q.pk)])
-                    except ValidationError:
+                    except BaseValidationError:
                         pass
 
         try:
@@ -423,17 +676,140 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
                 file__isnull=False,
                 pk=data[len("file:"):],
             )
-        except (ValidationError, IndexError):  # invalid uuid
-            raise ValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
+        except (BaseValidationError, IndexError):  # invalid uuid
+            raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
         except CachedFile.DoesNotExist:
-            raise ValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
+            raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
 
         allowed_types = (
             'image/png', 'image/jpeg', 'image/gif', 'application/pdf'
         )
         if cf.type not in allowed_types:
-            raise ValidationError('The submitted file "{fid}" has a file type that is not allowed in this field.'.format(fid=data))
+            raise BaseValidationError('The submitted file "{fid}" has a file type that is not allowed in this field.'.format(fid=data))
         if cf.file.size > 10 * 1024 * 1024:
-            raise ValidationError('The submitted file "{fid}" is too large to be used in this field.'.format(fid=data))
+            raise BaseValidationError('The submitted file "{fid}" is too large to be used in this field.'.format(fid=data))
 
         return cf.file
+
+class CheckinRPCRedeemView(views.APIView):
+    def post(self, request, *args, **kwargs):
+        auth = self.request.auth
+        user = self.request.user
+
+        if isinstance(auth, (TeamAPIToken, Device)):
+            events = auth.get_events_with_permission(('can_change_orders', 'can_checkin_orders'))
+        elif user.is_authenticated:
+            events = user.get_events_with_permission(('can_change_orders', 'can_checkin_orders'), request).filter(organizer=self.request.organizer)
+        else:
+            raise ValueError("Unknown authentication method")
+
+        serializer = CheckinRPCRedeemInputSerializer(data=request.data, context={'events': events})
+        serializer.is_valid(raise_exception=True)
+        return _redeem_process(
+            checkinlists=serializer.validated_data['lists'],
+            raw_barcode=serializer.validated_data['secret'],
+            source_type=serializer.validated_data['source_type'],
+            answers_data=serializer.validated_data.get('answers'),
+            datetime=serializer.validated_data.get('datetime') or now(),
+            force=serializer.validated_data['force'],
+            checkin_type=serializer.validated_data['type'],
+            ignore_unpaid=serializer.validated_data['ignore_unpaid'],
+            nonce=serializer.validated_data.get('nonce'),
+            untrusted_input=True,
+            user=user,
+            auth=auth,
+            expand=self.request.query_params.getlist('expand'),
+            pdf_data=self.request.query_params.get('pdf_data', 'false') == 'true',
+            questions_supported=serializer.validated_data['questions_supported'],
+            canceled_supported=True,
+            request=self.request,
+            legacy_url_support=False,
+        )
+
+
+class CheckinRPCSearchView(ListAPIView):
+    serializer_class = CheckinListOrderPositionSerializer
+    queryset = OrderPosition.all.none()
+    filter_backends = (ExtendedBackend, RichOrderingFilter)
+    ordering = (F('attendee_name_cached').asc(nulls_last=True), 'positionid')
+    ordering_fields = (
+        'order__code', 'order__datetime', 'positionid', 'attendee_name',
+        'last_checked_in', 'order__email',
+    )
+    ordering_custom = {
+        'attendee_name': {
+            '_order': F('display_name').asc(nulls_first=True),
+            'display_name': Coalesce('attendee_name_cached', 'addon_to__attendee_name_cached')
+        },
+        '-attendee_name': {
+            '_order': F('display_name').desc(nulls_last=True),
+            'display_name': Coalesce('attendee_name_cached', 'addon_to__attendee_name_cached')
+        },
+        'last_checked_in': {
+            '_order': OrderBy(F('last_checked_in'), nulls_first=True),
+        },
+        '-last_checked_in': {
+            '_order': OrderBy(F('last_checked_in'), nulls_last=True, descending=True),
+        },
+    }
+    filterset_class = OrderPositionFilter
+
+    def get_serializer_context(self):
+        return {
+            **super().get_serializer_context(),
+            'expand': self.request.query_params.getlist('expand'),
+            'pdf_data': False
+        }
+
+    @cached_property
+    def lists(self):
+        auth = self.request.auth
+        user = self.request.user
+
+        if isinstance(auth, (TeamAPIToken, Device)):
+            events = auth.get_events_with_permission(('can_view_orders', 'can_checkin_orders'))
+        elif user.is_authenticated:
+            events = user.get_events_with_permission(('can_view_orders', 'can_checkin_orders'), self.request).filter(organizer=self.request.organizer)
+        else:
+            raise ValueError("Unknown authentication method")
+
+        requested_lists = [int(l) for l in self.request.query_params.getlist('list') if l.isdigit()]
+        checkin_lists = CheckinList.objects.filter(event__in=events, id__in=requested_lists).select_related('event')
+
+        if len(checkin_lists) != len(requested_lists):
+            missing_lists = set(requested_lists) - {l.pk for l in checkin_lists}
+            raise PermissionDenied(f"Access denied or non-existent lists: {', '.join(map(str, missing_lists))}")
+
+        return list(checkin_lists)
+
+    @cached_property
+    def has_full_access_permission(self):
+        auth = self.request.auth
+        user = self.request.user
+
+        if isinstance(auth, (TeamAPIToken, Device)):
+            events = auth.get_events_with_permission('can_view_orders')
+        elif user.is_authenticated:
+            events = user.get_events_with_permission('can_view_orders', self.request).filter(organizer=self.request.organizer)
+        else:
+            raise ValueError("Unknown authentication method")
+
+        return CheckinList.objects.filter(event__in=events, id__in=[c.pk for c in self.lists]).count() == len(self.lists)
+
+    def get_queryset(self, ignore_status=False, ignore_products=False):
+        params = self.request.query_params
+        min_search_len = 3
+        search_len = len(params.get('search', ''))
+
+        qs = _checkin_list_position_queryset(
+            self.lists,
+            ignore_status=params.get('ignore_status', 'false') == 'true' or ignore_status,
+            ignore_products=ignore_products,
+            pdf_data=params.get('pdf_data', 'false') == 'true',
+            expand=params.getlist('expand'),
+        )
+
+        if search_len < min_search_len and not self.has_full_access_permission:
+            qs = qs.none()
+
+        return qs
