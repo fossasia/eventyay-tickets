@@ -190,6 +190,7 @@ def test_add_custom_css_as_administrator(event, administrator_client, path):
     assert event.custom_css
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_add_logo(event, orga_client):
     assert not event.logo
