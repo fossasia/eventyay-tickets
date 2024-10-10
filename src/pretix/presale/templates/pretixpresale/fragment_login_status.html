@@ -5,11 +5,13 @@
     {{ request.event.organizer.slug|json_script:"organizer_name" }}
     {{ request.event.slug|json_script:"event_slug" }}
     {{ 'popover-profile'|json_script:"popover_toggle" }}
+    {{ base_path|json_script:"base_path" }}
     <nav class="loginstatus" aria-label="{% trans "customer account" %}">
         {% if request.customer %}
             <div class="navigation-button">
                 <a target="_blank" class="header-nav btn btn-outline-success" data-toggle="popover-profile">
                     <i class="fa fa-user"></i> {{ request.customer.name|default:request.customer.email }}
+                    <i class="fa fa-solid fa-caret-down"></i>
                 </a>
             </div>
         {% else %}

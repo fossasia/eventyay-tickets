@@ -23,9 +23,6 @@
     {{ block.super }}
 {% endblock %}
 {% block above %}
-    {% compress js %}
-        <script type="text/javascript" src="{% static "pretixpresale/js/ui/popover.js" %}"></script>
-    {% endcompress %}
     {% if not event.live %}
         <div class="offline-banner">
             <div class="container">
