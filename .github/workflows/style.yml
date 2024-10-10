@@ -28,6 +28,8 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
+      - name: Install system packages
+        run: sudo apt update && sudo apt install gettext
       - name: Install Dependencies
         run: |
           sed -i '/eventyay-stripe/d' pyproject.toml
@@ -50,6 +52,8 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
+      - name: Install system packages
+        run: sudo apt update && sudo apt install gettext
       - name: Install Dependencies
         run: |
           sed -i '/eventyay-stripe/d' pyproject.toml
