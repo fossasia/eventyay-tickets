@@ -80,7 +80,8 @@
             {% for e in events %}
                 <tr>
                     <td class="event-name-col">
-                        <strong><a href='{% url "eventyay_common:event.update" organizer=e.organizer.slug event=e.slug %}'>{{ e.name }}</a></strong>
+                        <strong><a
+                                href='{% url "eventyay_common:event.update" organizer=e.organizer.slug event=e.slug %}'>{{ e.name }}</a></strong>
                     </td>
                     <td>{{ e.slug }}</td>
                     <td>{{ e.organizer }}</td>
@@ -94,7 +95,7 @@
                             <span class="label label-default">{% trans "Series" %}</span>
                         {% endif %}
                         {% if e.settings.show_date_to and e.date_to %}
-                             –<br>
+                            –<br>
                             {% if e.has_subevents %}
                                 {{ e.max_fromto|default_if_none:e.max_from|default_if_none:e.max_to|default_if_none:""|date:"SHORT_DATETIME_FORMAT" }}
                             {% else %}
@@ -106,9 +107,16 @@
                         {% endif %}
                     </td>
                     <td class="text-right flip">
+                        {% if 'pretix_venueless' in e.plugins_array %}
+                            <a href='{% url "eventyay_common:event.create_access_to_video" organizer=e.organizer.slug event=e.slug %}'
+                               class="btn btn-sm btn-default" title="{% trans "Enable video access" %}"
+                               data-toggle="tooltip">
+                                <span class="fa fa-video-camera"></span>
+                            </a>
+                        {% endif %}
                         <a href='{% url "eventyay_common:event.update" organizer=e.organizer.slug event=e.slug %}'
-                                class="btn btn-sm btn-default" title="{% trans "Edit" %}"
-                                data-toggle="tooltip">
+                           class="btn btn-sm btn-default" title="{% trans "Edit" %}"
+                           data-toggle="tooltip">
                             <span class="fa fa-edit"></span>
                         </a>
                     </td>
