@@ -2047,6 +2047,12 @@ class OrderPosition(AbstractPosition):
     def sort_key(self):
         return self.addon_to.positionid if self.addon_to else self.positionid, self.addon_to_id or 0
 
+    @cached_property
+    def require_checkin_attention(self):
+        if self.order.checkin_attention or self.item.checkin_attention or (self.variation_id and self.variation.checkin_attention):
+            return True
+        return False
+
     @property
     def generate_ticket(self):
         if self.item.generate_tickets is not None:
