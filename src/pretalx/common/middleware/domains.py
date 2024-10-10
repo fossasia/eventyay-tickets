@@ -69,7 +69,7 @@ class MultiDomainMiddleware:
                 if event_domain == domain and event_port == port:
                     request.uses_custom_domain = True
                     return None
-                elif domain == default_domain:
+                elif domain == default_domain and not request.path.startswith("/orga"):
                     return redirect(
                         urljoin(event.urls.base.full(), request.get_full_path())
                     )

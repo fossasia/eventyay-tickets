@@ -75,13 +75,13 @@ def test_can_see_feedback(django_assert_num_queries, feedback, client):
 
 @pytest.mark.django_db()
 def test_can_see_feedback_form(django_assert_num_queries, past_slot, client):
-    with django_assert_num_queries(12):
+    with django_assert_num_queries(13):
         response = client.get(past_slot.submission.urls.feedback, follow=True)
     assert response.status_code == 200
 
 
 @pytest.mark.django_db()
 def test_cannot_see_feedback_form_before_talk(django_assert_num_queries, slot, client):
-    with django_assert_num_queries(14):
+    with django_assert_num_queries(15):
         response = client.get(slot.submission.urls.feedback, follow=True)
     assert response.status_code == 200
