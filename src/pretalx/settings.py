@@ -97,7 +97,6 @@ LOCAL_APPS = [
     "pretalx.eventyay_common",
 ]
 FALLBACK_APPS = [
-    "bootstrap4",
     "django.forms",
     "rest_framework",
 ]
@@ -626,14 +625,6 @@ if DEBUG:
             "JQUERY_URL": "",
             "DISABLE_PANELS": toolbar_settings.PANELS_DEFAULTS,
         }
-BOOTSTRAP4 = {
-    "field_renderers": {
-        "default": "bootstrap4.renderers.FieldRenderer",
-        "inline": "bootstrap4.renderers.InlineFieldRenderer",
-        "event": "pretalx.common.forms.renderers.EventFieldRenderer",
-        "event-inline": "pretalx.common.forms.renderers.EventInlineFieldRenderer",
-    }
-}
 COMPRESS_ENABLED = COMPRESS_OFFLINE = not DEBUG
 COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
 COMPRESS_FILTERS = {

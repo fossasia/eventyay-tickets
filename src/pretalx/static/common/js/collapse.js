@@ -1,4 +1,3 @@
-// Re-implement Bootstrap's collapse API in minimal vanilla JS
 const makeCollapsed = (controller, element, collapsed) => {
     controller.setAttribute('aria-expanded', !collapsed)
     element.setAttribute('aria-hidden', collapsed)
