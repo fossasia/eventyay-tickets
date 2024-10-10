@@ -85,6 +85,15 @@ class SubmissionStates(Choices):
 
     accepted_states = (ACCEPTED, CONFIRMED)
 
+    @staticmethod
+    def get_color(state):
+        return {
+            SubmissionStates.SUBMITTED: "--color-info",
+            SubmissionStates.ACCEPTED: "--color-success",
+            SubmissionStates.CONFIRMED: "--color-success",
+            SubmissionStates.REJECTED: "--color-danger",
+        }.get(state, "--color-grey")
+
 
 class SubmissionManager(models.Manager):
     def get_queryset(self):

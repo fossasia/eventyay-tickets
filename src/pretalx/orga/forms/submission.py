@@ -93,8 +93,15 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             if not anonymise:
                 self.fields["state"] = forms.ChoiceField(
                     label=_("Proposal state"),
-                    choices=SubmissionStates.get_choices(),
+                    choices=[
+                        (choice, name)
+                        for (choice, name) in SubmissionStates.get_choices()
+                        if choice != SubmissionStates.DELETED
+                        and choice != SubmissionStates.DRAFT
+                    ],
                     initial=SubmissionStates.SUBMITTED,
+                    required=True,
+                    widget=EnhancedSelect(color_field=SubmissionStates.get_color),
                 )
         if (
             not self.instance.pk

@@ -724,4 +724,4 @@ class ReviewScoreCategoryForm(I18nHelpText, I18nModelForm):
         field_classes = {
             "limit_tracks": SafeModelMultipleChoiceField,
         }
-        widgets = {"limit_tracks": EnhancedSelectMultiple}
+        widgets = {"limit_tracks": EnhancedSelectMultiple(color_field="color")}

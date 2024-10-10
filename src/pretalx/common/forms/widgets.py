@@ -138,6 +138,9 @@ class EnhancedSelectMixin(Select):
                 color := getattr(value.instance, self.color_field, None)
             ):
                 option["attrs"]["data-color"] = color
+        else:
+            if self.color_field and callable(self.color_field):
+                option["attrs"]["data-color"] = self.color_field(value)
         return option
 
 

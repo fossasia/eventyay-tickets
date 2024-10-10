@@ -557,7 +557,8 @@ class Event(PretalxModel):
             plugins_active.remove(module)
             self.set_plugins(plugins_active)
 
-    def get_primary_color(self):
+    @cached_property
+    def visible_primary_color(self):
         return self.primary_color or settings.DEFAULT_EVENT_PRIMARY_COLOR
 
     def _get_default_submission_type(self):
