@@ -105,6 +105,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 queryset=event.rooms.all(),
                 label=TalkSlot._meta.get_field("room").verbose_name,
                 initial=initial_slot.get("room"),
+                widget=EnhancedSelect,
             )
             self.fields["start"] = forms.DateTimeField(
                 required=False,

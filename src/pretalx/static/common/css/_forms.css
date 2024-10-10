@@ -679,6 +679,9 @@ input.password_strength {
     .choices__item {
       padding: 2px 5px 2px 2px;
       box-shadow: var(--shadow-checkbox);
+      &.choice-item-color:before {
+        margin-left: 5px;
+      }
     }
   }
   .choices__list.choices__list--dropdown {

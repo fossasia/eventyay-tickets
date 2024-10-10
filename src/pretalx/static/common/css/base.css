@@ -714,6 +714,9 @@ small {
 .d-flex {
   display: flex !important;
 }
+.d-inline-flex {
+  display: inline-flex !important;
+}
 
 .flex-row {
   flex-direction: row !important;
@@ -750,6 +753,9 @@ small {
 }
 .align-items-end {
   align-items: flex-end !important;
+}
+.align-self-start {
+  align-self: flex-start !important;
 }
 .float-right {
   float: right !important;

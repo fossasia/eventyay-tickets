@@ -22,7 +22,11 @@ from pretalx.common.forms.mixins import (
     RequestRequire,
 )
 from pretalx.common.forms.renderers import InlineFormLabelRenderer, InlineFormRenderer
-from pretalx.common.forms.widgets import EnhancedSelectMultiple, MarkdownWidget
+from pretalx.common.forms.widgets import (
+    EnhancedSelect,
+    EnhancedSelectMultiple,
+    MarkdownWidget,
+)
 from pretalx.common.text.phrases import phrases
 from pretalx.event.models import Event
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
@@ -422,6 +426,7 @@ class UserSpeakerFilterForm(forms.Form):
             ("all", phrases.base.all_choices),
         ),
         required=False,
+        widget=EnhancedSelect,
     )
     events = SafeModelMultipleChoiceField(
         queryset=Event.objects.none(),

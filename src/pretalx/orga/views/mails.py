@@ -342,7 +342,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         ctx["output"] = getattr(self, "output", None)
-        ctx["mail_count"] = getattr(self, "mail_count", None)
+        ctx["mail_count"] = getattr(self, "mail_count", None) or 0
         return ctx
 
     def form_valid(self, form):

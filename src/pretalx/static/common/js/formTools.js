@@ -124,6 +124,8 @@ const initSelect = (element) => {
             showPlaceholder = label.textContent !== element.title
         }
     }
+    const realPlaceholder = element.getAttribute("placeholder")
+    showPlaceholder = showPlaceholder || (realPlaceholder && realPlaceholder.length > 0)
     const choicesOptions = {
         removeItems: !element.readonly,
         removeItemButton:
@@ -134,7 +136,7 @@ const initSelect = (element) => {
         searchResultLimit: -1,
         resetScrollPosition: false,
         shouldSort: false,
-        placeholderValue: showPlaceholder ? element.title : null,
+        placeholderValue: showPlaceholder ? (element.title || realPlaceholder) : null,
         itemSelectText: "",
         addItemText: "",
         removeItemLabelText: "×",
@@ -192,7 +194,6 @@ const initFormChanges = (form) => {
 const addDateLimit = (element, other, limit) => {
     const otherElement = document.querySelector(other)
     if (otherElement) {
-        console.log("Adding date limit", limit, otherElement)
         otherElement.addEventListener("change", () => {
             element.setAttribute(limit, otherElement.value)
         })

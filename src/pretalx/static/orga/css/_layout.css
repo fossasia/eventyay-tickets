@@ -934,11 +934,14 @@ table .color-square {
     border-bottom-left-radius: var(--size-border-radius);
   }
 }
-.i18n-form-single-language input[lang],
+.i18n-form-single-language input[lang][type=text],
 .i18n-form-single-language textarea[lang],
-.i18n-form-single-language input[lang] + label {
+.i18n-form-single-language input[lang][type=text] + label {
   background: none !important;
   padding: 0.375rem 0.75rem;
+  &::placeholder {
+      opacity: 0;
+  }
 }
 
 #fake-changelog {

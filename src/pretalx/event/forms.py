@@ -153,7 +153,7 @@ class OrganiserForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def __init__(self, *args, **kwargs):
         kwargs["locales"] = "en"
         super().__init__(*args, **kwargs)
-
+        self.fields["name"].required = True
         if kwargs.get("instance"):
             self.fields["slug"].disabled = True
 
