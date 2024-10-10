@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -14,26 +13,15 @@
 
 {% block extra_title %}{% translate "User settings" %} :: {% endblock extra_title %}
 {% block content %}
-    <form method="post">
-        {% csrf_token %}
-        <fieldset class="m-2">
-            <legend>{% translate "User settings" %}</legend>
-            {% bootstrap_form profile_form layout="event" %}
+    <fieldset class="m-2">
+        <legend>{% translate "User settings" %}</legend>
+        {% include "orga/includes/base_form.html" with form=profile_form submit_name="form" submit_value="profile" %}
+    </fieldset>
 
-            {% include "orga/includes/submit_row.html" with submit_name="form" submit_value="profile" %}
-
-        </fieldset>
-    </form>
-    <form method="post" class="password-input-form">
-        {% csrf_token %}
-        <fieldset class="m-2">
-            <legend>{% translate "Login settings" %}</legend>
-            {% bootstrap_form login_form layout="event" %}
-
-            {% include "orga/includes/submit_row.html" with submit_name="form" submit_value="login" %}
-
-        </fieldset>
-    </form>
+    <fieldset class="m-2 password-input-form">
+        <legend>{% translate "Login settings" %}</legend>
+        {% include "orga/includes/base_form.html" with form=login_form submit_name="form" submit_value="login" %}
+    </fieldset>
 
     {% include "common/user_api_token.html" with orga="true" %}
 

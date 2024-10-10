@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -131,15 +130,12 @@
         </div>
         <div class="ml-auto mr-auto col-md-4">
             <form id="direction">
-                {% bootstrap_form direction_form layout="inline" %}
+                {{ direction_form }}
             </form>
         </div>
-        <form method="post" class="d-flex flex-column">
-            {% csrf_token %}
 
-            {% bootstrap_form form layout="event" %}
-            {% include "orga/includes/submit_row.html" %}
-        </form>
+        {% include "orga/includes/base_form.html" %}
+
     </div>
 {% endblock content %}
 

@@ -1,6 +1,5 @@
 {% extends "orga/settings/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -21,29 +20,23 @@
 {% endblock scripts %}
 
 {% block settings_content %}
-    <form method="post" class="d-flex flex-column">
-        {% csrf_token %}
+    <h2>
+        {% translate "Widget settings" %}
+        <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
+            <i class="fa fa-question-circle-o text-info"></i>
+        </span>
+    </h2>
+    <dialog id="info-dialog">
+        <div class="alert alert-info flip ml-auto">
+            {% blocktranslate trimmed %}
+                You can configure a pretalx schedule widget to show your event schedule
+                on your homepage, instead of using this page. If you want to disable the
+                schedule on here entirely, please activate the setting below.
+            {% endblocktranslate %}
+        </div>
+    </dialog>
 
-        <h2>
-            {% translate "Widget settings" %}
-            <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
-                <i class="fa fa-question-circle-o text-info"></i>
-            </span>
-        </h2>
-        <dialog id="info-dialog">
-            <div class="alert alert-info flip ml-auto">
-                {% blocktranslate trimmed %}
-                    You can configure a pretalx schedule widget to show your event schedule
-                    on your homepage, instead of using this page. If you want to disable the
-                    schedule on here entirely, please activate the setting below.
-                {% endblocktranslate %}
-            </div>
-        </dialog>
-        {% bootstrap_form form layout="event" %}
-
-        {% include "orga/includes/submit_row.html" %}
-
-    </form>
+    {% include "orga/includes/base_form.html" %}
 
     <h2>{% translate "Widget generation" %}</h2>
     <p>
@@ -58,9 +51,7 @@
                 Using this form, you can generate code to copy and paste to your website source.
             {% endblocktranslate %}
         </p>
-        <form>
-            {% bootstrap_form extra_form layout="event" %}
-        </form>
+        {{ extra_form }}
         <div class="submit-group panel">
             <span></span>
             <span>

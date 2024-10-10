@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -25,16 +24,7 @@
             {% translate "New track" %}
         {% endif %}
     </h2>
-    <form method="post">
-        {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        {% bootstrap_field form.name layout="event" %}
-        {% bootstrap_field form.description layout="event" %}
-        {% bootstrap_field form.color layout="event" %}
-        {% bootstrap_field form.requires_access_code layout="event" %}
 
-        {% include "orga/includes/submit_row.html" %}
-
-    </form>
+    {% include "orga/includes/base_form.html" %}
 
 {% endblock content %}
