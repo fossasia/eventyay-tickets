@@ -31,42 +31,7 @@
         {% endif %}
     </div>
 
-    <div class="submit-group search-submit-group">
-        <form class="search-form" id="review-filter-form">
-            {% bootstrap_field filter_form.q %}
-            {% if show_submission_types and filter_form.submission_type %}
-                {% bootstrap_field filter_form.submission_type %}
-            {% endif %}
-            <div class="d-none form-group">
-                {% bootstrap_field filter_form.state layout="inline" %}
-                <div id="pending">{% bootstrap_field filter_form.pending_state__isnull layout="inline" %}</div>
-            </div>
-            {% if filter_form.track %}
-                {% bootstrap_field filter_form.track %}
-            {% endif %}
-            {% if filter_form.content_locale %}
-                {% bootstrap_field filter_form.content_locale %}
-            {% endif %}
-            {% if filter_form.tags %}
-                {% bootstrap_field filter_form.tags %}
-            {% endif %}
-            <div class="form-group w-auto">
-                <button class="btn btn-success" type="submit">{% translate "Search" %}</button>
-            </div>
-        </form>
-        {% if filter_form.is_valid and filter_form.cleaned_data.question %}
-            <p class="text-muted ml-2">
-                <span class="fa fa-filter"></span>
-                {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
-                    List filtered by answers to question “{{ question }}”.
-                {% endblocktranslate %}
-                <a href="?{% querystring question="" answer="" answer__options="" %}" class="text-muted">
-                    <span class="fa fa-times"></span>
-                    {% translate "Remove filter" %}
-                </a>
-            </p>
-        {% endif %}
-    </div>
+    {% include "orga/includes/review_filter_form.html" %}
 
     <form method="post">
         {% csrf_token %}

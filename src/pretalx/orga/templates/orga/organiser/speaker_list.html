@@ -13,13 +13,7 @@
         {% endblocktranslate %}
     </h2>
 
-    <div class="submit-group search-submit-group">
-        <form class="search-form">
-            {% bootstrap_form search_form %}
-            {% bootstrap_form filter_form %}
-            <button class="btn btn-info btn-search" type="submit">{% translate "Search" %}</button>
-        </form>
-    </div>
+    {% include "common/includes/search_form.html" %}
 
     <div class="table-responsive-md">
         <table class="table table-sm table-hover table-flip table-sticky">

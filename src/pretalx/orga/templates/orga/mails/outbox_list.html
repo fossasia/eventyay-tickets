@@ -15,9 +15,7 @@
     </h2>
     <div class="submit-group">
         <span>
-
-            {% include "common/search_form.html" %}
-
+            {% include "common/includes/search_form.html" with omit_wrapper=True %}
         </span>
         <span>
             {% if is_paginated and page_obj.paginator.num_pages > 1 %}
