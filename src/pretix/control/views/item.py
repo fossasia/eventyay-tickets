@@ -35,10 +35,10 @@ from pretix.base.services.quotas import QuotaAvailability
 from pretix.base.services.tickets import invalidate_cache
 from pretix.base.signals import quota_availability
 from pretix.control.forms.item import (
-    CategoryForm, DescriptionForm, ItemAddOnForm, ItemAddOnsFormSet, ItemBundleForm,
-    ItemBundleFormSet, ItemCreateForm, ItemMetaValueForm, ItemUpdateForm,
-    ItemVariationForm, ItemVariationsFormSet, QuestionForm, QuestionOptionForm,
-    QuotaForm,
+    CategoryForm, DescriptionForm, ItemAddOnForm, ItemAddOnsFormSet,
+    ItemBundleForm, ItemBundleFormSet, ItemCreateForm, ItemMetaValueForm,
+    ItemUpdateForm, ItemVariationForm, ItemVariationsFormSet, QuestionForm,
+    QuestionOptionForm, QuotaForm,
 )
 from pretix.control.permissions import (
     EventPermissionRequiredMixin, event_permission_required,
@@ -450,8 +450,10 @@ class QuestionDelete(EventPermissionRequiredMixin, DeleteView):
             'event': self.request.event.slug,
         })
 
+
 class DescriptionDelete(QuestionDelete):
     template_name = 'pretixcontrol/items/desciption_delete.html'
+
 
 class QuestionMixin:
     @cached_property
@@ -639,9 +641,11 @@ class QuestionUpdate(EventPermissionRequiredMixin, QuestionMixin, UpdateView):
         messages.error(self.request, _('We could not save your changes. See below for details.'))
         return super().form_invalid(form)
 
+
 class DescriptionUpdate(QuestionUpdate):
     form_class = DescriptionForm
     template_name = 'pretixcontrol/items/description_edit.html'
+
 
 class QuestionCreate(EventPermissionRequiredMixin, QuestionMixin, CreateView):
     model = Question
@@ -683,9 +687,11 @@ class QuestionCreate(EventPermissionRequiredMixin, QuestionMixin, CreateView):
 
         return ret
 
+
 class DescriptionCreate(QuestionCreate):
     form_class = DescriptionForm
     template_name = 'pretixcontrol/items/description_edit.html'
+
 
 class QuotaList(PaginationMixin, ListView):
     model = Quota

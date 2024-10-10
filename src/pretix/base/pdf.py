@@ -1,12 +1,12 @@
 import copy
 import hashlib
 import itertools
+import json
 import logging
 import os
 import subprocess
 import tempfile
 import uuid
-import json
 from collections import OrderedDict
 from functools import partial
 from io import BytesIO
@@ -554,9 +554,9 @@ class Renderer:
     def _draw_barcodearea(self, canvas: Canvas, op: OrderPosition, o: dict):
         content = o.get('content', 'secret')
         content_dict = {
-                'event': str(op.event),
-                'ticket': op.secret,
-                'lead': op.pseudonymization_id
+            'event': str(op.event),
+            'ticket': op.secret,
+            'lead': op.pseudonymization_id
         }
         content = json.dumps(content_dict)
         level = 'H'

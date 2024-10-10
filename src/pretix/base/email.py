@@ -7,6 +7,7 @@ from email.parser import BytesParser
 from itertools import groupby
 from smtplib import SMTPResponseException
 
+from css_inline import inline as inline_css
 from django.conf import settings
 from django.core.mail.backends.smtp import EmailBackend
 from django.db.models import Count
@@ -14,7 +15,8 @@ from django.dispatch import receiver
 from django.template.loader import get_template
 from django.utils.timezone import now
 from django.utils.translation import get_language, gettext_lazy as _
-from css_inline import inline as inline_css
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Attachment, Bcc, Mail
 
 from pretix.base.i18n import (
     LazyCurrencyNumber, LazyDate, LazyExpiresDate, LazyNumber,
@@ -25,15 +27,13 @@ from pretix.base.signals import (
     register_html_mail_renderers, register_mail_placeholders,
 )
 from pretix.base.templatetags.rich_text import markdown_compile_email
-import os
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, Attachment, Bcc
 
 logger = logging.getLogger('pretix.base.email')
 
 
 class SendGridEmail():
     api_key = ""
+
     def __init__(self, api_key):
         self.api_key = api_key
 
@@ -49,9 +49,9 @@ class SendGridEmail():
     def bytes_to_base64_string(self, value: bytes) -> str:
         import base64
         return base64.b64encode(value).decode('ASCII')
-    
+
     def build_attachment(self, input):
-        
+
         attachment = Attachment()
         attachment.file_content = self.bytes_to_base64_string(input[1])
         attachment.file_type = input[2]
@@ -59,7 +59,6 @@ class SendGridEmail():
         attachment.disposition = "attachment"
         # attachment.content_id = "Balance Sheet"
         return attachment
-
 
     def send_messages(self, emails):
         for email in emails:
@@ -377,8 +376,9 @@ def get_best_name(position_or_address, parts=False):
 
 @receiver(register_mail_placeholders, dispatch_uid="pretixbase_register_mail_placeholders")
 def base_placeholders(sender, **kwargs):
-    from pretix.multidomain.urlreverse import build_absolute_uri
-    from pretix.multidomain.urlreverse import build_join_video_url
+    from pretix.multidomain.urlreverse import (
+        build_absolute_uri, build_join_video_url,
+    )
 
     ph = [
         SimpleFunctionalMailTextPlaceholder(

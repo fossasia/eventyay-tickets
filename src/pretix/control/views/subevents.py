@@ -139,7 +139,7 @@ class SubEventDelete(EventPermissionRequiredMixin, DeleteView):
 
         if not self.object.allow_delete():
             messages.error(self.request, pgettext_lazy('subevent', 'A date can not be deleted if orders already have been '
-                                                              'placed.'))
+                                                       'placed.'))
             return HttpResponseRedirect(self.get_success_url())
         else:
             self.object.log_action('pretix.subevent.deleted', user=self.request.user)
@@ -1100,7 +1100,6 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
         if to_delete_list_ids:
             CheckinList.objects.filter(id__in=to_delete_list_ids).delete()
 
-
     def save_quota_formset(self, log_entries):
         if not self.quota_formset.has_changed():
             return
@@ -1193,7 +1192,6 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
             Quota.variations.through.objects.bulk_create(to_save_variations)
         if to_delete_quota_ids:
             Quota.objects.filter(id__in=to_delete_quota_ids).delete()
-
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -1346,7 +1344,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
             form.is_valid() and
             self.quota_formset.is_valid() and
             (not self.list_formset or self.list_formset.is_valid()) and
-            all(f.is_valid() for f in self.itemvar_forms)and
+            all(f.is_valid() for f in self.itemvar_forms) and
             all(f.is_valid() for f in self.meta_forms)
         )
         if is_valid:

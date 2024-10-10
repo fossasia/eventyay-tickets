@@ -1,5 +1,4 @@
-from django.urls import include
-from django.urls import re_path as url
+from django.urls import include, re_path as url
 from django.views.decorators.csrf import csrf_exempt
 
 import pretix.presale.views.cart
@@ -137,9 +136,9 @@ organizer_patterns = [
         name='organizer.widget.productlist'),
     url(r'^widget/v1.css$', pretix.presale.views.widget.widget_css, name='organizer.widget.css'),
     url(r'^account/login/(?P<provider>[0-9]+)/$', pretix.presale.views.customer.SSOLoginView.as_view(),
-            name='organizer.customer.login'),
+        name='organizer.customer.login'),
     url(r'^account/login/(?P<provider>[0-9]+)/return$', pretix.presale.views.customer.SSOLoginReturnView.as_view(),
-            name='organizer.customer.login.return'),
+        name='organizer.customer.login.return'),
     url(r'^account/login$', pretix.presale.views.customer_view.LoginView.as_view(), name='organizer.customer.login'),
     url(r'^account/logout$', pretix.presale.views.customer_view.LogoutView.as_view(), name='organizer.customer.logout'),
     url(r'^account/register$', pretix.presale.views.customer_view.RegistrationView.as_view(),
@@ -159,15 +158,15 @@ organizer_patterns = [
     url(r'^account/$', pretix.presale.views.customer.ProfileView.as_view(), name='organizer.customer.profile'),
     url(r'^account/order/$', pretix.presale.views.customer.OrderView.as_view(), name='organizer.customer.order'),
     url(r'^oauth2/v1/authorize$', pretix.presale.views.open_id_connect.AuthorizeView.as_view(),
-            name='organizer.oauth2.v1.authorize'),
+        name='organizer.oauth2.v1.authorize'),
     url(r'^oauth2/v1/token$', pretix.presale.views.open_id_connect.TokenView.as_view(),
-            name='organizer.oauth2.v1.token'),
+        name='organizer.oauth2.v1.token'),
     url(r'^oauth2/v1/userinfo$', pretix.presale.views.open_id_connect.UserInfoView.as_view(),
-            name='organizer.oauth2.v1.userinfo'),
+        name='organizer.oauth2.v1.userinfo'),
     url(r'^oauth2/v1/keys$', pretix.presale.views.open_id_connect.KeysView.as_view(),
-            name='organizer.oauth2.v1.jwks'),
+        name='organizer.oauth2.v1.jwks'),
     url(r'^.well-known/openid-configuration$', pretix.presale.views.open_id_connect.WellKnownConfigurationView.as_view(),
-            name='organizer.oauth2.v1.configuration'),
+        name='organizer.oauth2.v1.configuration'),
 ]
 
 locale_patterns = [

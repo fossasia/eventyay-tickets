@@ -158,7 +158,6 @@ class SnippetExtension(markdown.extensions.Extension):
         md.parser.blockprocessors.deregister('quote')
 
 
-
 def markdown_compile(source, snippet=False):
     tags = ALLOWED_TAGS_SNIPPET if snippet else ALLOWED_TAGS
     exts = [

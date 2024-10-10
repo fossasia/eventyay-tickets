@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import PermissionDenied
 from django.core.files import File
 from django.db import transaction
 from django.db.models import Max, Min, Prefetch, ProtectedError
@@ -17,7 +17,7 @@ from pretix.base.models.event import Event, EventMetaValue
 from pretix.base.models.organizer import Organizer, Team
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.control.forms.filter import EventFilterForm, OrganizerFilterForm
-from pretix.control.forms.organizer import BaseOrganizerFooterLink, OrganizerFooterLink
+from pretix.control.forms.organizer import OrganizerFooterLink
 from pretix.control.forms.organizer_forms import (
     MailSettingsForm, OrganizerDeleteForm, OrganizerForm,
     OrganizerSettingsForm, OrganizerUpdateForm,

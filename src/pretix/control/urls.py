@@ -1,11 +1,10 @@
-from django.urls import include
-from django.urls import re_path as url
+from django.urls import include, re_path as url
 from django.views.generic.base import RedirectView
 
 from pretix.control.views import (
     auth, checkin, dashboards, event, geo, global_settings, item, main, oauth,
-    orderimport, orders, organizer, pdf, search, shredder, subevents,
-    typeahead, user, users, vouchers, waitinglist, organizer_views
+    orderimport, orders, organizer, organizer_views, pdf, search, shredder,
+    subevents, typeahead, user, users, vouchers, waitinglist,
 )
 from pretix.control.views.auth import CustomAuthorizationView
 
@@ -109,28 +108,29 @@ urlpatterns = [
     url(r'^organizer/(?P<organizer>[^/]+)/customer/(?P<customer>[^/]+)/anonymize$',
         organizer_views.customer_view.CustomerAnonymizeView.as_view(), name='organizer.customer.anonymize'),
     url(r'^organizer/(?P<organizer>[^/]+)/ssoproviders$', organizer_views.sso_provider_view.SSOProviderListView.as_view(),
-            name='organizer.ssoproviders'),
+        name='organizer.ssoproviders'),
     url(r'^organizer/(?P<organizer>[^/]+)/ssoprovider/add$', organizer_views.sso_provider_view.SSOProviderCreateView.as_view(),
-            name='organizer.ssoprovider.add'),
+        name='organizer.ssoprovider.add'),
     url(r'^organizer/(?P<organizer>[^/]+)/ssoprovider/(?P<provider>[^/]+)/edit$',
-            organizer_views.sso_provider_view.SSOProviderUpdateView.as_view(),
-            name='organizer.ssoprovider.edit'),
+        organizer_views.sso_provider_view.SSOProviderUpdateView.as_view(),
+        name='organizer.ssoprovider.edit'),
     url(r'^organizer/(?P<organizer>[^/]+)/ssoprovider/(?P<provider>[^/]+)/delete$',
-            organizer_views.sso_provider_view.SSOProviderDeleteView.as_view(),
-            name='organizer.ssoprovider.delete'),
+        organizer_views.sso_provider_view.SSOProviderDeleteView.as_view(),
+        name='organizer.ssoprovider.delete'),
     url(r'^organizer/(?P<organizer>[^/]+)/ssoclients$', organizer_views.sso_provider_view.SSOClientListView.as_view(),
-            name='organizer.ssoclients'),
+        name='organizer.ssoclients'),
     url(r'^organizer/(?P<organizer>[^/]+)/ssoclient/add$', organizer_views.sso_provider_view.SSOClientCreateView.as_view(),
-            name='organizer.ssoclient.add'),
+        name='organizer.ssoclient.add'),
     url(r'^organizer/(?P<organizer>[^/]+)/ssoclient/(?P<client>[^/]+)/edit$',
-            organizer_views.sso_provider_view.SSOClientUpdateView.as_view(),
-            name='organizer.ssoclient.edit'),
+        organizer_views.sso_provider_view.SSOClientUpdateView.as_view(),
+        name='organizer.ssoclient.edit'),
     url(r'^organizer/(?P<organizer>[^/]+)/ssoclient/(?P<client>[^/]+)/delete$',
-            organizer_views.sso_provider_view.SSOClientDeleteView.as_view(),
-            name='organizer.ssoclient.delete'),
+        organizer_views.sso_provider_view.SSOClientDeleteView.as_view(),
+        name='organizer.ssoclient.delete'),
     url(r'^organizer/(?P<organizer>[^/]+)/giftcards$', organizer_views.gift_card_view.GiftCardListView.as_view(), name='organizer.giftcards'),
     url(r'^organizer/(?P<organizer>[^/]+)/giftcard/add$', organizer_views.gift_card_view.GiftCardCreateView.as_view(), name='organizer.giftcard.add'),
-    url(r'^organizer/(?P<organizer>[^/]+)/giftcard/(?P<giftcard>[^/]+)/$', organizer_views.gift_card_view.GiftCardDetailView.as_view(), name='organizer.giftcard'),
+    url(r'^organizer/(?P<organizer>[^/]+)/giftcard/(?P<giftcard>[^/]+)/$',
+        organizer_views.gift_card_view.GiftCardDetailView.as_view(), name='organizer.giftcard'),
     url(r'^organizer/(?P<organizer>[^/]+)/giftcard/(?P<giftcard>[^/]+)/edit$', organizer_views.gift_card_view.GiftCardUpdateView.as_view(),
         name='organizer.giftcard.edit'),
     url(r'^organizer/(?P<organizer>[^/]+)/webhooks$', organizer_views.web_hook_view.WebHookListView.as_view(), name='organizer.webhooks'),

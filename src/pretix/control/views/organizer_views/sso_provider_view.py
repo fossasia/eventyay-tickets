@@ -23,7 +23,7 @@ class SSOProviderListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredM
 
     def get_queryset(self):
         return self.request.organizer.sso_providers.all()
-    
+
 
 class SSOProviderCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView):
     model = CustomerSSOProvider
@@ -56,7 +56,7 @@ class SSOProviderCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequire
     def form_invalid(self, form):
         messages.error(self.request, _('Your changes could not be saved.'))
         return super().form_invalid(form)
-    
+
 
 class SSOProviderUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
     model = CustomerSSOProvider
@@ -97,7 +97,7 @@ class SSOProviderUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequire
     def form_invalid(self, form):
         messages.error(self.request, _('Your changes could not be saved.'))
         return super().form_invalid(form)
-    
+
 
 class SSOProviderDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView):
     model = CustomerSSOProvider
@@ -127,7 +127,7 @@ class SSOProviderDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequire
             self.object.delete()
             messages.success(request, _('The selected object has been deleted.'))
         return redirect(success_url)
-    
+
 
 class SSOClientListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
     model = CustomerSSOClient
@@ -137,7 +137,7 @@ class SSOClientListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMix
 
     def get_queryset(self):
         return self.request.organizer.sso_clients.all()
-    
+
 
 class SSOClientCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView):
     model = CustomerSSOClient
@@ -176,7 +176,7 @@ class SSOClientCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredM
     def form_invalid(self, form):
         messages.error(self.request, _('Your changes could not be saved.'))
         return super().form_invalid(form)
-    
+
 
 class SSOClientUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
     model = CustomerSSOClient
@@ -225,7 +225,7 @@ class SSOClientUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredM
     def form_invalid(self, form):
         messages.error(self.request, _('Your changes could not be saved.'))
         return super().form_invalid(form)
-    
+
 
 class SSOClientDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView):
     model = CustomerSSOClient

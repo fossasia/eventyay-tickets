@@ -11,10 +11,11 @@ from django.views.generic import ListView
 
 from pretix.base.models import Organizer, Team
 from pretix.control.forms.filter import OrganizerFilterForm
-from pretix.control.views import PaginationMixin, CreateView, UpdateView
-from ..tasks import send_organizer_webhook
+from pretix.control.views import CreateView, PaginationMixin, UpdateView
+
 from ...control.forms.organizer_forms import OrganizerForm, OrganizerUpdateForm
 from ...control.permissions import OrganizerPermissionRequiredMixin
+from ..tasks import send_organizer_webhook
 
 logger = logging.getLogger(__name__)
 

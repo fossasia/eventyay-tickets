@@ -4,11 +4,11 @@ import time
 from django.conf import settings
 
 
-class SessionInvalid(Exception):
+class SessionInvalid(Exception):  # NOQA: N818
     pass
 
 
-class SessionReauthRequired(Exception):
+class SessionReauthRequired(Exception):  # NOQA: N818
     pass
 
 

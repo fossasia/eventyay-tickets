@@ -1,11 +1,10 @@
 import json
-import operator
 import re
 from collections import OrderedDict
 from decimal import Decimal
 from io import BytesIO
 from itertools import groupby
-from urllib.parse import urlsplit, urlparse
+from urllib.parse import urlparse, urlsplit
 
 import qrcode
 import qrcode.image.svg
@@ -14,7 +13,6 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
 from django.core.files import File
-from django.utils.http import url_has_allowed_host_and_scheme
 from django.db import transaction
 from django.db.models import ProtectedError
 from django.forms import inlineformset_factory
@@ -25,6 +23,7 @@ from django.http import (
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
 from django.utils.translation import gettext, gettext_lazy as _
 from django.views.generic import DeleteView, FormView, ListView
@@ -32,10 +31,10 @@ from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import SingleObjectMixin
 from i18nfield.strings import LazyI18nString
 from i18nfield.utils import I18nJSONEncoder
-from pretix.base.configurations import LazyI18nStringListBase
 from pytz import timezone
 
 from pretix.base.channels import get_all_sales_channels
+from pretix.base.configurations import LazyI18nStringListBase
 from pretix.base.email import get_available_placeholders
 from pretix.base.models import (
     Event, LogEntry, Order, RequiredAction, TaxRule, Voucher,
@@ -46,8 +45,8 @@ from pretix.base.services.invoices import build_preview_invoice_pdf
 from pretix.base.signals import register_ticket_outputs
 from pretix.base.templatetags.rich_text import markdown_compile_email
 from pretix.control.forms.event import (
-    CancelSettingsForm, CommentForm, ConfirmTextFormset, EventDeleteForm, EventFooterLink,
-    EventMetaValueForm, EventSettingsForm, EventUpdateForm,
+    CancelSettingsForm, CommentForm, ConfirmTextFormset, EventDeleteForm,
+    EventFooterLink, EventMetaValueForm, EventSettingsForm, EventUpdateForm,
     InvoiceSettingsForm, ItemMetaPropertyForm, MailSettingsForm,
     PaymentSettingsForm, ProviderForm, QuickSetupForm,
     QuickSetupProductFormSet, TaxRuleForm, TaxRuleLineFormSet,
@@ -56,7 +55,7 @@ from pretix.control.forms.event import (
 from pretix.control.permissions import EventPermissionRequiredMixin
 from pretix.control.views.user import RecentAuthenticationRequiredMixin
 from pretix.helpers.database import rolledback_transaction
-from pretix.multidomain.urlreverse import get_event_domain, build_absolute_uri
+from pretix.multidomain.urlreverse import build_absolute_uri, get_event_domain
 from pretix.presale.style import regenerate_css
 
 from ...base.i18n import language
@@ -272,10 +271,10 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
 
     @cached_property
     def footer_links_formset(self):
-        return EventFooterLink(self.request.POST if self.request.method == "POST" else None, 
-                                        event=self.object,
-                                        prefix="footer-links", 
-                                        instance=self.object)
+        return EventFooterLink(self.request.POST if self.request.method == "POST" else None,
+                               event=self.object,
+                               prefix="footer-links",
+                               instance=self.object)
 
     def save_footer_links_formset(self, obj):
         self.footer_links_formset.save()

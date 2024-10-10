@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.contrib import messages
 from django.db import transaction
-from django.db.models import Prefetch, Min, Max, F
-from django.db.models.functions import Greatest, Coalesce
+from django.db.models import F, Max, Min, Prefetch
+from django.db.models.functions import Coalesce, Greatest
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -12,10 +12,12 @@ from pytz import timezone
 
 from pretix.base.forms import SafeSessionWizardView
 from pretix.base.i18n import language
-from pretix.base.models import Event, EventMetaValue, Quota, Organizer
+from pretix.base.models import Event, EventMetaValue, Organizer, Quota
 from pretix.base.services import tickets
 from pretix.base.services.quotas import QuotaAvailability
-from pretix.control.forms.event import EventWizardFoundationForm, EventWizardBasicsForm, EventUpdateForm
+from pretix.control.forms.event import (
+    EventUpdateForm, EventWizardBasicsForm, EventWizardFoundationForm,
+)
 from pretix.control.forms.filter import EventFilterForm
 from pretix.control.permissions import EventPermissionRequiredMixin
 from pretix.control.views import PaginationMixin, UpdateView

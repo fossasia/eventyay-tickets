@@ -1,8 +1,7 @@
 import importlib.util
 
 from django.apps import apps
-from django.urls import include
-from django.urls import re_path as url
+from django.urls import include, re_path as url
 
 from pretix.multidomain.plugin_handler import plugin_event_urls
 from pretix.presale.urls import (

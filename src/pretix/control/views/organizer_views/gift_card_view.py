@@ -210,47 +210,6 @@ class GiftCardCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMi
         ))
 
 
-class GiftCardCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView):
-    template_name = 'pretixcontrol/organizers/giftcard_create.html'
-    permission = 'can_manage_gift_cards'
-    form_class = GiftCardCreateForm
-    success_url = 'invalid'
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        any_event = self.request.organizer.events.first()
-        kwargs['initial'] = {
-            'currency': any_event.currency if any_event else settings.DEFAULT_CURRENCY,
-            'secret': gen_giftcard_secret(self.request.organizer.settings.giftcard_length)
-        }
-        kwargs['organizer'] = self.request.organizer
-        return kwargs
-
-    @transaction.atomic()
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        messages.success(self.request, _('The gift card has been created and can now be used.'))
-        form.instance.issuer = self.request.organizer
-        super().form_valid(form)
-        form.instance.transactions.create(
-            value=form.cleaned_data['value']
-        )
-        form.instance.log_action('pretix.giftcards.created', user=self.request.user, data={})
-        if form.cleaned_data['value']:
-            form.instance.log_action('pretix.giftcards.transaction.manual', user=self.request.user, data={
-                'value': form.cleaned_data['value']
-            })
-        return redirect(reverse(
-            'control:organizer.giftcard',
-            kwargs={
-                'organizer': self.request.organizer.slug,
-                'giftcard': self.object.pk
-            }
-        ))
-
-
 class GiftCardUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
     template_name = 'pretixcontrol/organizers/giftcard_edit.html'
     permission = 'can_manage_gift_cards'

@@ -242,7 +242,7 @@ def invite(request, token):
     return render(request, 'pretixcontrol/auth/invite.html', ctx)
 
 
-class RepeatedResetDenied(Exception):
+class RepeatedResetDenied(Exception):  # NOQA: N818
     pass
 
 
@@ -498,6 +498,7 @@ class CustomAuthorizationView(AuthorizationView):
     """
     Override the AuthorizationView to set a JWT cookie after successful login.
     """
+
     def get(self, request, *args, **kwargs):
         # Call the parent method to handle the standard authorization flow
         response = super().get(request, *args, **kwargs)

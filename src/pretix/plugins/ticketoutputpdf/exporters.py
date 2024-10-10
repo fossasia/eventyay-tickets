@@ -18,7 +18,6 @@ from pretix.base.models import Event, Order, OrderPosition
 from pretix.base.settings import PERSON_NAME_SCHEMES
 
 from ...helpers.templatetags.jsonfield import JSONExtract
-
 from .ticketoutput import PdfTicketOutput
 
 
