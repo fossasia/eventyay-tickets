@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -16,27 +15,18 @@
 {% endblock scripts %}
 
 {% block extra_title %}
-    {% if form.instance.name %}{% translate "Tag" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}{% else %}{% translate "New tag" %}{% endif %} ::
+    {% if form.instance.tag %}{% translate "Tag" %} {{ quotation_open }}{{ form.instance.tag }}{{ quotation_close }}{% else %}{% translate "New tag" %}{% endif %} ::
 {% endblock extra_title %}
 
 {% block content %}
     <h2>
-        {% if form.instance.name %}
-            {% translate "Tag" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}
+        {% if form.instance.tag %}
+            {% translate "Tag" %} {{ quotation_open }}{{ form.instance.tag }}{{ quotation_close }}
         {% else %}
             {% translate "New tag" %}
         {% endif %}
     </h2>
-    <form method="post">
-        {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        {% bootstrap_field form.tag layout="event" %}
-        {% bootstrap_field form.description layout="event" %}
-        {% bootstrap_field form.color layout="event" %}
-        {% bootstrap_field form.public layout="event" %}
 
-        {% include "orga/includes/submit_row.html" %}
-
-    </form>
+    {% include "orga/includes/base_form.html" %}
 
 {% endblock content %}
