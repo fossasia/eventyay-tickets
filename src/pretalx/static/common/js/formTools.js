@@ -147,14 +147,28 @@ const initSelect = (element) => {
         choicesOptions.callbackOnCreateTemplates = (strToEl, escapeForTemplates, getClassNames) => ({
             choice: (allowHTML, classNames, choice, selectedText, groupName) => {
                 let originalResult = Choices.defaults.templates.choice(allowHTML, classNames, choice, selectedText, groupName)
-                if (classNames.element && classNames.element.dataset.description) {
-                    console.log(originalResult)
-                    console.log(classNames.element)
+                if (classNames.element && classNames.element.dataset.description && classNames.element.dataset.description.length > 0) {
                     originalResult.innerHTML += `<div class="choice-item-description">${classNames.element.dataset.description}</div>`
                 }
-                if (classNames.element && classNames.element.dataset.color) {
+                if (classNames.element && classNames.element.dataset.color && classNames.element.dataset.color.length > 0) {
+                    let color = classNames.element.dataset.color
+                    if (color.startsWith("--")) {
+                        color = `var(${color})`
+                    }
                     originalResult.classList.add("choice-item-color")
-                    originalResult.style.setProperty("--choice-color", classNames.element.dataset.color)
+                    originalResult.style.setProperty("--choice-color", color)
+                }
+                return originalResult
+            },
+            item: (_a, choice, removeItemButton) => {
+                let originalResult = Choices.defaults.templates.item(_a, choice, removeItemButton)
+                if (choice.element && choice.element.dataset.color && choice.element.dataset.color.length > 0) {
+                    let color = choice.element.dataset.color
+                    if (color.startsWith("--")) {
+                        color = `var(${color})`
+                    }
+                    originalResult.classList.add("choice-item-color")
+                    originalResult.style.setProperty("--choice-color", color)
                 }
                 return originalResult
             }

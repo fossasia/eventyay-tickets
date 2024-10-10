@@ -762,7 +762,7 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
             "logo_image": (
                 self.request.event.logo.url if self.request.event.logo else None
             ),
-            "primary_color": self.request.event.get_primary_color(),
+            "primary_color": self.request.event.visible_primary_color,
             "locales": self.request.event.locales,
         }
         return ctx

@@ -7,7 +7,7 @@
 {% block agenda_content %}
     <p></p>
     <article>
-        <section style="--track-color: {{ request.event.get_primary_color }}" class="pretalx-list-day">
+        <section style="--track-color: {{ request.event.visible_primary_color }}" class="pretalx-list-day">
             {% for speaker in speakers %}
                 <a href="{{ speaker.urls.public }}">
                     <div class="pretalx-session">
