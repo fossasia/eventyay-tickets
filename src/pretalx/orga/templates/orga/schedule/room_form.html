@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -10,22 +9,26 @@
 {% block content %}
     {% include "common/availabilities.html" %}
 
+    <h2>
+        {% if form.instance.pk %}
+            {% translate "Room" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}
+        {% else %}
+            {% translate "New room" %}
+        {% endif %}
+    </h2>
     <form method="post">
         {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        <h2>
-            {% if form.instance.pk %}
-                {% translate "Room" %} {{ quotation_open }}{{ form.instance.name }}{{ quotation_close }}
-            {% else %}
-                {% translate "New room" %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            {% if field.name != "guid" %}
+                {{ field.as_field_group }}
             {% endif %}
-        </h2>
-        {% bootstrap_form form layout="event" %}
+        {% endfor %}
         <details>
             <summary class="col-md-9 ml-auto mb-4">
                 <h3 class="d-inline">{% translate "Advanced settings" %}</h3>
             </summary>
-            {% bootstrap_field form.guid layout="event" %}
+            {{ form.guid.as_field_group }}
         </details>
 
         {% include "orga/includes/submit_row.html" %}

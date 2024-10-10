@@ -2,7 +2,6 @@
 
 {% load compress %}
 {% load i18n %}
-{% load bootstrap4 %}
 {% load static %}
 
 {% block extra_title %}{% translate "Export schedule data" %} :: {% endblock extra_title %}
@@ -15,16 +14,17 @@
     <div role="tabpanel" id="tabpanel-custom" aria-labelledby="tab-custom" tabindex="0" aria-hidden="false">
         <form method="post">
             {% csrf_token %}
+            {{ form.non_field_errors }}
             <fieldset>
                 <legend>{% translate "Export settings" %}</legend>
-                {% bootstrap_field form.export_format layout="event" %}
+                {{ form.export_format.as_field_group }}
                 <div id="data-delimiter">
-                    {% bootstrap_field form.data_delimiter layout="event" %}
+                    {{ form.data_delimiter.as_field_group }}
                 </div>
             </fieldset>
             <fieldset>
                 <legend>{% translate "Dataset" %}</legend>
-                {% bootstrap_field form.target layout="event" %}
+                {{ form.target.as_field_group }}
             </fieldset>
             <fieldset>
                 <legend>{% translate "Data fields" %}</legend>
@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 {% for field in form.export_fields %}
-                    {% bootstrap_field field layout="event" %}
+                    {{ field.as_field_group }}
                 {% endfor %}
             </fieldset>
 

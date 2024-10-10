@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load review_score %}
@@ -97,12 +96,12 @@
                             {% for score in row.score_fields %}
                                 <td class="pt-2">
                                     {% if score %}
-                                        {% bootstrap_field score layout="inline" %}
+                                        {{ score.as_field_group }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
                             <td class="pt-2">
-                                {% bootstrap_field row.form.text layout="inline" form_group_class="flex-direction-column" %}
+                                {{ row.form.text.as_field_group }}
                             </td>
                         </tr>
                     {% empty %}

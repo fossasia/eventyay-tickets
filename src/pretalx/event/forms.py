@@ -96,6 +96,8 @@ class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
 
 
 class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):
+    default_renderer = InlineFormRenderer
+
     bulk_email = forms.CharField(
         label=_("Email addresses"),
         help_text=_("Enter one email address per line."),

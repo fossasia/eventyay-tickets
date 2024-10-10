@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, TemplateView
 from django_context_decorator import context
 
+from pretalx.common.forms.renderers import InlineFormRenderer
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
     ActionConfirmMixin,
@@ -408,6 +409,7 @@ class BulkReview(EventPermissionRequired, TemplateView):
                 )
                 + categories[None],
                 data=(self.request.POST if self.request.method == "POST" else None),
+                default_renderer=InlineFormRenderer,
             )
             for submission in self.submissions
         }

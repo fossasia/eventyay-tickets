@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load rules %}
@@ -65,26 +64,24 @@
     </div>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {% bootstrap_form_errors form %}
+        {{ form.non_field_errors }}
 
-        {% bootstrap_field form.name layout="event" %}
-        {% bootstrap_field form.email layout="event" %}
+        {{ form.name.as_field_group }}
+        {{ form.email.as_field_group }}
         {% if form.avatar %}
             {% include "common/avatar.html" with user=form.instance.user form=form %}
         {% endif %}
 
-        <div class="d-flex mb-4">
-            <a href="{{ form.instance.orga_urls.password_reset }}" class="btn btn-info flip flip ml-auto">{{ phrases.base.password_reset_heading }}</a>
-        </div>
         {% if form.biography %}
-            {% bootstrap_field form.biography layout="event" %}
+            {{ form.biography.as_field_group }}
         {% endif %}
         {% if form.availabilities %}
             {% include "common/availabilities.html" %}
 
-            {% bootstrap_field form.availabilities layout="event" %}
+            {{ form.availabilities.as_field_group }}
         {% endif %}
-        {% bootstrap_form questions_form layout="event" %}
+
+        {{ questions_form }}
 
         {% include "orga/includes/submit_row.html" %}
 

@@ -1,6 +1,5 @@
 {% extends "cfp/event/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load static %}
 {% load i18n %}
@@ -20,14 +19,10 @@
 
 {% block content %}
     <form method="post">
-        {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        {{ form.media }}
         <div class="col-md-8 labelless-password-input-form">
             <h2>{{ phrases.base.password_reset_heading }}</h2>
             <p>{{ phrases.base.password_reset_nearly_done }}</p>
-            {% bootstrap_field form.password layout="inline" %}
-            {% bootstrap_field form.password_repeat layout="inline" %}
+            {{ form }}
             <button type="submit" class="btn btn-block btn-success">{{ phrases.base.save }}</button>
         </div>
     </form>

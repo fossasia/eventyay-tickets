@@ -1,4 +1,3 @@
-{% load bootstrap4 %}
 {% load i18n %}
 {% load static %}
 {% load compress %}
@@ -6,8 +5,8 @@
 <div class="avatar-form form-group row">
     <label class="col-md-3 col-form-label">{% translate "Profile picture" %}</label>
     <div class="avatar-form-fields col-md-9">
-        <div class="d-flex align-items-start">
-            {% bootstrap_field form.get_gravatar layout="event-inline" %}
+        <div class="d-flex align-items-start hide-label">
+            {{ form.get_gravatar.as_field_group }}
             <div class="form-image-preview {% if not user.avatar and not user.get_gravatar %}d-none{% endif %}">
                 <a href="{% if user.avatar %}{{ user.avatar.url }}{% endif %}" data-lightbox="{% if user.avatar %}{{ user.avatar.url }}{% endif %}">
                     <img loading="lazy"
@@ -20,9 +19,8 @@
             </div>
         </div>
 
-        <div class="avatar-upload">
-            {% bootstrap_field form.avatar layout="inline" %}
-            <div class="text-muted">{{ form.avatar.help_text }}</div>
+        <div class="avatar-upload hide-label">
+            {{ form.avatar.as_field_group }}
         </div>
     </div>
 </div>

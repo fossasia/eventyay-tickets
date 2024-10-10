@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load i18n %}
 {% load static %}
 
@@ -24,7 +23,7 @@
             {% csrf_token %}
             <fieldset>
                 <legend>{% translate "Dataset" %}</legend>
-                {% bootstrap_field form.target layout="event" %}
+                {{ form.target.as_field_group }}
             </fieldset>
             <fieldset>
                 <legend>{% translate "Data fields" %}</legend>
@@ -35,14 +34,14 @@
                     </div>
                 </div>
                 {% for field in form.export_fields %}
-                    {% bootstrap_field field layout="event" %}
+                    {{ field.as_field_group }}
                 {% endfor %}
             </fieldset>
             <fieldset>
                 <legend>{% translate "Export settings" %}</legend>
-                {% bootstrap_field form.export_format layout="event" %}
+                {{ form.export_format.as_field_group }}
                 <div id="data-delimiter">
-                    {% bootstrap_field form.data_delimiter layout="event" %}
+                    {{ form.data_delimiter.as_field_group }}
                 </div>
             </fieldset>
 

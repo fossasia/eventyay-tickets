@@ -37,7 +37,6 @@ from pretalx.common.views.mixins import (
 from pretalx.orga.forms.schedule import ScheduleExportForm, ScheduleReleaseForm
 from pretalx.schedule.forms import QuickScheduleForm, RoomForm
 from pretalx.schedule.models import Availability, Room, TalkSlot
-from pretalx.schedule.utils import guess_schedule_version
 
 SCRIPT_SRC = "'self' 'unsafe-eval'"
 DEFAULT_SRC = "'self'"
@@ -180,15 +179,11 @@ class ScheduleReleaseView(EventPermissionRequired, FormView):
     def notifications(self):
         return len(self.request.event.wip_schedule.generate_notifications(save=False))
 
-    @context
-    def suggested_version(self):
-        return guess_schedule_version(self.request.event)
-
     def form_invalid(self, form):
         messages.error(
             self.request, _("You have to provide a new, unique schedule version!")
         )
-        return redirect(self.request.event.orga_urls.release_schedule)
+        return super().form_invalid(form)
 
     def form_valid(self, form):
         self.request.event.release_schedule(

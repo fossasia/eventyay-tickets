@@ -11,6 +11,9 @@ input.availabilities-editor-data {
 }
 .availabilities-editor {
   max-width: 100%;
+  tr:hover {
+    background-color: inherit;
+  }
 }
 .availabilities-tz-hint {
   text-align: right;

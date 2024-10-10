@@ -3,10 +3,13 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from pretalx.common.forms.fields import SizeFileField
+from pretalx.common.forms.renderers import InlineFormLabelRenderer
 from pretalx.submission.models import Resource
 
 
 class ResourceForm(forms.ModelForm):
+    default_renderer = InlineFormLabelRenderer
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["description"].required = True

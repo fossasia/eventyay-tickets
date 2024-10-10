@@ -7,6 +7,7 @@ from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceFie
 
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.mixins import ReadOnlyFlag, RequestRequire
+from pretalx.common.forms.renderers import InlineFormRenderer
 from pretalx.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
@@ -232,6 +233,8 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
 
 
 class AnonymiseForm(SubmissionForm):
+    default_renderer = InlineFormRenderer
+
     def __init__(self, *args, **kwargs):
         instance = kwargs.get("instance")
         if not instance or not instance.pk:

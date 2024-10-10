@@ -7,6 +7,7 @@ from django_scopes.forms import SafeModelChoiceField
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.mixins import PublicContent, RequestRequire
+from pretalx.common.forms.renderers import InlineFormRenderer
 from pretalx.common.forms.widgets import (
     EnhancedSelect,
     MarkdownWidget,
@@ -264,6 +265,8 @@ class SubmissionFilterForm(forms.Form):
     answer = forms.CharField(required=False)
     answer__options = forms.IntegerField(required=False)
     q = forms.CharField(required=False, label=_("Search"), widget=SearchInput)
+
+    default_renderer = InlineFormRenderer
 
     def __init__(self, event, *args, limit_tracks=False, search_fields=None, **kwargs):
         self.event = event

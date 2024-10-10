@@ -172,32 +172,6 @@ footer {
   }
 }
 
-.resource-option-row,
-.resource-option-input {
-  align-items: center;
-
-  .resource-option-fields {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    border-top: 1px var(--color-grey-lighter) solid;
-    padding-top: 4px;
-    .resource-option-inline {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-    }
-  }
-
-  .resource-option-delete {
-    margin-top: 8px;
-  }
-
-  .form-group {
-    flex-direction: column;
-  }
-}
-
 @media (max-width: 1200px) {
   .user-logs {
     display: none;

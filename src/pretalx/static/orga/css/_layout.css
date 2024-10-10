@@ -545,15 +545,6 @@ footer {
     }
   }
 }
-.resource-option-row,
-.resource-option-input {
-  .resource-option-delete {
-    padding-right: 8px;
-  }
-  .form-group input {
-    height: 2rem;
-  }
-}
 
 .dashboard-history {
   max-height: none;
@@ -771,6 +762,13 @@ details.submission-state-dropdown {
   .form-group {
     margin-bottom: 0;
   }
+  td > .form-group {
+    display: flex;
+    justify-content: center;
+  }
+  label {
+    display: none;
+  }
 }
 #id_locales.checkbox,
 #id_initial-locales.checkbox,
@@ -955,9 +953,18 @@ table .color-square {
   }
 }
 #release #notify-speakers-check {
+  label {
+    display: inline-block !important;
+  }
+  .form-group {
+    margin-bottom: -8px;
+    padding-right: var(--size-spacer);
+    margin-right: var(--size-spacer);
+  }
   small {
-    margin-top: 0;
+    margin-top: -6px;
     font-size: 80%;
+    margin-left: 38px;
     a {
       color: var(--color-grey);
     }

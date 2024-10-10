@@ -1,5 +1,4 @@
 {% extends "orga/base.html" %}
-{% load bootstrap4 %}
 {% load i18n %}
 
 {% block extra_title %}{{ page_obj.paginator.count }} {% blocktranslate trimmed count count=page_obj.paginator.count %}speaker{% plural %}speakers{% endblocktranslate %} :: {% endblock extra_title %}

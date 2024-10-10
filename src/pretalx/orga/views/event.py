@@ -85,10 +85,6 @@ class EventDetail(EventSettingsPermission, ActionFromUrl, UpdateView):
         return response
 
     @context
-    def url_placeholder(self):
-        return f"https://{self.request.host}/"
-
-    @context
     def tablist(self):
         return {
             "general": _("General information"),
@@ -586,10 +582,6 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
             self.request.user.teams.filter(can_create_events=True).exists()
             or self.request.user.is_administrator
         )
-
-    @context
-    def url_placeholder(self):
-        return f"https://{self.request.host}/"
 
     @context
     def organiser(self):

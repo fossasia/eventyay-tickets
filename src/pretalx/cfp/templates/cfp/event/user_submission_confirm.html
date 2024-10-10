@@ -1,6 +1,5 @@
 {% extends "cfp/event/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -32,8 +31,8 @@
             {% if form.availabilities %}
 
                 {% include "common/availabilities.html" %}
+                {{ form.availabilities.as_field_group }}
 
-                {% bootstrap_field form.availabilities layout="inline" %}
                 <div class="text-muted">{{ form.availabilities.help_text }}</div>
             {% endif %}
             <p></p>

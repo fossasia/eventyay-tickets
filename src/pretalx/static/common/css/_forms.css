@@ -177,7 +177,6 @@ input[type="file"] {
   }
 }
 ::file-selector-button {
-  padding: 0.375rem 0.75rem;
   margin-left: -6px;
   color: white;
   background-color: var(--color-secondary);
@@ -373,6 +372,10 @@ input[type="number"] {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
+    &:not(:last-child) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
   }
 }
 
@@ -488,7 +491,10 @@ input.password_strength {
   }
   .auth-form-block {
     margin: 12px;
-    flex-grow: 1;
+    flex-basis: 100%;
+  }
+  .optional {
+    display: none;
   }
 }
 
@@ -528,6 +534,7 @@ input.password_strength {
   background-color: var(--color-grey-lightest);
   padding: 16px;
   margin-bottom: 16px;
+  border-radius: var(--size-border-radius);
 
   button {
     align-self: flex-end;
@@ -613,6 +620,7 @@ input.password_strength {
       &.choices__item--selectable {
         button {
           color: var(--color-danger) !important;
+          margin-bottom: -3px;
         }
       }
 
