@@ -1,9 +1,11 @@
 import collections
 import datetime as dt
 import json
+import logging
 from contextlib import suppress
 
 import dateutil.parser
+from celery.exceptions import TaskError
 from csp.decorators import csp_update
 from django.conf import settings
 from django.contrib import messages
@@ -51,6 +53,9 @@ if settings.VITE_DEV_MODE:
     DEFAULT_SRC = (
         f"{DEFAULT_SRC} {settings.VITE_DEV_SERVER} {settings.VITE_DEV_SERVER.replace('http', 'ws')}",
     )
+
+
+logger = logging.getLogger(__name__)
 
 
 @method_decorator(
@@ -236,6 +241,26 @@ class ScheduleToggleView(EventPermissionRequired, View):
             not self.request.event.feature_flags["show_schedule"]
         )
         self.request.event.save()
+        # Trigger tickets to hidden/unhidden schedule menu
+        try:
+            from pretalx.orga.tasks import trigger_public_schedule
+
+            trigger_public_schedule.apply_async(
+                kwargs={
+                    "is_show_schedule": self.request.event.feature_flags[
+                        "show_schedule"
+                    ],
+                    "event_slug": self.request.event.slug,
+                    "organiser_slug": self.request.event.organiser.slug,
+                    "user_email": self.request.user.email,
+                },
+                ignore_result=True,
+            )
+        except (TaskError, ConnectionError) as e:
+            logger.warning("Unexpected error when trying to trigger "
+                           "schedule's state to external system: %s", e)
+        except Exception as e:
+            logger.error("Unexpected error in task: %s", e)
         return redirect(self.request.event.orga_urls.schedule)
 
 
