@@ -1,15 +1,16 @@
 import django_filters
 import operator
 from functools import reduce
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError as BaseValidationError
 from django.db.models import (
     Count, Exists, F, Max, OuterRef, Prefetch, Q, Subquery, OrderBy,prefetch_related_objects
 )
 from django.db.models.functions import Coalesce
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
 from django.utils.timezone import now
+from django.utils.translation import gettext, gettext_lazy
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from django_scopes import scopes_disabled
 from rest_framework import views, viewsets
@@ -19,14 +20,14 @@ from rest_framework.fields import DateTimeField
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 
-from pretix.api.serializers.checkin import CheckinListSerializer,CheckinRPCRedeemInputSerializer
+from pretix.api.serializers.checkin import CheckinListSerializer,CheckinRPCRedeemInputSerializer, MiniCheckinListSerializer
 from pretix.api.serializers.item import QuestionSerializer
 from pretix.api.serializers.order import CheckinListOrderPositionSerializer
 from pretix.api.views import RichOrderingFilter
 from pretix.api.views.order import OrderPositionFilter
 from pretix.base.i18n import language
 from pretix.base.models import (
-    CachedFile, Checkin, CheckinList, Event, Order, OrderPosition, Question, Device, TeamAPIToken
+    CachedFile, Checkin, CheckinList, Event, Order, OrderPosition, Question, Device, TeamAPIToken, RevokedTicketSecret, 
 )
 from pretix.base.services.checkin import (
     CheckInError, RequiredQuestionsError, SQLLogic, perform_checkin,
@@ -195,9 +196,9 @@ with scopes_disabled():
 def _checkin_list_position_queryset(checkinlists, ignore_status=False, ignore_products=False, pdf_data=False, expand=None):
     list_by_event = {cl.event_id: cl for cl in checkinlists}
     if not checkinlists:
-        raise ValidationError('No check-in list passed.')
+        raise BaseValidationError('No check-in list passed.')
     if len(list_by_event) != len(checkinlists):
-        raise ValidationError('Selecting two check-in lists from the same event is unsupported.')
+        raise BaseValidationError('Selecting two check-in lists from the same event is unsupported.')
 
     cqs = Checkin.objects.filter(
         position_id=OuterRef('pk'),
@@ -281,23 +282,163 @@ def _checkin_list_position_queryset(checkinlists, ignore_status=False, ignore_pr
     return qs
 
 
+def _handle_file_upload(data, user, auth):
+    try:
+        cf = CachedFile.objects.get(
+            session_key=f'api-upload-{str(type(user or auth))}-{(user or auth).pk}',
+            file__isnull=False,
+            pk=data[len("file:"):],
+        )
+    except (BaseValidationError, BaseBaseValidationError, IndexError):  # invalid uuid
+        raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
+    except CachedFile.DoesNotExist:
+        raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
+
+    allowed_types = (
+        'image/png', 'image/jpeg', 'image/gif', 'application/pdf'
+    )
+    if cf.type not in allowed_types:
+        raise BaseValidationError('The submitted file "{fid}" has a file type that is not allowed in this field.'.format(fid=data))
+    if cf.file.size > settings.FILE_UPLOAD_MAX_SIZE_OTHER:
+        raise BaseValidationError('The submitted file "{fid}" is too large to be used in this field.'.format(fid=data))
+
+    return cf.file
+
 def _redeem_process(*, checkinlists, raw_barcode, answers_data, datetime, force, checkin_type, ignore_unpaid, nonce,
                     untrusted_input, user, auth, expand, pdf_data, request, questions_supported, canceled_supported,
                     source_type='barcode', legacy_url_support=False, simulate=False, gate=None):
-    
     if not checkinlists:
-        raise ValidationError('No check-in list passed.')
+        raise BaseValidationError('No check-in list passed.')
 
-    list_by_event = {cl.event_id: cl for cl in checkinlists}
-    prefetch_related_objects([cl for cl in checkinlists if not cl.all_products], 'limit_products')
+    list_by_event = {checkinlist.event_id: checkinlist for checkinlist in checkinlists}
+    prefetch_related_objects([checkinlist for checkinlist in checkinlists if not checkinlist.all_products], 'limit_products') # prefetch_related  
 
     device = auth if isinstance(auth, Device) else None
     gate = gate or (auth.gate if isinstance(auth, Device) else None)
 
     context = {
-        'request': request,
-        'expand': expand,
+            'request': request,
+            'expand': expand,
     }
+
+    def _make_context(context, event):
+        return{
+            **context,
+            'event': event,
+            'pdf_data': pdf_data and (
+                user if user and user.is_authenticated else auth
+            ).has_event_permission(request.organizer, event, 'can_view_orders', request),
+        }
+
+    common_checkin_args = dict(
+        raw_barcode=raw_barcode,
+        raw_source_type=source_type,
+        type=checkin_type,
+        list=checkinlists[0],
+        datetime=datetime,
+        device=device,
+        gate=gate,
+        nonce=nonce,
+        forced=force,
+    )
+    raw_barcode_for_checkin = None
+    from_revoked_secret = False
+    if simulate:
+        common_checkin_args['__fake_arg_to_prevent_this_from_being_saved'] = True
+
+    queryset = _checkin_list_position_queryset(checkinlists, pdf_data=pdf_data, ignore_status=True, ignore_products=True).order_by(
+        F('addon_to').asc(nulls_first=True)
+    )
+    
+
+
+    q = Q(secret=raw_barcode)
+
+    if raw_barcode.isnumeric() and not untrusted_input and legacy_url_support:
+        q |= Q(pk=raw_barcode)
+
+
+    op_candidates = list(queryset.filter(q)) #filtering queryset with q to fetch orderposition
+
+    print('\n',op_candidates,'\n')
+    
+    op = op_candidates[0]
+    common_checkin_args['list'] = list_by_event[op.order.event_id]
+
+    # 5. Pre-validate all incoming answers, handle file upload
+    given_answers = {}
+    if answers_data:
+        for q in op.item.questions.filter(ask_during_checkin=True):
+            if str(q.pk) in answers_data:
+                try:
+                    if q.type == Question.TYPE_FILE:
+                        given_answers[q] = _handle_file_upload(answers_data[str(q.pk)], user, auth)
+                    else:
+                        given_answers[q] = q.clean_answer(answers_data[str(q.pk)])
+                except (BaseValidationError):
+                    pass
+
+    with language(op.order.event.settings.locale):
+        try:
+            perform_checkin(
+                    op=op,
+                    clist=list_by_event[op.order.event_id],
+                    given_answers=given_answers,
+                    force=force,
+                    ignore_unpaid=ignore_unpaid,
+                    nonce=nonce,
+                    datetime=datetime,
+                    questions_supported=questions_supported,
+                    canceled_supported=canceled_supported,
+                    user=user,
+                    auth=auth,
+                    type=checkin_type,
+            )
+        except RequiredQuestionsError as e:
+            return Response({
+                'status': 'incomplete',
+                'require_attention': op.require_checkin_attention,
+                'position': CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data,
+                'questions': [
+                    QuestionSerializer(q).data for q in e.questions
+                ],
+                'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
+            }, status=400)
+        except CheckInError as e:
+            if not simulate:
+                op.order.log_action('pretix.event.checkin.denied', data={
+                    'position': op.id,
+                    'positionid': op.positionid,
+                    'errorcode': e.code,
+                    'reason_explanation': e.reason,
+                    'force': force,
+                    'datetime': datetime,
+                    'type': checkin_type,
+                    'list': list_by_event[op.order.event_id].pk,
+                }, user=user, auth=auth)
+                Checkin.objects.create(
+                    position=op,
+                    successful=False,
+                    error_reason=e.code,
+                    error_explanation=e.reason,
+                    **common_checkin_args,
+                )
+            return Response({
+                'status': 'error',
+                'reason': e.code,
+                'reason_explanation': e.reason,
+                'require_attention': op.require_checkin_attention,
+                'position': CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data,
+                'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
+            }, status=400)
+        else:
+            return Response({
+                'status': 'ok',
+                'require_attention': op.require_checkin_attention,
+                'position': CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data,
+                'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
+            }, status=201)
+
 
 
 class ExtendedBackend(DjangoFilterBackend):
@@ -434,7 +575,7 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
         force = bool(self.request.data.get('force', False))
         type = self.request.data.get('type', None) or Checkin.TYPE_ENTRY
         if type not in dict(Checkin.CHECKIN_TYPES):
-            raise ValidationError("Invalid check-in type.")
+            raise BaseValidationError("Invalid check-in type.")
         ignore_unpaid = bool(self.request.data.get('ignore_unpaid', False))
         nonce = self.request.data.get('nonce')
 
@@ -478,7 +619,7 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
                             given_answers[q] = self._handle_file_upload(aws[str(q.pk)])
                         else:
                             given_answers[q] = q.clean_answer(aws[str(q.pk)])
-                    except ValidationError:
+                    except BaseValidationError:
                         pass
 
         try:
@@ -535,18 +676,18 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
                 file__isnull=False,
                 pk=data[len("file:"):],
             )
-        except (ValidationError, IndexError):  # invalid uuid
-            raise ValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
+        except (BaseValidationError, IndexError):  # invalid uuid
+            raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
         except CachedFile.DoesNotExist:
-            raise ValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
+            raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
 
         allowed_types = (
             'image/png', 'image/jpeg', 'image/gif', 'application/pdf'
         )
         if cf.type not in allowed_types:
-            raise ValidationError('The submitted file "{fid}" has a file type that is not allowed in this field.'.format(fid=data))
+            raise BaseValidationError('The submitted file "{fid}" has a file type that is not allowed in this field.'.format(fid=data))
         if cf.file.size > 10 * 1024 * 1024:
-            raise ValidationError('The submitted file "{fid}" is too large to be used in this field.'.format(fid=data))
+            raise BaseValidationError('The submitted file "{fid}" is too large to be used in this field.'.format(fid=data))
 
         return cf.file
 
@@ -564,7 +705,6 @@ class CheckinRPCRedeemView(views.APIView):
         
         serializer = CheckinRPCRedeemInputSerializer(data=request.data, context={'events': events})
         serializer.is_valid(raise_exception=True)
-        
         return _redeem_process(
             checkinlists=serializer.validated_data['lists'],
             raw_barcode=serializer.validated_data['secret'],

@@ -76,3 +76,13 @@ class CheckinRPCRedeemInputSerializer(serializers.Serializer):
         super().__init__(*args, **kwargs)
         self.fields['lists'].child_relation.queryset = CheckinList.objects.filter(event__in=self.context['events']).select_related('event')
 
+class MiniCheckinListSerializer(I18nAwareModelSerializer):
+    event = serializers.SlugRelatedField(slug_field='slug', read_only=True)
+    subevent = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = CheckinList
+        fields = ('id', 'name', 'event', 'subevent', 'include_pending')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
