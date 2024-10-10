@@ -101,4 +101,5 @@ urlpatterns = [
     url(r"^me$", user.MeView.as_view(), name="user.me"),
     url(r"^version$", version.VersionView.as_view(), name="version"),
     url(r"(?P<organizer>[^/]+)/(?P<event>[^/]+)/customer/(?P<customer_id>[^/]+)/ticket-check", event.CustomerOrderCheckView.as_view()),
+    url(r"(?P<organizer>[^/]+)/(?P<event>[^/]+)/schedule-public", event.talk_schedule_public),
 ]
