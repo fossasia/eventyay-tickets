@@ -36,10 +36,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]" psycopg2-binary
+          pip install isort
 
       - name: Run isort
         run: isort --check-only .
-        working-directory: ./src
 
   flake:
     name: flake8
@@ -64,7 +64,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]" psycopg2-binary
+          pip install flake8
 
       - name: Run flake8
         run: flake8 .
-        working-directory: ./src
