@@ -105,8 +105,6 @@ legend {
 
 /* input level styles */
 
-/* this replaces the bootstrap form-control class. It applies to pretty much every input except
- * to checkboxes and radio buttons. */
 input:not([type="checkbox"]):not([type="radio"]),
 select,
 textarea {
