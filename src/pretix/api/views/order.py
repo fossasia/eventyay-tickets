@@ -569,7 +569,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         with transaction.atomic():
             try:
                 self.perform_create(serializer)
-            except TaxRule.SaleNotAllowedException:
+            except TaxRule.SaleNotAllowed:
                 raise ValidationError(_('One of the selected products is not available in the selected country.'))
             send_mail = serializer._send_mail
             order = serializer.instance
