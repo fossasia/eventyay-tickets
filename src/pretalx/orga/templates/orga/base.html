@@ -434,6 +434,9 @@
                             <span>{% translate "Speakers" %}</span>
                         </a>
                     {% endif %}
+                    {% for nav_element in nav_global %}
+                        {% include "orga/includes/sidebar_nav.html" %}
+                    {% endfor %}
                 {% else %}  {# elif request.organiser #}
                     {% has_perm "orga.view_organiser_lists" request.user request as can_see_organiser_lists %}
                     {% if can_see_organiser_lists %}
