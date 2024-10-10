@@ -39,11 +39,11 @@ class LockManager:
             return False
 
 
-class LockTimeoutException(Exception):
+class LockTimeoutException(Exception):  # NOQA: N818
     pass
 
 
-class LockReleaseException(Exception):
+class LockReleaseException(Exception):  # NOQA: N818
     pass
 
 

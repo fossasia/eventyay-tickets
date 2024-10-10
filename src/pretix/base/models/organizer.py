@@ -11,10 +11,11 @@ from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.timezone import get_current_timezone, make_aware, now
 from django.utils.translation import gettext_lazy as _
+from i18nfield.fields import I18nCharField
 
 from pretix.base.models.base import LoggedModel
 from pretix.base.validators import OrganizerSlugBanlistValidator
-from i18nfield.fields import I18nCharField
+
 from ..settings import settings_hierarkey
 from .auth import User
 
@@ -419,13 +420,14 @@ class TeamAPIToken(models.Model):
         else:
             return self.team.organizer.events.none()
 
+
 class OrganizerFooterLinkModel(models.Model):
     """
     FooterLink model - support show link for organizer's footer
     """
-    organizer = models.ForeignKey('Organizer', 
-                                    on_delete=models.CASCADE, 
-                                    related_name='footer_links')
+    organizer = models.ForeignKey('Organizer',
+                                  on_delete=models.CASCADE,
+                                  related_name='footer_links')
 
     label = I18nCharField(
         max_length=255,

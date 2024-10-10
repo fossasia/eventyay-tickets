@@ -146,12 +146,13 @@ class QuestionForm(I18nModelForm):
             'dependency_question': SafeModelChoiceField,
         }
 
+
 class DescriptionForm(QuestionForm):
     question = I18nFormField(
         label=_("Description Title"),
         widget_kwargs={'attrs': {'rows': 2}},
         widget=I18nTextarea,
-        
+
     )
     description = I18nFormField(
         label=_("Description"),
@@ -163,11 +164,13 @@ class DescriptionForm(QuestionForm):
     def removeDesOption(self):
         # just override parent 's function
         pass
+
     def __init__(self, *args, **kwargs):
         kwargs['initial'] = {
             "type": "DES",
         }
         super().__init__(*args, **kwargs)
+
 
 class QuestionOptionForm(I18nModelForm):
     class Meta:

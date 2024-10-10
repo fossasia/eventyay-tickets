@@ -137,7 +137,7 @@ class TaxRule(LoggedModel):
     class Meta:
         ordering = ('event', 'rate', 'id')
 
-    class SaleNotAllowed(Exception):
+    class SaleNotAllowed(Exception):  # NOQA: N818
         pass
 
     def allow_delete(self):

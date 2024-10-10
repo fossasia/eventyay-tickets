@@ -1,9 +1,10 @@
-import os
 import json
+import os
 
 from django.apps import AppConfig
-from django.utils.translation import gettext, gettext_lazy as _
 from django.core.files.base import ContentFile
+from django.utils.translation import gettext, gettext_lazy as _
+
 from pretix import __version__ as version
 
 

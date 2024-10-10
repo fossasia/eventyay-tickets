@@ -217,7 +217,6 @@ class EventWizard(SafeSessionWizardView):
         except KeyError:
             copy_data = None
 
-
         with transaction.atomic(), language(basics_data['locale']):
             event = form_dict['basics'].instance
             event.organizer = foundation_data['organizer']

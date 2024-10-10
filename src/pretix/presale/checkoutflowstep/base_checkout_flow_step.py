@@ -1,7 +1,8 @@
 from django.http import HttpResponseNotAllowed
-from django.utils.translation import pgettext_lazy
 from django.utils.functional import cached_property
+from django.utils.translation import pgettext_lazy
 from django_scopes import scopes_disabled
+
 from pretix.base.models import InvoiceAddress
 from pretix.multidomain.urlreverse import eventreverse
 from pretix.presale.views.cart import cart_session

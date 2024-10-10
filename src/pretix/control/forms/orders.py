@@ -511,6 +511,7 @@ class OrderContactForm(forms.ModelForm):
         else:
             del self.fields['customer']
 
+
 class OrderLocaleForm(forms.ModelForm):
     locale = forms.ChoiceField()
 

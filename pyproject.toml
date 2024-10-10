@@ -16,10 +16,10 @@ classifiers = [
   "Environment :: Web Environment",
   "License :: OSI Approved :: Apache License, Version 2.0",
   "Programming Language :: Python :: 3.11",
-  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.1",
 ]
 dependencies = [
-        'Django==4.2.*',
+        'Django==5.1.*',
         'djangorestframework==3.15.*',
         'python-dateutil==2.9.*',
         'isoweek',
@@ -103,7 +103,7 @@ dependencies = [
 [project.optional-dependencies]
 memcached = ["pylibmc"]
 dev = [
-            'django-debug-toolbar==4.0.*',
+            'django-debug-toolbar==4.4.*',
             'pycodestyle==2.12.*',
             'pyflakes==3.2.*',
             'flake8==7.1.*',

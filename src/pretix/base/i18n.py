@@ -120,7 +120,7 @@ def language(lng, region=None):
         translation.activate(_lng)
 
 
-class LazyLocaleException(Exception):
+class LazyLocaleException(Exception):  # NOQA: N818
     def __init__(self, *args):
         self.msg = args[0]
         self.msgargs = args[1] if len(args) > 1 else None

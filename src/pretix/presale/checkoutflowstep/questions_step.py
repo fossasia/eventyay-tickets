@@ -5,16 +5,18 @@ from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
-from django.utils.translation import (
-    gettext_lazy as _, pgettext_lazy,
-)
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
+
 from pretix.base.models import TaxRule
 from pretix.base.services.cart import update_tax_rates
 from pretix.presale.checkoutflowstep.template_flow_step import TemplateFlowStep
-
-from pretix.presale.forms.checkout import ContactForm, InvoiceNameForm, InvoiceAddressForm
-from pretix.presale.signals import checkout_all_optional, contact_form_fields_overrides, question_form_fields_overrides, \
-    question_form_fields
+from pretix.presale.forms.checkout import (
+    ContactForm, InvoiceAddressForm, InvoiceNameForm,
+)
+from pretix.presale.signals import (
+    checkout_all_optional, contact_form_fields_overrides, question_form_fields,
+    question_form_fields_overrides,
+)
 from pretix.presale.views import CartMixin, get_cart_is_free
 from pretix.presale.views.cart import get_or_create_cart_id
 from pretix.presale.views.questions import QuestionsViewMixin
@@ -51,8 +53,8 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
         wd = self.cart_session.get('widget_data', {})
         initial = {
             'email': (
-                    self.cart_session.get('email', '') or
-                    wd.get('email', '')
+                self.cart_session.get('email', '') or
+                wd.get('email', '')
             ),
             'phone': wd.get('phone', None)
         }
@@ -162,9 +164,9 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
     @cached_property
     def address_asked(self):
         return (
-                self.request.event.settings.invoice_address_asked
-                and (not self.request.event.settings.invoice_address_not_asked_free or not get_cart_is_free(
-            self.request))
+            self.request.event.settings.invoice_address_asked
+            and (not self.request.event.settings.invoice_address_not_asked_free or not get_cart_is_free(
+                self.request))
         )
 
     def post(self, request):
@@ -250,16 +252,16 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
                 if parentid not in answ:
                     return False
                 return (
-                        ('True' in qvals and answ[parentid].answer == 'True')
-                        or ('False' in qvals and answ[parentid].answer == 'False')
-                        or (any(qval in [o.identifier for o in answ[parentid].options.all()] for qval in qvals))
+                    ('True' in qvals and answ[parentid].answer == 'True')
+                    or ('False' in qvals and answ[parentid].answer == 'False')
+                    or (any(qval in [o.identifier for o in answ[parentid].options.all()] for qval in qvals))
                 )
 
             def question_is_required(q):
                 return (
-                        q.required and
-                        (not q.dependency_question_id or question_is_visible(q.dependency_question_id,
-                                                                             q.dependency_values))
+                    q.required and
+                    (not q.dependency_question_id or question_is_visible(q.dependency_question_id,
+                                                                         q.dependency_values))
                 )
 
             for q in cp.item.questions_to_ask:

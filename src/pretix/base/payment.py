@@ -3,8 +3,8 @@ import json
 import logging
 from collections import OrderedDict
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Any, Dict, Union
 from enum import Enum
+from typing import Any, Dict, Union
 
 import pytz
 from django import forms
@@ -53,6 +53,7 @@ class WalletQueries:
         (WalletType.APPLEPAY.value, pgettext_lazy('payment', 'Apple Pay')),
         (WalletType.GOOGLEPAY.value, pgettext_lazy('payment', 'Google Pay')),
     )
+
 
 class PaymentProviderForm(Form):
     def clean(self):
@@ -856,7 +857,7 @@ class BasePaymentProvider:
         return None
 
 
-class PaymentException(Exception):
+class PaymentException(Exception):  # NOQA: N818
     pass
 
 

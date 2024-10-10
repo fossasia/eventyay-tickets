@@ -1,8 +1,8 @@
+from css_inline import inline as inline_css
 from django.conf import settings
 from django.template.loader import get_template
 from django.utils.timezone import override
 from django_scopes import scope, scopes_disabled
-from css_inline import inline as inline_css
 
 from pretix.base.i18n import language
 from pretix.base.models import LogEntry, NotificationSetting, User
@@ -74,9 +74,9 @@ def notify(logentry_ids: list):
 def send_notification(logentry_id: int, action_type: str, user_id: int, method: str):
     logentry = LogEntry.all.get(id=logentry_id)
     if logentry.event:
-        sm = lambda: scope(organizer=logentry.event.organizer)  # noqa
+        def sm(): return scope(organizer=logentry.event.organizer)  # noqa
     else:
-        sm = lambda: scopes_disabled()  # noqa
+        def sm(): return scopes_disabled()  # noqa
     with sm():
         user = User.objects.get(id=user_id)
         types = get_all_notification_types(logentry.event)

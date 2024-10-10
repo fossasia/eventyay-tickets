@@ -1040,7 +1040,7 @@ class Question(LoggedModel):
     question = I18nTextField(
         verbose_name=_("Question")
     )
-    description =  I18nTextField(
+    description = I18nTextField(
         verbose_name=_("Description"),
         default="",
         null=True,
@@ -1474,7 +1474,7 @@ class Quota(LoggedModel):
             _cache['_count_waitinglist'] = count_waitinglist
         return res
 
-    class QuotaExceededException(Exception):
+    class QuotaExceededException(Exception):  # NOQA: N818
         pass
 
     @staticmethod

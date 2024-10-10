@@ -1,4 +1,4 @@
-from django.urls import re_path as url, include
+from django.urls import include, re_path as url
 
 from pretix.eventyay_common.views import dashboards, event, organizer, team
 

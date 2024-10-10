@@ -2,8 +2,7 @@ from importlib import import_module
 
 from django.conf import settings
 from django.db.models import Q
-from django.urls import Resolver404, get_script_prefix, resolve
-from django.urls import reverse
+from django.urls import Resolver404, get_script_prefix, resolve, reverse
 from django.utils.translation import gettext_lazy as _
 
 from pretix.base.models.auth import StaffSession

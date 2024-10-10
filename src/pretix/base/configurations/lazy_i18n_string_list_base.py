@@ -1,5 +1,6 @@
-from collections import UserList
 import json
+from collections import UserList
+
 from i18nfield.strings import LazyI18nString
 
 

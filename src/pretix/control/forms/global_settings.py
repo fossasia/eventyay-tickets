@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from django import forms
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
 
@@ -8,15 +9,12 @@ from pretix.base.forms import SecretKeySettingsField, SettingsForm
 from pretix.base.settings import GlobalSettingsObject
 from pretix.base.signals import register_global_settings
 
-from django.conf import settings
-
 
 class GlobalSettingsForm(SettingsForm):
     auto_fields = [
         'region',
         'mail_from'
     ]
-
 
     def _setting_default(self):
         """
@@ -40,7 +38,7 @@ class GlobalSettingsForm(SettingsForm):
 
     def __init__(self, *args, **kwargs):
         self.obj = GlobalSettingsObject()
-        self._setting_default()        
+        self._setting_default()
         super().__init__(*args, obj=self.obj, **kwargs)
 
         smtp_select = [
@@ -126,7 +124,7 @@ class GlobalSettingsForm(SettingsForm):
                 label=_("Use STARTTLS"),
                 help_text=_("Commonly enabled on port 587."),
                 required=False
-                
+
             )),
             ('smtp_use_ssl', forms.BooleanField(
                 label=_("Use SSL"),

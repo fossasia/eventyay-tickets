@@ -88,4 +88,3 @@ class I18nURLField(I18nField):
             url_validator(value.data)
 
         return value
-

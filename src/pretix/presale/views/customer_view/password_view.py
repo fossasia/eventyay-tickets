@@ -1,19 +1,22 @@
-from django.views.generic import FormView
-from pretix.presale.forms.customer_forms import (ChangePasswordForm, ResetPasswordForm, SetPasswordForm)
-from django.utils.decorators import method_decorator
-from django.views.decorators.debug import sensitive_post_parameters
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.cache import never_cache
-from django.http import Http404, HttpResponseRedirect
-from pretix.base.models import Customer
 from django.contrib import messages
-from django.utils.translation import gettext_lazy as _
-from pretix.presale.forms.customer import TokenGenerator
-from pretix.multidomain.urlreverse import build_absolute_uri, eventreverse
 from django.db import transaction
+from django.http import Http404, HttpResponseRedirect
+from django.utils.decorators import method_decorator
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic import FormView
+
+from pretix.base.models import Customer
 from pretix.base.services.mail import mail
-from pretix.presale.views.customer import CustomerRequiredMixin
+from pretix.multidomain.urlreverse import build_absolute_uri, eventreverse
+from pretix.presale.forms.customer import TokenGenerator
+from pretix.presale.forms.customer_forms import (
+    ChangePasswordForm, ResetPasswordForm, SetPasswordForm,
+)
 from pretix.presale.utils import update_customer_session_auth_hash
+from pretix.presale.views.customer import CustomerRequiredMixin
 
 
 class SetPasswordView(FormView):

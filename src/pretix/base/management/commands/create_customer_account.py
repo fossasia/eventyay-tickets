@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from django_scopes import scopes_disabled
 
 from pretix.base.i18n import get_language_without_region
-from pretix.base.models import Organizer, Event, Order, Customer
+from pretix.base.models import Customer, Event, Order, Organizer
 
 
 class Command(BaseCommand):
@@ -42,7 +42,7 @@ class Command(BaseCommand):
                     if not customer:
                         name_parts_data = {
                             "_scheme": "full",
-                            "full_name":order.email.split("@")[0]
+                            "full_name": order.email.split("@")[0]
                         }
                         customer = organizer.customers.create(
                             email=order.email,

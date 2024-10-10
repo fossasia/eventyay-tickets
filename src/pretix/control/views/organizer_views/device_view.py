@@ -2,7 +2,7 @@ import json
 
 from django.conf import settings
 from django.contrib import messages
-from django.http import HttpResponseBadRequest, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.functional import cached_property

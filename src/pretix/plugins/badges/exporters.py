@@ -30,6 +30,7 @@ from pretix.plugins.badges.models import BadgeItem, BadgeLayout
 
 from ...helpers.templatetags.jsonfield import JSONExtract
 
+
 def _renderer(event, layout):
     if layout is None:
         return None
