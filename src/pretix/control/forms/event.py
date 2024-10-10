@@ -489,6 +489,7 @@ class EventSettingsForm(SettingsForm):
         'theme_color_danger',
         'theme_color_background',
         'theme_round_borders',
+        'hover_button_color',
         'primary_font',
         'logo_image',
         'logo_image_large',
@@ -1104,6 +1105,7 @@ class TicketSettingsForm(SettingsForm):
         'ticket_download_nonadm',
         'ticket_download_pending',
         'ticket_download_require_validated_email',
+        'require_registered_account_for_tickets'
     ]
     ticket_secret_generator = forms.ChoiceField(
         label=_("Ticket code generator"),

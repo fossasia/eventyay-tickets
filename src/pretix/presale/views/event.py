@@ -458,6 +458,8 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
             if pretix_venueless.apps.PluginApp.name in self.request.event.get_plugins():
                 context['is_video_plugin_enabled'] = True
 
+        context['guest_checkout_allowed'] = not self.request.event.settings.require_registered_account_for_tickets
+
         return context
 
     def _subevent_list_context(self):

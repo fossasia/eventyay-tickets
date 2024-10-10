@@ -27,6 +27,7 @@ from pretix.multidomain.middlewares import CsrfViewMiddleware
 from pretix.multidomain.urlreverse import build_absolute_uri
 from pretix.presale.forms.customer_forms import AuthenticationForm
 from pretix.presale.utils import customer_login, get_customer_auth_time
+from pretix.presale.views.customer_view.authentication_view import set_cookie_after_logged_in
 
 RESPONSE_TYPES_SUPPORTED = ("code", "id_token token", "id_token", "code id_token", "code id_token token", "code token")
 
@@ -206,6 +207,8 @@ class AuthorizeView(View):
         response = redirect(redirect_uri)
         response['Cache-Control'] = 'no-store'
         response['Pragma'] = 'no-cache'
+
+        set_cookie_after_logged_in(self.request, response)
 
         return response
 

@@ -16,6 +16,7 @@ $body-bg: #f5f5f5 !default;
 @import "_forms.scss";
 @import "_calendar.scss";
 @import "_checkout.scss";
+@import "custom.scss";
 @import "../../pretixbase/scss/webfont.scss";
 
 /* See https://github.com/pretix/pretix/pull/761 */

@@ -16,11 +16,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='badgelayout',
-            name='size',
-            field=models.TextField(default='[{"width": 148, "height": 105, "orientation": "portrait"}]'),
-        ),
-        migrations.AddField(
-            model_name='badgelayout',
             name='event',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='badge_layouts', to='pretixbase.event'),
         ),
