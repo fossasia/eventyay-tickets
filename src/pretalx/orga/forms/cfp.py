@@ -571,6 +571,7 @@ class ReminderFilterForm(QuestionFilterForm):
         required=False,
         help_text=_("If you select no question, all questions will be used."),
         label=phrases.cfp.questions,
+        widget=EnhancedSelectMultiple,
     )
 
     def get_question_queryset(self):

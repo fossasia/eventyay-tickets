@@ -31,21 +31,26 @@
         </small>
     </h3>
 {% endif %}
-{% if submission.submission_type and request.event.submission_types.all|length > 1 %}
-    <p>
-        <strong>{% translate "Session type" %}</strong>: {{ submission.submission_type.name }}
+<div class="submission-info d-flex">
+    {% if submission.submission_type and request.event.submission_types.all|length > 1 %}
+        <p class="mr-1 ml-1">
+            <strong>{% translate "Session type" %}</strong>: {{ submission.submission_type.name }}
+        </p>
+        ·
+    {% endif %}
+    {% if submission.track and request.event.tracks.all|length > 1 %}
+        <p class="mr-1 ml-1">
+            <strong>{% translate "Track" %}</strong> {{ submission.track.name }}
+        </p>
+        ·
+    {% endif %}
+    {% if request.event.is_multilingual and request.event.cfp.request_content_locale %}
+        <p class="mr-1 ml-1">
+            <strong>{{ phrases.base.language }}</strong> {{ submission.get_content_locale_display }}
+        </p>
+        ·
+    {% endif %}
+    <p class="mr-1 ml-1">
+        <strong>{% translate "Duration" %}</strong> {{ submission.export_duration }}
     </p>
-{% endif %}
-{% if submission.track and request.event.tracks.all|length > 1 %}
-    <p>
-        <strong>{% translate "Track" %}</strong> {{ submission.track.name }}
-    </p>
-{% endif %}
-{% if request.event.is_multilingual and request.event.cfp.request_content_locale %}
-    <p>
-        <strong>{{ phrases.base.language }}</strong> {{ submission.get_content_locale_display }}
-    </p>
-{% endif %}
-<p>
-    <strong>{% translate "Duration" %}</strong> {{ submission.export_duration }}
-</p>
+</div>

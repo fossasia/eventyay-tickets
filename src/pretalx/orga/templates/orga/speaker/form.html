@@ -38,12 +38,15 @@
             proposals
         {% endblocktranslate %}
         {{ proposal_title }})
-        {% if can_send_mails %}
-            <a class="btn btn-outline-info ml-auto mb-1" href="{{ request.event.orga_urls.compose_mails_sessions }}?speakers={{ form.instance.user.code }}">
-                <i class="fa fa-envelope"></i>
-                {% translate "Send email" %}
-            </a>
-        {% endif %}
+        <div class="ml-auto mb-1">
+            <a href="{{ form.instance.orga_urls.password_reset }}" class="btn btn-info flip">{{ phrases.base.password_reset_heading }}</a>
+            {% if can_send_mails %}
+                <a class="btn btn-outline-info ml-2" href="{{ request.event.orga_urls.compose_mails_sessions }}?speakers={{ form.instance.user.code }}">
+                    <i class="fa fa-envelope"></i>
+                    {% translate "Send email" %}
+                </a>
+            {% endif %}
+        </div>
     </h2>
     <div class="alert alert-info col-md-9 flip offset-md-3">
         <span>
