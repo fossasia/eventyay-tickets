@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -31,7 +30,7 @@
     {% if answer_count %}
         <div class="pb-4">
             <form class="form-inline filter-form">
-                {% bootstrap_form filter_form layout="inline" %}
+                {{ filter_form }}
                 <button class="btn btn-info" type="submit">{% translate "Filter" %}</button>
             </form>
         </div>

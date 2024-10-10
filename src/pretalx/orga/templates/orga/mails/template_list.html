@@ -1,6 +1,5 @@
 {% extends "orga/mails/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -68,7 +67,7 @@
                 </div>
                 <div id="collapse{{ template.obj.id }}" class="collapse" aria-labelledby="heading{{ template.obj.id }}" data-parent="#template-accordion">
                     <div class="card-body">
-                        {% bootstrap_form template.form layout="event" %}
+                        {{ template.form }}
                     </div>
                 </div>
             </div>

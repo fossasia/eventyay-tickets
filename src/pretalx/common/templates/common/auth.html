@@ -1,9 +1,8 @@
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
 
-{% bootstrap_form_errors form %}
+{{ form.non_field_errors }}
 {% if no_form %}
     <div id="auth-form" class="password-input-form d-md-flex flex-row">
 {% else %}
@@ -28,8 +27,8 @@
         {% if not hide_login and not hide_register %}
             <h4 class="text-center">{% translate "I already have an account" %}</h4>
         {% endif %}
-        {% bootstrap_field form.login_email layout="inline" %}
-        {% bootstrap_field form.login_password layout="inline" %}
+        {{ form.login_email.as_field_group }}
+        {{ form.login_password.as_field_group }}
         {% if not no_buttons %}
             <button type="submit" class="btn btn-lg btn-success btn-block">
                 {% translate "Log in" %}
@@ -47,10 +46,10 @@
         {% if not hide_login and not hide_register %}
             <h4 class="text-center">{% translate "I need a new account" %}</h4>
         {% endif %}
-        {% bootstrap_field form.register_name layout="inline" %}
-        {% bootstrap_field form.register_email layout="inline" %}
-        {% bootstrap_field form.register_password layout="inline" %}
-        {% bootstrap_field form.register_password_repeat layout="inline" %}
+        {{ form.register_name.as_field_group }}
+        {{ form.register_email.as_field_group }}
+        {{ form.register_password.as_field_group }}
+        {{ form.register_password_repeat.as_field_group }}
         {% if not no_buttons %}
             <button type="submit" class="btn btn-lg btn-info btn-block">
                 {% translate "Register" %}

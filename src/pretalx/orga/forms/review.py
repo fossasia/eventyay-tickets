@@ -9,6 +9,7 @@ from django.utils.translation import ngettext as _n
 from django_scopes.forms import SafeModelMultipleChoiceField
 
 from pretalx.common.forms.mixins import ReadOnlyFlag
+from pretalx.common.forms.renderers import InlineFormRenderer, TabularFormRenderer
 from pretalx.common.forms.widgets import EnhancedSelectMultiple, MarkdownWidget
 from pretalx.common.text.phrases import phrases
 from pretalx.orga.forms.export import ExportForm
@@ -49,6 +50,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         categories=None,
         submission=None,
         allow_empty=False,
+        default_renderer=None,
         **kwargs,
     ):
         self.event = event
@@ -56,6 +58,7 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
         self.categories = categories
         self.submission = submission
         self.allow_empty = allow_empty
+        self.default_renderer = default_renderer or self.default_renderer
 
         super().__init__(*args, instance=instance, **kwargs)
 
@@ -80,7 +83,6 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
                 hide_optional=self.event.review_settings["score_mandatory"],
             )
         self.fields["text"].widget.attrs["rows"] = 2
-        self.fields["text"].widget.attrs["placeholder"] = phrases.orga.example_review
         self.fields["text"].help_text += " " + phrases.base.use_markdown
 
     def build_score_field(
@@ -174,6 +176,8 @@ class ReviewForm(ReadOnlyFlag, forms.ModelForm):
 
 
 class DirectionForm(forms.Form):
+    default_renderer = InlineFormRenderer
+
     direction = forms.ChoiceField(
         choices=(
             ("reviewer", _("Assign proposals to reviewers")),
@@ -362,7 +366,9 @@ class ReviewExportForm(ExportForm):
 
 
 class ReviewAssignImportForm(DirectionForm):
-    import_file = forms.FileField(label=_("file"))
+    default_renderer = TabularFormRenderer
+
+    import_file = forms.FileField(label=_("File"))
     replace_assignments = forms.ChoiceField(
         label=_("Replace current assignments"),
         choices=(

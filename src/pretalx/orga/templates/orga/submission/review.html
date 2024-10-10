@@ -1,6 +1,5 @@
 {% extends "orga/submission/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load rich_text %}
@@ -45,11 +44,7 @@
 
         <form method="post" id="review-form">
             {% csrf_token %}
-            {% bootstrap_form_errors form %}
-            {% bootstrap_form_errors qform %}
-            {% if tags_form %}
-                {% bootstrap_form_errors tags_form %}
-            {% endif %}
+            {{ form.non_field_errors }}
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">{% translate "Title" %}</label>
                 <div class="col-md-9 mt-1">
@@ -150,16 +145,14 @@
             {% endif %}
 
             {% if not read_only %}
-                {% if tags_form %}
-                    {% bootstrap_form tags_form layout="event" %}
-                {% endif %}
+                {% if tags_form %}{{ tags_form }}{% endif %}
 
                 <div id="own-review" {% if form.instance.pk %}class="d-none"{% endif %}>
                     {% for score_field in form.get_score_fields %}
-                        {% bootstrap_field score_field layout="event" %}
+                        {{ score_field.as_field_group }}
                     {% endfor %}
-                    {% bootstrap_form qform layout="event" %}
-                    {% bootstrap_field form.text layout="event" %}
+                    {{ qform }}
+                    {{ form.text.as_field_group }}
                 </div>
             {% endif %}
 

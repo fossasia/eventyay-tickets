@@ -1,6 +1,5 @@
 {% extends "orga/submission/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load rich_text %}
@@ -25,7 +24,7 @@
 
 {% block submission_content %}
     <form method="post" enctype="multipart/form-data"><fieldset>
-        {% bootstrap_form_errors form %}
+        {{ form.non_field_errors }}
         {% csrf_token %}
 
         <div id="anonymise">
@@ -55,7 +54,7 @@
                 <h4>{{ field.label }}</h4>
                 <div>
                     <div class="plaintext"><p>{{ field.field.plaintext|rich_text }}</p></div>
-                    <div class="anonymised">{% bootstrap_field field layout="inline" %}</div>
+                    <div class="anonymised">{{ field.as_field_group }}</div>
                 </div>
             {% endfor %}
         </div>

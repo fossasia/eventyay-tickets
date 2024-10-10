@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load rules %}
@@ -59,17 +58,17 @@
 
     <div class="submit-group search-submit-group">
         <form class="search-form">
-            {% bootstrap_field filter_form.q %}
-            {% if show_submission_types and filter_form.submission_type %}{% bootstrap_field filter_form.submission_type %}{% endif %}
+            {{ filter_form.q.as_field_group }}
+            {% if show_submission_types and filter_form.submission_type %}{{ filter_form.submission_type.as_field_group }}{% endif %}
             <div class="d-flex flex-column form-group">
-                {% bootstrap_field filter_form.state layout="inline" %}
+                {{ filter_form.state.as_field_group }}
                 <div class="ml-4">
-                    <div id="pending" class="d-none">{% bootstrap_field filter_form.pending_state__isnull layout="inline" %}</div>
+                    <div id="pending" class="d-none">{{ filter_form.pending_state__isnull.as_field_group }}</div>
                 </div>
             </div>
-            {% if filter_form.track %}{% bootstrap_field filter_form.track %}{% endif %}
-            {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}
-            {% if filter_form.content_locale %}{% bootstrap_field filter_form.content_locale %}{% endif %}
+            {% if filter_form.track %}{{ filter_form.track.as_field_group }}{% endif %}
+            {% if filter_form.tags %}{{ filter_form.tags.as_field_group }}{% endif %}
+            {% if filter_form.content_locale %}{{ filter_form.content_locale.as_field_group }}{% endif %}
             {# These fields are hidden, but included to keep question search intact #}
             {% if request.GET.question %} <input type="hidden" name="question" value="{{ request.GET.question }}"> {% endif %}
             {% if request.GET.answer__options %} <input type="hidden" name="answer__options" value="{{ request.GET.answer__options }}"> {% endif %}

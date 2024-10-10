@@ -1,9 +1,6 @@
 {% extends "agenda/base.html" %}
 
-{% load bootstrap4 %}
-{% load compress %}
 {% load i18n %}
-{% load static %}
 
 {% block agenda_custom_header %}
     {% include "cfp/includes/forms_header.html" %}
@@ -27,14 +24,9 @@
                     {% translate "You can’t give feedback for this session at this time." %}
                 {% else %}
                     <form method="post">
-                        {% bootstrap_form_errors form %}
                         {% csrf_token %}
-                        {% if speakers|length > 1 %}
-                            {% bootstrap_field form.speaker layout="inline" %}
-                        {% endif %}
-                        <div class="markdown-column">{% bootstrap_field form.review layout="inline" %}</div>
-
-                        <button type="submit" class="btn btn-success float-right">{{ phrases.base.send }}</button>
+                        {{ form }}
+                        <button type="submit" class="btn-success float-right">{{ phrases.base.send }}</button>
                     </form>
                 {% endif %}
             </div>

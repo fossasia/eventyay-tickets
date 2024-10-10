@@ -489,6 +489,8 @@ I’m looking forward to your proposal!
 
 
 class QuestionFilterForm(forms.Form):
+    default_renderer = InlineFormRenderer
+
     role = forms.ChoiceField(
         choices=(
             ("", phrases.base.all_choices),

@@ -1,5 +1,4 @@
-.resource-option-row,
-.resource-option-input {
+.resource-option-row {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -7,21 +6,28 @@
   .resource-option-delete {
     float: right;
     flex-grow: 0;
-    padding-right: 8px;
   }
 
   .form-group {
     display: flex;
-    padding-right: 16px;
     margin-bottom: 0;
-    margin-top: 2px;
+    margin-top: 0;
 
     .bootstrap-multi-input {
       flex-grow: 1;
+    }
+    label .optional {
+      display: none;
     }
 
     input {
       height: 2rem;
     }
+    input[type="file"] + small {
+      display: none;
+    }
   }
+}
+hr + .resource-option-row {
+  margin-top: -12px;
 }

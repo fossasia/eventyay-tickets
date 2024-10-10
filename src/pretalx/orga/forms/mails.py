@@ -12,6 +12,7 @@ from i18nfield.forms import I18nModelForm
 
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
+from pretalx.common.forms.renderers import TabularFormRenderer
 from pretalx.common.forms.widgets import EnhancedSelectMultiple
 from pretalx.common.language import language
 from pretalx.common.text.phrases import phrases
@@ -307,6 +308,8 @@ class WriteTeamsMailForm(WriteMailBaseForm):
 
 
 class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
+    default_renderer = TabularFormRenderer
+
     submissions = forms.MultipleChoiceField(
         required=False,
         label=_("Proposals"),

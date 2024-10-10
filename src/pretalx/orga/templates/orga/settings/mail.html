@@ -1,6 +1,5 @@
 {% extends "orga/settings/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -38,7 +37,7 @@
                 {% endblocktranslate %}
             </div>
         </dialog>
-        {% bootstrap_form form layout="event" %}
+        {{ form }}
         <div class="submit-group panel">
             <span></span>
             <span>

@@ -1,6 +1,5 @@
 {% extends "orga/mails/_mail_editor.html" %}
 
-{% load bootstrap4 %}
 {% load i18n %}
 
 {% block email_editor_title_detail %}
@@ -37,22 +36,14 @@
       {% endif %}
     </div>
   {% endif %}
-  <div class="form-group row">
-    <label for="id_state" class="col-md-3 col-form-label">{{ form.state.label }}
-      <br>
-      <span class="optional">{% translate "Optional" context "form field" %}</span>
-    </label>
-    <div class="col-md-9 d-flex align-items-center">
-      {% bootstrap_field form.state layout="inline" form_group_class="d-inline-flex col-md-6 pl-0 mr-3" %}
-      {% bootstrap_field form.pending_state__isnull layout="inline" form_group_class="d-inline-flex" %}
-    </div>
-  </div>
-  {% if form.submission_type %}{% bootstrap_field form.submission_type layout="event" %}{% endif %}
-  {% if form.track %}{% bootstrap_field form.track layout="event" %}{% endif %}
-  {% if form.content_locale %}{% bootstrap_field form.content_locale layout="event" %}{% endif %}
-  {% if form.tags %}{% bootstrap_field form.tags layout="event" %}{% endif %}
+  {{ form.state.as_field_group }}
+  {{ form.exclude_pending.as_field_group }}
+  {% if form.submission_type %}{{ form.submission_type.as_field_group }}{% endif %}
+  {% if form.track %}{{ form.track.as_field_group }}{% endif %}
+  {% if form.content_locale %}{{ form.content_locale.as_field_group }}{% endif %}
+  {% if form.tags %}{{ form.tags.as_field_group }}{% endif %}
 
-  {% bootstrap_field form.submissions layout="event" %}
-  {% bootstrap_field form.speakers layout="event" %}
+  {{ form.submissions.as_field_group }}
+  {{ form.speakers.as_field_group }}
 
 {% endblock recipient_form %}

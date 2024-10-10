@@ -1,7 +1,6 @@
 {% extends "orga/mails/_mail_editor.html" %}
 
 {% load i18n %}
-{% load bootstrap4 %}
 
 {% block email_editor_title_detail %}
     {% translate "Reviewers and team members" %}
@@ -18,7 +17,7 @@
 {% endblock skip_queue %}
 
 {% block recipient_form %}
-    {% bootstrap_field form.recipients layout="event" %}
+    {{ form.recipients.as_field_group }}
 {% endblock recipient_form %}
 
 {% block send_button_label %}{{ phrases.base.send }}{% endblock send_button_label %}

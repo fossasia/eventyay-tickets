@@ -1,6 +1,5 @@
 {% extends "orga/settings/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load rules %}
@@ -31,52 +30,49 @@
         {% include "orga/includes/tablist.html" %}
 
         <div role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
-            {% bootstrap_form_errors form %}
+            {{ form.non_field_errors }}
 
-            {% bootstrap_field form.name layout="event" %}
-            {% bootstrap_field form.slug layout="event" addon_before=url_placeholder addon_before_class="input-group-prepend input-group-text" %}
-            {% bootstrap_field form.date_from layout="event" %}
-            {% bootstrap_field form.date_to layout="event" %}
-            {% bootstrap_field form.email layout="event" %}
-            {% bootstrap_field form.custom_domain layout="event" %}
-            {% bootstrap_field form.meta_noindex layout="event" %}
-            {% bootstrap_field form.imprint_url layout="event" %}
-
-
-
+            {{ form.name.as_field_group }}
+            {{ form.slug.as_field_group }}
+            {{ form.date_from.as_field_group }}
+            {{ form.date_to.as_field_group }}
+            {{ form.email.as_field_group }}
+            {{ form.custom_domain.as_field_group }}
+            {{ form.meta_noindex.as_field_group }}
+            {{ form.imprint_url.as_field_group }}
         </div>
         <div role="tabpanel" id="tabpanel-localisation" aria-labelledby="tab-localisation" tabindex="0" aria-hidden="true">
-            {% bootstrap_field form.locale layout="event" %}
-            {% bootstrap_field form.locales layout="event" %}
-            {% bootstrap_field form.content_locales layout="event" %}
-            {% bootstrap_field form.timezone layout="event" %}
+            {{ form.locale.as_field_group }}
+            {{ form.locales.as_field_group }}
+            {{ form.content_locales.as_field_group }}
+            {{ form.timezone.as_field_group }}
         </div>
         <div role="tabpanel" id="tabpanel-texts" aria-labelledby="tab-texts" tabindex="0" aria-hidden="true">
-            {% bootstrap_field form.landing_page_text layout="event" %}
-            {% bootstrap_field form.featured_sessions_text layout="event" %}
+            {{ form.landing_page_text.as_field_group }}
+            {{ form.featured_sessions_text.as_field_group }}
         </div>
         <div role="tabpanel" id="tabpanel-display" aria-labelledby="tab-display" tabindex="0" aria-hidden="true">
-            {% bootstrap_field form.primary_color layout="event" %}
+            {{ form.primary_color.as_field_group }}
             <div id="csswrap">
-                {% bootstrap_field form.custom_css layout="event" %}
+                {{ form.custom_css.as_field_group }}
                 <button class="btn btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseCSSBox" aria-expanded="false" aria-controls="collapseCSSBox">
                     <i class="fa fa-code"></i>
                 </button>
             </div>
             <div class="collapse" id="collapseCSSBox">
-                {% bootstrap_field form.custom_css_text layout="event" %}
+                {{ form.custom_css_text.as_field_group }}
             </div>
-            {% bootstrap_field form.logo layout="event" %}
-            {% bootstrap_field form.header_image layout="event" %}
+            {{ form.logo.as_field_group }}
+            {{ form.header_image.as_field_group }}
             <div {% if request.event.primary_color %}style="--color: {{ request.event.primary_color }}"{% endif %} class="colorpicker-update">
-                {% bootstrap_field form.header_pattern layout="event" %}
+                {{ form.header_pattern.as_field_group }}
             </div>
-            {% bootstrap_field form.show_schedule layout="event" %}
-            {% bootstrap_field form.schedule layout="event" %}
-            {% bootstrap_field form.show_featured layout="event" %}
-            {% bootstrap_field form.use_feedback layout="event" %}
-            {% bootstrap_field form.export_html_on_release layout="event" %}
-            {% bootstrap_field form.html_export_url layout="event" %}
+            {{ form.show_schedule.as_field_group }}
+            {{ form.schedule.as_field_group }}
+            {{ form.show_featured.as_field_group }}
+            {{ form.use_feedback.as_field_group }}
+            {{ form.export_html_on_release.as_field_group }}
+            {{ form.html_export_url.as_field_group }}
         </div>
         <div class="submit-group panel">
             <span>

@@ -1,11 +1,11 @@
-{% load bootstrap4 %}
 {% load formset_tags %}
 {% load i18n %}
 {% load filesize %}
+{% load static %}
 
 <div class="formset form-group row" id="resource-upload" data-formset data-formset-prefix="{{ formset.prefix }}">
     {{ formset.management_form }}
-    {% bootstrap_formset_errors formset %}
+    {{ formset.non_form_errors }}
     <label class="col-md-3 col-form-label">{% translate "Resources" %}</label>
     <div data-formset-body class="col-md-9">
         {% if can_edit %}
@@ -17,34 +17,46 @@
             <div data-formset-form class="mb-2">
                 <div class="sr-only">
                     {{ form.id }}
-                    {% bootstrap_field form.DELETE form_group_class="" layout="inline" %}
+                    {{ form.DELETE }}
                 </div>
-                {% bootstrap_form_errors form %}
-                <div class="resource-option-row flip ml-auto">
-                    <div class="resource-option{% if not form.errors %}-input{% endif %}{% if action == "view" %} disabled{% endif %}">
-                        {% bootstrap_form_errors form %}
-                        {% bootstrap_field form.description layout="inline" %}
+                {{ form.non_field_errors }}
+                <div class="resource-option-row flip ml-auto d-flex">
+                    <div class="d-flex flex-column flex-grow-1 mr-2 resource-option{% if not form.errors %}-input{% endif %}{% if action == "view" %} disabled{% endif %}">
                         {% if form.errors %}
+                            {{ form.description.as_field_group }}
                             <div class="resource-option-inline">
-                                {% bootstrap_field form.link layout="inline" %}
-                                {% bootstrap_field form.resource layout="inline" %}
+                                {{ form.link.as_field_group }}
+                                {{ form.resource.as_field_group }}
                             </div>
                         {% else %}
                             {% if form.instance.link %}
-                                {% bootstrap_field form.link layout="inline" %}
+                                <div class="col-md-12">
+                                    {{ form.description.as_field_group }}
+                                    {{ form.link.as_field_group }}
+                                </div>
                             {% else %}
-                                <i class="fa fa-paperclip mr-1 ml-2 pt-1"></i> <a href="{{ form.instance.url }}">{{ form.instance.filename }}</a>
+                                <div class="d-flex flex-row align-items-end">
+                                    <div class="col-md-6">
+                                        {{ form.description.as_field_group }}
+                                    </div>
+                                    <div class="mb-1 col-md-6">
+                                        <i class="fa fa-paperclip mr-1 ml-2 pt-1"></i> <a href="{{ form.instance.url }}">{{ form.instance.filename }}</a>
+                                    </div>
+                                </div>
                             {% endif %}
                         {% endif %}
                     </div>
                     {% if can_edit %}
-                        <div class="resource-option-delete">
-                            <button type="button" class="btn btn-danger btn-sm" data-formset-delete-button>
+                        <div class="resource-option-delete mt-3 pt-1">
+                            <button type="button" class="btn btn-danger btn-sm mt-3" data-formset-delete-button>
                                 <i class="fa fa-trash"></i></button>
                         </div>
                     {% endif %}
                 </div>
             </div>
+            {% if not forloop.last %}
+                <hr>
+            {% endif %}
         {% empty %}
             <div class="mt-1">{% translate "This proposal has no resources yet." %}</div>
         {% endfor %}
@@ -53,25 +65,33 @@
         <script type="form-template" data-formset-empty-form>
             {% escapescript %}
                 <div data-formset-form class="formset-row">
+                <hr>
+                <div class="resource-option-row flip ml-auto d-flex flex-column col-md-12">
                 <div class="sr-only">
                 {{ formset.empty_form.id }}
-                {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
+                {{ formset.empty_form.DELETE }}
                 </div>
-                <div class="resource-option-row flip ml-auto">
-                <div class="resource-option-fields">
-                {% bootstrap_field formset.empty_form.description layout="inline" %}
-                <div class="resource-option-inline">
-                {% bootstrap_field formset.empty_form.link layout="inline"  %}
-                {% bootstrap_field formset.empty_form.resource layout="inline"  %}
-                <button type="button" class="btn btn-danger btn-sm ml-auto" data-formset-delete-button>
-                <i class="fa fa-trash"></i></button>
+                <div class="resource-option-fields d-flex">
+                <div class="mr-2 flex-grow-1">
+                {{ formset.empty_form.description.as_field_group }}
                 </div>
-                <div class="text-muted mt-0 pt-0 mb-2">
+                <div class="resource-option-delete mt-3 pt-1">
+                <button type="button" class="btn btn-danger btn-sm ml-auto mt-3" data-formset-delete-button>
+                <i class="fa fa-trash"></i>
+                </button>
+                </div>
+                </div>
+                <div class="resource-option-inline d-flex">
+                <div class="mr-2 flex-grow-1">
+                {{ formset.empty_form.link.as_field_group }}
+                </div>
+                <div class="ml-2 flex-grow-1">
+                {{ formset.empty_form.resource.as_field_group }}
+                </div>
+                </div>
+                <div class="text-muted mt-0 pt-0 mb-2 mt-2">
                 {% translate "You can either provide a URL or upload a file." %}
                 {{ formset.empty_form.resource.help_text }}
-                </div>
-                <div class="resource-option-delete">
-                </div>
                 </div>
                 </div>
                 </div>
@@ -86,3 +106,5 @@
         {% endif %}
     {% endif %}
 </div>
+
+<link rel="stylesheet" type="text/css" href="{% static "common/css/resource-form.css" %}" />

@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -46,13 +45,15 @@
     </dialog>
     <form method="post">
         {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        {% bootstrap_form_errors sform %}
+
+        {{ form.non_field_errors }}
+        {{ sform.non_field_errors }}
+
         {% include "orga/includes/tablist.html" %}
         <div role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
-            {% bootstrap_field form.headline layout="event" %}
-            {% bootstrap_field form.text layout="event" %}
-            {% bootstrap_field form.deadline layout="event" %}
+            {{ form.headline.as_field_group }}
+            {{ form.text.as_field_group }}
+            {{ form.deadline.as_field_group }}
             {% if different_deadlines %}
                 <div class="offset-md-3 alert alert-info">
                     <div>
@@ -70,14 +71,14 @@
                     </div>
                 </div>
             {% endif %}
-            {% bootstrap_field form.show_deadline layout="event" %}
-            {% bootstrap_field sform.use_tracks layout="event" %}
-            {% bootstrap_field sform.present_multiple_times layout="event" %}
-            {% bootstrap_field sform.mail_on_new_submission layout="event" %}
+            {{ form.show_deadline.as_field_group }}
+            {{ sform.use_tracks.as_field_group }}
+            {{ sform.present_multiple_times.as_field_group }}
+            {{ sform.mail_on_new_submission.as_field_group }}
         </div>
 
         <div role="tabpanel" id="tabpanel-fields" aria-labelledby="tab-fields" tabindex="0" aria-hidden="true">
-            {% bootstrap_field form.count_length_in layout="event" %}
+            {{ form.count_length_in.as_field_group }}
             <fieldset>
 
                 <legend id="information"><div>
@@ -105,62 +106,62 @@
                         <tr>
                             <th>{% translate "Title" %}</th>
                             <td></td>
-                            <td>{% bootstrap_field sform.cfp_title_min_length use_label=False layout="inline" %}</td>
-                            <td>{% bootstrap_field sform.cfp_title_max_length use_label=False layout="inline" %}</td>
+                            <td>{{ sform.cfp_title_min_length.as_field_group }}</td>
+                            <td>{{ sform.cfp_title_max_length.as_field_group }}</td>
                         </tr>
                         <tr>
                             <th>{% translate "Abstract" %}</th>
-                            <td class="hide-label">{% bootstrap_field sform.cfp_ask_abstract layout="event-inline" %}</td>
-                            <td>{% bootstrap_field sform.cfp_abstract_min_length use_label=False layout="inline" %}</td>
-                            <td>{% bootstrap_field sform.cfp_abstract_max_length use_label=False layout="inline" %}</td>
+                            <td class="hide-label">{{ sform.cfp_ask_abstract.as_field_group }}</td>
+                            <td>{{ sform.cfp_abstract_min_length.as_field_group }}</td>
+                            <td>{{ sform.cfp_abstract_max_length.as_field_group }}</td>
                         </tr>
                         <tr>
                             <th>{% translate "Description" %}</th>
-                            <td class="hide-label">{% bootstrap_field sform.cfp_ask_description layout="event-inline" %}</td>
-                            <td>{% bootstrap_field sform.cfp_description_min_length use_label=False layout="inline" %}</td>
-                            <td>{% bootstrap_field sform.cfp_description_max_length use_label=False layout="inline" %}</td>
+                            <td class="hide-label">{{ sform.cfp_ask_description.as_field_group }}</td>
+                            <td>{{ sform.cfp_description_min_length.as_field_group }}</td>
+                            <td>{{ sform.cfp_description_max_length.as_field_group }}</td>
                         </tr>
                         <tr{% if request.event.settings.use_tracks %}class="d-none"{% endif %}>
                             <th>{% translate "Track" %}</th>
-                            <td class="hide-label">{% bootstrap_field sform.cfp_ask_track layout="event-inline" %}</td>
+                            <td class="hide-label">{{ sform.cfp_ask_track.as_field_group }}</td>
                             <td></td>
                             <td></td>
                         </tr>
                         {% if request.event.is_multilingual %}
                             <tr>
                                 <th>{{ phrases.base.language }}</th>
-                                <td class="hide-label">{% bootstrap_field sform.cfp_ask_content_locale layout="event-inline" %}</td>
+                                <td class="hide-label">{{ sform.cfp_ask_content_locale.as_field_group }}</td>
                                 <td></td>
                                 <td></td>
                             </tr>
                         {% endif %}
                         <tr>
                             <th>{% translate "Additional speakers" %}</th>
-                            <td class="hide-label">{% bootstrap_field sform.cfp_ask_additional_speaker layout="event-inline" %}</td>
+                            <td class="hide-label">{{ sform.cfp_ask_additional_speaker.as_field_group }}</td>
                             <td></td>
                             <td></td>
                         </tr>
                         <tr>
                             <th>{% translate "Notes" %}</th>
-                            <td class="hide-label">{% bootstrap_field sform.cfp_ask_notes layout="event-inline" %}</td>
+                            <td class="hide-label">{{ sform.cfp_ask_notes.as_field_group }}</td>
                             <td></td>
                             <td></td>
                         </tr>
                         <tr>
                             <th>{% translate "Recording opt-out" %}</th>
-                            <td class="hide-label">{% bootstrap_field sform.cfp_ask_do_not_record layout="event-inline" %}</td>
+                            <td class="hide-label">{{ sform.cfp_ask_do_not_record.as_field_group }}</td>
                             <td></td>
                             <td></td>
                         </tr>
                         <tr>
                             <th>{% translate "Session image" %}</th>
-                            <td class="hide-label">{% bootstrap_field sform.cfp_ask_image layout="event-inline" %}</td>
+                            <td class="hide-label">{{ sform.cfp_ask_image.as_field_group }}</td>
                             <td></td>
                             <td></td>
                         </tr>
                         <tr>
                             <th>{% translate "Duration" %}</th>
-                            <td class="hide-label">{% bootstrap_field sform.cfp_ask_duration layout="event-inline" %}</td>
+                            <td class="hide-label">{{ sform.cfp_ask_duration.as_field_group }}</td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -188,19 +189,19 @@
                     <tbody>
                         <tr>
                             <th>{% translate "Biography" %}</th>
-                            <td class="hide-label">{% bootstrap_field sform.cfp_ask_biography layout="event-inline" %}</td>
-                            <td>{% bootstrap_field sform.cfp_biography_min_length use_label=False layout="inline" %}</td>
-                            <td>{% bootstrap_field sform.cfp_biography_max_length use_label=False layout="inline" %}</td>
+                            <td class="hide-label">{{ sform.cfp_ask_biography.as_field_group }}</td>
+                            <td>{{ sform.cfp_biography_min_length.as_field_group }}</td>
+                            <td>{{ sform.cfp_biography_max_length.as_field_group }}</td>
                         </tr>
                         <tr>
                             <th>{% translate "Profile picture" %}</th>
-                            <td class="hide-label">{% bootstrap_field sform.cfp_ask_avatar layout="event-inline" %}</td>
+                            <td class="hide-label">{{ sform.cfp_ask_avatar.as_field_group }}</td>
                             <td></td>
                             <td></td>
                         </tr>
                         <tr>
                             <th>{% translate "Availability" %}</th>
-                            <td class="hide-label">{% bootstrap_field sform.cfp_ask_availabilities layout="event-inline" %}</td>
+                            <td class="hide-label">{{ sform.cfp_ask_availabilities.as_field_group }}</td>
                             <td></td>
                             <td></td>
                         </tr>

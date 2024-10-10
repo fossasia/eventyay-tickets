@@ -1,7 +1,6 @@
 {% extends "orga/schedule/base.html" %}
 
 {% load compress %}
-{% load bootstrap4 %}
 {% load i18n %}
 {% load static %}
 
@@ -9,10 +8,13 @@
 
 {% block schedule_content %}
     <form method="post">
+        {{ form.non_field_errors }}
         {% csrf_token %}
         <h2>
             {% translate "Release new schedule" %}
-            <input id="id_version" class="form-control d-inline-flex w-auto" name="version" maxlength="200" title="" type="text" placeholder="{{ phrases.schedule.version }}" value="{{ suggested_version }}" required>
+            <div class="d-inline-block">
+                {{ form.version.as_field_group }}
+            </div>
         </h2>
         {% if warnings.unconfirmed or warnings.unscheduled or warnings.no_track or warnings.talk_warnings %}
             <div class="alert alert-warning">
@@ -116,7 +118,7 @@
                     {{ phrases.schedule.version }}  {{ suggested_version }}
                 </h4>
                 <div class="flex-next-column">
-                    {% bootstrap_field form.comment layout="inline" %}
+                    {{ form.comment.as_field_group }}
                 </div>
                 {% include "agenda/changelog_block.html" with schedule=request.event.wip_schedule %}
             </div>
@@ -129,7 +131,7 @@
                 </a>
             </div>
             <div class="d-flex align-items-center justify-content-end" id="notify-speakers-check">
-                {% bootstrap_field form.notify_speakers layout="event-inline" form_group_class="mr-3" %}
+                {{ form.notify_speakers.as_field_group }}
                 <button type="submit" class="btn btn-success btn-lg">{% translate "Release" %}</button>
             </div>
         </div>

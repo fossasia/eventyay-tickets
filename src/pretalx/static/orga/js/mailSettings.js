@@ -4,42 +4,18 @@ const dependents = [
     "smtp_port",
     "smtp_username",
     "smtp_password",
+    "smtp_use_tls",
+    "smtp_use_ssl",
 ]
-const checkboxDependents = ["smtp_use_tls", "smtp_use_ssl"]
+const smtpInput = document.querySelector("input#id_smtp_use_custom")
 const updateVisibility = () => {
-    if (document.querySelector("input#id_smtp_use_custom").checked) {
-        dependents.forEach((element) =>
-            document
-                .querySelector(`#id_${element}`)
-                .parentElement.parentElement.classList.remove("d-none"),
-        )
-        checkboxDependents.forEach((element) =>
-            document
-                .querySelector(`#id_${element}`)
-                .parentElement.parentElement.parentElement.classList.remove(
-                    "d-none",
-                ),
-        )
-        document.querySelector("button[name=test]").disabled = false
-    } else {
-        dependents.forEach((element) =>
-            document
-                .querySelector(`#id_${element}`)
-                .parentElement.parentElement.classList.add("d-none"),
-        )
-        checkboxDependents.forEach((element) =>
-            document
-                .querySelector(`#id_${element}`)
-                .parentElement.parentElement.parentElement.classList.add(
-                    "d-none",
-                ),
-        )
-        document.querySelector("button[name=test]").disabled = true
-    }
+    const showCustomSettings = smtpInput.checked
+    dependents.forEach((element) =>
+        document.querySelector(`#id_${element}`).closest(".form-group").classList.toggle("d-none", !showCustomSettings),
+    )
+    document.querySelector("button[name=test]").disabled = !showCustomSettings
 }
-document
-    .querySelector("input#id_smtp_use_custom")
-    .addEventListener("change", (event) => {
-        updateVisibility()
-    })
-updateVisibility()
+onReady(() => {
+    smtpInput.addEventListener("change", updateVisibility)
+    updateVisibility()
+})

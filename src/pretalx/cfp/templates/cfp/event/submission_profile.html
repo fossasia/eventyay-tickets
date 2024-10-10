@@ -1,7 +1,5 @@
 {% extends "cfp/event/submission_base.html" %}
 
-{% load bootstrap4 %}
-{% load compress %}
 {% load i18n %}
 {% load orga_edit_link %}
 {% load rich_text %}
@@ -16,18 +14,19 @@
     </div>
     <p>{{ text|rich_text }}</p>
 
+    {{ form.name.as_field_group }}
+    {% if form.biography %}
+        {{ form.biography.as_field_group }}
+    {% endif %}
+
     {% if form.avatar or form.get_gravatar %}
         {% include "common/avatar.html" with user=user form=form %}
     {% endif %}
 
-    {% bootstrap_field form.name layout="event" %}
-    {% if form.biography %}
-        {% bootstrap_field form.biography layout="event" %}
-    {% endif %}
     {% if form.availabilities %}
         {% include "common/availabilities.html" %}
 
-        {% bootstrap_field form.availabilities layout="event" %}
+        {{ form.availabilities.as_field_group }}
     {% endif %}
 
 {% endblock inner %}

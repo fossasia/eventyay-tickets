@@ -1,6 +1,5 @@
 {% extends "orga/settings/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load formset_tags %}
@@ -29,10 +28,13 @@
         {% csrf_token %}
 
         <h2>{% translate "Review settings" %}</h2>
+
         {% include "orga/includes/tablist.html" %}
+
         <div role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
-            {% bootstrap_field form.score_mandatory layout="event" %}
-            {% bootstrap_field form.text_mandatory layout="event" %}
+            {{ form.non_field_errors }}
+            {{ form.score_mandatory.as_field_group }}
+            {{ form.text_mandatory.as_field_group }}
             <div class="col-md-9 flip ml-auto mb-4">
                 <div class="text-muted">
                     {% blocktranslate trimmed %}
@@ -42,9 +44,9 @@
                     {% endblocktranslate %}
                 </div>
             </div>
-            {% bootstrap_field form.aggregate_method layout="event" %}
-            {% bootstrap_field form.score_format layout="event" %}
-            {% bootstrap_field form.review_help_text layout="event" %}
+            {{ form.aggregate_method.as_field_group }}
+            {{ form.score_format.as_field_group }}
+            {{ form.review_help_text.as_field_group }}
 
         </div>
         <div role="tabpanel" id="tabpanel-scores" aria-labelledby="tab-scores" tabindex="0" aria-hidden="true">
@@ -65,15 +67,15 @@
 
             <div id="score-formset" class="formset" data-formset data-formset-prefix="{{ scores_formset.prefix }}">
                 {{ scores_formset.management_form }}
-                {% bootstrap_formset_errors scores_formset %}
+                {{ scores_formset.non_form_errors }}
                 <div data-formset-body class="card"><div class="list-group list-group-flush">
                     {% for form in scores_formset %}
                         <div data-formset-form class="score-group list-group-item">
-                            <h3 class="d-flex offset-md-3 flex-wrap align-items-start mt-2">
+                            <h3 class="d-flex offset-md-3 flex-wrap align-items-start mt-2 hide-label">
                                 <span class="m-2">{% translate "Review Score category" %}
 
                                 </span>
-                                {% bootstrap_field form.name layout="inline" %}
+                                {{ form.name.as_field_group }}
                                 {% if forloop.first %}
                                     <span class="dialog-anchor" data-target="#info-review-scoring" data-toggle="dialog">
                                         <i class="fa fa-question-circle-o text-info ml-2"></i>
@@ -88,16 +90,16 @@
                             <div class="sr-only">
                                 {{ form.id }}
                                 {{ form.new_scores }}
-                                {% bootstrap_field form.DELETE layout="event" %}
+                                {{ form.DELETE }}
                             </div>
                             <div class="score-row flip ml-auto score-input{% if action == "view" %} disabled{% endif %}">
-                                {% bootstrap_form_errors form %}
-                                {% bootstrap_field form.is_independent layout="event" %}
-                                {% bootstrap_field form.weight layout="event" %}
-                                {% bootstrap_field form.required layout="event" %}
-                                {% bootstrap_field form.active layout="event" %}
+                                {{ form.non_field_errors }}
+                                {{ form.is_independent.as_field_group }}
+                                {{ form.weight.as_field_group }}
+                                {{ form.required.as_field_group }}
+                                {{ form.active.as_field_group }}
 
-                                {% if form.limit_tracks %}{% bootstrap_field form.limit_tracks layout="event" %}{% endif %}
+                                {% if form.limit_tracks %}{{ form.limit_tracks.as_field_group }}{% endif %}
 
                                 {% for label_pair in form.get_label_fields %}
                                     <div class="row form-group">
@@ -106,11 +108,15 @@
                                                 {% translate "Scores" %}
                                             </label>
                                         {% endif %}
-                                        <div class="col-md-9 flip ml-auto d-flex">
-                                            {% bootstrap_field label_pair.0 layout="inline" form_group_class="mr-2 ml-0 pl-0 col-md-1 text-right" %}
-                                            {% bootstrap_field label_pair.1 layout="inline" form_group_class="" %}
+                                        <div class="col-md-9 flip ml-auto d-flex hide-label">
+                                            <div class="mr-2 score-score">
+                                                {{ label_pair.0.as_field_group }}
+                                            </div>
+                                            <div class="score-label">
+                                                {{ label_pair.1.as_field_group }}
+                                            </div>
                                             {% if forloop.first %}
-                                                <div role="button" class="new-score btn btn-info flip ml-auto"><i class="fa fa-plus"></i></div>
+                                                <div role="button" class="new-score btn btn-info flip ml-auto align-self-start"><i class="fa fa-plus"></i></div>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -131,9 +137,9 @@
                     <script type="form-template" data-formset-empty-form>
                         {% escapescript %}
                             <div data-formset-form class="score-group list-group-item p-3">
-                            <h3 class="d-flex offset-md-3 flex-wrap align-items-start mt-2">
+                            <h3 class="d-flex offset-md-3 flex-wrap align-items-start mt-2 hide-label">
                             <span class="m-2">{% translate "Score Category" %}</span>
-                            {% bootstrap_field scores_formset.empty_form.name layout="inline" %}
+                            {{ scores_formset.empty_form.name.as_field_group }}
                             {% if action != "view" %}
                                 <div class="score-delete flip ml-auto">
                                 <button type="button" class="btn btn-danger" data-formset-delete-button>
@@ -144,18 +150,20 @@
                             <div class="sr-only">
                             {{ scores_formset.empty_form.id }}
                             {{ scores_formset.empty_form.new_scores }}
-                            {% bootstrap_field scores_formset.empty_form.DELETE layout="event" %}
+                            {{ scores_formset.empty_form.DELETE }}
                             </div>
                             <div class="score-row flip ml-auto score-input">
-                            {% bootstrap_field scores_formset.empty_form.is_independent layout="event" %}
-                            {% bootstrap_field scores_formset.empty_form.weight layout="event" %}
-                            {% bootstrap_field scores_formset.empty_form.required layout="event" %}
-                            {% bootstrap_field scores_formset.empty_form.active layout="event" %}
+                            {{ scores_formset.empty_form.is_independent.as_field_group }}
+                            {{ scores_formset.empty_form.weight.as_field_group }}
+                            {{ scores_formset.empty_form.required.as_field_group }}
+                            {{ scores_formset.empty_form.active.as_field_group }}
                             <div class="row form-group">
                             <label class="col-md-3 col-form-label">
                             {% translate "Scores" %}
                             </label>
-                            <div class="col-md-9 d-flex">
+                            <div class="col-md-9 d-flex hide-label">
+                            <div class="mr-2 score-score"></div>
+                            <div class="score-label"></div>
                             <div role="button" class="new-score btn btn-info flip ml-auto"><i class="fa fa-plus"></i></div>
                             </div>
                             </div>
@@ -186,13 +194,13 @@
             </dialog>
             <div class="formset" data-formset data-formset-prefix="{{ phases_formset.prefix }}" id="review-phases-formset">
                 {{ phases_formset.management_form }}
-                {% bootstrap_formset_errors phases_formset %}
+                {{ phases_formset.non_form_errors }}
                 <div data-formset-body class="card"><div class="list-group list-group-flush">
                     {% for form in phases_formset %}
                         <div data-formset-form class="list-group-item review-phase">
-                            <h3 class="d-flex offset-md-3 flex-wrap mt-2">
+                            <h3 class="d-flex offset-md-3 flex-wrap mt-2 hide-label">
                                 <span class="m-2">{% translate "Review Phase" %}</span>
-                                {% bootstrap_field form.name layout="inline" %}
+                                {{ form.name.as_field_group }}
                                 {% if forloop.first %}
                                     <span class="dialog-anchor" data-target="#info-review-phases" data-toggle="dialog">
                                         <i class="fa fa-question-circle-o text-info ml-2"></i>
@@ -222,12 +230,16 @@
                             </h3>
                             <div class="sr-only">
                                 {{ form.id }}
-                                {% bootstrap_field form.DELETE layout="event" %}
+                                {{ form.DELETE }}
                             </div>
                             <div class="phase-option-row flip ml-auto">
                                 <div class="phase-option-input{% if action == "view" %} disabled{% endif %}">
-                                    {% bootstrap_form_errors form %}
-                                    {% bootstrap_form form layout="event" exclude="DELETE,name" %}
+                                    {{ form.non_field_errors }}
+                                    {% for field in form %}
+                                        {% if field.name != "DELETE" and field.name != "name" and field.name != "id" %}
+                                            {{ field.as_field_group }}
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
@@ -235,9 +247,9 @@
                     <script type="form-template" data-formset-empty-form>
                         {% escapescript %}
                             <div data-formset-form class="list-group-item review-phase p-3">
-                            <h3 class="d-flex offset-md-3 mt-2">
+                            <h3 class="d-flex offset-md-3 mt-2 hide-label">
                             <span class="m-2">{% translate "Review Phase" %}</span>
-                            {% bootstrap_field phases_formset.empty_form.name layout="inline" %}
+                            {{ phases_formset.empty_form.name.as_field_group }}
                             <div class="phase-option-delete flip ml-auto mr-2">
                             <button type="button" class="btn btn-danger" data-formset-delete-button>
                             <i class="fa fa-trash"></i></button>
@@ -245,10 +257,14 @@
                             </h3>
                             <div class="sr-only">
                             {{ phases_formset.empty_form.id }}
-                            {% bootstrap_field phases_formset.empty_form.DELETE layout="event" %}
+                            {{ phases_formset.empty_form.DELETE }}
                             </div>
                             <div class="phase-option-row flip ml-auto"><div class="phase-option-input">
-                            {% bootstrap_form phases_formset.empty_form layout="event" exclude="DELETE,name" %}
+                            {% for field in phases_formset.empty_form %}
+                                {% if field.name != "DELETE" and field.name != "name" and field.name != "id" %}
+                                    {{ field.as_field_group }}
+                                {% endif %}
+                            {% endfor %}
                             </div></div>
                             </div>
                         {% endescapescript %}

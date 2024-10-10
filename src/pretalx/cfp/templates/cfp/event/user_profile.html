@@ -1,5 +1,4 @@
 {% extends "cfp/event/base.html" %}
-{% load bootstrap4 %}
 {% load compress %}
 {% load html_signal %}
 {% load i18n %}
@@ -25,21 +24,18 @@
     </p>
     <form method="post" enctype="multipart/form-data" class="speaker-profile-form">
         {% csrf_token %}
-        {% bootstrap_form_errors profile_form %}
+        {{ profile_form.non_field_errors }}
 
+        {{ profile_form.name.as_field_group }}
+        {% if profile_form.biography %}
+            {{ profile_form.biography.as_field_group }}
+        {% endif %}
         {% if request.event.cfp.request_avatar %}
             {% include "common/avatar.html" with user=request.user form=profile_form %}
         {% endif %}
-
-        {% bootstrap_field profile_form.name layout="event" %}
-        {% if profile_form.biography %}
-            {% bootstrap_field profile_form.biography layout="event" %}
-        {% endif %}
         {% if profile_form.availabilities %}
-
             {% include "common/availabilities.html" %}
-
-            {% bootstrap_field profile_form.availabilities layout="event" %}
+            {{ profile_form.availabilities.as_field_group }}
         {% endif %}
         <div class="row">
             <div class="col-md-4 flip ml-auto">
@@ -54,7 +50,7 @@
         <h2>{% translate "We have some questions" %}</h2>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {% bootstrap_form questions_form layout="event" %}
+            {{ questions_form }}
             <div class="row">
                 <div class="col-md-4 flip ml-auto">
                     <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="questions">
@@ -70,10 +66,10 @@
     <form method="post" class="form password-input-form">
         {% csrf_token %}
         {{ login_form.media }}
-        {% bootstrap_field login_form.old_password layout="event" %}
-        {% bootstrap_field login_form.email layout="event" %}
-        {% bootstrap_field login_form.password layout="event" %}
-        {% bootstrap_field login_form.password_repeat layout="event" %}
+        {{ login_form.old_password.as_field_group }}
+        {{ login_form.email.as_field_group }}
+        {{ login_form.password.as_field_group }}
+        {{ login_form.password_repeat.as_field_group }}
         <div class="row">
             <div class="col-md-4 flip ml-auto">
                 <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="login">
