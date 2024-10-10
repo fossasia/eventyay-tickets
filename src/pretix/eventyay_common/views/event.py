@@ -22,8 +22,8 @@ from pretix.control.views import PaginationMixin, UpdateView
 from pretix.control.views.event import DecoupleMixin, EventSettingsViewMixin
 from pretix.control.views.item import MetaDataEditorMixin
 from pretix.eventyay_common.forms.event import EventCommonSettingsForm
-from pretix.eventyay_common.tasks import send_event_webhook
-from pretix.eventyay_common.utils import check_create_permission, create_world
+from pretix.eventyay_common.tasks import send_event_webhook, create_world
+from pretix.eventyay_common.utils import check_create_permission, generate_token
 
 
 class EventList(PaginationMixin, ListView):
@@ -221,8 +221,9 @@ class EventCreateView(SafeSessionWizardView):
         # The user automatically creates a world when selecting the add video option in the create ticket form.
         data = dict(id=basics_data.get('slug'), title=basics_data.get('name').data,
                     timezone=basics_data.get('timezone'),
-                    locale=basics_data.get('locale'))
-        create_world(self.request, foundation_data['is_video_create'], data)
+                    locale=basics_data.get('locale'), has_permission=check_create_permission(self.request),
+                    token=generate_token(self.request))
+        create_world.delay(is_video_create=foundation_data.get('is_video_create'), data=data)
 
         return redirect(reverse('eventyay_common:events') + '?congratulations=1')
 
@@ -272,9 +273,10 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
 
         ## The user automatically creates a world when selecting the add video option in the update ticket form.
         data = dict(id=form.cleaned_data.get('slug'), title=form.cleaned_data.get('name').data,
-                    timezone=self.sform.cleaned_data.get('timezone'), locale=self.sform.cleaned_data.get('locale'))
+                    timezone=self.sform.cleaned_data.get('timezone'), locale=self.sform.cleaned_data.get('locale'),
+                    has_permission=check_create_permission(self.request), token=generate_token(self.request))
 
-        create_world(self.request, form.cleaned_data.get('is_video_create'), data)
+        create_world.delay(is_video_create=form.cleaned_data.get('is_video_create'), data=data)
 
         messages.success(self.request, _('Your changes have been saved.'))
         return super().form_valid(form)

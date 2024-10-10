@@ -5,10 +5,8 @@ import string
 from datetime import datetime, timedelta, timezone
 
 import jwt
-import requests
 from django.conf import settings
-from django.contrib import messages
-from django.utils.translation import gettext_lazy as _
+
 
 logger = logging.getLogger(__name__)
 
@@ -64,37 +62,3 @@ def check_create_permission(request):
         return True
     return False
 
-
-def create_world(request, is_video_create, data):
-    """
-    Create video system for the event
-    @param request: user request
-    @param is_video_create: allow user to add video system
-    @param data: event's data
-    """
-    event_slug = data.get("id")
-    title = data.get("title")
-    event_timezone = data.get("timezone")
-    locale = data.get("locale")
-
-    # Check if user choose add video option and has permission to create video system ('can_create_events' permission)
-    if is_video_create and check_create_permission(request):
-        try:
-            requests.post(
-                "{}/api/v1/create-world/".format(settings.VIDEO_SERVER_HOSTNAME),
-                json={
-                    "id": event_slug,
-                    "title": title,
-                    "timezone": event_timezone,
-                    "locale": locale,
-                },
-                headers={"Authorization": "Bearer " + generate_token(request)},
-            )
-        except requests.exceptions.RequestException as e:
-            logger.error("An error occurred while requesting to create a video: %s" % e)
-            messages.error(
-                request,
-                _("Cannot create video system for this event. Please try again later."),
-            )
-    elif is_video_create and not check_create_permission(request):
-        messages.error(request, _("You do not have permission to create video system"))
