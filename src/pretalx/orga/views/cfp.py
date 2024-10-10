@@ -12,7 +12,14 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView, ListView, TemplateView, UpdateView, View
+from django.views.generic import (
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+    UpdateView,
+    View,
+)
 from django_context_decorator import context
 
 from pretalx.cfp.flow import CfPFlow
@@ -372,15 +379,15 @@ class CfPQuestionToggle(PermissionRequired, View):
         return redirect(question.urls.base)
 
 
-class CfPQuestionRemind(EventPermissionRequired, TemplateView):
+class CfPQuestionRemind(EventPermissionRequired, FormView):
     template_name = "orga/cfp/question_remind.html"
     permission_required = "orga.view_question"
+    form_class = ReminderFilterForm
 
-    @context
-    @cached_property
-    def filter_form(self):
-        data = None if self.request.method == "GET" else self.request.POST
-        return ReminderFilterForm(data, event=self.request.event)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["event"] = self.request.event
+        return kwargs
 
     @staticmethod
     def get_missing_answers(*, questions, person, submissions):
@@ -398,20 +405,18 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
                     missing.append(question)
         return missing
 
-    def post(self, request, *args, **kwargs):
-        if not self.filter_form.is_valid():
-            messages.error(request, _("Could not send mails, error in configuration."))
-            return redirect(request.path)
-        if not getattr(request.event, "question_template", None):
-            request.event.build_initial_data()
-        submissions = self.filter_form.get_submissions()
-        people = request.event.submitters.filter(submissions__in=submissions)
-        questions = (
-            self.filter_form.cleaned_data["questions"]
-            or self.filter_form.get_question_queryset()
-        )
+    def form_invalid(self, form):
+        messages.error(self.request, _("Could not send mails, error in configuration."))
+        return super().form_invalid(form)
+
+    def form_valid(self, form):
+        if not getattr(self.request.event, "question_template", None):
+            self.request.event.build_initial_data()
+        submissions = form.get_submissions()
+        people = self.request.event.submitters.filter(submissions__in=submissions)
+        questions = form.cleaned_data["questions"] or form.get_question_queryset()
         data = {
-            "url": request.event.urls.user_submissions.full(),
+            "url": self.request.event.urls.user_submissions.full(),
         }
         for person in people:
             missing = self.get_missing_answers(
@@ -421,13 +426,16 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
                 data["questions"] = "\n".join(
                     f"- {question.question}" for question in missing
                 )
-                request.event.question_template.to_mail(
+                self.request.event.question_template.to_mail(
                     person,
-                    event=request.event,
+                    event=self.request.event,
                     context=data,
                     context_kwargs={"user": person},
                 )
-        return redirect(request.event.orga_urls.outbox)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.request.event.orga_urls.outbox
 
 
 class SubmissionTypeList(EventPermissionRequired, PaginationMixin, ListView):
