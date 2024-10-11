@@ -1457,7 +1457,7 @@ div.mail-preview {
     ul {
       flex-direction: row;
 
-      .fa {
+      .fa.fa-sign-out {
         padding-left: 12px;
         padding-right: 12px;
         margin-top: 0;
