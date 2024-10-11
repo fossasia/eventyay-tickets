@@ -1,45 +1,51 @@
 <template lang="pug">
 .c-schedule
-    template(v-if="schedule")
-        div.filter-actions
-            app-dropdown(v-for="item in filter", className="schedule")
-                template(slot="toggler")
-                    span {{item.title}}
-                    app-dropdown-content(className="schedule")
-                        app-dropdown-item(v-for="track in item.data", :key="track.value")
-                            .checkbox-line(:style="{'--track-color': track.color}")
-                                bunt-checkbox.checkbox-text(type="checkbox", :label="track.label", name="track_room_views", v-model="track.selected", :value="track.value") {{ getTrackName(track) }}
-            bunt-button.bunt-ripple-ink(v-if="favs",
-                icon="star"
-                @click="onlyFavs = !onlyFavs; if (onlyFavs) resetFiltered()"
-                :class="onlyFavs ? ['active'] : []") {{favs.length}}
+	template(v-if="schedule")
+		div.filter-actions
+			app-dropdown(v-for="item in filter", :key="item.refKey", className="schedule")
+				template(slot="toggler")
+					span {{item.title}}
+					app-dropdown-content(className="schedule")
+						app-dropdown-item(v-for="track in item.data", :key="track.value")
+							.checkbox-line(:style="{'--track-color': track.color}")
+								bunt-checkbox.checkbox-text(type="checkbox", :label="track.label", name="track_room_views", v-model="track.selected", :value="track.value") {{ getTrackName(track) }}
+			bunt-button.bunt-ripple-ink(v-if="favs",
+				icon="star"
+				@click="onlyFavs = !onlyFavs; if (onlyFavs) resetFiltered()"
+				:class="onlyFavs ? ['active'] : []") {{favs.length}}
 
-            bunt-button.bunt-ripple-ink(@click="resetAllFiltered", icon="filter-off")
-            .export.dropdown
-                bunt-progress-circular.export-spinner(v-if="isExporting", size="small")
-                custom-dropdown(name="calendar-add1"
-                    v-model="selectedExporter"
-                    :options="exportType"
-                    label="Add to Calendar"
-                    @input="makeExport")
+			bunt-button.bunt-ripple-ink(@click="resetAllFiltered", icon="filter-off")
 
-        bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay.toISOString()", ref="tabs", v-scrollbar.x="")
-            bunt-tab(v-for="day in days", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
-        .scroll-parent(ref="scrollParent", v-scrollbar.x.y="")
-            linear-schedule(:sessions="sessions",
-                :rooms="rooms",
-                :currentDay="currentDay",
-                :now="now",
-                :scrollParent="$refs.scrollParent",
-                :favs="favs",
-                @changeDay="changeDayByScroll",
-                @fav="$store.dispatch('schedule/fav', $event)",
-                @unfav="$store.dispatch('schedule/unfav', $event)"
-            )
-    .error(v-else-if="errorLoading")
-        .mdi.mdi-alert-octagon
-        h1 {{ $t('schedule/index:scheduleLoadingError') }}
-    bunt-progress-circular(v-else, size="huge", :page="true")
+			template(v-if="!inEventTimezone")
+				bunt-select.timezone-item(name="timezone", :options="[{id: schedule.timezone, label: schedule.timezone}, {id: userTimezone, label: userTimezone}]", v-model="currentTimezone", @blur="saveTimezone")
+			template(v-else)
+				div.timezone-label.timezone-item.bunt-tab-header-item {{ schedule.timezone }}
+
+			.export.dropdown
+				bunt-progress-circular.export-spinner(v-if="isExporting", size="small")
+				custom-dropdown(name="calendar-add1"
+					v-model="selectedExporter"
+					:options="exportType"
+					label="Add to Calendar"
+					@input="makeExport")
+
+		bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay.toISOString()", ref="tabs", v-scrollbar.x="")
+			bunt-tab(v-for="day in days", :key="day.toISOString()", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
+		.scroll-parent(ref="scrollParent", v-scrollbar.x.y="")
+			linear-schedule(:sessions="sessions",
+				:rooms="rooms",
+				:currentDay="currentDay",
+				:now="now",
+				:scrollParent="$refs.scrollParent",
+				:favs="favs",
+				@changeDay="changeDayByScroll",
+				@fav="$store.dispatch('schedule/fav', $event)",
+				@unfav="$store.dispatch('schedule/unfav', $event)"
+			)
+	.error(v-else-if="errorLoading")
+		.mdi.mdi-alert-octagon
+		h1 {{ $t('schedule/index:scheduleLoadingError') }}
+	bunt-progress-circular(v-else, size="huge", :page="true")
 </template>
 <script>
 import _ from 'lodash'
@@ -123,7 +129,9 @@ export default {
 			isExporting: false,
 			error: null,
 			defaultFilter: defaultFilter,
-			onlyFavs: false
+			onlyFavs: false,
+			userTimezone: null,
+			currentTimezone: null,
 		}
 	},
 	computed: {
@@ -182,7 +190,16 @@ export default {
 			filter.rooms.data = this.filterItemsByLanguage(this?.schedule?.rooms)
 			filter.tracks.data = this.filterItemsByLanguage(this?.schedule?.tracks)
 			return filter
-		}
+		},
+		inEventTimezone () {
+			if (!this.schedule?.talks?.length) return false
+			const example = this.schedule.talks[0].start
+			return moment.tz(example, this.userTimezone).format('Z') === moment.tz(example, this.schedule.timezone).format('Z')
+		},
+	},
+	async created () {
+		this.userTimezone = moment.tz.guess()
+		this.currentTimezone = localStorage.getItem(`userTimezone`)
 	},
 	watch: {
 		tracksFilter: {
@@ -271,6 +288,9 @@ export default {
 		resetOnlyFavs() {
 			this.onlyFavs = false
 		},
+		saveTimezone () {
+			localStorage.setItem(`userTimezone`, this.currentTimezone)
+		},
 	}
 }
 </script>
@@ -357,4 +377,7 @@ export default {
         .export-spinner
             padding-top: 22px !important
             margin-right: 10px
+	.bunt-select
+		.bunt-input
+			height: auto !important
 </style>
