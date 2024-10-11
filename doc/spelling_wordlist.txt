@@ -16,8 +16,10 @@ browsable
 canceled
 categorys
 ccc
+center
 CfP
 changelog
+color
 config
 cron
 cronjob
@@ -65,6 +67,7 @@ lossy
 makemessages
 middleware
 mixin
+mixins
 namespace
 nginx
 nodejs
@@ -76,6 +79,7 @@ prepend
 prepended
 pretalx
 pretix
+px
 pytest
 queryset
 redis
