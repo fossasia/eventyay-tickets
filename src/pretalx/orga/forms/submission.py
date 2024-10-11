@@ -30,6 +30,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             slot = (
                 instance.slots.filter(schedule__version__isnull=True)
                 .select_related("room")
+                .filter(start__isnull=False)
                 .order_by("start")
                 .first()
             )
