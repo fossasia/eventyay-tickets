@@ -55,7 +55,7 @@ class DashboardEventListView(TemplateView):
                     ]
                 ),
             )
-        )
+        ).order_by("-date_from")
         if search := self.request.GET.get("q"):
             qs = qs.filter(Q(name__icontains=search) | Q(slug__icontains=search))
         return qs
@@ -66,7 +66,7 @@ class DashboardEventListView(TemplateView):
         context["past_orga_events"] = []
         for event in self.queryset:
             if event.date_to >= now().date():
-                context["current_orga_events"].append(event)
+                context["current_orga_events"].insert(0, event)
             else:
                 context["past_orga_events"].append(event)
         context["speaker_events"] = (
