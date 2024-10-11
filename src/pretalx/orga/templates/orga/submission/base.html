@@ -80,7 +80,7 @@
                                     {% endif %}
                                 </a>
                             {% endif %}
-                            {% if can_view_speakers %}
+                            {% if can_view_speakers and request.event|get_feature_flag:"submission_public_review" %}
                                 <a href="{{ submission.urls.review.full }}" class="dropdown-item" target="_blank">
                                     <i class="fa fa-eye"></i>
                                     {% translate "Secret public link" %}

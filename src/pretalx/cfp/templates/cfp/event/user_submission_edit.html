@@ -95,13 +95,17 @@
                 </div>
             {% endif %}
         </form>
-        <h3 id="share-proposal">{% translate "Share proposal" %}</h3>
-        <p>
-            {% blocktranslate trimmed %}
-                If you need a review from a colleague or a friend here’s a link that you can send out for viewing your proposal:
-            {% endblocktranslate %}
-            <a target="_blank" rel="noopener" href="{{ submission.urls.review.full }}">{{ submission.urls.review.full }}</a>
-        </p>
+
+        {% if submission.review_code and request.event|get_feature_flag:"submission_public_review" %}
+            <h3 id="share-proposal">{% translate "Share proposal" %}</h3>
+            <p>
+                {% blocktranslate trimmed %}
+                    If you need a review from a colleague or a friend here’s a link that you can send out for viewing your proposal:
+                {% endblocktranslate %}
+                <a target="_blank" rel="noopener" href="{{ submission.urls.review.full }}">{{ submission.urls.review.full }}</a>
+            </p>
+        {% endif %}
+
         {% if submission.state == "submitted" or submission.state == "accepted" %}
             <h3>{% translate "Withdraw proposal" %}</h3>
             <p>

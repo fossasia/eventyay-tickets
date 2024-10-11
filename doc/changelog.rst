@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`cfp` Organisers can now turn off the public “secret” proposal share URLs.
 - :announcement:`dev` pretalx has dropped its use of SCSS, Bootstrap (while retaining a lot of style rules) and jQuery. If you rely on these in your plugin, you will need to adjust your code. If you require jQuery, you can load `static/js/jquery.js`, as this is still shipped with pretalx core. You can continue using SCSS, but you'll have to use CSS variables rather than SCSS variables, but we do expose all previous SCSS variables as CSS variables.
 - :bug:`orga` Deleting review phases and review score categories was broken.
 - :feature:`schedule` The schedule page makes even better use of several caching methods in order to be smaller and faster to load and re-load.

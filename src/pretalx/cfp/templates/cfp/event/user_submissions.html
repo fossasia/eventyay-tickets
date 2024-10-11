@@ -40,7 +40,7 @@
                                 <a href="{{ submission.urls.user_base }}">{{ submission.title }}</a>
                             </td>
                             <td class="flip text-right">
-                                {% if submission.review_code %}
+                                {% if submission.review_code and request.event|get_feature_flag:"submission_public_review" %}
                                     <button data-destination="{{ submission.urls.review.full }}"
                                             class="btn btn-sm btn-info"
                                             data-toggle="tooltip"
@@ -99,7 +99,7 @@
                                 {% endif %}
                             </td>
                             <td class="flip text-right">
-                                {% if submission.review_code %}
+                                {% if submission.review_code and request.event|get_feature_flag:"submission_public_review" %}
                                     <button data-destination="{{ submission.urls.review.full }}"
                                             class="btn btn-sm btn-info"
                                             data-toggle="tooltip"
