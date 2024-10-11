@@ -1,13 +1,17 @@
+import datetime as dt
 from pathlib import Path
 
 from django.core.files import File
 from django.forms import (
     ClearableFileInput,
+    DateInput,
+    DateTimeInput,
     PasswordInput,
     Select,
     SelectMultiple,
     Textarea,
     TextInput,
+    TimeInput,
 )
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
@@ -221,3 +225,30 @@ class TextInputWithAddon(TextInput):
         context["widget"]["addon_before"] = self.addon_before
         context["widget"]["addon_after"] = self.addon_after
         return context
+
+
+class HtmlDateInput(DateInput):
+    input_type = "date"
+
+    def format_value(self, value):
+        if value and isinstance(value, (dt.date, dt.datetime)):
+            return value.strftime("%Y-%m-%d")
+        return value
+
+
+class HtmlDateTimeInput(DateTimeInput):
+    input_type = "datetime-local"
+
+    def format_value(self, value):
+        if value and isinstance(value, dt.datetime):
+            return value.strftime("%Y-%m-%dT%H:%M")
+        return value
+
+
+class HtmlTimeInput(TimeInput):
+    input_type = "time"
+
+    def format_value(self, value):
+        if value and isinstance(value, (dt.time, dt.datetime)):
+            return value.strftime("%H:%M")
+        return value

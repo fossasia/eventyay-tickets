@@ -19,6 +19,7 @@ from pretalx.common.forms.validators import (
     MinDateTimeValidator,
     MinDateValidator,
 )
+from pretalx.common.forms.widgets import HtmlDateInput, HtmlDateTimeInput
 from pretalx.common.text.phrases import phrases
 from pretalx.submission.models.cfp import default_fields
 
@@ -326,7 +327,7 @@ class QuestionFieldsMixin:
             field.widget.attrs["placeholder"] = ""  # XSS
             return field
         if question.variant == QuestionVariant.DATE:
-            attrs = {"type": "date"}
+            attrs = {}
             if question.min_date:
                 attrs["data-date-start-date"] = question.min_date.isoformat()
             if question.max_date:
@@ -337,7 +338,7 @@ class QuestionFieldsMixin:
                 disabled=read_only,
                 help_text=help_text,
                 initial=dateutil.parser.parse(initial).date() if initial else None,
-                widget=forms.DateInput(attrs=attrs),
+                widget=HtmlDateInput(attrs=attrs),
             )
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS
@@ -347,7 +348,7 @@ class QuestionFieldsMixin:
                 field.validators.append(MaxDateValidator(question.max_date))
             return field
         elif question.variant == QuestionVariant.DATETIME:
-            attrs = {"type": "datetime-local"}
+            attrs = {}
             if question.min_datetime:
                 attrs["min"] = question.min_datetime.isoformat()
             if question.max_datetime:
@@ -362,7 +363,7 @@ class QuestionFieldsMixin:
                     if initial
                     else None
                 ),
-                widget=forms.DateTimeInput(attrs=attrs),
+                widget=HtmlDateTimeInput(attrs=attrs),
             )
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS

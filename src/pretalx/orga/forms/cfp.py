@@ -14,6 +14,8 @@ from pretalx.common.forms.renderers import InlineFormRenderer
 from pretalx.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
+    HtmlDateInput,
+    HtmlDateTimeInput,
     TextInputWithAddon,
 )
 from pretalx.common.text.phrases import phrases
@@ -168,7 +170,7 @@ class CfPForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
     class Meta:
         model = CfP
         fields = ["headline", "text", "deadline"]
-        widgets = {"deadline": forms.DateTimeInput(attrs={"type": "datetime-local"})}
+        widgets = {"deadline": HtmlDateTimeInput}
         # These are JSON fields on cfp.settings
         json_fields = {
             "show_deadline": "settings",
@@ -321,13 +323,13 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             "max_datetime",
         ]
         widgets = {
-            "deadline": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+            "deadline": HtmlDateTimeInput,
             "question_required": forms.RadioSelect(),
-            "freeze_after": forms.DateTimeInput(attrs={"type": "datetime-local"}),
-            "min_datetime": forms.DateTimeInput(attrs={"type": "datetime-local"}),
-            "max_datetime": forms.DateTimeInput(attrs={"type": "datetime-local"}),
-            "min_date": forms.DateInput(attrs={"type": "date"}),
-            "max_date": forms.DateInput(attrs={"type": "date"}),
+            "freeze_after": HtmlDateTimeInput,
+            "min_datetime": HtmlDateTimeInput,
+            "max_datetime": HtmlDateTimeInput,
+            "min_date": HtmlDateInput,
+            "max_date": HtmlDateInput,
             "tracks": EnhancedSelectMultiple,
             "submission_types": EnhancedSelectMultiple,
         }
@@ -369,7 +371,7 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         model = SubmissionType
         fields = ("name", "default_duration", "deadline", "requires_access_code")
         widgets = {
-            "deadline": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+            "deadline": HtmlDateTimeInput,
             "default_duration": TextInputWithAddon(addon_after=_("minutes")),
         }
 
@@ -429,7 +431,7 @@ class SubmitterAccessCodeForm(forms.ModelForm):
             "submission_type": SafeModelChoiceField,
         }
         widgets = {
-            "valid_until": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+            "valid_until": HtmlDateTimeInput,
             "track": EnhancedSelect,
             "submission_type": EnhancedSelect,
         }

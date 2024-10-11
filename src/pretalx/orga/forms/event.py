@@ -23,6 +23,8 @@ from pretalx.common.forms.mixins import (
 from pretalx.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
+    HtmlDateInput,
+    HtmlDateTimeInput,
     TextInputWithAddon,
 )
 from pretalx.common.text.css import validate_css
@@ -355,12 +357,8 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
             "header_image": ImageField,
         }
         widgets = {
-            "date_from": forms.DateInput(
-                attrs={"type": "date", "data-date-before": "#id_date_to"}
-            ),
-            "date_to": forms.DateInput(
-                attrs={"type": "date", "data-date-after": "#id_date_from"}
-            ),
+            "date_from": HtmlDateInput(attrs={"data-date-before": "#id_date_to"}),
+            "date_to": HtmlDateInput(attrs={"data-date-after": "#id_date_from"}),
             "locale": EnhancedSelect,
             "timezone": EnhancedSelect,
             "slug": TextInputWithAddon(addon_before=settings.SITE_URL + "/"),
@@ -629,8 +627,8 @@ class ReviewPhaseForm(I18nHelpText, I18nModelForm):
             "speakers_can_change_submissions",
         ]
         widgets = {
-            "start": forms.DateInput(attrs={"type": "datetime-local"}),
-            "end": forms.DateInput(attrs={"type": "datetime-local"}),
+            "start": HtmlDateTimeInput,
+            "end": HtmlDateTimeInput,
         }
 
 
