@@ -83,6 +83,7 @@ def default_feature_flags():
         "use_tracks": True,
         "use_feedback": True,
         "present_multiple_times": False,
+        "submission_public_review": True,
     }
 
 

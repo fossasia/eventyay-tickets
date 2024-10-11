@@ -49,6 +49,13 @@ class CfPSettingsForm(
         ),
         required=False,
     )
+    submission_public_review = forms.BooleanField(
+        label=_("Allow submitters to share their proposal publicly"),
+        help_text=_(
+            "Allow submitters to share a secret link to their proposal with others."
+        ),
+        required=False,
+    )
 
     def __init__(self, *args, obj, **kwargs):
         kwargs.pop(
@@ -127,6 +134,7 @@ class CfPSettingsForm(
         # These are JSON fields on event.settings
         json_fields = {
             "use_tracks": "feature_flags",
+            "submission_public_review": "feature_flags",
             "present_multiple_times": "feature_flags",
             "mail_on_new_submission": "mail_settings",
         }
