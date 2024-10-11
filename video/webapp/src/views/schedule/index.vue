@@ -2,7 +2,7 @@
 .c-schedule
 	template(v-if="schedule")
 		div.filter-actions
-			app-dropdown(v-for="item in filter", className="schedule")
+			app-dropdown(v-for="item in filter", :key="item.refKey", className="schedule")
 				template(slot="toggler")
 					span {{item.title}}
 					app-dropdown-content(className="schedule")
@@ -15,6 +15,12 @@
 				:class="onlyFavs ? ['active'] : []") {{favs.length}}
 
 			bunt-button.bunt-ripple-ink(@click="resetAllFiltered", icon="filter-off")
+
+			template(v-if="!inEventTimezone")
+				bunt-select.timezone-item(name="timezone", :options="[{id: schedule.timezone, label: schedule.timezone}, {id: userTimezone, label: userTimezone}]", v-model="currentTimezone", @blur="saveTimezone")
+			template(v-else)
+				div.timezone-label.timezone-item.bunt-tab-header-item {{ schedule.timezone }}
+
 			.export.dropdown
 				bunt-progress-circular.export-spinner(v-if="isExporting", size="small")
 				custom-dropdown(name="calendar-add1"
@@ -24,7 +30,7 @@
 					@input="makeExport")
 
 		bunt-tabs.days(v-if="days && days.length > 1", :active-tab="currentDay.toISOString()", ref="tabs", v-scrollbar.x="")
-			bunt-tab(v-for="day in days", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
+			bunt-tab(v-for="day in days", :key="day.toISOString()", :id="day.toISOString()", :header="moment(day).format('dddd DD. MMMM')", @selected="changeDay(day)")
 		.scroll-parent(ref="scrollParent", v-scrollbar.x.y="")
 			grid-schedule(v-if="$mq.above['m']",
 				:sessions="sessions",
@@ -135,7 +141,9 @@ export default {
 			isExporting: false,
 			error: null,
 			defaultFilter: defaultFilter,
-			onlyFavs: false
+			onlyFavs: false,
+			userTimezone: null,
+			currentTimezone: null,
 		}
 	},
 	computed: {
@@ -195,7 +203,12 @@ export default {
 			filter.tracks.data = this.filterItemsByLanguage(this?.schedule?.tracks)
 
 			return filter
-		}
+		},
+		inEventTimezone() {
+			if (!this.schedule?.talks?.length) return false
+			const example = this.schedule.talks[0].start
+			return moment.tz(example, this.userTimezone).format('Z') === moment.tz(example, this.schedule.timezone).format('Z')
+		},
 	},
 	watch: {
 		tracksFilter: {
@@ -206,6 +219,10 @@ export default {
 			},
 			deep: true
 		}
+	},
+	async created() {
+		this.userTimezone = moment.tz.guess()
+		this.currentTimezone = localStorage.getItem('userTimezone')
 	},
 	methods: {
 		changeDay(day) {
@@ -283,6 +300,9 @@ export default {
 		},
 		resetOnlyFavs() {
 			this.onlyFavs = false
+		},
+		saveTimezone() {
+			localStorage.setItem('userTimezone', this.currentTimezone)
 		},
 	}
 }
@@ -372,4 +392,7 @@ export default {
 		.export-spinner
 			padding-top: 22px !important
 			margin-right: 10px
+	.bunt-select
+		.bunt-input
+			height: auto !important
 </style>
