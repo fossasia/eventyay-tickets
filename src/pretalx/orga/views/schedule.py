@@ -219,7 +219,7 @@ class ScheduleToggleView(EventPermissionRequired, View):
     def dispatch(self, request, event):
         super().dispatch(request, event)
         self.request.event.feature_flags["show_schedule"] = (
-            not self.request.event.feature_flags["show_schedule"]
+            not self.request.event.get_feature_flag("show_schedule")
         )
         self.request.event.save()
         return redirect(self.request.event.orga_urls.schedule)

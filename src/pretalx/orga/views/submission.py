@@ -621,7 +621,7 @@ class SubmissionList(EventPermissionRequired, BaseSubmissionList):
 
     @context
     def show_tracks(self):
-        if self.request.event.feature_flags["use_tracks"]:
+        if self.request.event.get_feature_flag("use_tracks"):
             if self.limit_tracks:
                 return len(self.limit_tracks) > 1
             return self.request.event.tracks.all().count() > 1
@@ -759,7 +759,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
     @cached_property
     def show_tracks(self):
         return (
-            self.request.event.feature_flags["use_tracks"]
+            self.request.event.get_feature_flag("use_tracks")
             and self.request.event.tracks.all().count() > 1
         )
 
@@ -864,7 +864,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
 
     @context
     def submission_track_data(self):
-        if self.request.event.feature_flags["use_tracks"]:
+        if self.request.event.get_feature_flag("use_tracks"):
             counter = Counter(
                 str(submission.track)
                 for submission in Submission.objects.filter(
@@ -937,7 +937,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
 
     @context
     def talk_track_data(self):
-        if self.request.event.feature_flags["use_tracks"]:
+        if self.request.event.get_feature_flag("use_tracks"):
             counter = Counter(
                 str(submission.track)
                 for submission in self.request.event.submissions.filter(

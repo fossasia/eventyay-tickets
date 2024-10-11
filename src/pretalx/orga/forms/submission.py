@@ -128,9 +128,9 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             )
         if "abstract" in self.fields:
             self.fields["abstract"].widget.attrs["rows"] = 2
-        if not event.feature_flags["present_multiple_times"]:
+        if not event.get_feature_flag("present_multiple_times"):
             self.fields.pop("slot_count", None)
-        if not event.feature_flags["use_tracks"]:
+        if not event.get_feature_flag("use_tracks"):
             self.fields.pop("track", None)
         elif "track" in self.fields:
             self.fields["track"].queryset = event.tracks.all()

@@ -1,10 +1,11 @@
 {% extends "orga/schedule/base.html" %}
 
 {% load compress %}
+{% load event_tags %}
 {% load i18n %}
+{% load phrases %}
 {% load static %}
 {% load vite %}
-{% load phrases %}
 
 {% block scripts %}
     {% vite_hmr %}
@@ -43,7 +44,7 @@
                     <a class="dropdown-item" href="{{ active_schedule.urls.public }}" target="_blank" rel="noopener">
                         <i class="fa fa-link"></i> {% translate "View in frontend" %}
                     </a>
-                    {% if request.event.feature_flags.show_schedule %}
+                    {% if request.event|get_feature_flag:"show_schedule" %}
                         <a class="dropdown-item"
                            href="{{ request.event.orga_urls.toggle_schedule }}">
                             <i class="fa fa-eye"></i> {% translate "Hide schedule" %}

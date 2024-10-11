@@ -1,11 +1,12 @@
 {% extends "agenda/base.html" %}
 
 {% load compress %}
-{% load static %}
+{% load event_tags %}
 {% load html_signal %}
 {% load i18n %}
-{% load rich_text %}
 {% load phrases %}
+{% load rich_text %}
+{% load static %}
 
 {% block title %}{{ submission.title }} ::{% endblock title %}
 {% block meta_title %}{{ submission.title }}{% endblock meta_title %}
@@ -49,7 +50,7 @@
                             <i class="fa fa-calendar"></i> .ical
                         </a>
                     {% endif %}
-                    {% if submission.does_accept_feedback and request.event.feature_flags.use_feedback and not is_html_export %}
+                    {% if submission.does_accept_feedback and request.event|get_feature_flag:"use_feedback" and not is_html_export %}
                         <a href="{{ submission.urls.feedback }}" class="btn btn-success">
                             <i class="fa fa-comments"></i> {{ phrases.agenda.feedback }}
                         </a>

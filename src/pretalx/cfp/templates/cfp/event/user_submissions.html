@@ -1,6 +1,7 @@
 {% extends "cfp/event/base.html" %}
 
 {% load compress %}
+{% load event_tags %}
 {% load html_signal %}
 {% load i18n %}
 {% load rich_text %}
@@ -121,7 +122,7 @@
                                         <i class="fa fa-check"></i> {% translate "Confirm" %}
                                     </a>
                                 {% endif %}
-                                {% if request.event.feature_flags.use_feedback and submission.does_accept_feedback %}
+                                {% if request.event|get_feature_flag:"use_feedback" and submission.does_accept_feedback %}
                                     <a href="{{ submission.urls.feedback }}" class="btn btn-sm btn-info">
                                         <i class="fa fa-comments"></i> {% translate "Feedback" %}
                                         {% if submission.feedback.count %}({{ submission.feedback.count }}){% endif %}

@@ -95,7 +95,6 @@ Feel free to look around, but don\'t be alarmed if something doesn\'t quite make
                 event=event, name="Workshop", default_duration=90
             )
 
-            event.feature_flags["use_tracks"] = True
             event.display_settings["header_pattern"] = random.choice(
                 ("", "pcb", "bubbles", "signal", "topo", "graph")
             )

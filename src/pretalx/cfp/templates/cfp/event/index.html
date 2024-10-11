@@ -1,5 +1,6 @@
 {% extends "cfp/event/base.html" %}
 
+{% load event_tags %}
 {% load i18n %}
 {% load rich_text %}
 {% load rules %}
@@ -16,7 +17,7 @@
                     </a>
                 {% endif %}
             {% endif %}
-            {% if request.event.current_schedule and request.event.feature_flags.show_schedule %}
+            {% if request.event.current_schedule and request.event|get_feature_flag:"show_schedule" %}
                 <a class="btn btn-success btn-lg btn-block" href="{{ request.event.urls.schedule }}">
                     {{ phrases.agenda.view_schedule }}
                 </a>

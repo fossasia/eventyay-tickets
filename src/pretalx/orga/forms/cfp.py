@@ -181,7 +181,7 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         super().__init__(*args, **kwargs)
         instance = kwargs.get("instance")
         if not (
-            event.feature_flags["use_tracks"]
+            event.get_feature_flag("use_tracks")
             and event.tracks.all().count()
             and event.cfp.request_track
         ):
@@ -389,7 +389,7 @@ class SubmitterAccessCodeForm(forms.ModelForm):
         self.fields["submission_type"].queryset = SubmissionType.objects.filter(
             event=self.event
         )
-        if event.feature_flags["use_tracks"]:
+        if event.get_feature_flag("use_tracks"):
             self.fields["track"].queryset = Track.objects.filter(event=self.event)
         else:
             self.fields.pop("track")
@@ -514,7 +514,7 @@ class QuestionFilterForm(forms.Form):
         self.fields["submission_type"].queryset = SubmissionType.objects.filter(
             event=event
         )
-        if not event.feature_flags["use_tracks"]:
+        if not event.get_feature_flag("use_tracks"):
             self.fields.pop("track", None)
         elif "track" in self.fields:
             self.fields["track"].queryset = event.tracks.all()

@@ -81,7 +81,7 @@ def task_periodic_schedule_export(event_slug):
             .first()
         )
     with scope(event=event):
-        if not event.feature_flags["export_html_on_release"]:
+        if not event.get_feature_flag("export_html_on_release"):
             return
         zip_path = get_export_zip_path(event)
         last_time = event.cache.get("last_schedule_rebuild")
@@ -106,7 +106,9 @@ def periodic_event_services(sender, **kwargs):
             task_periodic_event_services.apply_async(
                 args=(event.slug,), ignore_result=True
             )
-            if event.current_schedule and event.feature_flags["export_html_on_release"]:
+            if event.current_schedule and event.get_feature_flag(
+                "export_html_on_release"
+            ):
                 task_periodic_schedule_export.apply_async(
                     args=(event.slug,), ignore_result=True
                 )

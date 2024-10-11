@@ -142,7 +142,7 @@ class ScheduleViewSet(viewsets.ReadOnlyModelViewSet):
         qs = self.queryset
         is_public = (
             self.request.event.is_public
-            and self.request.event.feature_flags["show_schedule"]
+            and self.request.event.get_feature_flag("show_schedule")
         )
         current_schedule = (
             self.request.event.current_schedule.pk
