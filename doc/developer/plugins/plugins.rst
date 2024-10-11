@@ -109,6 +109,8 @@ Make sure you do this in the same virtualenv as you're using for pretalx.
 Signals
 -------
 
+.. highlight:: python
+
 pretalx defines signals which your plugin can listen for. We will go into the
 details of the different signals in the following pages. We suggest that you
 put your signal receivers into a ``signals`` submodule of your plugin. You
