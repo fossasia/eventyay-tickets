@@ -1,7 +1,6 @@
 import json
 
 from django import forms
-from django.utils.formats import get_format
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 
@@ -35,16 +34,15 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 .first()
             )
             if slot:
-                datetime_format = get_format("DATETIME_INPUT_FORMATS")[0]
                 initial_slot = {
                     "room": slot.room,
                     "start": (
-                        slot.local_start.strftime(datetime_format)
+                        slot.local_start.strftime("%Y-%m-%dT%H:%M")
                         if slot.local_start
                         else ""
                     ),
                     "end": (
-                        slot.local_end.strftime(datetime_format)
+                        slot.local_end.strftime("%Y-%m-%dT%H:%M")
                         if slot.real_end
                         else ""
                     ),
