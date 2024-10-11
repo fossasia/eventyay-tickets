@@ -568,7 +568,14 @@ class BaseSubmissionList(Sortable, ReviewerSubmissionFilter, PaginationMixin, Li
     model = Submission
     context_object_name = "submissions"
     filter_fields = ()
-    sortable_fields = ("code", "title", "state", "is_featured")
+    sortable_fields = (
+        "code",
+        "title",
+        "state",
+        "is_featured",
+        "submission_type__name",
+        "track__name",
+    )
     usable_states = None
 
     def get_filter_form(self):

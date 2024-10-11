@@ -96,7 +96,12 @@
         <table class="table table-sm table-hover table-flip table-sticky">
             <thead>
                 <tr>
-                    <th></th>
+                    <th>
+                        {% if request.event|get_feature_flag:"use_tracks" and filter_form.track %}
+                            <a href="{% querystring sort="track__name" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                            <a href="{% querystring sort="-track__name" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
+                        {% endif %}
+                    </th>
                     <th>
                         {% translate "Title" %}
                         <a href="{% querystring sort="title" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
@@ -106,6 +111,8 @@
                     {% if show_submission_types %}
                         <th>
                             {% translate "Type" %}
+                            <a href="{% querystring sort="submission_type__name" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                            <a href="{% querystring sort="-submission_type__name" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
                         </th>
                     {% endif %}
                     <th>
@@ -116,8 +123,8 @@
                     {% if can_change_submission %}
                         <th>
                             {% translate "Featured" %} <i class="fa fa-question-circle" data-toggle="tooltip" title="{% translate "Show this session on the list of featured sessions, once it was accepted" %}"></i>
-                            <a href="{% querystring sort="-is_featured" %}"><i class="fa fa-caret-down" title="{% translate "Sort (latest first)" %}"></i></a>
-                            <a href="{% querystring sort="is_featured" %}"><i class="fa fa-caret-up" title="{% translate "Sort (oldest first)" %}"></i></a>
+                            <a href="{% querystring sort="-is_featured" %}"><i class="fa fa-caret-down"></i></a>
+                            <a href="{% querystring sort="is_featured" %}"><i class="fa fa-caret-up"></i></a>
                         </th>
                         <th></th>
                     {% endif %}
