@@ -205,6 +205,15 @@ const initFormChanges = (form) => {
     window.addEventListener("beforeunload", handleUnload)
 }
 
+const initFormButton = (form) => {
+    const submitButton = form.querySelector("button[type=submit]")
+    if (!submitButton) return
+    form.addEventListener("submit", () => {
+        submitButton.disabled = true
+        submitButton.innerHTML = `<i class="fa fa-spinner fa-spin pr-0"></i> ${submitButton.textContent}`
+    })
+}
+
 const addDateLimit = (element, other, limit) => {
     const otherElement = document.querySelector(other)
     if (otherElement) {
@@ -247,7 +256,10 @@ onReady(() => {
         .forEach((element) => initSelect(element))
     document
         .querySelectorAll("form[method=post]")
-        .forEach((form) => initFormChanges(form))
+        .forEach((form) => {
+            initFormChanges(form)
+            initFormButton(form)
+        })
     checkForChanges()
     initDateFields()
 })
