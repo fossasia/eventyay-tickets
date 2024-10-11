@@ -1,5 +1,6 @@
 {% extends "common/base.html" %}
 
+{% load event_tags %}
 {% load i18n %}
 {% load rules %}
 
@@ -44,7 +45,7 @@
 {% endblock header_tabs %}
 
 {% block content %}
-    {% if not request.event.feature_flags.show_schedule and not request.user.is_anonymous and not hide_visibility_warning %}
+    {% if not request.event|get_feature_flag:"show_schedule" and not request.user.is_anonymous and not hide_visibility_warning %}
         <div id="event-nonpublic" class="d-print-none">
             <i class="fa fa-user-secret"></i>
             {% blocktranslate trimmed %}

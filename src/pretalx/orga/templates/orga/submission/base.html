@@ -1,5 +1,7 @@
 {% extends "orga/base.html" %}
+
 {% load compress %}
+{% load event_tags %}
 {% load i18n %}
 {% load rules %}
 {% load static %}
@@ -46,7 +48,7 @@
                     {% translate "Anonymisation" %}
                 </a>
             {% endif %}
-            {% if submission.feedback.count and request.event.feature_flags.use_feedback %}
+            {% if submission.feedback.count and request.event|get_feature_flag:"use_feedback" %}
                 <a role="tab" href="{{ submission.orga_urls.feedback }}" {% if "submissions.feedback" in url_name %}aria-selected="true"{% else %}aria-selected="false"{% endif %}>
                     {% translate "Feedback" %}
                 </a>

@@ -1,6 +1,7 @@
 {% extends "orga/base.html" %}
 
 {% load compress %}
+{% load event_tags %}
 {% load i18n %}
 {% load rules %}
 {% load static %}
@@ -126,7 +127,7 @@
                 {% for submission in submissions %}
                     <tr>
                         <td class="text-center">
-                            {% if request.event.feature_flags.use_tracks and submission.track %}
+                            {% if request.event|get_feature_flag:"use_tracks" and submission.track %}
                                 {% if not submission.is_anonymised %}
                                     <div class="color-square" style="background-color: {{ submission.track.color }}" title="{{ submission.track.name }}">
                                     </div>

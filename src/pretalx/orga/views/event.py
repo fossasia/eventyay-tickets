@@ -138,7 +138,7 @@ class EventLive(EventSettingsPermission, TemplateView):
             )
         # TODO: test that mails can be sent
         if (
-            self.request.event.feature_flags["use_tracks"]
+            self.request.event.get_feature_flag("use_tracks")
             and self.request.event.cfp.request_track
             and self.request.event.tracks.count() < 2
         ):

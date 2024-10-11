@@ -1,6 +1,7 @@
 {% extends "orga/base.html" %}
 
 {% load compress %}
+{% load event_tags %}
 {% load i18n %}
 {% load static %}
 
@@ -36,7 +37,7 @@
                 <tr>
                     <th class="col col-md-4">{% translate "Team" %}</th>
                     <th class="col col-md-3">{% translate "Members" %}</th>
-                    {% if request.event.feature_flags.use_tracks %}
+                    {% if request.event|get_feature_flag:"use_tracks" %}
                         <th class="col col-md-3">{% translate "Limited to tracks" %}</th>
                     {% endif %}
                     <th></th>
@@ -67,7 +68,7 @@
                                 -
                             {% endif %}
                         </td>
-                        {% if request.event.feature_flags.use_tracks %}
+                        {% if request.event|get_feature_flag:"use_tracks" %}
                             <td>
                                 {% for track in team.limit_tracks.all %}
                                     <span class="badge badge-secondary">{{ track.name }}</span>

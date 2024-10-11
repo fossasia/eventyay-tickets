@@ -1,6 +1,7 @@
 {% extends "orga/settings/base.html" %}
 
 {% load compress %}
+{% load event_tags %}
 {% load i18n %}
 {% load static %}
 
@@ -93,7 +94,7 @@
         </p>
     </div>
 
-    {% if request.event.is_public and request.event.feature_flags.show_schedule and request.event.current_schedule and not request.event.custom_domain %}
+    {% if request.event.is_public and request.event|get_feature_flag:"show_schedule" and request.event.current_schedule and not request.event.custom_domain %}
         <div class="mw-100">
             <h2>{% translate "Widget preview" %}</h2>
             <p>

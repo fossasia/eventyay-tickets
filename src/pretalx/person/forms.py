@@ -366,7 +366,7 @@ class SpeakerInformationForm(I18nHelpText, I18nModelForm):
         self.event = event
         super().__init__(*args, **kwargs)
         self.fields["limit_types"].queryset = event.submission_types.all()
-        if not event.feature_flags["use_tracks"]:
+        if not event.get_feature_flag("use_tracks"):
             self.fields.pop("limit_tracks")
         else:
             self.fields["limit_tracks"].queryset = event.tracks.all()

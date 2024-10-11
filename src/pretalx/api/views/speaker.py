@@ -39,9 +39,8 @@ class SpeakerViewSet(viewsets.ReadOnlyModelViewSet):
             return SpeakerProfile.objects.filter(
                 event=self.request.event, user__isnull=False
             )
-        if (
-            self.request.event.current_schedule
-            and self.request.event.feature_flags["show_schedule"]
+        if self.request.event.current_schedule and self.request.event.get_feature_flag(
+            "show_schedule"
         ):
             return SpeakerProfile.objects.filter(
                 event=self.request.event,

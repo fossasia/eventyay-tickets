@@ -159,7 +159,7 @@ class TalkSlot(PretalxModel):
 
     @cached_property
     def id_suffix(self):
-        if not self.event.feature_flags["present_multiple_times"]:
+        if not self.event.get_feature_flag("present_multiple_times"):
             return ""
         all_slots = list(
             TalkSlot.objects.filter(
