@@ -233,8 +233,15 @@ class CountableOption:
 class SubmissionFilterForm(forms.Form):
     state = forms.MultipleChoiceField(
         required=False,
-        choices=SubmissionStates.get_choices(),
-        widget=SelectMultipleWithCount(attrs={"title": _("Proposal states")}),
+        choices=[
+            (state, name)
+            for (state, name) in SubmissionStates.get_choices()
+            if state not in (SubmissionStates.DELETED, SubmissionStates.DRAFT)
+        ],
+        widget=SelectMultipleWithCount(
+            attrs={"title": _("Proposal states")},
+            color_field=SubmissionStates.get_color,
+        ),
     )
     submission_type = forms.MultipleChoiceField(
         required=False,

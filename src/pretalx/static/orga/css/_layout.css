@@ -1418,6 +1418,11 @@ div.mail-preview {
   padding: 5px;
 }
 
+#pending .form-group-inline {
+  flex-direction: row;
+  align-items: center;
+}
+
 @media print {
   body,
   #page-content,
