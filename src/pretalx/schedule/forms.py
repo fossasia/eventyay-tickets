@@ -10,6 +10,7 @@ from i18nfield.forms import I18nModelForm
 
 from pretalx.api.serializers.room import AvailabilitySerializer
 from pretalx.common.forms.mixins import ReadOnlyFlag
+from pretalx.common.forms.widgets import HtmlDateInput, HtmlTimeInput
 from pretalx.schedule.models import Availability, Room, TalkSlot
 
 
@@ -227,8 +228,8 @@ class RoomForm(AvailabilitiesFormMixin, ReadOnlyFlag, I18nModelForm):
 
 
 class QuickScheduleForm(forms.ModelForm):
-    start_date = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
-    start_time = forms.TimeField(widget=forms.TimeInput(attrs={"type": "time"}))
+    start_date = forms.DateField(widget=HtmlDateInput)
+    start_time = forms.TimeField(widget=HtmlTimeInput)
 
     def __init__(self, event, *args, **kwargs):
         self.event = event

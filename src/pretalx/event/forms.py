@@ -13,6 +13,7 @@ from pretalx.common.forms.renderers import InlineFormRenderer
 from pretalx.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
+    HtmlDateInput,
     TextInputWithAddon,
 )
 from pretalx.common.text.phrases import phrases
@@ -260,8 +261,8 @@ class EventWizardTimelineForm(forms.ModelForm):
         model = Event
         fields = ("date_from", "date_to")
         widgets = {
-            "date_from": forms.DateInput(attrs={"type": "date"}),
-            "date_to": forms.DateInput(attrs={"type": "date"}),
+            "date_from": HtmlDateInput,
+            "date_to": HtmlDateInput,
         }
 
 

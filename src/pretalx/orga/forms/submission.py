@@ -10,6 +10,7 @@ from pretalx.common.forms.renderers import InlineFormRenderer
 from pretalx.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
+    HtmlDateTimeInput,
     MarkdownWidget,
     TextInputWithAddon,
 )
@@ -116,13 +117,13 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             self.fields["start"] = forms.DateTimeField(
                 required=False,
                 label=TalkSlot._meta.get_field("start").verbose_name,
-                widget=forms.DateInput(attrs={"type": "datetime-local"}),
+                widget=HtmlDateTimeInput,
                 initial=initial_slot.get("start"),
             )
             self.fields["end"] = forms.DateTimeField(
                 required=False,
                 label=TalkSlot._meta.get_field("end").verbose_name,
-                widget=forms.DateInput(attrs={"type": "datetime-local"}),
+                widget=HtmlDateTimeInput,
                 initial=initial_slot.get("end"),
             )
         if "abstract" in self.fields:
