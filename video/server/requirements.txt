@@ -26,7 +26,7 @@ pdfrw==0.4
 pyjwt==2.8.*
 python-dateutil==2.9.*
 pytz
-redis==5.0.4
+redis==5.1.1
 reportlab==4.2.*
 requests==2.31.*
 sentry-sdk==2.14.*
