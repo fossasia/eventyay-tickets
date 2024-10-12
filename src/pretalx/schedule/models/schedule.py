@@ -713,6 +713,16 @@ class Schedule(PretalxModel):
                 "avatar": (
                     user.get_avatar_url(event=self.event) if include_avatar else None
                 ),
+                "avatar_thumbnail_default": (
+                    user.get_avatar_url(event=self.event, thumbnail="default")
+                    if include_avatar
+                    else None
+                ),
+                "avatar_thumbnail_tiny": (
+                    user.get_avatar_url(event=self.event, thumbnail="tiny")
+                    if include_avatar
+                    else None
+                ),
             }
             for user in speakers
         ]

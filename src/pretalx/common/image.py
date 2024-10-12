@@ -7,7 +7,7 @@ from PIL import Image, ImageOps
 from PIL.Image import Resampling
 
 THUMBNAIL_SIZES = {
-    "tiny": (32, 32),
+    "tiny": (64, 64),
     "default": (460, 460),
 }
 
@@ -60,11 +60,11 @@ def create_thumbnail(image, size):
     if not image.instance._meta.get_field(thumbnail_field_name):
         return
 
-    img = Image.open(
-        image,
-        formats=("PNG", "JPEG", "GIF"),
-    )
-    img.load()
+    try:
+        img = Image.open(image, formats=("PNG", "JPEG", "GIF"))
+        img.load()
+    except Exception:
+        return None
     img.thumbnail(THUMBNAIL_SIZES[size], resample=Resampling.LANCZOS)
     thumbnail_field = getattr(image.instance, thumbnail_field_name)
     thumbnail_name = (
