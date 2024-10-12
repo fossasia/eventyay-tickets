@@ -40,7 +40,7 @@ uvicorn[standard]==0.30.6
 
 # dev
 daphne==4.1.*
-black==23.7
+black==24.10.0
 isort==5.13.2
 flake8==7.0.0
 pytest==8.3.3
