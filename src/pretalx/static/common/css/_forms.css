@@ -718,8 +718,8 @@ input.password_strength {
     margin-top: 2px;
   }
   .choices__item.choice-item-color:not([data-deletable]):before {
-      margin-right: 5px;
-      margin-top: 2px;
+    margin-right: 5px;
+    margin-top: 2px;
   }
 }
 
