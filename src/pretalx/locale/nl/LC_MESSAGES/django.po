@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-12 00:31+0000\n"
+"POT-Creation-Date: 2024-10-12 00:57+0000\n"
 "PO-Revision-Date: 2024-02-20 12:24+0000\n"
 "Last-Translator: Carole_Grootenboer <carole.grootenboer@surf.nl>\n"
 "Language-Team: none\n"
@@ -214,20 +214,12 @@ msgstr "Ons programma is nog niet beschikbaar."
 
 #: pretalx/agenda/views/schedule.py:228
 msgid ""
-"You're currently not logged in, so your favourited talks can't be saved (but "
-"they are stored locally in your browser)."
+"You're currently not logged in, so your favourited talks will only be stored "
+"locally in your browser."
 msgstr ""
 
 #: pretalx/agenda/views/schedule.py:231
-msgid ""
-"Your favourites could not be loaded from the server, but they are stored "
-"locally in your browser."
-msgstr ""
-
-#: pretalx/agenda/views/schedule.py:234
-msgid ""
-"Your favourites could not be saved on the server, but they are stored "
-"locally in your browser."
+msgid "Your favourites could only be saved locally in your browser."
 msgstr ""
 
 #: pretalx/agenda/views/talk.py:117
@@ -1626,10 +1618,6 @@ msgid "Other"
 msgstr "Anders"
 
 #: pretalx/common/templates/400.html:18
-#, fuzzy
-#| msgid ""
-#| "It looks as if the communication between you and pretalx went wrong in "
-#| "some way.<br>Please return to the last page and try again!"
 msgid ""
 "It looks as if the communication between you and pretalx went wrong in some "
 "way. <br> Please return to the last page and try again!"
@@ -1643,11 +1631,6 @@ msgid "Verification failed."
 msgstr "Bevestiging mislukt."
 
 #: pretalx/common/templates/403_csrf.html:17
-#, fuzzy
-#| msgid ""
-#| "We could not verify that this request really was sent by you. For "
-#| "security reasons, we cannot process it.<br> Please go back to the last "
-#| "page, refresh, and then try again."
 msgid ""
 "We could not verify that this request really was sent by you. For security "
 "reasons, we cannot process it. <br> Please go back to the last page, "
@@ -5469,11 +5452,17 @@ msgstr "Geaccepteerde Voorstellen"
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:34
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:39
+#: pretalx/orga/templates/orga/review/dashboard.html:162
+#: pretalx/orga/templates/orga/review/dashboard.html:174
+#: pretalx/orga/templates/orga/review/dashboard.html:185
 msgid "Sort (high-low)"
 msgstr ""
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:35
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:40
+#: pretalx/orga/templates/orga/review/dashboard.html:163
+#: pretalx/orga/templates/orga/review/dashboard.html:175
+#: pretalx/orga/templates/orga/review/dashboard.html:186
 msgid "Sort (low-high)"
 msgstr ""
 
@@ -5695,22 +5684,6 @@ msgstr "Pas wijzigingen toe"
 msgid "Average"
 msgstr "Gemiddeld"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:162
-#: pretalx/orga/templates/orga/review/dashboard.html:174
-#: pretalx/orga/templates/orga/review/dashboard.html:185
-#, fuzzy
-#| msgid "Sort by score (highest first)"
-msgid "Sort (highest first)"
-msgstr "Sorteer op score (hoogste eerst)"
-
-#: pretalx/orga/templates/orga/review/dashboard.html:163
-#: pretalx/orga/templates/orga/review/dashboard.html:175
-#: pretalx/orga/templates/orga/review/dashboard.html:186
-#, fuzzy
-#| msgid "Sort by score (lowest first)"
-msgid "Sort (lowest first)"
-msgstr "Sorteer op score (laagste eerst)"
-
 #: pretalx/orga/templates/orga/review/dashboard.html:195
 #: pretalx/orga/templates/orga/submission/list.html:80
 msgid "Type"
@@ -5915,13 +5888,6 @@ msgstr "Regenereren export"
 #: pretalx/orga/views/speaker.py:369
 msgid "API"
 msgstr "API"
-
-#: pretalx/orga/templates/orga/schedule/index.html:15
-#, fuzzy
-#| msgctxt "Schedule/program of the conference"
-#| msgid "Schedule"
-msgid "Schedule"
-msgstr "Programma"
 
 #: pretalx/orga/templates/orga/schedule/index.html:31
 msgid "New release"
@@ -6347,11 +6313,6 @@ msgstr[0] "Spreker Informatie Notitie"
 msgstr[1] "Spreker Informatie Notities"
 
 #: pretalx/orga/templates/orga/speaker/information_list.html:35
-#, fuzzy
-#| msgid ""
-#| "Add important messages (e.g. “Please bring an HDMI adapter if required.”) "
-#| "or files (e.g. a conference styleguide).<br> They are shown to the "
-#| "selected speakers above the list of their submitted sessions."
 msgid ""
 "Add important messages (e.g. “Please bring an HDMI adapter if required.”) or "
 "files (e.g. a conference styleguide). <br> They are shown to the selected "
@@ -8466,7 +8427,22 @@ msgid "Drag the box to the schedule to create a new break"
 msgstr ""
 
 #, fuzzy
-#~| msgid "Optional"
+#~| msgid "Sort by score (highest first)"
+#~ msgid "Sort (highest first)"
+#~ msgstr "Sorteer op score (hoogste eerst)"
+
+#, fuzzy
+#~| msgid "Sort by score (lowest first)"
+#~ msgid "Sort (lowest first)"
+#~ msgstr "Sorteer op score (laagste eerst)"
+
+#, fuzzy
+#~| msgctxt "Schedule/program of the conference"
+#~| msgid "Schedule"
+#~ msgid "Schedule"
+#~ msgstr "Programma"
+
+#, fuzzy
 #~ msgctxt "form field"
 #~ msgid "Optional"
 #~ msgstr "Optioneel"
@@ -8596,7 +8572,6 @@ msgstr ""
 #~ msgstr "Score categorie"
 
 #, fuzzy
-#~| msgid "Review phases"
 #~ msgid "Review phase"
 #~ msgstr "Beoordelingsfases"
 

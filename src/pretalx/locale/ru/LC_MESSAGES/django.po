@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-12 00:31+0000\n"
+"POT-Creation-Date: 2024-10-12 00:57+0000\n"
 "PO-Revision-Date: 2024-02-07 14:24+0000\n"
 "Last-Translator: prodject <anonymous.prodject@gmail.com>\n"
 "Language-Team: none\n"
@@ -209,20 +209,12 @@ msgstr ""
 
 #: pretalx/agenda/views/schedule.py:228
 msgid ""
-"You're currently not logged in, so your favourited talks can't be saved (but "
-"they are stored locally in your browser)."
+"You're currently not logged in, so your favourited talks will only be stored "
+"locally in your browser."
 msgstr ""
 
 #: pretalx/agenda/views/schedule.py:231
-msgid ""
-"Your favourites could not be loaded from the server, but they are stored "
-"locally in your browser."
-msgstr ""
-
-#: pretalx/agenda/views/schedule.py:234
-msgid ""
-"Your favourites could not be saved on the server, but they are stored "
-"locally in your browser."
+msgid "Your favourites could only be saved locally in your browser."
 msgstr ""
 
 #: pretalx/agenda/views/talk.py:117
@@ -4863,11 +4855,17 @@ msgstr ""
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:34
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:39
+#: pretalx/orga/templates/orga/review/dashboard.html:162
+#: pretalx/orga/templates/orga/review/dashboard.html:174
+#: pretalx/orga/templates/orga/review/dashboard.html:185
 msgid "Sort (high-low)"
 msgstr ""
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:35
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:40
+#: pretalx/orga/templates/orga/review/dashboard.html:163
+#: pretalx/orga/templates/orga/review/dashboard.html:175
+#: pretalx/orga/templates/orga/review/dashboard.html:186
 msgid "Sort (low-high)"
 msgstr ""
 
@@ -5065,18 +5063,6 @@ msgstr ""
 msgid "Average"
 msgstr ""
 
-#: pretalx/orga/templates/orga/review/dashboard.html:162
-#: pretalx/orga/templates/orga/review/dashboard.html:174
-#: pretalx/orga/templates/orga/review/dashboard.html:185
-msgid "Sort (highest first)"
-msgstr ""
-
-#: pretalx/orga/templates/orga/review/dashboard.html:163
-#: pretalx/orga/templates/orga/review/dashboard.html:175
-#: pretalx/orga/templates/orga/review/dashboard.html:186
-msgid "Sort (lowest first)"
-msgstr ""
-
 #: pretalx/orga/templates/orga/review/dashboard.html:195
 #: pretalx/orga/templates/orga/submission/list.html:80
 msgid "Type"
@@ -5255,10 +5241,6 @@ msgstr ""
 #: pretalx/orga/views/review.py:809 pretalx/orga/views/schedule.py:98
 #: pretalx/orga/views/speaker.py:369
 msgid "API"
-msgstr ""
-
-#: pretalx/orga/templates/orga/schedule/index.html:15
-msgid "Schedule"
 msgstr ""
 
 #: pretalx/orga/templates/orga/schedule/index.html:31

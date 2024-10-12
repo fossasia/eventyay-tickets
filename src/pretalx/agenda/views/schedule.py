@@ -225,13 +225,10 @@ def schedule_messages(request, **kwargs):
     """This view is cached for a day, as it is small and non-critical, but loaded synchronously."""
     strings = {
         "favs_not_logged_in": _(
-            "You're currently not logged in, so your favourited talks can't be saved (but they are stored locally in your browser)."
-        ),
-        "favs_not_loaded": _(
-            "Your favourites could not be loaded from the server, but they are stored locally in your browser."
+            "You're currently not logged in, so your favourited talks will only be stored locally in your browser."
         ),
         "favs_not_saved": _(
-            "Your favourites could not be saved on the server, but they are stored locally in your browser."
+            "Your favourites could only be saved locally in your browser."
         ),
     }
     strings = {key: str(value) for key, value in strings.items()}
