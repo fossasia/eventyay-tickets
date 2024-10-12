@@ -46,7 +46,7 @@
 							.data-label {{ $t('Title') }}
 							.data-value.i18n-form-group
 								template(v-for="locale of locales")
-									input(v-model="editorSession.title[locale]", :required="true" :lang="locale")
+									input(v-model="editorSession.title[locale]", :required="true", :lang="locale", type="text")
 						.data-row(v-if="editorSession.track")
 							.data-label {{ $t('Track') }}
 							.data-value {{ getLocalizedString(editorSession.track.name) }}
@@ -396,9 +396,10 @@ export default {
 	width: 100%
 	font-size: 14px
 	margin-left: 24px
-	font-family: inherit
+	font-family: var(--font-family)
+	color: var(--color-text)
 	h1, h2, h3, h4, h5, h6, legend, button, .btn
-		font-family: "Titillium Web", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif
+		font-family: var(--font-family-title)
 	&.is-dragging
 		user-select: none
 		cursor: grabbing
@@ -461,6 +462,12 @@ export default {
 			margin-left: 8px
 			#filter-input
 				width: calc(100% - 36px)
+				.label-input-container, .label-input-container:active
+					.outline
+						display: none
+				input:focus-visible
+					color: var(--color-text)
+					text-shadow: none
 			#unassigned-sort
 				width: 28px
 				height: 28px
@@ -556,7 +563,9 @@ export default {
 							border-radius: 0.25rem
 							font-size: 16px
 							height: 30px
+							color: var(--color-text)
 							&:focus, &:active, &:focus-visible
+								color: var(--color-text)
 								border-color: #89d6b8
 								box-shadow: 0 0 0 1px rgba(58, 165, 124, 0.25)
 							&[type=number]
