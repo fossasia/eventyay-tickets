@@ -1,7 +1,7 @@
 <template lang="pug">
 .c-app-bar
 	bunt-icon-button(v-if="showActions", @click="$emit('toggleSidebar')", @touchend.native="$emit('toggleSidebar')") menu
-	router-link.logo(to="/", :class="{anonymous: isAnonymous}")
+	router-link.logo(:to="{name: 'home'}", :class="{anonymous: isAnonymous}")
 		img(:src="theme.logo.url", :alt="world.title")
 	.user(v-if="showUser")
 		p(v-if="isAnonymous") {{ $t('AppBar:user-anonymous') }}

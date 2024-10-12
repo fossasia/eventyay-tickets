@@ -178,7 +178,7 @@ export default {
 				}
 			})
 
-			return Array.from(languageMap).map(([id, name]) => ({ value: id, label: name }));
+			return Array.from(languageMap).map(([id, name]) => ({ value: id, label: name }))
 		},
 		matchesSessionTypeFilter: (state) => (talk, selectedIds) => {
 			if (typeof talk?.session_type === 'string') {
