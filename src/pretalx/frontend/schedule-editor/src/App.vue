@@ -308,7 +308,7 @@ export default {
 		showNewBreakHint () {
 			// Users try to click the "+ New Break" box instead of dragging it to the schedule
 			// so we show a hint on-click
-			this.newBreakTooltip = this.$t('Drag the box to the schedule to create a new break.')
+			this.newBreakTooltip = this.$t('Drag the box to the schedule to create a new break')
 		},
 		removeNewBreakHint () {
 			this.newBreakTooltip = ''
