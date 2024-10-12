@@ -338,7 +338,9 @@ input[type="number"] {
       #efefef 75%,
       #efefef
     );
+  border-radius: 6px;
   img {
+    border-radius: 6px;
     max-width: 100%;
     height: auto;
     box-shadow: var(--shadow-light);

@@ -9,6 +9,12 @@
   .avatar-upload .form-group {
     display: block;
 
+    .col-md-9 br:first-of-type {
+      display: none;
+    }
+
+    padding-top: 8px;
+
     input[type="checkbox"] {
       margin: 0 2px 0 12px;
     }
