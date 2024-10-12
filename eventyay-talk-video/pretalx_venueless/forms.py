@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
+from pretalx.common.forms.widgets import HtmlDateTimeInput
 
 from .models import VenuelessSettings
 
@@ -73,7 +74,7 @@ class VenuelessSettingsForm(I18nModelForm):
             "join_text",
         )
         widgets = {
-            "join_start": forms.DateTimeInput(attrs={"type": "datetime-local"}),
+            "join_start": HtmlDateTimeInput,
             "secret": forms.TextInput(),
             "audience": forms.TextInput(),
             "issuer": forms.TextInput(),
