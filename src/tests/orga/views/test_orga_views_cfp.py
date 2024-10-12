@@ -49,8 +49,8 @@ def test_edit_cfp_timezones(orga_client, event):
     event.cfp.save()
     response = orga_client.get(event.cfp.urls.edit_text)
     assert response.status_code == 200
-    assert "2018-03-05 18:39:15" in response.rendered_content
-    assert "2018-03-05 17:39:15" not in response.rendered_content
+    assert "2018-03-05T18:39" in response.rendered_content
+    assert "2018-03-05T17:39" not in response.rendered_content
 
 
 @pytest.mark.django_db
