@@ -1280,9 +1280,33 @@ div.mail-preview {
 }
 
 .speaker-avatar {
-  position: absolute;
-  right: 20px;
-  top: 20px;
+  float: right;
+}
+
+.user-name-display {
+  display: inline-flex;
+  align-items: center;
+  img {
+    border-radius: 50%;
+    height: 1rem;
+    width: 1rem;
+    margin-left: 4px;
+  }
+  img,
+  a[data-lightbox] img,
+  a[data-lightbox] img:hover {
+    box-shadow: var(--shadow-lightest);
+  }
+}
+.col-form-label .user-name-display {
+  margin-left: auto;
+}
+h2 .user-name-display img {
+  height: 1.5rem;
+  width: 1.5rem;
+}
+.speaker-name-list .user-name-display:not(:last-child)::after {
+  content: ", ";
 }
 
 .timeline {

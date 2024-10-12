@@ -127,7 +127,7 @@
                             <td>
                                 {% for speaker in submission.speakers.all %}
                                     <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.code %}">
-                                        {{ speaker.get_display_name }}
+                                        {% include "orga/includes/user_name.html" with user=speaker %}
                                     </a><br>
                                 {% endfor %}
                             </td>

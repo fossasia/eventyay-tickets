@@ -46,7 +46,9 @@
                 {% for profile in speakers %}
                     <tr>
                         <td>
-                            <a href="{{ profile.orga_urls.base }}">{{ profile.user.get_display_name }}</a>
+                            <a href="{{ profile.orga_urls.base }}">
+                                {% include "orga/includes/user_name.html" with user=profile.user %}
+                            </a>
                         </td>
                         <td class="numeric">{{ profile.accepted_submission_count }}</td>
                         <td class="numeric">{{ profile.submission_count }}</td>
