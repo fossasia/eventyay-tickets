@@ -177,7 +177,10 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
     def save(self, *args, **kwargs):
         for key, value in self.default_values.items():
             setattr(self.instance, key, value)
-        return super().save(*args, **kwargs)
+        result = super().save(*args, **kwargs)
+        if "image" in self.cleaned_data:
+            self.process_image("image")
+        return result
 
     class Meta:
         model = Submission

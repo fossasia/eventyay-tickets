@@ -52,7 +52,13 @@
       </tr>
     </table>
     <div class="ml-auto">
-      <img loading="lazy" height=160 src="https://www.gravatar.com/avatar/{{ user.gravatar_parameter }}?s=512" alt="{% translate "Profile picture" %}">
+      {% if user.avatar %}
+        <div class="speaker-avatar">
+          <a href="{{ user.avatar.url }}" data-lightbox="{{ user.avatar.url }}">
+            <img loading="lazy" width="100%" src="{{ user.avatar|thumbnail:"default" }}" alt="{% translate "Profile picture" %}">
+          </a>
+        </div>
+      {% endif %}
     </div>
   </div>
 

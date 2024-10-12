@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load rich_text %}
 {% load static %}
+{% load thumbnail %}
 
 {% block agenda_content %}
     {% include "agenda/header_row.html" %}
@@ -15,7 +16,7 @@
                         <div class="pretalx-session-time-box avatar">
                             <div class="avatar-wrapper">
                                 {% if speaker.user.avatar_url and request.event.cfp.request_avatar %}
-                                    <img loading="lazy" src="{{ speaker.user.avatar_url }}" alt="{% translate "The speaker’s profile picture" %}">
+                                    <img loading="lazy" src="{{ speaker.user.avatar|thumbnail:"default" }}" alt="{% translate "The speaker’s profile picture" %}">
                                 {% else %}
                                     <img loading="lazy" src="{{ request.event.urls.speakers }}avatar.svg" alt="{% translate "The speaker’s profile picture" %}">
                                 {% endif %}

@@ -662,6 +662,8 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
                 value = steps["display"].get(setting)
                 if value:
                     event.settings.set(setting, value)
+            if event.logo:
+                event.process_image("logo")
 
         has_control_rights = self.request.user.teams.filter(
             organiser=event.organiser,
