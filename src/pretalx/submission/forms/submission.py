@@ -179,7 +179,7 @@ class InfoForm(CfPFormMixin, RequestRequire, PublicContent, forms.ModelForm):
             setattr(self.instance, key, value)
         result = super().save(*args, **kwargs)
         if "image" in self.cleaned_data:
-            self.process_image("image")
+            self.instance.process_image("image")
         return result
 
     class Meta:

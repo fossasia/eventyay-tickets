@@ -21,6 +21,7 @@ from django.utils.translation import override
 from django_scopes import scopes_disabled
 from rest_framework.authtoken.models import Token
 
+from pretalx.common.image import create_thumbnail
 from pretalx.common.models import TIMEZONE_CHOICES
 from pretalx.common.models.mixins import FileCleanupMixin, GenerateCode
 from pretalx.common.text.path import path_with_hash
@@ -328,14 +329,26 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         if self.has_avatar:
             return self.avatar.url
 
-    def get_avatar_url(self, event=None):
+    def get_avatar_url(self, event=None, thumbnail=None):
         """Returns the full avatar URL, where user.avatar_url returns the
         absolute URL."""
         if not self.avatar_url:
             return ""
+        if not thumbnail:
+            image = self.avatar
+        else:
+            image = (
+                self.avatar_thumbnail_tiny
+                if thumbnail == "tiny"
+                else self.avatar_thumbnail
+            )
+            if not image:
+                image = create_thumbnail(self.avatar, thumbnail)
+        if not image:
+            return
         if event and event.custom_domain:
-            return urljoin(event.custom_domain, self.avatar_url)
-        return urljoin(settings.SITE_URL, self.avatar_url)
+            return urljoin(event.custom_domain, image.url)
+        return urljoin(settings.SITE_URL, image.url)
 
     def get_events_with_any_permission(self):
         """Returns a queryset of events for which this user has any type of
