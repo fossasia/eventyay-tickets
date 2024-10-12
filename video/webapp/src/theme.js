@@ -152,11 +152,30 @@ export function computeForegroundSidebarColor(colors) {
 
 export async function getThemeConfig() {
 	const themeUrl = config.api.base + 'theme'
-	const response = await (await fetch(themeUrl, {
+	const response = await fetch(themeUrl, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json'
 		}
-	})).json()
-	return response
+	})
+
+	let themeConfig
+	if (response.ok) {
+		const data = await response.json()
+		themeConfig = {
+			colors: data.colors || configColors,
+			logo: Object.assign({}, DEFAULT_LOGO, data.logo),
+			streamOfflineImage: data.streamOfflineImage,
+			identicons: Object.assign({}, DEFAULT_IDENTICONS, data.identicons),
+		}
+	} else {
+		console.error('Failed to fetch theme config, set default:', response.statusText)
+		themeConfig = {
+			colors: configColors,
+			logo: Object.assign({}, DEFAULT_LOGO, config.theme?.logo),
+			streamOfflineImage: config.theme?.streamOfflineImage,
+			identicons: Object.assign({}, DEFAULT_IDENTICONS, config.theme?.identicons),
+		}
+	}
+	return themeConfig
 }

@@ -164,7 +164,6 @@ def _clear_db():
 
 
 @pytest.fixture(autouse=True)
-@pytest.mark.django_db
 async def clear_database(request):
     if "django_db" not in request.keywords:  # pragma: no cover
         return

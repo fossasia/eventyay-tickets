@@ -65,8 +65,8 @@ export default {
 	mounted() {},
 	methods: {
 		generateSessionLinkUrl(sessionData) {
-			const publicPath = process.env.BASE_URL || '/video/';
-			return `${publicPath}schedule/talks/${sessionData.session.id}`;
+			const publicPath = process.env.BASE_URL || '/video/'
+			return `${publicPath}schedule/talks/${sessionData.session.id}`
 		}
 	}
 }
