@@ -315,7 +315,7 @@ export default {
 		},
 		startNewBreak({event}) {
 			const title = this.locales.reduce((obj, locale) => {
-				obj[locale] = this.$t("New Break")
+				obj[locale] = this.$t("New break")
 				return obj
 			}, {})
 			this.startDragging({event, session: {title, duration: "5", uncreated: true}})
