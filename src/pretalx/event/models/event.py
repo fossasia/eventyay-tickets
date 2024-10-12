@@ -230,7 +230,7 @@ class Event(PretalxModel):
             "Upload a custom CSS file if changing the primary colour is not sufficient for you."
         ),
     )
-    logo = models.FileField(
+    logo = models.ImageField(
         upload_to=event_logo_path,
         null=True,
         blank=True,
@@ -240,7 +240,7 @@ class Event(PretalxModel):
             "The logo will be scaled down to a height of 150px."
         ),
     )
-    header_image = models.FileField(
+    header_image = models.ImageField(
         upload_to=event_logo_path,
         null=True,
         blank=True,
