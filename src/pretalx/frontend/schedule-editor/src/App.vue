@@ -4,7 +4,7 @@
 		#main-wrapper
 			#unassigned.no-print(v-scrollbar.y="", @pointerenter="isUnassigning = true", @pointerleave="isUnassigning = false")
 				.title
-					bunt-input#filter-input(v-model="unassignedFilterString", :placeholder="$t('Filter sessions')", icon="search")
+					bunt-input#filter-input(v-model="unassignedFilterString", :placeholder="translations.filterSessions", icon="search")
 					#unassigned-sort(@click="showUnassignedSortMenu = !showUnassignedSortMenu", :class="{'active': showUnassignedSortMenu}")
 						i.fa.fa-sort
 					#unassigned-sort-menu(v-if="showUnassignedSortMenu")
@@ -12,7 +12,7 @@
 							span {{ method.label }}
 							i.fa.fa-sort-amount-asc(v-if="unassignedSort === method.name && unassignedSortDirection === 1")
 							i.fa.fa-sort-amount-desc(v-if="unassignedSort === method.name && unassignedSortDirection === -1")
-				session.new-break(:session="{title: '+ ' + $t('New break')}", :isDragged="false", @startDragging="startNewBreak", @click="showNewBreakHint", v-tooltip.fixed="{text: newBreakTooltip, show: newBreakTooltip}", @pointerleave="removeNewBreakHint")
+				session.new-break(:session="{title: '+ ' + translations.newBreak}", :isDragged="false", @startDragging="startNewBreak", @click="showNewBreakHint", v-tooltip.fixed="{text: newBreakTooltip, show: newBreakTooltip}", @pointerleave="removeNewBreakHint")
 				session(v-for="un in unscheduled", :session="un", @startDragging="startDragging", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")
 				bunt-tabs.days(v-if="days", :modelValue="currentDay.format()", ref="tabs" :class="['grid-tabs']")
@@ -111,6 +111,13 @@ export default {
 			showUnassignedSortMenu: false,
 			newBreakTooltip: '',
 			getLocalizedString,
+			// i18next-parser doesn't have a pug parser / fails to parse translated
+			// strings in attributes (though plain {{}} strings work!), so anything
+			// handled in attributes will be collected here instead
+			translations: {
+				filterSessions: this.$t('Filter sessions'),
+				newBreak: this.$t('New break'),
+			}
 		}
 	},
 	computed: {
