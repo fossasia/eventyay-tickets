@@ -1,13 +1,10 @@
-from io import BytesIO
 from pathlib import Path
 
 from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
-from django.core.files import File
 from django.core.files.uploadedfile import UploadedFile
 from django.forms import CharField, FileField, ValidationError
 from django.utils.translation import gettext_lazy as _
-from PIL import Image
 
 from pretalx.common.forms.widgets import (
     ClearableBasenameFileInput,
@@ -76,9 +73,10 @@ class SizeFileInput:
 
 class ExtensionFileInput:
     widget = ClearableBasenameFileInput
+    extensions = []
 
     def __init__(self, *args, **kwargs):
-        extensions = kwargs.pop("extensions")
+        extensions = kwargs.pop("extensions", None) or self.extensions or []
         self.extensions = sorted([ext.lower() for ext in extensions])
         super().__init__(*args, **kwargs)
         self.original_help_text = (
@@ -119,82 +117,4 @@ class ExtensionFileField(ExtensionFileInput, SizeFileInput, FileField):
 
 class ImageField(ExtensionFileInput, SizeFileInput, FileField):
     widget = ImageInput
-
-    def __init__(self, *args, **kwargs):
-        self.max_width = (
-            kwargs.pop("max_width", None) or settings.IMAGE_DEFAULT_MAX_WIDTH
-        )
-        self.max_height = (
-            kwargs.pop("max_height", None) or settings.IMAGE_DEFAULT_MAX_HEIGHT
-        )
-        super().__init__(*args, extensions=IMAGE_EXTENSIONS, **kwargs)
-
-    def to_python(self, data):
-        """Check that the file-upload field data contains a valid image (GIF,
-        JPG, PNG, etc. -- whatever Pillow supports).
-
-        Vendored from django.forms.fields.ImageField to add EXIF data
-        removal. Can't use super() because we need to patch in the
-        .png.fp object for some unholy (and possibly buggy) reason.
-        """
-        field = super().to_python(data)
-        if field is None or field.name.endswith(".svg"):
-            return field
-
-        # We need to get a file object for Pillow. We might have a path or we might
-        # have to read the data into memory.
-        if getattr(data, "temporary_file_path", None):
-            with open(data.temporary_file_path(), "rb") as temp_fp:
-                file = BytesIO(temp_fp.read())
-        else:
-            if getattr(data, "read", None):
-                file = BytesIO(data.read())
-            else:
-                file = BytesIO(data["content"])
-
-        try:
-            # load() could spot a truncated JPEG, but it loads the entire
-            # image in memory, which is a DoS vector. See #3848 and #18520.
-            image = Image.open(file)
-            # verify() must be called immediately after the constructor.
-            image.verify()
-
-            # Annotating so subclasses can reuse it for their own validation
-            field.image = image
-            # Pillow doesn't detect the MIME type of all formats. In those
-            # cases, content_type will be None.
-            field.content_type = Image.MIME.get(image.format)
-        except Exception as exc:
-            # Pillow doesn't recognize it as an image.
-            raise ValidationError(
-                _(
-                    "Upload a valid image. The file you uploaded was either not an "
-                    "image or a corrupted image."
-                )
-            ) from exc
-        if getattr(field, "seek", None) and callable(field.seek):
-            field.seek(0)
-
-        image.fp = file
-        if getattr(image, "png", None):  # Yeah, idk what's up with this
-            image.png.fp = file
-
-        stream = BytesIO()
-
-        extension = ".jpg"
-        if image.mode.lower() in ("rgba", "la", "pa"):
-            extension = ".png"
-        elif image.mode != "RGB":
-            image = image.convert("RGB")
-
-        stream.name = Path(data.name).stem + extension
-        image_data = image.getdata()
-        image_without_exif = Image.new(image.mode, image.size)
-        image_without_exif.putdata(image_data)
-        if self.max_height and self.max_width:
-            image_without_exif.thumbnail((self.max_width, self.max_height))
-        image_without_exif.save(
-            stream, quality="web_high" if extension == ".jpg" else 95
-        )
-        stream.seek(0)
-        return File(stream, name=data.name)
+    extensions = IMAGE_EXTENSIONS

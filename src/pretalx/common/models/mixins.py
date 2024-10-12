@@ -77,6 +77,19 @@ class FileCleanupMixin:
         self._delete_files()
         return super().delete(*args, **kwargs)
 
+    def process_image(self, field, generate_thumbnail=False):
+        from pretalx.common.tasks import task_process_image
+
+        task_process_image.apply_async(
+            kwargs={
+                "field": field,
+                "model": str(self._meta.model_name.capitalize()),
+                "pk": self.pk,
+                "generate_thumbnail": generate_thumbnail,
+            },
+            countdown=10,
+        )
+
 
 class PretalxModel(LogMixin, TimestampedModel, FileCleanupMixin, models.Model):
     """
