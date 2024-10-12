@@ -39,7 +39,8 @@
         {% endif %}
         <div class="row">
             <div class="col-md-4 flip ml-auto">
-                <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="profile">
+                <input type="hidden" name="form" value="profile">
+                <button type="submit" class="btn btn-block btn-success btn-lg">
                     {{ phrases.base.save }}
                 </button>
             </div>
@@ -53,7 +54,8 @@
             {{ questions_form }}
             <div class="row">
                 <div class="col-md-4 flip ml-auto">
-                    <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="questions">
+                    <input type="hidden" name="form" value="questions">
+                    <button type="submit" class="btn btn-block btn-success btn-lg">
                         {{ phrases.base.save }}
                     </button>
                 </div>
@@ -72,7 +74,8 @@
         {{ login_form.password_repeat.as_field_group }}
         <div class="row">
             <div class="col-md-4 flip ml-auto">
-                <button type="submit" class="btn btn-block btn-success btn-lg" name="form" value="login">
+                <input type="hidden" name="form" value="login">
+                <button type="submit" class="btn btn-block btn-success btn-lg">
                     {{ phrases.base.save }}
                 </button>
             </div>
@@ -96,7 +99,8 @@
         </div>
         <div class="row">
             <div class="col-md-4 flip ml-auto">
-                <button type="submit" class="btn btn-block btn-danger btn-lg" name="form" value="">
+                <input type="hidden" name="form" value="">
+                <button type="submit" class="btn btn-block btn-danger btn-lg">
                     {% translate "Delete my account" %}
                 </button>
             </div>
