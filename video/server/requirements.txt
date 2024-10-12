@@ -6,7 +6,7 @@ celery==5.3.*
 channels==4.1.*
 channels_redis==4.2.*
 Django==4.2.*
-django-cors-headers==4.3.*
+django-cors-headers==4.4.*
 django-decorator-include==3.0
 django-extensions==3.2.*
 django-formset-js-improved
