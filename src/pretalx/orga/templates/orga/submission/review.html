@@ -8,11 +8,14 @@
 
 {% block submission_title %}{% translate "Reviews" %} :: {% endblock submission_title %}
 
-{% block submission_content %}
+{% block scripts %}
+    {{ block.super }}
     <script src="{% static "vendored/marked.min.js" %}" defer></script> {# do not compress #}
     <script defer src="{% static "vendored/purify.min.js" %}"></script>
     <script src="{% static "orga/js/reviewSubmission.js" %}" defer></script>
+{% endblock scripts %}
 
+{% block submission_content %}
     {% has_perm "orga.view_reviews" request.user submission as can_view_other_reviews %}
     {% has_perm "orga.view_reviewer_names" request.user submission as can_view_reviewer_names %}
     {% if request.user in submission.speakers.all %}
@@ -129,7 +132,10 @@
             {% if not anonymise_review %}
                 {% for speaker in profiles %}
                     <div class="form-group row">
-                        <label class="col-md-3 col-form-label">{% translate "Biography" %}: {{ speaker.user.get_display_name }}</label>
+                        <label class="col-md-3 col-form-label">
+                            {% translate "Biography" %}:
+                            {% include "orga/includes/user_name.html" with user=speaker.user lightbox=True %}
+                        </label>
                         <div class="col-md-9 mt-1">
                             {% if request.event.cfp.request_biography %}
                                 {{ speaker.biography|default:"-"|rich_text }}
