@@ -3,6 +3,7 @@
 {% load compress %}
 {% load i18n %}
 {% load rich_text %}
+{% load thumbnail %}
 {% load static %}
 
 {% block title %}{{ profile.user.get_display_name }} ::{% endblock title %}
@@ -47,7 +48,7 @@
                 {% if profile.user.avatar_url and request.event.cfp.request_avatar %}
                     <div class="speaker-avatar">
                         <a href="{{ profile.user.avatar.url }}" data-lightbox="{{ profile.user.avatar.url }}">
-                            <img loading="lazy" width="100%" src="{{ profile.user.avatar.url }}" alt="{% translate "The speaker’s profile picture" %}">
+                            <img loading="lazy" width="100%" src="{{ profile.user.avatar|thumbnail:"default" }}" alt="{% translate "The speaker’s profile picture" %}">
                         </a>
                     </div>
                 {% endif %}

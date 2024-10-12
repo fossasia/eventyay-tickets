@@ -270,7 +270,11 @@ class SpeakerProfileForm(
 
         self.instance.event = self.event
         self.instance.user = self.user
-        super().save(**kwargs)
+        result = super().save(**kwargs)
+
+        if self.user.avatar and "avatar" in self.changed_data:
+            self.user.process_image("avatar", generate_thumbnail=True)
+        return result
 
     class Meta:
         model = SpeakerProfile

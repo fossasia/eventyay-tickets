@@ -1047,9 +1047,13 @@ pl-0 {
 }
 
 .speaker-avatar {
-  width: 120px;
+  width: 200px;
   margin-left: 8px;
   box-shadow: var(--shadow-light);
+  border-radius: 6px;
+  img {
+    border-radius: 6px;
+  }
 }
 
 ::selection {

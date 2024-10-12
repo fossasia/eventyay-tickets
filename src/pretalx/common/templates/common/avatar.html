@@ -8,7 +8,7 @@
         <div class="d-flex align-items-start hide-label">
             {{ form.get_gravatar.as_field_group }}
             <div class="form-image-preview {% if not user.avatar and not user.get_gravatar %}d-none{% endif %}">
-                <a href="{% if user.avatar %}{{ user.avatar.url }}{% endif %}" data-lightbox="{% if user.avatar %}{{ user.avatar.url }}{% endif %}">
+                <a href="{% if user.avatar %}{{ user.avatar|thumbnail:"default" }}{% endif %}" data-lightbox="{% if user.avatar %}{{ user.avatar.url }}{% endif %}">
                     <img loading="lazy"
                          class="avatar"
                          data-gravatar="{{ user.gravatar_parameter }}"

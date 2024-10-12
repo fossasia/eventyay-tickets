@@ -120,6 +120,10 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         help_text=_("If possible, upload an image that is least 120 pixels wide."),
         upload_to=avatar_path,
     )
+    avatar_thumbnail = models.ImageField(null=True, blank=True, upload_to="avatars/")
+    avatar_thumbnail_tiny = models.ImageField(
+        null=True, blank=True, upload_to="avatars/"
+    )
     get_gravatar = models.BooleanField(
         default=False,
         verbose_name=_("Retrieve profile picture via gravatar"),

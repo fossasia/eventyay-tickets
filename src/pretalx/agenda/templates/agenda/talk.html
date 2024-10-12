@@ -7,6 +7,7 @@
 {% load phrases %}
 {% load rich_text %}
 {% load static %}
+{% load thumbnail %}
 
 {% block title %}{{ submission.title }} ::{% endblock title %}
 {% block meta_title %}{{ submission.title }}{% endblock meta_title %}
@@ -153,7 +154,7 @@
                     <a href="{{ speaker.talk_profile.urls.public }}">
                         <div class="avatar-wrapper">
                             {% if speaker.avatar_url and request.event.cfp.request_avatar %}
-                                <img loading="lazy" src="{{ speaker.avatar_url }}" alt="The speaker’s profile picture">
+                                <img loading="lazy" src="{{ speaker.avatar|thumbnail:"default" }}" alt="{% translate "The speaker’s profile picture" %}">
                             {% else %}
                                 <img loading="lazy" src="{{ request.event.urls.speakers }}avatar.svg" alt="The speaker’s profile picture">
                             {% endif %}

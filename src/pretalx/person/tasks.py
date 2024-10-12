@@ -45,11 +45,13 @@ def gravatar_cache(person_id: int):
             tmp_img.write(chunk)
         tmp_img.flush()
 
-        user.avatar.save(f"{user.gravatar_parameter}.jpg", File(tmp_img))
         user.get_gravatar = False
         user.save()
+        user.avatar.save(f"{user.gravatar_parameter}.jpg", File(tmp_img))
 
         logger.info(f"set avatar for user {user.name} to {user.avatar.url}")
+
+    user.process_image("avatar", generate_thumbnail=True)
 
 
 @receiver(periodic_task)
