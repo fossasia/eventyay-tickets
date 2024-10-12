@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-12 00:31+0000\n"
+"POT-Creation-Date: 2024-10-12 00:57+0000\n"
 "PO-Revision-Date: 2023-10-14 10:38+0000\n"
 "Last-Translator: Vangelis Zacharioudakis <sugarvag@gmail.com>\n"
 "Language-Team: none\n"
@@ -217,20 +217,12 @@ msgstr "Το πρόγραμμά μας δεν είναι ακόμα ζωνταν
 
 #: pretalx/agenda/views/schedule.py:228
 msgid ""
-"You're currently not logged in, so your favourited talks can't be saved (but "
-"they are stored locally in your browser)."
+"You're currently not logged in, so your favourited talks will only be stored "
+"locally in your browser."
 msgstr ""
 
 #: pretalx/agenda/views/schedule.py:231
-msgid ""
-"Your favourites could not be loaded from the server, but they are stored "
-"locally in your browser."
-msgstr ""
-
-#: pretalx/agenda/views/schedule.py:234
-msgid ""
-"Your favourites could not be saved on the server, but they are stored "
-"locally in your browser."
+msgid "Your favourites could only be saved locally in your browser."
 msgstr ""
 
 #: pretalx/agenda/views/talk.py:117
@@ -1672,7 +1664,7 @@ msgctxt "category of items"
 msgid "Other"
 msgstr "Λοιπά"
 
-#: pretalx/common/templates/400.html:12
+#: pretalx/common/templates/400.html:18
 msgid ""
 "It looks as if the communication between you and pretalx went wrong in some "
 "way.<br>Please return to the last page and try again!"
@@ -1686,7 +1678,7 @@ msgstr ""
 msgid "Verification failed."
 msgstr "Η επαλήθευση απέτυχε."
 
-#: pretalx/common/templates/403_csrf.html:8
+#: pretalx/common/templates/403_csrf.html:17
 msgid ""
 "We could not verify that this request really was sent by you. For security "
 "reasons, we cannot process it.<br> Please go back to the last page, refresh, "
@@ -5541,11 +5533,17 @@ msgstr "Αποδεκτές προτάσεις"
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:34
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:39
+#: pretalx/orga/templates/orga/review/dashboard.html:162
+#: pretalx/orga/templates/orga/review/dashboard.html:174
+#: pretalx/orga/templates/orga/review/dashboard.html:185
 msgid "Sort (high-low)"
 msgstr ""
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:35
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:40
+#: pretalx/orga/templates/orga/review/dashboard.html:163
+#: pretalx/orga/templates/orga/review/dashboard.html:175
+#: pretalx/orga/templates/orga/review/dashboard.html:186
 msgid "Sort (low-high)"
 msgstr ""
 
@@ -5778,22 +5776,6 @@ msgstr "Εφαρμόστε αλλαγές σε εκκρεμότητα"
 msgid "Average"
 msgstr "Μέση τιμή"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:162
-#: pretalx/orga/templates/orga/review/dashboard.html:174
-#: pretalx/orga/templates/orga/review/dashboard.html:185
-#, fuzzy
-#| msgid "Sort by score (highest first)"
-msgid "Sort (highest first)"
-msgstr "Ταξινόμηση κατά βαθμολογία (πρώτα το υψηλότερο)"
-
-#: pretalx/orga/templates/orga/review/dashboard.html:163
-#: pretalx/orga/templates/orga/review/dashboard.html:175
-#: pretalx/orga/templates/orga/review/dashboard.html:186
-#, fuzzy
-#| msgid "Sort by score (lowest first)"
-msgid "Sort (lowest first)"
-msgstr "Ταξινόμηση κατά βαθμολογία (πρώτα η χαμηλότερη)"
-
 #: pretalx/orga/templates/orga/review/dashboard.html:195
 #: pretalx/orga/templates/orga/submission/list.html:80
 msgid "Type"
@@ -6004,28 +5986,7 @@ msgstr "Αναδημιουργία Εξαγώμενου"
 msgid "API"
 msgstr "API"
 
-#: pretalx/orga/templates/orga/schedule/index.html:15
-#, fuzzy
-#| msgctxt "Schedule/program of the conference"
-#| msgid "Schedule"
-msgid "Schedule"
-msgstr "Πρόγραμμα"
-
-#: pretalx/orga/templates/orga/schedule/import.html:11
-msgid ""
-"Submit an XML file here to release a new schedule, containing exactly the "
-"sessions specified in the XML file. The format is expected to be the same as "
-"the XML export provided."
-msgstr ""
-"Υποβάλετε ένα αρχείο XML εδώ για να κυκλοφορήσει ένα νέο χρονοδιάγραμμα, το "
-"οποίο θα περιέχει ακριβώς τις περιόδους σύνδεσης που καθορίζονται στο αρχείο "
-"XML. Η μορφή αναμένεται να είναι η ίδια με την εξαγωγή XML που παρέχεται."
-
-#: pretalx/orga/templates/orga/schedule/import.html:20
-msgid "Upload"
-msgstr "Μεταφόρτωση"
-
-#: pretalx/orga/templates/orga/schedule/index.html:28
+#: pretalx/orga/templates/orga/schedule/index.html:31
 msgid "New release"
 msgstr "Νέα έκδοση"
 
@@ -6483,11 +6444,6 @@ msgstr[0] "Σημείωση για Πληροφορίες Ομιλητή"
 msgstr[1] "Σημειώσεις για Πληροφορίες Ομιλητή"
 
 #: pretalx/orga/templates/orga/speaker/information_list.html:35
-#, fuzzy
-#| msgid ""
-#| "Add important messages (e.g. “Please bring an HDMI adapter if required.”) "
-#| "or files (e.g. a conference styleguide).<br> They are shown to the "
-#| "selected speakers above the list of their submitted sessions."
 msgid ""
 "Add important messages (e.g. “Please bring an HDMI adapter if required.”) or "
 "files (e.g. a conference styleguide).<br> They are shown to the selected "
@@ -8700,8 +8656,22 @@ msgid "Drag the box to the schedule to create a new break"
 msgstr ""
 
 #, fuzzy
-#~| msgctxt "form"
-#~| msgid "Optional"
+#~| msgid "Sort by score (highest first)"
+#~ msgid "Sort (highest first)"
+#~ msgstr "Ταξινόμηση κατά βαθμολογία (πρώτα το υψηλότερο)"
+
+#, fuzzy
+#~| msgid "Sort by score (lowest first)"
+#~ msgid "Sort (lowest first)"
+#~ msgstr "Ταξινόμηση κατά βαθμολογία (πρώτα η χαμηλότερη)"
+
+#, fuzzy
+#~| msgctxt "Schedule/program of the conference"
+#~| msgid "Schedule"
+#~ msgid "Schedule"
+#~ msgstr "Πρόγραμμα"
+
+#, fuzzy
 #~ msgctxt "form field"
 #~ msgid "Optional"
 #~ msgstr "Προαιρετικό"
@@ -8829,7 +8799,6 @@ msgstr ""
 #~ msgstr "Κατηγορία βαθμολογίας"
 
 #, fuzzy
-#~| msgid "Review phases"
 #~ msgid "Review phase"
 #~ msgstr "Φάσεις επανεξέτασης"
 
@@ -8889,7 +8858,6 @@ msgstr ""
 #~ msgstr "Προαιρετικό"
 
 #, fuzzy
-#~| msgid "Other"
 #~ msgctxt "Type of plugin"
 #~ msgid "Other"
 #~ msgstr "Λοιπά"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-12 00:31+0000\n"
+"POT-Creation-Date: 2024-10-12 00:57+0000\n"
 "PO-Revision-Date: 2024-10-01 09:55+0000\n"
 "Last-Translator: Harrissou Sant-anna <delazj@gmail.com>\n"
 "Language-Team: \n"
@@ -213,26 +213,24 @@ msgid "Our schedule is not live yet."
 msgstr "Notre agenda n'est pas encore visible."
 
 #: pretalx/agenda/views/schedule.py:228
+#, fuzzy
+#| msgid ""
+#| "You're currently not logged in, so your favourited talks can't be saved "
+#| "(but they are stored locally in your browser)."
 msgid ""
-"You're currently not logged in, so your favourited talks can't be saved (but "
-"they are stored locally in your browser)."
+"You're currently not logged in, so your favourited talks will only be stored "
+"locally in your browser."
 msgstr ""
 "Vous n'êtes actuellement pas connecté, vos préférences de présentations "
 "n'ont donc pas pu être sauvegardés (mais ils sont stockés en local dans "
 "votre navigateur)."
 
 #: pretalx/agenda/views/schedule.py:231
-msgid ""
-"Your favourites could not be loaded from the server, but they are stored "
-"locally in your browser."
-msgstr ""
-"Vos favoris n'ont pas pu être chargés depuis le serveur, mais ils sont "
-"stockés en local dans votre navigateur."
-
-#: pretalx/agenda/views/schedule.py:234
-msgid ""
-"Your favourites could not be saved on the server, but they are stored "
-"locally in your browser."
+#, fuzzy
+#| msgid ""
+#| "Your favourites could not be saved on the server, but they are stored "
+#| "locally in your browser."
+msgid "Your favourites could only be saved locally in your browser."
 msgstr ""
 "Vos favoris n'ont pas pu être sauvegardés sur le serveur, mais ils sont "
 "stockés en local dans votre navigateur."
@@ -5510,11 +5508,17 @@ msgstr "Propositions acceptées"
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:34
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:39
+#: pretalx/orga/templates/orga/review/dashboard.html:162
+#: pretalx/orga/templates/orga/review/dashboard.html:174
+#: pretalx/orga/templates/orga/review/dashboard.html:185
 msgid "Sort (high-low)"
 msgstr "Trier (descendant)"
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:35
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:40
+#: pretalx/orga/templates/orga/review/dashboard.html:163
+#: pretalx/orga/templates/orga/review/dashboard.html:175
+#: pretalx/orga/templates/orga/review/dashboard.html:186
 msgid "Sort (low-high)"
 msgstr "Trier (ascendant)"
 
@@ -5737,22 +5741,6 @@ msgstr "Appliquer les changements en attente"
 msgid "Average"
 msgstr "Moyenne"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:162
-#: pretalx/orga/templates/orga/review/dashboard.html:174
-#: pretalx/orga/templates/orga/review/dashboard.html:185
-#, fuzzy
-#| msgid "Sort by score (highest first)"
-msgid "Sort (highest first)"
-msgstr "Trier par score (décroissant)"
-
-#: pretalx/orga/templates/orga/review/dashboard.html:163
-#: pretalx/orga/templates/orga/review/dashboard.html:175
-#: pretalx/orga/templates/orga/review/dashboard.html:186
-#, fuzzy
-#| msgid "Sort by score (lowest first)"
-msgid "Sort (lowest first)"
-msgstr "Trier par score (croissant)"
-
 #: pretalx/orga/templates/orga/review/dashboard.html:195
 #: pretalx/orga/templates/orga/submission/list.html:80
 msgid "Type"
@@ -5959,28 +5947,7 @@ msgstr "Re-générer l'export"
 msgid "API"
 msgstr "API"
 
-#: pretalx/orga/templates/orga/schedule/index.html:15
-#, fuzzy
-#| msgctxt "Schedule/program of the conference"
-#| msgid "Schedule"
-msgid "Schedule"
-msgstr "Planning"
-
-#: pretalx/orga/templates/orga/schedule/import.html:11
-msgid ""
-"Submit an XML file here to release a new schedule, containing exactly the "
-"sessions specified in the XML file. The format is expected to be the same as "
-"the XML export provided."
-msgstr ""
-"Chargez ici un fichier XML pour publier un nouveau planning qui contiendra "
-"uniquement les interventions spécifiées dans le fichier. Le format doit être "
-"le même que celui des exports."
-
-#: pretalx/orga/templates/orga/schedule/import.html:20
-msgid "Upload"
-msgstr "Envoyer"
-
-#: pretalx/orga/templates/orga/schedule/index.html:28
+#: pretalx/orga/templates/orga/schedule/index.html:31
 msgid "New release"
 msgstr "Nouvelle version"
 
@@ -8605,8 +8572,30 @@ msgstr ""
 msgid "Drag the box to the schedule to create a new break"
 msgstr ""
 
+#~ msgid ""
+#~ "Your favourites could not be loaded from the server, but they are stored "
+#~ "locally in your browser."
+#~ msgstr ""
+#~ "Vos favoris n'ont pas pu être chargés depuis le serveur, mais ils sont "
+#~ "stockés en local dans votre navigateur."
+
 #, fuzzy
-#~| msgid "Optional"
+#~| msgid "Sort by score (highest first)"
+#~ msgid "Sort (highest first)"
+#~ msgstr "Trier par score (décroissant)"
+
+#, fuzzy
+#~| msgid "Sort by score (lowest first)"
+#~ msgid "Sort (lowest first)"
+#~ msgstr "Trier par score (croissant)"
+
+#, fuzzy
+#~| msgctxt "Schedule/program of the conference"
+#~| msgid "Schedule"
+#~ msgid "Schedule"
+#~ msgstr "Planning"
+
+#, fuzzy
 #~ msgctxt "form field"
 #~ msgid "Optional"
 #~ msgstr "Optionnel"

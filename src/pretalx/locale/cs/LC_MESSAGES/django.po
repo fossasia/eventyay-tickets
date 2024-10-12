@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-12 00:31+0000\n"
+"POT-Creation-Date: 2024-10-12 00:57+0000\n"
 "PO-Revision-Date: 2024-06-01 09:55+0000\n"
 "Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
@@ -212,20 +212,12 @@ msgstr "Náš program ještě nebyl zveřejněn."
 
 #: pretalx/agenda/views/schedule.py:228
 msgid ""
-"You're currently not logged in, so your favourited talks can't be saved (but "
-"they are stored locally in your browser)."
+"You're currently not logged in, so your favourited talks will only be stored "
+"locally in your browser."
 msgstr ""
 
 #: pretalx/agenda/views/schedule.py:231
-msgid ""
-"Your favourites could not be loaded from the server, but they are stored "
-"locally in your browser."
-msgstr ""
-
-#: pretalx/agenda/views/schedule.py:234
-msgid ""
-"Your favourites could not be saved on the server, but they are stored "
-"locally in your browser."
+msgid "Your favourites could only be saved locally in your browser."
 msgstr ""
 
 #: pretalx/agenda/views/talk.py:117
@@ -1606,7 +1598,7 @@ msgctxt "category of items"
 msgid "Other"
 msgstr "Ostatní"
 
-#: pretalx/common/templates/400.html:12
+#: pretalx/common/templates/400.html:18
 msgid ""
 "It looks as if the communication between you and pretalx went wrong in some "
 "way.<br>Please return to the last page and try again!"
@@ -1619,7 +1611,7 @@ msgstr ""
 msgid "Verification failed."
 msgstr "Ověření se nezdařilo."
 
-#: pretalx/common/templates/403_csrf.html:8
+#: pretalx/common/templates/403_csrf.html:17
 msgid ""
 "We could not verify that this request really was sent by you. For security "
 "reasons, we cannot process it.<br> Please go back to the last page, refresh, "
@@ -5336,11 +5328,17 @@ msgstr "Přijaté přihlášky"
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:34
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:39
+#: pretalx/orga/templates/orga/review/dashboard.html:162
+#: pretalx/orga/templates/orga/review/dashboard.html:174
+#: pretalx/orga/templates/orga/review/dashboard.html:185
 msgid "Sort (high-low)"
 msgstr ""
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:35
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:40
+#: pretalx/orga/templates/orga/review/dashboard.html:163
+#: pretalx/orga/templates/orga/review/dashboard.html:175
+#: pretalx/orga/templates/orga/review/dashboard.html:186
 msgid "Sort (low-high)"
 msgstr ""
 
@@ -5562,22 +5560,6 @@ msgstr "Použít čekající změny"
 msgid "Average"
 msgstr "Průměr"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:162
-#: pretalx/orga/templates/orga/review/dashboard.html:174
-#: pretalx/orga/templates/orga/review/dashboard.html:185
-#, fuzzy
-#| msgid "Sort by score (highest first)"
-msgid "Sort (highest first)"
-msgstr "Seřadit podle skóre (od nejvyššího)"
-
-#: pretalx/orga/templates/orga/review/dashboard.html:163
-#: pretalx/orga/templates/orga/review/dashboard.html:175
-#: pretalx/orga/templates/orga/review/dashboard.html:186
-#, fuzzy
-#| msgid "Sort by score (lowest first)"
-msgid "Sort (lowest first)"
-msgstr "Seřadit podle skóre (od nejnižšího)"
-
 #: pretalx/orga/templates/orga/review/dashboard.html:195
 #: pretalx/orga/templates/orga/submission/list.html:80
 msgid "Type"
@@ -5783,27 +5765,7 @@ msgstr "Znovu vygenerovat export"
 msgid "API"
 msgstr "API"
 
-#: pretalx/orga/templates/orga/schedule/index.html:15
-#, fuzzy
-#| msgctxt "Schedule/program of the conference"
-#| msgid "Schedule"
-msgid "Schedule"
-msgstr "Program"
-
-#: pretalx/orga/templates/orga/schedule/import.html:11
-msgid ""
-"Submit an XML file here to release a new schedule, containing exactly the "
-"sessions specified in the XML file. The format is expected to be the same as "
-"the XML export provided."
-msgstr ""
-"Pro zveřejnění nového programu s přednáškami uvedenými v určeném XML souboru "
-"ho sem nahrajte. Očekávaný formát je stejný jako formát XML exportu."
-
-#: pretalx/orga/templates/orga/schedule/import.html:20
-msgid "Upload"
-msgstr "Nahrát"
-
-#: pretalx/orga/templates/orga/schedule/index.html:28
+#: pretalx/orga/templates/orga/schedule/index.html:31
 msgid "New release"
 msgstr "Zveřejnit"
 
@@ -6233,11 +6195,6 @@ msgstr[1] "Poznámky s informacemi pro přednášející"
 msgstr[2] "Poznámek s informacemi pro přednášející"
 
 #: pretalx/orga/templates/orga/speaker/information_list.html:35
-#, fuzzy
-#| msgid ""
-#| "Add important messages (e.g. “Please bring an HDMI adapter if required.”) "
-#| "or files (e.g. a conference styleguide).<br> They are shown to the "
-#| "selected speakers above the list of their submitted sessions."
 msgid ""
 "Add important messages (e.g. “Please bring an HDMI adapter if required.”) or "
 "files (e.g. a conference styleguide).<br> They are shown to the selected "
@@ -8352,7 +8309,22 @@ msgid "Drag the box to the schedule to create a new break"
 msgstr ""
 
 #, fuzzy
-#~| msgid "Optional"
+#~| msgid "Sort by score (highest first)"
+#~ msgid "Sort (highest first)"
+#~ msgstr "Seřadit podle skóre (od nejvyššího)"
+
+#, fuzzy
+#~| msgid "Sort by score (lowest first)"
+#~ msgid "Sort (lowest first)"
+#~ msgstr "Seřadit podle skóre (od nejnižšího)"
+
+#, fuzzy
+#~| msgctxt "Schedule/program of the conference"
+#~| msgid "Schedule"
+#~ msgid "Schedule"
+#~ msgstr "Program"
+
+#, fuzzy
 #~ msgctxt "form field"
 #~ msgid "Optional"
 #~ msgstr "Nepovinné"

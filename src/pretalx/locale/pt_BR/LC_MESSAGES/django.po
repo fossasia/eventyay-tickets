@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-10-12 00:31+0000\n"
+"POT-Creation-Date: 2024-10-12 00:57+0000\n"
 "PO-Revision-Date: 2021-09-22 18:56+0000\n"
 "Last-Translator: Alberto Leoncio <albertoleoncio@hotmail.com>\n"
 "Language-Team: none\n"
@@ -215,23 +215,23 @@ msgid "Our schedule is not live yet."
 msgstr "Nosso cronograma ainda não está no ar."
 
 #: pretalx/agenda/views/schedule.py:228
+#, fuzzy
+#| msgid ""
+#| "Your favourites could not be loaded from the server, but they are stored "
+#| "locally in your browser."
 msgid ""
-"You're currently not logged in, so your favourited talks can't be saved (but "
-"they are stored locally in your browser)."
-msgstr ""
-
-#: pretalx/agenda/views/schedule.py:231
-msgid ""
-"Your favourites could not be loaded from the server, but they are stored "
+"You're currently not logged in, so your favourited talks will only be stored "
 "locally in your browser."
 msgstr ""
 "Suas favoritas não puderam ser carregadas do servidor, mas elas estão "
 "armazenadas localmente no seu navegador."
 
-#: pretalx/agenda/views/schedule.py:234
-msgid ""
-"Your favourites could not be saved on the server, but they are stored "
-"locally in your browser."
+#: pretalx/agenda/views/schedule.py:231
+#, fuzzy
+#| msgid ""
+#| "Your favourites could not be saved on the server, but they are stored "
+#| "locally in your browser."
+msgid "Your favourites could only be saved locally in your browser."
 msgstr ""
 "Suas favoritas não puderam ser salvas no servidor, mas elas estão "
 "armazenadas localmente no seu navegador."
@@ -1647,7 +1647,7 @@ msgctxt "category of items"
 msgid "Other"
 msgstr "Outro"
 
-#: pretalx/common/templates/400.html:12
+#: pretalx/common/templates/400.html:18
 msgid ""
 "It looks as if the communication between you and pretalx went wrong in some "
 "way.<br>Please return to the last page and try again!"
@@ -1660,7 +1660,7 @@ msgstr ""
 msgid "Verification failed."
 msgstr "A verificação falhou."
 
-#: pretalx/common/templates/403_csrf.html:8
+#: pretalx/common/templates/403_csrf.html:17
 msgid ""
 "We could not verify that this request really was sent by you. For security "
 "reasons, we cannot process it.<br> Please go back to the last page, refresh, "
@@ -5446,11 +5446,17 @@ msgstr "Propostas Aceitas"
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:34
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:39
+#: pretalx/orga/templates/orga/review/dashboard.html:162
+#: pretalx/orga/templates/orga/review/dashboard.html:174
+#: pretalx/orga/templates/orga/review/dashboard.html:185
 msgid "Sort (high-low)"
 msgstr ""
 
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:35
 #: pretalx/orga/templates/orga/organiser/speaker_list.html:40
+#: pretalx/orga/templates/orga/review/dashboard.html:163
+#: pretalx/orga/templates/orga/review/dashboard.html:175
+#: pretalx/orga/templates/orga/review/dashboard.html:186
 msgid "Sort (low-high)"
 msgstr ""
 
@@ -5676,22 +5682,6 @@ msgstr ""
 msgid "Average"
 msgstr "Médio"
 
-#: pretalx/orga/templates/orga/review/dashboard.html:162
-#: pretalx/orga/templates/orga/review/dashboard.html:174
-#: pretalx/orga/templates/orga/review/dashboard.html:185
-#, fuzzy
-#| msgid "Sort by score (highest first)"
-msgid "Sort (highest first)"
-msgstr "Ordenar por pontos (maior primeiro)"
-
-#: pretalx/orga/templates/orga/review/dashboard.html:163
-#: pretalx/orga/templates/orga/review/dashboard.html:175
-#: pretalx/orga/templates/orga/review/dashboard.html:186
-#, fuzzy
-#| msgid "Sort by score (lowest first)"
-msgid "Sort (lowest first)"
-msgstr "Ordenar por pontos (menor primeiro)"
-
 #: pretalx/orga/templates/orga/review/dashboard.html:195
 #: pretalx/orga/templates/orga/submission/list.html:80
 msgid "Type"
@@ -5899,28 +5889,7 @@ msgstr "Regenerar exportação"
 msgid "API"
 msgstr "API"
 
-#: pretalx/orga/templates/orga/schedule/index.html:15
-#, fuzzy
-#| msgctxt "Schedule/program of the conference"
-#| msgid "Schedule"
-msgid "Schedule"
-msgstr "Cronograma"
-
-#: pretalx/orga/templates/orga/schedule/import.html:11
-msgid ""
-"Submit an XML file here to release a new schedule, containing exactly the "
-"sessions specified in the XML file. The format is expected to be the same as "
-"the XML export provided."
-msgstr ""
-"Envie um arquivo XML aqui para liberar uma nova programação, contendo "
-"exatamente as sessões especificadas no arquivo XML. Espera-se que o formato "
-"seja o mesmo da exportação XML fornecida."
-
-#: pretalx/orga/templates/orga/schedule/import.html:20
-msgid "Upload"
-msgstr "Upload"
-
-#: pretalx/orga/templates/orga/schedule/index.html:28
+#: pretalx/orga/templates/orga/schedule/index.html:31
 msgid "New release"
 msgstr "Novo envio"
 
@@ -6366,11 +6335,6 @@ msgstr[0] "Nota de Informação do Palestrante"
 msgstr[1] "Notas de Informações dos Palestrantes"
 
 #: pretalx/orga/templates/orga/speaker/information_list.html:35
-#, fuzzy
-#| msgid ""
-#| "Add important messages (e.g. “Please bring an HDMI adapter if required.”) "
-#| "or files (e.g. a conference styleguide).<br> They are shown to the "
-#| "selected speakers above the list of their submitted sessions."
 msgid ""
 "Add important messages (e.g. “Please bring an HDMI adapter if required.”) or "
 "files (e.g. a conference styleguide).<br> They are shown to the selected "
@@ -8516,6 +8480,22 @@ msgid "Hidden rooms"
 msgstr ""
 
 #, fuzzy
+#~| msgid "Sort by score (highest first)"
+#~ msgid "Sort (highest first)"
+#~ msgstr "Ordenar por pontos (maior primeiro)"
+
+#, fuzzy
+#~| msgid "Sort by score (lowest first)"
+#~ msgid "Sort (lowest first)"
+#~ msgstr "Ordenar por pontos (menor primeiro)"
+
+#, fuzzy
+#~| msgctxt "Schedule/program of the conference"
+#~| msgid "Schedule"
+#~ msgid "Schedule"
+#~ msgstr "Cronograma"
+
+#, fuzzy
 #~ msgctxt "form field"
 #~ msgid "Optional"
 #~ msgstr "Opcional"
@@ -8645,7 +8625,6 @@ msgstr ""
 #~ msgstr "Categorias de pontuação"
 
 #, fuzzy
-#~| msgid "Review phases"
 #~ msgid "Review phase"
 #~ msgstr "Revisar fases"
 

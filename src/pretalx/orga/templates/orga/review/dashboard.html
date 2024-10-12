@@ -159,8 +159,8 @@
                                 {% else %}
                                     {% translate "Average" %}
                                 {% endif %}
-                                <a href="{% querystring sort="score" %}"><i class="fa fa-caret-down" title="{% translate "Sort (highest first)" %}"></i></a>
-                                <a href="{% querystring sort="-score" %}"><i class="fa fa-caret-up" title="{% translate "Sort (lowest first)" %}"></i></a>
+                                <a href="{% querystring sort="score" %}"><i class="fa fa-caret-down" title="{% translate "Sort (high-low)" %}"></i></a>
+                                <a href="{% querystring sort="-score" %}"><i class="fa fa-caret-up" title="{% translate "Sort (low-high)" %}"></i></a>
                             </th>
                             {% if independent_categories %}
                                 {% for category in independent_categories %}
@@ -171,8 +171,8 @@
                         {% if can_review or submissions_reviewed %}
                             <th class="col-score-user numeric">
                                 {% translate "Your score" %}
-                                <a href="{% querystring sort="my_score" %}"><i class="fa fa-caret-down" title="{% translate "Sort (highest first)" %}"></i></a>
-                                <a href="{% querystring sort="-my_score" %}"><i class="fa fa-caret-up" title="{% translate "Sort (lowest first)" %}"></i></a>
+                                <a href="{% querystring sort="my_score" %}"><i class="fa fa-caret-down" title="{% translate "Sort (high-low)" %}"></i></a>
+                                <a href="{% querystring sort="-my_score" %}"><i class="fa fa-caret-up" title="{% translate "Sort (low-high)" %}"></i></a>
                             </th>
                             {% if independent_categories and not can_see_all_reviews %}
                                 {% for category in independent_categories %}
@@ -182,8 +182,8 @@
                         {% endif %}
                         <th class="col-review-count numeric">
                             {% translate "Reviews" %}
-                            <a href="{% querystring sort="count" %}"><i class="fa fa-caret-down" title="{% translate "Sort (highest first)" %}"></i></a>
-                            <a href="{% querystring sort="-count" %}"><i class="fa fa-caret-up" title="{% translate "Sort (lowest first)" %}"></i></a>
+                            <a href="{% querystring sort="count" %}"><i class="fa fa-caret-down" title="{% translate "Sort (high-low)" %}"></i></a>
+                            <a href="{% querystring sort="-count" %}"><i class="fa fa-caret-up" title="{% translate "Sort (low-high)" %}"></i></a>
                         </th>
                         <th>{% translate "Title" %}</th>
                         {% if can_view_speakers %}<th class="col-speakers">{{ phrases.schedule.speakers }}</th>{% endif %}
