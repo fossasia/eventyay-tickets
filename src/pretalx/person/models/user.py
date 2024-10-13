@@ -3,6 +3,7 @@ import random
 import uuid
 from contextlib import suppress
 from hashlib import md5
+from pathlib import Path
 from urllib.parse import urljoin
 
 from django.conf import settings
@@ -30,7 +31,8 @@ from pretalx.common.urls import build_absolute_uri
 
 def avatar_path(instance, filename):
     if instance.code:
-        filename = f"{instance.code}"
+        extension = Path(filename).suffix
+        filename = f"{instance.code}{extension}"
     return f"avatars/{path_with_hash(filename)}"
 
 
