@@ -248,7 +248,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         css_text = self.cleaned_data["custom_css_text"]
         for image_field in ("logo", "header_image"):
             if image_field in self.changed_data:
-                self.process_image(image_field)
+                self.instance.process_image(image_field)
         if css_text:
             self.instance.custom_css.save(
                 self.instance.slug + ".css", ContentFile(css_text)
