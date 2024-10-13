@@ -19,6 +19,7 @@
 
 {% block content %}
     <form method="post">
+        {% csrf_token %}
         <div class="col-md-8 labelless-password-input-form">
             <h2>{{ phrases.base.password_reset_heading }}</h2>
             <p>{{ phrases.base.password_reset_nearly_done }}</p>
