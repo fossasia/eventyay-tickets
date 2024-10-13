@@ -29,6 +29,8 @@ from pretalx.common.urls import build_absolute_uri
 
 
 def avatar_path(instance, filename):
+    if instance.code:
+        filename = f"{instance.code}"
     return f"avatars/{path_with_hash(filename)}"
 
 
