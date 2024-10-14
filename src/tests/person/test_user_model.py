@@ -90,8 +90,20 @@ def test_shred_user(user):
     assert User.objects.count() == 0
 
 
-def test_avatar_path():
-    assert avatar_path(None, "foo").startswith("avatars/foo")
+@pytest.mark.parametrize(
+    "code,filename,expected_start,expected_end",
+    (
+        ("ABCDEF", "foo.jpg", "avatars/ABCDEF", ".jpg"),
+        (None, "foo.jpg", "avatars/foo", ".jpg"),
+        ("ABCDEF", "foo.jpeg", "avatars/ABCDEF", ".jpeg"),
+    ),
+)
+def test_avatar_path(code, filename, expected_start, expected_end):
+    user = User()
+    user.code = code
+    ap = avatar_path(user, filename)
+    assert ap.startswith(expected_start)
+    assert ap.endswith(expected_end)
 
 
 @pytest.mark.django_db
