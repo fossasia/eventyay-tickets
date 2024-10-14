@@ -53,6 +53,8 @@
         </div>
         <div role="tabpanel" id="tabpanel-display" aria-labelledby="tab-display" tabindex="0" aria-hidden="true">
             {{ form.primary_color.as_field_group }}
+            {{ form.logo.as_field_group }}
+            {{ form.header_image.as_field_group }}
             <div id="csswrap">
                 {{ form.custom_css.as_field_group }}
                 <button class="btn btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseCSSBox" aria-expanded="false" aria-controls="collapseCSSBox">
@@ -62,8 +64,6 @@
             <div class="collapse" id="collapseCSSBox">
                 {{ form.custom_css_text.as_field_group }}
             </div>
-            {{ form.logo.as_field_group }}
-            {{ form.header_image.as_field_group }}
             <div {% if request.event.primary_color %}style="--color: {{ request.event.primary_color }}"{% endif %} class="colorpicker-update">
                 {{ form.header_pattern.as_field_group }}
             </div>
