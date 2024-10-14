@@ -564,23 +564,23 @@ class Event(EventMixin, LoggedModel):
             if self.settings.email_vendor == 'sendgrid':
                 return SendGridEmail(api_key=self.settings.send_grid_api_key)
             return CustomSMTPBackend(host=self.settings.smtp_host,
-                                    port=self.settings.smtp_port,
-                                    username=self.settings.smtp_username,
-                                    password=self.settings.smtp_password,
-                                    use_tls=self.settings.smtp_use_tls,
-                                    use_ssl=self.settings.smtp_use_ssl,
-                                    fail_silently=False, timeout=timeout)
+                                     port=self.settings.smtp_port,
+                                     username=self.settings.smtp_username,
+                                     password=self.settings.smtp_password,
+                                     use_tls=self.settings.smtp_use_tls,
+                                     use_ssl=self.settings.smtp_use_ssl,
+                                     fail_silently=False, timeout=timeout)
         elif gs.settings.email_vendor is not None:
             if gs.settings.email_vendor == 'sendgrid':
                 return SendGridEmail(api_key=gs.settings.send_grid_api_key)
             else:
                 CustomSMTPBackend(host=gs.settings.smtp_host,
-                                    port=gs.settings.smtp_port,
-                                    username=gs.settings.smtp_username,
-                                    password=gs.settings.smtp_password,
-                                    use_tls=gs.settings.smtp_use_tls,
-                                    use_ssl=gs.settings.smtp_use_ssl,
-                                    fail_silently=False, timeout=timeout)
+                                  port=gs.settings.smtp_port,
+                                  username=gs.settings.smtp_username,
+                                  password=gs.settings.smtp_password,
+                                  use_tls=gs.settings.smtp_use_tls,
+                                  use_ssl=gs.settings.smtp_use_ssl,
+                                  fail_silently=False, timeout=timeout)
         else:
             return get_connection(fail_silently=False)
 
@@ -711,7 +711,7 @@ class Event(EventMixin, LoggedModel):
         for q in self.questions.filter(dependency_question__isnull=False):
             q.dependency_question = question_map[q.dependency_question_id]
             q.save(update_fields=['dependency_question'])
-        
+
         # Copy event footer link
         for footerLink in EventFooterLinkModel.objects.filter(event=other):
             footerLink.pk = None
@@ -1490,9 +1490,9 @@ class EventFooterLinkModel(models.Model):
     """
     FooterLink model - support show link for event's footer
     """
-    event = models.ForeignKey('Event', 
-                                on_delete=models.CASCADE, 
-                                related_name='footer_links')
+    event = models.ForeignKey('Event',
+                              on_delete=models.CASCADE,
+                              related_name='footer_links')
     label = I18nCharField(
         max_length=255,
         verbose_name=_("Link's text"),

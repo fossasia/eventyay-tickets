@@ -12,8 +12,8 @@ from django_scopes import scopes_disabled
 
 from pretix.base.i18n import language
 from pretix.base.models import (
-    CartPosition, InvoiceAddress, ItemAddOn, OrderPosition, Question,
-    QuestionAnswer, QuestionOption, Customer,
+    CartPosition, Customer, InvoiceAddress, ItemAddOn, OrderPosition, Question,
+    QuestionAnswer, QuestionOption,
 )
 from pretix.base.services.cart import get_fees
 from pretix.helpers.cookies import set_cookie_without_samesite

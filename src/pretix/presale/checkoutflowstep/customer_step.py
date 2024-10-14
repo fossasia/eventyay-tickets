@@ -5,7 +5,9 @@ from django.utils.translation import gettext_lazy as _, pgettext_lazy
 
 from pretix.base.models import Customer
 from pretix.helpers.http import redirect_to_url
-from pretix.presale.forms.customer_forms import AuthenticationForm, RegistrationForm
+from pretix.presale.forms.customer_forms import (
+    AuthenticationForm, RegistrationForm,
+)
 from pretix.presale.utils import customer_login
 from pretix.presale.views import CartMixin
 from pretix.presale.views.questions import QuestionsViewMixin

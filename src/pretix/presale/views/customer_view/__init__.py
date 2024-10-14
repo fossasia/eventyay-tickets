@@ -1,2 +1,6 @@
-from .authentication_view import (LoginView, LogoutView, RegistrationView)
-from .password_view import (ResetPasswordView, SetPasswordView, ChangePasswordView)
+from .authentication_view import (  # NOQA: F401
+    LoginView, LogoutView, RegistrationView,
+)
+from .password_view import (  # NOQA: F401
+    ChangePasswordView, ResetPasswordView, SetPasswordView,
+)

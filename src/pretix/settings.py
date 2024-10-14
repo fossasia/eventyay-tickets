@@ -2,11 +2,10 @@ import configparser
 import logging
 import os
 import sys
-import importlib_metadata
-
 from urllib.parse import urlparse
-from .settings_helpers import build_db_tls_config, build_redis_tls_config
+
 import django.conf.locale
+import importlib_metadata
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from kombu import Queue
@@ -14,7 +13,7 @@ from pycountry import currencies
 
 from . import __version__
 from .helpers.config import EnvOrParserConfig
-
+from .settings_helpers import build_db_tls_config, build_redis_tls_config
 
 from django.contrib.messages import constants as messages  # NOQA
 from django.utils.translation import gettext_lazy as _  # NOQA

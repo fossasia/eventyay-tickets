@@ -58,7 +58,7 @@ def compile_scss(object, file="main.scss", fonts=True):
     if object.settings.get('theme_color_background'):
         sassrules.append('$body-bg: {};'.format(object.settings.get('theme_color_background')))
     if object.settings.get('hover_button_color'):
-       sassrules.append('$hover-button-color: {};'.format(object.settings.get('hover_button_color')))
+        sassrules.append('$hover-button-color: {};'.format(object.settings.get('hover_button_color')))
     if not object.settings.get('theme_round_borders'):
         sassrules.append('$border-radius-base: 0;')
         sassrules.append('$border-radius-large: 0;')

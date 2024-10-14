@@ -1,5 +1,3 @@
-import string
-import uuid
 import secrets
 
 from django.conf import settings

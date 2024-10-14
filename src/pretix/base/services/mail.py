@@ -30,7 +30,8 @@ from i18nfield.strings import LazyI18nString
 from pretix.base.email import ClassicMailRenderer
 from pretix.base.i18n import language
 from pretix.base.models import (
-    CachedFile, Event, Invoice, InvoiceAddress, Order, OrderPosition, User, Organizer, Customer,
+    CachedFile, Customer, Event, Invoice, InvoiceAddress, Order, OrderPosition,
+    Organizer, User,
 )
 from pretix.base.services.invoices import invoice_pdf_task
 from pretix.base.services.tasks import TransactionAwareTask
@@ -50,7 +51,7 @@ class TolerantDict(dict):
         return key
 
 
-class SendMailException(Exception):
+class SendMailException(Exception):  # NOQA: N818
     pass
 
 
@@ -132,10 +133,10 @@ def mail(email: Union[str, Sequence[str]], subject: str, template: Union[str, La
         content_plain = body_plain = render_mail(template, context)
         subject = str(subject).format_map(TolerantDict(context))
         sender = (
-                sender or
-                (event.settings.get('mail_from') if event else settings.MAIL_FROM) or
-                (organizer.settings.get('mail_from') if organizer else settings.MAIL_FROM) or
-                settings.MAIL_FROM
+            sender or
+            (event.settings.get('mail_from') if event else settings.MAIL_FROM) or
+            (organizer.settings.get('mail_from') if organizer else settings.MAIL_FROM) or
+            settings.MAIL_FROM
         )
         if event:
             sender_name = event.settings.mail_from_name or str(event.name)
@@ -312,15 +313,15 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
         with scopes_disabled():
             event = Event.objects.get(id=event)
         backend = event.get_mail_backend()
-        cm = lambda: scope(organizer=event.organizer)  # noqa
+        def cm(): return scope(organizer=event.organizer)  # noqa
     elif organizer:
         with scopes_disabled():
             organizer = Organizer.objects.get(id=organizer)
         backend = organizer.get_mail_backend()
-        cm = lambda: scope(organizer=organizer)  # noqa
+        def cm(): return scope(organizer=organizer)  # noqa
     else:
         backend = get_connection(fail_silently=False)
-        cm = lambda: scopes_disabled()  # noqa
+        def cm(): return scopes_disabled()  # noqa
     with cm():
         if customer:
             customer = Customer.objects.get(pk=customer)

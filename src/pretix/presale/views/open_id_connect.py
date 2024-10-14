@@ -7,7 +7,7 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 from Crypto.PublicKey import RSA
 from django.db import transaction
-from django.http import Http404, HttpResponse, JsonResponse, HttpRequest
+from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.utils.crypto import get_random_string
 from django.utils.decorators import method_decorator
@@ -27,7 +27,9 @@ from pretix.multidomain.middlewares import CsrfViewMiddleware
 from pretix.multidomain.urlreverse import build_absolute_uri
 from pretix.presale.forms.customer_forms import AuthenticationForm
 from pretix.presale.utils import customer_login, get_customer_auth_time
-from pretix.presale.views.customer_view.authentication_view import set_cookie_after_logged_in
+from pretix.presale.views.customer_view.authentication_view import (
+    set_cookie_after_logged_in,
+)
 
 RESPONSE_TYPES_SUPPORTED = ("code", "id_token token", "id_token", "code id_token", "code id_token token", "code token")
 
