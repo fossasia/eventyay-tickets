@@ -39,9 +39,9 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
     @cached_property
     def address_asked(self):
         return (
-                self.request.event.settings.invoice_address_asked
-                and (not self.request.event.settings.invoice_address_not_asked_free or not get_cart_is_free(
-            self.request))
+            self.request.event.settings.invoice_address_asked
+            and (not self.request.event.settings.invoice_address_not_asked_free or not get_cart_is_free(
+                self.request))
         )
 
     def get_context_data(self, **kwargs):

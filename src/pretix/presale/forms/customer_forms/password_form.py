@@ -70,8 +70,7 @@ class ResetPasswordForm(forms.Form):
         if 'email' not in self.cleaned_data:
             return
         try:
-            self.customer = self.request.organizer.customers.get(email=self.cleaned_data['email'].lower()
-                                                                 , provider__isnull=True)
+            self.customer = self.request.organizer.customers.get(email=self.cleaned_data['email'].lower(), provider__isnull=True)
             return self.customer.email
         except Customer.DoesNotExist:
             raise forms.ValidationError(self.error_messages['unknown'], code='unknown')

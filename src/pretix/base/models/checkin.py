@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import Exists, F, Max, OuterRef, Q, Subquery, JSONField
+from django.db.models import Exists, F, JSONField, Max, OuterRef, Q, Subquery
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from django_scopes import ScopedManager, scopes_disabled
@@ -185,7 +185,7 @@ class CheckinList(LoggedModel):
             return
 
         if operator in ('or', 'and') and seen_nonbool:
-            raise ValidationError(f'You cannot use OR/AND logic on a level below a comparison operator.')
+            raise ValidationError('You cannot use OR/AND logic on a level below a comparison operator.')
 
         for v in values:
             cls.validate_rules(v, seen_nonbool=seen_nonbool or operator not in ('or', 'and'), depth=depth + 1)

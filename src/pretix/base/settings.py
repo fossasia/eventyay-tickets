@@ -7,8 +7,11 @@ from django.db.models import Model
 from django.utils.translation import gettext_lazy as _
 from hierarkey.models import GlobalSettingsBase, Hierarkey
 from i18nfield.strings import LazyI18nString
-from pretix.base.configurations import (DEFAULT_SETTINGS, CSS_SETTINGS, TITLE_GROUP, NAME_SALUTION, NAME_SCHEMES,
-                                        COUNTRIES_WITH_STATE, LazyI18nStringListBase)
+
+from pretix.base.configurations import (
+    COUNTRIES_WITH_STATE, CSS_SETTINGS, DEFAULT_SETTINGS, NAME_SALUTION,
+    NAME_SCHEMES, TITLE_GROUP, LazyI18nStringListBase,
+)
 from pretix.base.reldate import RelativeDateWrapper
 
 

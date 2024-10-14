@@ -28,13 +28,11 @@ from pretix.base.services.mail import mail
 from pretix.base.settings import PERSON_NAME_SCHEMES
 from pretix.multidomain.models import KnownDomain
 from pretix.multidomain.urlreverse import build_absolute_uri, eventreverse
-from pretix.presale.forms.customer import TokenGenerator
 from pretix.presale.forms.customer_forms import (
-    AuthenticationForm, ChangeInfoForm, ChangePasswordForm, RegistrationForm,
-    ResetPasswordForm, SetPasswordForm,
+    AuthenticationForm, ChangeInfoForm,
 )
 from pretix.presale.utils import (
-    customer_login, customer_logout, update_customer_session_auth_hash,
+    customer_login, update_customer_session_auth_hash,
 )
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
@@ -273,9 +271,9 @@ class SSOLoginView(RedirectBackMixin, View):
         if popup_origin:
             popup_origin_parsed = urlparse(popup_origin)
             untrusted = (
-                    popup_origin_parsed.hostname != urlparse(settings.SITE_URL).hostname and
-                    not KnownDomain.objects.filter(domainname=popup_origin_parsed.hostname,
-                                                   organizer=self.request.organizer.pk).exists()
+                popup_origin_parsed.hostname != urlparse(settings.SITE_URL).hostname and
+                not KnownDomain.objects.filter(domainname=popup_origin_parsed.hostname,
+                                               organizer=self.request.organizer.pk).exists()
             )
             if untrusted:
                 popup_origin = None

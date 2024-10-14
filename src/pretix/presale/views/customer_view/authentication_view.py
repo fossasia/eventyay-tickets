@@ -1,24 +1,24 @@
 from django.conf import settings
+from django.contrib import messages
+from django.db import transaction
+from django.http import Http404, HttpResponseRedirect
+from django.utils.decorators import method_decorator
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic import FormView, View
 
 from pretix.helpers.cookies import set_cookie_without_samesite
 from pretix.helpers.jwt_generate import generate_customer_sso_token
 from pretix.multidomain.middlewares import get_cookie_domain
-from pretix.presale.views.customer import RedirectBackMixin
-from django.views.generic import FormView, View
-from pretix.presale.forms.customer_forms import (AuthenticationForm, RegistrationForm)
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.debug import sensitive_post_parameters
-from django.views.decorators.cache import never_cache
-from django.http import Http404, HttpResponseRedirect
 from pretix.multidomain.urlreverse import eventreverse
-from pretix.presale.utils import (
-    customer_login, customer_logout
+from pretix.presale.forms.customer_forms import (
+    AuthenticationForm, RegistrationForm,
 )
-from django.utils.http import url_has_allowed_host_and_scheme
-from django.db import transaction
-from django.contrib import messages
-from django.utils.translation import gettext_lazy as _
+from pretix.presale.utils import customer_login, customer_logout
+from pretix.presale.views.customer import RedirectBackMixin
 
 
 class LoginView(RedirectBackMixin, FormView):
