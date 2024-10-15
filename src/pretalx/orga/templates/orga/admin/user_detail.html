@@ -10,6 +10,7 @@
 
 {% block scripts %}
   {% compress js %}
+    <script defer src="{% static "common/js/copy.js" %}"></script>
     <script defer src="{% static "common/js/lightbox.js" %}"></script>
   {% endcompress %}
 {% endblock scripts %}
