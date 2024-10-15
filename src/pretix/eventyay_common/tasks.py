@@ -10,26 +10,30 @@ from ..helpers.jwt_generate import generate_sso_token
 logger = logging.getLogger(__name__)
 
 
-@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
+@shared_task(
+    bind=True, max_retries=5, default_retry_delay=60
+)  # Retries up to 5 times with a 60-second delay
 def send_organizer_webhook(self, user_id, organizer):
     # Define the payload to send to the webhook
     payload = {
-        'name': organizer.get('name'),
-        'slug': organizer.get('slug'),
-        'action': organizer.get('action')
+        "name": organizer.get("name"),
+        "slug": organizer.get("slug"),
+        "action": organizer.get("action"),
     }
     # Define the headers, including the Authorization header with the Bearer token
     headers = get_header_token(user_id)
 
     try:
         # Send the POST request with the payload and the headers
-        response = requests.post(settings.TALK_HOSTNAME + '/webhook/organiser/',
-                                 json=payload,
-                                 headers=headers)
+        response = requests.post(
+            settings.TALK_HOSTNAME + "/webhook/organiser/",
+            json=payload,
+            headers=headers,
+        )
         response.raise_for_status()  # Raise exception for bad status codes
     except requests.RequestException as e:
         # Log any errors that occur
-        logger.error('Error sending webhook to talk component: %s', e)
+        logger.error("Error sending webhook to talk component: %s", e)
         # Retry the task if an exception occurs (with exponential backoff by default)
         try:
             self.retry(exc=e)
@@ -37,31 +41,33 @@ def send_organizer_webhook(self, user_id, organizer):
             logger.error("Max retries exceeded for sending organizer webhook.")
 
 
-@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
+@shared_task(
+    bind=True, max_retries=5, default_retry_delay=60
+)  # Retries up to 5 times with a 60-second delay
 def send_team_webhook(self, user_id, team):
     # Define the payload to send to the webhook
     payload = {
-        'organiser_slug': team.get('organiser_slug'),
-        'name': team.get('name'),
-        'old_name': team.get('old_name'),
-        'all_events': team.get('all_events'),
-        'can_create_events': team.get('can_create_events'),
-        'can_change_teams': team.get('can_change_teams'),
-        'can_change_organiser_settings': team.get('can_change_organizer_settings'),
-        'can_change_event_settings': team.get('can_change_event_settings'),
-        'action': team.get('action')
+        "organiser_slug": team.get("organiser_slug"),
+        "name": team.get("name"),
+        "old_name": team.get("old_name"),
+        "all_events": team.get("all_events"),
+        "can_create_events": team.get("can_create_events"),
+        "can_change_teams": team.get("can_change_teams"),
+        "can_change_organiser_settings": team.get("can_change_organizer_settings"),
+        "can_change_event_settings": team.get("can_change_event_settings"),
+        "action": team.get("action"),
     }
     headers = get_header_token(user_id)
 
     try:
         # Send the POST request with the payload and the headers
-        response = requests.post(settings.TALK_HOSTNAME + '/webhook/team/',
-                                 json=payload,
-                                 headers=headers)
+        response = requests.post(
+            settings.TALK_HOSTNAME + "/webhook/team/", json=payload, headers=headers
+        )
         response.raise_for_status()  # Raise exception for bad status codes
     except requests.RequestException as e:
         # Log any errors that occur
-        logger.error('Error sending webhook to talk component: %s', e)
+        logger.error("Error sending webhook to talk component: %s", e)
         # Retry the task if an exception occurs (with exponential backoff by default)
         try:
             self.retry(exc=e)
@@ -69,81 +75,86 @@ def send_team_webhook(self, user_id, team):
             logger.error("Max retries exceeded for sending organizer webhook.")
 
 
-@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
+@shared_task(
+    bind=True, max_retries=5, default_retry_delay=60
+)  # Retries up to 5 times with a 60-second delay
 def send_event_webhook(self, user_id, event, action):
     # Define the payload to send to the webhook
     user_model = get_user_model()
     user = user_model.objects.get(id=user_id)
     payload = {
-        'organiser_slug': event.get('organiser_slug'),
-        'name': event.get('name'),
-        'slug': event.get('slug'),
-        'date_from': event.get('date_from'),
-        'date_to': event.get('date_to'),
-        'timezone': event.get('timezone'),
-        'locale': event.get('locale'),
-        'locales': event.get('locales'),
-        'user_email': user.email,
-        'action': action
+        "organiser_slug": event.get("organiser_slug"),
+        "name": event.get("name"),
+        "slug": event.get("slug"),
+        "date_from": event.get("date_from"),
+        "date_to": event.get("date_to"),
+        "timezone": event.get("timezone"),
+        "locale": event.get("locale"),
+        "locales": event.get("locales"),
+        "user_email": user.email,
+        "action": action,
     }
     headers = get_header_token(user_id)
 
     try:
         # Send the POST request with the payload and the headers
-        response = requests.post(settings.TALK_HOSTNAME + '/webhook/event/',
-                                 json=payload,
-                                 headers=headers)
+        response = requests.post(
+            settings.TALK_HOSTNAME + "/webhook/event/", json=payload, headers=headers
+        )
         response.raise_for_status()  # Raise exception for bad status codes
     except requests.RequestException as e:
         # Log any errors that occur
-        logger.error('Error sending webhook to talk component: %s', e)
+        logger.error("Error sending webhook to talk component: %s", e)
         # Retry the task if an exception occurs (with exponential backoff by default)
         try:
             self.retry(exc=e)
         except self.MaxRetriesExceededError:
             logger.error("Max retries exceeded for sending organizer webhook.")
 
-@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
-def create_world(self, is_video_create, data):
+
+@shared_task(
+    bind=True, max_retries=5, default_retry_delay=60
+)  # Retries up to 5 times with a 60-second delay
+def create_world(self, is_video_creation, data):
     """
     Create video system for the event
     @self: task instance
-    @param is_video_create: allow user to add video system
+    @param is_video_creation: allow user to add video system
     @param data: event's data
     """
     event_slug = data.get("id")
     title = data.get("title")
     event_timezone = data.get("timezone")
     locale = data.get("locale")
-    token =  data.get("token")
+    token = data.get("token")
     has_permission = data.get("has_permission")
 
     payload = {
-        'id': event_slug,
-        'title': title,
-        'timezone': event_timezone,
-        'locale': locale,
+        "id": event_slug,
+        "title": title,
+        "timezone": event_timezone,
+        "locale": locale,
     }
 
-    headers = {
-        "Authorization": "Bearer " + token
-    }
+    headers = {"Authorization": "Bearer " + token}
 
     # Check if user choose add video option and has permission to create video system ('can_create_events' permission)
-    if is_video_create and has_permission:
+    if is_video_creation and has_permission:
         try:
-             requests.post(
+            requests.post(
                 "{}/api/v1/create-world/".format(settings.VIDEO_SERVER_HOSTNAME),
-                json= payload,
-                headers= headers,
+                json=payload,
+                headers=headers,
             )
-        except requests.RequestException as e:
-            # Log any errors that occur
-            logger.error('An error occurred while requesting to create a video: %s', e)
-            try:
-                self.retry(exc=e)
-            except self.MaxRetriesExceededError:
-                logger.error("Max retries exceeded for sending organizer webhook.")
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f"Connection error: {e}")
+            raise self.retry(exc=e)
+        except requests.exceptions.Timeout as e:
+            logger.error(f"Request timed out: {e}")
+            raise self.retry(exc=e)
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Request failed: {e}")
+            raise self.retry(exc=e)
 
 
 def get_header_token(user_id):
@@ -155,7 +166,7 @@ def get_header_token(user_id):
 
     # Define the headers, including the Authorization header with the Bearer token
     headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json',
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
     }
     return headers
