@@ -8,8 +8,9 @@ from django.core import mail
 from django.utils.timezone import now
 from django_countries.fields import Country
 from django_scopes import scopes_disabled
+
+from tests.api.test_orders import MockedCharge
 from tests.base import SoupTest
-from tests.plugins.stripe.test_provider import MockedCharge
 
 from pretix.base.models import (
     Event, GiftCard, InvoiceAddress, Item, Order, OrderFee, OrderPayment,
