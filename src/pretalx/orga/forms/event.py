@@ -13,7 +13,7 @@ from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.fields import I18nFormField, I18nTextarea
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
-from pretalx.common.forms.fields import ImageField
+from pretalx.common.forms.fields import ColorField, ImageField
 from pretalx.common.forms.mixins import (
     HierarkeyMixin,
     I18nHelpText,
@@ -181,7 +181,6 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
             self.fields["slug"].help_text = _(
                 "Please contact your administrator if you need to change the short name of your event."
             )
-        self.fields["primary_color"].widget.attrs["class"] = "colorpickerfield"
         self.fields["date_to"].help_text = _(
             "Any sessions you have scheduled already will be moved if you change the event dates. You will have to release a new schedule version to notify all speakers."
         )
@@ -358,6 +357,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         field_classes = {
             "logo": ImageField,
             "header_image": ImageField,
+            "primary_color": ColorField,
         }
         widgets = {
             "date_from": HtmlDateInput(attrs={"data-date-before": "#id_date_to"}),

@@ -2,6 +2,7 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nModelForm
 
+from pretalx.common.forms.fields import ColorField
 from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
 from pretalx.submission.models import Tag
 
@@ -10,7 +11,6 @@ class TagForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def __init__(self, *args, event=None, **kwargs):
         self.event = event
         super().__init__(*args, **kwargs)
-        self.fields["color"].widget.attrs["class"] = "colorpickerfield"
 
     def clean_tag(self):
         tag = self.cleaned_data["tag"]
@@ -24,3 +24,6 @@ class TagForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     class Meta:
         model = Tag
         fields = ("tag", "description", "color", "public")
+        field_classes = {
+            "color": ColorField,
+        }
