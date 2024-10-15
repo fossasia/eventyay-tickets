@@ -7,7 +7,7 @@ from django_scopes import scopes_disabled
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.forms.fields import ImageField
+from pretalx.common.forms.fields import ColorField, ImageField
 from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
 from pretalx.common.forms.renderers import InlineFormRenderer
 from pretalx.common.forms.widgets import (
@@ -267,11 +267,9 @@ class EventWizardTimelineForm(forms.ModelForm):
 
 
 class EventWizardDisplayForm(forms.Form):
-    primary_color = forms.CharField(
-        max_length=7,
+    primary_color = ColorField(
         label=Event._meta.get_field("primary_color").verbose_name,
         help_text=Event._meta.get_field("primary_color").help_text,
-        required=False,
     )
     header_pattern = forms.ChoiceField(
         label=phrases.orga.event_header_pattern_label,
@@ -287,7 +285,6 @@ class EventWizardDisplayForm(forms.Form):
         self.fields["logo"] = ImageField(
             required=False, label=logo.verbose_name, help_text=logo.help_text
         )
-        self.fields["primary_color"].widget.attrs["class"] = "colorpickerfield"
 
 
 class EventWizardCopyForm(forms.Form):

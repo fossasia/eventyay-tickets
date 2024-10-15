@@ -138,7 +138,8 @@ textarea {
     border-color: var(--color-success);
   }
 
-  &[aria-invalid] {
+  &[aria-invalid],
+  &:user-invalid {
     border-color: var(--color-danger);
   }
 

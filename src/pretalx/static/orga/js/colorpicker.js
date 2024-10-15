@@ -95,7 +95,7 @@ const contrast = (rgb1, rgb2) => {
 }
 
 onReady(() => {
-    document.querySelectorAll(".colorpickerfield").forEach((field) => {
+    document.querySelectorAll("input.colorpicker").forEach((field) => {
         initColorPicker(field)
     })
 })

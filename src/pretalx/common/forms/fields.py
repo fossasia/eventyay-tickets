@@ -3,7 +3,7 @@ from pathlib import Path
 from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
 from django.core.files.uploadedfile import UploadedFile
-from django.forms import CharField, FileField, ValidationError
+from django.forms import CharField, FileField, RegexField, ValidationError
 from django.utils.translation import gettext_lazy as _
 
 from pretalx.common.forms.widgets import (
@@ -118,3 +118,15 @@ class ExtensionFileField(ExtensionFileInput, SizeFileInput, FileField):
 class ImageField(ExtensionFileInput, SizeFileInput, FileField):
     widget = ImageInput
     extensions = IMAGE_EXTENSIONS
+
+
+class ColorField(RegexField):
+    color_regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    max_length = 7
+
+    def __init__(self, *args, **kwargs):
+        kwargs["regex"] = kwargs.get("regex", self.color_regex)
+        super().__init__(*args, **kwargs)
+        widget_class = self.widget.attrs.get("class", "")
+        self.widget.attrs["class"] = f"{widget_class} colorpicker".strip()
+        self.widget.attrs["pattern"] = self.color_regex[1:-1]

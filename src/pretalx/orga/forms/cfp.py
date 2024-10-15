@@ -9,6 +9,7 @@ from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceFie
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 from i18nfield.strings import LazyI18nString
 
+from pretalx.common.forms.fields import ColorField
 from pretalx.common.forms.mixins import I18nHelpText, JsonSubfieldMixin, ReadOnlyFlag
 from pretalx.common.forms.renderers import InlineFormRenderer
 from pretalx.common.forms.widgets import (
@@ -367,7 +368,6 @@ class TrackForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def __init__(self, *args, event=None, **kwargs):
         self.event = event
         super().__init__(*args, **kwargs)
-        self.fields["color"].widget.attrs["class"] = "colorpickerfield"
         if self.instance.pk:
             url = f"{event.cfp.urls.new_access_code}?track={self.instance.pk}"
             self.fields["requires_access_code"].help_text += " " + _(
@@ -386,6 +386,9 @@ class TrackForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     class Meta:
         model = Track
         fields = ("name", "description", "color", "requires_access_code")
+        field_classes = {
+            "color": ColorField,
+        }
 
 
 class SubmitterAccessCodeForm(forms.ModelForm):
