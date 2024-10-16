@@ -209,8 +209,14 @@ const initFormButton = (form) => {
     const submitButton = form.querySelector("button[type=submit]")
     if (!submitButton) return
     form.addEventListener("submit", () => {
-        submitButton.disabled = true
+        // We can't disable the button immediately, because then, the browser will
+        // not send the button's value to the server. Instead, we'll just delay the
+        // disabling a bit.
+        // submitButton.disabled = true
         submitButton.innerHTML = `<i class="fa fa-spinner fa-spin pr-0"></i> ${submitButton.textContent}`
+        setTimeout(() => {
+            submitButton.classList.add("disabled")
+        }, 1)
     })
 }
 
