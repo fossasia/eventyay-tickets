@@ -29,7 +29,7 @@
 
         {% include "orga/includes/tablist.html" %}
 
-        <div role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
+        <section role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
             {{ form.non_field_errors }}
 
             {{ form.name.as_field_group }}
@@ -40,18 +40,18 @@
             {{ form.custom_domain.as_field_group }}
             {{ form.meta_noindex.as_field_group }}
             {{ form.imprint_url.as_field_group }}
-        </div>
-        <div role="tabpanel" id="tabpanel-localisation" aria-labelledby="tab-localisation" tabindex="0" aria-hidden="true">
+        </section>
+        <section role="tabpanel" id="tabpanel-localisation" aria-labelledby="tab-localisation" tabindex="0" aria-hidden="true">
             {{ form.locale.as_field_group }}
             {{ form.locales.as_field_group }}
             {{ form.content_locales.as_field_group }}
             {{ form.timezone.as_field_group }}
-        </div>
-        <div role="tabpanel" id="tabpanel-texts" aria-labelledby="tab-texts" tabindex="0" aria-hidden="true">
+        </section>
+        <section role="tabpanel" id="tabpanel-texts" aria-labelledby="tab-texts" tabindex="0" aria-hidden="true">
             {{ form.landing_page_text.as_field_group }}
             {{ form.featured_sessions_text.as_field_group }}
-        </div>
-        <div role="tabpanel" id="tabpanel-display" aria-labelledby="tab-display" tabindex="0" aria-hidden="true">
+        </section>
+        <section role="tabpanel" id="tabpanel-display" aria-labelledby="tab-display" tabindex="0" aria-hidden="true">
             {{ form.primary_color.as_field_group }}
             {{ form.logo.as_field_group }}
             {{ form.header_image.as_field_group }}
@@ -75,7 +75,7 @@
             {{ form.html_export_url.as_field_group }}
             {{ form.ticket_link.as_field_group }}
             {{ form.video_link.as_field_group }}
-        </div>
+        </section>
         <div class="submit-group panel">
             <span>
                 {% has_perm "person.is_administrator" request.user request.event as can_delete_event %}

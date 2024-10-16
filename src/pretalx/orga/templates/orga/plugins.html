@@ -11,7 +11,7 @@
         <form method="post" class="form-horizontal">
             {% csrf_token %}
             {% for category, plugins in grouped_plugins.items %}
-                <div role="tabpanel" id="tabpanel-{{ category.0 }}" aria-labelledby="tab-{{ category.0 }}" tabindex="0" aria-hidden="false">
+                <section role="tabpanel" id="tabpanel-{{ category.0 }}" aria-labelledby="tab-{{ category.0 }}" tabindex="0" aria-hidden="false">
                     <div class="form-plugins">
 
                         {% for plugin in plugins %}
@@ -45,7 +45,7 @@
                             </div>
                         {% endfor %}
                     </div>
-                </div>
+                </section>
             {% endfor %}
         </form>
     {% else %}

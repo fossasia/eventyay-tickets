@@ -26,7 +26,7 @@
 
     {% include "orga/includes/tablist.html" %}
 
-    <div role="tabpanel" id="tabpanel-group" aria-labelledby="tab-group" tabindex="0" aria-hidden="false">
+    <section role="tabpanel" id="tabpanel-group" aria-labelledby="tab-group" tabindex="0" aria-hidden="false">
         <p>
             {% blocktranslate trimmed %}
                 Reviewers can be assigned to tracks by way of review teams. If you require more
@@ -100,8 +100,8 @@
                 {% endfor %}
             </tbody>
         </table>
-    </div>
-    <div role="tabpanel" id="tabpanel-individual" aria-labelledby="tab-individual" tabindex="0" aria-hidden="false">
+    </section>
+    <section role="tabpanel" id="tabpanel-individual" aria-labelledby="tab-individual" tabindex="0" aria-hidden="false">
 
         <div class="alert alert-info"><p>
             {% if request.event.active_review_phase.proposal_visibility == "assigned" %}
@@ -148,6 +148,6 @@
 
         {% include "orga/includes/base_form.html" %}
 
-    </div>
+    </section>
 {% endblock content %}
 
