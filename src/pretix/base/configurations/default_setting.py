@@ -52,31 +52,6 @@ def primary_font_kwargs():
 
 
 DEFAULT_SETTINGS = {
-    "customer_accounts": {
-        "default": "False",
-        "type": bool,
-        "form_class": forms.BooleanField,
-        "serializer_class": serializers.BooleanField,
-        "form_kwargs": dict(
-            label=_("Allow attendees to create an account"),
-            help_text=_("Allow your attendees to sign up an account."),
-        ),
-    },
-    "customer_accounts_native": {
-        "default": "True",
-        "type": bool,
-        "form_class": forms.BooleanField,
-        "serializer_class": serializers.BooleanField,
-        "form_kwargs": dict(
-            label=_("Allow attendees to log in with email address and password"),
-            help_text=_(
-                "If this option is disabled, attendees will need to use Single Sign-On (SSO) to log in."
-            ),
-            widget=forms.CheckboxInput(
-                attrs={"data-display-dependency": "#id_settings-customer_accounts"}
-            ),
-        ),
-    },
     "max_items_per_order": {
         "default": "10",
         "type": int,
@@ -2005,90 +1980,6 @@ If you did not do so already, you can download your ticket here:
 
 Best regards,
 Your {event} team"""
-            )
-        ),
-    },
-    "mail_subject_customer_registration": {
-        "type": LazyI18nString,
-        "default": LazyI18nString.from_gettext(
-            gettext_noop("Activate your account at {organizer}")
-        ),
-    },
-    "mail_text_customer_registration": {
-        "type": LazyI18nString,
-        "default": LazyI18nString.from_gettext(
-            gettext_noop(
-                """Hello {name},
-
-thank you for signing up for an account at {organizer}!
-
-To activate your account and set a password, please click here:
-
-{url}
-
-This link is valid for one day.
-
-If you did not sign up yourself, please ignore this email.
-
-Best regards,
-
-Your {organizer} team"""
-            )
-        ),
-    },
-    "mail_subject_customer_email_change": {
-        "type": LazyI18nString,
-        "default": LazyI18nString.from_gettext(
-            gettext_noop("Confirm email address for your account at {organizer}")
-        ),
-    },
-    "mail_subject_customer_reset": {
-        "type": LazyI18nString,
-        "default": LazyI18nString.from_gettext(
-            gettext_noop("Set a new password for your account at {organizer}")
-        ),
-    },
-    "mail_text_customer_email_change": {
-        "type": LazyI18nString,
-        "default": LazyI18nString.from_gettext(
-            gettext_noop(
-                """Hello {name},
-
-you requested to change the email address of your account at {organizer}!
-
-To confirm the change, please click here:
-
-{url}
-
-This link is valid for one day.
-
-If you did not request this, please ignore this email.
-
-Best regards,
-
-Your {organizer} team"""
-            )
-        ),
-    },
-    "mail_text_customer_reset": {
-        "type": LazyI18nString,
-        "default": LazyI18nString.from_gettext(
-            gettext_noop(
-                """Hello {name},
-
-you requested a new password for your account at {organizer}!
-
-To set a new password, please click here:
-
-{url}
-
-This link is valid for one day.
-
-If you did not request a new password, please ignore this email.
-
-Best regards,
-
-Your {organizer} team"""
             )
         ),
     },

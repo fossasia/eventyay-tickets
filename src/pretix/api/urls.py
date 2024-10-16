@@ -20,7 +20,6 @@ orga_router.register(r'subevents', event.SubEventViewSet)
 orga_router.register(r'webhooks', webhooks.WebHookViewSet)
 orga_router.register(r'seatingplans', organizer.SeatingPlanViewSet)
 orga_router.register(r'giftcards', organizer.GiftCardViewSet)
-orga_router.register(r'customers', organizer.CustomerViewSet)
 orga_router.register(r'teams', organizer.TeamViewSet)
 orga_router.register(r'devices', organizer.DeviceViewSet)
 orga_router.register(r'exporters', exporters.OrganizerExportersViewSet, basename='exporters')
@@ -99,5 +98,4 @@ urlpatterns = [
     url(r"^upload$", upload.UploadView.as_view(), name="upload"),
     url(r"^me$", user.MeView.as_view(), name="user.me"),
     url(r"^version$", version.VersionView.as_view(), name="version"),
-    url(r"(?P<organizer>[^/]+)/(?P<event>[^/]+)/customer/(?P<customer_id>[^/]+)/ticket-check", event.CustomerOrderCheckView.as_view()),
 ]
