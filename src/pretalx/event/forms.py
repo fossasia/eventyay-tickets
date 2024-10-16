@@ -270,6 +270,7 @@ class EventWizardDisplayForm(forms.Form):
     primary_color = ColorField(
         label=Event._meta.get_field("primary_color").verbose_name,
         help_text=Event._meta.get_field("primary_color").help_text,
+        required=False,
     )
     header_pattern = forms.ChoiceField(
         label=phrases.orga.event_header_pattern_label,
