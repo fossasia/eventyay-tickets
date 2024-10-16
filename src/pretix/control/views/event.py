@@ -311,25 +311,15 @@ class EventPlugins(EventSettingsViewMixin, EventPermissionRequiredMixin, Templat
             'FORMAT': _('Output and export formats'),
             'API': _('API features'),
         }
-        plugins_grouped = groupby(
-            sorted(
-                plugins,
-                key=lambda p: (
-                    str(getattr(p, 'category', _('Other'))),
-                    (0 if getattr(p, 'featured', False) else 1),
-                    str(p.name).lower().replace('pretix ', '')
-                ),
-            ),
-            lambda p: str(getattr(p, 'category', _('Other')))
-        )
-        plugins_grouped = [(c, list(plist)) for c, plist in plugins_grouped]
         context['plugins'] = sorted([
-            (c, labels.get(c, c), plist, any(getattr(p, 'picture', None) for p in plist))
+            (c, labels.get(c, c), list(plist))
             for c, plist
-            in plugins_grouped
+            in groupby(
+                sorted(plugins, key=lambda p: str(getattr(p, 'category', _('Other')))),
+                lambda p: str(getattr(p, 'category', _('Other')))
+            )
         ], key=lambda c: (order.index(c[0]), c[1]) if c[0] in order else (999, str(c[1])))
         context['plugins_active'] = self.object.get_plugins()
-        context['show_meta'] = settings.PRETIX_PLUGINS_SHOW_META
         return context
 
     def get(self, request, *args, **kwargs):
@@ -1461,85 +1451,3 @@ class QuickSetupView(FormView):
                 },
             ] if self.request.method != "POST" else []
         )
-
-
-class EventQRCode(EventPermissionRequiredMixin, View):
-    """
-    Access the view to generate QR codes for event URLs. This class requires specific permissions for each event and
-    can produce QR codes in multiple formats (e.g. SVG, JPEG, PNG, GIF).
-
-    Attributes:
-        permission (str): Required permissions for accessing this view.
-    """
-    permission = None
-
-    def get(self, request, *args, filetype, **kwargs):
-        """
-        Handle GET requests to generate a QR code.
-        """
-        # Build the base URL for the event
-        url = build_absolute_uri(request.event, 'presale:event.index')
-
-        # Check if a custom URL is provided and validate it
-        custom_url = request.GET.get("url")
-        if custom_url:
-            if url_has_allowed_host_and_scheme(custom_url, allowed_hosts=[urlparse(url).netloc]):
-                url = custom_url
-            else:
-                raise PermissionDenied("Untrusted URL")
-
-        # Create a QRCode object
-        qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_M,
-            box_size=10,
-            border=4,
-        )
-        qr.add_data(url)
-        qr.make(fit=True)
-
-        # Generate the QR code in the specified format
-        if filetype == 'svg':
-            return self._generate_svg_response(qr, request.event.slug, filetype)
-        elif filetype in ('jpeg', 'png', 'gif'):
-            return self._generate_image_response(qr, request.event.slug, filetype)
-        else:
-            raise ValueError(f"Unsupported file type: {filetype}")
-
-    def _generate_svg_response(self, qr, event_slug, filetype):
-        """
-        Generate an SVG response for the QR code.
-
-        Parameters:
-            qr (QRCode): The QRCode object.
-            event_slug (str): The slug for the event to be included in the filename.
-            filetype (str): The desired file type (must be 'svg').
-
-        Returns:
-            The HTTP response that contains the SVG QR code.
-        """
-        factory = qrcode.image.svg.SvgPathImage
-        img = qr.make_image(image_factory=factory)
-        response = HttpResponse(img.to_string(), content_type='image/svg+xml')
-        response['Content-Disposition'] = f'inline; filename="qrcode-{event_slug}.{filetype}"'
-        return response
-
-    def _generate_image_response(self, qr, event_slug, filetype):
-        """
-        Generate an image response (JPEG, PNG, GIF) for the QR code.
-
-        Parameters:
-            qr (QRCode): The QRCode object.
-            event_slug (str): The event slug to be used in the filename.
-            filetype (str): The file type (jpeg, png, gif).
-
-        Returns:
-            HttpResponse: An HTTP response containing the image QR code.
-        """
-        img = qr.make_image(fill_color="black", back_color="white")
-        byte_io = BytesIO()
-        img.save(byte_io, filetype.upper())
-        byte_io.seek(0)
-        response = HttpResponse(byte_io.read(), content_type=f'image/{filetype}')
-        response['Content-Disposition'] = f'inline; filename="qrcode-{event_slug}.{filetype}"'
-        return response

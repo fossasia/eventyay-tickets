@@ -159,8 +159,8 @@ class SecretKeySettingsField(forms.CharField):
 class I18nMarkdownTextarea(i18nfield.forms.I18nTextarea):
     def format_output(self, rendered_widgets) -> str:
         markdown_note = _(
-            "You can use {markup_name} in this field."
-        ).format(markup_name='<a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">Markdown</a>')
+            "You can use {name} in this field."
+        ).format(name='<a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">Markdown</a>')
         rendered_widgets.append(f'<div class="i18n-field-markdown-note">{markdown_note}</div>')
         return super().format_output(rendered_widgets)
 
