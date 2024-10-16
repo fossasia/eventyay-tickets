@@ -125,6 +125,7 @@ class EnhancedSelectMixin(Select):
     def get_context(self, name, value, attrs):
         ctx = super().get_context(name, value, attrs)
         ctx["widget"]["attrs"] = add_class(ctx["widget"]["attrs"], "enhanced")
+        ctx["widget"]["attrs"]["tabindex"] = "-1"
         return ctx
 
     def create_option(
