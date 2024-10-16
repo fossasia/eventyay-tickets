@@ -8,7 +8,6 @@ from .gift_card_create_form import GiftCardCreateForm  # NOQA: F401
 from .gift_card_update_form import GiftCardUpdateForm  # NOQA: F401
 from .mail_settings_form import MailSettingsForm  # NOQA: F401
 from .organizer_delete_form import OrganizerDeleteForm  # NOQA: F401
-from .organizer_footer_link_form import OrganizerFooterLinkForm  # NOQA: F401
 from .organizer_form import OrganizerForm  # NOQA: F401
 from .organizer_settings_form import OrganizerSettingsForm  # NOQA: F401
 from .organizer_update_form import OrganizerUpdateForm  # NOQA: F401
