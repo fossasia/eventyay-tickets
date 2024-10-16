@@ -482,34 +482,15 @@ class OrderContactForm(forms.ModelForm):
 
     class Meta:
         model = Order
-        fields = ['customer', 'email', 'email_known_to_work', 'phone']
+        fields = ['email', 'email_known_to_work', 'phone']
         widgets = {
             'phone': WrappedPhoneNumberPrefixWidget(),
         }
-        field_classes = {
-            'customer': SafeModelChoiceField,
-        }
 
     def __init__(self, *args, **kwargs):
-        customers = kwargs.pop('customers')
         super().__init__(*args, **kwargs)
         if not self.instance.event.settings.order_phone_asked and not self.instance.phone:
             del self.fields['phone']
-        if customers:
-            self.fields['customer'].queryset = self.instance.event.organizer.customers.all()
-            self.fields['customer'].widget = Select2(
-                attrs={
-                    'data-model-select2': 'generic',
-                    'data-select2-url': reverse('control:organizer.customers.select2', kwargs={
-                        'organizer': self.instance.event.organizer.slug,
-                    }),
-                    'data-placeholder': _('Customer')
-                }
-            )
-            self.fields['customer'].widget.choices = self.fields['customer'].choices
-            self.fields['customer'].required = False
-        else:
-            del self.fields['customer']
 
 
 class OrderLocaleForm(forms.ModelForm):

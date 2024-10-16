@@ -671,7 +671,7 @@ class JoinOnlineVideoView(EventViewMixin, View):
         }, status=200)
 
     def validate_access(self, request, *args, **kwargs):
-        if not self.request.customer:
+        if not hasattr(self.request, 'customer'):
             # Customer not logged in yet
             return False, None, None
         else:

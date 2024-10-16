@@ -16,7 +16,7 @@ from pretix.api.serializers.event import (
 )
 from pretix.api.views import ConditionalListView
 from pretix.base.models import (
-    CartPosition, Customer, Device, Event, Order, Organizer, TaxRule,
+    CartPosition, Device, Event, Order, Organizer, TaxRule,
     TeamAPIToken,
 )
 from pretix.base.models.event import SubEvent
@@ -404,39 +404,3 @@ class EventSettingsView(views.APIView):
                 'request': request
             })
         return Response(s.data)
-
-
-class CustomerOrderCheckView(views.View):
-
-    @scopes_disabled()
-    def get(self, request, *args, **kwargs):
-        if (not kwargs.get("customer_id")
-                or not kwargs.get("event")
-                or not kwargs.get("organizer")):
-            return Response(status=400, data={"error": "Missing parameters."})
-
-        try:
-            organizer = Organizer.objects.get(slug=kwargs["organizer"])
-            event = Event.objects.get(slug=kwargs["event"], organizer=organizer)
-            customer = Customer.objects.get(identifier=kwargs["customer_id"], organizer=organizer)
-
-        except Organizer.DoesNotExist:
-            return JsonResponse(status=404, data={"error": "Organizer not found."})
-        except Event.DoesNotExist:
-            return JsonResponse(status=404, data={"error": "Event not found."})
-        except Customer.DoesNotExist:
-            return JsonResponse(status=404, data={"error": "Customer not found."})
-
-        # Get all orders of customer which belong to this event
-        order_list = (Order.objects.filter(Q(event=event)
-                                           & (Q(customer=customer) | Q(
-                                               email__iexact=customer.email))).select_related('event').order_by('-datetime'))
-
-        if not order_list:
-            return JsonResponse(status=404, data={"error": "Customer has no orders for this event."})
-
-        for order in order_list:
-            if order.status == 'p':
-                return JsonResponse(status=200, data={"message": "Customer has paid orders."})
-
-        return JsonResponse(status=400, data={"message": "Customer did not paid orders."})

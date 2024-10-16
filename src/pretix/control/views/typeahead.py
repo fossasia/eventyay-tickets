@@ -137,47 +137,6 @@ def event_list(request):
     return JsonResponse(doc)
 
 
-@organizer_permission_required("can_manage_customers")
-def customer_select2(request, **kwargs):
-    """
-    Handles the Select2 AJAX requests for searching customers. Returns a paginated list of customers
-    matching the query.
-
-    Args:
-        request (HttpRequest): The HTTP request object.
-        **kwargs: Arbitrary keyword arguments.
-
-    Returns:
-        JsonResponse: A JSON response containing the search results and pagination information.
-    """
-    query = request.GET.get('query', '')
-
-    try:
-        page = int(request.GET.get('page', '1'))
-    except ValueError:
-        page = 1
-
-    pagesize = 20
-    offset = (page - 1) * pagesize
-
-    qs = request.organizer.customers.filter(
-        Q(email__icontains=query) | Q(name_cached__icontains=query) | Q(identifier__istartswith=query)
-    ).order_by('name_cached')
-
-    total = qs.count()
-    results = [
-        {'id': e.pk, 'text': str(e)}
-        for e in qs[offset:offset + pagesize]
-    ]
-
-    doc = {
-        'results': results,
-        'pagination': {"more": total > (offset + pagesize)}
-    }
-
-    return JsonResponse(doc)
-
-
 def nav_context_list(request):
     query = request.GET.get('query', '').strip()
     organizer = request.GET.get('organizer', None)
