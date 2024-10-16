@@ -570,7 +570,7 @@ class BaseQuestionsForm(forms.Form):
             initial = answers[0] if answers else None
             tz = pytz.timezone(event.settings.timezone)
             help_text = rich_text(q.help_text)
-            label = mark_safe(q.question)  # django-bootstrap3 calls mark_safe
+            label = mark_safe(q.question)
             required = q.required and not self.all_optional
             if q.type == Question.TYPE_BOOLEAN:
                 if q.required:
