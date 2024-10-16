@@ -556,9 +556,8 @@ input.password_strength {
 }
 
 .markdown-wrapper {
-  max-height: 160px;
   textarea {
-    max-height: 160px;
+    min-height: 140px;
     border-top: none;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
@@ -568,8 +567,7 @@ input.password_strength {
     border-top: none;
     border-bottom-left-radius: var(--size-border-radius);
     border-bottom-right-radius: var(--size-border-radius);
-    min-height: 160px;
-    max-height: 160px;
+    min-height: 140px;
     padding: 0.375rem 0.75rem;
     overflow-y: auto;
     width: auto;
