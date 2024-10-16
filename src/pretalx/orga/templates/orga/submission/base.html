@@ -77,13 +77,13 @@
                     </a>
                 {% endif %}
                 {% if submission.state == "confirmed" or can_view_speakers %}
-                    <details class="dropdown">
+                    <details class="dropdown" aria-haspopup="menu" role="menu">
                         <summary class="color-primary" role="button">
                             {% translate "Links" %} <i class="fa fa-caret-down"></i>
                         </summary>
                         <div class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
                             {% if is_publicly_visible or submission.state == "accepted" or submission.state == "confirmed" %}
-                                <a href="{{ submission.urls.public.full }}" class="dropdown-item" target=_blank>
+                                <a href="{{ submission.urls.public.full }}" class="dropdown-item" target=_blank role="menuitem" tabindex="-1">
                                     <i class="fa fa-link"></i>
                                     {% translate "Public link" %}
                                     {% if not is_publicly_visible %}
@@ -92,7 +92,7 @@
                                 </a>
                             {% endif %}
                             {% if can_view_speakers and request.event|get_feature_flag:"submission_public_review" %}
-                                <a href="{{ submission.urls.review.full }}" class="dropdown-item" target="_blank">
+                                <a href="{{ submission.urls.review.full }}" class="dropdown-item" target="_blank" role="menuitem" tabindex="-1">
                                     <i class="fa fa-eye"></i>
                                     {% translate "Secret public link" %}
                                 </a>

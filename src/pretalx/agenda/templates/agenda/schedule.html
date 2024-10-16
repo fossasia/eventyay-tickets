@@ -12,19 +12,19 @@
 {% endblock agenda_custom_header %}
 
 {% block header_right %}
-    <details class="dropdown mr-2">
+    <details class="dropdown mr-2" aria-haspopup="menu" role="menu">
         <summary>
             <span>{{ phrases.schedule.version }} {{ schedule.version|default:'-' }}</span>
             <i class="fa fa-caret-down ml-1"></i>
         </summary>
         <div class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-            <a class="dropdown-item" href="{{ request.event.urls.changelog }}">
+            <a class="dropdown-item" href="{{ request.event.urls.changelog }}" role="menuitem" tabindex="-1">
                 <i class="fa fa-book"></i>
                 {% translate "Changelog" %}
             </a>
             <hr>
             {% for exporter in exporters %}
-                <a class="dropdown-item" href="{{ exporter.urls.base }}">
+                <a class="dropdown-item" href="{{ exporter.urls.base }}" role="menuitem" tabindex="-1">
                     {% if exporter.icon|slice:":3" == "fa-" %}
                         <span class="fa {{ exporter.icon }} export-icon"></span>
                     {% else %}

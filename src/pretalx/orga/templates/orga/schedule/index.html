@@ -35,29 +35,29 @@
                     <button type="submit" class="btn btn-outline-danger ml-2">{% translate "Override WIP schedule with this version" %}</button>
                 </form>
             {% endif %}
-            <details class="dropdown ml-2">
+            <details class="dropdown ml-2" aria-haspopup="menu" role="menu">
                 <summary class="btn btn-info" id="schedule-actions">
                     {% translate "Actions" %} <i class="fa fa-caret-down"></i>
                 </summary>
 
                 <div class="dropdown-content dropdown-front dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-                    <a class="dropdown-item" href="{{ active_schedule.urls.public }}" target="_blank" rel="noopener">
+                    <a class="dropdown-item" href="{{ active_schedule.urls.public }}" target="_blank" rel="noopener" role="menuitem" tabindex="-1">
                         <i class="fa fa-link"></i> {% translate "View in frontend" %}
                     </a>
                     {% if request.event|get_feature_flag:"show_schedule" %}
-                        <a class="dropdown-item"
+                        <a class="dropdown-item role="menuitem" tabindex="-1""
                            href="{{ request.event.orga_urls.toggle_schedule }}">
                             <i class="fa fa-eye"></i> {% translate "Hide schedule" %}
                         </a>
                     {% else %}
-                        <a class="dropdown-item" href="{{ request.event.orga_urls.toggle_schedule }}">
+                        <a class="dropdown-item" href="{{ request.event.orga_urls.toggle_schedule }}" role="menuitem" tabindex="-1">
                             <i class="fa fa-eye"></i> {% translate "Make schedule public" %}
                         </a>
                     {% endif %}
-                    <a href="{{ request.event.orga_urls.submission_cards }}" class="dropdown-item">
+                    <a href="{{ request.event.orga_urls.submission_cards }}" class="dropdown-item" role="menuitem" tabindex="-1">
                         <i class="fa fa-print"></i> {% translate "Print cards" %}
                     </a>
-                    <a href="resend_mails" class="dropdown-item">
+                    <a href="resend_mails" class="dropdown-item" role="menuitem" tabindex="-1">
                         <i class="fa fa-envelope"></i> {% translate "Resend speaker notifications" %}
                     </a>
                 </div>

@@ -49,74 +49,74 @@
     </div>
 
     <div class="ml-auto mb-2 d-flex">
-        <details class="dropdown flip ml-auto fix-height mr-2">
+        <details class="dropdown flip ml-auto fix-height mr-2" aria-haspopup="menu" role="menu">
             <summary class="btn btn-secondary">
                 {% translate "Columns" %} <i class="fa fa-caret-down"></i>
             </summary>
             <div id="column-select" class="dropdown-content dropdown-content-s{% if rtl %}w{% else %}e{% endif %}">
                 {% if can_see_all_reviews %}
-                    <li class="dropdown-item form-check">
+                    <li class="dropdown-item form-check" role="menuitem" tabindex="-1">
                         <input type="checkbox" id="col-score-avg" checked autocomplete=off>
                         <label for="col-score-avg">{% translate "Score" %}</label>
                     </li>
                 {% endif %}
                 {% if can_review or submissions_reviewed %}
-                    <li class="dropdown-item form-check">
+                    <li class="dropdown-item form-check" role="menuitem" tabindex="-1">
                         <input type="checkbox" id="col-score-user" checked autocomplete=off>
                         <label for="col-score-user">{% translate "Your score" %}</label>
                     </li>
                 {% endif %}
                 {% if can_review or submissions_reviewed %}
-                    <li class="dropdown-item form-check">
+                    <li class="dropdown-item form-check" role="menuitem" tabindex="-1">
                         <input type="checkbox" id="col-review-count" checked autocomplete=off>
                         <label for="col-review-count">{% translate "Reviews" %}</label>
                     </li>
                 {% endif %}
                 {% if can_view_speakers %}
-                    <li class="dropdown-item form-check">
+                    <li class="dropdown-item form-check" role="menuitem" tabindex="-1">
                         <input type="checkbox" id="col-speakers" checked autocomplete=off>
                         <label for="col-speakers">{{ phrases.schedule.speakers }}</label>
                     </li>
                 {% endif %}
                 {% for question in short_questions %}
-                    <li class="dropdown-item form-check">
+                    <li class="dropdown-item form-check" role="menuitem" tabindex="-1">
                         <input type="checkbox" id="col-question-{{ question.id }}" autocomplete=off>
                         <label for="col-question-{{ question.id }}">{% translate "Question" %}: {{ question.question }}</label>
                     </li>
                 {% endfor %}
-                <li class="dropdown-item form-check">
+                <li class="dropdown-item form-check" role="menuitem" tabindex="-1">
                     <input type="checkbox" id="col-track" checked autocomplete=off>
                     <label for="col-track">{% translate "Track" %}</label>
                 </li>
-                <li class="dropdown-item form-check">
+                <li class="dropdown-item form-check" role="menuitem" tabindex="-1">
                     <input type="checkbox" id="col-duration" autocomplete=off>
                     <label for="col-duration">{% translate "Duration" %}</label>
                 </li>
-                <li class="dropdown-item form-check">
+                <li class="dropdown-item form-check" role="menuitem" tabindex="-1">
                     <input type="checkbox" id="col-subtype" autocomplete=off>
                     <label for="col-subtype">{% translate "Session type" %}</label>
                 </li>
                 {% if filter_form.tags %}
-                    <li class="dropdown-item form-check">
+                    <li class="dropdown-item form-check" role="menuitem" tabindex="-1">
                         <input type="checkbox" id="col-tags" checked autocomplete=off>
                         <label for="col-tags">{% translate "Tags" %}</label>
                     </li>
                 {% endif %}
-                <li class="dropdown-item form-check">
+                <li class="dropdown-item form-check" role="menuitem" tabindex="-1">
                     <input type="checkbox" id="col-state" checked autocomplete=off>
                     <label for="col-state">{% translate "State" %}</label>
                 </li>
             </div>
         </details>
-        <details class="dropdown flip fix-height">
+        <details class="dropdown flip fix-height" role="menu">
             <summary class="btn btn-info">
                 {% translate "Actions" %} <i class="fa fa-caret-down"></i>
             </summary>
             <div class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-                <a class="dropdown-item" href="{{ request.event.orga_urls.reviews }}regenerate">
+                <a class="dropdown-item" href="{{ request.event.orga_urls.reviews }}regenerate" role="menuitem" tabindex="-1">
                     <i class="fa fa-link"></i> {% translate "Regenerate decision emails" %}
                 </a>
-                <a class="dropdown-item" href="{{ request.event.orga_urls.apply_pending }}?next={{ request.path }}">
+                <a class="dropdown-item" href="{{ request.event.orga_urls.apply_pending }}?next={{ request.path }}" role="menuitem" tabindex="-1">
                     <i class="fa fa-link"></i> {% translate "Apply pending changes" %}
                 </a>
             </div>
