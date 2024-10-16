@@ -10,7 +10,7 @@
 
     {% include "orga/includes/tablist.html" %}
 
-    <div role="tabpanel" id="tabpanel-custom" aria-labelledby="tab-custom" tabindex="0" aria-hidden="false">
+    <section role="tabpanel" id="tabpanel-custom" aria-labelledby="tab-custom" tabindex="0" aria-hidden="false">
         <p>
             {% blocktranslate trimmed %}
                 Build your own custom export here, by selecting all the data you need,
@@ -49,8 +49,8 @@
 
         </form>
 
-    </div>
-    <div role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="true">
+    </section>
+    <section role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="true">
         <p>
             {% blocktranslate trimmed %}
                 pretalx provides a range of exports. If none of these match what you are looking
@@ -88,8 +88,8 @@
                 </li>
             {% endfor %}
         </ul>
-    </div>
-    <div role="tabpanel" id="tabpanel-api" aria-labelledby="tab-api" tabindex="0" aria-hidden="true">
+    </section>
+    <section role="tabpanel" id="tabpanel-api" aria-labelledby="tab-api" tabindex="0" aria-hidden="true">
         <p>
             {% translate "You can also use the API to export or use data." %}
         </p>
@@ -115,6 +115,6 @@
             </a>
         </span>
         </div>
-    </div>
+    </section>
     <script defer src="{% static "orga/js/speaker_export.js" %}"></script>
 {% endblock content %}

@@ -50,7 +50,7 @@
         {{ sform.non_field_errors }}
 
         {% include "orga/includes/tablist.html" %}
-        <div role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
+        <section role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
             {{ form.headline.as_field_group }}
             {{ form.text.as_field_group }}
             {{ form.deadline.as_field_group }}
@@ -76,9 +76,9 @@
             {{ sform.present_multiple_times.as_field_group }}
             {{ sform.submission_public_review.as_field_group }}
             {{ sform.mail_on_new_submission.as_field_group }}
-        </div>
+        </section>
 
-        <div role="tabpanel" id="tabpanel-fields" aria-labelledby="tab-fields" tabindex="0" aria-hidden="true">
+        <section role="tabpanel" id="tabpanel-fields" aria-labelledby="tab-fields" tabindex="0" aria-hidden="true">
             {{ form.count_length_in.as_field_group }}
             <fieldset>
 
@@ -209,7 +209,7 @@
                     </tbody>
                 </table></div>
             </fieldset>
-        </div>
+        </section>
 
         {% include "orga/includes/submit_row.html" %}
 

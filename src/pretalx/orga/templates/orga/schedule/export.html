@@ -11,7 +11,7 @@
 
     {% include "orga/includes/tablist.html" %}
 
-    <div role="tabpanel" id="tabpanel-custom" aria-labelledby="tab-custom" tabindex="0" aria-hidden="false">
+    <section role="tabpanel" id="tabpanel-custom" aria-labelledby="tab-custom" tabindex="0" aria-hidden="false">
         <form method="post">
             {% csrf_token %}
             {{ form.non_field_errors }}
@@ -41,9 +41,9 @@
 
             {% include "orga/includes/submit_row.html" %}
         </form>
-    </div>
+    </section>
 
-    <div role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="true">
+    <section role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="true">
         {% blocktranslate trimmed %}
             pretalx provides a range of exports. If none of these match what you are looking
             for, you can also provide a custom plugin to export the data – please ask
@@ -112,8 +112,8 @@
             </form>
         </span>
         </div>
-    </div>
-    <div role="tabpanel" id="tabpanel-api" aria-labelledby="tab-api" tabindex="0" aria-hidden="true">
+    </section>
+    <section role="tabpanel" id="tabpanel-api" aria-labelledby="tab-api" tabindex="0" aria-hidden="true">
 
         <h3>{% translate "API" %}</h3>
 
@@ -141,7 +141,7 @@
             </a>
         </span>
         </div>
-    </div>
+    </section>
     <script defer src="{% static "orga/js/speaker_export.js" %}"></script>
 
 {% endblock schedule_content %}

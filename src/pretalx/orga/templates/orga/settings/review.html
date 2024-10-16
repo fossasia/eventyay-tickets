@@ -31,7 +31,7 @@
 
         {% include "orga/includes/tablist.html" %}
 
-        <div role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
+        <section role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
             {{ form.non_field_errors }}
             {{ form.score_mandatory.as_field_group }}
             {{ form.text_mandatory.as_field_group }}
@@ -48,8 +48,8 @@
             {{ form.score_format.as_field_group }}
             {{ form.review_help_text.as_field_group }}
 
-        </div>
-        <div role="tabpanel" id="tabpanel-scores" aria-labelledby="tab-scores" tabindex="0" aria-hidden="true">
+        </section>
+        <section role="tabpanel" id="tabpanel-scores" aria-labelledby="tab-scores" tabindex="0" aria-hidden="true">
             <dialog id="info-review-scoring">
                 <div class="alert alert-info">
                     <p>
@@ -178,8 +178,8 @@
                     </button>
                 </div>
             </div>
-        </div>
-        <div role="tabpanel" id="tabpanel-phases" aria-labelledby="tab-phases" tabindex="0" aria-hidden="true">
+        </section>
+        <section role="tabpanel" id="tabpanel-phases" aria-labelledby="tab-phases" tabindex="0" aria-hidden="true">
 
             <dialog id="info-review-phases">
                 <div class="alert alert-info">
@@ -277,7 +277,7 @@
                     </button>
                 </div>
             </div>
-        </div>
+        </section>
         {% include "orga/includes/submit_row.html" %}
     </form>
 {% endblock settings_content %}
