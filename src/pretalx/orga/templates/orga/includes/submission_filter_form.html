@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <div class="submit-group search-submit-group">
-    <form class="search-form"{% block form_attrs %}{% endblock %}>
+    <form class="search-form"{% block form_attrs %}{% endblock %} role="search">
         {{ filter_form.q.as_field_group }}
         {% if show_submission_types and filter_form.submission_type %}{{ filter_form.submission_type.as_field_group }}{% endif %}
         <div class="d-flex flex-column form-group">
