@@ -10,6 +10,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q, OuterRef, Count, Subquery, IntegerField
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -28,10 +29,12 @@ from pretix.base.auth import get_auth_backends
 from pretix.base.forms.auth import ReauthForm
 from pretix.base.forms.user import User2FADeviceAddForm, UserSettingsForm
 from pretix.base.models import (
-    Event, LogEntry, NotificationSetting, U2FDevice, User, WebAuthnDevice,
+    Event, LogEntry, NotificationSetting, U2FDevice, User, WebAuthnDevice, Order, OrderPosition,
 )
 from pretix.base.models.auth import StaffSession
 from pretix.base.notifications import get_all_notification_types
+from pretix.control.forms.filter import OrderFilterForm
+from pretix.control.forms.organizer_forms.user_orders_form import UserOrderFilterForm
 from pretix.control.forms.users import StaffSessionForm
 from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, StaffMemberRequiredMixin,
@@ -757,3 +760,26 @@ class EditStaffSession(StaffMemberRequiredMixin, UpdateView):
             return get_object_or_404(StaffSession, pk=self.kwargs['id'])
         else:
             return get_object_or_404(StaffSession, pk=self.kwargs['id'], user=self.request.user)
+
+
+class UserOrdersView(ListView):
+    template_name = 'pretixcontrol/user/orders.html'
+    context_object_name = 'orders'
+    paginate_by = 20
+
+    def get_queryset(self):
+        qs = Order.objects.filter(
+            Q(email__iexact=self.request.user.email)
+        ).select_related('event').order_by('-datetime')
+
+        # Filter by event if provided
+        event_id = self.request.GET.get('event')
+        if event_id:
+            qs = qs.filter(event_id=event_id)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['filter_form'] = UserOrderFilterForm(self.request.GET or None, user=self.request.user)
+        return ctx

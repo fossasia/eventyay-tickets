@@ -163,7 +163,7 @@ def register(request):
             request.session['pretix_auth_long_session'] = (
                 settings.PRETIX_LONG_SESSIONS and form.cleaned_data.get('keep_logged_in', False)
             )
-            response = redirect('control:index')
+            response = redirect(request.GET.get("next", 'control:index'))
             set_cookie_after_logged_in(request, response)
             return response
     else:

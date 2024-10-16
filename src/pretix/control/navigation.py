@@ -302,6 +302,12 @@ def get_global_navigation(request):
             'icon': 'dashboard',
         },
         {
+            'label': _('My Orders'),
+            'url': reverse('control:user.settings.orders'),
+            'active': 'user.settings.orders' in url.url_name,
+            'icon': 'shopping-cart',
+        },
+        {
             'label': _('Events'),
             'url': reverse('control:events'),
             'active': 'events' in url.url_name,
