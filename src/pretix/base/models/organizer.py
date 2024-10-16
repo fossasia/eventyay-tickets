@@ -2,7 +2,6 @@ import string
 from datetime import date, datetime, time
 
 import pytz
-from django.core.mail import get_connection
 from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from django.db.models import Exists, OuterRef, Q
@@ -15,9 +14,8 @@ from i18nfield.fields import I18nCharField
 
 from pretix.base.models.base import LoggedModel
 from pretix.base.validators import OrganizerSlugBanlistValidator
-
-from ..settings import settings_hierarkey
 from .auth import User
+from ..settings import settings_hierarkey
 
 
 @settings_hierarkey.add(cache_namespace='organizer')

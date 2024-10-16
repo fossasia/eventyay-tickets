@@ -18,8 +18,7 @@ from pretix.base.models import (
 )
 from pretix.control.forms.event import EventWizardCopyForm
 from pretix.control.permissions import (
-    event_permission_required, organizer_permission_required,
-)
+    event_permission_required, )
 from pretix.helpers.daterange import daterange
 from pretix.helpers.i18n import i18ncomp
 

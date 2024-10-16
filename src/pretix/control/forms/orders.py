@@ -11,7 +11,6 @@ from django.utils.timezone import make_aware, now
 from django.utils.translation import (
     gettext_lazy as _, gettext_noop, pgettext_lazy,
 )
-from django_scopes.forms import SafeModelChoiceField
 from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
 from i18nfield.strings import LazyI18nString
 

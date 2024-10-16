@@ -1,7 +1,6 @@
 import django_filters
 from django.db import transaction
 from django.db.models import ProtectedError, Q
-from django.http import JsonResponse
 from django.utils.timezone import now
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from django_scopes import scopes_disabled
@@ -16,8 +15,7 @@ from pretix.api.serializers.event import (
 )
 from pretix.api.views import ConditionalListView
 from pretix.base.models import (
-    CartPosition, Device, Event, Order, Organizer, TaxRule,
-    TeamAPIToken,
+    CartPosition, Device, Event, TaxRule, TeamAPIToken,
 )
 from pretix.base.models.event import SubEvent
 from pretix.base.settings import SETTINGS_AFFECTING_CSS

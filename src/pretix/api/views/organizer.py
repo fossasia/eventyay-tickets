@@ -1,7 +1,6 @@
 from decimal import Decimal
 
 import django_filters
-from django.contrib.auth.hashers import make_password
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
@@ -18,13 +17,14 @@ from rest_framework.viewsets import GenericViewSet
 
 from pretix.api.models import OAuthAccessToken
 from pretix.api.serializers.organizer import (
-    DeviceSerializer, GiftCardSerializer, GiftCardTransactionSerializer, OrganizerSerializer,
-    OrganizerSettingsSerializer, SeatingPlanSerializer, TeamAPITokenSerializer,
-    TeamInviteSerializer, TeamMemberSerializer, TeamSerializer,
+    DeviceSerializer, GiftCardSerializer, GiftCardTransactionSerializer,
+    OrganizerSerializer, OrganizerSettingsSerializer, SeatingPlanSerializer,
+    TeamAPITokenSerializer, TeamInviteSerializer, TeamMemberSerializer,
+    TeamSerializer,
 )
 from pretix.base.models import (
-    Device, GiftCard, GiftCardTransaction, Organizer, SeatingPlan,
-    Team, TeamAPIToken, TeamInvite, User,
+    Device, GiftCard, GiftCardTransaction, Organizer, SeatingPlan, Team,
+    TeamAPIToken, TeamInvite, User,
 )
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.helpers.dicts import merge_dicts
