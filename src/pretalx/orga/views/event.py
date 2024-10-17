@@ -549,7 +549,7 @@ class UserSettings(TemplateView):
             request.user.regenerate_token()
             messages.success(request, phrases.cfp.token_regenerated)
         else:
-            messages.error(self.request, phrases.common.error_saving_changes)
+            messages.error(self.request, phrases.base.error_saving_changes)
             return self.get(request, *args, **kwargs)
         return redirect(self.get_success_url())
 
