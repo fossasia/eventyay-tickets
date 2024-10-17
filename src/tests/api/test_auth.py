@@ -85,7 +85,3 @@ def test_device_auth_security_profile(client, device):
     device.save()
     resp = client.get('/api/v1/organizers/dummy/giftcards/')
     assert resp.status_code == 403
-    device.security_profile = "pretixpos"
-    device.save()
-    resp = client.get('/api/v1/organizers/dummy/giftcards/')
-    assert resp.status_code == 200

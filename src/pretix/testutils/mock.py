@@ -11,5 +11,9 @@ class FakePytestConfig:
 @contextmanager
 def mocker_context():
     result = MockFixture(FakePytestConfig())
-    yield result
-    result.stopall()
+    if result is None:
+        raise ValueError("MockFixture could not be initialized properly")
+    try:
+        yield result
+    finally:
+        result.stopall()

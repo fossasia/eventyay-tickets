@@ -769,6 +769,7 @@ class SessionTimeOutTest(TestCase):
 
 
 @pytest.fixture
+@pytest.mark.django_db
 def user():
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
     return user
