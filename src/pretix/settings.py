@@ -91,7 +91,7 @@ DATABASES = {
         'PASSWORD': config.get('database', 'password', fallback=''),
         'HOST': config.get('database', 'host', fallback=''),
         'PORT': config.get('database', 'port', fallback=''),
-        'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 120,
+        'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 600,
         'OPTIONS': db_options,
         'TEST': {}
     }
@@ -106,7 +106,7 @@ if config.has_section('replica'):
         'PASSWORD': config.get('replica', 'password', fallback=DATABASES['default']['PASSWORD']),
         'HOST': config.get('replica', 'host', fallback=DATABASES['default']['HOST']),
         'PORT': config.get('replica', 'port', fallback=DATABASES['default']['PORT']),
-        'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 120,
+        'CONN_MAX_AGE': 0 if db_backend == 'sqlite3' else 600,
         'OPTIONS': db_options,
         'TEST': {}
     }
