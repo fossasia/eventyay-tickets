@@ -16,7 +16,8 @@ const checkForChanges = () => {
     if (dirtyInputs.length) {
         dirtyInputs.forEach((element) => {
             const inputElement = element.querySelector("textarea")
-            const outputElement = element.querySelector(".preview")
+            const outputElement = element.querySelector(".markdown-preview")
+            if (!outputElement) return
             outputElement.innerHTML = DOMPurify.sanitize(
                 marked.parse(inputElement.value, options),
             )
@@ -29,6 +30,7 @@ const checkForChanges = () => {
 const initMarkdown = (element) => {
     const inputElement = element.querySelector("textarea")
     const outputElement = element.querySelector(".markdown-preview")
+    if (!outputElement) return
     outputElement.innerHTML = DOMPurify.sanitize(
         marked.parse(inputElement.value, options),
     )

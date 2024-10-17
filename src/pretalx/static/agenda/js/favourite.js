@@ -83,7 +83,6 @@ const toggleFavState = async () => {
 
 const pageSetup = async () => {
     setupRun = true
-    console.log('running page setup')
     eventSlug = window.location.pathname.split('/')[1]
     submissionId = window.location.pathname.split('/')[3]
     loggedIn = document.querySelector('#pretalx-messages').dataset.loggedIn === 'true'
