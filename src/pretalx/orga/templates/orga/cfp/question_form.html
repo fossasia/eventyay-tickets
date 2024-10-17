@@ -23,7 +23,7 @@
     </h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.non_field_errors }}
+        {% include "common/forms/errors.html" %}
         {% if action == "edit" and question.answers.count %}
             <div class="alert alert-warning col-md-9 offset-md-3">
                 {% blocktranslate trimmed %}
@@ -119,7 +119,7 @@
                             </div>
                             <div class="question-option-row flip ml-auto col-md-9 mb-2 d-flex hide-label">
                                 <div class="question-option-input w-100{% if action == "view" %} disabled{% endif %}">
-                                    {{ form.non_field_errors }}
+                                    {% include "common/forms/errors.html" %}
                                     {{ form.answer.as_field_group }}
                                 </div>
                                 {% if action != "view" %}

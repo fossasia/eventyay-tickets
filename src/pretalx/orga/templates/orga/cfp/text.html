@@ -46,8 +46,8 @@
     <form method="post">
         {% csrf_token %}
 
-        {{ form.non_field_errors }}
-        {{ sform.non_field_errors }}
+        {% include "common/forms/errors.html" %}
+        {% include "common/forms/errors.html" with form=sform %}
 
         {% include "orga/includes/tablist.html" %}
         <section role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">

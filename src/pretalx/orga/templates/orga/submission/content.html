@@ -34,7 +34,7 @@
                     {% endblocktranslate %} <a href="{{ submission.access_code.urls.edit }}">{{ submission.access_code.code }}</a>
                 </span></div>
             {% endif %}
-            {{ form.non_field_errors }}
+            {% include "common/forms/errors.html" %}
             {% csrf_token %}
 
             {{ form.title.as_field_group }}

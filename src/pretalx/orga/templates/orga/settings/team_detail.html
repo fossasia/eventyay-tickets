@@ -119,7 +119,7 @@
 
         <form method="post">
             {% csrf_token %}
-            {{ form.non_field_errors }}
+            {% include "common/forms/errors.html" %}
             {{ form.name.as_field_group }}
             {{ form.all_events.as_field_group }}
             {{ form.limit_events.as_field_group }}

@@ -21,7 +21,7 @@
             </h3>
         </div>
         <div id="placeholder-neighbour">
-            {{ form.non_field_errors }}
+            {% include "common/forms/errors.html" %}
             <fieldset>
                 <legend>{% translate "Recipients" %}</legend>
                 {% block recipient_form %}{% endblock recipient_form %}

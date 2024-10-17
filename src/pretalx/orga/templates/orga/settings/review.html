@@ -32,7 +32,7 @@
         {% include "orga/includes/tablist.html" %}
 
         <section role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
-            {{ form.non_field_errors }}
+            {% include "common/forms/errors.html" %}
             {{ form.score_mandatory.as_field_group }}
             {{ form.text_mandatory.as_field_group }}
             <div class="col-md-9 flip ml-auto mb-4">
@@ -93,7 +93,7 @@
                                 {{ form.DELETE }}
                             </div>
                             <div class="score-row flip ml-auto score-input{% if action == "view" %} disabled{% endif %}">
-                                {{ form.non_field_errors }}
+                                {% include "common/forms/errors.html" %}
                                 {{ form.is_independent.as_field_group }}
                                 {{ form.weight.as_field_group }}
                                 {{ form.required.as_field_group }}
@@ -234,7 +234,7 @@
                             </div>
                             <div class="phase-option-row flip ml-auto">
                                 <div class="phase-option-input{% if action == "view" %} disabled{% endif %}">
-                                    {{ form.non_field_errors }}
+                                    {% include "common/forms/errors.html" %}
                                     {% for field in form %}
                                         {% if field.name != "DELETE" and field.name != "name" and field.name != "id" %}
                                             {{ field.as_field_group }}

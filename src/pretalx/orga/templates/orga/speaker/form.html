@@ -70,7 +70,7 @@
     </div>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.non_field_errors }}
+        {% include "common/forms/errors.html" %}
 
         {{ form.name.as_field_group }}
         {{ form.email.as_field_group }}

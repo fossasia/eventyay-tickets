@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load static %}
 
-{{ form.non_field_errors }}
+{% include "common/forms/errors.html" %}
 {% if no_form %}
     <div id="auth-form" class="password-input-form d-md-flex flex-row">
 {% else %}
