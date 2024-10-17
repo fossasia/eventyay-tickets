@@ -112,7 +112,7 @@ if config.has_section('replica'):
     }
     DATABASE_ROUTERS = ['pretix.helpers.database.ReplicaRouter']
 
-BASE_PATH = config.get('pretix', 'base_path', fallback='/tickets')
+BASE_PATH = config.get('pretix', 'base_path', fallback='')
 
 FORCE_SCRIPT_NAME = BASE_PATH
 
