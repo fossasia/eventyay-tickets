@@ -433,7 +433,7 @@ class BulkReview(EventPermissionRequired, TemplateView):
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         if not all(form.is_valid() for form in self.forms.values()):
-            messages.error(self.request, phrases.common.error_saving_changes)
+            messages.error(self.request, phrases.base.error_saving_changes)
             return super().get(request, *args, **kwargs)
         for form in self.forms.values():
             if form.has_changed():
@@ -609,10 +609,10 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
 
     def form_valid(self, form):
         if not self.qform.is_valid():
-            messages.error(self.request, phrases.common.error_saving_changes)
+            messages.error(self.request, phrases.base.error_saving_changes)
             return super().form_invalid(form)
         if self.tags_form and not self.tags_form.is_valid():
-            messages.error(self.request, phrases.common.error_saving_changes)
+            messages.error(self.request, phrases.base.error_saving_changes)
             return super().form_invalid(form)
         form.save()
         self.qform.review = form.instance

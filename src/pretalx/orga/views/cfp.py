@@ -100,7 +100,7 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     @transaction.atomic
     def form_valid(self, form):
         if not self.sform.is_valid():
-            messages.error(self.request, phrases.common.error_saving_changes)
+            messages.error(self.request, phrases.base.error_saving_changes)
             return self.form_invalid(form)
         messages.success(self.request, phrases.base.saved)
         form.instance.event = self.request.event
