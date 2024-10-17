@@ -5,7 +5,9 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.db.models import Q
-from django.forms import CheckboxSelectMultiple, formset_factory, inlineformset_factory
+from django.forms import (
+    CheckboxSelectMultiple, formset_factory, inlineformset_factory,
+)
 from django.urls import reverse
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
@@ -21,14 +23,16 @@ from pretix.base.channels import get_all_sales_channels
 from pretix.base.email import get_available_placeholders
 from pretix.base.forms import I18nModelForm, PlaceholderValidator, SettingsForm
 from pretix.base.models import Event, Organizer, TaxRule, Team
-from pretix.base.models.event import EventMetaValue, SubEvent, EventFooterLinkModel
+from pretix.base.models.event import (
+    EventFooterLinkModel, EventMetaValue, SubEvent,
+)
 from pretix.base.reldate import RelativeDateField, RelativeDateTimeField
 from pretix.base.settings import (
     PERSON_NAME_SCHEMES, PERSON_NAME_TITLE_GROUPS, validate_event_settings,
 )
 from pretix.control.forms import (
     MultipleLanguagesWidget, SlugWidget, SplitDateTimeField,
-    SplitDateTimePickerWidget, SMTPSettingsMixin,
+    SplitDateTimePickerWidget,
 )
 from pretix.control.forms.widgets import Select2
 from pretix.helpers.countries import CachedCountries
@@ -793,7 +797,7 @@ def contains_web_channel_validate(val):
         raise ValidationError(_("The online shop must be selected to receive these emails."))
 
 
-class MailSettingsForm(SMTPSettingsMixin, SettingsForm):
+class MailSettingsForm(SettingsForm):
     auto_fields = [
         'mail_prefix',
         'mail_from',
@@ -1000,10 +1004,9 @@ class MailSettingsForm(SMTPSettingsMixin, SettingsForm):
     )
 
     smtp_select = [
-        
+
         ('sendgrid', _("SendGrid")),
         ('smtp', _("SMTP"))]
-
 
     email_vendor = forms.ChoiceField(
         label=_(""),
@@ -1095,6 +1098,16 @@ class MailSettingsForm(SMTPSettingsMixin, SettingsForm):
                 # If we don't ask for attendee emails, we can't send them anything and we don't need to clutter
                 # the user interface with it
                 del self.fields[k]
+
+    def clean(self):
+        data = self.cleaned_data
+        if not data.get('smtp_password') and data.get('smtp_username'):
+            # Leave password unchanged if the username is set and the password field is empty.
+            # This makes it impossible to set an empty password as long as a username is set, but
+            # Python's smtplib does not support password-less schemes anyway.
+            data['smtp_password'] = self.initial.get('smtp_password')
+        if data.get('smtp_use_tls') and data.get('smtp_use_ssl'):
+            raise ValidationError(_('You can activate either SSL or STARTTLS security, but not both at the same time.'))
 
 
 class TicketSettingsForm(SettingsForm):

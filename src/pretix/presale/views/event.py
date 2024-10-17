@@ -1,19 +1,20 @@
 import calendar
-import jwt
-import sys
 import datetime as dt
+import importlib.util
+import logging
+import sys
 from collections import defaultdict
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 from importlib import import_module
-import logging
 
 import isoweek
+import jwt
 import pytz
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.db.models import (
-    Count, Exists, IntegerField, OuterRef, Prefetch, Value, Q
+    Count, Exists, IntegerField, OuterRef, Prefetch, Q, Value,
 )
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -27,7 +28,7 @@ from django.views.generic import TemplateView
 
 from pretix.base.channels import get_all_sales_channels
 from pretix.base.models import (
-    ItemVariation, Quota, SeatCategoryMapping, Voucher, Order
+    ItemVariation, Order, Quota, SeatCategoryMapping, Voucher,
 )
 from pretix.base.models.event import SubEvent
 from pretix.base.models.items import (
@@ -42,15 +43,12 @@ from pretix.presale.views.organizer import (
     EventListMixin, add_subevents_for_days, days_for_template,
     filter_qs_by_attr, weeks_for_template,
 )
-from pretix.multidomain.urlreverse import build_absolute_uri
 
 from ...helpers.formats.en.formats import WEEK_FORMAT
 from . import (
     CartMixin, EventViewMixin, allow_frame_if_namespaced, get_cart,
     iframe_entry_view_wrapper,
 )
-
-import importlib.util
 
 package_name = 'pretix_venueless'
 
@@ -648,6 +646,7 @@ class EventAuth(View):
         request.session['pretix_event_access_{}'.format(request.event.pk)] = parent
         return redirect(eventreverse(request.event, 'presale:event.index'))
 
+
 @method_decorator(allow_frame_if_namespaced, 'dispatch')
 @method_decorator(iframe_entry_view_wrapper, 'dispatch')
 class JoinOnlineVideoView(EventViewMixin, View):
@@ -672,14 +671,14 @@ class JoinOnlineVideoView(EventViewMixin, View):
         }, status=200)
 
     def validate_access(self, request, *args, **kwargs):
-        if not self.request.customer:
+        if not hasattr(self.request, 'customer'):
             # Customer not logged in yet
             return False, None, None
         else:
             # Get all orders of customer which belong to this event
             order_list = (Order.objects.filter(Q(event=self.request.event)
-                                      & (Q(customer=self.request.customer) | Q(email__iexact=self.request.customer.email)))
-                  .select_related('event').order_by('-datetime'))
+                                               & (Q(customer=self.request.customer) | Q(email__iexact=self.request.customer.email)))
+                          .select_related('event').order_by('-datetime'))
             # Check qs is empty
             if not order_list:
                 # no order placed yet

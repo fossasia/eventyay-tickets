@@ -83,7 +83,7 @@ def _default_context(request):
                 _footer += response
             else:
                 _footer.append(response)
-    
+
         # Append footer links to the _footer list
         _footer += request.event.cache.get_or_set(
             'footer_links',  # The cache key

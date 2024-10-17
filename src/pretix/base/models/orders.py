@@ -3,13 +3,12 @@ import hashlib
 import hmac
 import json
 import logging
+import secrets
 import string
-import uuid
 from collections import Counter
 from datetime import datetime, time, timedelta
 from decimal import Decimal
 from typing import Any, Dict, List, Union
-import secrets
 
 import dateutil
 import pycountry
@@ -40,7 +39,7 @@ from pretix.base.banlist import banned
 from pretix.base.decimal import round_decimal
 from pretix.base.email import get_email_context
 from pretix.base.i18n import language
-from pretix.base.models import Customer, User
+from pretix.base.models import User
 from pretix.base.reldate import RelativeDateWrapper
 from pretix.base.services.locking import NoLockManager
 from pretix.base.settings import PERSON_NAME_SCHEMES
@@ -178,13 +177,6 @@ class Order(LockModel, LoggedModel):
         verbose_name=_("Event"),
         related_name="orders",
         on_delete=models.CASCADE
-    )
-    customer = models.ForeignKey(
-        Customer,
-        verbose_name=_("Customer"),
-        related_name="orders",
-        null=True, blank=True,
-        on_delete=models.SET_NULL
     )
     email = models.EmailField(
         null=True, blank=True,

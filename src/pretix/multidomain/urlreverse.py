@@ -1,8 +1,8 @@
-import logging
 import datetime
-import jwt
+import logging
 from urllib.parse import urljoin, urlsplit
 
+import jwt
 from django.conf import settings
 from django.db.models import Q
 from django.urls import reverse
@@ -12,6 +12,7 @@ from pretix.base.models import Event, Organizer
 from .models import KnownDomain
 
 logger = logging.getLogger(__name__)
+
 
 def get_event_domain(event, fallback=False, return_info=False):
     assert isinstance(event, Event)
@@ -169,7 +170,7 @@ def build_join_video_url(event, order):
 
 def generate_token_url(event, order, position):
     # If customer has account, use customer code to generate token
-    if order.customer:
+    if hasattr(order, 'customer') and order.customer:
         video_url = generate_token(event, order.customer.identifier, position)
     else:
         # else user position Id to generate token

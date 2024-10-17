@@ -4,13 +4,14 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy
-from django.views.generic import ListView, UpdateView, DeleteView, CreateView
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from pretix.base.models import Team
 from pretix.control.views.organizer import OrganizerDetailViewMixin
-from ..tasks import send_team_webhook
+
 from ...control.forms.organizer_forms import TeamForm
 from ...control.permissions import OrganizerPermissionRequiredMixin
+from ..tasks import send_team_webhook
 
 
 class TeamListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):

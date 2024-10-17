@@ -39,9 +39,9 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
     @cached_property
     def address_asked(self):
         return (
-                self.request.event.settings.invoice_address_asked
-                and (not self.request.event.settings.invoice_address_not_asked_free or not get_cart_is_free(
-            self.request))
+            self.request.event.settings.invoice_address_asked
+            and (not self.request.event.settings.invoice_address_not_asked_free or not get_cart_is_free(
+                self.request))
         )
 
     def get_context_data(self, **kwargs):
@@ -135,19 +135,11 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
         for receiver, response in order_meta_from_request.send(sender=request.event, request=request):
             meta_info.update(response)
 
-        return self.do(
-            self.request.event.id,
-            payment_provider=self.payment_provider.identifier if self.payment_provider else None,
-            positions=[p.id for p in self.positions],
-            email=self.cart_session.get('email'),
-            locale=translation.get_language(),
-            address=self.invoice_address.pk,
-            meta_info=meta_info,
-            sales_channel=request.sales_channel.identifier,
-            gift_cards=self.cart_session.get('gift_cards'),
-            shown_total=self.cart_session.get('shown_total'),
-            customer=self.cart_session.get('customer'),
-        )
+        return self.do(self.request.event.id, self.payment_provider.identifier if self.payment_provider else None,
+                       [p.id for p in self.positions], self.cart_session.get('email'),
+                       translation.get_language(), self.invoice_address.pk, meta_info,
+                       request.sales_channel.identifier, self.cart_session.get('gift_cards'),
+                       self.cart_session.get('shown_total'))
 
     def get_success_message(self, value):
         create_empty_cart_id(self.request)

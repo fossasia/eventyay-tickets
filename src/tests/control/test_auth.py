@@ -317,7 +317,7 @@ class Login2FAFormTest(TestCase):
         d = TOTPDevice.objects.create(user=self.user, name='test')
         totp = TOTP(d.bin_key, d.step, d.t0, d.digits, d.drift)
         totp.time = time.time()
-        response = self.client.post('/control/login/2fa'.format(d.pk), {
+        response = self.client.post('/control/login/2fa', {
             'token': str(totp.token() + 2)
         })
         self.assertEqual(response.status_code, 302)
@@ -329,7 +329,7 @@ class Login2FAFormTest(TestCase):
         d = TOTPDevice.objects.create(user=self.user, name='test')
         totp = TOTP(d.bin_key, d.step, d.t0, d.digits, d.drift)
         totp.time = time.time()
-        response = self.client.post('/control/login/2fa?next=/control/events/'.format(d.pk), {
+        response = self.client.post('/control/login/2fa?next=/control/events/', {
             'token': str(totp.token())
         })
         self.assertEqual(response.status_code, 302)
@@ -343,7 +343,7 @@ class Login2FAFormTest(TestCase):
 
         m = self.monkeypatch
         m.setattr("webauthn.verify_authentication_response", fail)
-        d = U2FDevice.objects.create(
+        U2FDevice.objects.create(
             user=self.user, name='test',
             json_data='{"appId": "https://local.eventyay.com", "keyHandle": '
                       '"j9Rkpon1J5U3eDQMM8YqAvwEapt-m87V8qdCaImiAqmvTJ'
@@ -353,7 +353,7 @@ class Login2FAFormTest(TestCase):
 
         response = self.client.get('/control/login/2fa')
         assert 'token' in response.content.decode()
-        response = self.client.post('/control/login/2fa'.format(d.pk), {
+        response = self.client.post('/control/login/2fa', {
             'token': '{"response": "true"}'
         })
         self.assertEqual(response.status_code, 302)
@@ -368,7 +368,7 @@ class Login2FAFormTest(TestCase):
                       b'', 1, 'single_device', True,
                   ))
 
-        d = U2FDevice.objects.create(
+        U2FDevice.objects.create(
             user=self.user, name='test',
             json_data='{"appId": "https://local.eventyay.com", "keyHandle": '
                       '"j9Rkpon1J5U3eDQMM8YqAvwEapt-m87V8qdCaImiAqmvTJ'
@@ -378,7 +378,7 @@ class Login2FAFormTest(TestCase):
 
         response = self.client.get('/control/login/2fa')
         assert 'token' in response.content.decode()
-        response = self.client.post('/control/login/2fa'.format(d.pk), {
+        response = self.client.post('/control/login/2fa', {
             'token': '{"response": "true"}'
         })
         self.assertEqual(response.status_code, 302)

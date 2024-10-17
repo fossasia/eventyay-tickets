@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import PermissionDenied
 from django.core.files import File
 from django.db import transaction
 from django.db.models import Max, Min, Prefetch, ProtectedError
@@ -17,10 +17,10 @@ from pretix.base.models.event import Event, EventMetaValue
 from pretix.base.models.organizer import Organizer, Team
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.control.forms.filter import EventFilterForm, OrganizerFilterForm
-from pretix.control.forms.organizer import BaseOrganizerFooterLink, OrganizerFooterLink
+from pretix.control.forms.organizer import OrganizerFooterLink
 from pretix.control.forms.organizer_forms import (
-    MailSettingsForm, OrganizerDeleteForm, OrganizerForm,
-    OrganizerSettingsForm, OrganizerUpdateForm,
+    OrganizerDeleteForm, OrganizerForm, OrganizerSettingsForm,
+    OrganizerUpdateForm,
 )
 from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, OrganizerPermissionRequiredMixin,
@@ -241,63 +241,6 @@ class OrganizerSettingsFormView(OrganizerDetailViewMixin, OrganizerPermissionReq
         else:
             messages.error(self.request, _('We could not save your changes. See below for details.'))
             return self.get(request)
-
-
-class OrganizerMailSettings(OrganizerSettingsFormView):
-    form_class = MailSettingsForm
-    template_name = 'pretixcontrol/organizers/mail.html'
-    permission = 'can_change_organizer_settings'
-
-    def get_success_url(self):
-        return reverse('control:organizer.settings.mail', kwargs={
-            'organizer': self.request.organizer.slug,
-        })
-
-    @transaction.atomic
-    def post(self, request, *args, **kwargs):
-        """
-        Handles POST requests to process the form, save changes, log actions, and test SMTP settings if requested.
-
-        Args:
-            request (HttpRequest): The HTTP request object.
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
-
-        Returns:
-            HttpResponse: Redirects to the success URL if the form is valid, otherwise re-renders the form with errors.
-        """
-        form = self.get_form()
-
-        if form.is_valid():
-            form.save()
-
-            if form.has_changed():
-                self.request.organizer.log_action(
-                    'pretix.organizer.settings', user=self.request.user, data={
-                        k: form.cleaned_data.get(k) for k in form.changed_data
-                    }
-                )
-
-            if request.POST.get('test', '0').strip() == '1':
-                backend = self.request.organizer.get_mail_backend(force_custom=True, timeout=10)
-                try:
-                    backend.test(self.request.organizer.settings.mail_from)
-                except Exception as e:
-                    messages.warning(self.request, _('An error occurred while contacting the SMTP server: %s') % str(e))
-                else:
-                    success_message = _(
-                        'Your changes have been saved and the connection attempt to your SMTP server was successful.') \
-                        if form.cleaned_data.get('smtp_use_custom') else \
-                        _('We\'ve been able to contact the SMTP server you configured. Remember to check '
-                          'the "use custom SMTP server" checkbox, otherwise your SMTP server will not be used.')
-                    messages.success(self.request, success_message)
-            else:
-                messages.success(self.request, _('Your changes have been saved.'))
-
-            return redirect(self.get_success_url())
-
-        messages.error(self.request, _('We could not save your changes. See below for details.'))
-        return self.get(request)
 
 
 class OrganizerTeamView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DetailView):
