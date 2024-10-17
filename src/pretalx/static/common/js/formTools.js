@@ -177,27 +177,38 @@ const initSelect = (element) => {
     new Choices(element, choicesOptions)
 }
 
+const originalData = {}
+
+const handleUnload = (e) => {
+    const form = e.target.form
+    if (isDirty(form)) {
+        e.preventDefault()
+    }
+}
+
+const isDirty = (form) => {
+    if (Object.keys(originalData[form.id]).length === 0) return false
+    const currentData = {}
+    new FormData(form).forEach((value, key) => (currentData[key] = value))
+    /* We have to compare all the current form's fields individually, because
+     * there may be multiple forms with no/the same ID on the page. */
+    for (const key in currentData) {
+        if (JSON.stringify(currentData[key]) !== JSON.stringify(originalData[form.id][key])) {
+            return true
+        }
+    }
+    return false
+}
+
+
 // Make sure the main form doesn't have unsaved changes before leaving
 const initFormChanges = (form) => {
-    const originalData = {}
     // Populate original data after a short delay to make sure the form is fully loaded
     // and that any script interactions have run
     setTimeout(() => {
-        new FormData(form).forEach((value, key) => (originalData[key] = value))
+        originalData[form.id] = {}
+        new FormData(form).forEach((value, key) => (originalData[form.id][key] = value))
     }, 1000)
-
-    const isDirty = (form) => {
-        if (Object.keys(originalData).length === 0) return false
-        const currentData = {}
-        new FormData(form).forEach((value, key) => (currentData[key] = value))
-        return JSON.stringify(originalData) !== JSON.stringify(currentData)
-    }
-
-    const handleUnload = (e) => {
-        if (isDirty(form)) {
-            e.preventDefault()
-        }
-    }
 
     form.addEventListener("submit", () => {
         window.removeEventListener("beforeunload", handleUnload)
@@ -227,6 +238,32 @@ const addDateLimit = (element, other, limit) => {
             element.setAttribute(limit, otherElement.value)
         })
         element.setAttribute(limit, otherElement.value)
+    }
+}
+
+const initTextarea = (element, other, limit) => {
+    const submitButtons = Array.from(element.form.querySelectorAll("button, input[type=submit]")).filter(button => !button.disabled && button.type === "submit")
+    const buttonsWithName = submitButtons.filter(button => button.name.length > 0)
+    if (submitButtons.length <= 1 && buttonsWithName.length === 0) {
+        // We use classic form submit whenever we can, to be on the safe side
+        element.addEventListener("keydown", (ev) => {
+            if (ev.key === "Enter" && ev.ctrlKey) {
+                ev.preventDefault()
+                // We need to remove the "are you sure" dialog that will show now otherwise
+                window.removeEventListener("beforeunload", handleUnload)
+                element.form.removeEventListener("submit", handleUnload)
+                element.form.submit()
+            }
+        })
+    } else {
+        // But if there are multiple submit buttons, we click the first one,
+        // to make sure the correct name/value is attached to the form data
+        element.addEventListener("keydown", (ev) => {
+            if (ev.key === "Enter" && ev.ctrlKey) {
+                ev.preventDefault()
+                submitButtons[0].click()
+            }
+        })
     }
 }
 
@@ -266,6 +303,7 @@ onReady(() => {
             initFormChanges(form)
             initFormButton(form)
         })
+    document.querySelectorAll("form textarea").forEach(element => initTextarea(element))
     checkForChanges()
     initDateFields()
 })
