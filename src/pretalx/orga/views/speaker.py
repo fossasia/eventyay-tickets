@@ -222,7 +222,7 @@ class SpeakerDetail(SpeakerViewMixin, ActionFromUrl, CreateOrUpdateView):
             )
         if form.has_changed() or self.questions_form.has_changed():
             self.request.event.cache.set("rebuild_schedule_export", True, None)
-        messages.success(self.request, "The speaker profile has been updated.")
+        messages.success(self.request, phrases.base.saved)
         return result
 
     def get_form_kwargs(self):

@@ -67,9 +67,7 @@ class UpdateCheckView(PermissionRequired, FormView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _("Your changes have not been saved, see below for errors.")
-        )
+        messages.error(self.request, phrases.common.error_saving_changes)
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):

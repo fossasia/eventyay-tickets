@@ -26,6 +26,7 @@ from django_context_decorator import context
 from pretalx.agenda.permissions import is_submission_visible
 from pretalx.common.exceptions import SubmissionError
 from pretalx.common.models import ActivityLog
+from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
@@ -1015,7 +1016,7 @@ class TagDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def form_valid(self, form):
         form.instance.event = self.request.event
         result = super().form_valid(form)
-        messages.success(self.request, _("The tag has been saved."))
+        messages.success(self.request, phrases.base.saved)
         if form.has_changed():
             action = "pretalx.tag." + ("update" if self.object else "create")
             form.instance.log_action(action, person=self.request.user, orga=True)
