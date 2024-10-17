@@ -64,8 +64,8 @@
             </form>
         </h5>
         <form method="post" enctype="multipart/form-data">
-            {{ form.non_field_errors }}
-            {{ qform.non_field_errors }}
+            {% include "common/forms/errors.html" %}
+            {% include "common/forms/errors.html" with form=qform %}
             {% csrf_token %}
             {{ form }}
             {{ qform }}

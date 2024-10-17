@@ -30,7 +30,7 @@
         {% include "orga/includes/tablist.html" %}
 
         <section role="tabpanel" id="tabpanel-general" aria-labelledby="tab-general" tabindex="0" aria-hidden="false">
-            {{ form.non_field_errors }}
+            {% include "common/forms/errors.html" %}
 
             {{ form.name.as_field_group }}
             {{ form.slug.as_field_group }}

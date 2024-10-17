@@ -4,7 +4,7 @@
 {% load socialaccount %}
 {% load socialapp_extras %}
 
-{{ form.non_field_errors }}
+{% include "common/forms/errors.html" %}
 {% if no_form %}
     <div id="auth-form" class="password-input-form">
 {% else %}

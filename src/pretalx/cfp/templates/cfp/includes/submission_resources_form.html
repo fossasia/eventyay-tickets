@@ -19,7 +19,7 @@
                     {{ form.id }}
                     {{ form.DELETE }}
                 </div>
-                {{ form.non_field_errors }}
+                {% include "common/forms/errors.html" %}
                 <div class="resource-option-row flip ml-auto d-flex">
                     <div class="d-flex flex-column flex-grow-1 mr-2 resource-option{% if not form.errors %}-input{% endif %}{% if action == "view" %} disabled{% endif %}">
                         {% if form.errors %}

@@ -47,7 +47,7 @@
 
         <form method="post" id="review-form">
             {% csrf_token %}
-            {{ form.non_field_errors }}
+            {% include "common/forms/errors.html" %}
             <div class="form-group row">
                 <label class="col-md-3 col-form-label">{% translate "Title" %}</label>
                 <div class="col-md-9 mt-1">

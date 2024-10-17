@@ -18,7 +18,7 @@
 
 {% block submission_content %}
     <form method="post" enctype="multipart/form-data"><fieldset>
-        {{ form.non_field_errors }}
+        {% include "common/forms/errors.html" %}
         {% csrf_token %}
 
         <div id="anonymise">

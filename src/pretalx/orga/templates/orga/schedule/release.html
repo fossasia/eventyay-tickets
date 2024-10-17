@@ -8,7 +8,7 @@
 
 {% block schedule_content %}
     <form method="post">
-        {{ form.non_field_errors }}
+        {% include "common/forms/errors.html" %}
         {% csrf_token %}
         <h2>
             {% translate "Release new schedule" %}

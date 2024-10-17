@@ -24,7 +24,7 @@
     </p>
     <form method="post" enctype="multipart/form-data" class="speaker-profile-form">
         {% csrf_token %}
-        {{ profile_form.non_field_errors }}
+        {% include "common/forms/errors.html" with form=profile_form %}
 
         {{ profile_form.name.as_field_group }}
         {% if profile_form.biography %}
