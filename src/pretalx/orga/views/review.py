@@ -12,6 +12,7 @@ from django.views.generic import FormView, TemplateView
 from django_context_decorator import context
 
 from pretalx.common.forms.renderers import InlineFormRenderer
+from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
     ActionConfirmMixin,
@@ -432,12 +433,12 @@ class BulkReview(EventPermissionRequired, TemplateView):
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         if not all(form.is_valid() for form in self.forms.values()):
-            messages.error(request, _("There have been errors with your input."))
+            messages.error(self.request, phrases.common.error_saving_changes)
             return super().get(request, *args, **kwargs)
         for form in self.forms.values():
             if form.has_changed():
                 form.save()
-        messages.success(request, _("Your reviews have been saved."))
+        messages.success(self.request, phrases.base.saved)
         return super().get(request, *args, **kwargs)
 
 
@@ -608,10 +609,10 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
 
     def form_valid(self, form):
         if not self.qform.is_valid():
-            messages.error(self.request, _("There have been errors with your input."))
+            messages.error(self.request, phrases.common.error_saving_changes)
             return super().form_invalid(form)
         if self.tags_form and not self.tags_form.is_valid():
-            messages.error(self.request, _("There have been errors with your input."))
+            messages.error(self.request, phrases.common.error_saving_changes)
             return super().form_invalid(form)
         form.save()
         self.qform.review = form.instance
@@ -776,7 +777,7 @@ class ReviewAssignment(EventPermissionRequired, FormView):
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, _("Saved!"))
+        messages.success(self.request, phrases.base.saved)
         return redirect(self.request.event.orga_urls.review_assignments)
 
 

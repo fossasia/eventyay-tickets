@@ -123,7 +123,7 @@ class TeamDetail(PermissionRequired, TeamMixin, CreateOrUpdateView):
         if created:
             messages.success(self.request, _("The team has been created."))
         elif form.has_changed():
-            messages.success(self.request, _("The settings have been saved."))
+            messages.success(self.request, phrases.base.saved)
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -310,7 +310,7 @@ class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
         return self.get_object()
 
     def get_success_url(self):
-        messages.success(self.request, _("Saved!"))
+        messages.success(self.request, phrases.base.saved)
         return self.request.path
 
 

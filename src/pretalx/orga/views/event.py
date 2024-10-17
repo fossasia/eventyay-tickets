@@ -103,7 +103,7 @@ class EventDetail(EventSettingsPermission, ActionFromUrl, UpdateView):
         form.instance.log_action(
             "pretalx.event.update", person=self.request.user, orga=True
         )
-        messages.success(self.request, _("The event settings have been saved."))
+        messages.success(self.request, phrases.base.saved)
         return result
 
 
@@ -455,7 +455,7 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
                         ),
                     )
         else:
-            messages.success(self.request, _("Yay! We saved your changes."))
+            messages.success(self.request, phrases.base.saved)
 
         return super().form_valid(form)
 
@@ -549,10 +549,7 @@ class UserSettings(TemplateView):
             request.user.regenerate_token()
             messages.success(request, phrases.cfp.token_regenerated)
         else:
-            messages.error(
-                self.request,
-                _("Oh :( We had trouble saving your input. See below for details."),
-            )
+            messages.error(self.request, phrases.common.error_saving_changes)
             return self.get(request, *args, **kwargs)
         return redirect(self.get_success_url())
 
@@ -743,7 +740,7 @@ class WidgetSettings(EventPermissionRequired, FormView):
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, _("The widget settings have been saved."))
+        messages.success(self.request, phrases.base.saved)
         return super().form_valid(form)
 
     def get_form_kwargs(self):

@@ -24,6 +24,7 @@ from django_context_decorator import context
 
 from pretalx.cfp.flow import CfPFlow
 from pretalx.common.forms import I18nFormSet
+from pretalx.common.text.phrases import phrases
 from pretalx.common.text.serialize import I18nStrJSONEncoder
 from pretalx.common.views import CreateOrUpdateView, OrderModelView
 from pretalx.common.views.mixins import (
@@ -99,9 +100,9 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     @transaction.atomic
     def form_valid(self, form):
         if not self.sform.is_valid():
-            messages.error(self.request, _("We had trouble saving your input."))
+            messages.error(self.request, phrases.common.error_saving_changes)
             return self.form_invalid(form)
-        messages.success(self.request, "The CfP update has been saved.")
+        messages.success(self.request, phrases.base.saved)
         form.instance.event = self.request.event
         result = super().form_valid(form)
         if form.has_changed():
@@ -310,7 +311,7 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 "update" if "pk" in self.kwargs else "create"
             )
             form.instance.log_action(action, person=self.request.user, orga=True)
-        messages.success(self.request, "The question has been saved.")
+        messages.success(self.request, phrases.base.saved)
         return result
 
 
@@ -470,7 +471,7 @@ class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView
         return result
 
     def form_valid(self, form):
-        messages.success(self.request, "The Submission Type has been saved.")
+        messages.success(self.request, phrases.base.saved)
         form.instance.event = self.request.event
         result = super().form_valid(form)
         if form.has_changed():
@@ -585,7 +586,7 @@ class TrackDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def form_valid(self, form):
         form.instance.event = self.request.event
         result = super().form_valid(form)
-        messages.success(self.request, _("The track has been saved."))
+        messages.success(self.request, phrases.base.saved)
         if form.has_changed():
             action = "pretalx.track." + ("update" if self.object else "create")
             form.instance.log_action(action, person=self.request.user, orga=True)
@@ -666,7 +667,7 @@ class AccessCodeDetail(PermissionRequired, CreateOrUpdateView):
         if form.has_changed():
             action = "pretalx.access_code." + ("update" if self.object else "create")
             form.instance.log_action(action, person=self.request.user, orga=True)
-        messages.success(self.request, _("The access code has been saved."))
+        messages.success(self.request, phrases.base.saved)
         return result
 
 
