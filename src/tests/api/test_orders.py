@@ -9,7 +9,7 @@ from django.core import mail as djmail
 from django.core.files.base import ContentFile
 from django.utils.timezone import now
 from django_countries.fields import Country
-from django_scopes import scopes_disabled
+from django_scopes import scopes_disabled, scope
 from pytz import UTC
 from rest_framework.exceptions import ErrorDetail
 from stripe.error import APIConnectionError
@@ -3395,8 +3395,9 @@ def test_order_create_auto_pricing(token_client, organizer, event, item, quota, 
     )
     assert resp.status_code == 201
     with scopes_disabled():
-        o = Order.objects.get(code=resp.data['code'])
-        p = o.positions.first()
+        with scope(organizer=organizer):
+            o = Order.objects.get(code=resp.data['code'])
+            p = o.positions.first()
     assert p.price == item.default_price
     assert o.total == item.default_price + Decimal('0.25')
 

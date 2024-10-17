@@ -3,6 +3,7 @@ import time
 import pytest
 from django.test import override_settings
 from django.utils.timezone import now
+from django_scopes import scope
 
 from pretix.base.models import Organizer
 
@@ -308,8 +309,9 @@ def test_token_event_subresources_permission_not_allowed(token_client, team, org
         team.all_events = True
         setattr(team, urlset[1], False)
     team.save()
-    resp = getattr(token_client, urlset[0])('/api/v1/organizers/{}/events/{}/{}'.format(
-        organizer.slug, event.slug, urlset[2]))
+    with scope(organizer=organizer):
+        resp = getattr(token_client, urlset[0])('/api/v1/organizers/{}/events/{}/{}'.format(
+            organizer.slug, event.slug, urlset[2]))
     if urlset[3] == 404:
         assert resp.status_code == 403
     else:

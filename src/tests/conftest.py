@@ -47,3 +47,9 @@ def pytest_fixture_setup(fixturedef, request):
     else:
         with scopes_disabled():
             yield
+
+
+@pytest.fixture(autouse=True)
+def disable_scopes():
+    with scopes_disabled():
+        yield
