@@ -9,9 +9,6 @@ from pretalx.submission.models import Submission
 
 @app.task(name="pretalx.process_image")
 def task_process_image(*, model: str, pk: int, field: str, generate_thumbnail: bool):
-    print("=" * 80)
-    print("task_process_image")
-    print("=" * 80)
     models = {
         "Event": Event,
         "Submission": Submission,

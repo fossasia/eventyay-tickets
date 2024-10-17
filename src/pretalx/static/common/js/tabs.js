@@ -42,7 +42,6 @@ const initTabs = () => {
     // If the URL fragment changes, e.g. by navigating backwards, update the tab
     window.addEventListener('hashchange', () => {
         selectedTab = getTabFromHash()
-        console.log(selectedTab)
         if (selectedTab) {
             selectedTab.checked = true
             updateTabPanels()
