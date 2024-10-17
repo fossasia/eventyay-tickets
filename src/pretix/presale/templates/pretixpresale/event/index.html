@@ -109,8 +109,9 @@
                             </form>
                         </div>
                         <div class="col-md-4 col-sm-6 col-md-offset-4 col-xs-12">
-                            <a class="btn btn-block btn-primary btn-lg"
-                                    href="{% eventurl request.event "presale:event.checkout.start" cart_namespace=cart_namespace  %}">
+                            <a class="btn btn-block btn-primary btn-lg
+                                {% if not guest_checkout_allowed and not request.user.is_authenticated %}disabled{% endif %}"
+                                href="{% if guest_checkout_allowed or request.user.is_authenticated %}{% eventurl request.event 'presale:event.checkout.start' cart_namespace=cart_namespace %}{% endif %}">
                                 {% if has_addon_choices or cart.total == 0 %}
                                     <i class="fa fa-shopping-cart" aria-hidden="true"></i> {% trans "Continue" %}
                                 {% else %}

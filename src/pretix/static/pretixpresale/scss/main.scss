@@ -40,7 +40,12 @@ footer nav {
 }
 
 
-.locales {
+.login-hdr {
+    margin-left: 10px;
+}
+
+
+.locales, .login-hdr {
     display: inline;
     // a {
     //     text-decoration: none;
@@ -114,7 +119,7 @@ body.loading .container {
     font-size: 120px;
     color: $brand-primary;
 }
-#loadingmodal, #ajaxerr, #join-video-popupmodal {
+#loadingmodal, #ajaxerr, #login-hdr, #join-video-popupmodal {
     position: fixed;
     top: 0;
     left: 0;
@@ -178,7 +183,7 @@ body.loading .container {
     }
 }
 @media (max-width: 700px) {
-    #loadingmodal, #ajaxerr, #join-video-popupmodal {
+    #loadingmodal, #ajaxerr, #login-hdr, #join-video-popupmodal {
         .modal-card {
             .modal-card-icon {
                 float: none;

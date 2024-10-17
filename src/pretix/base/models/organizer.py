@@ -14,8 +14,9 @@ from i18nfield.fields import I18nCharField
 
 from pretix.base.models.base import LoggedModel
 from pretix.base.validators import OrganizerSlugBanlistValidator
-from .auth import User
+
 from ..settings import settings_hierarkey
+from .auth import User
 
 
 @settings_hierarkey.add(cache_namespace='organizer')
