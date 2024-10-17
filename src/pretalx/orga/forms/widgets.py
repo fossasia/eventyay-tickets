@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.forms import CheckboxSelectMultiple, RadioSelect
+from django.utils.translation import gettext_lazy as _
 
 
 class HeaderSelect(RadioSelect):
@@ -7,6 +8,7 @@ class HeaderSelect(RadioSelect):
 
 
 class MultipleLanguagesWidget(CheckboxSelectMultiple):
+    template_name = "orga/widgets/multi_languages_select.html"
     option_template_name = "orga/widgets/multi_languages_widget.html"
 
     def __init__(self, *args, **kwargs):
@@ -17,11 +19,33 @@ class MultipleLanguagesWidget(CheckboxSelectMultiple):
         super().__init__(*args, **kwargs)
 
     def sort(self):
-        self.choices = sorted(
-            self.choices,
-            key=lambda locale: (
-                not settings.LANGUAGES_INFORMATION[locale[0]].get("official"),
-                str(locale[1]),
+        official_languages = [
+            choice
+            for choice in self.choices
+            if settings.LANGUAGES_INFORMATION[choice[0]].get("official")
+        ]
+        inofficial_languages = [
+            choice
+            for choice in self.choices
+            if not settings.LANGUAGES_INFORMATION[choice[0]].get("official")
+        ]
+        self.choices = (
+            (
+                "",
+                official_languages,
+            ),
+            (
+                (
+                    _("Community translantions"),
+                    _(
+                        "These translations are not maintained by the pretalx team. "
+                        "We cannot vouch for their correctness, and new or recently changed features "
+                        "might not be translated and will show in English instead. "
+                        'You can <a href="{url}" target="_blank">contribute to the translations</a>.'
+                    ),
+                    "fa fa-group",
+                ),
+                inofficial_languages,
             ),
         )
 

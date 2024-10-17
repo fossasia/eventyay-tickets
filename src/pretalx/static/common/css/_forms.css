@@ -244,9 +244,20 @@ input[type="checkbox"] {
 input[type="radio"] {
   border-radius: 50%;
 }
-
 input[type="radio"] + label {
   line-height: 2;
+}
+
+.checkbox-group-legend {
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+
+  span {
+    background-color: var(--color-bg);
+    padding-right: 0.5rem;
+    position: relative;
+    top: 0.5em;
+  }
 }
 
 textarea {
