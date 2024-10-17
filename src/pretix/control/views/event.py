@@ -2,16 +2,12 @@ import json
 import re
 from collections import OrderedDict
 from decimal import Decimal
-from io import BytesIO
 from itertools import groupby
-from urllib.parse import urlparse, urlsplit
+from urllib.parse import urlsplit
 
-import qrcode
-import qrcode.image.svg
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import PermissionDenied
 from django.core.files import File
 from django.db import transaction
 from django.db.models import ProtectedError
@@ -23,7 +19,6 @@ from django.http import (
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
-from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.timezone import now
 from django.utils.translation import gettext, gettext_lazy as _
 from django.views.generic import DeleteView, FormView, ListView
@@ -55,7 +50,7 @@ from pretix.control.forms.event import (
 from pretix.control.permissions import EventPermissionRequiredMixin
 from pretix.control.views.user import RecentAuthenticationRequiredMixin
 from pretix.helpers.database import rolledback_transaction
-from pretix.multidomain.urlreverse import build_absolute_uri, get_event_domain
+from pretix.multidomain.urlreverse import get_event_domain
 from pretix.presale.style import regenerate_css
 
 from ...base.i18n import language
