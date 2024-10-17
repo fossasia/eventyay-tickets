@@ -34,10 +34,19 @@ $(function () {
     var show_organizer_area = JSON.parse(document.getElementById('show_organizer_area').textContent);
     var currentPath = window.location.pathname;
     var queryString = window.location.search;
-    var logoutPath = `/control/logout?back=${encodeURIComponent(currentPath)}%3F${encodeURIComponent(queryString)}`;
+
+    // Using URLSearchParams to handle query parameters
+    var searchParams = new URLSearchParams(queryString);
+    var backUrl = `${currentPath}${queryString}`;
+
+    // Constructing logout path using URLSearchParams
+    var logoutParams = new URLSearchParams();
+    logoutParams.set('back', backUrl);
+    var logoutPath = `/control/logout?${logoutParams.toString()}`;
+
     var profilePath = `/control/settings/`;
     var orderPath = `/control/settings/orders/`;
-    logoutPath = decodeURIComponent(logoutPath);
+
     var options = {
         html: true,
         content: `<div data-name="popover-profile-menu">
