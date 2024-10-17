@@ -30,8 +30,7 @@ from i18nfield.strings import LazyI18nString
 from pretix.base.email import ClassicMailRenderer
 from pretix.base.i18n import language
 from pretix.base.models import (
-    CachedFile, Event, Invoice, InvoiceAddress, Order, OrderPosition,
-    User,
+    CachedFile, Event, Invoice, InvoiceAddress, Order, OrderPosition, User,
 )
 from pretix.base.services.invoices import invoice_pdf_task
 from pretix.base.services.tasks import TransactionAwareTask

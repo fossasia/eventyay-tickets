@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q, OuterRef, Count, Subquery, IntegerField
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
@@ -29,12 +29,14 @@ from pretix.base.auth import get_auth_backends
 from pretix.base.forms.auth import ReauthForm
 from pretix.base.forms.user import User2FADeviceAddForm, UserSettingsForm
 from pretix.base.models import (
-    Event, LogEntry, NotificationSetting, U2FDevice, User, WebAuthnDevice, Order, OrderPosition,
+    Event, LogEntry, NotificationSetting, Order, U2FDevice, User,
+    WebAuthnDevice,
 )
 from pretix.base.models.auth import StaffSession
 from pretix.base.notifications import get_all_notification_types
-from pretix.control.forms.filter import OrderFilterForm
-from pretix.control.forms.organizer_forms.user_orders_form import UserOrderFilterForm
+from pretix.control.forms.organizer_forms.user_orders_form import (
+    UserOrderFilterForm,
+)
 from pretix.control.forms.users import StaffSessionForm
 from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, StaffMemberRequiredMixin,
