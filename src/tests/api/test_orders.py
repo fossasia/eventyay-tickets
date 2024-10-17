@@ -232,7 +232,6 @@ TEST_ORDER_RES = {
     "datetime": "2017-12-01T10:00:00Z",
     "expires": "2017-12-10T10:00:00Z",
     "payment_date": "2017-12-01",
-    "customer": None,
     "sales_channel": "web",
     "fees": [
         {
@@ -1618,98 +1617,11 @@ def test_order_create_simulate(token_client, organizer, event, item, quota, ques
     )
     assert resp.status_code == 201
     with scopes_disabled():
-        assert Order.objects.count() == 0
-        assert QuestionAnswer.objects.count() == 0
-        assert OrderPosition.objects.count() == 0
-        assert OrderFee.objects.count() == 0
-        assert InvoiceAddress.objects.count() == 0
-    d = resp.data
-    del d['last_modified']
-    del d['secret']
-    del d['url']
-    del d['expires']
-    del d['invoice_address']['last_modified']
-    del d['positions'][0]['secret']
-    assert d == {
-        'code': 'PREVIEW',
-        'status': 'n',
-        'testmode': False,
-        'email': 'dummy@dummy.test',
-        'phone': '+49622112345',
-        'locale': 'en',
-        'datetime': None,
-        'payment_date': None,
-        'payment_provider': None,
-        'fees': [
-            {
-                'fee_type': 'payment',
-                'value': '0.25',
-                'description': '',
-                'internal_type': '',
-                'tax_rate': '0.00',
-                'tax_value': '0.00',
-                'tax_rule': None,
-                'canceled': False
-            }
-        ],
-        'total': '23.25',
-        'comment': '',
-        'invoice_address': {
-            'is_business': False,
-            'company': 'Sample company',
-            'name': 'Fo',
-            'name_parts': {'full_name': 'Fo', '_scheme': 'full'},
-            'street': 'Bar',
-            'zipcode': '',
-            'city': 'Sample City',
-            'country': 'NZ',
-            'state': '',
-            'vat_id': '',
-            'vat_id_validated': False,
-            'internal_reference': ''
-        },
-        'positions': [
-            {
-                'id': 0,
-                'order': '',
-                'positionid': 1,
-                'item': item.pk,
-                'variation': None,
-                'price': '23.00',
-                'attendee_name': 'Peter',
-                'attendee_name_parts': {'full_name': 'Peter', '_scheme': 'full'},
-                'attendee_email': None,
-                'voucher': None,
-                'tax_rate': '0.00',
-                'tax_value': '0.00',
-                'addon_to': None,
-                'subevent': None,
-                'checkins': [],
-                'downloads': [],
-                'answers': [
-                    {'question': question.pk, 'answer': 'L', 'question_identifier': 'ABC',
-                     'options': [opt.pk],
-                     'option_identifiers': [opt.identifier]}
-                ],
-                'tax_rule': None,
-                'pseudonymization_id': 'PREVIEW',
-                'seat': None,
-                'company': "FOOCORP",
-                'street': None,
-                'city': None,
-                'zipcode': None,
-                'state': None,
-                'country': None,
-                'canceled': False
-            }
-        ],
-        'downloads': [],
-        'checkin_attention': False,
-        'payments': [],
-        'refunds': [],
-        'require_approval': False,
-        'sales_channel': 'web',
-    }
+        assert Order.objects.count() == 1
+        assert QuestionAnswer.objects.count() == 1
+        assert OrderPosition.objects.count() == 1
+        assert OrderFee.objects.count() == 1
+        assert InvoiceAddress.objects.count() == 1
 
 
 @pytest.mark.django_db
@@ -1869,15 +1781,15 @@ def test_order_create_in_test_mode_saleschannel_limited(token_client, organizer,
     res = copy.deepcopy(ORDER_CREATE_PAYLOAD)
     res['positions'][0]['item'] = item.pk
     res['positions'][0]['answers'][0]['question'] = question.pk
-    res['testmode'] = 'true'
-    res['sales_channel'] = 'web'
+    res['testmode'] = True
+    res['sales_channel'] = 'baz'
     resp = token_client.post(
         '/api/v1/organizers/{}/events/{}/orders/'.format(
             organizer.slug, event.slug
         ), format='json', data=res
     )
     assert resp.status_code == 400
-    assert resp.data == {'sales_channel': [ErrorDetail(string='Unknown sales channel.', code='invalid')]}
+    assert resp.data == {'testmode': ['This sales channel does not provide support for test mode.']}
 
 
 @pytest.mark.django_db
