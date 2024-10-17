@@ -170,7 +170,7 @@ def build_join_video_url(event, order):
 
 def generate_token_url(event, order, position):
     # If customer has account, use customer code to generate token
-    if order.customer:
+    if hasattr(order, 'customer') and order.customer:
         video_url = generate_token(event, order.customer.identifier, position)
     else:
         # else user position Id to generate token

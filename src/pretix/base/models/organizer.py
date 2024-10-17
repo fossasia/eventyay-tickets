@@ -2,7 +2,6 @@ import string
 from datetime import date, datetime, time
 
 import pytz
-from django.core.mail import get_connection
 from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from django.db.models import Exists, OuterRef, Q
@@ -15,9 +14,8 @@ from i18nfield.fields import I18nCharField
 
 from pretix.base.models.base import LoggedModel
 from pretix.base.validators import OrganizerSlugBanlistValidator
-
-from ..settings import settings_hierarkey
 from .auth import User
+from ..settings import settings_hierarkey
 
 
 @settings_hierarkey.add(cache_namespace='organizer')
@@ -146,24 +144,6 @@ class Organizer(LoggedModel):
             e.delete()
         self.teams.all().delete()
 
-    def get_mail_backend(self, timeout=None, force_custom=False):
-        """
-        Returns an email server connection, either by using the system-wide connection
-        or by returning a custom one based on the organizer's settings.
-        """
-        from pretix.base.email import CustomSMTPBackend
-
-        if self.settings.smtp_use_custom or force_custom:
-            return CustomSMTPBackend(host=self.settings.smtp_host,
-                                     port=self.settings.smtp_port,
-                                     username=self.settings.smtp_username,
-                                     password=self.settings.smtp_password,
-                                     use_tls=self.settings.smtp_use_tls,
-                                     use_ssl=self.settings.smtp_use_ssl,
-                                     fail_silently=False, timeout=timeout)
-        else:
-            return get_connection(fail_silently=False)
-
 
 def generate_invite_token():
     return get_random_string(length=32, allowed_chars=string.ascii_lowercase + string.digits)
@@ -225,10 +205,6 @@ class Team(LoggedModel):
         verbose_name=_("Can change organizer settings"),
         help_text=_('Someone with this setting can get access to most data of all of your events, i.e. via privacy '
                     'reports, so be careful who you add to this team!')
-    )
-    can_manage_customers = models.BooleanField(
-        default=False,
-        verbose_name=_("Can manage customer accounts")
     )
     can_manage_gift_cards = models.BooleanField(
         default=False,

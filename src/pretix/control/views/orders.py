@@ -1737,18 +1737,12 @@ class OrderContactChange(OrderView):
     def form(self):
         return OrderContactForm(
             instance=self.order,
-            data=self.request.POST if self.request.method == "POST" else None,
-            customers=self.request.organizer.settings.customer_accounts and (
-                self.request.user.has_organizer_permission(
-                    self.request.organizer, 'can_manage_customers', request=self.request
-                )
-            )
+            data=self.request.POST if self.request.method == "POST" else None
         )
 
     def post(self, *args, **kwargs):
         old_email = self.order.email
         old_phone = self.order.phone
-        old_customer = self.order.customer
         changed = False
         if self.form.is_valid():
             new_email = self.form.cleaned_data['email']
@@ -1771,17 +1765,6 @@ class OrderContactChange(OrderView):
                     data={
                         'old_phone': old_phone,
                         'new_phone': self.form.cleaned_data['phone'],
-                    },
-                    user=self.request.user,
-                )
-            new_customer = self.form.cleaned_data.get('customer')
-            if new_customer != old_customer:
-                changed = True
-                self.order.log_action(
-                    'pretix.event.order.customer.changed',
-                    data={
-                        'old_customer': old_customer,
-                        'new_customer': self.form.cleaned_data['customer'],
                     },
                     user=self.request.user,
                 )

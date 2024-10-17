@@ -12,7 +12,7 @@ from django_scopes import scopes_disabled
 
 from pretix.base.i18n import language
 from pretix.base.models import (
-    CartPosition, Customer, InvoiceAddress, ItemAddOn, OrderPosition, Question,
+    CartPosition, InvoiceAddress, ItemAddOn, OrderPosition, Question,
     QuestionAnswer, QuestionOption,
 )
 from pretix.base.services.cart import get_fees
@@ -56,14 +56,6 @@ class CartMixin:
     def cart_session(self):
         from pretix.presale.views.cart import cart_session
         return cart_session(self.request)
-
-    @cached_property
-    def cart_customer(self):
-        if self.cart_session.get('customer_mode', 'guest') == 'login':
-            try:
-                return self.request.organizer.customers.get(pk=self.cart_session.get('customer', -1))
-            except Customer.DoesNotExist:
-                return
 
     @cached_property
     def invoice_address(self):
