@@ -111,7 +111,7 @@ dev = [
             'coveralls',
             'coverage',
             'pytest==8.2.*',
-            'pytest-django==4.*',
+            'pytest-django==4.9.*',
             'pytest-xdist==3.6.*',
             'isort==5.13.*',
             'pytest-mock==3.14.*',
