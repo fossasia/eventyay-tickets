@@ -257,7 +257,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         while self.__class__.objects.filter(
             email__iexact=self.email
         ).exists():  # pragma: no cover
-            self.email = f"deleted_user_{random.randint(0, 999)}"
+            self.email = f"deleted_user_{random.randint(0, 99999)}"
         self.name = "Deleted User"
         self.is_active = False
         self.is_superuser = False
@@ -267,13 +267,13 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         self.pw_reset_token = None
         self.pw_reset_time = None
         self.set_unusable_password()
+        self._delete_files()
         self.save()
         self.profiles.all().update(biography="")
         for answer in Answer.objects.filter(
             person=self, question__contains_personal_data=True
         ):
             answer.delete()  # Iterate to delete answer files, too
-        self._delete_files()
         for team in self.teams.all():
             team.members.remove(self)
 
