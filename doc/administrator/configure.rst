@@ -324,5 +324,14 @@ The locale section
 - **Environment variable:** ``PRETALX_TIME_ZONE``
 - **Default:** ``UTC``
 
+The files section
+-----------------
+
+``upload_limit``
+~~~~~~~~~~~~~~~~
+
+- The maximum file size for uploads in MB.
+- **Environment variable:** ``PRETALX_FILE_UPLOAD_LIMIT``
+- **Default:** ``10``
 
 .. _Python: https://docs.python.org/3/library/configparser.html
