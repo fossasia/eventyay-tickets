@@ -14,7 +14,13 @@ from pretalx.common.forms.widgets import (
 )
 from pretalx.common.templatetags.filesize import filesize
 
-IMAGE_EXTENSIONS = (".png", ".jpg", ".gif", ".jpeg", ".svg")
+IMAGE_EXTENSIONS = {
+    ".png": ["image/png", ".png"],
+    ".jpg": ["image/jpeg", ".jpg"],
+    ".jpeg": ["image/jpeg", ".jpeg"],
+    ".gif": ["image/gif", ".gif"],
+    ".svg": ["image/svg+xml", ".svg"],
+}
 
 
 class GlobalValidator:
@@ -73,37 +79,28 @@ class SizeFileInput:
 
 class ExtensionFileInput:
     widget = ClearableBasenameFileInput
-    extensions = []
+    extensions = {}
 
     def __init__(self, *args, **kwargs):
-        extensions = kwargs.pop("extensions", None) or self.extensions or []
-        self.extensions = sorted([ext.lower() for ext in extensions])
+        self.extensions = kwargs.pop("extensions", None) or self.extensions or {}
         super().__init__(*args, **kwargs)
-        self.original_help_text = (
-            getattr(self, "original_help_text", "") or self.help_text
-        )
-        self.added_help_text = (
-            (getattr(self, "added_help_text", "") + " ").strip()
-            + " "
-            + _(
-                _("Allowed filetypes: {extensions}").format(
-                    extensions=", ".join(self.extensions)
-                )
-            )
-        )
-        self.help_text = self.original_help_text + " " + self.added_help_text
+        content_types = set()
+        for ext in self.extensions.values():
+            content_types.update(ext)
+        content_types = ",".join(content_types)
+        self.widget.attrs["accept"] = content_types
 
     def validate(self, value):
         super().validate(value)
         if value:
             filename = value.name
             extension = Path(filename).suffix.lower()
-            if extension not in self.extensions:
+            if extension not in self.extensions.keys():
                 raise ValidationError(
                     _(
                         "This filetype ({extension}) is not allowed, it has to be one of the following: "
                     ).format(extension=extension)
-                    + ", ".join(self.extensions)
+                    + ", ".join(self.extensions.keys())
                 )
 
 
