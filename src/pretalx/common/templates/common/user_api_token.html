@@ -29,7 +29,7 @@
             <div class="{% if orga %}submit-group{% else %}col-md-4 flip ml-auto{% endif %}">
                 <span></span>
                 {% if orga %}<div>{% endif %}
-                <button type="submit" class="btn btn-lg btn-danger {% if not orga %}btn-block{% endif %}" name="form" value="token" data-toggle="tooltip" title="{% translate "Generate a new token. The current token will not be usable any longer." %}">
+                <button type="submit" class="btn btn-lg btn-danger {% if not orga %}btn-block{% endif %}" name="form" value="token" data-toggle="tooltip" data-placement="left" title="{% translate "Generate a new token. The current token will not be usable any longer." %}">
                     {% translate "Invalidate and regenerate" %}
                 </button>
                 {% if orga %}</div>{% endif %}
