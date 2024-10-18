@@ -26,11 +26,12 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.gzip import gzip_page
 from django.views.decorators.http import condition
 from django.views.i18n import (
-    JavaScriptCatalog, get_formats, js_catalog_template,
+    JavaScriptCatalog, get_formats,
 )
 from lxml import html
 
 from pretix.base.i18n import language
+from pretix.base.js_catalog_template import js_catalog_template
 from pretix.base.models import CartPosition, Event, Quota, SubEvent, Voucher
 from pretix.base.services.cart import error_messages
 from pretix.base.settings import GlobalSettingsObject
