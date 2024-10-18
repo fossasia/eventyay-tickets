@@ -109,15 +109,15 @@
                             </form>
                         </div>
                         <div class="col-md-4 col-sm-6 col-md-offset-4 col-xs-12">
-                            <a class="btn btn-block btn-primary btn-lg
-                                {% if not guest_checkout_allowed and not request.user.is_authenticated %}disabled{% endif %}"
-                                href="{% if guest_checkout_allowed or request.user.is_authenticated %}{% eventurl request.event 'presale:event.checkout.start' cart_namespace=cart_namespace %}{% endif %}">
-                                {% if has_addon_choices or cart.total == 0 %}
-                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i> {% trans "Continue" %}
-                                {% else %}
-                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i> {% trans "Proceed with checkout" %}
-                                {% endif %}
-                            </a>
+                            {% if guest_checkout_allowed or request.user.is_authenticated %}
+                                <a class="btn btn-block btn-primary btn-lg" href="{% eventurl request.event 'presale:event.checkout.start' cart_namespace=cart_namespace %}">
+                                    Checkout
+                                </a>
+                            {% else %}
+                                <a class="btn btn-block btn-primary btn-lg disabled" href="#">
+                                    Checkout
+                                </a>
+                            {% endif %}
                         </div>
                         <div class="visible-xs-block col-xs-12">
                             <form method="post" data-asynctask action="{% eventurl request.event "presale:event.cart.clear" cart_namespace=cart_namespace %}">

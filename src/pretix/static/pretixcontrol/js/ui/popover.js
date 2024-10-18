@@ -3,14 +3,11 @@ $(function () {
     var currentPath = window.location.pathname;
     var queryString = window.location.search;
 
-    // Using URLSearchParams to handle query parameters
-    var searchParams = new URLSearchParams(queryString);
     var backUrl = `${currentPath}${queryString}`;
 
     // Constructing logout path using URLSearchParams
-    var logoutParams = new URLSearchParams();
-    logoutParams.set('back', backUrl);
-    var logoutPath = `/control/logout?${logoutParams.toString()}`;
+    let logoutParams = new URLSearchParams({ back: backUrl });
+    var logoutPath = `/control/logout?${logoutParams}`;
 
     var profilePath = `/control/settings/`;
     var orderPath = `/control/settings/orders/`;
