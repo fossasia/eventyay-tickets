@@ -184,8 +184,12 @@ adjust the content to fit your system::
     [Install]
     WantedBy=multi-user.target
 
-If you decide to use Celery (giving you asynchronous execution for long-running
-tasks), you’ll also need a second service
+pretalx optionally runs with Celery, a service that allows for long-running
+tasks (like sending many emails) to be performed asynchronously in the
+background. We strongly recommend running pretalx with Celery workers, as some
+things, like cleaning up unused files, are otherwise not going to work.
+
+To run Celery workers, you’ll need a second service
 ``/etc/systemd/system/pretalx-worker.service`` with the following content::
 
     [Unit]
