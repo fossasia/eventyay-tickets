@@ -24,6 +24,10 @@ def render_time(time, fmt):
 
 @register.filter()
 def datetimerange(start: datetime, end: datetime):
+    if not start and not end:
+        return ""
+    if not end:
+        return render_time(start, "SHORT_DATETIME_FORMAT")
     tz = get_current_timezone()
     start = start.astimezone(tz)
     end = end.astimezone(tz)
