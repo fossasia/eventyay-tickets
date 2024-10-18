@@ -1,6 +1,7 @@
 {% extends "cfp/event/base.html" %}
 
 {% load compress %}
+{% load datetimerange %}
 {% load event_tags %}
 {% load html_signal %}
 {% load i18n %}
@@ -9,6 +10,15 @@
 {% load static %}
 
 {% block title %}{% translate "Your proposals" %} :: {% endblock title %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "common/js/copy.js" %}"></script>
+        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
+        <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
+        <script defer src="{% static "agenda/js/datetime-local.js" %}"></script>
+    {% endcompress %}
+{% endblock scripts %}
 
 {% block content %}
     {% if information %}
@@ -92,7 +102,7 @@
                                 {% if submission.public_slots %}
                                     <a href="{{ submission.urls.public }}">
                                         {% for talk in submission.public_slots %}
-                                            {{ talk.start|date:DAY_MONTH_DATE_FORMAT }}, {{ talk.start|date:"TIME_FORMAT" }}–{{ talk.end|date:"TIME_FORMAT" }}, {{ talk.room.name }}
+                                            {{ talk.start|datetimerange:talk.end }}, {{ talk.room.name }}
                                             {% if not forloop.last %}<br>{% endif %}
                                         {% endfor %}
                                     </a>
@@ -154,7 +164,4 @@
             </p>
         {% endif %}
     {% endif %}
-    {% compress js %}
-        <script defer src="{% static "common/js/copy.js" %}"></script>
-    {% endcompress %}
 {% endblock content %}
