@@ -34,15 +34,36 @@ class CompatDeleteView(SingleObjectTemplateResponseMixin, DeletionMixin, FormMix
         Returns:
             HttpResponse: The response following form validation.
         """
-        self.object = self.get_object()
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
+        self.object = self.retrieve_object()
+        form = self.retrieve_form()
+        return self.process_form(form)
+
+    def retrieve_object(self):
+        return self.get_object()
+
+    def retrieve_form(self):
+        return self.get_form()
+
+    def process_form(self, form):
+        if self.is_form_valid(form):
+            return self.handle_valid_form(form)
         else:
-            return self.form_invalid(form)
+            return self.handle_invalid_form(form)
+
+    def is_form_valid(self, form):
+        return form.is_valid()
+
+    def handle_valid_form(self, form):
+        return self.form_valid(form)
+
+    def handle_invalid_form(self, form):
+        return self.form_invalid(form)
 
     def form_valid(self, form):
         """
         Remove the object and redirect to the success URL.
         """
+        return self.perform_deletion()
+
+    def perform_deletion(self):
         return self.delete(self.request, self.args, self.kwargs)
