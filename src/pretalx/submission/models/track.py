@@ -50,8 +50,6 @@ class Track(OrderedModel, PretalxModel):
         base = edit = "{self.event.cfp.urls.tracks}{self.pk}/"
         delete = "{base}delete"
         prefilled_cfp = "{self.event.cfp.urls.public}?track={self.slug}"
-        up = "{base}up"
-        down = "{base}down"
 
     def __str__(self) -> str:
         return str(self.name)

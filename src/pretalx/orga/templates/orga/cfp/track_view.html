@@ -9,12 +9,14 @@
 {% block stylesheets %}
     {% compress css %}
         <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+        <link rel="stylesheet" href="{% static "orga/css/dragsort.css" %}">
     {% endcompress %}
 {% endblock stylesheets %}
 
 {% block scripts %}
     {% compress js %}
         <script defer src="{% static "common/js/modalDialog.js" %}"></script>
+        <script defer src="{% static "orga/js/dragsort.js" %}"></script>
     {% endcompress %}
 {% endblock scripts %}
 
@@ -50,9 +52,9 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody dragsort-url="{{ request.cfp.urls.tracks }}">
                 {% for track in tracks %}
-                    <tr>
+                    <tr dragsort-id="{{ track.id }}">
                         <td>
                             <a href="{{ track.urls.edit }}">{{ track.name }}</a>
                             {% if track.requires_access_code %}
@@ -66,14 +68,14 @@
                             <a href="{{ request.event.orga_urls.submissions }}?track={{ track.id }}">{{ track.submissions.all.count }}</a>
                         </td>
                         <td class="text-right">
+                            <button draggable="true" class="btn btn-sm btn-primary mr-1 dragsort-button" title="{% translate "Move item" %}">
+                                <i class="fa fa-arrows"></i>
+                            </button>
                             <a href="{{ track.urls.prefilled_cfp.full }}"
                                title="{% translate "Go to pre-filled CfP form" %}"
                                class="btn btn-sm btn-info">
                                 <i class="fa fa-link"></i>
                             </a>
-
-                            {% include "orga/includes/order_object.html" with object=track %}
-
                             <a href="{{ track.urls.edit }}" class="btn btn-sm btn-info">
                                 <i class="fa fa-edit"></i>
                             </a>
