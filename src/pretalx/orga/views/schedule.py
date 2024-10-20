@@ -9,7 +9,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.db.models.deletion import ProtectedError
 from django.http import FileResponse, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -26,7 +26,7 @@ from pretalx.agenda.views.utils import get_schedule_exporters
 from pretalx.common.language import get_current_language_information
 from pretalx.common.text.path import safe_filename
 from pretalx.common.text.phrases import phrases
-from pretalx.common.views import CreateOrUpdateView, OrderModelView
+from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
     ActionFromUrl,
     EventPermissionRequired,
@@ -532,6 +532,16 @@ class RoomList(EventPermissionRequired, TemplateView):
     template_name = "orga/schedule/room_list.html"
     permission_required = "orga.change_settings"
 
+    def post(self, request, *args, **kwargs):
+        order = request.POST.get("order")
+        if order:
+            order = order.split(",")
+        for index, pk in enumerate(order):
+            room = get_object_or_404(Room.objects, event=request.event, pk=pk)
+            room.position = index
+            room.save(update_fields=["position"])
+        return self.get(request, *args, **kwargs)
+
 
 class RoomDelete(EventPermissionRequired, View):
     permission_required = "orga.change_settings"
@@ -600,11 +610,3 @@ class RoomDetail(EventPermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 "pretalx.event.update", person=self.request.user, orga=True
             )
         return result
-
-
-class RoomOrderView(OrderModelView):
-    model = Room
-    permission_required = "orga.edit_room"
-
-    def get_success_url(self):
-        return self.request.event.orga_urls.room_settings

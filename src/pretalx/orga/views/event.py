@@ -25,7 +25,7 @@ from rest_framework.authtoken.models import Token
 from pretalx.common.forms import I18nEventFormSet, I18nFormSet
 from pretalx.common.models import ActivityLog
 from pretalx.common.text.phrases import phrases
-from pretalx.common.views import OrderModelView, is_form_bound
+from pretalx.common.views import is_form_bound
 from pretalx.common.views.mixins import (
     ActionConfirmMixin,
     ActionFromUrl,
@@ -384,14 +384,6 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
         if weights_changed:
             ReviewScoreCategory.recalculate_scores(self.request.event)
         return True
-
-
-class ReviewPhaseOrderView(OrderModelView):
-    permission_required = "orga.change_settings"
-    model = ReviewPhase
-
-    def get_success_url(self):
-        return self.request.event.orga_urls.review_settings
 
 
 class PhaseActivate(PermissionRequired, View):

@@ -176,7 +176,6 @@ class GenerateCode:
 class OrderedModel:
     """Provides methods to move a model up and down in a queryset.
 
-    Used with OrderModelView to provide a view to move models up and down.
     Implement the `get_order_queryset` method as a classmethod or staticmethod
     to provide the queryset to order.
     """

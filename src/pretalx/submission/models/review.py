@@ -330,8 +330,6 @@ class ReviewPhase(OrderedModel, PretalxModel):
     class urls(EventUrls):
         base = "{self.event.orga_urls.review_settings}phase/{self.pk}/"
         delete = "{base}delete"
-        up = "{base}up"
-        down = "{base}down"
         activate = "{base}activate"
 
     def activate(self) -> None:

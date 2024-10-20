@@ -174,7 +174,6 @@ urlpatterns = [
                                 cfp.CfPQuestionDetail.as_view(),
                                 name="cfp.question.view",
                             ),
-                            *cfp.QuestionOrderView.get_urls(),
                             path(
                                 "delete",
                                 cfp.CfPQuestionDelete.as_view(),
@@ -246,7 +245,6 @@ urlpatterns = [
                                 cfp.TrackDelete.as_view(),
                                 name="cfp.track.delete",
                             ),
-                            *cfp.TrackOrderView.get_urls(),
                         ]
                     ),
                 ),
@@ -635,7 +633,6 @@ urlpatterns = [
                     "settings/review/phase/<int:pk>/",
                     include(
                         [
-                            *event.ReviewPhaseOrderView.get_urls(),
                             path(
                                 "activate",
                                 event.PhaseActivate.as_view(),
@@ -711,7 +708,6 @@ urlpatterns = [
                                 schedule.RoomDelete.as_view(),
                                 name="schedule.rooms.delete",
                             ),
-                            *schedule.RoomOrderView.get_urls(),
                         ]
                     ),
                 ),

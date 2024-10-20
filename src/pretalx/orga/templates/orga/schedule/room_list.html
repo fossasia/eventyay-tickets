@@ -1,8 +1,22 @@
 {% extends "orga/base.html" %}
 
+{% load compress %}
 {% load i18n %}
+{% load static %}
 
 {% block extra_title %}{{ request.event.rooms.count }} {% blocktranslate trimmed count count=request.event.rooms.count context "Number of rooms" %}Room{% plural %}Rooms{% endblocktranslate %} :: {% endblock extra_title %}
+
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "orga/css/dragsort.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "orga/js/dragsort.js" %}"></script>
+    {% endcompress %}
+{% endblock scripts %}
 
 {% block content %}
     <div>
@@ -24,9 +38,9 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody dragsort-url="{{ request.event.orga_urls.room_settings }}">
                     {% for room in request.event.rooms.all %}
-                        <tr>
+                        <tr dragsort-id="{{ room.pk }}">
                             <td>
                                 <a href="{{ room.urls.settings_base }}">{{ room.name }}</a>
                             </td>
@@ -34,8 +48,9 @@
                                 {% if room.capacity %}{{ room.capacity }}{% endif %}
                             </td>
                             <td class="text-right">
-
-                                {% include "orga/includes/order_object.html" with object=room %}
+                                <button draggable="true" class="btn btn-sm btn-primary mr-1 dragsort-button" title="{% translate "Move item" %}">
+                                    <i class="fa fa-arrows"></i>
+                                </button>
 
                                 <a href="{{ room.urls.edit }}" class="btn btn-sm btn-info">
                                     <i class="fa fa-edit"></i>

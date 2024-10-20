@@ -26,7 +26,7 @@ from pretalx.cfp.flow import CfPFlow
 from pretalx.common.forms import I18nFormSet
 from pretalx.common.text.phrases import phrases
 from pretalx.common.text.serialize import I18nStrJSONEncoder
-from pretalx.common.views import CreateOrUpdateView, OrderModelView
+from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
     ActionConfirmMixin,
     ActionFromUrl,
@@ -116,6 +116,18 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
 class CfPQuestionList(EventPermissionRequired, TemplateView):
     template_name = "orga/cfp/question_view.html"
     permission_required = "orga.view_question"
+
+    def post(self, request, *args, **kwargs):
+        order = request.POST.get("order")
+        if order:
+            order = order.split(",")
+        for index, pk in enumerate(order):
+            question = get_object_or_404(
+                Question.all_objects, event=request.event, pk=pk
+            )
+            question.position = index
+            question.save(update_fields=["position"])
+        return self.get(request, *args, **kwargs)
 
     @context
     def questions(self):
@@ -354,14 +366,6 @@ class CfPQuestionDelete(PermissionRequired, ActionConfirmMixin, DetailView):
         return redirect(self.request.event.cfp.urls.questions)
 
 
-class QuestionOrderView(OrderModelView):
-    permission_required = "orga.edit_question"
-    model = Question
-
-    def get_success_url(self):
-        return self.request.event.cfp.urls.questions
-
-
 class CfPQuestionToggle(PermissionRequired, View):
     permission_required = "orga.edit_question"
 
@@ -557,6 +561,16 @@ class TrackList(EventPermissionRequired, PaginationMixin, ListView):
     template_name = "orga/cfp/track_view.html"
     context_object_name = "tracks"
     permission_required = "orga.view_tracks"
+
+    def post(self, request, *args, **kwargs):
+        order = request.POST.get("order")
+        if order:
+            order = order.split(",")
+        for index, pk in enumerate(order):
+            track = get_object_or_404(Track.objects, event=request.event, pk=pk)
+            track.position = index
+            track.save(update_fields=["position"])
+        return self.get(request, *args, **kwargs)
 
     def get_queryset(self):
         return self.request.event.tracks.all()
@@ -780,11 +794,3 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
         else:
             flow.save_config(data)
         return JsonResponse({"success": True})
-
-
-class TrackOrderView(OrderModelView):
-    permission_required = "orga.edit_track"
-    model = Track
-
-    def get_success_url(self):
-        return self.request.event.cfp.urls.tracks
