@@ -1,35 +1,35 @@
 tr[dragsort-id] {
-    &.drag-indicator.insert-before {
-        th,
-        td {
-            border-top: 2px solid var(--color-text-lighter);
-        }
+  &.drag-indicator.insert-before {
+    th,
+    td {
+      border-top: 2px solid var(--color-text-lighter);
     }
-    &.drag-indicator.insert-after {
-        th,
-        td {
-            border-bottom: 2px solid var(--color-text-lighter);
-        }
+  }
+  &.drag-indicator.insert-after {
+    th,
+    td {
+      border-bottom: 2px solid var(--color-text-lighter);
     }
-    .dragsort-button:not(:disabled) {
-        &,
-        button {
-            cursor: grab;
-        }
-        &:active {
-            cursor: grabbing;
-        }
+  }
+  .dragsort-button:not(:disabled) {
+    &,
+    button {
+      cursor: grab;
     }
-    &.dragging td {
-        background-color: var(--color-grey-lighter);
-        .dragsort-button {
-            transform: translate(-9999px);
-        }
+    &:active {
+      cursor: grabbing;
     }
+  }
+  &.dragging td {
+    background-color: var(--color-grey-lighter);
+    .dragsort-button {
+      transform: translate(-9999px);
+    }
+  }
 }
 thead.drag-indicator.insert-after {
-    box-shadow: 0 2px var(--color-text-lighter);
+  box-shadow: 0 2px var(--color-text-lighter);
 }
 .dragging {
-    cursor: grabbing !important;
+  cursor: grabbing !important;
 }
