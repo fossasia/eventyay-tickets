@@ -146,7 +146,6 @@ if config.get('pretix', 'trust_x_forwarded_proto', fallback=False):
 PRETIX_PLUGINS_DEFAULT = config.get('pretix', 'plugins_default',
                                     fallback='pretix.plugins.sendmail,pretix.plugins.statistics,pretix.plugins.checkinlists,pretix.plugins.autocheckin')
 PRETIX_PLUGINS_EXCLUDE = config.get('pretix', 'plugins_exclude', fallback='').split(',')
-PRETIX_PLUGINS_SHOW_META = config.getboolean('pretix', 'plugins_show_meta', fallback=True)
 
 FETCH_ECB_RATES = config.getboolean('pretix', 'ecb_rates', fallback=True)
 
@@ -259,7 +258,6 @@ CACHE_TICKETS_HOURS = config.getint('cache', 'tickets', fallback=24 * 3)
 
 ENTROPY = {
     'order_code': config.getint('entropy', 'order_code', fallback=5),
-    'customer_identifier': config.getint('entropy', 'customer_identifier', fallback=7),
     'ticket_secret': config.getint('entropy', 'ticket_secret', fallback=32),
     'voucher_code': config.getint('entropy', 'voucher_code', fallback=16),
     'giftcard_secret': config.getint('entropy', 'giftcard_secret', fallback=12),

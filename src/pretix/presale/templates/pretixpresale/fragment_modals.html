@@ -2,32 +2,6 @@
 {% load eventurl %}
 <div id="ajaxerr">
 </div>
-<div id="popupmodal" hidden aria-live="polite">
-    <div class="modal-card">
-        <div class="modal-card-icon">
-            <i class="fa fa-window-restore big-icon" aria-hidden="true"></i>
-        </div>
-        <div class="modal-card-content">
-            <div>
-                <h3>
-                    {% trans "Being processed in a new window." %}
-                </h3>
-                <p class="text">
-                    {% trans "Re-launch new window." %}
-                </p>
-                <p>
-                    <a href="" data-open-in-popup-window class="btn btn-default">
-                        <span class="fa fa-external-link-square"></span>
-                        {% trans "Open window again" %}
-                    </a>
-                </p>
-                <p class="text">
-                    {% trans "After completing the process in the new window, you can proceed here." %}
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
 <div id="loadingmodal">
     <div class="modal-card">
         <div class="modal-card-icon">
@@ -65,22 +39,24 @@
                         </a>
                     </p>
                 {% endif %}
-                <p class="text">
-                    {% blocktrans with event_name=event_name %}
-                        Want to create a {{ event_name }} account?
-                    {% endblocktrans %}
-                    <a class="btn btn-link" href='{% eventurl request.organizer "presale:organizer.customer.register" %}'>
-                        {% trans "Sign up here" %}
-                    </a>
-                </p>
-                <p class="text">
-                    {% blocktrans with event_name=event_name %}
-                        Already have a {{ event_name }} account?
-                    {% endblocktrans %}
-                    <a class="btn btn-link" href='{% eventurl request.organizer "presale:organizer.customer.login" %}'>
-                        {% trans "Login here" %}
-                    </a>
-                </p>
+                {% if not request.user.is_authenticated %}
+                    <p class="text">
+                        {% blocktrans with event_name=event_name %}
+                            Want to create a {{ event_name }} account?
+                        {% endblocktrans %}
+                        <a class="btn btn-link" href='{% url "control:auth.register" %}?next={{ request.get_full_path|urlencode }}'>
+                            {% trans "Sign up here" %}
+                        </a>
+                    </p>
+                    <p class="text">
+                        {% blocktrans with event_name=event_name %}
+                            Already have a {{ event_name }} account?
+                        {% endblocktrans %}
+                        <a class="btn btn-link" href='{% url "control:auth.login" %}?next={{ request.get_full_path|urlencode }}'>
+                            {% trans "Login here" %}
+                        </a>
+                    </p>
+                {% endif %}
             </div>
         </div>
         <div class="join-online-close">
