@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`orga,1839` If the organisers initially showed the “do not record” checkbox, but then hid it, the sessions marked as unrecorded would still show the appropriate icon in the public schedule, without anybody being able to uncheck the checkbox. Instead, the indicator is now hidden if the checkbox can’t be accessed anymore.
 - :release:`2024.3.0 <2024-10-21>`
 - :feature:`orga` You can now drag rooms, tracks, questions, and even question options to reorder them.
 - :feature:`admin` You can now configure the maximum file upload size.

@@ -643,6 +643,7 @@ class Schedule(PretalxModel):
             "event_start": self.event.date_from.isoformat(),
             "event_end": self.event.date_to.isoformat(),
         }
+        show_do_not_record = self.event.cfp.request_do_not_record
         for talk in talks:
             rooms.add(talk.room)
             if talk.submission:
@@ -672,7 +673,11 @@ class Schedule(PretalxModel):
                         "duration": talk.submission.get_duration(),
                         "updated": talk.updated.isoformat(),
                         "state": talk.submission.state if all_talks else None,
-                        "do_not_record": talk.submission.do_not_record,
+                        "do_not_record": (
+                            talk.submission.do_not_record
+                            if show_do_not_record
+                            else None
+                        ),
                     }
                 )
             else:
