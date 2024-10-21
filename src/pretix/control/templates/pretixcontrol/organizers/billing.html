@@ -12,12 +12,12 @@
 
 {% block inside %}
     <h1>{% trans "Billing settings" %}</h1>
-    <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
-        {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        <div class="tabbed-form">
-            <fieldset>
-                <legend>{% trans "General" %}</legend>
+    <div class="tabbed-form">
+        <fieldset>
+            <legend>{% trans "General" %}</legend>
+            <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% bootstrap_form_errors form %}
                 {% bootstrap_field form.primary_contact_name layout="control" %}
                 {% bootstrap_field form.primary_contact_email layout="control" %}
                 {% bootstrap_field form.company_or_organization_name layout="control" %}
@@ -28,13 +28,21 @@
                 {% bootstrap_field form.country layout="control" %}
                 {% bootstrap_field form.tax_id layout="control" %}
                 {% bootstrap_field form.preferred_language layout="control" %}
-                {% bootstrap_field form.payment_information layout="control" %}
-            </fieldset>
+                <div class="form-group submit-group">
+                    <button type="submit" class="btn btn-primary btn-save">
+                        {% trans "Save" %}
+                    </button>
+                </div>
+            </form>
+        </fieldset>
+        <fieldset>
+            <legend>{% trans "Payment information" %}</legend>
+            <div id="payment-information"></div>
             <div class="form-group submit-group">
-                <button type="submit" class="btn btn-primary btn-save">
+                <button type="button" class="btn btn-primary btn-save" id="save-payment-information">
                     {% trans "Save" %}
                 </button>
             </div>
-        </div>
-    </form>
+        </fieldset>
+    </div>
 {% endblock %}

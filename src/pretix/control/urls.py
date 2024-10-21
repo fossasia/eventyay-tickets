@@ -86,6 +86,21 @@ urlpatterns = [
     url(r'^organizer/(?P<organizer>[^/]+)/delete$', organizer_views.organizer_view.OrganizerDelete.as_view(), name='organizer.delete'),
     url(r'^organizer/(?P<organizer>[^/]+)/settings/display$', organizer_views.organizer_view.OrganizerDisplaySettings.as_view(),
         name='organizer.display'),
+    url(
+        r"^organizer/(?P<organizer>[^/]+)/settings/billing$",
+        organizer_views.organizer_view.BillingSettings.as_view(),
+        name="organizer.settings.billing",
+    ),
+    url(
+        r"^organizer/(?P<organizer>[^/]+)/setup_intent$",
+        organizer_views.organizer_view.setup_intent,
+        name="organizer.setup_intent",
+    ),
+    url(
+        r"^organizer/(?P<organizer>[^/]+)/save_payment_information$",
+        organizer_views.organizer_view.save_payment_information,
+        name="organizer.save_payment_information",
+    ),
     url(r'^organizer/(?P<organizer>[^/]+)/properties$', organizer.EventMetaPropertyListView.as_view(), name='organizer.properties'),
     url(r'^organizer/(?P<organizer>[^/]+)/property/add$', organizer.EventMetaPropertyCreateView.as_view(),
         name='organizer.property.add'),
@@ -106,11 +121,6 @@ urlpatterns = [
         name='organizer.webhook.edit'),
     url(r'^organizer/(?P<organizer>[^/]+)/webhook/(?P<webhook>[^/]+)/logs$', organizer_views.web_hook_view.WebHookLogsView.as_view(),
         name='organizer.webhook.logs'),
-    url(
-        r"^organizer/(?P<organizer>[^/]+)/settings/billing$",
-        organizer_views.organizer_view.BillingSettings.as_view(),
-        name="organizer.settings.billing",
-    ),
     url(r'^organizer/(?P<organizer>[^/]+)/devices$', organizer_views.device_view.DeviceListView.as_view(), name='organizer.devices'),
     url(r'^organizer/(?P<organizer>[^/]+)/device/add$', organizer_views.device_view.DeviceCreateView.as_view(),
         name='organizer.device.add'),

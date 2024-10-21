@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from pretix.base.forms import I18nModelForm
 from pretix.base.models.organizer import Organizer, OrganizerBillingModel
+from pretix.control.utils import create_stripe_customer, update_customer_info
 from pretix.helpers.countries import CachedCountries
 
 
@@ -145,7 +146,6 @@ class BillingSettingsForm(forms.ModelForm):
         ]
         self.base_fields["preferred_language"].choices = selected_languages
         self.base_fields["preferred_language"].initial = self.organizer.settings.locale
-        self.base_fields["payment_information"].disabled = True
         super().__init__(*args, **kwargs)
         self.set_initial_data()
 
@@ -161,7 +161,6 @@ class BillingSettingsForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.organizer_id = self.organizer.id
-
         billing_settings = OrganizerBillingModel.objects.filter(
             organizer_id=self.organizer.id
         ).first()
@@ -170,9 +169,17 @@ class BillingSettingsForm(forms.ModelForm):
             for field in self.Meta.fields:
                 setattr(billing_settings, field, self.cleaned_data[field])
             if commit:
+                update_customer_info(
+                    billing_settings.stripe_customer_id,
+                    email=self.cleaned_data.get("primary_contact_email"),
+                    name=self.cleaned_data.get("primary_contact_name"),
+                )
                 billing_settings.save()
             return billing_settings
         else:
             if commit:
+                stripe_customer = create_stripe_customer(email=self.cleaned_data.get("primary_contact_email"),
+                                                         name=self.cleaned_data.get("primary_contact_name"))
+                instance.stripe_customer_id = stripe_customer.id
                 instance.save()
             return instance

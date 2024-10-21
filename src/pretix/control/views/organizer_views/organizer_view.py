@@ -16,7 +16,7 @@ from django.views.generic import (
 )
 
 from pretix.base.models.event import Event, EventMetaValue
-from pretix.base.models.organizer import Organizer, OrganizerBillingModel, Team
+from pretix.base.models.organizer import Organizer, Team, OrganizerBillingModel
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.control.forms.filter import EventFilterForm, OrganizerFilterForm
 from pretix.control.forms.organizer_forms import (
@@ -27,11 +27,16 @@ from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, OrganizerPermissionRequiredMixin,
 )
 from pretix.control.signals import nav_organizer
+from pretix.control.utils import create_stripe_customer, get_stripe_customer_id, create_setup_intent, \
+    get_stripe_publishable_key, update_payment_info
 from pretix.control.views import PaginationMixin
 from pretix.presale.style import regenerate_organizer_css
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
-from ...forms.organizer_forms.organizer_form import BillingSettingsForm
 from .organizer_detail_view_mixin import OrganizerDetailViewMixin
+from ...forms.organizer_forms.organizer_form import BillingSettingsForm
+
 
 logger = logging.getLogger(__name__)
 
@@ -323,7 +328,6 @@ class OrganizerList(PaginationMixin, ListView):
     def filter_form(self):
         return OrganizerFilterForm(data=self.request.GET, request=self.request)
 
-
 class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
     model = OrganizerBillingModel
     form_class = BillingSettingsForm
@@ -365,3 +369,49 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
             )
 
         return self.form_invalid(form)
+
+
+
+@api_view(['GET'])
+def setup_intent(request, organizer):
+    try:
+        stripe_customer_id = get_stripe_customer_id(organizer)
+
+        if not stripe_customer_id:
+            logger.error("No Stripe customer ID found for organizer: %s", organizer)
+            return Response({
+                "error": "No Stripe customer ID found."
+            }, status=404)
+
+        client_secret = create_setup_intent(stripe_customer_id)
+
+        return Response({
+            "client_secret": client_secret,
+            "stripe_public_key": get_stripe_publishable_key()
+        })
+
+    except Exception as e:
+        logger.error("Unexpected error creating setup intent: %s", str(e))
+        return Response({
+            "error": "An unexpected error occurred."
+        }, status=500)
+
+@api_view(['POST'])
+def save_payment_information(request, organizer):
+    setup_intent_id = request.data.get("setup_intent_id")
+
+    try:
+        stripe_customer_id = get_stripe_customer_id(organizer)
+
+        customer_information = update_payment_info(setup_intent_id, stripe_customer_id)
+
+        return Response({
+            "success": True,
+            "customer": customer_information
+        })
+
+    except Exception as e:
+        logger.error("Unexpected error updating payment information: %s", str(e))
+        return Response({
+            "error": "An unexpected error occurred."
+        }, status=500)

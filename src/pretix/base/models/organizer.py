@@ -458,6 +458,27 @@ class OrganizerBillingModel(models.Model):
 
     payment_information = models.TextField(
         verbose_name=_("Payment Information"),
+    ),
+
+    stripe_customer_id = models.CharField(
+        max_length=255,
+        verbose_name=_("Stripe Customer ID"),
+        blank=True,
+        null=True,
+    )
+
+    payment_method_id = models.CharField(
+        max_length=255,
+        verbose_name=_("Payment Method"),
+        blank=True,
+        null=True,
+    )
+
+    setup_intent_id = models.CharField(
+        max_length=255,
+        verbose_name=_("Setup Intent ID"),
+        blank=True,
+        null=True,
     )
 
     def delete(self, *args, **kwargs):
