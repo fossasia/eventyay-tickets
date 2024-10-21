@@ -30,12 +30,3 @@ class EventCommonSettingsForm(SettingsForm):
     def __init__(self, *args, **kwargs):
         self.event = kwargs['obj']
         super().__init__(*args, **kwargs)
-
-
-class EventWizardCommonFoundationForm(EventWizardFoundationForm):
-    create_for = forms.MultipleChoiceField(
-        choices=settings.LANGUAGES,
-        label=_("Use languages"),
-        widget=MultipleLanguagesWidget,
-        help_text=_('Choose all languages that your event should be available in.')
-    )

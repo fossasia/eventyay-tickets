@@ -103,6 +103,48 @@ def send_event_webhook(self, user_id, event, action):
         except self.MaxRetriesExceededError:
             logger.error("Max retries exceeded for sending organizer webhook.")
 
+@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
+def create_world(self, is_video_create, data):
+    """
+    Create video system for the event
+    @self: task instance
+    @param is_video_create: allow user to add video system
+    @param data: event's data
+    """
+    event_slug = data.get("id")
+    title = data.get("title")
+    event_timezone = data.get("timezone")
+    locale = data.get("locale")
+    token =  data.get("token")
+    has_permission = data.get("has_permission")
+
+    payload = {
+        'id': event_slug,
+        'title': title,
+        'timezone': event_timezone,
+        'locale': locale,
+    }
+
+    headers = {
+        "Authorization": "Bearer " + token
+    }
+
+    # Check if user choose add video option and has permission to create video system ('can_create_events' permission)
+    if is_video_create and has_permission:
+        try:
+             requests.post(
+                "{}/api/v1/create-world/".format(settings.VIDEO_SERVER_HOSTNAME),
+                json= payload,
+                headers= headers,
+            )
+        except requests.RequestException as e:
+            # Log any errors that occur
+            logger.error('An error occurred while requesting to create a video: %s', e)
+            try:
+                self.retry(exc=e)
+            except self.MaxRetriesExceededError:
+                logger.error("Max retries exceeded for sending organizer webhook.")
+
 
 def get_header_token(user_id):
     # Fetch the user and organizer instances
