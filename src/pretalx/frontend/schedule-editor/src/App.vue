@@ -426,7 +426,7 @@ export default {
 			color: $clr-secondary-text-light
 	.days
 		background-color: $clr-white
-		tabs-style(active-color: var(--pretalx-clr-primary), indicator-color: var(--pretalx-clr-primary), background-color: transparent)
+		tabs-style(active-color: var(--color-primary), indicator-color: var(--color-primary), background-color: transparent)
 		overflow-x: auto
 		position: sticky
 		left: 0
