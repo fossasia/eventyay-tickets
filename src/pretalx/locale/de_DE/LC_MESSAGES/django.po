@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-20 19:51+0000\n"
-"PO-Revision-Date: 2024-10-12 01:15+0000\n"
+"PO-Revision-Date: 2024-10-21 14:40+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -3938,28 +3938,21 @@ msgstr ""
 "veröffentlichen willst."
 
 #: pretalx/orga/forms/widgets.py:39
-#, fuzzy
-#| msgid "Unofficial translation"
 msgid "Community translations"
-msgstr "Inoffizielle Übersetzung"
+msgstr "Inoffizielle Übersetzungen"
 
 #: pretalx/orga/forms/widgets.py:41
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "This translation is not maintained by the pretalx team. We cannot vouch for "
-#| "its correctness and new or recently changed features might not be translated"
-#| " and will show in English instead. You can help translating at "
-#| "github.com/pretalx/pretalx."
+#, python-brace-format
 msgid ""
 "These translations are not maintained by the pretalx team. We cannot vouch "
 "for their correctness, and new or recently changed features might not be "
 "translated and will show in English instead. You can <a href=\"{url}\" "
 "target=\"_blank\">contribute to the translations</a>."
 msgstr ""
-"Diese Übersetzung wird nicht vom pretalx-Team gepflegt. Daher kann nicht für"
-" ihre Vollständigkeit garantiert werden. Neue oder veränderte Sätze sind "
-"möglicherweise nicht übersetzt und tauchen auf Englisch auf. Du kannst unter"
-" https://github.com/pretalx/pretalx helfen."
+"Diese Übersetzungen werden nicht vom pretalx-Team gepflegt. Daher kann nicht "
+"für ihre Vollständigkeit garantiert werden. Neue oder veränderte Sätze sind "
+"möglicherweise nicht übersetzt und tauchen auf Englisch auf. Du kannst <a "
+"href=\"{url}\" target=\"_blank\">zu den Übersetzungen beitragen</a>."
 
 #: pretalx/orga/phrases.py:7
 msgid "The event end cannot be before the start."
@@ -4635,10 +4628,8 @@ msgstr "Antwortoptionen hochladen"
 #: pretalx/orga/templates/orga/cfp/question_view.html:86
 #: pretalx/orga/templates/orga/cfp/track_view.html:71
 #: pretalx/orga/templates/orga/schedule/room_list.html:51
-#, fuzzy
-#| msgid "Remove filter"
 msgid "Move item"
-msgstr "Filter entfernen"
+msgstr "Objekt verschieben"
 
 #: pretalx/orga/templates/orga/cfp/question_form.html:172
 msgid "Add a new option"
@@ -7445,6 +7436,9 @@ msgid ""
 "We recommend uploading an image at least 400px wide. A square image works "
 "best, as we display it in a circle in several places."
 msgstr ""
+"Wir empfehlen ein Bild, das mindestens 400px breit ist. Ein quadratisches "
+"Bild funktioniert am besten, da wir das Bild an mehreren Stellen kreisförmig "
+"darstellen."
 
 #: pretalx/person/models/user.py:137
 msgid "Retrieve profile picture via gravatar"
