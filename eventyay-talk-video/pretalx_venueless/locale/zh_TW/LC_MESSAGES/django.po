@@ -29,8 +29,8 @@ msgstr ""
 
 #: local/pretalx-venueless/pretalx_venueless/forms.py:10
 msgid ""
-"Generate a token with the trait 'world:api' in the Config -> Token Generator "
-"menu in Venueless. Leave empty to leave unchanged."
+"Generate a token with the trait 'world:api' in the Config -> Token Generator"
+" menu in Venueless. Leave empty to leave unchanged."
 msgstr ""
 
 #: local/pretalx-venueless/pretalx_venueless/forms.py:12
@@ -68,10 +68,11 @@ msgstr ""
 
 #: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:32
 msgid ""
-"Setting up the connection with Venueless will configure the pretalx settings "
-"in Venueless, and will automatically push schedule changes to venueless "
-"users. Please use Venueless to begin this process. Go to <b>Config → Event</"
-"b> in Venueless, and enter the following settings to create the connection:"
+"Setting up the connection with Venueless will configure the pretalx settings"
+" in Venueless, and will automatically push schedule changes to venueless "
+"users. Please use Venueless to begin this process. Go to <b>Config → "
+"Event</b> in Venueless, and enter the following settings to create the "
+"connection:"
 msgstr ""
 
 #: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:61

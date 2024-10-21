@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-19 08:10+0000\n"
+"POT-Creation-Date: 2024-10-12 00:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,30 +27,30 @@ msgid ""
 "releases!"
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/forms.py:11
+#: local/pretalx-venueless/pretalx_venueless/forms.py:12
 #: local/pretalx-venueless/pretalx_venueless/models.py:16
 msgid ""
-"Generate a token with the trait 'world:api' in the Config -> Token Generator "
-"menu in Venueless. Leave empty to leave unchanged."
+"Generate a token with the trait 'world:api' in the Config -> Token Generator"
+" menu in Venueless. Leave empty to leave unchanged."
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/forms.py:13
+#: local/pretalx-venueless/pretalx_venueless/forms.py:14
 #: local/pretalx-venueless/pretalx_venueless/models.py:18
 msgid "Venueless Token"
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/forms.py:17
+#: local/pretalx-venueless/pretalx_venueless/forms.py:18
 #: local/pretalx-venueless/pretalx_venueless/models.py:23
 msgid "URL of your Venueless event"
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/forms.py:18
+#: local/pretalx-venueless/pretalx_venueless/forms.py:19
 #: local/pretalx-venueless/pretalx_venueless/models.py:24
 #: local/pretalx-venueless/pretalx_venueless/models.py:40
 msgid "Venueless URL"
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/forms.py:57
+#: local/pretalx-venueless/pretalx_venueless/forms.py:58
 msgid ""
 "This field is required if you want to show a join button to your speakers."
 msgstr ""
@@ -90,7 +90,7 @@ msgid "Introductory text"
 msgstr ""
 
 #: local/pretalx-venueless/pretalx_venueless/signals.py:35
-#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:31
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:23
 msgid "Venueless"
 msgstr ""
 
@@ -109,55 +109,56 @@ msgid ""
 "starts."
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:21
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:13
 msgid "Confirm your Venueless connection"
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:24
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:16
 msgid ""
 "<b>Venueless</b> is asking to connect to your pretalx event. If you confirm "
 "this connection, pretalx will notify Venueless about all schedule changes."
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:35
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:27
 #, python-format
 msgid ""
 "Successfully connected to venueless. Data was last pushed on %(last_push)s."
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:42
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:34
 msgid ""
-"Setting up the connection with Venueless will configure the pretalx settings "
-"in Venueless, and will automatically push schedule changes to venueless "
-"users. Please use Venueless to begin this process. Go to <b>Config → Event</"
-"b> in Venueless, and enter the following settings to create the connection:"
+"Setting up the connection with Venueless will configure the pretalx settings"
+" in Venueless, and will automatically push schedule changes to venueless "
+"users. Please use Venueless to begin this process. Go to <b>Config → "
+"Event</b> in Venueless, and enter the following settings to create the "
+"connection:"
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:61
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:53
 msgid "Main settings"
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:63
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:55
 msgid ""
 "These settings will get filled in automatically when you set up your event "
 "with venueless. Please follow the instructions at the top of this page!"
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:76
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:68
 msgid "Join link settings"
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:78
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:70
 msgid ""
-"These settings are only required if you want to distribute the sign-up links "
-"to venueless for your speakers by way of pretalx."
+"These settings are only required if you want to distribute the sign-up links"
+" to venueless for your speakers by way of pretalx."
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:103
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:95
 msgid "Connect"
 msgstr ""
 
-#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:105
+#: local/pretalx-venueless/pretalx_venueless/templates/pretalx_venueless/settings.html:97
 msgid "Save"
 msgstr ""
 
