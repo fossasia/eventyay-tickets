@@ -8,15 +8,12 @@ register = template.Library()
 @register.filter
 def build_locale_url(request, locale_code):
     """
-    Constructs the locale change URL by appending the locale and
-    next path and query string to the URL.
+    Constructs the locale change URL by appending the locale and next path
+    with the existing query string in a safe and automatic manner.
     """
-    # Build base URL with locale
-    base_url = f"{request.path}?locale={locale_code}"
-
-    # Append query string if it exists
+    params = {'locale': locale_code, 'next': request.path}
     if request.META.get('QUERY_STRING'):
-        query_string = urllib.parse.urlencode(urllib.parse.parse_qsl(request.META['QUERY_STRING']))
-        return f"{base_url}%3F{query_string}"
-
-    return base_url
+        existing_params = urllib.parse.parse_qs(request.META['QUERY_STRING'])
+        params.update(existing_params)
+    query_string = urllib.parse.urlencode(params, doseq=True)
+    return f"{request.path}?{query_string}"
