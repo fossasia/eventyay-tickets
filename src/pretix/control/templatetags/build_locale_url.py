@@ -11,10 +11,8 @@ def build_locale_url(request, locale_code):
     Constructs the locale change URL by appending the safely encoded locale
     and next path with the existing query string in a safe and automatic manner.
     """
-    encoded_locale = urllib.parse.quote(locale_code)
-    params = {'locale': encoded_locale, 'next': request.path}
-    if request.META.get('QUERY_STRING'):
-        existing_params = urllib.parse.parse_qs(request.META['QUERY_STRING'])
-        params.update(existing_params)
-    query_string = urllib.parse.urlencode(params, doseq=True)
-    return f"{request.path}?{query_string}"
+    params = request.GET.copy()
+    params.setdefault('next', request.path)
+    params['locale'] = locale_code
+
+    return f'{request.path}?{params.urlencode()}'
