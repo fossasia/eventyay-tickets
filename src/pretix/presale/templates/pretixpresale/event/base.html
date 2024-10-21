@@ -5,6 +5,7 @@
 {% load eventurl %}
 {% load safelink %}
 {% load rich_text %}
+{% load build_locale_url %}
 {% load compress %}
 {% block thetitle %}
     {% if messages %}
@@ -39,12 +40,15 @@
         {% if event.settings.theme_color_background|upper != "#FFFFFF" or event.settings.logo_image_large %}
             <div class="pull-right header-part flip hidden-print header-content">
                 <nav class="locales" aria-label="{% trans "select language" %}">
-                {% if event.settings.locales|length > 1 %}
-                    {% for l in languages %}
-                        <a href="{% url "presale:locale.set" %}?locale={{ l.code }}&next={{ request.path }}{% if request.META.QUERY_STRING %}%3F{{ request.META.QUERY_STRING|urlencode }}{% endif %}" class="{% if l.code == request.LANGUAGE_CODE %}active{% endif %}" rel="nofollow" lang="{{ l.code }}" hreflang="{{ l.code }}">
-                            {{ l.name_local }}</a>
-                    {% endfor %}
-                {% endif %}
+                    {% if event.settings.locales|length > 1 %}
+                        {% for l in languages %}
+                            <a href="{{ request|build_locale_url:l.code }}"
+                               class="{% if l.code == request.LANGUAGE_CODE %}active{% endif %}"
+                               rel="nofollow" lang="{{ l.code }}" hreflang="{{ l.code }}">
+                                {{ l.name_local }}
+                            </a>
+                        {% endfor %}
+                    {% endif %}
                 </nav>
                 {% include "pretixpresale/fragment_login_status.html" %}
             </div>
