@@ -26,6 +26,7 @@ from rest_framework.authtoken.models import Token
 
 from pretalx.cfp.forms.submissions import SubmissionInvitationForm
 from pretalx.cfp.views.event import LoggedInEventPageMixin
+from pretalx.common.forms.fields import SizeFileInput
 from pretalx.common.middleware.event import get_login_redirect
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views import is_form_bound
@@ -280,6 +281,10 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
 
     def get_permission_object(self):
         return self.object
+
+    @context
+    def size_warning(self):
+        return SizeFileInput.get_size_warning()
 
     @context
     @cached_property

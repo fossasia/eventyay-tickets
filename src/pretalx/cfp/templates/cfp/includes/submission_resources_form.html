@@ -10,7 +10,8 @@
     <div data-formset-body class="col-md-9">
         {% if can_edit %}
             <div class="alert alert-info flip ml-auto">
-                {% translate "Resources will be publicly visible. Please try to keep your uploads below 16MB." %}
+                {% translate "Resources will be publicly visible." %}
+                {{ size_warning }}
             </div>
         {% endif %}
         {% for form in formset %}

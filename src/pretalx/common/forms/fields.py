@@ -56,9 +56,7 @@ class SizeFileInput:
         else:
             self.max_size = kwargs.pop("max_size")
         super().__init__(*args, **kwargs)
-        self.size_warning = _("Please do not upload files larger than {size}!").format(
-            size=filesize(self.max_size)
-        )
+        self.size_warning = self.get_size_warning(self.max_size)
         self.original_help_text = (
             getattr(self, "original_help_text", "") or self.help_text
         )
@@ -66,6 +64,14 @@ class SizeFileInput:
         self.help_text = self.original_help_text + " " + self.added_help_text
         self.widget.attrs["data-maxsize"] = self.max_size
         self.widget.attrs["data-sizewarning"] = self.size_warning
+
+    @staticmethod
+    def get_size_warning(max_size=None, fallback=True):
+        if not max_size and fallback:
+            max_size = settings.FILE_UPLOAD_DEFAULT_LIMIT
+        return _("Please do not upload files larger than {size}!").format(
+            size=filesize(max_size)
+        )
 
     def validate(self, value):
         super().validate(value)

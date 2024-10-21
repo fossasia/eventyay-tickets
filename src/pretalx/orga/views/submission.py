@@ -25,6 +25,7 @@ from django_context_decorator import context
 
 from pretalx.agenda.permissions import is_submission_visible
 from pretalx.common.exceptions import SubmissionError
+from pretalx.common.forms.fields import SizeFileInput
 from pretalx.common.models import ActivityLog
 from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import build_absolute_uri
@@ -388,6 +389,10 @@ class SubmissionContent(
         if self.kwargs.get("code"):
             return "submission.edit_submission"
         return "orga.create_submission"
+
+    @context
+    def size_warning(self):
+        return SizeFileInput.get_size_warning()
 
     @cached_property
     def _formset(self):
