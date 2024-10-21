@@ -307,6 +307,10 @@ article .pretalx-session .pretalx-session-info .abstract {
       max-width: inherit;
     }
   }
+  .talk-content {
+      display: flex;
+      flex-direction: column;
+  }
 }
 
 @media print {
