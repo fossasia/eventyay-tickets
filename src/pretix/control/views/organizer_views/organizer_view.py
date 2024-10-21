@@ -17,7 +17,6 @@ from pretix.base.models.event import Event, EventMetaValue
 from pretix.base.models.organizer import Organizer, Team
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.control.forms.filter import EventFilterForm, OrganizerFilterForm
-from pretix.control.forms.organizer import OrganizerFooterLink
 from pretix.control.forms.organizer_forms import (
     OrganizerDeleteForm, OrganizerForm, OrganizerSettingsForm,
     OrganizerUpdateForm,

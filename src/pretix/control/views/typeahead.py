@@ -13,12 +13,18 @@ from django.utils.timezone import make_aware
 from django.utils.translation import gettext as _, pgettext
 
 from pretix.base.models import (
-    EventMetaProperty, EventMetaValue, ItemMetaProperty, ItemMetaValue,
-    ItemVariation, Order, Organizer, User, Voucher,
+    EventMetaProperty,
+    EventMetaValue,
+    ItemMetaProperty,
+    ItemMetaValue,
+    ItemVariation,
+    Order,
+    Organizer,
+    User,
+    Voucher,
 )
 from pretix.control.forms.event import EventWizardCopyForm
-from pretix.control.permissions import (
-    event_permission_required, )
+from pretix.control.permissions import event_permission_required
 from pretix.helpers.daterange import daterange
 from pretix.helpers.i18n import i18ncomp
 

@@ -2,6 +2,7 @@ import string
 from datetime import date, datetime, time
 
 import pytz
+
 from django.core.validators import MinLengthValidator, RegexValidator
 from django.db import models
 from django.db.models import Exists, OuterRef, Q
@@ -13,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 
 from pretix.base.models.base import LoggedModel
 from pretix.base.validators import OrganizerSlugBanlistValidator
+
 from .auth import User
 from ..settings import settings_hierarkey
 
@@ -394,5 +396,4 @@ class TeamAPIToken(models.Model):
             return self.get_events_with_any_permission()
         else:
             return self.team.organizer.events.none()
-
 

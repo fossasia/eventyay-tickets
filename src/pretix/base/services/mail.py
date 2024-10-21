@@ -17,7 +17,9 @@ from celery import chain
 from celery.exceptions import MaxRetriesExceededError
 from django.conf import settings
 from django.core.mail import (
-    EmailMultiAlternatives, SafeMIMEMultipart, get_connection,
+    EmailMultiAlternatives,
+    SafeMIMEMultipart,
+    get_connection,
 )
 from django.core.mail.message import SafeMIMEText
 from django.db import transaction
@@ -30,7 +32,12 @@ from i18nfield.strings import LazyI18nString
 from pretix.base.email import ClassicMailRenderer
 from pretix.base.i18n import language
 from pretix.base.models import (
-    CachedFile, Event, Invoice, InvoiceAddress, Order, OrderPosition,
+    CachedFile,
+    Event,
+    Invoice,
+    InvoiceAddress,
+    Order,
+    OrderPosition,
     User,
 )
 from pretix.base.services.invoices import invoice_pdf_task
