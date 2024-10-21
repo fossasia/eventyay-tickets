@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :release:`2024.3.0 <2024-10-21>`
 - :feature:`orga` You can now drag rooms, tracks, questions, and even question options to reorder them.
 - :feature:`admin` You can now configure the maximum file upload size.
 - :feature:`cfp` You can now submit a form from textboxes with Ctrl+Enter.
