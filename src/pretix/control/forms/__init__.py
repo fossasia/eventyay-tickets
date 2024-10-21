@@ -13,9 +13,11 @@ from django.utils.translation import gettext_lazy as _
 
 from ...base.forms import I18nModelForm
 
-# Import for backwards compatibility with okd import paths
+# Import for backwards compatibility with old import paths
 from ...base.forms.widgets import (  # noqa
-    DatePickerWidget, SplitDateTimePickerWidget, TimePickerWidget,
+    DatePickerWidget,
+    SplitDateTimePickerWidget,
+    TimePickerWidget,
 )
 
 
