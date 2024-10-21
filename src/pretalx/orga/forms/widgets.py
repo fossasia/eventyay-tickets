@@ -36,7 +36,7 @@ class MultipleLanguagesWidget(CheckboxSelectMultiple):
             ),
             (
                 (
-                    _("Community translantions"),
+                    _("Community translations"),
                     _(
                         "These translations are not maintained by the pretalx team. "
                         "We cannot vouch for their correctness, and new or recently changed features "
