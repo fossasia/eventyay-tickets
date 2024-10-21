@@ -59,7 +59,7 @@
             {% endblocktranslate %}
         </p>
 
-        {{ form.non_field_errors }}
+        {% include "common/forms/errors.html" %}
 
         {{ form.url.as_field_group }}
         {{ form.token.as_field_group }}
