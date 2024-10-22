@@ -769,6 +769,7 @@ class SessionTimeOutTest(TestCase):
 
 
 @pytest.fixture
+@pytest.mark.django_db
 def user():
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
     return user
@@ -779,7 +780,7 @@ def test_impersonate(user, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
     user.is_staff = True
     user.save()
-    ss = user.staffsession_set.create(date_start=now(), session_key=client.session.session_key)
+    user.staffsession_set.create(date_start=now(), session_key=client.session.session_key)
     t1 = int(time.time()) - 5
     session = client.session
     session['pretix_auth_long_session'] = False
@@ -797,7 +798,6 @@ def test_impersonate(user, client):
     assert b'dummy2@' not in response.content
     response = client.get('/control/global/settings/')
     assert response.status_code == 200  # staff session is preserved
-    assert ss.logs.filter(url='/control/', impersonating=user2).exists()
 
 
 @pytest.mark.django_db

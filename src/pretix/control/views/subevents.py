@@ -1040,7 +1040,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
         )
 
     def save_list_formset(self, log_entries):
-        if not self.list_formset.has_changed() or self.sampled_lists is None:
+        if self.sampled_lists is None or not self.list_formset.has_changed():
             return
         qidx = 0
         subevents = list(self.get_queryset().prefetch_related('checkinlist_set'))

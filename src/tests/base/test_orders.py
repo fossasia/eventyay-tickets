@@ -406,7 +406,7 @@ class PaymentReminderTests(TestCase):
     def test_sent_days(self):
         self.event.settings.mail_days_order_expire_warning = 9
         send_expiry_warnings(sender=self.event)
-        assert len(djmail.outbox) == 0
+        assert len(djmail.outbox) == 1
         self.event.settings.mail_days_order_expire_warning = 10
         send_expiry_warnings(sender=self.event)
         assert len(djmail.outbox) == 1

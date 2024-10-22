@@ -1,10 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from django.test import utils
 from django.utils.timezone import now
 from django_scopes import scopes_disabled
-from pytz import UTC
 from rest_framework.test import APIClient
 
 from pretix.base.models import Device, Event, Organizer, Team, User
@@ -33,7 +32,7 @@ def meta_prop(organizer):
 def event(organizer, meta_prop):
     e = Event.objects.create(
         organizer=organizer, name='Dummy', slug='dummy',
-        date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=UTC),
+        date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc),
         plugins='pretix.plugins.banktransfer,pretix.plugins.ticketoutputpdf',
         is_public=True
     )
@@ -48,7 +47,7 @@ def event(organizer, meta_prop):
 def event2(organizer, meta_prop):
     e = Event.objects.create(
         organizer=organizer, name='Dummy2', slug='dummy2',
-        date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=UTC),
+        date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc),
         plugins='pretix.plugins.banktransfer,pretix.plugins.ticketoutputpdf'
     )
     e.meta_values.create(property=meta_prop, value="Conference")
@@ -60,7 +59,7 @@ def event2(organizer, meta_prop):
 def event3(organizer, meta_prop):
     e = Event.objects.create(
         organizer=organizer, name='Dummy3', slug='dummy3',
-        date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=UTC),
+        date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc),
         plugins='pretix.plugins.banktransfer,pretix.plugins.ticketoutputpdf'
     )
     e.meta_values.create(property=meta_prop, value="Conference")
@@ -137,7 +136,7 @@ def device_client(client, device):
 def subevent(event, meta_prop):
     event.has_subevents = True
     event.save()
-    se = event.subevents.create(name="Foobar", date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=UTC))
+    se = event.subevents.create(name="Foobar", date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc))
 
     se.meta_values.create(property=meta_prop, value="Workshop")
     return se
@@ -148,7 +147,7 @@ def subevent(event, meta_prop):
 def subevent2(event2, meta_prop):
     event2.has_subevents = True
     event2.save()
-    se = event2.subevents.create(name="Foobar", date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=UTC))
+    se = event2.subevents.create(name="Foobar", date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc))
 
     se.meta_values.create(property=meta_prop, value="Workshop")
     return se
