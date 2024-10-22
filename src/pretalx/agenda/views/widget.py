@@ -167,6 +167,10 @@ def version_prefix(request, event, version=None):
     key_prefix=version_prefix,
     condition=is_public_and_versioned,
     server_timeout=5 * 60,
+    headers={
+        "Access-Control-Allow-Headers": "authorization,content-type",
+        "Access-Control-Allow-Origin": "*",
+    },
 )
 @csp_exempt
 def widget_data(request, event, version=None):
