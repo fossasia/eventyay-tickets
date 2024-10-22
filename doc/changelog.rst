@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`schedule` The schedule would work only intermittently when used with a custom domain.
 - :bug:`cfp` The resource upload form always mentioned a hard-coded file upload limit (but would in reality allow files up to the size of the real file upload limit).
 - :bug:`schedule` Sessions with session image would not look good on some mobile devices.
 - :bug:`orga,1839` If the organisers initially showed the “do not record” checkbox, but then hid it, the sessions marked as unrecorded would still show the appropriate icon in the public schedule, without anybody being able to uncheck the checkbox. Instead, the indicator is now hidden if the checkbox can’t be accessed anymore.
