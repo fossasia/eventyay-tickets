@@ -9,10 +9,8 @@ from django.core import mail as djmail
 from django.core.files.base import ContentFile
 from django.utils.timezone import now
 from django_countries.fields import Country
-from django_scopes import scopes_disabled, scope
+from django_scopes import scope, scopes_disabled
 from pytz import UTC
-from rest_framework.exceptions import ErrorDetail
-from stripe.error import APIConnectionError
 
 from pretix.base.models import (
     InvoiceAddress, Order, OrderPosition, Question, SeatingPlan,
@@ -41,6 +39,7 @@ class MockedCharge:
 
 class Object():
     pass
+
 
 @pytest.fixture
 def item(event):
@@ -591,7 +590,6 @@ def test_payment_refund_fail(token_client, organizer, event, order, monkeypatch)
     })
     assert resp.status_code == 400
     assert resp.data == {'detail': 'Invalid state of payment.'}
-
 
 
 @pytest.mark.django_db

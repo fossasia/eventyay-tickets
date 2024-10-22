@@ -8,7 +8,6 @@ from django.core import mail
 from django.utils.timezone import now
 from django_countries.fields import Country
 from django_scopes import scopes_disabled
-
 from tests.api.test_orders import MockedCharge
 from tests.base import SoupTest
 
@@ -1883,7 +1882,7 @@ def test_refund_propose_lower_payment(client, env):
         p = env[2].payments.last()
         p.amount = Decimal('8.00')
         p.confirm()
-        p2 = env[2].payments.create(
+        env[2].payments.create(
             amount=Decimal('6.00'), provider='stripe', state=OrderPayment.PAYMENT_STATE_CONFIRMED
         )
     client.login(email='dummy@dummy.dummy', password='dummy')
@@ -1903,7 +1902,7 @@ def test_refund_propose_equal_payment(client, env):
         p = env[2].payments.last()
         p.amount = Decimal('7.00')
         p.confirm()
-        p2 = env[2].payments.create(
+        env[2].payments.create(
             amount=Decimal('7.00'), provider='stripe', state=OrderPayment.PAYMENT_STATE_CONFIRMED
         )
     client.login(email='dummy@dummy.dummy', password='dummy')
@@ -1923,7 +1922,7 @@ def test_refund_propose_higher_payment(client, env):
         p = env[2].payments.last()
         p.amount = Decimal('6.00')
         p.confirm()
-        p2 = env[2].payments.create(
+        env[2].payments.create(
             amount=Decimal('8.00'), provider='stripe', state=OrderPayment.PAYMENT_STATE_CONFIRMED
         )
     client.login(email='dummy@dummy.dummy', password='dummy')
@@ -2011,7 +2010,7 @@ def test_refund_paid_order_automatically_failed(client, env, monkeypatch):
 
     monkeypatch.setattr("stripe.Charge.retrieve", charge_retr)
 
-    r = client.post('/control/event/dummy/dummy/orders/FOO/refund', {
+    client.post('/control/event/dummy/dummy/orders/FOO/refund', {
         'start-partial_amount': '7.00',
         'start-mode': 'partial',
         'start-action': 'mark_pending',

@@ -1,6 +1,5 @@
 import base64
 import json
-import time
 from urllib.parse import quote
 
 import pytest

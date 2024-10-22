@@ -8,7 +8,8 @@ import webauthn
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import (
-    authenticate, login as auth_login, logout as auth_logout, BACKEND_SESSION_KEY, load_backend,
+    BACKEND_SESSION_KEY, authenticate, load_backend, login as auth_login,
+    logout as auth_logout,
 )
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied
