@@ -9571,9 +9571,6 @@ msgstr "abgelehnt"
 #~ msgid "Mail outbox"
 #~ msgstr "Postausgang"
 
-#~ msgid "Speaker information"
-#~ msgstr "Informationen für Vortragende"
-
 #~ msgid "Review dashboard"
 #~ msgstr "Review-Dashboard"
 

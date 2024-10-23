@@ -9701,9 +9701,6 @@ msgstr ""
 #~ msgid "Mail outbox"
 #~ msgstr "Boite d'envoi"
 
-#~ msgid "Speaker information"
-#~ msgstr "Informations pour les intervenants"
-
 #~ msgid "Review dashboard"
 #~ msgstr "Tableau de bord d'évaluation"
 
