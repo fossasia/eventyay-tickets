@@ -3,7 +3,7 @@ from contextlib import suppress
 from django.apps import apps
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import include, path, re_path
+from django.urls import include, path
 from django.utils.module_loading import import_string
 
 from pretalx.common.views import error_view

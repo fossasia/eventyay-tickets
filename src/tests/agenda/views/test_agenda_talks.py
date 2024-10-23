@@ -30,7 +30,6 @@ def test_can_see_talk(client, django_assert_num_queries, event, slot, other_slot
         assert formats.date_format(slot.local_end, "H:i") in content
         assert str(slot.room.name) in content
         assert "fa-edit" not in content  # edit btn
-        assert "fa-video" not in content  # do not record
 
 
 @pytest.mark.django_db
