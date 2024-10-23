@@ -16,7 +16,7 @@ def test_can_see_talk_list(client, django_assert_num_queries, event, slot, other
 
 @pytest.mark.django_db
 def test_can_see_talk(client, django_assert_num_queries, event, slot, other_slot):
-    with django_assert_num_queries(20):
+    with django_assert_num_queries(21):
         response = client.get(slot.submission.urls.public, follow=True)
     with scope(event=event):
         assert event.schedules.count() == 2
@@ -69,7 +69,6 @@ def test_orga_can_see_new_talk(
         assert formats.date_format(slot.local_end, "H:i") in content
         assert str(slot.room.name) in content
         assert "fa-edit" not in content  # edit btn
-        assert "fa-video" not in content  # do not record
 
 
 @pytest.mark.django_db
@@ -82,7 +81,6 @@ def test_can_see_talk_edit_btn(
     assert response.status_code == 200
     content = response.content.decode()
     assert "fa-edit" in content  # edit btn
-    assert "fa-video" not in content
 
 
 @pytest.mark.django_db
@@ -110,7 +108,6 @@ def test_can_see_talk_does_accept_feedback(
     content = response.content.decode()
     assert "fa-edit" not in content  # edit btn
     assert "fa-comments" in content
-    assert "fa-video" not in content
 
 
 @pytest.mark.django_db

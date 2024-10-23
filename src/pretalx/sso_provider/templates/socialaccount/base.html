@@ -35,7 +35,6 @@
         {% else %}
             {% compress css %}
                 <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}"/>
-                <link rel="stylesheet" type="text/x-scss" href="{% static "agenda/scss/main.scss" %}" />
             {% endcompress %}
         {% endif %}
         {% if request.event and request.event.custom_css %}<link rel="stylesheet" type="text/css" href="{{ request.event.custom_css.url }}"/>{% endif %}
