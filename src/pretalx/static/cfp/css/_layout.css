@@ -55,7 +55,7 @@ header {
     margin-bottom: -4px;
     padding-bottom: 4px;
     a.header-tab {
-      padding: 8px 16px 4px 16px;
+      padding: 8px 10px 4px 10px;
       border-bottom: 2px solid transparent;
       &:hover {
         text-decoration: none;

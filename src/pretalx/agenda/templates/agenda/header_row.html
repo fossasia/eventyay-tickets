@@ -22,21 +22,21 @@
               </h3>
               <p class="text">
                   {% trans "Can't find your ticket?" %}
-                  <a id="resend_link" class="btn btn-default" href='{{ request.event.display_settings.ticket_link }}resend'>
+                  <a id="resend_link" class="btn-link" href='{{ request.event.display_settings.ticket_link }}resend'>
                       {% trans "Resend the email" %}
                   </a>
                   {% trans "to receive it." %}
               </p>
               <p class="text">
                   {% trans "Want to order a ticket?" %}
-                  <a id="ticket_link" class="btn btn-default" href='{{ request.event.display_settings.ticket_link }}'>
+                  <a id="ticket_link" class="btn-link" href='{{ request.event.display_settings.ticket_link }}'>
                       {% trans "Get a ticket here" %}
                   </a>
               </p>
           </div>
       </div>
       <div class="join-online-close">
-          <button id="join-online-close-button" class="btn btn-default join-online-close-button">Close</button>
+          <button id="join-online-close-button" class="btn-link join-online-close-button">Close</button>
       </div>
   </div>
 </div>

@@ -17,8 +17,8 @@
     {% if form.avatar or form.get_gravatar %}
         {% include "common/avatar.html" with user=user form=form %}
     {% endif %}
-    {% if form.avatar_source %}{% bootstrap_field form.avatar_source layout='event' %}{% endif %}
-    {% if form.avatar_license %}{% bootstrap_field form.avatar_license layout='event' %}{% endif %}
+    {% if form.avatar_source %}{{ form.avatar_source.as_field_group }}{% endif %}
+    {% if form.avatar_license %}{{ form.avatar_license.as_field_group }}{% endif %}
 
     {% if form.availabilities %}
         {% include "common/availabilities.html" %}

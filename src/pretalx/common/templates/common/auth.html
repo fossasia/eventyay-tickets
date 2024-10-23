@@ -44,22 +44,6 @@
                     {% translate "Login with SSO" %}
                 </a>
             </div>
-            <div id="collapseOne" class="auth-form-block panel-collapse collapse in" aria-labelledby="headingOne">
-                <div class="panel-body">
-                    {% bootstrap_field form.login_email layout="inline" %}
-                    {% bootstrap_field form.login_password layout="inline" %}
-                    {% if not no_buttons %}
-                        <button type="submit" class="btn btn-lg btn-success btn-block">
-                            {% translate "Log in" %}
-                        </button>
-                    {% endif %}
-                    {% if password_reset_link or request.event %}
-                        <a class="btn btn-block btn-link" href="{% if password_reset_link %}{{ password_reset_link }}{% else %}{{ request.event.urls.reset }}{% endif %}">
-                            {% translate "Reset password" %}
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
         </div>
     {% endif %}
     {% if not hide_register %}
@@ -69,19 +53,6 @@
                 <a class="btn btn-lg btn-primary btn-block mt-3" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                     {% translate "Register Speaker Account" %}
                 </a>
-            </div>
-            <div id="collapseTwo" class="auth-form-block panel-collapse collapse in" aria-labelledby="headingTwo">
-                <div class="panel-body">
-                    {% bootstrap_field form.register_name layout="inline" %}
-                    {% bootstrap_field form.register_email layout="inline" %}
-                    {% bootstrap_field form.register_password layout="inline" %}
-                    {% bootstrap_field form.register_password_repeat layout="inline" %}
-                    {% if not no_buttons %}
-                        <button type="submit" class="btn btn-lg btn-info btn-block">
-                            {% translate "Register" %}
-                        </button>
-                    {% endif %}
-                </div>
             </div>
         </div>
     {% endif %}

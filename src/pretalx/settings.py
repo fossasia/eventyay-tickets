@@ -720,7 +720,7 @@ OAUTH2_PROVIDER = {
     "CLIENT_SECRET": SSO_CLIENT_SECRET,
     "AUTHORIZE_URL": "/".join([EVENTYAY_TICKET_BASE_PATH, "control/oauth2/authorize/"]),
     "ACCESS_TOKEN_URL": "/".join([EVENTYAY_TICKET_BASE_PATH, "control/oauth2/token/"]),
-    "REDIRECT_URI": "/".join([SITE_URL, BASE_PATH[1:], "oauth2/callback/"]),
+    "REDIRECT_URI": "/".join(filter(None, [SITE_URL.rstrip("/"), BASE_PATH.strip("/") if BASE_PATH else "", "oauth2/callback/"])),
     "SCOPE": ["profile"],
 }
 # Set default Application model if using default
