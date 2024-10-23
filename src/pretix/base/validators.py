@@ -35,8 +35,6 @@ class EventSlugBanlistValidator(BanlistValidator):
         'events',
         'csp_report',
         'widget',
-        'customer',
-        'account',
     ]
 
 

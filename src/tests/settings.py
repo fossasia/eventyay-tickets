@@ -14,5 +14,9 @@ PRETIX_AUTH_BACKENDS = [
     'tests.testdummy.auth.TestRequestAuthBackend',
 ]
 
+BASE_PATH = config.get('pretix', 'base_path', fallback='')
+
+FORCE_SCRIPT_NAME = BASE_PATH
+
 for a in PLUGINS:
     INSTALLED_APPS.remove(a)

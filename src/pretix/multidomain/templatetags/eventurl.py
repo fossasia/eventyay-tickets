@@ -1,11 +1,11 @@
 from django import template
+from django.conf import settings
 from django.template import TemplateSyntaxError
 from django.template.base import kwarg_re
 from django.template.defaulttags import URLNode
 from django.urls import NoReverseMatch
 from django.utils.encoding import smart_str
 from django.utils.html import conditional_escape
-from django.conf import settings
 
 from pretix.multidomain.urlreverse import build_absolute_uri
 

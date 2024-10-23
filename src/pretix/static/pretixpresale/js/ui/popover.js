@@ -11,8 +11,8 @@ $(function () {
                                 </a>
                             </div>
                             <div class="options">
-                                <a href="${basePath}/${organizerName}/account" target="_self" class="btn btn-outline-success">
-                                    <i class="fa fa-shopping-cart"></i> ${window.gettext('My Orders')}
+                                <a href="${basePath}/${organizerName}/${eventSlug}/resend/" target="_self" class="btn btn-outline-success">
+                                    <i class="fa fa-shopping-cart"></i> ${window.gettext('Resend My Orders')}
                                 </a>
                             </div>
                     </div>`,
