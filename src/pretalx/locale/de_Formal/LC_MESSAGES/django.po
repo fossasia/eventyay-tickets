@@ -4434,11 +4434,6 @@ msgstr "Reviewer einteilen"
 msgid "Export reviews"
 msgstr "Reviews exportieren"
 
-#: pretalx/orga/templates/orga/base.html:349
-#: pretalx/schedule/models/room.py:43
-msgid "Speaker Information"
-msgstr "Informationen für Vortragende"
-
 #: pretalx/orga/templates/orga/base.html:376
 msgid "Rooms"
 msgstr "Räume"

@@ -4480,11 +4480,6 @@ msgstr "Affecter des évaluateurs"
 msgid "Export reviews"
 msgstr "Export des avis"
 
-#: pretalx/orga/templates/orga/base.html:349
-#: pretalx/schedule/models/room.py:43
-msgid "Speaker Information"
-msgstr "Informations pour les intervenants"
-
 #: pretalx/orga/templates/orga/base.html:376
 msgid "Rooms"
 msgstr "Salles"
