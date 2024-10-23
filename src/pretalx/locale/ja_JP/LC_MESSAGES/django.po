@@ -223,12 +223,6 @@ msgstr ""
 msgid "The session “{title}” at {event}"
 msgstr "講演 “{title}” at {event}"
 
-#: pretalx/api/templates/rest_framework/api.html:18
-#: pretalx/orga/templates/orga/auth/base.html:29
-#: pretalx/orga/templates/orga/base.html:74
-msgid "The pretalx logo"
-msgstr "The pretalx logo"
-
 #: pretalx/cfp/flow.py:348
 msgid ""
 "Your draft was saved. You can continue to edit it as long as the CfP is "
@@ -4447,17 +4441,6 @@ msgstr "送信済みメール"
 msgid "Templates"
 msgstr "テンプレート"
 
-#. Translators: Ideally a term that is as broad as possible, to refer to
-#. anybody who
-#. presents/owns a session. This word is also used to differentiate accepted
-#. „speakers“
-#. from not-yet-accepted „submitters“. Plural, used in headings.
-#: pretalx/orga/templates/orga/base.html:436
-#: pretalx/orga/templates/orga/submission/speakers.html:10
-#: pretalx/schedule/phrases.py:18
-msgid "Speakers"
-msgstr "登壇者"
-
 #: pretalx/orga/templates/orga/base.html:451
 msgid "Organisers"
 msgstr "主催者"
@@ -4864,10 +4847,6 @@ msgstr "録画の許可"
 #: pretalx/submission/models/submission.py:230
 msgid "Session image"
 msgstr "講演イメージ"
-
-#: pretalx/orga/templates/orga/cfp/text.html:175
-msgid "Speaker information"
-msgstr "講演者情報"
 
 #: pretalx/orga/templates/orga/cfp/text.html:204 pretalx/schedule/forms.py:19
 msgid "Availability"

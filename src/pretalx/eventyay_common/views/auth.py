@@ -51,7 +51,7 @@ def oauth2_callback(request):
             settings.OAUTH2_PROVIDER["ACCESS_TOKEN_URL"],
             client_secret=settings.OAUTH2_PROVIDER["CLIENT_SECRET"],
             authorization_response=request.build_absolute_uri(),
-            scope=settings.OAUTH2_PROVIDER["SCOPE"]
+            scope=settings.OAUTH2_PROVIDER["SCOPE"],
         )
 
         # Use the token to fetch user info from the SSO provider
@@ -76,4 +76,4 @@ def oauth2_callback(request):
 
     # Log the user into the session
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-    return redirect(reverse('cfp:root.main'))
+    return redirect(reverse("cfp:root.main"))

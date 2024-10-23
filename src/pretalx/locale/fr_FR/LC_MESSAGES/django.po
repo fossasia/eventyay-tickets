@@ -242,12 +242,6 @@ msgstr ""
 msgid "The session “{title}” at {event}"
 msgstr "L'intervention \"{title}\" pour {event}"
 
-#: pretalx/api/templates/rest_framework/api.html:18
-#: pretalx/orga/templates/orga/auth/base.html:29
-#: pretalx/orga/templates/orga/base.html:74
-msgid "The pretalx logo"
-msgstr "Le logo pretalx"
-
 #: pretalx/cfp/flow.py:348
 msgid ""
 "Your draft was saved. You can continue to edit it as long as the CfP is "
@@ -4511,17 +4505,6 @@ msgstr "Courriels envoyés"
 #: pretalx/orga/templates/orga/mails/template_list.html:16
 msgid "Templates"
 msgstr "Modèles"
-
-#. Translators: Ideally a term that is as broad as possible, to refer to
-#. anybody who
-#. presents/owns a session. This word is also used to differentiate accepted
-#. „speakers“
-#. from not-yet-accepted „submitters“. Plural, used in headings.
-#: pretalx/orga/templates/orga/base.html:436
-#: pretalx/orga/templates/orga/submission/speakers.html:10
-#: pretalx/schedule/phrases.py:18
-msgid "Speakers"
-msgstr "Intervenants"
 
 #: pretalx/orga/templates/orga/base.html:451
 msgid "Organisers"
