@@ -93,7 +93,6 @@ LOCAL_APPS = [
     "pretalx.agenda",
     "pretalx.cfp",
     "pretalx.orga",
-    "pretalx.sso_provider",
     "pretalx.eventyay_common",
 ]
 FALLBACK_APPS = [
@@ -555,7 +554,7 @@ TEMPLATES = [
         "DIRS": [
             DATA_DIR / "templates",
             BASE_DIR / "templates",
-            BASE_DIR / "pretalx" / "sso_provider" / "templates",
+            BASE_DIR / "pretalx" / "templates",
         ],
         "OPTIONS": {
             "context_processors": [
@@ -687,8 +686,6 @@ else:
         plugins=PLUGINS,
     )
 
-# Below is configuration for SSO using eventyay-ticket
-
 EVENTYAY_TICKET_BASE_PATH = config.get(
     "urls", "eventyay-ticket", fallback="https://app-test.eventyay.com/tickets"
 )
@@ -700,15 +697,7 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_USER_MODEL_USERNAME_FIELD = "name"
 # redirect to home page after login with eventyay-ticket
 LOGIN_REDIRECT_URL = BASE_PATH
-# custom form for signup and adapter
-SOCIALACCOUNT_FORMS = {"signup": "pretalx.sso_provider.forms.CustomSignUpForm"}
-SOCIALACCOUNT_ADAPTER = "pretalx.sso_provider.views.CustomSocialAccountAdapter"
 # disable confirm step when using eventyay-ticket to login
-SOCIALACCOUNT_LOGIN_ON_GET = True
-# eventyay-ticket provider configuration
-EVENTYAY_TICKET_SSO_WELL_KNOW_URL = "/".join(
-    [EVENTYAY_TICKET_BASE_PATH, "{org}", ".well-known/openid-configuration"]
-)
 # redirect_url as https
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 
