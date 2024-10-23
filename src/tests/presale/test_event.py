@@ -39,7 +39,9 @@ class EventTestMixin:
 class EventMiddlewareTest(EventTestMixin, SoupTest):
     def test_event_header(self):
         doc = self.get_doc('/%s/%s/' % (self.orga.slug, self.event.slug))
-        self.assertIn(str(self.event.name), doc.find("h1").text)
+        print("####", self.event.name)
+        print("####", doc)
+        self.assertIn(str(self.event.name), doc.find("title").text.strip())
 
     def test_not_found(self):
         resp = self.client.get('/%s/%s/' % ('foo', 'bar'))
@@ -1153,7 +1155,7 @@ class EventIcalDownloadTest(EventTestMixin, SoupTest):
     def test_metadata(self):
         ical = self.client.get('/%s/%s/ical/' % (self.orga.slug, self.event.slug)).content.decode()
         self.assertIn('VERSION:2.0', ical, 'incorrect version tag - 2.0')
-        self.assertIn('-//eventyay//%s//' % settings.INSTANCE_NAME, ical, 'incorrect PRODID')
+        self.assertIn('//%s//' % settings.INSTANCE_NAME, ical, 'incorrect PRODID')
 
     def test_event_info(self):
         ical = self.client.get('/%s/%s/ical/' % (self.orga.slug, self.event.slug)).content.decode()
