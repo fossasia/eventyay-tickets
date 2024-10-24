@@ -1,7 +1,8 @@
 import logging
+from functools import wraps
 
 import stripe
-from django.contrib import messages
+from django.core.exceptions import ValidationError
 
 from pretix.base.models import Organizer
 from pretix.base.models.organizer import OrganizerBillingModel
@@ -10,224 +11,191 @@ from pretix.base.settings import GlobalSettingsObject
 logger = logging.getLogger(__name__)
 
 
-def get_stripe_secret_key():
+def get_stripe_key(key_type: str) -> str:
     gs = GlobalSettingsObject()
-    prod_secret_key = gs.settings.payment_stripe_connect_secret_key
-    test_secret_key = gs.settings.payment_stripe_connect_test_secret_key
-    if not prod_secret_key and not test_secret_key:
-        return messages.error("Please contact the administrator to set the Stripe secret key")
-    if prod_secret_key:
-        return prod_secret_key
-    print('test_secret_key', test_secret_key)
-    return test_secret_key
+    prod_key = getattr(gs.settings, f"payment_stripe_connect_{key_type}_key")
+    test_key = getattr(gs.settings, f"payment_stripe_connect_test_{key_type}_key")
 
-
-def get_stripe_publishable_key():
-    gs = GlobalSettingsObject()
-    prod_publishable_key = gs.settings.payment_stripe_connect_publishable_key
-    test_publishable_key = gs.settings.payment_stripe_connect_test_publishable_key
-    if not prod_publishable_key and not test_publishable_key:
-        return messages.error("Please contact the administrator to set the Stripe publishable key")
-    if prod_publishable_key:
-        return prod_publishable_key
-    print('test_publishable_key', test_publishable_key)
-    return test_publishable_key
-
-
-def create_setup_intent(customer_id):
-    stripe.api_key = get_stripe_secret_key()
-
-    try:
-        setup_intent = stripe.SetupIntent.create(
-            customer=customer_id,
-            payment_method_types=["card"],
-            usage="off_session",
+    if not prod_key and not test_key:
+        raise ValidationError(
+            f"Please contact the administrator to set the Stripe {key_type} key"
         )
-        return setup_intent.client_secret
 
-    except stripe.error.CardError as e:
-        logger.error("Card error creating setup intent: %s", str(e))
-        return messages.error(f"Card error: {e.user_message}")
-
-    except stripe.error.InvalidRequestError as e:
-        logger.error("Invalid request error creating setup intent: %s", str(e))
-        return messages.error(f"Invalid request: {e.user_message}")
-
-    except stripe.error.AuthenticationError as e:
-        logger.error("Authentication error creating setup intent: %s", str(e))
-        return messages.error(f"Authentication error: {e.user_message}")
-
-    except stripe.error.APIConnectionError as e:
-        logger.error("API connection error creating setup intent: %s", str(e))
-        return messages.error("Network error: {}".format(e))
-
-    except stripe.error.StripeError as e:
-        logger.error("Stripe error creating setup intent: %s", str(e))
-        return messages.error(f"Stripe error: {e.user_message}")
-
-    except Exception as e:
-        logger.error("Unexpected error creating setup intent: %s", str(e))
-        return messages.error(f"An unexpected error occurred: {e}")
+    return prod_key or test_key
 
 
-def get_stripe_customer_id(organizer_slug):
-    try:
-        organizer = Organizer.objects.get(slug=organizer_slug)
-        billing_settings = OrganizerBillingModel.objects.filter(organizer_id=organizer.id).first()
-
-        if billing_settings and billing_settings.stripe_customer_id:
-            return billing_settings.stripe_customer_id
-
-    except Organizer.DoesNotExist:
-        logger.error("Organizer with slug '%s' does not exist", organizer_slug)
-        return messages.error("Organizer does not exist.")
-
-    except Exception as e:
-        logger.error("Unexpected error retrieving Stripe customer ID: %s", str(e))
-        return messages.error("An unexpected error occurred.")
+def get_stripe_secret_key() -> str:
+    return get_stripe_key("secret")
 
 
-def create_stripe_customer(email, name):
-    stripe.api_key = get_stripe_secret_key()
+def get_stripe_publishable_key() -> str:
+    return get_stripe_key("publishable")
 
-    try:
-        customer = stripe.Customer.create(
-            email=email,
-            name=name,
+
+stripe.api_key = get_stripe_secret_key()
+
+
+def handle_stripe_errors(operation_name: str):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except stripe.error.APIError as e:
+                logger.error(f"Stripe API error during {operation_name}: %s", str(e))
+                raise ValidationError(
+                    f"Stripe service error: {getattr(e, 'user_message', str(e))}"
+                )
+            except stripe.error.APIConnectionError as e:
+                logger.error(
+                    f"API connection error during {operation_name}: %s", str(e)
+                )
+                raise ValidationError(f"Network communication error: {str(e)}")
+            except stripe.error.AuthenticationError as e:
+                logger.error(
+                    f"Authentication error during {operation_name}: %s", str(e)
+                )
+                raise ValidationError(
+                    f"Authentication failed: {getattr(e, 'user_message', str(e))}"
+                )
+            except stripe.error.CardError as e:
+                logger.error(
+                    f"Card error during {operation_name}: %s | Code: %s | Decline code: %s",
+                    str(e),
+                    e.code,
+                    getattr(e, "decline_code", "N/A"),
+                )
+                raise ValidationError(f"Card error: {e.user_message}")
+            except stripe.error.RateLimitError as e:
+                logger.error(f"Rate limit error during {operation_name}: %s", str(e))
+                raise ValidationError(
+                    f"Too many requests. Please try again later: {getattr(e, 'user_message', str(e))}"
+                )
+            except stripe.error.InvalidRequestError as e:
+                logger.error(
+                    f"Invalid request error during {operation_name}: %s | Param: %s",
+                    str(e),
+                    getattr(e, "param", "N/A"),
+                )
+                raise ValidationError(f"Invalid request: {e.user_message}")
+            except stripe.error.SignatureVerificationError as e:
+                logger.error(
+                    f"Signature verification failed during {operation_name}: %s", str(e)
+                )
+                raise ValidationError(
+                    f"Webhook signature verification failed: {str(e)}"
+                )
+            except stripe.error.PermissionError as e:
+                logger.error(f"Permission error during {operation_name}: %s", str(e))
+                raise ValidationError(
+                    f"Permission denied: {getattr(e, 'user_message', str(e))}"
+                )
+            except stripe.error.IdempotencyError as e:
+                logger.error(f"Idempotency error during {operation_name}: %s", str(e))
+                raise ValidationError(
+                    f"Idempotency error: {getattr(e, 'user_message', str(e))}"
+                )
+            except stripe.error.StripeError as e:
+                logger.error(f"Stripe error during {operation_name}: %s", str(e))
+                raise ValidationError(
+                    f"Payment processing error: {getattr(e, 'user_message', str(e))}"
+                )
+            except Exception as e:
+                logger.error(
+                    f"Unexpected error during {operation_name}: %s",
+                    str(e),
+                    exc_info=True,
+                )
+                raise ValidationError(f"An unexpected error occurred: {str(e)}")
+
+        return wrapper
+
+    return decorator
+
+
+@handle_stripe_errors("create_setup_intent")
+def create_setup_intent(customer_id: str) -> str:
+    stripe_setup_intent = stripe.SetupIntent.create(
+        customer=customer_id,
+        payment_method_types=["card"],
+        usage="off_session",
+    )
+    OrganizerBillingModel.objects.filter(stripe_customer_id=customer_id).update(
+        stripe_setup_intent_id=stripe_setup_intent.id
+    )
+    return stripe_setup_intent.client_secret
+
+
+def get_stripe_customer_id(organizer_slug: str) -> str:
+    organizer = Organizer.objects.get(slug=organizer_slug)
+    billing_settings = OrganizerBillingModel.objects.filter(
+        organizer_id=organizer.id
+    ).first()
+
+    if billing_settings and billing_settings.stripe_customer_id:
+        return billing_settings.stripe_customer_id
+    else:
+        logger.warning(
+            "No billing settings or Stripe customer ID found for organizer '%s'",
+            organizer_slug,
         )
-        return customer
-
-    except stripe.error.InvalidRequestError as e:
-        logger.error("Invalid request error creating customer: %s", str(e))
-        return messages.error("Invalid request: {}".format(e.user_message))
-
-    except stripe.error.AuthenticationError as e:
-        logger.error("Authentication error: %s", str(e))
-        return messages.error("Authentication error: {}".format(e.user_message))
-
-    except stripe.error.CardError as e:
-        logger.error("Card error: %s", str(e))
-        return messages.error("Card error: {}".format(e.user_message))
-
-    except stripe.error.RateLimitError as e:
-        logger.error("Rate limit error: %s", str(e))
-        return messages.error("Rate limit error: {}".format(e.user_message))
-
-    except stripe.error.StripeError as e:
-        logger.error("Stripe error creating customer: %s", str(e))
-        return messages.error("Stripe error: {}".format(e.user_message))
-
-    except Exception as e:
-        logger.error("Unexpected error creating Stripe customer: %s", str(e))
-        return messages.error("An unexpected error occurred: {}".format(e))
-
-
-def update_payment_info(setup_intent_id, customer_id):
-    stripe.api_key = get_stripe_secret_key()
-
-    try:
-        setup_intent = retrieve_setup_intent(setup_intent_id)
-        if not setup_intent:
-            return messages.error("Failed to retrieve setup intent.")
-
-        payment_method = setup_intent.payment_method
-        attach_payment_method_to_customer(payment_method, customer_id)
-
-        updated_customer_info = stripe.Customer.modify(
-            customer_id,
-            invoice_settings={
-                "default_payment_method": payment_method
-            }
+        raise ValidationError(
+            f"No stripe_customer_id found for organizer '{organizer_slug}'"
         )
-        return updated_customer_info
-    except stripe.error.InvalidRequestError as e:
-        logger.error("Invalid request error while updating payment info: %s", str(e))
-        return messages.error(f"Invalid request: {e.user_message}")
-    except stripe.error.AuthenticationError as e:
-        logger.error("Authentication error while updating payment info: %s", str(e))
-        return messages.error(f"Authentication error: {e.user_message}")
-    except stripe.error.APIConnectionError as e:
-        logger.error("API connection error while updating payment info: %s", str(e))
-        return messages.error(f"Network error: {str(e)}")
-    except stripe.error.StripeError as e:
-        logger.error("Stripe error while updating payment info: %s", str(e))
-        return messages.error(f"Stripe error: {e.user_message}")
-    except Exception as e:
-        logger.error("Unexpected error while updating payment info: %s", str(e))
-        return messages.error(f"An unexpected error occurred: {str(e)}")
 
 
-def update_customer_info(customer_id, email, name):
-    stripe.api_key = get_stripe_secret_key()
-
-    try:
-        updated_customer_info = stripe.Customer.modify(
-            customer_id,
-            email=email,
-            name=name
-        )
-        return updated_customer_info
-    except stripe.error.InvalidRequestError as e:
-        logger.error("Invalid request error while updating customer info: %s", str(e))
-        return messages.error(f"Invalid request: {e.user_message}")
-    except stripe.error.AuthenticationError as e:
-        logger.error("Authentication error while updating customer info: %s", str(e))
-        return messages.error(f"Authentication error: {e.user_message}")
-    except stripe.error.APIConnectionError as e:
-        logger.error("API connection error while updating customer info: %s", str(e))
-        return messages.error(f"Network error: {str(e)}")
-    except stripe.error.StripeError as e:
-        logger.error("Stripe error while updating customer info: %s", str(e))
-        return messages.error(f"Stripe error: {e.user_message}")
-    except Exception as e:
-        logger.error("Unexpected error while updating customer info: %s", str(e))
-        return messages.error(f"An unexpected error occurred: {str(e)}")
+@handle_stripe_errors("create_stripe_customer")
+def create_stripe_customer(email: str, name: str):
+    customer = stripe.Customer.create(
+        email=email,
+        name=name,
+    )
+    return customer
 
 
-def attach_payment_method_to_customer(payment_method_id, customer_id):
-    stripe.api_key = get_stripe_secret_key()
+@handle_stripe_errors("update_payment_info")
+def update_payment_info(setup_intent_id: str, customer_id: str):
+    setup_intent = get_setup_intent(setup_intent_id)
+    payment_method = setup_intent.payment_method
+    OrganizerBillingModel.objects.filter(stripe_customer_id=customer_id).update(
+        stripe_payment_method_id=payment_method
+    )
+    attach_payment_method_to_customer(payment_method, customer_id)
 
-    try:
-        attached_payment_method = stripe.PaymentMethod.attach(
-            payment_method_id,
-            customer=customer_id
-        )
-        return attached_payment_method
-    except stripe.error.InvalidRequestError as e:
-        logger.error("Invalid request error while attaching payment method: %s", str(e))
-        return messages.error(f"Invalid request: {e.user_message}")
-    except stripe.error.AuthenticationError as e:
-        logger.error("Authentication error while attaching payment method: %s", str(e))
-        return messages.error(f"Authentication error: {e.user_message}")
-    except stripe.error.APIConnectionError as e:
-        logger.error("API connection error while attaching payment method: %s", str(e))
-        return messages.error(f"Network error: {str(e)}")
-    except stripe.error.StripeError as e:
-        logger.error("Stripe error while attaching payment method: %s", str(e))
-        return messages.error(f"Stripe error: {e.user_message}")
-    except Exception as e:
-        logger.error("Unexpected error while attaching payment method: %s", str(e))
-        return messages.error(f"An unexpected error occurred: {str(e)}")
+    updated_customer_info = stripe.Customer.modify(
+        customer_id, invoice_settings={"default_payment_method": payment_method}
+    )
+    return updated_customer_info
 
 
-def retrieve_setup_intent(setup_intent_id):
-    stripe.api_key = get_stripe_secret_key()
+@handle_stripe_errors("get_payment_method_info")
+def get_payment_method_info(stripe_customer_id: str):
+    billing_settings = OrganizerBillingModel.objects.filter(
+        stripe_customer_id=stripe_customer_id
+    ).first()
+    if billing_settings is None or billing_settings.stripe_payment_method_id is None:
+        return None
+    payment_method = stripe.PaymentMethod.retrieve(
+        billing_settings.stripe_payment_method_id
+    )
+    return payment_method
 
-    try:
-        setup_intent = stripe.SetupIntent.retrieve(setup_intent_id)
-        return setup_intent
-    except stripe.error.InvalidRequestError as e:
-        logger.error("Invalid request error while retrieving setup intent: %s", str(e))
-        return messages.error(f"Invalid request: {e.user_message}")
-    except stripe.error.AuthenticationError as e:
-        logger.error("Authentication error while retrieving setup intent: %s", str(e))
-        return messages.error(f"Authentication error: {e.user_message}")
-    except stripe.error.APIConnectionError as e:
-        logger.error("API connection error while retrieving setup intent: %s", str(e))
-        return messages.error(f"Network error: {str(e)}")
-    except stripe.error.StripeError as e:
-        logger.error("Stripe error while retrieving setup intent: %s", str(e))
-        return messages.error(f"Stripe error: {e.user_message}")
-    except Exception as e:
-        logger.error("Unexpected error while retrieving setup intent: %s", str(e))
-        return messages.error(f"An unexpected error occurred: {str(e)}")
+
+@handle_stripe_errors("update_customer_info")
+def update_customer_info(customer_id: str, email: str, name: str):
+    updated_customer_info = stripe.Customer.modify(customer_id, email=email, name=name)
+    return updated_customer_info
+
+
+@handle_stripe_errors("attach_payment_method_to_customer")
+def attach_payment_method_to_customer(payment_method_id: str, customer_id: str):
+    attached_payment_method = stripe.PaymentMethod.attach(
+        payment_method_id, customer=customer_id
+    )
+    return attached_payment_method
+
+
+@handle_stripe_errors("get_setup_intent")
+def get_setup_intent(setup_intent_id: str):
+    setup_intent = stripe.SetupIntent.retrieve(setup_intent_id)
+    return setup_intent

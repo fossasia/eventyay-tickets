@@ -8,6 +8,7 @@
 {% block custom_header %}
     {{ block.super }}
     <link type="text/css" rel="stylesheet" href="{% url "control:pdf.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "billing/css/billing.css" %}" />
 {% endblock %}
 
 {% block inside %}
@@ -35,14 +36,38 @@
                 </div>
             </form>
         </fieldset>
-        <fieldset>
-            <legend>{% trans "Payment information" %}</legend>
-            <div id="payment-information"></div>
-            <div class="form-group submit-group">
-                <button type="button" class="btn btn-primary btn-save" id="save-payment-information">
-                    {% trans "Save" %}
-                </button>
-            </div>
-        </fieldset>
+            <fieldset>
+                <legend>{% trans "Payment information" %}</legend>
+                {% if is_general_information %}
+                    {{ base_path|json_script:"base_path" }}
+                    <script type="text/javascript" src="{% static "billing/js/billing.js" %}"></script>
+                    <div id="payment-information">
+                        <div class="card">
+                            <div class="chip"></div>
+                            <div class="logo"></div>
+                            <div class="card-number"></div>
+                            <div class="expiration"></div>
+                            <div class="design"></div>
+                        </div>
+                    </div>
+                    <button id="change-card-btn">Use a different card</button>
+                    <div id="payment-element"></div>
+                    <div class="form-group submit-group">
+                        <button type="button" class="btn btn-primary btn-save" id="save-payment-information">
+                            {% trans "Save" %}
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="notification">
+                        <p>⚠️ Please complete the Billing Settings in the General tab before filling in the Payment Information tab..</p>
+                    </div>
+                     <div class="form-group submit-group">
+                        <button type="button" class="btn btn-primary btn-save" id="back-btn">
+                            {% trans "Back" %}
+                        </button>
+                     <script type="text/javascript" src="{% static "billing/js/event.js" %}"></script>
+                    </div>
+                {% endif %}
+            </fieldset>
     </div>
 {% endblock %}

@@ -12,7 +12,11 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import (
-    CreateView, DetailView, FormView, ListView, UpdateView,
+    CreateView,
+    DetailView,
+    FormView,
+    ListView,
+    UpdateView,
 )
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -22,15 +26,23 @@ from pretix.base.models.organizer import Organizer, OrganizerBillingModel, Team
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.control.forms.filter import EventFilterForm, OrganizerFilterForm
 from pretix.control.forms.organizer_forms import (
-    OrganizerDeleteForm, OrganizerForm, OrganizerSettingsForm,
+    OrganizerDeleteForm,
+    OrganizerForm,
+    OrganizerSettingsForm,
     OrganizerUpdateForm,
 )
 from pretix.control.permissions import (
-    AdministratorPermissionRequiredMixin, OrganizerPermissionRequiredMixin,
+    AdministratorPermissionRequiredMixin,
+    OrganizerPermissionRequiredMixin,
 )
 from pretix.control.signals import nav_organizer
 from pretix.control.utils import (
-    create_setup_intent, get_stripe_customer_id, get_stripe_publishable_key,
+    create_setup_intent,
+    create_stripe_customer,
+    get_payment_method_info,
+    get_setup_intent,
+    get_stripe_customer_id,
+    get_stripe_publishable_key,
     update_payment_info,
 )
 from pretix.control.views import PaginationMixin
@@ -40,7 +52,6 @@ from ...forms.organizer_forms.organizer_form import BillingSettingsForm
 from .organizer_detail_view_mixin import OrganizerDetailViewMixin
 
 logger = logging.getLogger(__name__)
-
 
 class OrganizerCreate(CreateView):
     model = Organizer
@@ -349,6 +360,19 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
         kwargs["organizer"] = self.request.organizer
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+
+        billing_settings = OrganizerBillingModel.objects.filter(
+            organizer_id=self.request.organizer.id
+        ).first()
+
+        if billing_settings and billing_settings.stripe_customer_id:
+            ctx["is_general_information"] = True
+        else:
+            ctx["is_general_information"] = False
+        return ctx
+
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -373,47 +397,35 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
         return self.form_invalid(form)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def setup_intent(request, organizer):
     try:
         stripe_customer_id = get_stripe_customer_id(organizer)
-
-        if not stripe_customer_id:
-            logger.error("No Stripe customer ID found for organizer: %s", organizer)
-            return Response({
-                "error": "No Stripe customer ID found."
-            }, status=404)
-
+        payment_method_info = get_payment_method_info(stripe_customer_id)
         client_secret = create_setup_intent(stripe_customer_id)
-
-        return Response({
-            "client_secret": client_secret,
-            "stripe_public_key": get_stripe_publishable_key()
-        })
-
+        return Response(
+            {
+                "client_secret": client_secret,
+                "stripe_public_key": get_stripe_publishable_key(),
+                "payment_method_info": payment_method_info,
+            }
+        )
     except Exception as e:
         logger.error("Unexpected error creating setup intent: %s", str(e))
-        return Response({
-            "error": "An unexpected error occurred."
-        }, status=500)
+        return Response({"error": "An unexpected error occurred."}, status=500)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def save_payment_information(request, organizer):
     setup_intent_id = request.data.get("setup_intent_id")
-
     try:
         stripe_customer_id = get_stripe_customer_id(organizer)
-
-        customer_information = update_payment_info(setup_intent_id, stripe_customer_id)
-
-        return Response({
-            "success": True,
-            "customer": customer_information
-        })
-
+        update_payment_info(setup_intent_id, stripe_customer_id)
+        return Response(
+            {
+                "success": True,
+            }
+        )
     except Exception as e:
         logger.error("Unexpected error updating payment information: %s", str(e))
-        return Response({
-            "error": "An unexpected error occurred."
-        }, status=500)
+        return Response({"error": "An unexpected error occurred."}, status=500)
