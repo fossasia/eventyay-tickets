@@ -24,7 +24,7 @@ from pretix.api.serializers.event import (
 )
 from pretix.api.views import ConditionalListView
 from pretix.base.models import (
-    CartPosition, Device, Event, TaxRule, TeamAPIToken, Organizer, Customer, Order, User,
+    CartPosition, Device, Event, Organizer, TaxRule, TeamAPIToken, User,
 )
 from pretix.base.models.event import SubEvent
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
