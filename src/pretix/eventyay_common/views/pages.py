@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib import messages
-
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView

@@ -6,7 +6,7 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
-from i18nfield.forms import I18nFormField, I18nTextInput, I18nTextarea
+from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
 
 from pretix.base.forms import SettingsForm
 from pretix.base.settings import GlobalSettingsObject
