@@ -1,4 +1,5 @@
 import pytest
+from django_scopes import scope
 
 from pretalx.common.mail import TolerantDict
 from pretalx.mail.models import QueuedMail
@@ -46,6 +47,18 @@ def test_mail_template_model_to_mail_shortens_subject(mail_template):
     mail_template.subject = "A" * 300
     mail = mail_template.to_mail("testdummy@exacmple.com", None, commit=False)
     assert len(mail.subject) == 199
+
+
+@pytest.mark.django_db
+def test_mail_submission_present_in_context(mail_template, submission, event):
+    with scope(event=event):
+        mail = mail_template.to_mail(
+            "testdummy@exacmple.com",
+            None,
+            context_kwargs={"submission": submission},
+        )
+        mail.save()
+        assert mail.submissions.all().contains(submission)
 
 
 @pytest.mark.django_db
