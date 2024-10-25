@@ -21,7 +21,9 @@ from pretix.base.models import Event, EventMetaValue, Organizer, Quota
 from pretix.base.services import tickets
 from pretix.base.services.quotas import QuotaAvailability
 from pretix.control.forms.event import (
-    EventUpdateForm, EventWizardBasicsForm, EventWizardFoundationForm,
+    EventUpdateForm,
+    EventWizardBasicsForm,
+    EventWizardFoundationForm,
 )
 from pretix.control.forms.filter import EventFilterForm
 from pretix.control.permissions import EventPermissionRequiredMixin
@@ -31,7 +33,9 @@ from pretix.control.views.item import MetaDataEditorMixin
 from pretix.eventyay_common.forms.event import EventCommonSettingsForm
 from pretix.eventyay_common.tasks import create_world, send_event_webhook
 from pretix.eventyay_common.utils import (
-    check_create_permission, encode_email, generate_token,
+    check_create_permission,
+    encode_email,
+    generate_token,
 )
 
 
@@ -243,9 +247,9 @@ class EventCreateView(SafeSessionWizardView):
                 event.plugins = settings.PRETIX_PLUGINS_DEFAULT
                 event.has_subevents = foundation_data["has_subevents"]
                 if check_create_permission(self.request):
-                    event.is_video_create = foundation_data["is_video_create"]
+                    event.is_video_creation = foundation_data["is_video_creation"]
                 else:
-                    event.is_video_create = False
+                    event.is_video_creation = False
                 event.testmode = True
                 form_dict["basics"].save()
 
@@ -281,7 +285,7 @@ class EventCreateView(SafeSessionWizardView):
             token=generate_token(self.request),
         )
         create_world.delay(
-            is_video_create=foundation_data.get("is_video_create"), data=data
+            is_video_creation=foundation_data.get("is_video_creation"), data=data
         )
 
         return redirect(reverse("eventyay_common:events") + "?congratulations=1")
@@ -324,23 +328,16 @@ class EventUpdate(
         )
         return context
 
-    @transaction.atomic
-    def form_valid(self, form):
-        self._save_decoupled(self.sform)
-        self.sform.save()
-
-        tickets.invalidate_cache.apply_async(kwargs={"event": self.request.event.pk})
-
+    def handle_video_creation(self, form):
         if check_create_permission(self.request):
-            form.instance.is_video_create = form.cleaned_data.get("is_video_create")
+            form.instance.is_video_creation = form.cleaned_data.get("is_video_creation")
         elif not check_create_permission(self.request) and form.cleaned_data.get(
-            "is_video_create"
+            "is_video_creation"
         ):
-            form.instance.is_video_create = True
+            form.instance.is_video_creation = True
         else:
-            form.instance.is_video_create = False
+            form.instance.is_video_creation = False
 
-        # The user automatically creates a world when selecting the add video option in the update ticket form.
         data = dict(
             id=form.cleaned_data.get("slug"),
             title=form.cleaned_data.get("name").data,
@@ -351,8 +348,17 @@ class EventUpdate(
         )
 
         create_world.delay(
-            is_video_create=form.cleaned_data.get("is_video_create"), data=data
+            is_video_creation=form.cleaned_data.get("is_video_creation"), data=data
         )
+
+    @transaction.atomic
+    def form_valid(self, form):
+        self._save_decoupled(self.sform)
+        self.sform.save()
+
+        tickets.invalidate_cache.apply_async(kwargs={"event": self.request.event.pk})
+
+        self.handle_video_creation(form)
 
         messages.success(self.request, _("Your changes have been saved."))
         return super().form_valid(form)
@@ -431,15 +437,13 @@ class VideoAccessAuthenticator(views.APIView):
                     "Event information is not available or the video plugin is turned off."
                 )
             )
-
-        # Check if the organizer has permission change event settings
+        # Check if the organizer has permission for the event
         if not self.request.user.has_event_permission(
             self.request.organizer, self.request.event, "can_change_event_settings"
         ):
             raise PermissionDenied(
                 _("You do not have permission to access this video system.")
             )
-
         # Generate token and include in url to video system
         return redirect(self.generate_token_url(request))
 
@@ -447,7 +451,6 @@ class VideoAccessAuthenticator(views.APIView):
         uid_token = encode_email(request.user.email)
         iat = dt.datetime.utcnow()
         exp = iat + dt.timedelta(days=30)
-
         payload = {
             "iss": self.request.event.settings.venueless_issuer,
             "aud": self.request.event.settings.venueless_audience,
@@ -461,7 +464,6 @@ class VideoAccessAuthenticator(views.APIView):
                 }
             ),
         }
-
         token = jwt.encode(
             payload, self.request.event.settings.venueless_secret, algorithm="HS256"
         )

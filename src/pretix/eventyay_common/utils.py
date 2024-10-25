@@ -1,12 +1,10 @@
 import hashlib
 import logging
-import random
-import string
+import secrets
 from datetime import datetime, timedelta, timezone
 
 import jwt
 from django.conf import settings
-
 
 logger = logging.getLogger(__name__)
 
@@ -32,14 +30,13 @@ def generate_token(request):
 
 
 def encode_email(email):
+    random_token = secrets.token_urlsafe(32)[:7]
+
     hash_object = hashlib.sha256(email.encode())
     hash_hex = hash_object.hexdigest()
     short_hash = hash_hex[:7]
-    characters = string.ascii_letters + string.digits
-    random_suffix = "".join(
-        random.choice(characters) for _ in range(7 - len(short_hash))
-    )
-    final_result = short_hash + random_suffix
+
+    final_result = short_hash + random_token
     return final_result.upper()
 
 
@@ -61,4 +58,3 @@ def check_create_permission(request):
     if is_create_permission or is_active_staff_session:
         return True
     return False
-

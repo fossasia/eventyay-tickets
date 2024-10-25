@@ -1,19 +1,20 @@
 import calendar
-import jwt
-import sys
 import datetime as dt
+import importlib.util
+import logging
+import sys
 from collections import defaultdict
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 from importlib import import_module
-import logging
 
 import isoweek
+import jwt
 import pytz
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.db.models import (
-    Count, Exists, IntegerField, OuterRef, Prefetch, Value, Q
+    Count, Exists, IntegerField, OuterRef, Prefetch, Q, Value,
 )
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -27,7 +28,7 @@ from django.views.generic import TemplateView
 
 from pretix.base.channels import get_all_sales_channels
 from pretix.base.models import (
-    ItemVariation, Quota, SeatCategoryMapping, Voucher, Order
+    ItemVariation, Order, Quota, SeatCategoryMapping, Voucher,
 )
 from pretix.base.models.event import SubEvent
 from pretix.base.models.items import (
@@ -42,7 +43,6 @@ from pretix.presale.views.organizer import (
     EventListMixin, add_subevents_for_days, days_for_template,
     filter_qs_by_attr, weeks_for_template,
 )
-from pretix.multidomain.urlreverse import build_absolute_uri
 
 from ...helpers.formats.en.formats import WEEK_FORMAT
 from . import (
@@ -50,9 +50,7 @@ from . import (
     iframe_entry_view_wrapper,
 )
 
-import importlib.util
-
-package_name = 'pretix_venueless'
+package_name = 'pretix-venueless'
 
 if importlib.util.find_spec(package_name) is not None:
     pretix_venueless = import_module(package_name)
@@ -444,13 +442,23 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
             context['cart_redirect'] = self.request.path
 
         # Get event_name in language code
-        event_name = self.request.event.name.data.get(self.request.LANGUAGE_CODE)
-        if event_name is None:
-            # If event_name is not available in the language code, get event name in english
-            event_name = self.request.event.name.data.get('en')
-        if event_name is None and len(self.request.event.name.data) > 0:
-            # If event_name is not available in english, get the first available event name
-            event_name = next(iter(self.request.event.name.data.values()))
+        event_name_data = self.request.event.name.data
+
+        if isinstance(event_name_data, dict):
+            # If event_name_data is a dictionary, try to get the name based on LANGUAGE_CODE
+            event_name = event_name_data.get(self.request.LANGUAGE_CODE)
+
+            if event_name is None:
+                # If event_name is not available in the language code, get event name in English
+                event_name = event_name_data.get('en')
+
+            if event_name is None and len(event_name_data) > 0:
+                # If event_name is not available in English, get the first available event name
+                event_name = next(iter(event_name_data.values()))
+        else:
+            # If event_name_data is a string, use it directly
+            event_name = event_name_data
+
         context['event_name'] = event_name
 
         context['is_video_plugin_enabled'] = False
@@ -648,6 +656,7 @@ class EventAuth(View):
         request.session['pretix_event_access_{}'.format(request.event.pk)] = parent
         return redirect(eventreverse(request.event, 'presale:event.index'))
 
+
 @method_decorator(allow_frame_if_namespaced, 'dispatch')
 @method_decorator(iframe_entry_view_wrapper, 'dispatch')
 class JoinOnlineVideoView(EventViewMixin, View):
@@ -672,14 +681,14 @@ class JoinOnlineVideoView(EventViewMixin, View):
         }, status=200)
 
     def validate_access(self, request, *args, **kwargs):
-        if not self.request.customer:
+        if not hasattr(self.request, 'customer'):
             # Customer not logged in yet
             return False, None, None
         else:
             # Get all orders of customer which belong to this event
             order_list = (Order.objects.filter(Q(event=self.request.event)
-                                      & (Q(customer=self.request.customer) | Q(email__iexact=self.request.customer.email)))
-                  .select_related('event').order_by('-datetime'))
+                                               & (Q(customer=self.request.customer) | Q(email__iexact=self.request.customer.email)))
+                          .select_related('event').order_by('-datetime'))
             # Check qs is empty
             if not order_list:
                 # no order placed yet

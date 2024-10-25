@@ -329,7 +329,7 @@ def invoice_pdf(*args, **kwargs):
     invoice_pdf_task.apply_async(args=args, kwargs=kwargs)
 
 
-class DummyRollbackException(Exception):
+class DummyRollbackException(Exception):  # NOQA: N818
     pass
 
 

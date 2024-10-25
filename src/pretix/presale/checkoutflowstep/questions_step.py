@@ -5,16 +5,18 @@ from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
-from django.utils.translation import (
-    gettext_lazy as _, pgettext_lazy,
-)
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
+
 from pretix.base.models import TaxRule
 from pretix.base.services.cart import update_tax_rates
 from pretix.presale.checkoutflowstep.template_flow_step import TemplateFlowStep
-
-from pretix.presale.forms.checkout import ContactForm, InvoiceNameForm, InvoiceAddressForm
-from pretix.presale.signals import checkout_all_optional, contact_form_fields_overrides, question_form_fields_overrides, \
-    question_form_fields
+from pretix.presale.forms.checkout import (
+    ContactForm, InvoiceAddressForm, InvoiceNameForm,
+)
+from pretix.presale.signals import (
+    checkout_all_optional, contact_form_fields_overrides, question_form_fields,
+    question_form_fields_overrides,
+)
 from pretix.presale.views import CartMixin, get_cart_is_free
 from pretix.presale.views.cart import get_or_create_cart_id
 from pretix.presale.views.questions import QuestionsViewMixin
@@ -51,8 +53,8 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
         wd = self.cart_session.get('widget_data', {})
         initial = {
             'email': (
-                    self.cart_session.get('email', '') or
-                    wd.get('email', '')
+                self.cart_session.get('email', '') or
+                wd.get('email', '')
             ),
             'phone': wd.get('phone', None)
         }
@@ -63,14 +65,12 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
             initial.update({
                 k: v['initial'] for k, v in overrides.items() if 'initial' in v
             })
-        if self.cart_customer:
-            initial['email'] = self.cart_customer.email
 
         f = ContactForm(data=self.request.POST if self.request.method == "POST" else None,
                         event=self.request.event,
                         request=self.request,
                         initial=initial, all_optional=self.all_optional)
-        if wd.get('email', '') and wd.get('fix', '') == "true" or self.cart_customer:
+        if wd.get('email', '') and wd.get('fix', '') == "true":
             f.fields['email'].disabled = True
 
         for overrides in override_sets:
@@ -81,21 +81,13 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
         return f
 
     def get_question_override_sets(self, cart_position):
-        o = []
-        if self.cart_customer:
-            o.append({
-                'attendee_name_parts': {
-                    'initial': self.cart_customer.name_parts
-                }
-            })
-        o += [
+        return [
             resp for recv, resp in question_form_fields_overrides.send(
                 self.request.event,
                 position=cart_position,
                 request=self.request
             )
         ]
-        return o
 
     @cached_property
     def eu_reverse_charge_relevant(self):
@@ -122,11 +114,6 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
         else:
             wd_initial = {}
         initial = dict(wd_initial)
-
-        if self.cart_customer:
-            initial.update({
-                'name_parts': self.cart_customer.name_parts
-            })
 
         override_sets = self._contact_override_sets
         for overrides in override_sets:
@@ -162,9 +149,8 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
     @cached_property
     def address_asked(self):
         return (
-                self.request.event.settings.invoice_address_asked
-                and (not self.request.event.settings.invoice_address_not_asked_free or not get_cart_is_free(
-            self.request))
+            self.request.event.settings.invoice_address_asked
+            and (not self.request.event.settings.invoice_address_not_asked_free or not get_cart_is_free(self.request))
         )
 
     def post(self, request):
@@ -222,8 +208,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
         if not self.all_optional:
 
             if self.address_asked:
-                if request.event.settings.invoice_address_required and (
-                        not self.invoice_address or not self.invoice_address.street):
+                if request.event.settings.invoice_address_required and (not self.invoice_address or not self.invoice_address.street):
                     messages.warning(request, _('Please enter your invoicing address.'))
                     return False
 
@@ -250,16 +235,16 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
                 if parentid not in answ:
                     return False
                 return (
-                        ('True' in qvals and answ[parentid].answer == 'True')
-                        or ('False' in qvals and answ[parentid].answer == 'False')
-                        or (any(qval in [o.identifier for o in answ[parentid].options.all()] for qval in qvals))
+                    ('True' in qvals and answ[parentid].answer == 'True')
+                    or ('False' in qvals and answ[parentid].answer == 'False')
+                    or (any(qval in [o.identifier for o in answ[parentid].options.all()] for qval in qvals))
                 )
 
             def question_is_required(q):
                 return (
-                        q.required and
-                        (not q.dependency_question_id or question_is_visible(q.dependency_question_id,
-                                                                             q.dependency_values))
+                    q.required and
+                    (not q.dependency_question_id or question_is_visible(q.dependency_question_id,
+                                                                         q.dependency_values))
                 )
 
             for q in cp.item.questions_to_ask:
@@ -305,5 +290,4 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
         ctx['cart'] = self.get_cart()
         ctx['cart_session'] = self.cart_session
         ctx['invoice_address_asked'] = self.address_asked
-        ctx['customer'] = self.cart_customer
         return ctx

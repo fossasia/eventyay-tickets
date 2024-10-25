@@ -31,7 +31,14 @@ RES_LAYOUT = {
     'default': True,
     'item_assignments': [{'item': 1}],
     'layout': [{'a': 2}],
-    'background': None
+    'background': None,
+    'size': [
+        {
+            'width': 148,
+            'height': 105,
+            'orientation': 'landscape'
+        }
+    ]
 }
 
 
