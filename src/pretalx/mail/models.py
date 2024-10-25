@@ -154,6 +154,10 @@ class MailTemplate(PretalxModel):
             )
             if commit:
                 mail.save()
+                if "submission" in context_kwargs:
+                    mail.save()
+                    submission = context_kwargs["submission"]
+                    mail.submissions.set([submission])
                 if users:
                     mail.to_users.set(users)
             if skip_queue:
@@ -229,6 +233,10 @@ class QueuedMail(PretalxModel):
     sent = models.DateTimeField(null=True, blank=True, verbose_name=_("Sent at"))
     locale = models.CharField(max_length=32, null=True, blank=True)
     attachments = models.JSONField(default=None, null=True, blank=True)
+    submissions = models.ManyToManyField(
+        to="submission.Submission",
+        related_name="mails",
+    )
 
     class urls(EventUrls):
         base = edit = "{self.event.orga_urls.mail}{self.pk}/"
