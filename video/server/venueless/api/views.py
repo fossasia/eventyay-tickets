@@ -3,14 +3,18 @@ import logging
 from contextlib import suppress
 from urllib.parse import urlparse
 
+import jwt
 import requests
 from asgiref.sync import async_to_sync
-from django.core import exceptions
-from django.db import transaction
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError, transaction
+from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils.crypto import get_random_string
 from django.utils.timezone import now
-from rest_framework import viewsets
+from rest_framework import exceptions, viewsets
 from rest_framework.authentication import get_authorization_header
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
@@ -113,6 +117,115 @@ class WorldThemeView(APIView):
                 + kwargs["world_id"],
                 status=503,
             )
+
+
+class CreateWorldView(APIView):
+    authentication_classes = []  # disables authentication
+    permission_classes = []
+
+    @staticmethod
+    def post(request, *args, **kwargs) -> JsonResponse:
+        payload = CreateWorldView.get_payload_from_token(request)
+
+        # check if user has permission to create world
+        if payload.get("has_permission"):
+            secret = get_random_string(length=64)
+            config = {
+                "JWT_secrets": [
+                    {
+                        "issuer": "any",
+                        "audience": "venueless",
+                        "secret": secret,
+                    }
+                ]
+            }
+
+            titles = request.data.get("title") or {}
+            locale = request.data.get("locale")
+
+            title_values = [value for value in titles.values() if value]
+            title_default = title_values[0] if title_values else ""
+
+            title = titles.get(locale) or titles.get("en") or title_default
+
+            # if world already exists, update it, otherwise create a new world
+            world_id = request.data.get("id")
+            try:
+                if not world_id:
+                    raise ValidationError("World ID is required")
+                if World.objects.filter(id=world_id).exists():
+                    world = World.objects.get(id=world_id)
+                    world.title = title
+                    world.domain = (
+                        "{}{}/{}".format(
+                            settings.DOMAIN_PATH,
+                            settings.BASE_PATH,
+                            request.data.get("id"),
+                        )
+                        or ""
+                    )
+                    world.locale = request.data.get("locale") or "en"
+                    world.timezone = request.data.get("timezone") or "UTC"
+                    world.save()
+                else:
+                    world = World.objects.create(
+                        id=world_id,
+                        title=title,
+                        domain="{}{}/{}".format(
+                            settings.DOMAIN_PATH,
+                            settings.BASE_PATH,
+                            request.data.get("id"),
+                        )
+                        or "",
+                        locale=request.data.get("locale") or "en",
+                        timezone=request.data.get("timezone") or "UTC",
+                        config=config,
+                    )
+            except IntegrityError as e:
+                logger.error(f"Database integrity error while saving world: {e}")
+                return JsonResponse(
+                    {
+                        "error": "A world with this ID already exists or database constraint violated"
+                    },
+                    status=400,
+                )
+            except ValidationError as e:
+                logger.error(f"Validation error while saving world: {e}")
+                return JsonResponse({"error": str(e)}, status=400)
+            except Exception as e:
+                logger.error(f"Unexpected error creating world: {e}")
+                return JsonResponse(
+                    {"error": "An unexpected error occurred"}, status=500
+                )
+
+            return JsonResponse(model_to_dict(world, exclude=["roles"]), status=201)
+        else:
+            return JsonResponse(
+                {"error": "World cannot be created due to missing permission"},
+                status=403,
+            )
+
+    @staticmethod
+    def get_payload_from_token(request):
+        auth_header = get_authorization_header(request).split()
+        if auth_header and auth_header[0].lower() == b"bearer":
+            if len(auth_header) == 1:
+                raise exceptions.AuthenticationFailed(
+                    "Invalid token header. No credentials provided."
+                )
+            elif len(auth_header) > 2:
+                raise exceptions.AuthenticationFailed(
+                    "Invalid token header. Token string should not contain spaces."
+                )
+        try:
+            payload = jwt.decode(
+                auth_header[1], settings.SECRET_KEY, algorithms=["HS256"]
+            )
+        except jwt.ExpiredSignatureError:
+            raise exceptions.AuthenticationFailed("Token has expired")
+        except jwt.DecodeError:
+            raise exceptions.AuthenticationFailed("Invalid token")
+        return payload
 
 
 class UserFavouriteView(APIView):

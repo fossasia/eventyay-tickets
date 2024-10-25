@@ -40,6 +40,9 @@ SECRET_KEY = os.environ.get(
     "VENUELESS_DJANGO_SECRET", config.get("django", "secret", fallback="")
 )
 BASE_PATH = config.get("venueless", "base_path", fallback="")
+DOMAIN_PATH = config.get(
+    "venueless", "domain_path", fallback="https://app.eventyay.com"
+)
 if not SECRET_KEY:
     SECRET_FILE = os.path.join(DATA_DIR, ".secret")
     if os.path.exists(SECRET_FILE):
