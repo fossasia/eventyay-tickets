@@ -21,9 +21,7 @@ from pretix.base.models import Event, EventMetaValue, Organizer, Quota
 from pretix.base.services import tickets
 from pretix.base.services.quotas import QuotaAvailability
 from pretix.control.forms.event import (
-    EventUpdateForm,
-    EventWizardBasicsForm,
-    EventWizardFoundationForm,
+    EventUpdateForm, EventWizardBasicsForm, EventWizardFoundationForm,
 )
 from pretix.control.forms.filter import EventFilterForm
 from pretix.control.permissions import EventPermissionRequiredMixin
@@ -33,9 +31,7 @@ from pretix.control.views.item import MetaDataEditorMixin
 from pretix.eventyay_common.forms.event import EventCommonSettingsForm
 from pretix.eventyay_common.tasks import create_world, send_event_webhook
 from pretix.eventyay_common.utils import (
-    check_create_permission,
-    encode_email,
-    generate_token,
+    check_create_permission, encode_email, generate_token,
 )
 
 
