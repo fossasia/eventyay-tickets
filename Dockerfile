@@ -68,8 +68,7 @@ RUN chmod +x /usr/local/bin/pretix && \
     cd /pretix/src && \
     rm -f pretix.cfg && \
 	mkdir -p data && \
-    chown -R pretixuser:pretixuser /pretix /data data && \
-	sudo -u pretixuser make production
+    chown -R pretixuser:pretixuser /pretix /data data
 
 USER pretixuser
 VOLUME ["/etc/pretix", "/data"]
