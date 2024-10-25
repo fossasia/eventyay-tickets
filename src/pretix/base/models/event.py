@@ -834,12 +834,6 @@ class Event(EventMixin, LoggedModel):
             q.dependency_question = question_map[q.dependency_question_id]
             q.save(update_fields=["dependency_question"])
 
-        # Copy event footer link
-        for footerLink in EventFooterLinkModel.objects.filter(event=other):
-            footerLink.pk = None
-            footerLink.event = self
-            footerLink.save(force_insert=True)
-
         def _walk_rules(rules):
             if isinstance(rules, dict):
                 for k, v in rules.items():
@@ -1755,29 +1749,3 @@ class SubEventMetaValue(LoggedModel):
         super().save(*args, **kwargs)
         if self.subevent:
             self.subevent.event.cache.clear()
-
-
-class EventFooterLinkModel(models.Model):
-    """
-    FooterLink model - support show link for event's footer
-    """
-
-    event = models.ForeignKey(
-        "Event", on_delete=models.CASCADE, related_name="footer_links"
-    )
-    label = I18nCharField(
-        max_length=255,
-        verbose_name=_("Link's text"),
-    )
-    url = models.URLField(
-        verbose_name=_("Link's URL"),
-        # description=_("Event's footer link")
-    )
-
-    def delete(self, *args, **kwargs):
-        super().delete(*args, **kwargs)
-        self.event.cache.clear()
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.event.cache.clear()

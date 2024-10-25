@@ -68,7 +68,7 @@ def generate(model: str, pk: int, provider: str):
             return generate_orderposition(pk, provider)
 
 
-class DummyRollbackException(Exception):
+class DummyRollbackException(Exception):  # NOQA: N818
     pass
 
 

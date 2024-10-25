@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.safestring import mark_safe
-from django.utils.translation import gettext_lazy as _, pgettext_lazy
+from django.utils.translation import pgettext_lazy
 from django_scopes.forms import SafeModelMultipleChoiceField
 
 from pretix.api.models import WebHook

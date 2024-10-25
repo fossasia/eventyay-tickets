@@ -5,9 +5,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.db.models import Q
-from django.forms import (
-    CheckboxSelectMultiple, formset_factory, inlineformset_factory,
-)
+from django.forms import CheckboxSelectMultiple, formset_factory
 from django.urls import reverse
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
@@ -23,15 +21,13 @@ from pretix.base.channels import get_all_sales_channels
 from pretix.base.email import get_available_placeholders
 from pretix.base.forms import I18nModelForm, PlaceholderValidator, SettingsForm
 from pretix.base.models import Event, Organizer, TaxRule, Team
-from pretix.base.models.event import (
-    EventFooterLinkModel, EventMetaValue, SubEvent,
-)
+from pretix.base.models.event import EventMetaValue, SubEvent
 from pretix.base.reldate import RelativeDateField, RelativeDateTimeField
 from pretix.base.settings import (
     PERSON_NAME_SCHEMES, PERSON_NAME_TITLE_GROUPS, validate_event_settings,
 )
 from pretix.control.forms import (
-    MultipleLanguagesWidget, SlugWidget, SMTPSettingsMixin, SplitDateTimeField,
+    MultipleLanguagesWidget, SlugWidget, SplitDateTimeField,
     SplitDateTimePickerWidget,
 )
 from pretix.control.forms.widgets import Select2
@@ -414,7 +410,6 @@ class EventUpdateForm(I18nModelForm):
             ),
             widget=forms.CheckboxSelectMultiple,
         )
-
         self.is_video_creation = self.initial.get("is_video_creation")
         if self.is_video_creation:
             self.fields["is_video_creation"].disabled = True
@@ -916,7 +911,7 @@ def contains_web_channel_validate(val):
         )
 
 
-class MailSettingsForm(SMTPSettingsMixin, SettingsForm):
+class MailSettingsForm(SettingsForm):
     auto_fields = [
         "mail_prefix",
         "mail_from",
@@ -1233,6 +1228,16 @@ class MailSettingsForm(SMTPSettingsMixin, SettingsForm):
                 # If we don't ask for attendee emails, we can't send them anything and we don't need to clutter
                 # the user interface with it
                 del self.fields[k]
+
+    def clean(self):
+        data = self.cleaned_data
+        if not data.get('smtp_password') and data.get('smtp_username'):
+            # Leave password unchanged if the username is set and the password field is empty.
+            # This makes it impossible to set an empty password as long as a username is set, but
+            # Python's smtplib does not support password-less schemes anyway.
+            data['smtp_password'] = self.initial.get('smtp_password')
+        if data.get('smtp_use_tls') and data.get('smtp_use_ssl'):
+            raise ValidationError(_('You can activate either SSL or STARTTLS security, but not both at the same time.'))
 
 
 class TicketSettingsForm(SettingsForm):
@@ -1620,31 +1625,6 @@ ConfirmTextFormset = formset_factory(
     ConfirmTextForm,
     formset=BaseConfirmTextFormSet,
     can_order=True,
-    can_delete=True,
-    extra=0,
-)
-
-
-class EventFooterLinkForm(I18nModelForm):
-    class Meta:
-        model = EventFooterLinkModel
-        fields = ("label", "url")
-
-
-class BaseEventFooterLink(I18nFormSetMixin, forms.BaseInlineFormSet):
-    def __init__(self, *args, **kwargs):
-        event = kwargs.pop("event", None)
-        if event:
-            kwargs["locales"] = event.settings.get("locales")
-        super().__init__(*args, **kwargs)
-
-
-EventFooterLink = inlineformset_factory(
-    Event,
-    EventFooterLinkModel,
-    EventFooterLinkForm,
-    formset=BaseEventFooterLink,
-    can_order=False,
     can_delete=True,
     extra=0,
 )

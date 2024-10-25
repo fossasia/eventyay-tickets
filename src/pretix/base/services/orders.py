@@ -496,7 +496,7 @@ def _check_date(event: Event, now_dt: datetime):
 
 
 def _check_positions(event: Event, now_dt: datetime, positions: List[CartPosition], address: InvoiceAddress=None,
-                     sales_channel='web', customer=None):
+                     sales_channel='web'):
     err = None
     errargs = None
     _check_date(event, now_dt)
@@ -518,8 +518,7 @@ def _check_positions(event: Event, now_dt: datetime, positions: List[CartPositio
             deleted_positions.add(cp.pk)
             cp.delete()
 
-    sorted_positions = sorted(positions, key=lambda s: -int(s.is_bundled))
-    for i, cp in enumerate(sorted_positions):
+    for i, cp in enumerate(sorted(positions, key=lambda s: -int(s.is_bundled))):
         if cp.pk in deleted_positions:
             continue
 
@@ -751,8 +750,8 @@ def _get_fees(positions: List[CartPosition], payment_provider: BasePaymentProvid
 
 def _create_order(event: Event, email: str, positions: List[CartPosition], now_dt: datetime,
                   payment_provider: BasePaymentProvider, locale: str=None, address: InvoiceAddress=None,
-                  meta_info: dict=None, sales_channel: str='web', gift_cards: list=None, shown_total=None,
-                  customer=None):
+                  meta_info: dict=None, sales_channel: str='web', gift_cards: list=None,
+                  shown_total=None):
     p = None
     sales_channel = get_all_sales_channels()[sales_channel]
 
@@ -787,11 +786,8 @@ def _create_order(event: Event, email: str, positions: List[CartPosition], now_d
             testmode=True if sales_channel.testmode_supported and event.testmode else False,
             meta_info=json.dumps(meta_info or {}),
             require_approval=any(p.item.require_approval for p in positions),
-            sales_channel=sales_channel.identifier,
-            customer=customer,
+            sales_channel=sales_channel.identifier
         )
-        if customer:
-            order.email_known_to_work = customer.is_verified
         order.set_expires(now_dt, event.subevents.filter(id__in=[p.subevent_id for p in positions]))
         order.save()
 
@@ -895,16 +891,13 @@ def _order_placed_email_attendee(event: Event, order: Order, position: OrderPosi
 
 def _perform_order(event: Event, payment_provider: str, position_ids: List[str],
                    email: str, locale: str, address: int, meta_info: dict=None, sales_channel: str='web',
-                   gift_cards: list=None, shown_total=None, customer=None):
+                   gift_cards: list=None, shown_total=None):
     if payment_provider:
         pprov = event.get_payment_providers().get(payment_provider)
         if not pprov:
             raise OrderError(error_messages['internal'])
     else:
         pprov = None
-
-    if customer:
-        customer = event.organizer.customers.get(pk=customer)
 
     if email == settings.PRETIX_EMAIL_NONE_VALUE:
         email = None
@@ -931,8 +924,8 @@ def _perform_order(event: Event, payment_provider: str, position_ids: List[str],
         id__in=position_ids, event=event
     )
 
-    validate_order.send(event, payment_provider=pprov, email=email, positions=positions, locale=locale,
-                        invoice_address=addr, meta_info=meta_info, customer=customer)
+    validate_order.send(event, payment_provider=pprov, email=email, positions=positions,
+                        locale=locale, invoice_address=addr, meta_info=meta_info)
 
     lockfn = NoLockManager
     locked = False
@@ -951,10 +944,10 @@ def _perform_order(event: Event, payment_provider: str, position_ids: List[str],
             raise OrderError(error_messages['empty'])
         if len(position_ids) != len(positions):
             raise OrderError(error_messages['internal'])
-        _check_positions(event, now_dt, positions, address=addr, sales_channel=sales_channel, customer=customer)
+        _check_positions(event, now_dt, positions, address=addr, sales_channel=sales_channel)
         order, payment = _create_order(event, email, positions, now_dt, pprov,
                                        locale=locale, address=addr, meta_info=meta_info, sales_channel=sales_channel,
-                                       gift_cards=gift_cards, shown_total=shown_total, customer=customer)
+                                       gift_cards=gift_cards, shown_total=shown_total)
 
         free_order_flow = payment and payment_provider == 'free' and order.pending_sum == Decimal('0.00') and not order.require_approval
         if free_order_flow:
@@ -2026,12 +2019,12 @@ class OrderChangeManager:
 @app.task(base=ProfiledEventTask, bind=True, max_retries=5, default_retry_delay=1, throws=(OrderError,))
 def perform_order(self, event: Event, payment_provider: str, positions: List[str],
                   email: str=None, locale: str=None, address: int=None, meta_info: dict=None,
-                  sales_channel: str='web', gift_cards: list=None, shown_total=None, customer=None):
+                  sales_channel: str='web', gift_cards: list=None, shown_total=None):
     with language(locale):
         try:
             try:
                 return _perform_order(event, payment_provider, positions, email, locale, address, meta_info,
-                                      sales_channel, gift_cards, shown_total, customer)
+                                      sales_channel, gift_cards, shown_total)
             except LockTimeoutException:
                 self.retry()
         except (MaxRetriesExceededError, LockTimeoutException):

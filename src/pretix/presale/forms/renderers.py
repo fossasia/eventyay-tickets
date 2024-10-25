@@ -38,7 +38,7 @@ def render_label(content, label_for=None, label_class=None, label_title='', labe
         # usually checkboxes have overall empty labels and special labels per checkbox
         # => remove for-attribute as well as "required"-text appended to label
         if 'for' in attrs:
-            del(attrs['for'])
+            del (attrs['for'])
     else:
         opt += '<i class="sr-only label-required">, {}</i>'.format(pgettext('form', 'required')) if not optional else ''
 
@@ -99,9 +99,7 @@ class CheckoutFieldRenderer(FieldRenderer):
     def add_label(self, html):
         label = self.get_label()
 
-        if hasattr(self.field.field, '_show_required'):
-            required = self.field.field._show_required
-        elif hasattr(self.field.field, '_required'):
+        if hasattr(self.field.field, '_required'):
             # e.g. payment settings forms where a field is only required if the payment provider is active
             required = self.field.field._required
         else:

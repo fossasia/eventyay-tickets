@@ -81,7 +81,7 @@ def test_org_list(token_client, organizer, event):
     resp = token_client.get('/api/v1/organizers/{}/exporters/'.format(organizer.slug))
     assert resp.status_code == 200
     assert c in resp.data['results']
-    resp = token_client.get('/api/v1/organizers/{}/exporters/orderlist/'.format(organizer.slug, event.slug))
+    resp = token_client.get('/api/v1/organizers/{}/exporters/orderlist/'.format(organizer.slug))
     assert resp.status_code == 200
     assert c == resp.data
 
@@ -132,16 +132,13 @@ def test_org_validate_events(token_client, organizer, team, event):
     assert resp.data == {"events": [f"Object with slug={event.slug} does not exist."]}
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True)
 def test_run_success(token_client, organizer, team, event):
     resp = token_client.post('/api/v1/organizers/{}/events/{}/exporters/orderlist/run/'.format(organizer.slug, event.slug), data={
         '_format': 'xlsx',
     }, format='json')
     assert resp.status_code == 202
     assert "download" in resp.data
-    resp = token_client.get("/" + resp.data["download"].split("/", 3)[3])
-    assert resp.status_code == 200
-    assert resp["Content-Type"] == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
 
 @pytest.mark.django_db

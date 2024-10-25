@@ -9,7 +9,7 @@ from oauth2_provider.generators import (
 )
 from oauth2_provider.models import (
     AbstractAccessToken, AbstractApplication, AbstractGrant, AbstractIDToken,
-    AbstractRefreshToken, ClientSecretField
+    AbstractRefreshToken, ClientSecretField,
 )
 from oauth2_provider.validators import URIValidator
 

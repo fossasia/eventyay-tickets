@@ -1,5 +1,4 @@
 from base64 import urlsafe_b64decode, urlsafe_b64encode
-from typing import Union
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_der_public_key

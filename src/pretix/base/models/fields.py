@@ -12,8 +12,7 @@ class MultiStringField(TextField):
         'delimiter_found': _('No value can contain the delimiter character.')
     }
 
-    def __init__(self, verbose_name=None, name=None, delimiter=DELIMITER, **kwargs):
-        self.delimiter = delimiter
+    def __init__(self, verbose_name=None, name=None, **kwargs):
         super().__init__(verbose_name, name, **kwargs)
 
     def deconstruct(self):
@@ -24,13 +23,13 @@ class MultiStringField(TextField):
         if isinstance(value, (list, tuple)):
             return value
         elif value:
-            return [v for v in value.split(self.delimiter) if v]
+            return [v for v in value.split(DELIMITER) if v]
         else:
             return []
 
     def get_prep_value(self, value):
         if isinstance(value, (list, tuple)):
-            return self.delimiter + self.delimiter.join(value) + self.delimiter
+            return DELIMITER + DELIMITER.join(value) + DELIMITER
         elif value is None:
             return ""
         raise TypeError("Invalid data type passed.")
@@ -40,14 +39,14 @@ class MultiStringField(TextField):
 
     def from_db_value(self, value, expression, connection):
         if value:
-            return [v for v in value.split(self.delimiter) if v]
+            return [v for v in value.split(DELIMITER) if v]
         else:
             return []
 
     def validate(self, value, model_instance):
         super().validate(value, model_instance)
         for l in value:
-            if self.delimiter in l:
+            if DELIMITER in l:
                 raise exceptions.ValidationError(
                     self.error_messages['delimiter_found'],
                     code='delimiter_found',
@@ -55,30 +54,26 @@ class MultiStringField(TextField):
 
     def get_lookup(self, lookup_name):
         if lookup_name == 'contains':
-            return make_multi_string_contains_lookup(self.delimiter)
+            return MultiStringContains
         elif lookup_name == 'icontains':
-            return make_multi_string_icontains_lookup(self.delimiter)
+            return MultiStringIContains
         raise NotImplementedError(
             "Lookup '{}' doesn't work with MultiStringField".format(lookup_name),
         )
 
 
-def make_multi_string_contains_lookup(delimiter):
-    class Cls(builtin_lookups.Contains):
-        def process_rhs(self, qn, connection):
-            sql, params = super().process_rhs(qn, connection)
-            params[0] = "%" + delimiter + params[0][1:-1] + delimiter + "%"
-            return sql, params
-    return Cls
+class MultiStringContains(builtin_lookups.Contains):
+    def process_rhs(self, qn, connection):
+        sql, params = super().process_rhs(qn, connection)
+        params[0] = "%" + DELIMITER + params[0][1:-1] + DELIMITER + "%"
+        return sql, params
 
 
-def make_multi_string_icontains_lookup(delimiter):
-    class Cls(builtin_lookups.IContains):
-        def process_rhs(self, qn, connection):
-            sql, params = super().process_rhs(qn, connection)
-            params[0] = "%" + delimiter + params[0][1:-1] + delimiter + "%"
-            return sql, params
-    return Cls
+class MultiStringIContains(builtin_lookups.IContains):
+    def process_rhs(self, qn, connection):
+        sql, params = super().process_rhs(qn, connection)
+        params[0] = "%" + DELIMITER + params[0][1:-1] + DELIMITER + "%"
+        return sql, params
 
 
 class MultiStringSerializer(serializers.Field):
