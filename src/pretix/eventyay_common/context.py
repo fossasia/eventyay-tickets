@@ -61,7 +61,7 @@ def get_global_navigation(request):
     url = request.resolver_match
     if not url:
         return []
-    request.user.has_active_staff_session(request.session.session_key)
+    has_staff_session = request.user.has_active_staff_session(request.session.session_key)
     nav = [
         {
             'label': _('Dashboard'),
@@ -82,6 +82,36 @@ def get_global_navigation(request):
             'icon': 'group',
         },
     ]
+
+    if has_staff_session:
+        nav.append({
+            'label': _('Pages'),
+            'url': reverse('control:global.settings'),
+            'active': False,
+            'icon': "file-text",
+            'children': [
+                {
+                    'label': _('FAQ'),
+                    'url': reverse('eventyay_common:pages.create'),
+                    'active': (url.url_name == 'pages.create'),
+                },
+                {
+                    'label': _('Pricing'),
+                    'url': reverse('control:global.update'),
+                    'active': (url.url_name == 'global.update'),
+                },
+                {
+                    'label': _('Privacy'),
+                    'url': reverse('control:global.update'),
+                    'active': (url.url_name == 'global.update'),
+                },
+                {
+                    'label': _('Terms'),
+                    'url': reverse('control:global.update'),
+                    'active': (url.url_name == 'global.update'),
+                },
+            ]
+        })
 
     merge_in(nav, sorted(
         sum((list(a[1]) for a in nav_global.send(request, request=request)), []),

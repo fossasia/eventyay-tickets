@@ -1,6 +1,6 @@
 from django.urls import include, re_path as url
 
-from pretix.eventyay_common.views import dashboards, event, organizer, team
+from pretix.eventyay_common.views import dashboards, event, organizer, team, pages
 
 app_name = 'eventyay_common'
 
@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/', include([
         url(r'^settings/$', event.EventUpdate.as_view(), name='event.update'),
     ])),
+    url("pages/faq/create", pages.PageCreate.as_view(), name="pages.create", ),
 ]
