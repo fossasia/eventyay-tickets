@@ -8,7 +8,8 @@ import webauthn
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import (
-    authenticate, login as auth_login, logout as auth_logout,
+    BACKEND_SESSION_KEY, authenticate, load_backend, login as auth_login,
+    logout as auth_logout,
 )
 from django.contrib.auth.tokens import default_token_generator
 from django.core.exceptions import PermissionDenied
@@ -36,6 +37,12 @@ from pretix.multidomain.middlewares import get_cookie_domain
 logger = logging.getLogger(__name__)
 
 
+def get_used_backend(request):
+    backend_str = request.session[BACKEND_SESSION_KEY]
+    backend = load_backend(backend_str)
+    return backend
+
+
 def process_login(request, user, keep_logged_in):
     """
     This method allows you to return a response to a successful log-in. This will set all session values correctly
@@ -53,7 +60,7 @@ def process_login(request, user, keep_logged_in):
             twofa_url += '?next=' + quote(next_url)
         return redirect(twofa_url)
     else:
-        auth_login(request, user)
+        auth_login(request, user, backend="django.contrib.auth.backends.ModelBackend")
         request.session['pretix_auth_login_time'] = int(time.time())
         if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
             return redirect(next_url)
@@ -242,7 +249,7 @@ def invite(request, token):
     return render(request, 'pretixcontrol/auth/invite.html', ctx)
 
 
-class RepeatedResetDenied(Exception):
+class RepeatedResetDenied(Exception):  # NOQA: N818
     pass
 
 
@@ -457,7 +464,7 @@ class Login2FAView(TemplateView):
             valid = match_token(self.user, token)
 
         if valid:
-            auth_login(request, self.user)
+            auth_login(request, self.user, backend="django.contrib.auth.backends.ModelBackend")
             request.session['pretix_auth_login_time'] = int(time.time())
             del request.session['pretix_auth_2fa_user']
             del request.session['pretix_auth_2fa_time']
@@ -498,6 +505,7 @@ class CustomAuthorizationView(AuthorizationView):
     """
     Override the AuthorizationView to set a JWT cookie after successful login.
     """
+
     def get(self, request, *args, **kwargs):
         # Call the parent method to handle the standard authorization flow
         response = super().get(request, *args, **kwargs)

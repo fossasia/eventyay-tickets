@@ -19,7 +19,7 @@ from .event import Event, SubEvent
 from .items import Item, ItemVariation
 
 
-class WaitingListException(Exception):
+class WaitingListException(Exception):  # NOQA: N818
     pass
 
 

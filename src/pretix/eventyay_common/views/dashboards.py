@@ -9,4 +9,3 @@ def organiser_dashboard(request):
         'video_component': '#',
     }
     return render(request, 'eventyay_common/dashboard/dashboard.html', context)
-

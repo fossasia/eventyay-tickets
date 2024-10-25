@@ -6,6 +6,7 @@ from django_scopes import scope
 from pretix.base.models import Event, Organizer
 from pretix.multidomain.middlewares import SessionMiddleware
 from pretix.presale import checkoutflow
+from pretix.presale.checkoutflowstep import BaseCheckoutFlowStep
 
 
 @pytest.fixture
@@ -63,7 +64,7 @@ def with_mocked_step(mocker, step, event):
 
 @pytest.mark.django_db
 def test_plugins_max_priority(event, mocker):
-    class MockingStep(checkoutflow.BaseCheckoutFlowStep):
+    class MockingStep(BaseCheckoutFlowStep):
         identifier = 'mocking'
         priority = 1001
 
@@ -73,7 +74,7 @@ def test_plugins_max_priority(event, mocker):
 
 @pytest.mark.django_db
 def test_plugin_in_order(event, mocker):
-    class MockingStep(checkoutflow.BaseCheckoutFlowStep):
+    class MockingStep(BaseCheckoutFlowStep):
         identifier = 'mocking'
         priority = 100
 
@@ -87,7 +88,7 @@ def test_plugin_in_order(event, mocker):
 
 @pytest.mark.django_db
 def test_step_ignored(event, mocker, req_with_session):
-    class MockingStep(checkoutflow.BaseCheckoutFlowStep):
+    class MockingStep(BaseCheckoutFlowStep):
         identifier = 'mocking'
         priority = 100
 

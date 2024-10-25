@@ -19,12 +19,8 @@
         <meta property="og:url" content="{% abseventurl request.event "presale:event.index" %}" />
     {% endif %}
     {% compress js %}
-        <script type="text/javascript" src="{% static "pretixpresale/js/ui/popover.js" %}"></script>
         <script type="text/javascript" src="{% static "pretixpresale/js/ui/join-video-event.js" %}"></script>
     {% endcompress %}
-    {{ request.event.organizer.slug|json_script:"organizer_name" }}
-    {{ request.event.slug|json_script:"event_slug" }}
-    {{ base_path|json_script:"base_path" }}
 {% endblock %}
 {% block content %}
 
