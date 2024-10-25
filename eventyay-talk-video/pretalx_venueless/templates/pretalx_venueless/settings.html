@@ -1,22 +1,14 @@
 {% extends "orga/base.html" %}
-{% load bootstrap4 %}
 {% load compress %}
 {% load copyable %}
 {% load i18n %}
 {% load static %}
 {% block scripts %}
-
     {% compress js %}
-        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-        <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
-        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
         <script defer src="{% static "pretalx_venueless/settings.js" %}"></script>
     {% endcompress %}
 {% endblock %}
-
 {% block content %}
-
     {% if connect_in_progress %}
         <h2>{% trans "Confirm your Eventyay video connection" %}</h2>
         <div class="alert alert-info">
@@ -67,11 +59,11 @@
             {% endblocktranslate %}
         </p>
 
-        {% bootstrap_form_errors form %}
+        {% include "common/forms/errors.html" %}
 
-        {% bootstrap_field form.url layout='event' %}
-        {% bootstrap_field form.token layout='event' %}
-        {% bootstrap_field form.return_url layout='event' %}
+        {{ form.url.as_field_group }}
+        {{ form.token.as_field_group }}
+        {{ form.return_url.as_field_group }}
 
         <h2>{% translate "Join link settings" %}</h2>
         <p>
@@ -81,14 +73,14 @@
             {% endblocktranslate %}
         </p>
 
-        {% bootstrap_field form.show_join_link layout='event' %}
+        {{ form.show_join_link.as_field_group }}
         <div id="join-link-settings">
-            {% bootstrap_field form.join_url layout='event' %}
-            {% bootstrap_field form.secret layout='event' %}
-            {% bootstrap_field form.issuer layout='event' %}
-            {% bootstrap_field form.audience layout='event' %}
-            {% bootstrap_field form.join_start layout='event' %}
-            {% bootstrap_field form.join_text layout='event' %}
+            {{ form.join_url.as_field_group }}
+            {{ form.secret.as_field_group }}
+            {{ form.issuer.as_field_group }}
+            {{ form.audience.as_field_group }}
+            {{ form.join_start.as_field_group }}
+            {{ form.join_text.as_field_group }}
         </div>
 
         <div class="submit-group panel">

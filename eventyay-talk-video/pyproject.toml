@@ -12,7 +12,9 @@ maintainers = [
   {name = "Tobias Kunze", email = "r@rixx.de"},
 ]
 
-dependencies = []
+dependencies = [
+    "PyJWT",
+]
 
 [project.urls]
 homepage = "https://github.com/pretalx/pretalx-venueless"
