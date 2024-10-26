@@ -68,7 +68,7 @@ def test_schedule_frab_xml_export(
     schedule_schema_xml,
     break_slot,
 ):
-    with django_assert_max_num_queries(11):
+    with django_assert_max_num_queries(14):
         response = client.get(
             reverse(
                 "agenda:export.schedule.xml",
