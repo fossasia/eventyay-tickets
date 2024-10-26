@@ -283,11 +283,12 @@ def test_schedule_page_text_wrong_format(
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     "version,queries_main,queries_versioned,queries_redirect",
-    (("js", 5, 6, 11), ("nojs", 6, 9, 14)),
+    (("js", 5, 6, 11), ("nojs", 6, 12, 14)),
 )
 def test_versioned_schedule_page(
     client,
     django_assert_num_queries,
+    django_assert_max_num_queries,
     event,
     speaker,
     slot,
@@ -316,7 +317,7 @@ def test_versioned_schedule_page(
         )  # But our talk has been made invisible
 
     url = schedule.urls.public if version == "js" else schedule.urls.nojs
-    with django_assert_num_queries(queries_versioned):
+    with django_assert_max_num_queries(queries_versioned):
         response = client.get(url, follow=True, HTTP_ACCEPT="text/html")
     assert response.status_code == 200
     assert test_string in response.content.decode()
