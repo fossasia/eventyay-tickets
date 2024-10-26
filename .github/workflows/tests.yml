@@ -72,7 +72,14 @@ jobs:
         working-directory: ./src
       - name: Run tests
         working-directory: ./src
-        run: python -m pytest -nauto -p no:sugar --reruns 3 --cov-report=term-missing:skip-covered tests
+        run: |
+          # tee will gobble up our exit code without pipefail
+          set -o pipefail
+          python -m pytest \
+            -nauto -p no:sugar \
+            --junitxml=pytest.xml \
+            --cov-report=term-missing:skip-covered \
+            tests | tee pytest-coverage.txt
         env:
           PRETALX_CONFIG_FILE: 'tests/ci_${{ matrix.database }}.cfg'
       - name: Show coverage as build info
