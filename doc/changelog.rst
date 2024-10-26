@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :release:`2024.3.1 <2024-10-27>`
 - :bug:`schedule` The schedule would work only intermittently when used with a custom domain.
 - :bug:`cfp` The resource upload form always mentioned a hard-coded file upload limit (but would in reality allow files up to the size of the real file upload limit).
 - :bug:`schedule` Sessions with session image would not look good on some mobile devices.
