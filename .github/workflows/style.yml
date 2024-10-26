@@ -29,7 +29,7 @@ jobs:
           python-version-file: ".github/workflows/python-version.txt"
           cache: "pip"
       - name: Install Dependencies
-        run: python -m pip install -Ue ".[dev]"
+        run: python -m pip install uv && uv pip install --system -Ue ".[dev]"
       - name: Run isort
         run: isort -c .
         working-directory: ./src
@@ -43,7 +43,7 @@ jobs:
           python-version-file: ".github/workflows/python-version.txt"
           cache: "pip"
       - name: Install Dependencies
-        run: python -m pip install -Ue ".[dev]"
+        run: python -m pip install uv && uv pip install --system -Ue ".[dev]"
       - name: Setup flake8 annotations
         uses: rbialon/flake8-annotations@v1
       - name: Run flake8
@@ -73,7 +73,7 @@ jobs:
           python-version-file: ".github/workflows/python-version.txt"
           cache: "pip"
       - name: Install Dependencies
-        run: python -m pip install -Ue ".[dev]"
+        run: python -m pip install uv && uv pip install --system -Ue ".[dev]"
       - name: Run djhtml
         run: 'djhtml pretalx/'
         working-directory: ./src
