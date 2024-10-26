@@ -44,7 +44,7 @@ jobs:
         run: npm ci
         working-directory: ./src/pretalx/frontend/schedule-editor
       - name: Install system dependencies
-        run: sudo apt update && sudo apt install gettext unzip
+        run: sudo apt update && sudo apt install -y gettext unzip
       - name: Install Python dependencies
         run: python -m pip install twine wheel -Ue ".[dev]"
       - name: Run check-manifest
