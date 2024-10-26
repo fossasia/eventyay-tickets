@@ -46,7 +46,7 @@ jobs:
       - name: Install system dependencies
         run: sudo apt update && sudo apt install -y gettext unzip
       - name: Install Python dependencies
-        run: python -m pip install twine wheel -Ue ".[dev]"
+        run: python -m pip install uv && uv pip install --system twine wheel -Ue ".[dev]"
       - name: Run check-manifest
         run: check-manifest
       - name: Run build
