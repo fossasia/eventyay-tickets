@@ -45,7 +45,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: pretalx
         options: >-
-          --health-cmd pg_isready -U postgres -d pretalx
+          --health-cmd pg_isready -u postgres -d pretalx
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
