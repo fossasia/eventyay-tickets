@@ -308,7 +308,12 @@ class SubmissionFilterForm(forms.Form):
             }
         )
         sub_types = event.submission_types.all()
-        tracks = limit_tracks or event.tracks.all()
+        if limit_tracks and isinstance(limit_tracks, (list, tuple, set)):
+            limit_tracks = event.tracks.filter(
+                pk__in=[track.pk for track in limit_tracks]
+            )
+        else:
+            tracks = limit_tracks or event.tracks.all()
         languages = event.named_content_locales
         if len(sub_types) > 1:
             type_count = {
