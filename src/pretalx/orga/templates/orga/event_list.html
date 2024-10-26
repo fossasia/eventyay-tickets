@@ -16,6 +16,32 @@
 {% block content %}
     {% has_perm "orga.create_events" request.user request.user as can_create_event %}
 
+    {% if current_orga_events or past_orga_events or can_create_event %}
+        <form class="mb-4 m-2">
+            <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% translate "Search" %}">
+        </form>
+        {% if current_orga_events or can_create_event %}
+            <h2>{% translate "Your upcoming events" %}</h2>
+            <div class="dashboard-list">
+                {% for event in current_orga_events %}
+                    {% include "orga/includes/dashboard_block_event.html" %}
+                {% endfor %}
+                {% if can_create_event %}
+                    <a class="dashboard-block symbol" href="{% url "orga:event.create" %}">
+                        <i class="fa fa-plus-circle" title="{% translate "Create a new event" %}"></i>
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+        {% if past_orga_events %}
+            <h2>{% translate "Your most recent events" %}</h2>
+            <div class="dashboard-list">
+                {% for event in past_orga_events %}
+                    {% include "orga/includes/dashboard_block_event.html" %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
     {% if not hide_speaker_events and speaker_events %}
         <div class="alert alert-info">
             <div>
@@ -30,36 +56,6 @@
                     </ul>
                 {% endif %}
             </div>
-        </div>
-    {% endif %}
-    <form class="mb-4 m-2">
-        <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% translate "Search" %}">
-    </form>
-    <h2>{% translate "Your upcoming events" %}</h2>
-    <div class="dashboard-list">
-        {% if not current_orga_events and not past_orga_events and not can_create_event %}
-            <div class="dashboard-block">
-                <h2>{% translate "No events" %}</h2>
-                <div class="dashboard-description">
-                    {% translate "Please ask an organiser to invite you to an event." %}
-                </div>
-            </div>
-        {% endif %}
-        {% for event in current_orga_events %}
-            {% include "orga/includes/dashboard_block_event.html" %}
-        {% endfor %}
-        {% if can_create_event %}
-            <a class="dashboard-block symbol" href="{% url "orga:event.create" %}">
-                <i class="fa fa-plus-circle" title="{% translate "Create a new event" %}"></i>
-            </a>
-        {% endif %}
-    </div>
-    {% if past_orga_events %}
-        <h2>{% translate "Your most recent events" %}</h2>
-        <div class="dashboard-list">
-            {% for event in past_orga_events %}
-                {% include "orga/includes/dashboard_block_event.html" %}
-            {% endfor %}
         </div>
     {% endif %}
 {% endblock content %}
