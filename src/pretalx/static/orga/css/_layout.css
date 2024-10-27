@@ -409,7 +409,7 @@ nav.navbar,
   height: 50px;
   color: var(--color-primary);
   background-color: var(--color-offwhite);
-  border-bottom: 4px var(--color-primary) solid;
+  border-bottom: 4px var(--color-primary-event, var(--color-primary)) solid;
   padding: 0.25rem;
   box-shadow:
     1px 1px 3px rgb(0 0 0 / 0.12),
