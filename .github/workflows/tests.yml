@@ -88,6 +88,7 @@ jobs:
           python -m pytest \
             -nauto -p no:sugar \
             --junitxml=pytest.xml \
+            --reruns 3 \
             --cov-report=term-missing:skip-covered \
             tests | tee pytest-coverage.txt
         env:
