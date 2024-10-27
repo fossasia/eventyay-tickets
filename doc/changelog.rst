@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`orga` When entering a HTML colour manually instead of using the colour picker, pretalx would expand a three-letter colour to a six-letter colour (e.g. #123 to #112233), which is technically correct, but also not helpful when you’re in the process of typing out a six-letter colour, so pretalx will now not expand these colours anymore.
 - :feature:`orga` In order to make it easier for organisers of multiple events to see which event they are currently editing, the green line in the top navbar is now of the current event’s colour instead.
 - :feature:`orga:review` Reviewers were shown the proposal state dropdown, even when they didn’t have the necessary permissions to change a proposal’s state. They are now shown a non-interactive badge instead, and the same badge is also used on the frontend-side for speakers.
 - :release:`2024.3.1 <2024-10-27>`
