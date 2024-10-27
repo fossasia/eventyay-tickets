@@ -19,7 +19,7 @@
     <p>
         {% translate "Current state of your proposal:" %}
 
-        {% include "cfp/event/fragment_state.html" with state=submission.state %}
+        {% include "cfp/event/fragment_state.html" with state=submission.state as_badge=True %}
 
     </p>
 {% else %}

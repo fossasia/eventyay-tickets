@@ -696,60 +696,6 @@ details.submission-state-dropdown {
   }
 }
 
-.submission-state-deleted,
-.submission-state-withdrawn,
-.submission-state-canceled {
-  --submission-color-primary: var(--color-grey);
-  --submission-color-secondary: var(--color-grey);
-  --highlight-color: var(--color-grey);
-  --highlight-color-text: var(--color-grey);
-}
-.submission-state-dropdown.submission-state-pending-deleted,
-.submission-state-dropdown.submission-state-pending-withdrawn,
-.submission-state-dropdown.submission-state-pending-canceled {
-  --submission-color-secondary: var(--color-grey);
-}
-
-.submission-state-submitted {
-  --submission-color-primary: var(--color-info);
-  --submission-color-secondary: var(--color-info);
-  --highlight-color: var(--color-info);
-  --highlight-color-text: var(--color-info-dark);
-}
-.submission-state-dropdown.submission-state-pending-submitted {
-  --submission-color-secondary: var(--color-info);
-}
-
-.submission-state-accepted {
-  --submission-color-primary: var(--color-primary);
-  --submission-color-secondary: var(--color-primary);
-  --highlight-color: var(--color-success);
-  --highlight-color-text: var(--color-success-dark);
-}
-.submission-state-dropdown.submission-state-pending-accepted {
-  --submission-color-secondary: var(--color-primary);
-}
-
-.submission-state-confirmed {
-  --submission-color-primary: var(--color-primary-text);
-  --submission-color-secondary: var(--color-primary-text);
-  --highlight-color: var(--color-success);
-  --highlight-color-text: var(--color-success-dark);
-}
-.submission-state-dropdown.submission-state-pending-confirmed {
-  --submission-color-secondary: var(--color-primary-text);
-}
-
-.submission-state-rejected {
-  --submission-color-primary: var(--color-danger);
-  --submission-color-secondary: var(--color-danger);
-  --highlight-color: var(--color-danger);
-  --highlight-color-text: var(--color-danger);
-}
-.submission-state-dropdown.submission-state-pending-rejected {
-  --submission-color-secondary: var(--color-danger);
-}
-
 .cfp-option-table {
   display: table;
   input:not([type="checkbox"]):not([type="radio"]),

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`orga:review` Reviewers were shown the proposal state dropdown, even when they didn’t have the necessary permissions to change a proposal’s state. They are now shown a non-interactive badge instead, and the same badge is also used on the frontend-side for speakers.
 - :release:`2024.3.1 <2024-10-27>`
 - :bug:`schedule` The schedule would work only intermittently when used with a custom domain.
 - :bug:`cfp` The resource upload form always mentioned a hard-coded file upload limit (but would in reality allow files up to the size of the real file upload limit).

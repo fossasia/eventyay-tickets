@@ -38,10 +38,13 @@
             <span>
                 {{ quotation_open }}{% if can_view_speakers %}{{ submission.title }}{% else %}{{ submission.anonymised.title|default:submission.title }}{% endif %}{{ quotation_close }}
                 {% if submission.speakers.exists and can_view_speakers %}
-                    – {% include "orga/includes/submission_speaker_names.html" %}
+                    – {% include "orga/includes/submission_speaker_names.html" with lightbox=True %}
                 {% endif %}
-                {% include "orga/submission/state_dropdown.html" with submission=submission lightbox=True %}
-
+                {% if can_edit_submission %}
+                    {% include "orga/submission/state_dropdown.html" with submission=submission %}
+                {% else %}
+                    {% include "cfp/event/fragment_state.html" with state=submission.state as_badge=True %}
+                {% endif %}
             </span>
         </h2>
 
