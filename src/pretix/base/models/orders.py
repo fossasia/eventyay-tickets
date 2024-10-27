@@ -2041,9 +2041,7 @@ class OrderPosition(AbstractPosition):
 
     @cached_property
     def require_checkin_attention(self):
-        if self.order.checkin_attention or self.item.checkin_attention or (self.variation_id and self.variation.checkin_attention):
-            return True
-        return False
+        return self.order.checkin_attention or self.item.checkin_attention or (self.variation_id and self.variation.checkin_attention)
 
     @property
     def generate_ticket(self):
