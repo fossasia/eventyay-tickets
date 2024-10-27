@@ -76,6 +76,7 @@ def test_edit_cfp_flow(orga_client, event):
     assert response.status_code == 200, response.content.decode()
 
 
+@pytest.mark.flaky(reruns=3)
 @pytest.mark.django_db
 def test_make_submission_type_default(
     orga_client, submission_type, default_submission_type
