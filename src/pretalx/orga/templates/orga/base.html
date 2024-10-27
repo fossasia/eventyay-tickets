@@ -46,6 +46,7 @@
             <link rel="stylesheet" type="text/css" href="{% static "orga/css/_layout.css" %}" />
             <link rel="stylesheet" type="text/css" href="{% static "orga/css/_rtl.css" %}" />
         {% endcompress %}
+        {% if request.event and request.event.primary_color %}<link rel="stylesheet" type="text/css" href="{{ request.event.urls.settings_css }}?target=orga" />{% endif %}
         {% block stylesheets %}{% endblock stylesheets %}
         {% compress js %}
             <script defer src="{% static "common/js/base.js" %}"></script>
