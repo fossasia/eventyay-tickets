@@ -189,7 +189,7 @@ class ScheduleExportForm(ExportForm):
     def _get_start_value(self, obj):
         slot = obj.slot
         if slot and slot.start:
-            return slot.start.isoformat()
+            return slot.local_start.isoformat()
 
     def _get_end_value(self, obj):
         slot = obj.slot

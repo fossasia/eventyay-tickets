@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`orga:schedule` When exporting all your sessions as CSV or JSON export, only the end time would be in the local timezone, but the start time would be in UTC – both timestamps included the full timezone, so if you went on to parse them with a program, this likely wouldn’t matter, but it was confusing regardless. The export now uses the event timezone, as intended.
 - :bug:`orga` When entering a HTML colour manually instead of using the colour picker, pretalx would expand a three-letter colour to a six-letter colour (e.g. #123 to #112233), which is technically correct, but also not helpful when you’re in the process of typing out a six-letter colour, so pretalx will now not expand these colours anymore.
 - :feature:`orga` In order to make it easier for organisers of multiple events to see which event they are currently editing, the green line in the top navbar is now of the current event’s colour instead.
 - :feature:`orga:review` Reviewers were shown the proposal state dropdown, even when they didn’t have the necessary permissions to change a proposal’s state. They are now shown a non-interactive badge instead, and the same badge is also used on the frontend-side for speakers.
