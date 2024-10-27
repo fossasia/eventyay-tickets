@@ -315,7 +315,6 @@ def _redeem_process(*, checkinlists, raw_barcode, answers_data, datetime, force,
 
     device = auth if isinstance(auth, Device) else None
     gate = gate or (auth.gate if isinstance(auth, Device) else None)
-
     context = {
             'request': request,
             'expand': expand,
@@ -360,12 +359,98 @@ def _redeem_process(*, checkinlists, raw_barcode, answers_data, datetime, force,
 
     op_candidates = list(queryset.filter(q)) #filtering queryset with q to fetch orderposition
 
-    print('\n',op_candidates,'\n')
+
+    #if nothing found
+    if not op_candidates:
+        #check if revoked
+        revoked = list(RevokedTicketSecret.objects.filter(event_id__in=list_by_event.keys(), secret=raw_barcode))
+        if len(revoked)==0:
+            checkinlists[0].event.log_action('pretix.event.checkin.unknown', data={
+                'datetime': datetime,
+                'type': checkin_type,
+                'list': checkinlists[0].pk,
+                'barcode': raw_barcode,
+                'searched_lists': [cl.pk for cl in checkinlists]
+            }, user=user, auth=auth)
+
+            for cl in checkinlists:
+                for k, s in cl.event.ticket_secret_generators.items():
+                    try:
+                        parsed = s.parse_secret(raw_barcode)
+                        common_checkin_args.update({
+                            'raw_item': parsed.item,
+                            'raw_variation': parsed.variation,
+                            'raw_subevent': parsed.subevent,
+                        })
+                    except:
+                        pass
+
+            if not simulate:
+                Checkin.objects.create(
+                    position=None,
+                    successful=False,
+                    error_reason=Checkin.REASON_INVALID,
+                    **common_checkin_args,
+                )
+            return Response({
+                'detail': 'Not found.',  # for backwards compatibility
+                'status': 'error',
+                'reason': 'invalid',
+                'reason_explanation': None,
+                'require_attention': False,
+                'checkin_texts': [],
+                'list': MiniCheckinListSerializer(checkinlists[0]).data,
+            }, status=404)
+
+
+    #if multiple options found
+    if len(op_candidates) > 1:
+        op_candidates_matching_product = [
+            op for op in op_candidates
+            if (
+                (list_by_event[op.order.event_id].addon_match or op.secret == raw_barcode or legacy_url_support) and
+                (list_by_event[op.order.event_id].all_products or op.item_id in {i.pk for i in list_by_event[op.order.event_id].limit_products.all()})
+            )
+        ]
+
+        if len(op_candidates_matching_product) == 0:
+            # None of the found add-ons has the correct product. Instead of erroring out, we continue with any product and let it be rejected by perform_checkin for a better error message.
+            op_candidates = [op_candidates[0]]
+        elif len(op_candidates_matching_product) > 1:
+            # It's still ambiguous, we'll error out. We choose the first match for logging as it's likely the base product due to the order_by.
+            op = op_candidates[0]
+            if not simulate:
+                op.order.log_action('pretix.event.checkin.denied', data={
+                    'position': op.id,
+                    'positionid': op.positionid,
+                    'errorcode': 'ambiguous',
+                    'reason_explanation': None,
+                    'force': force,
+                    'datetime': datetime,
+                    'type': checkin_type,
+                    'list': list_by_event[op.order.event_id].pk,
+                }, user=user, auth=auth)
+                common_checkin_args['list'] = list_by_event[op.order.event_id]
+                Checkin.objects.create(
+                    position=op,
+                    successful=False,
+                    error_reason='ambiguous',
+                    error_explanation=None,
+                    **common_checkin_args,
+                )
+            return Response({
+                'status': 'error',
+                'reason': 'ambiguous',
+                'reason_explanation': None,
+                'require_attention': op.require_checkin_attention,
+                'position': CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data,
+                'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
+            }, status=400)
+        else:
+            op_candidates = op_candidates_matching_product
 
     op = op_candidates[0]
     common_checkin_args['list'] = list_by_event[op.order.event_id]
-
-    # 5. Pre-validate all incoming answers, handle file upload
     given_answers = {}
     if answers_data:
         for q in op.item.questions.filter(ask_during_checkin=True):
@@ -410,7 +495,7 @@ def _redeem_process(*, checkinlists, raw_barcode, answers_data, datetime, force,
                     'position': op.id,
                     'positionid': op.positionid,
                     'errorcode': e.code,
-                    'reason_explanation': e.reason,
+                    'reason_explanation': 'unkown',
                     'force': force,
                     'datetime': datetime,
                     'type': checkin_type,
@@ -420,22 +505,35 @@ def _redeem_process(*, checkinlists, raw_barcode, answers_data, datetime, force,
                     position=op,
                     successful=False,
                     error_reason=e.code,
-                    error_explanation=e.reason,
+                    error_explanation='unkown',
                     **common_checkin_args,
                 )
             return Response({
                 'status': 'error',
                 'reason': e.code,
-                'reason_explanation': e.reason,
+                'reason_explanation': 'unkown',
                 'require_attention': op.require_checkin_attention,
                 'position': CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data,
                 'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
             }, status=400)
         else:
+            downloads = CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data['downloads']
+
+            # Check if badges plugin is enabled
+            if 'pretix.plugins.badges' in op.order.event.plugins:
+                badge_url = f"/api/v1/organizers/{request.organizer.slug}/events/{op.order.event.slug}/orderpositions/{op.pk}/download/badge/"
+                downloads.append({
+                    "output": "badge",
+                    "url": badge_url
+                })
+
             return Response({
                 'status': 'ok',
                 'require_attention': op.require_checkin_attention,
-                'position': CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data,
+                'position': {
+                    **CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data,
+                    'downloads': downloads
+                },
                 'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
             }, status=201)
 
@@ -695,14 +793,13 @@ class CheckinRPCRedeemView(views.APIView):
     def post(self, request, *args, **kwargs):
         auth = self.request.auth
         user = self.request.user
-
+        
         if isinstance(auth, (TeamAPIToken, Device)):
             events = auth.get_events_with_permission(('can_change_orders', 'can_checkin_orders'))
         elif user.is_authenticated:
             events = user.get_events_with_permission(('can_change_orders', 'can_checkin_orders'), request).filter(organizer=self.request.organizer)
         else:
             raise ValueError("Unknown authentication method")
-
         serializer = CheckinRPCRedeemInputSerializer(data=request.data, context={'events': events})
         serializer.is_valid(raise_exception=True)
         return _redeem_process(

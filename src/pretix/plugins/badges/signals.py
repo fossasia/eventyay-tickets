@@ -19,6 +19,14 @@ from pretix.control.signals import (
 from pretix.plugins.badges.forms import BadgeItemForm
 from pretix.plugins.badges.models import BadgeItem, BadgeLayout
 
+# In pretix/plugins/badges/signals.py
+
+from pretix.base.signals import register_ticket_outputs
+
+@receiver(register_ticket_outputs)
+def register_badge_output(sender: Event, **kwargs):
+    from .providers import BadgeOutputProvider
+    return BadgeOutputProvider
 
 @receiver(nav_event, dispatch_uid="badges_nav")
 def control_nav_import(sender, request=None, **kwargs):

@@ -1,10 +1,17 @@
-from rest_framework import viewsets
-
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
+from django.core.files.base import ContentFile
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.renderers import BaseRenderer
 from pretix.api.serializers.i18n import I18nAwareModelSerializer
 from pretix.api.serializers.order import CompatibleJSONField
-
+from pretix.base.models import OrderPosition, CachedFile
+from pretix.plugins.badges.exporters import render_pdf, OPTIONS
+from pretix.base.services.tickets import generate_orderposition
 from .models import BadgeItem, BadgeLayout
-
+from .apps import PDFRenderer
 
 class BadgeItemAssignmentSerializer(I18nAwareModelSerializer):
     class Meta:
@@ -44,3 +51,81 @@ class BadgeItemViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return BadgeItem.objects.filter(item__event=self.request.event)
+
+
+
+
+class BadgeDownloadView(APIView):
+    renderer_classes = [PDFRenderer]
+
+    def get(self, request, organizer, event, position):
+
+        try:
+            op = get_object_or_404(
+                OrderPosition,
+                order__event__slug=event,
+                order__event__organizer__slug=organizer,
+                pk=position
+            )
+
+            # Check if badges plugin is enabled
+            if 'pretix.plugins.badges' not in op.order.event.plugins:
+                return Response(
+                    {"error": "Badges plugin is not enabled for this event"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Check if there's already a cached file
+            cached_file = CachedFile.objects.filter(
+                filename__startswith=f'badge_{position}_',
+                expires__isnull=True
+            ).last()
+
+            if cached_file and cached_file.file:
+                response = Response(
+                    cached_file.file.read(),
+                    content_type='application/pdf',
+                    status=status.HTTP_200_OK
+                )
+                response['Content-Disposition'] = f'attachment; filename="badge_{position}.pdf"'
+                return response
+
+            # If no cached file exists, generate one
+            from .providers import BadgeOutputProvider
+            provider = BadgeOutputProvider(op.order.event)
+
+            try:
+                # Try to generate immediately
+                filename, mimetype, pdf_content = provider.generate(op)
+
+                # Cache the generated file
+                cached_file = CachedFile.objects.create(
+                    filename=f'badge_{position}.pdf',
+                    type='application/pdf'
+                )
+                cached_file.file.save(f'badge_{position}.pdf', ContentFile(pdf_content))
+
+                response = Response(
+                    pdf_content,
+                    content_type=mimetype,
+                    status=status.HTTP_200_OK
+                )
+                response['Content-Disposition'] = f'attachment; filename="{filename}"'
+                return response
+
+            except Exception as generation_error:
+                # If immediate generation fails, fall back to async generation
+                generate_orderposition.apply_async(args=(op.pk, 'badge'))
+                return Response(
+                    {
+                        "status": "generating",
+                        "message": "Badge generation has been started. Please retry in a few seconds."
+                    },
+                    status=status.HTTP_202_ACCEPTED
+                )
+
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
