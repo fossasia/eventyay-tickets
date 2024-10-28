@@ -7,6 +7,7 @@
     <title>{{ django_settings.INSTANCE_NAME }}</title>
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/auth.scss" %}"/>
+        <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/main.scss" %}" />
     {% endcompress %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -27,6 +28,23 @@
     <meta name="theme-color" content="#2185d0">
 </head>
 <body>
+    <div id="wrapper">
+        <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+            <div class="navbar-header">
+                <a class="navbar-brand" href='{% url "control:index" %}'>
+                    <img src='{% static "pretixbase/img/eventyay-icon.svg" %}' />
+                    {{ django_settings.INSTANCE_NAME }}
+                </a>
+            </div>
+            <ul class="nav navbar-nav navbar-top-links navbar-right flip">
+                <li>
+                    <a href="{% url 'api-v1:pages.faq.view' page='faq' %}" title='{% trans "FAQ" %}' >
+                        <i class="fa fa-question"></i> {% trans "Frequently asked question" %}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 <div class="container">
     <a href="{% url "control:auth.login" %}">
         <img src="{% static "pretixbase/img/eventyay-logo.svg" %}" class="logo"/>

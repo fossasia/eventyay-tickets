@@ -1,9 +1,12 @@
+import bleach
 from django.conf import settings
 from django.contrib import messages
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView
+from i18nfield.strings import LazyI18nString
 
+from pretix.base.settings import GlobalSettingsObject
 from pretix.control.permissions import AdministratorPermissionRequiredMixin
 from pretix.eventyay_common.forms.page import PageSettingsForm
 
@@ -29,4 +32,32 @@ class PageCreate(AdministratorPermissionRequiredMixin, FormView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse('eventyay_common:pages.create')
+        return reverse('eventyay_common:pages.faq.create')
+
+
+class ShowPageView(TemplateView):
+    template_name = 'eventyay_common/pages/show.html'
+
+    def get_page(self, page):
+        gs = GlobalSettingsObject()
+        return gs.settings.get(page + "_title"), gs.settings.get(page + "_content")
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data()
+        page_title, page_content = self.get_page(page=kwargs.get("page"))
+        ctx["page_title"] = str(LazyI18nString(page_title))
+
+        attributes = dict(bleach.ALLOWED_ATTRIBUTES)
+        attributes["a"] = ["href", "title", "target"]
+        attributes["p"] = ["class"]
+        attributes["li"] = ["class"]
+        attributes["img"] = ["src"]
+
+        ctx["content"] = bleach.clean(
+            str(LazyI18nString(page_content)),
+            tags=bleach.ALLOWED_TAGS
+                 + ["img", "p", "br", "s", "sup", "sub", "u", "h3", "h4", "h5", "h6"],
+            attributes=attributes,
+            protocols=bleach.ALLOWED_PROTOCOLS + ["data"],
+        )
+        return ctx

@@ -10,6 +10,7 @@ from .views import (
     checkin, device, event, exporters, item, oauth, order, organizer, upload,
     user, version, voucher, waitinglist, webhooks,
 )
+from ..eventyay_common.views import pages
 
 router = routers.DefaultRouter()
 router.register(r'organizers', organizer.OrganizerViewSet)
@@ -98,4 +99,5 @@ urlpatterns = [
     url(r"^upload$", upload.UploadView.as_view(), name="upload"),
     url(r"^me$", user.MeView.as_view(), name="user.me"),
     url(r"^version$", version.VersionView.as_view(), name="version"),
+    url("pages/(?P<page>[^/]+)/view", pages.ShowPageView.as_view(), name="pages.faq.view"),
 ]

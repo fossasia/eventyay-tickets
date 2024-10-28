@@ -92,8 +92,8 @@ def get_global_navigation(request):
             'children': [
                 {
                     'label': _('FAQ'),
-                    'url': reverse('eventyay_common:pages.create'),
-                    'active': (url.url_name == 'pages.create'),
+                    'url': reverse('eventyay_common:pages.faq.create'),
+                    'active': (url.url_name == 'pages.faq.create'),
                 },
                 {
                     'label': _('Pricing'),
