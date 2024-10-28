@@ -33,7 +33,7 @@ def avatar_path(instance, filename):
     if instance.code:
         extension = Path(filename).suffix
         filename = f"{instance.code}{extension}"
-    return f"avatars/{path_with_hash(filename)}"
+    return path_with_hash(filename, base_path="avatars")
 
 
 class UserManager(BaseUserManager):

@@ -67,11 +67,11 @@ def validate_event_slug_permitted(value):
 
 
 def event_css_path(instance, filename):
-    return f"{instance.slug}/css/{path_with_hash(filename)}"
+    return path_with_hash(filename, base_path=f"{instance.slug}/css/")
 
 
 def event_logo_path(instance, filename):
-    return f"{instance.slug}/img/{path_with_hash(filename)}"
+    return path_with_hash(filename, base_path=f"{instance.slug}/img/")
 
 
 def default_feature_flags():
