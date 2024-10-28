@@ -55,7 +55,7 @@ def handle_stripe_errors(operation_name: str):
                 )
             except stripe.error.APIConnectionError as e:
                 logger.error(
-                    "API connection error during {}: %s", operation_name, str(e)
+                    "API connection error during %s: %s", operation_name, str(e)
                 )
                 raise ValidationError("Network communication error: {}".format(str(e)))
             except stripe.error.AuthenticationError as e:

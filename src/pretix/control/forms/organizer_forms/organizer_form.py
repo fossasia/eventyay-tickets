@@ -41,7 +41,6 @@ class BillingSettingsForm(forms.ModelForm):
             "country",
             "preferred_language",
             "tax_id",
-            "payment_information",
         ]
 
     primary_contact_name = forms.CharField(
@@ -128,13 +127,6 @@ class BillingSettingsForm(forms.ModelForm):
         required=True,
         max_length=255,
         widget=forms.TextInput(attrs={"placeholder": ""}),
-    )
-
-    payment_information = forms.CharField(
-        label=_("Payment Information"),
-        help_text=_("Please enter your credit card details for monthly fee payments."),
-        required=False,
-        widget=forms.Textarea(attrs={"placeholder": ""}),
     )
 
     def __init__(self, *args, **kwargs):

@@ -456,10 +456,6 @@ class OrganizerBillingModel(models.Model):
         verbose_name=_("Tax ID"),
     )
 
-    payment_information = models.TextField(
-        verbose_name=_("Payment Information"),
-    ),
-
     stripe_customer_id = models.CharField(
         max_length=255,
         verbose_name=_("Stripe Customer ID"),
