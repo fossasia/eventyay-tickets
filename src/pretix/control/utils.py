@@ -13,12 +13,20 @@ logger = logging.getLogger(__name__)
 
 def get_stripe_key(key_type: str) -> str:
     gs = GlobalSettingsObject()
-    prod_key = getattr(gs.settings, f"payment_stripe_connect_{key_type}_key")
-    test_key = getattr(gs.settings, f"payment_stripe_connect_test_{key_type}_key")
+
+    try:
+        prod_key = getattr(gs.settings, f"payment_stripeconnect{key_type}_key")
+        test_key = getattr(gs.settings, f"payment_stripe_connecttest{key_type}_key")
+    except AttributeError as e:
+        raise ValidationError(
+            f"Missing attribute for Stripe {key_type} key: %s",
+            str(e),
+            "Please contact the administrator to set the Stripe key.",
+        )
 
     if not prod_key and not test_key:
         raise ValidationError(
-            f"Please contact the administrator to set the Stripe {key_type} key"
+            f"Please contact the administrator to set the Stripe {key_type} key."
         )
 
     return prod_key or test_key
@@ -100,13 +108,6 @@ def handle_stripe_errors(operation_name: str):
                 raise ValidationError(
                     f"Payment processing error: {getattr(e, 'user_message', str(e))}"
                 )
-            except Exception as e:
-                logger.error(
-                    f"Unexpected error during {operation_name}: %s",
-                    str(e),
-                    exc_info=True,
-                )
-                raise ValidationError(f"An unexpected error occurred: {str(e)}")
 
         return wrapper
 
@@ -134,14 +135,14 @@ def get_stripe_customer_id(organizer_slug: str) -> str:
 
     if billing_settings and billing_settings.stripe_customer_id:
         return billing_settings.stripe_customer_id
-    else:
-        logger.warning(
-            "No billing settings or Stripe customer ID found for organizer '%s'",
-            organizer_slug,
-        )
-        raise ValidationError(
-            f"No stripe_customer_id found for organizer '{organizer_slug}'"
-        )
+
+    logger.warning(
+        "No billing settings or Stripe customer ID found for organizer '%s'",
+        organizer_slug,
+    )
+    raise ValidationError(
+        f"No stripe_customer_id found for organizer '{organizer_slug}'"
+    )
 
 
 @handle_stripe_errors("create_stripe_customer")

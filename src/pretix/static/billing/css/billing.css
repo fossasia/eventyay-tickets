@@ -25,7 +25,7 @@
     position: absolute;
     top: 20px;
     right: 20px;
-    font-size: 30px;
+    font-size: 25px;
     font-weight: bold;
 }
 
@@ -54,7 +54,6 @@
     border-radius: 50%;
     z-index: -1;
 }
-
 
 @media (max-width: 400px) {
     .card {

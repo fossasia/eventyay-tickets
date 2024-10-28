@@ -11,9 +11,15 @@ $(document).ready(function () {
     let stripe;
     let paymentElement;
 
+
    async function initializeStripeAndAPI() {
         paymentInformation.style.display = 'none';
         changeCardBtn.style.display = 'none';
+
+        if (!organizerSlug) {
+            console.error('Organizer slug not found');
+            return;
+        }
 
         await fetch(`${basePath}/control/organizer/${organizerSlug}/setup_intent`, {
             method: 'GET',
@@ -54,7 +60,9 @@ $(document).ready(function () {
             });
     }
 
+
     initializeStripeAndAPI();
+
 
     $(changeCardBtn).on('click', function (event) {
         event.preventDefault();
@@ -64,6 +72,7 @@ $(document).ready(function () {
         });
         paymentElement.mount(el);
     })
+
 
     $(savePaymentInformation).on('click', async function (event) {
         event.preventDefault();
@@ -76,6 +85,11 @@ $(document).ready(function () {
             });
 
             const csrfToken = document.cookie.match(/pretix_csrftoken=([^;]+)/)[1];
+
+            if (!organizerSlug || !result.setupIntent.id || !csrfToken) {
+                console.error('Organizer slug, setup intent id or csrf token not found');
+                return;
+            }
 
             const response = await fetch(`${basePath}/control/organizer/${organizerSlug}/save_payment_information`, {
                 method: 'POST',
