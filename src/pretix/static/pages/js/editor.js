@@ -56,7 +56,6 @@ $(function () {
     $('.editor').closest('form').submit(function () {
         $('.editor').each(function () {
             var val = $(this).find('.ql-editor').html();
-            console.log("$$$$$##########$$$", quills)
             $("textarea[name^=faq_content_][lang=" + $(this).attr("data-lng") + "]").val(val);
         });
     });

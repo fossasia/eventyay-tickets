@@ -95,21 +95,6 @@ def get_global_navigation(request):
                     'url': reverse('eventyay_common:pages.faq.create'),
                     'active': (url.url_name == 'pages.faq.create'),
                 },
-                {
-                    'label': _('Pricing'),
-                    'url': reverse('control:global.update'),
-                    'active': (url.url_name == 'global.update'),
-                },
-                {
-                    'label': _('Privacy'),
-                    'url': reverse('control:global.update'),
-                    'active': (url.url_name == 'global.update'),
-                },
-                {
-                    'label': _('Terms'),
-                    'url': reverse('control:global.update'),
-                    'active': (url.url_name == 'global.update'),
-                },
             ]
         })
 

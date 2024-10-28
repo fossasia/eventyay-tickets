@@ -6,11 +6,11 @@ from rest_framework import routers
 
 from pretix.api.views import cart
 
+from ..eventyay_common.views import pages
 from .views import (
     checkin, device, event, exporters, item, oauth, order, organizer, upload,
     user, version, voucher, waitinglist, webhooks,
 )
-from ..eventyay_common.views import pages
 
 router = routers.DefaultRouter()
 router.register(r'organizers', organizer.OrganizerViewSet)
