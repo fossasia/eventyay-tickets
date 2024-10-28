@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`cfp` The upload of files with very long file names would fail instead of showing an error message. pretalx will now truncate the filename instead.
 - :bug:`orga:schedule` When exporting all your sessions as CSV or JSON export, only the end time would be in the local timezone, but the start time would be in UTC – both timestamps included the full timezone, so if you went on to parse them with a program, this likely would not matter, but it was confusing regardless. The export now uses the event timezone, as intended.
 - :bug:`orga` When entering a HTML colour manually instead of using the colour picker, pretalx would expand a three-letter colour to a six-letter colour (e.g. #123 to #112233), which is technically correct, but also not helpful when you’re in the process of typing out a six-letter colour, so pretalx will now not expand these colours anymore.
 - :feature:`orga` In order to make it easier for organisers of multiple events to see which event they are currently editing, the green line in the top navigation bar is now of the current event’s colour instead.

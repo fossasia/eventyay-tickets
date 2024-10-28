@@ -12,7 +12,8 @@ from pretalx.common.urls import get_base_url
 
 
 def resource_path(instance, filename):
-    return f"{instance.submission.event.slug}/submissions/{instance.submission.code}/resources/{path_with_hash(filename)}"
+    base_path = f"{instance.submission.event.slug}/submissions/{instance.submission.code}/resources/"
+    return path_with_hash(filename, base_path=base_path)
 
 
 class Resource(PretalxModel):

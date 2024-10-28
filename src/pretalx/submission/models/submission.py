@@ -35,8 +35,8 @@ def generate_invite_code(length=32):
 
 
 def submission_image_path(instance, filename):
-    return (
-        f"{instance.event.slug}/submissions/{instance.code}/{path_with_hash(filename)}"
+    return path_with_hash(
+        filename, base_path=f"{instance.event.slug}/submissions/{instance.code}/"
     )
 
 
