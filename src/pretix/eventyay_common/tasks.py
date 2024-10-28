@@ -126,8 +126,10 @@ def create_world(self, is_video_creation, data):
     title = data.get("title")
     event_timezone = data.get("timezone")
     locale = data.get("locale")
-    token = data.get("token")
-    has_permission = data.get("has_permission")
+    token = data.get("token")  # jwt token to authenticate user in video system
+    has_permission = data.get(
+        "has_permission", False
+    )  # check if user has permission to create video system ('can_create_events' permission)
 
     payload = {
         "id": event_slug,
@@ -141,19 +143,20 @@ def create_world(self, is_video_creation, data):
     # Check if user choose add video option and has permission to create video system ('can_create_events' permission)
     if is_video_creation and has_permission:
         try:
-            requests.post(
+            response = requests.post(
                 "{}/api/v1/create-world/".format(settings.VIDEO_SERVER_HOSTNAME),
                 json=payload,
                 headers=headers,
             )
+            response.raise_for_status()
         except requests.exceptions.ConnectionError as e:
-            logger.error(f"Connection error: {e}")
+            logger.error("Connection error: %s", str(e))
             raise self.retry(exc=e)
         except requests.exceptions.Timeout as e:
-            logger.error(f"Request timed out: {e}")
+            logger.error("Request timed out: %s", str(e))
             raise self.retry(exc=e)
         except requests.exceptions.RequestException as e:
-            logger.error(f"Request failed: {e}")
+            logger.error("Request failed: %s", str(e))
             raise self.retry(exc=e)
 
 
