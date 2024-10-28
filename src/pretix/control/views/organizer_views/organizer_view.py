@@ -1,7 +1,7 @@
 import logging
 
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.files import File
 from django.db import transaction
 from django.db.models import Max, Min, Prefetch, ProtectedError
@@ -392,6 +392,7 @@ def setup_intent(request, organizer):
         stripe_customer_id = get_stripe_customer_id(organizer)
         payment_method_info = get_payment_method_info(stripe_customer_id)
         client_secret = create_setup_intent(stripe_customer_id)
+
         return Response(
             {
                 "client_secret": client_secret,
@@ -399,9 +400,9 @@ def setup_intent(request, organizer):
                 "payment_method_info": payment_method_info,
             }
         )
-    except Exception as e:
-        logger.error("Unexpected error creating setup intent: %s", str(e))
-        return Response({"error": "An unexpected error occurred."}, status=500)
+    except ValidationError as e:
+        logger.error("Validation error creating setup intent: %s", str(e))
+        return Response({"error": str(e)}, status=400)
 
 
 @api_view(["POST"])
@@ -410,11 +411,12 @@ def save_payment_information(request, organizer):
     try:
         stripe_customer_id = get_stripe_customer_id(organizer)
         update_payment_info(setup_intent_id, stripe_customer_id)
+
         return Response(
             {
                 "success": True,
             }
         )
-    except Exception as e:
-        logger.error("Unexpected error updating payment information: %s", str(e))
-        return Response({"error": "An unexpected error occurred."}, status=500)
+    except ValidationError as e:
+        logger.error("Validation error updating payment information: %s", str(e))
+        return Response({"error": str(e)}, status=400)

@@ -15,18 +15,17 @@ def get_stripe_key(key_type: str) -> str:
     gs = GlobalSettingsObject()
 
     try:
-        prod_key = getattr(gs.settings, f"payment_stripeconnect{key_type}_key")
-        test_key = getattr(gs.settings, f"payment_stripe_connecttest{key_type}_key")
+        prod_key = getattr(gs.settings, "payment_stripe_connect_{}_key".format(key_type))
+        test_key = getattr(gs.settings, "payment_stripe_connect_test_{}_key".format(key_type))
     except AttributeError as e:
         raise ValidationError(
-            f"Missing attribute for Stripe {key_type} key: %s",
-            str(e),
-            "Please contact the administrator to set the Stripe key.",
+            "Missing attribute for Stripe {} key: {}. Please contact the administrator to set the Stripe key.".format(
+                key_type, str(e)),
         )
 
     if not prod_key and not test_key:
         raise ValidationError(
-            f"Please contact the administrator to set the Stripe {key_type} key."
+            "Please contact the administrator to set the Stripe {} key.".format(key_type)
         )
 
     return prod_key or test_key
@@ -50,63 +49,65 @@ def handle_stripe_errors(operation_name: str):
             try:
                 return func(*args, **kwargs)
             except stripe.error.APIError as e:
-                logger.error(f"Stripe API error during {operation_name}: %s", str(e))
+                logger.error("Stripe API error during %s: %s", operation_name, str(e))
                 raise ValidationError(
-                    f"Stripe service error: {getattr(e, 'user_message', str(e))}"
+                    "Stripe service error: {}".format(getattr(e, "user_message", str(e)))
                 )
             except stripe.error.APIConnectionError as e:
                 logger.error(
-                    f"API connection error during {operation_name}: %s", str(e)
+                    "API connection error during {}: %s", operation_name, str(e)
                 )
-                raise ValidationError(f"Network communication error: {str(e)}")
+                raise ValidationError("Network communication error: {}".format(str(e)))
             except stripe.error.AuthenticationError as e:
                 logger.error(
-                    f"Authentication error during {operation_name}: %s", str(e)
+                    "Authentication error during %s: %s", operation_name, str(e)
                 )
                 raise ValidationError(
-                    f"Authentication failed: {getattr(e, 'user_message', str(e))}"
+                    "Authentication failed: {}".format(getattr(e, "user_message", str(e)))
                 )
             except stripe.error.CardError as e:
                 logger.error(
-                    f"Card error during {operation_name}: %s | Code: %s | Decline code: %s",
+                    "Card error during %s: %s | Code: %s | Decline code: %s",
+                    operation_name,
                     str(e),
                     e.code,
                     getattr(e, "decline_code", "N/A"),
                 )
-                raise ValidationError(f"Card error: {e.user_message}")
+                raise ValidationError("Card error: {}".format(getattr(e, "user_message", str(e))))
             except stripe.error.RateLimitError as e:
-                logger.error(f"Rate limit error during {operation_name}: %s", str(e))
+                logger.error("Rate limit error during %s: %s", operation_name, str(e))
                 raise ValidationError(
-                    f"Too many requests. Please try again later: {getattr(e, 'user_message', str(e))}"
+                    "Too many requests. Please try again later: {}".format(getattr(e, "user_message", str(e)))
                 )
             except stripe.error.InvalidRequestError as e:
                 logger.error(
-                    f"Invalid request error during {operation_name}: %s | Param: %s",
+                    "Invalid request error during %s: %s | Param: %s",
+                    operation_name,
                     str(e),
                     getattr(e, "param", "N/A"),
                 )
-                raise ValidationError(f"Invalid request: {e.user_message}")
+                raise ValidationError("Invalid request: {}".format(getattr(e, "user_message", str(e))))
             except stripe.error.SignatureVerificationError as e:
                 logger.error(
-                    f"Signature verification failed during {operation_name}: %s", str(e)
+                    "Signature verification failed during %s: %s",operation_name, str(e)
                 )
                 raise ValidationError(
-                    f"Webhook signature verification failed: {str(e)}"
+                    "Webhook signature verification failed: {}".format(getattr(e, "user_message", str(e)))
                 )
             except stripe.error.PermissionError as e:
-                logger.error(f"Permission error during {operation_name}: %s", str(e))
+                logger.error("Permission error during %s: %s", operation_name,str(e))
                 raise ValidationError(
-                    f"Permission denied: {getattr(e, 'user_message', str(e))}"
+                    "Permission denied: {}".format(getattr(e, "user_message", str(e)))
                 )
             except stripe.error.IdempotencyError as e:
-                logger.error(f"Idempotency error during {operation_name}: %s", str(e))
+                logger.error("Idempotency error during %s: %s", operation_name, str(e))
                 raise ValidationError(
-                    f"Idempotency error: {getattr(e, 'user_message', str(e))}"
+                    "Idempotency error: {}".format(getattr(e, "user_message", str(e)))
                 )
             except stripe.error.StripeError as e:
-                logger.error(f"Stripe error during {operation_name}: %s", str(e))
+                logger.error("Stripe error during %s: %s", operation_name, str(e))
                 raise ValidationError(
-                    f"Payment processing error: {getattr(e, 'user_message', str(e))}"
+                    "Payment processing error: {}".format(getattr(e, "user_message", str(e)))
                 )
 
         return wrapper
@@ -137,11 +138,11 @@ def get_stripe_customer_id(organizer_slug: str) -> str:
         return billing_settings.stripe_customer_id
 
     logger.warning(
-        "No billing settings or Stripe customer ID found for organizer '%s'",
+        "No billing settings or Stripe customer ID found for organizer %s",
         organizer_slug,
     )
     raise ValidationError(
-        f"No stripe_customer_id found for organizer '{organizer_slug}'"
+        "No stripe_customer_id found for organizer {}".format(organizer_slug)
     )
 
 
