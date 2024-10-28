@@ -16,6 +16,8 @@ from pretalx.common.models.transaction import rolledback_transaction
 from pretalx.common.signals import register_data_exporters
 from pretalx.event.models import Event
 
+SERVER_NAME = settings.SITE_URL.split("://")[1]
+
 
 @contextlib.contextmanager
 def fake_admin(event):
@@ -31,7 +33,12 @@ def fake_admin(event):
                 return get_mediastatic_content(url)
             except FileNotFoundError:
                 # … then fall back to asking the views.
-                response = client.get(url, is_html_export=True, HTTP_ACCEPT="text/html")
+                response = client.get(
+                    url,
+                    is_html_export=True,
+                    HTTP_ACCEPT="text/html",
+                    SERVER_NAME=SERVER_NAME,
+                )
                 return get_content(response)
 
         yield get
