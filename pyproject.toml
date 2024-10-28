@@ -57,7 +57,7 @@ dependencies = [
   "rules~=3.5.0",
   "urlman~=2.0.1",
   "vobject~=0.9.0",
-  "whitenoise~=6.7.0",
+  "whitenoise~=6.8.0",
   "zxcvbn~=4.4.0",
   'pretalx_pages @ git+https://github.com/fossasia/eventyay-talk-pages.git@main',
   'pretalx_venueless @ git+https://github.com/fossasia/eventyay-talk-video.git@main',
@@ -96,7 +96,7 @@ dev = [
   "urllib3",
 ]
 postgres = ["psycopg2-binary~=2.9.0"]
-redis = ["redis~=5.1.0"]
+redis = ["redis~=5.2.0"]
 
 [build-system]
 build-backend = "setuptools.build_meta"
