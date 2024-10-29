@@ -30223,12 +30223,12 @@ var addStylesShadow = __webpack_require__("35d6");
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
 var componentNormalizer = __webpack_require__("2877");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"25128047-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=552119aa&lang=pug&shadow
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"25128047-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=7deb7e1f&lang=pug&shadow
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"pretalx-schedule",class:_vm.showGrid ? ['grid-schedule'] : ['list-schedule'],style:({'--scrollparent-width': _vm.scrollParentWidth + 'px', '--schedule-max-width': _vm.scheduleMaxWidth + 'px', '--pretalx-sticky-date-offset': _vm.days && _vm.days.length > 1 ? '48px' : '0px'})},[(_vm.scheduleError)?[_vm._m(0)]:(_vm.schedule && _vm.sessions.length)?[(_vm.showFilterModal)?_c('div',{staticClass:"modal-overlay",on:{"click":function($event){$event.stopPropagation();_vm.showFilterModal = false}}},[_c('div',{staticClass:"modal-box",on:{"click":function($event){$event.stopPropagation();}}},[_c('h3',[_vm._v("Tracks")]),_vm._l((_vm.allTracks),function(track){return _c('div',{key:track.value,staticClass:"checkbox-line",style:({'--track-color': track.color})},[_c('bunt-checkbox',{attrs:{"type":"checkbox","label":track.label,"name":track.value + track.label,"value":track.value},on:{"input":function($event){_vm.onlyFavs = false}},model:{value:(track.selected),callback:function ($$v) {_vm.$set(track, "selected", $$v)},expression:"track.selected"}}),(_vm.getLocalizedString(track.description).length)?_c('div',{staticClass:"track-description"},[_vm._v(_vm._s(_vm.getLocalizedString(track.description)))]):_vm._e()],1)})],2)]):_vm._e(),_c('div',{staticClass:"settings"},[_vm._l((_vm.filter),function(item){return _c('app-dropdown',{key:item.id,attrs:{"lazy":true}},[_c('template',{slot:"toggler"},[_c('span',[_vm._v(_vm._s(item.title))])]),_c('app-dropdown-content',_vm._l((item.data),function(track){return _c('app-dropdown-item',{key:track.value},[_c('div',{staticClass:"checkbox-line",style:({'--track-color': track.color})},[_c('bunt-checkbox',{attrs:{"type":"checkbox","label":track.label,"name":track.value + track.label,"value":track.value},on:{"input":function($event){_vm.onlyFavs = false}},model:{value:(track.selected),callback:function ($$v) {_vm.$set(track, "selected", $$v)},expression:"track.selected"}})],1)])}),1)],2)}),(_vm.favs.length)?_c('bunt-button',{staticClass:"fav-toggle",class:_vm.onlyFavs ? ['active'] : [],on:{"click":function($event){_vm.onlyFavs = !_vm.onlyFavs; if (_vm.onlyFavs) { _vm.resetFiltered() }}}},[_c('svg',{attrs:{"id":"star","viewBox":"0 0 24 24"}},[_c('polygon',{style:({fill: '#FFA000', stroke: '#FFA000'}),attrs:{"points":"14.43,10 12,2 9.57,10 2,10 8.18,14.41 5.83,22 12,17.31 18.18,22 15.83,14.41 22,10"}})]),[_vm._v(_vm._s(_vm.favs.length))]],2):_vm._e(),(!_vm.showGrid)?_c('bunt-select',{staticClass:"hide-select",staticStyle:{"margin-left":"0px"},attrs:{"name":"sort","options":_vm.sortOptions,"label":"Sort by"},model:{value:(_vm.selectedSort),callback:function ($$v) {_vm.selectedSort=$$v},expression:"selectedSort"}}):_vm._e(),_c('bunt-button',{staticClass:"sort-icon",attrs:{"tooltip":"Sort By"},on:{"click":_vm.toggleSortOptions}},[_c('svg',{attrs:{"viewBox":"0 0 301.219 301.219"}},[_c('path',{attrs:{"d":"M159.365,23.736v-10c0-5.523-4.477-10-10-10H10c-5.523,0-10,4.477-10,10v10c0,5.523,4.477,10,10,10h139.365C154.888,33.736,159.365,29.259,159.365,23.736z"}}),_c('path',{attrs:{"d":"M130.586,66.736H10c-5.523,0-10,4.477-10,10v10c0,5.523,4.477,10,10,10h120.586c5.523,0,10-4.477,10-10v-10C140.586,71.213,136.109,66.736,130.586,66.736z"}}),_c('path',{attrs:{"d":"M111.805,129.736H10c-5.523,0-10,4.477-10,10v10c0,5.523,4.477,10,10,10h101.805c5.523,0,10-4.477,10-10v-10C121.805,134.213,117.328,129.736,111.805,129.736z"}}),_c('path',{attrs:{"d":"M93.025,199.736H10c-5.523,0-10,4.477-10,10v10c0,5.523,4.477,10,10,10h83.025c5.522,0,10-4.477,10-10v-10C103.025,204.213,98.548,199.736,93.025,199.736z"}}),_c('path',{attrs:{"d":"M74.244,262.736H10c-5.523,0-10,4.477-10,10v10c0,5.523,4.477,10,10,10h64.244c5.522,0,10-4.477,10-10v-10C84.244,267.213,79.767,262.736,74.244,262.736z"}}),_c('path',{attrs:{"d":"M298.29,216.877l-7.071-7.071c-1.875-1.875-4.419-2.929-7.071-2.929c-2.652,0-5.196,1.054-7.072,2.929l-34.393,34.393V18.736c0-5.523-4.477-10-10-10h-10c-5.523,0-10,4.477-10,10v225.462l-34.393-34.393c-1.876-1.875-4.419-2.929-7.071-2.929c-2.652,0-5.196,1.054-7.071,2.929l-7.072,7.071c-3.904,3.905-3.904,10.237,0,14.142l63.536,63.536c1.953,1.953,4.512,2.929,7.071,2.929c2.559,0,5.119-0.976,7.071-2.929l63.536-63.536C302.195,227.113,302.195,220.781,298.29,216.877z"}})]),(_vm.showSortOptions)?_c('div',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(_vm.toggleSortOptions),expression:"toggleSortOptions"}],staticClass:"dropdown-sort-menu",on:{"click":function($event){$event.stopPropagation();}}},_vm._l((_vm.sortOptions),function(sort){return _c('div',{key:sort.id},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.selectedSortIcon),expression:"selectedSortIcon"}],attrs:{"type":"radio","name":sort.label},domProps:{"value":sort.id,"checked":_vm._q(_vm.selectedSortIcon,sort.id)},on:{"change":[function($event){_vm.selectedSortIcon=sort.id},_vm.handleSortSelected]}}),_c('label',[_vm._v(_vm._s(sort.id))])])}),0):_vm._e()]),(!_vm.inEventTimezone)?[_c('bunt-select',{staticClass:"timezone-item",attrs:{"name":"timezone","options":[{id: _vm.schedule.timezone, label: _vm.schedule.timezone}, {id: _vm.userTimezone, label: _vm.userTimezone}]},on:{"blur":_vm.saveTimezone},model:{value:(_vm.currentTimezone),callback:function ($$v) {_vm.currentTimezone=$$v},expression:"currentTimezone"}})]:[_c('div',{staticClass:"timezone-label timezone-item bunt-tab-header-item"},[_vm._v(_vm._s(_vm.schedule.timezone))])],_c('bunt-button',{staticClass:"fav-toggle",attrs:{"tooltip":"Clear All Filters"},on:{"click":_vm.resetAllFiltered}},[_c('svg',{attrs:{"viewBox":"0 0 24 24"}},[_c('path',{attrs:{"d":"M14.76 20.83L17.6 18l-2.84-2.83l1.41-1.41L19 16.57l2.83-2.81l1.41 1.41L20.43 18l2.81 2.83l-1.41 1.41L19 19.4l-2.83 2.84zM12 12v7.88c.04.3-.06.62-.29.83a.996.996 0 0 1-1.41 0L8.29 18.7a.99.99 0 0 1-.29-.83V12h-.03L2.21 4.62a1 1 0 0 1 .17-1.4c.19-.14.4-.22.62-.22h14c.22 0 .43.08.62.22a1 1 0 0 1 .17 1.4L12.03 12z"}})])])],2),(_vm.days && _vm.days.length > 1)?_c('bunt-tabs',{ref:"tabs",staticClass:"days",class:_vm.showGrid? ['grid-tabs'] : ['list-tabs'],attrs:{"active-tab":_vm.currentDay && _vm.currentDay.format()}},_vm._l((_vm.days),function(day){return _c('bunt-tab',{attrs:{"id":day.format(),"header":day.format(_vm.dateFormat)},on:{"selected":function($event){return _vm.changeDay(day)}}})}),1):_vm._e(),(_vm.showGrid)?_c('grid-schedule',{attrs:{"sessions":_vm.sessions,"rooms":_vm.rooms,"currentDay":_vm.currentDay,"now":_vm.now,"scrollParent":_vm.scrollParent,"favs":_vm.favs},on:{"changeDay":function($event){_vm.currentDay = $event},"fav":function($event){return _vm.fav($event)},"unfav":function($event){return _vm.unfav($event)}}}):_c('linear-schedule',{attrs:{"sessions":_vm.sessions,"rooms":_vm.rooms,"currentDay":_vm.currentDay,"now":_vm.now,"scrollParent":_vm.scrollParent,"favs":_vm.favs,"sortBy":_vm.sortBy},on:{"changeDay":function($event){_vm.currentDay = $event},"fav":function($event){return _vm.fav($event)},"unfav":function($event){return _vm.unfav($event)}}}),(_vm.showModal)?_c('div',{staticClass:"modal"},[_c('div',{staticClass:"modal-content"},[_vm._m(1),_c('div',{staticClass:"modal-body p"},[_vm._v("Please login to add a session to your personal schedule.")]),_c('div',{staticClass:"modal-footer"},[_c('div',{staticClass:"button",on:{"click":_vm.closeModal}},[_vm._v("OK")])])])]):_vm._e()]:_c('bunt-progress-circular',{attrs:{"size":"huge","page":true}}),(_vm.errorMessages.length)?_c('div',{staticClass:"error-messages"},_vm._l((_vm.errorMessages),function(message){return _c('div',{key:message,staticClass:"error-message"},[_c('div',{staticClass:"btn btn-danger",on:{"click":function($event){_vm.errorMessages = _vm.errorMessages.filter(function (m) { return m !== message; })}}},[_vm._v("x")]),_c('div',{staticClass:"message"},[_vm._v(_vm._s(message))])])}),0):_vm._e()],2)}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"schedule-error"},[_c('div',{staticClass:"error-message"},[_vm._v("An error occurred while loading the schedule. Please try again later.")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"modal-header"},[_c('div',{staticClass:"h3 modal-title"},[_vm._v("Warning")])])}]
 
 
-// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=552119aa&lang=pug&shadow
+// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=7deb7e1f&lang=pug&shadow
 
 // EXTERNAL MODULE: ./node_modules/vue-clickaway/dist/vue-clickaway.common.js
 var vue_clickaway_common = __webpack_require__("c7db");
@@ -34246,7 +34246,7 @@ vue_runtime_esm["default"].use(buntpapier_src);
         url = new URL('http://example.org/' + this.eventUrl);
       }
 
-      return url.pathname.replace(/\//g, '');
+      return url.pathname.split('/').filter(Boolean).pop();
     },
 
     sortBy() {
@@ -34304,7 +34304,8 @@ vue_runtime_esm["default"].use(buntpapier_src);
       return t;
     });
     this.filter.rooms.data = roomData;
-    this.apiUrl = window.location.origin + '/api/events/' + this.eventSlug + '/';
+    const baseUrl = this.eventUrl.substring(0, this.eventUrl.lastIndexOf('/', this.eventUrl.length - 2) + 1);
+    this.apiUrl = baseUrl + 'api/events/' + this.eventSlug + '/';
     this.favs = this.pruneFavs(await this.loadFavs(), this.schedule);
     const obj = {};
     this.schedule.talks.forEach(t => {
@@ -34454,35 +34455,14 @@ vue_runtime_esm["default"].use(buntpapier_src);
       this.showModal = false;
     },
 
-    async saveFavs() {
-      try {
-        const response = await await fetch(`/api/events/${this.eventSlug}/favourite-talk/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(this.favs)
-        });
-
-        if (response.status === 400) {
-          const data = await response.json();
-
-          if (data === 'user_not_logged_in') {
-            this.showModal = true;
-            return;
-          }
-        }
-      } catch (e) {
-        console.error(`error happened when trying to save favourite talk: ${JSON.stringify(this.favs)}`);
-      }
-
+    saveFavs() {
       localStorage.setItem(`${this.eventSlug}_favs`, JSON.stringify(this.favs));
     },
 
-    async fav(id) {
+    fav(id) {
       if (!this.favs.includes(id)) {
         this.favs.push(id);
-        await this.saveFavs();
+        this.saveFavs();
       }
 
       if (this.loggedIn) {
@@ -34494,7 +34474,7 @@ vue_runtime_esm["default"].use(buntpapier_src);
       }
     },
 
-    async unfav(id) {
+    unfav(id) {
       this.favs = this.favs.filter(elem => elem !== id);
       this.saveFavs();
 
