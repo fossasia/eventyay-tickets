@@ -2,6 +2,7 @@ from collections import OrderedDict
 
 from django import forms
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
 
@@ -11,6 +12,12 @@ from pretix.base.signals import register_global_settings
 
 
 class GlobalSettingsForm(SettingsForm):
+    ticket_fee_percentage = forms.DecimalField(
+        label=_("Ticket fee percentage"),
+        required=False,
+        help_text=_("A percentage fee will be charged for each ticket sold."),
+        validators=[MinValueValidator(0)],
+    )
     auto_fields = [
         'region',
         'mail_from'
