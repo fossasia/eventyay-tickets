@@ -239,10 +239,10 @@ class SubEventsTest(SoupTest):
         assert len(ses) == 10
 
         assert str(ses[0].name) == "Foo"
-        assert ses[0].date_from.isoformat() == "2018-04-03T11:29:31+00:00"
-        assert ses[0].date_to.isoformat() == "2018-04-03T13:29:31+00:00"
+        assert ses[0].date_from.isoformat() == "2018-04-03T12:36:31+00:00"
+        assert ses[0].date_to.isoformat() == "2018-04-03T14:36:31+00:00"
         assert not ses[0].presale_start
-        assert ses[0].presale_end.isoformat() == "2018-04-02T11:29:31+00:00"
+        assert ses[0].presale_end.isoformat() == "2018-04-02T12:36:31+00:00"
         with scopes_disabled():
             assert ses[0].quotas.count() == 1
             assert list(ses[0].quotas.first().items.all()) == [self.ticket]
@@ -250,17 +250,17 @@ class SubEventsTest(SoupTest):
             assert ses[0].checkinlist_set.count() == 1
 
         assert str(ses[1].name) == "Foo"
-        assert ses[1].date_from.isoformat() == "2019-04-03T11:29:31+00:00"
-        assert ses[1].date_to.isoformat() == "2019-04-03T13:29:31+00:00"
+        assert ses[1].date_from.isoformat() == "2019-04-03T12:36:31+00:00"
+        assert ses[1].date_to.isoformat() == "2019-04-03T14:36:31+00:00"
         assert not ses[1].presale_start
-        assert ses[1].presale_end.isoformat() == "2019-04-02T11:29:31+00:00"
+        assert ses[1].presale_end.isoformat() == "2019-04-02T12:36:31+00:00"
         with scopes_disabled():
             assert ses[1].quotas.count() == 1
             assert list(ses[1].quotas.first().items.all()) == [self.ticket]
             assert SubEventItem.objects.get(subevent=ses[0], item=self.ticket).price == 16
             assert ses[1].checkinlist_set.count() == 1
 
-        assert ses[-1].date_from.isoformat() == "2027-04-03T11:29:31+00:00"
+        assert ses[-1].date_from.isoformat() == "2027-04-03T12:36:31+00:00"
 
     def test_create_bulk_daily_interval(self):
         with scopes_disabled():
@@ -323,9 +323,9 @@ class SubEventsTest(SoupTest):
             ses = list(self.event1.subevents.order_by('date_from'))
         assert len(ses) == 183
 
-        assert ses[0].date_from.isoformat() == "2018-04-03T11:29:31+00:00"
-        assert ses[110].date_from.isoformat() == "2018-11-09T12:29:31+00:00"  # DST :)
-        assert ses[-1].date_from.isoformat() == "2019-04-02T11:29:31+00:00"
+        assert ses[0].date_from.isoformat() == "2018-04-03T12:36:31+00:00"
+        assert ses[110].date_from.isoformat() == "2018-11-09T12:36:31+00:00"  # DST :)
+        assert ses[-1].date_from.isoformat() == "2019-04-02T12:36:31+00:00"
 
     def test_create_bulk_daily_interval_multiple_times(self):
         with scopes_disabled():
@@ -390,10 +390,10 @@ class SubEventsTest(SoupTest):
             ses = list(self.event1.subevents.order_by('date_from'))
         assert len(ses) == 183 * 2
 
-        assert ses[0].date_from.isoformat() == "2018-04-03T11:29:31+00:00"
-        assert ses[1].date_from.isoformat() == "2018-04-03T13:29:31+00:00"
-        assert ses[220].date_from.isoformat() == "2018-11-09T12:29:31+00:00"  # DST :)
-        assert ses[-1].date_from.isoformat() == "2019-04-02T13:29:31+00:00"
+        assert ses[0].date_from.isoformat() == "2018-04-03T12:36:31+00:00"
+        assert ses[1].date_from.isoformat() == "2018-04-03T14:36:31+00:00"
+        assert ses[220].date_from.isoformat() == "2018-11-09T12:36:31+00:00"  # DST :)
+        assert ses[-1].date_from.isoformat() == "2019-04-02T14:36:31+00:00"
 
     def test_create_bulk_exclude(self):
         with scopes_disabled():
@@ -471,9 +471,9 @@ class SubEventsTest(SoupTest):
             ses = list(self.event1.subevents.order_by('date_from'))
         assert len(ses) == 314
 
-        assert ses[0].date_from.isoformat() == "2018-04-03T11:29:31+00:00"
-        assert ses[5].date_from.isoformat() == "2018-04-08T11:29:31+00:00"
-        assert ses[6].date_from.isoformat() == "2018-04-10T11:29:31+00:00"
+        assert ses[0].date_from.isoformat() == "2018-04-03T12:36:31+00:00"
+        assert ses[5].date_from.isoformat() == "2018-04-08T12:36:31+00:00"
+        assert ses[6].date_from.isoformat() == "2018-04-10T12:36:31+00:00"
 
     def test_create_bulk_monthly_interval(self):
         with scopes_disabled():
@@ -535,9 +535,9 @@ class SubEventsTest(SoupTest):
             ses = list(self.event1.subevents.order_by('date_from'))
         assert len(ses) == 12
 
-        assert ses[0].date_from.isoformat() == "2018-04-30T11:29:31+00:00"
-        assert ses[1].date_from.isoformat() == "2018-05-31T11:29:31+00:00"
-        assert ses[-1].date_from.isoformat() == "2019-03-29T12:29:31+00:00"
+        assert ses[0].date_from.isoformat() == "2018-04-30T12:36:31+00:00"
+        assert ses[1].date_from.isoformat() == "2018-05-31T12:36:31+00:00"
+        assert ses[-1].date_from.isoformat() == "2019-03-29T12:36:31+00:00"
 
     def test_create_bulk_weekly_interval(self):
         with scopes_disabled():
@@ -599,9 +599,9 @@ class SubEventsTest(SoupTest):
             ses = list(self.event1.subevents.order_by('date_from'))
         assert len(ses) == 52
 
-        assert ses[0].date_from.isoformat() == "2018-04-05T11:29:31+00:00"
-        assert ses[1].date_from.isoformat() == "2018-04-12T11:29:31+00:00"
-        assert ses[-1].date_from.isoformat() == "2019-03-28T12:29:31+00:00"
+        assert ses[0].date_from.isoformat() == "2018-04-05T12:36:31+00:00"
+        assert ses[1].date_from.isoformat() == "2018-04-12T12:36:31+00:00"
+        assert ses[-1].date_from.isoformat() == "2019-03-28T12:36:31+00:00"
 
     def test_delete_bulk(self):
         self.subevent2.active = True
