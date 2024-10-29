@@ -1,6 +1,7 @@
 from ..settings import GlobalSettingsObject_SettingsStore
 from .auth import U2FDevice, User, WebAuthnDevice
 from .base import CachedFile, LoggedModel, cachedfile_name
+from .billing import BillingInvoice
 from .checkin import Checkin, CheckinList
 from .devices import Device, Gate
 from .event import (
@@ -29,4 +30,3 @@ from .seating import Seat, SeatCategoryMapping, SeatingPlan
 from .tax import TaxRule
 from .vouchers import Voucher
 from .waitinglist import WaitingListEntry
-from .billing import BillingInvoice

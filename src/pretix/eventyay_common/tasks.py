@@ -7,6 +7,7 @@ from celery import shared_task
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db.models import Sum
 
 from ..base.models import BillingInvoice, Event, Order, Organizer
 from ..base.settings import GlobalSettingsObject
@@ -136,7 +137,7 @@ def monthly_billing_collect(self):
         first_day_of_current_month = today.replace(day=1)
         logger.info("Start - running task to collect billing on: %s", first_day_of_current_month)
         # Get the last month by subtracting one month from today
-        last_month_date = (first_day_of_current_month - relativedelta(months=3)).date()
+        last_month_date = (first_day_of_current_month - relativedelta(months=1)).date()
         gs = GlobalSettingsObject()
         ticket_rate = gs.settings.get('ticket_rate') or 2.5
         organizers = Organizer.objects.all()
@@ -190,11 +191,15 @@ def calculate_total_amount_on_monthly(event, last_month_date_start):
     @param last_month_date_start: start date of month to be calculated
     @return: total amount of all paid orders for the event in the previous month
     """
+    # Calculate the end date for last month
     last_month_date_end = (last_month_date_start + relativedelta(months=1, day=1)) - relativedelta(days=1)
-    orders = event.orders.filter(status=Order.STATUS_PAID, datetime__range=[last_month_date_start, last_month_date_end])
-    total_amount = 0
-    for order in orders:
-        total_amount += order.total
+
+    # Use aggregate to sum the total of all paid orders within the date range
+    total_amount = event.orders.filter(
+        status=Order.STATUS_PAID,
+        datetime__range=[last_month_date_start, last_month_date_end]
+    ).aggregate(total=Sum('total'))['total'] or 0  # Return 0 if the result is None
+
     return total_amount
 
 
@@ -225,4 +230,11 @@ def get_next_reminder_datetime(reminder_schedule):
         if reminder_date > today:
             next_reminder = reminder_date
             break
+    if not next_reminder:
+        # Handle month wrapping (December to January)
+        next_month = today.month + 1 if today.month < 12 else 1
+        next_year = today.year if today.month < 12 else today.year + 1
+        # Select the first date in BILLING_REMIND_SCHEDULE for the next month
+        next_reminder = datetime(next_year, next_month, reminder_schedule[0])
+
     return next_reminder
