@@ -1144,6 +1144,8 @@ pl-0 {
   }
 
   tr,
+  footer,
+  svg,
   img {
     page-break-inside: avoid;
   }
@@ -1155,7 +1157,10 @@ pl-0 {
   }
 
   h2,
-  h3 {
+  h3,
+  h4,
+  h5,
+  summary {
     page-break-after: avoid;
   }
 
@@ -1170,6 +1175,7 @@ pl-0 {
     display: none;
   }
   @page {
-    size: A4;
+    size: A4 portrait;
+    margin: 0;
   }
 }
