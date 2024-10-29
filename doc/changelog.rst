@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`orga` Dragging and dropping questions and other elements to change their order was broken in Google Chrome.
 - :bug:`orga:schedule` The HTML export did not work and exported only 404 pages.
 - :bug:`cfp` The upload of files with very long file names would fail instead of showing an error message. pretalx will now truncate the filename instead.
 - :bug:`orga:schedule` When exporting all your sessions as CSV or JSON export, only the end time would be in the local timezone, but the start time would be in UTC – both timestamps included the full timezone, so if you went on to parse them with a program, this likely would not matter, but it was confusing regardless. The export now uses the event timezone, as intended.

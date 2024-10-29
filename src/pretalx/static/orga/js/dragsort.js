@@ -134,8 +134,11 @@ onReady(() =>
         el.querySelector(".dragsort-button").addEventListener(
             "dragstart",
             (evt) => {
-                el.classList.add("dragging");
-                document.querySelector("body").classList.add("dragging");
+                // Changing the element’s class in the dragstart handler will immediately
+                // fire the dragend handler in Chrome, for cursed reasons, so we do it
+                // outside the event.
+                setTimeout(() => el.classList.add("dragging"), 0);
+                setTimeout(() => document.querySelector("body").classList.add("dragging"), 0);
                 const stop = dragStart(evt.target);
                 el.parentElement.addEventListener(
                     "drop",
@@ -144,7 +147,7 @@ onReady(() =>
                         once: true,
                     },
                 );
-                el.addEventListener(
+                document.addEventListener(
                     "dragend",
                     (evt) => {
                         evt.preventDefault();
