@@ -12,12 +12,6 @@ from pretix.base.signals import register_global_settings
 
 
 class GlobalSettingsForm(SettingsForm):
-    ticket_fee_percentage = forms.DecimalField(
-        label=_("Ticket fee percentage"),
-        required=False,
-        help_text=_("A percentage fee will be charged for each ticket sold."),
-        validators=[MinValueValidator(0)],
-    )
     auto_fields = [
         'region',
         'mail_from'
@@ -147,6 +141,19 @@ class GlobalSettingsForm(SettingsForm):
 
         self.fields['banner_message'].widget.attrs['rows'] = '2'
         self.fields['banner_message_detail'].widget.attrs['rows'] = '3'
+        self.fields = OrderedDict(list(self.fields.items()) + [
+            (
+                "ticket_fee_percentage",
+                forms.DecimalField(
+                    label=_("Ticket fee percentage"),
+                    required=False,
+                    help_text=_(
+                        "A percentage fee will be charged for each ticket sold."
+                    ),
+                    validators=[MinValueValidator(0)],
+                ),
+            )
+        ])
 
 
 class UpdateSettingsForm(SettingsForm):
