@@ -76,7 +76,7 @@ export default {
 		},
 		style () {
 			return {
-				'--track-color': this.session.track?.color || 'var(--pretalx-clr-primary)'
+				'--track-color': this.session.track?.color || 'var(--color-primary)'
 			}
 		},
 		startTime () {
@@ -165,7 +165,7 @@ export default {
 				border: 1px solid var(--track-color)
 				border-left: none
 				.title
-					color: var(--pretalx-clr-primary)
+					color: var(--color-primary)
 	&.pending, &.unconfirmed
 		.time-box
 			opacity: 0.5
@@ -176,7 +176,7 @@ export default {
 				border: 1px solid var(--track-color)
 				border-left: none
 				.title
-					color: var(--pretalx-clr-primary)
+					color: var(--color-primary)
 	&.pending
 		.info
 			border-style: dashed dashed dashed none

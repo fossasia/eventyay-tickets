@@ -1,5 +1,6 @@
 {% extends "cfp/event/base.html" %}
 
+{% load event_tags %}
 {% load i18n %}
 {% load orga_edit_link %}
 {% load rich_text %}
@@ -9,7 +10,7 @@
     {% with cfp=request.event.cfp %}
         {% has_perm "agenda.view_featured_submissions" request.user request.event as can_view_featured_submissions %}
         {% has_perm "orga.edit_cfp" request.user request.event as can_edit_cfp %}
-        <div class="d-flex">
+        <div class="d-flex align-items-start">
             <h1>{{ cfp.headline|default:"" }}</h1>
             {% if can_edit_cfp %}
                 {% orga_edit_link request.event.cfp.urls.text %}
@@ -31,8 +32,8 @@
                 </strong>
             </p>
         {% endif %}
-        <div class="row mb-4 url-links">
-            {% if request.event.current_schedule and request.event.feature_flags.show_schedule %}
+        <div class="url-links">
+            {% if request.event.current_schedule and request.event|get_feature_flag:"show_schedule" %}
                 <a class="btn btn-info btn-lg btn-block" href="{{ request.event.urls.schedule }}">
                     {{ phrases.agenda.view_schedule }}
                 </a>

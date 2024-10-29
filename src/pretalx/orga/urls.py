@@ -47,7 +47,6 @@ urlpatterns = [
         name="invitation.view",
     ),
     path("start/redirect", dashboard.start_redirect_view, name="start.redirect"),
-    path("start/", dashboard.StartView.as_view(), name="start"),
     path(
         "organiser/",
         dashboard.DashboardOrganiserListView.as_view(),
@@ -73,9 +72,7 @@ urlpatterns = [
                     organiser.OrganiserDelete.as_view(),
                     name="organiser.delete",
                 ),
-                path(
-                    "api/users", person.UserList.as_view(), name="organiser.user_list"
-                ),
+                path("api/users", organiser.speaker_search, name="organiser.user_list"),
                 path("teams/", organiser.TeamList.as_view(), name="organiser.teams"),
                 path(
                     "teams/new",
@@ -147,7 +144,6 @@ urlpatterns = [
                 path("delete", event.EventDelete.as_view(), name="event.delete"),
                 path("live", event.EventLive.as_view(), name="event.live"),
                 path("history/", event.EventHistory.as_view(), name="event.history"),
-                path("api/users", person.UserList.as_view(), name="event.user_list"),
                 path(
                     "cfp/",
                     RedirectView.as_view(pattern_name="orga:cfp.text.view"),
@@ -178,7 +174,6 @@ urlpatterns = [
                                 cfp.CfPQuestionDetail.as_view(),
                                 name="cfp.question.view",
                             ),
-                            *cfp.QuestionOrderView.get_urls(),
                             path(
                                 "delete",
                                 cfp.CfPQuestionDelete.as_view(),
@@ -250,7 +245,6 @@ urlpatterns = [
                                 cfp.TrackDelete.as_view(),
                                 name="cfp.track.delete",
                             ),
-                            *cfp.TrackOrderView.get_urls(),
                         ]
                     ),
                 ),
@@ -493,11 +487,6 @@ urlpatterns = [
                                 name="submissions.speakers.view",
                             ),
                             path(
-                                "speakers/add",
-                                submission.SubmissionSpeakersAdd.as_view(),
-                                name="submissions.speakers.add",
-                            ),
-                            path(
                                 "speakers/delete",
                                 submission.SubmissionSpeakersDelete.as_view(),
                                 name="submissions.speakers.delete",
@@ -644,7 +633,6 @@ urlpatterns = [
                     "settings/review/phase/<int:pk>/",
                     include(
                         [
-                            *event.ReviewPhaseOrderView.get_urls(),
                             path(
                                 "activate",
                                 event.PhaseActivate.as_view(),
@@ -720,7 +708,6 @@ urlpatterns = [
                                 schedule.RoomDelete.as_view(),
                                 name="schedule.rooms.delete",
                             ),
-                            *schedule.RoomOrderView.get_urls(),
                         ]
                     ),
                 ),

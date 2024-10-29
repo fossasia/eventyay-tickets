@@ -1,5 +1,7 @@
-document.addEventListener("DOMContentLoaded", function() {
-  document.querySelector("#direction select").addEventListener("change", e => {
-    e.target.form.submit()
-  })
+onReady(() => {
+    document
+        .querySelector("#direction select")
+        .addEventListener("change", (e) => {
+            e.target.form.submit()
+        })
 })

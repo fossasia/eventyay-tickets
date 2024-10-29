@@ -83,6 +83,7 @@ def default_feature_flags():
         "use_tracks": True,
         "use_feedback": True,
         "present_multiple_times": False,
+        "submission_public_review": True,
     }
 
 
@@ -132,11 +133,14 @@ class Event(PretalxModel):
     prevent data leaks.
 
     :param is_public: Is this event public yet? Should only be set via the
-        ``pretalx.orga.views.EventLive`` view after the warnings have been
-        acknowledged.
+        ``pretalx.orga.views.EventLive`` view or in another way that processes
+        the ``pretalx.orga.signals.activate_event`` signal.
     :param locale_array: Contains the event’s active locales as a comma
         separated string. Please use the ``locales`` property to interact
         with this information.
+    :param content_locale_array: Contains the event’s active locales available
+        for proposals as a comma separated string. Please use the
+        ``content_locales`` property to interact with this information.
     :param accept_template: Templates for emails sent when accepting a talk.
     :param reject_template: Templates for emails sent when rejecting a talk.
     :param ack_template: Templates for emails sent when acknowledging that
@@ -149,14 +153,12 @@ class Event(PretalxModel):
         ``#00ff00``.
     :param custom_css: Custom event CSS. Has to pass fairly restrictive
         validation for security considerations.
-    :param custom_domain: Custom event domain.
-    :param logo: Replaces the event name in the public header. Will be
-        displayed at up to full header height and up to full content width.
-    :param header_image: Replaces the header pattern and/or background
-        colour. Centred, so when the window shrinks, the centre will
-        continue to be displayed.
+    :param custom_domain: Custom event domain, starting with ``https://``.
     :param plugins: A list of active plugins as a comma-separated string.
         Please use the ``plugin_list`` property for interaction.
+    :param feature_flags: A JSON field containing feature flags for this event.
+        Please use the ``get_feature_flag`` method to check for features,
+        so that new feature flags can be added without breaking existing events.
     """
 
     name = I18nCharField(max_length=200, verbose_name=_("Name"))
@@ -228,7 +230,7 @@ class Event(PretalxModel):
             "Upload a custom CSS file if changing the primary colour is not sufficient for you."
         ),
     )
-    logo = models.FileField(
+    logo = models.ImageField(
         upload_to=event_logo_path,
         null=True,
         blank=True,
@@ -238,7 +240,7 @@ class Event(PretalxModel):
             "The logo will be scaled down to a height of 150px."
         ),
     )
-    header_image = models.FileField(
+    header_image = models.ImageField(
         upload_to=event_logo_path,
         null=True,
         blank=True,
@@ -357,6 +359,7 @@ class Event(PretalxModel):
         ical = "{export}schedule.ics"
         schedule_widget_data = "{schedule}widgets/schedule.json"
         schedule_widget_script = "{base}widgets/schedule.js"
+        settings_css = "{base}static/event.css"
 
     class orga_urls(EventUrls):
         base_path = settings.BASE_PATH
@@ -556,7 +559,8 @@ class Event(PretalxModel):
             plugins_active.remove(module)
             self.set_plugins(plugins_active)
 
-    def get_primary_color(self):
+    @cached_property
+    def visible_primary_color(self):
         return self.primary_color or settings.DEFAULT_EVENT_PRIMARY_COLOR
 
     def _get_default_submission_type(self):
@@ -1036,6 +1040,11 @@ class Event(PretalxModel):
         month is only named once.
         """
         return daterange(self.date_from, self.date_to)
+
+    def get_feature_flag(self, feature):
+        if feature in self.feature_flags:
+            return self.feature_flags[feature]
+        return default_feature_flags().get(feature, False)
 
     def release_schedule(
         self, name: str, user=None, notify_speakers: bool = False, comment: str = None

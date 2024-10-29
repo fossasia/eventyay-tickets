@@ -2,11 +2,17 @@
 
 {% load compress %}
 {% load copyable %}
+{% load event_tags %}
 {% load i18n %}
 {% load static %}
 
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
 {% block scripts %}
-    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
     {% compress js %}
         <script defer src="{% static "common/js/copy.js" %}"></script>
         <script defer src="{% static "common/js/modalDialog.js" %}"></script>
@@ -44,7 +50,7 @@
                 <thead>
                     <tr>
                         <th>{% translate "Code" %}</th>
-                        {% if request.event.feature_flags.use_tracks %}
+                        {% if request.event|get_feature_flag:"use_tracks" %}
                             <th>{% translate "Track" %}</th>
                         {% endif %}
                         <th>{% translate "Session type" %}</th>
@@ -56,7 +62,7 @@
                     {% for code in access_codes %}
                         <tr>
                             <td>{{ code.code|copyable }}</td>
-                            {% if request.event.feature_flags.use_tracks %}
+                            {% if request.event|get_feature_flag:"use_tracks" %}
                                 <td>
                                     {% if code.track %}
                                         <a href="{{ code.track.urls.base }}">{{ code.track.name }}</a>
@@ -73,8 +79,9 @@
                             <td class="numeric">
                                 {{ code.redeemed|default:0 }} / {{ code.maximum_uses|default:"∞" }}
                             </td>
-                            <td class="action-column">
+                            <td class="text-right">
                                 <div data-destination="{{ code.urls.cfp_url.full }}"
+                                     role="button"
                                      title="{% translate "Copy access code link" %}"
                                      class="btn btn-sm btn-info copyable-text">
                                     <i class="fa fa-copy"></i>

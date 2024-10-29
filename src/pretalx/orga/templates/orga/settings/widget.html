@@ -1,14 +1,19 @@
 {% extends "orga/settings/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
+{% load event_tags %}
 {% load i18n %}
 {% load static %}
 
 {% block extra_title %}{% translate "Widget generation" %} :: {% endblock extra_title %}
 
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
 {% block scripts %}
-    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
     {% compress js %}
         <script defer src="{% static "orga/js/widgetSettings.js" %}"></script>
         <script defer src="{% static "common/js/modalDialog.js" %}"></script>
@@ -16,29 +21,23 @@
 {% endblock scripts %}
 
 {% block settings_content %}
-    <form method="post" class="d-flex flex-column">
-        {% csrf_token %}
+    <h2>
+        {% translate "Widget settings" %}
+        <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
+            <i class="fa fa-question-circle-o text-info"></i>
+        </span>
+    </h2>
+    <dialog id="info-dialog">
+        <div class="alert alert-info flip ml-auto">
+            {% blocktranslate trimmed %}
+                You can configure a pretalx schedule widget to show your event schedule
+                on your homepage, instead of using this page. If you want to disable the
+                schedule on here entirely, please activate the setting below.
+            {% endblocktranslate %}
+        </div>
+    </dialog>
 
-        <h2>
-            {% translate "Widget settings" %}
-            <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
-                <i class="fa fa-question-circle-o text-info"></i>
-            </span>
-        </h2>
-        <dialog id="info-dialog">
-            <div class="alert alert-info flip ml-auto">
-                {% blocktranslate trimmed %}
-                    You can configure a pretalx schedule widget to show your event schedule
-                    on your homepage, instead of using this page. If you want to disable the
-                    schedule on here entirely, please activate the setting below.
-                {% endblocktranslate %}
-            </div>
-        </dialog>
-        {% bootstrap_form form layout="event" %}
-
-        {% include "orga/includes/submit_row.html" %}
-
-    </form>
+    {% include "orga/includes/base_form.html" %}
 
     <h2>{% translate "Widget generation" %}</h2>
     <p>
@@ -53,9 +52,7 @@
                 Using this form, you can generate code to copy and paste to your website source.
             {% endblocktranslate %}
         </p>
-        <form>
-            {% bootstrap_form extra_form layout="event" %}
-        </form>
+        {{ extra_form }}
         <div class="submit-group panel">
             <span></span>
             <span>
@@ -77,7 +74,7 @@
             {% endblocktranslate %}
         </p>
         <pre id="widget-body">
-&lt;pretalx-schedule event-url="{{ request.event.urls.base.full }}" locale="LOCALE" format="FORMAT" style="--pretalx-clr-primary: {{ request.event.get_primary_color }}">&lt;/pretalx-schedule>
+&lt;pretalx-schedule event-url="{{ request.event.urls.base.full }}" locale="LOCALE" format="FORMAT" style="--pretalx-clr-primary: {{ request.event.visible_primary_color }}">&lt;/pretalx-schedule>
 &lt;noscript>
    &lt;div class="pretalx-widget">
         &lt;div class="pretalx-widget-info-message">
@@ -97,7 +94,7 @@
         </p>
     </div>
 
-    {% if request.event.is_public and request.event.feature_flags.show_schedule and request.event.current_schedule and not request.event.custom_domain %}
+    {% if request.event.is_public and request.event|get_feature_flag:"show_schedule" and request.event.current_schedule and not request.event.custom_domain %}
         <div class="mw-100">
             <h2>{% translate "Widget preview" %}</h2>
             <p>

@@ -4,9 +4,15 @@
 {% load i18n %}
 {% load static %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{% static "common/css/headers-uncompressed.css" %}" />
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "orga/css/flow.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
 {% block scripts %}
     {{ current_configuration|json_script:"currentConfiguration" }}
-    {{ all_fields|json_script:"allFields" }}
     {{ event_configuration|json_script:"eventConfiguration" }}
 
     {% if debug %}

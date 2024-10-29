@@ -1,13 +1,10 @@
-from io import BytesIO
 from pathlib import Path
 
 from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
-from django.core.files import File
 from django.core.files.uploadedfile import UploadedFile
-from django.forms import CharField, FileField, ValidationError
+from django.forms import CharField, FileField, RegexField, ValidationError
 from django.utils.translation import gettext_lazy as _
-from PIL import Image
 
 from pretalx.common.forms.widgets import (
     ClearableBasenameFileInput,
@@ -17,7 +14,13 @@ from pretalx.common.forms.widgets import (
 )
 from pretalx.common.templatetags.filesize import filesize
 
-IMAGE_EXTENSIONS = (".png", ".jpg", ".gif", ".jpeg", ".svg")
+IMAGE_EXTENSIONS = {
+    ".png": ["image/png", ".png"],
+    ".jpg": ["image/jpeg", ".jpg"],
+    ".jpeg": ["image/jpeg", ".jpeg"],
+    ".gif": ["image/gif", ".gif"],
+    ".svg": ["image/svg+xml", ".svg"],
+}
 
 
 class GlobalValidator:
@@ -25,7 +28,7 @@ class GlobalValidator:
         return validate_password(value)
 
 
-class PasswordField(CharField):
+class NewPasswordField(CharField):
     default_validators = [GlobalValidator()]
 
     def __init__(self, *args, **kwargs):
@@ -35,7 +38,7 @@ class PasswordField(CharField):
         super().__init__(*args, **kwargs)
 
 
-class PasswordConfirmationField(CharField):
+class NewPasswordConfirmationField(CharField):
     def __init__(self, *args, **kwargs):
         kwargs["widget"] = kwargs.get(
             "widget",
@@ -53,9 +56,7 @@ class SizeFileInput:
         else:
             self.max_size = kwargs.pop("max_size")
         super().__init__(*args, **kwargs)
-        self.size_warning = _("Please do not upload files larger than {size}!").format(
-            size=filesize(self.max_size)
-        )
+        self.size_warning = self.get_size_warning(self.max_size)
         self.original_help_text = (
             getattr(self, "original_help_text", "") or self.help_text
         )
@@ -63,6 +64,14 @@ class SizeFileInput:
         self.help_text = self.original_help_text + " " + self.added_help_text
         self.widget.attrs["data-maxsize"] = self.max_size
         self.widget.attrs["data-sizewarning"] = self.size_warning
+
+    @staticmethod
+    def get_size_warning(max_size=None, fallback=True):
+        if not max_size and fallback:
+            max_size = settings.FILE_UPLOAD_DEFAULT_LIMIT
+        return _("Please do not upload files larger than {size}!").format(
+            size=filesize(max_size)
+        )
 
     def validate(self, value):
         super().validate(value)
@@ -76,36 +85,28 @@ class SizeFileInput:
 
 class ExtensionFileInput:
     widget = ClearableBasenameFileInput
+    extensions = {}
 
     def __init__(self, *args, **kwargs):
-        extensions = kwargs.pop("extensions")
-        self.extensions = sorted([ext.lower() for ext in extensions])
+        self.extensions = kwargs.pop("extensions", None) or self.extensions or {}
         super().__init__(*args, **kwargs)
-        self.original_help_text = (
-            getattr(self, "original_help_text", "") or self.help_text
-        )
-        self.added_help_text = (
-            (getattr(self, "added_help_text", "") + " ").strip()
-            + " "
-            + _(
-                _("Allowed filetypes: {extensions}").format(
-                    extensions=", ".join(self.extensions)
-                )
-            )
-        )
-        self.help_text = self.original_help_text + " " + self.added_help_text
+        content_types = set()
+        for ext in self.extensions.values():
+            content_types.update(ext)
+        content_types = ",".join(content_types)
+        self.widget.attrs["accept"] = content_types
 
     def validate(self, value):
         super().validate(value)
         if value:
             filename = value.name
             extension = Path(filename).suffix.lower()
-            if extension not in self.extensions:
+            if extension not in self.extensions.keys():
                 raise ValidationError(
                     _(
                         "This filetype ({extension}) is not allowed, it has to be one of the following: "
                     ).format(extension=extension)
-                    + ", ".join(self.extensions)
+                    + ", ".join(self.extensions.keys())
                 )
 
 
@@ -119,82 +120,16 @@ class ExtensionFileField(ExtensionFileInput, SizeFileInput, FileField):
 
 class ImageField(ExtensionFileInput, SizeFileInput, FileField):
     widget = ImageInput
+    extensions = IMAGE_EXTENSIONS
+
+
+class ColorField(RegexField):
+    color_regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+    max_length = 7
 
     def __init__(self, *args, **kwargs):
-        self.max_width = (
-            kwargs.pop("max_width", None) or settings.IMAGE_DEFAULT_MAX_WIDTH
-        )
-        self.max_height = (
-            kwargs.pop("max_height", None) or settings.IMAGE_DEFAULT_MAX_HEIGHT
-        )
-        super().__init__(*args, extensions=IMAGE_EXTENSIONS, **kwargs)
-
-    def to_python(self, data):
-        """Check that the file-upload field data contains a valid image (GIF,
-        JPG, PNG, etc. -- whatever Pillow supports).
-
-        Vendored from django.forms.fields.ImageField to add EXIF data
-        removal. Can't use super() because we need to patch in the
-        .png.fp object for some unholy (and possibly buggy) reason.
-        """
-        field = super().to_python(data)
-        if field is None or field.name.endswith(".svg"):
-            return field
-
-        # We need to get a file object for Pillow. We might have a path or we might
-        # have to read the data into memory.
-        if getattr(data, "temporary_file_path", None):
-            with open(data.temporary_file_path(), "rb") as temp_fp:
-                file = BytesIO(temp_fp.read())
-        else:
-            if getattr(data, "read", None):
-                file = BytesIO(data.read())
-            else:
-                file = BytesIO(data["content"])
-
-        try:
-            # load() could spot a truncated JPEG, but it loads the entire
-            # image in memory, which is a DoS vector. See #3848 and #18520.
-            image = Image.open(file)
-            # verify() must be called immediately after the constructor.
-            image.verify()
-
-            # Annotating so subclasses can reuse it for their own validation
-            field.image = image
-            # Pillow doesn't detect the MIME type of all formats. In those
-            # cases, content_type will be None.
-            field.content_type = Image.MIME.get(image.format)
-        except Exception as exc:
-            # Pillow doesn't recognize it as an image.
-            raise ValidationError(
-                _(
-                    "Upload a valid image. The file you uploaded was either not an "
-                    "image or a corrupted image."
-                )
-            ) from exc
-        if getattr(field, "seek", None) and callable(field.seek):
-            field.seek(0)
-
-        image.fp = file
-        if getattr(image, "png", None):  # Yeah, idk what's up with this
-            image.png.fp = file
-
-        stream = BytesIO()
-
-        extension = ".jpg"
-        if image.mode.lower() in ("rgba", "la", "pa"):
-            extension = ".png"
-        elif image.mode != "RGB":
-            image = image.convert("RGB")
-
-        stream.name = Path(data.name).stem + extension
-        image_data = image.getdata()
-        image_without_exif = Image.new(image.mode, image.size)
-        image_without_exif.putdata(image_data)
-        if self.max_height and self.max_width:
-            image_without_exif.thumbnail((self.max_width, self.max_height))
-        image_without_exif.save(
-            stream, quality="web_high" if extension == ".jpg" else 95
-        )
-        stream.seek(0)
-        return File(stream, name=data.name)
+        kwargs["regex"] = kwargs.get("regex", self.color_regex)
+        super().__init__(*args, **kwargs)
+        widget_class = self.widget.attrs.get("class", "")
+        self.widget.attrs["class"] = f"{widget_class} colorpicker".strip()
+        self.widget.attrs["pattern"] = self.color_regex[1:-1]

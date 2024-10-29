@@ -8,7 +8,6 @@ from django.db import transaction
 from django.utils.timezone import now
 from django_scopes import scope, scopes_disabled
 
-from pretalx.common.tasks import regenerate_css
 from pretalx.event.models import Event, Team
 from pretalx.event.utils import create_organiser_with_team
 from pretalx.person.models import SpeakerProfile, User
@@ -96,7 +95,6 @@ Feel free to look around, but don\'t be alarmed if something doesn\'t quite make
                 event=event, name="Workshop", default_duration=90
             )
 
-            event.feature_flags["use_tracks"] = True
             event.display_settings["header_pattern"] = random.choice(
                 ("", "pcb", "bubbles", "signal", "topo", "graph")
             )
@@ -129,7 +127,6 @@ If you have any interest in {self.fake.catch_phrase().lower()}, {self.fake.catch
             self.event = event
             self.build_room()
             self.build_room()
-            regenerate_css(event.pk)
         return event
 
     def build_room(self):

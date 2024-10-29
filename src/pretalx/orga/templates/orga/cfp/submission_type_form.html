@@ -1,18 +1,8 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
-
-{% block scripts %}
-    {% compress js %}
-        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-        <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
-        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
-    {% endcompress %}
-{% endblock scripts %}
 
 {% block extra_title %}{% if form.instance.name %}{{ form.instance.name }}{% else %}{% translate "New Session Type" %}{% endif %} :: {% endblock extra_title %}
 
@@ -24,16 +14,7 @@
             {% translate "New Session Type" %}
         {% endif %}
     </h2>
-    <form method="post">
-        {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        {% bootstrap_field form.name layout="event" %}
-        {% bootstrap_field form.default_duration addon_after="minutes" layout="event" addon_after_class="input-group-append input-group-text" %}
-        {% bootstrap_field form.deadline layout="event" %}
-        {% bootstrap_field form.requires_access_code layout="event" %}
 
-        {% include "orga/includes/submit_row.html" %}
-
-    </form>
+    {% include "orga/includes/base_form.html" %}
 
 {% endblock content %}

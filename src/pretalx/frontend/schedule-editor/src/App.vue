@@ -4,7 +4,7 @@
 		#main-wrapper
 			#unassigned.no-print(v-scrollbar.y="", @pointerenter="isUnassigning = true", @pointerleave="isUnassigning = false")
 				.title
-					bunt-input#filter-input(v-model="unassignedFilterString", :placeholder="$t('Filter sessions')", icon="search")
+					bunt-input#filter-input(v-model="unassignedFilterString", :placeholder="translations.filterSessions", icon="search")
 					#unassigned-sort(@click="showUnassignedSortMenu = !showUnassignedSortMenu", :class="{'active': showUnassignedSortMenu}")
 						i.fa.fa-sort
 					#unassigned-sort-menu(v-if="showUnassignedSortMenu")
@@ -12,7 +12,7 @@
 							span {{ method.label }}
 							i.fa.fa-sort-amount-asc(v-if="unassignedSort === method.name && unassignedSortDirection === 1")
 							i.fa.fa-sort-amount-desc(v-if="unassignedSort === method.name && unassignedSortDirection === -1")
-				session.new-break(:session="{title: '+ ' + $t('New break')}", :isDragged="false", @startDragging="startNewBreak", @click="showNewBreakHint", v-tooltip.fixed="{text: newBreakTooltip, show: newBreakTooltip}", @pointerleave="removeNewBreakHint")
+				session.new-break(:session="{title: '+ ' + translations.newBreak}", :isDragged="false", @startDragging="startNewBreak", @click="showNewBreakHint", v-tooltip.fixed="{text: newBreakTooltip, show: newBreakTooltip}", @pointerleave="removeNewBreakHint")
 				session(v-for="un in unscheduled", :session="un", @startDragging="startDragging", :isDragged="draggedSession && un.id === draggedSession.id")
 			#schedule-wrapper(v-scrollbar.x.y="")
 				bunt-tabs.days(v-if="days", :modelValue="currentDay.format()", ref="tabs" :class="['grid-tabs']")
@@ -36,34 +36,36 @@
 						a(v-if="editorSession.code", :href="`/orga/event/${eventSlug}/submissions/${editorSession.code}/`") {{editorSession.title }}
 						span(v-else) {{editorSession.title }}
 					.data
-						.data-row(v-if="editorSession.code && editorSession.speakers && editorSession.speakers.length > 0")
-							.data-label {{ $t('Speakers') }}
-							.data-value
+						.data-row(v-if="editorSession.code && editorSession.speakers && editorSession.speakers.length > 0").form-group.row
+							label.data-label.col-form-label.col-md-3 {{ $t('Speakers') }}
+							.col-md-9.data-value
 								span(v-for="speaker, index of editorSession.speakers")
 									a(:href="`/orga/event/${eventSlug}/speakers/${speaker.code}/`") {{speaker.name}}
 									span(v-if="index != editorSession.speakers.length - 1") {{', '}}
-						.data-row(v-else).form-group
-							.data-label {{ $t('Title') }}
-							.data-value.i18n-form-group
-								template(v-for="locale of locales")
-									input(v-model="editorSession.title[locale]", :required="true" :lang="locale")
-						.data-row(v-if="editorSession.track")
-							.data-label {{ $t('Track') }}
-							.data-value {{ getLocalizedString(editorSession.track.name) }}
-						.data-row(v-if="editorSession.room")
-							.data-label {{ $t('Room') }}
-							.data-value {{ getLocalizedString(editorSession.room.name) }}
-						.data-row
-							.data-label {{ $t('Duration') }}
-							.data-value.number
+						.data-row(v-else).form-group.row
+							label.data-label.col-form-label.col-md-3 {{ $t('Title') }}
+							.col-md-9
+								.i18n-form-group
+									template(v-for="locale of locales")
+										input(v-model="editorSession.title[locale]", :required="true", :lang="locale", type="text")
+						.data-row(v-if="editorSession.track").form-group.row
+							label.data-label.col-form-label.col-md-3 {{ $t('Track') }}
+							.col-md-9.data-value {{ getLocalizedString(editorSession.track.name) }}
+						.data-row(v-if="editorSession.room").form-group.row
+							label.data-label.col-form-label.col-md-3 {{ $t('Room') }}
+							.col-md-9.data-value {{ getLocalizedString(editorSession.room.name) }}
+						.data-row.form-control.form-group.row
+							label.data-label.col-form-label.col-md-3 {{ $t('Duration') }}
+							.col-md-9.number.input-group
 								input(v-model="editorSession.duration", type="number", min="1", max="1440", step="1", :required="true")
-								span {{ $t('minutes') }}
+								.input-group-append
+									span.input-group-text {{ $t('minutes') }}
 
-						.data-row(v-if="editorSession.code && warnings[editorSession.code] && warnings[editorSession.code].length")
-							.data-label
+						.data-row(v-if="editorSession.code && warnings[editorSession.code] && warnings[editorSession.code].length").form-group.row
+							label.data-label.col-form-label.col-md-3
 								i.fa.fa-exclamation-triangle.warning
 								span {{ $t('Warnings') }}
-							.data-value
+							.col-md-9.data-value
 								ul(v-if="warnings[editorSession.code].length > 1")
 									li.warning(v-for="warning of warnings[editorSession.code]") {{ warning.message }}
 								span(v-else) {{ warnings[editorSession.code][0].message }}
@@ -111,6 +113,13 @@ export default {
 			showUnassignedSortMenu: false,
 			newBreakTooltip: '',
 			getLocalizedString,
+			// i18next-parser doesn't have a pug parser / fails to parse translated
+			// strings in attributes (though plain {{}} strings work!), so anything
+			// handled in attributes will be collected here instead
+			translations: {
+				filterSessions: this.$t('Filter sessions'),
+				newBreak: this.$t('New break'),
+			}
 		}
 	},
 	computed: {
@@ -301,14 +310,14 @@ export default {
 		showNewBreakHint () {
 			// Users try to click the "+ New Break" box instead of dragging it to the schedule
 			// so we show a hint on-click
-			this.newBreakTooltip = this.$t('Drag the box to the schedule to create a new break.')
+			this.newBreakTooltip = this.$t('Drag the box to the schedule to create a new break')
 		},
 		removeNewBreakHint () {
 			this.newBreakTooltip = ''
 		},
 		startNewBreak({event}) {
 			const title = this.locales.reduce((obj, locale) => {
-				obj[locale] = this.$t("New Break")
+				obj[locale] = this.$t("New break")
 				return obj
 			}, {})
 			this.startDragging({event, session: {title, duration: "5", uncreated: true}})
@@ -389,9 +398,10 @@ export default {
 	width: 100%
 	font-size: 14px
 	margin-left: 24px
-	font-family: inherit
+	font-family: var(--font-family)
+	color: var(--color-text)
 	h1, h2, h3, h4, h5, h6, legend, button, .btn
-		font-family: "Titillium Web", "Open Sans", "OpenSans", "Helvetica Neue", Helvetica, Arial, sans-serif
+		font-family: var(--font-family-title)
 	&.is-dragging
 		user-select: none
 		cursor: grabbing
@@ -416,7 +426,7 @@ export default {
 			color: $clr-secondary-text-light
 	.days
 		background-color: $clr-white
-		tabs-style(active-color: var(--pretalx-clr-primary), indicator-color: var(--pretalx-clr-primary), background-color: transparent)
+		tabs-style(active-color: var(--color-primary), indicator-color: var(--color-primary), background-color: transparent)
 		overflow-x: auto
 		position: sticky
 		left: 0
@@ -454,6 +464,9 @@ export default {
 			margin-left: 8px
 			#filter-input
 				width: calc(100% - 36px)
+				.label-input-container, .label-input-container:active
+					.outline
+						display: none
 			#unassigned-sort
 				width: 28px
 				height: 28px
@@ -535,28 +548,8 @@ export default {
 				flex-direction: column
 				font-size: 16px
 				.data-row
-					display: flex
-					margin: 4px 0
-					.data-label
-						width: 130px
-						font-weight: bold
-						display: flex
-						align-items: baseline
 					.data-value
-						input
-							border: 1px solid #ced4da
-							width: 100%
-							border-radius: 0.25rem
-							font-size: 16px
-							height: 30px
-							&:focus, &:active, &:focus-visible
-								border-color: #89d6b8
-								box-shadow: 0 0 0 1px rgba(58, 165, 124, 0.25)
-							&[type=number]
-								width: 60px
-								text-align: right
-								padding-right: 8px
-								margin-right: 8px
+						padding-top: 8px
 						ul
 							list-style: none
 							padding: 0

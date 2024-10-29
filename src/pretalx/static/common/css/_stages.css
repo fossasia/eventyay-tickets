@@ -1,0 +1,96 @@
+.stages {
+  display: flex;
+  flex-direction: row;
+  margin: 15px 0 13px 0;
+
+  .step {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    position: relative;
+
+    &:before {
+      left: 0;
+    }
+    &:after {
+      left: 50%;
+    }
+    &:after,
+    &:before {
+      position: absolute;
+      top: 28px;
+      width: 50%;
+      height: 6px;
+      background: var(--color-grey-lighter);
+      z-index: 100;
+      content: "";
+    }
+    &:last-child:after,
+    &:first-child:before {
+      width: 0;
+    }
+
+    &.step-current,
+    &.step-done {
+      &:before {
+        background: var(--color, var(--color-primary));
+      }
+      .step-icon {
+        border: 1px solid var(--color, var(--color-primary));
+        background: var(--color, var(--color-primary));
+        color: white;
+      }
+      .step-label {
+        color: var(--color, var(--color-primary));
+        font-weight: bold;
+      }
+    }
+    &.step-done {
+      .step-label {
+        font-weight: normal;
+      }
+      &:after {
+        background: var(--color, var(--color-primary));
+      }
+    }
+    &:hover,
+    &:active {
+      text-decoration: none;
+    }
+    .step-icon {
+      border: 1px solid var(--color-text-muted);
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      line-height: 36px;
+      border-radius: 20px;
+      color: var(--color-text-muted);
+      z-index: 150;
+      background: white;
+      position: relative;
+    }
+    .step-label {
+      padding-top: 8px;
+      color: var(--color-text-muted);
+    }
+    .fa-paper-plane {
+      margin-left: -4px;
+    }
+    .step-links {
+      display: none;
+      position: absolute;
+      box-shadow: var(--shadow-lighter);
+      text-align: left;
+      z-index: 10;
+      padding: 8px 0;
+      width: 300px;
+      background: var(--color-bg);
+    }
+    &:hover .step-links {
+      display: block;
+    }
+    &:last-of-type .step-links {
+      left: -50px;
+    }
+  }
+}

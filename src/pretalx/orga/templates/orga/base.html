@@ -1,4 +1,5 @@
 {% load compress %}
+{% load event_tags %}
 {% load i18n %}
 {% load rules %}
 {% load static %}
@@ -25,28 +26,43 @@
 
         {% include "common/includes/favicon.html" %}
 
-        <link rel="stylesheet" type="text/css" href="{% static "common/scss/uncompressed.css" %}" />
         {% compress css %}
-            <link rel="stylesheet" type="text/css" href="{% static "vendored/typeahead.css" %}" />
-            <link rel="stylesheet" type="text/css" href="{% static "vendored/select2.min.css" %}" />
-            <link rel="stylesheet" type="text/css" href="{% static "vendored/fullcalendar/fullcalendar.min.css" %}" />
-            <link rel="stylesheet" type="text/x-scss" href="{% static "orga/scss/main.scss" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "vendored/choices/choices.min.css" %}" />
+            <link rel="stylesheet" type="text/x-scss" href="{% static "vendored/forkawesome/scss/fork-awesome.scss" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_reset.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/base.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_variables.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_fonts.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_forms.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_tooltip.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/availabilities.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/tabs.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_stages.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/avatar.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_dropdown.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_rtl.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "common/css/_pretalx.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "orga/css/_flags.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "orga/css/_layout.css" %}" />
+            <link rel="stylesheet" type="text/css" href="{% static "orga/css/_rtl.css" %}" />
         {% endcompress %}
         {% block stylesheets %}{% endblock stylesheets %}
         {% compress js %}
-            <script defer src="{% static "vendored/jquery-3.1.1.js" %}"></script>
-            <script defer src="{% static "vendored/tether/tether.min.js" %}"></script>
-            <script defer src="{% static "vendored/bootstrap/dist/js/bootstrap.bundle.min.js" %}"></script>
+            <script defer src="{% static "common/js/base.js" %}"></script>
+            <script defer src="{% static "common/js/collapse.js" %}"></script>
             <script defer src="{% static "orga/js/main.js" %}"></script>
             <script defer src="{% static "orga/js/typeahead.js" %}"></script>
-            <script defer src="{% static "vendored/select2.min.js" %}"></script>
-            <script src="{% static "common/js/formTools.js" %}" async></script>
+            <script defer src="{% static "vendored/choices/choices.min.js" %}"></script>
+            <script defer src="{% static "vendored/marked.min.js" %}"></script> {# required by formtools.js #}
+            <script defer src="{% static "vendored/purify.min.js" %}"></script> {# required by formtools.js #}
+            <script defer src="{% static "common/js/formTools.js" %}"></script>
+            <script defer src="{% static "orga/js/sidebar.js" %}"></script>
         {% endcompress %}
         {% block scripts %}{% endblock scripts %}
         {{ html_head|safe }}
     </head>
     <body data-datetimeformat="{{ js_datetime_format }}" data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}">
-        <nav class="navbar navbar-expand-lg fixed-top">
+        <nav class="navbar">
             <ul class="navbar-nav d-block">
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="sidebar" href="#" id="sidebar-toggle">
@@ -54,8 +70,9 @@
                     </a>
                 </li>
             </ul>
-            <a class="navbar-brand d-none d-md-block" href="{% url "orga:event.list" %}">
-                <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}" alt="{% translate "The {{ site_config.name }} logo" %}"> {{ site_config.name }}
+            <a class="navbar-brand" href="{% url "orga:event.list" %}">
+                <img loading="lazy" src="{% static "common/img/icons/icon.svg" %}" alt="{% translate "The {{ site_config.name }} logo" %}">
+                {{ site_config.name }}
             </a>
             <div class="navbar-collapse" id="navbartoggle">
                 <ul class="navbar-nav mr-auto flip">
@@ -65,11 +82,11 @@
                                 <form action="{{ request.event.urls.auth.full }}"
                                       method="post"
                                       target="_blank"
-                                      class="mobile-navbar-view-form visible-xs-block d-flex align-items-center">
+                                      class="mobile-navbar-view-form d-flex align-items-center">
                                     <input type="hidden" value="{{ new_session }}" name="session">
                                     <input type="hidden" value="{{ go_to_target }}" name="target">
-                                    <button type="submit" class="btn btn-link navbar-toggle">
-                                        <i class="fa fa-eye"></i>
+                                    <button type="submit" class="btn btn-link navbar-toggle pl-2">
+                                        <i class="fa fa-eye mr-1"></i>
                                         {% translate "View event" %}
                                     </button>
                                 </form>
@@ -109,7 +126,7 @@
             </ul>
         </nav>
         {% if request.user.is_superuser %}
-            <div class="superuser-warning">
+            <div class="global-top-warning">
                 <i class="fa fa-exclamation-triangle"></i>
                 {% blocktranslate with link=link trimmed %}
                     You’re using pretalx as a superuser. This is not recommended.
@@ -120,7 +137,7 @@
             </div>
         {% endif %}
         {% if warning_update_check_active %}
-            <div class="superuser-warning">
+            <div class="global-top-warning">
                 <a href="{% url "orga:admin.update" %}">
                     {% blocktranslate trimmed %}
                         Starting with version 1.1.0, pretalx automatically checks for updates in the background.
@@ -133,9 +150,9 @@
             </div>
         {% endif %}
         <div id="page-wrapper">
-            <aside class="nav flex-column sidebar">
-                <a class="dropdown nav-link p-0" id="nav-search-wrapper">
-                    <div id="nav-search" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {% if not request.user.is_anonymous %}<aside class="nav flex-column sidebar">
+                <details class="dropdown nav-link p-0" id="nav-search-wrapper">
+                    <summary id="nav-search" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span id="search-context-icon" class="fa-stack fa-lg">
                             <i class="fa fa-circle fa-stack-2x"></i>
                             <i class="fa fa-{% if request.event %}calendar{% elif request.organiser %}group{% else %}user{% endif %} fa-stack-1x fa-inverse"></i>
@@ -151,17 +168,20 @@
                                 <span class="context-name">{{ request.user.get_display_name }}</span>
                             {% endif %}
                         </div>
-                        <div id="nav-search-dropdown" class="dropdown-menu dropdown-menu-left" aria-labelledby="nav-search" data-source="{% url "orga:nav.typeahead" %}" data-event-typeahead{% if request.event %} data-organiser="{{ request.event.organiser.pk }}"{% elif request.organiser %} data-organiser="{{ request.organiser.pk }}"{% endif %}>
-                            <div class="query-holder">
-                                <div class="form-box">
-                                    <input type="text" class="form-control" placeholder="{% translate "Search" %}" data-typeahead-query>
-                                </div>
-                            </div>
-                            <ul id="search-results">
-                            </ul>
+                        <div class="arrow">
+                            <i class="fa fa-angle-down"></i>
                         </div>
+                    </summary>
+                    <div id="nav-search-input-wrapper" class="dropdown-content dropdown-menu dropdown-menu-left" aria-labelledby="nav-search" data-source="{% url "orga:nav.typeahead" %}" data-event-typeahead data-organiser="{% if request.event %}{{ request.event.organiser.pk }}{% elif request.organiser %}{{ request.organiser.pk }}{% endif %}">
+                        <div class="query-holder">
+                            <div class="form-box">
+                                <input type="search" class="form-control" placeholder="{% translate "Search" %} (Alt + k)" data-typeahead-query>
+                            </div>
+                        </div>
+                        <ul id="search-results">
+                        </ul>
                     </div>
-                </a>
+                </details>
                 {% if request.event %}
                     {% has_perm "orga.view_orga_area" request.user request.event as can_see_orga_area %}
                     {% has_perm "orga.change_submissions" request.user request.event as can_see_orga_exclusive %}
@@ -182,7 +202,7 @@
                                         <i class="fa fa-wrench"></i>
                                         <span class="sidebar-text">{% translate "Settings" %}</span>
                                     </a>
-                                    <a class="arrow nav-link" data-toggle="collapse" href="#collapseSettings" aria-controls="collapseSettings">
+                                    <a class="arrow nav-link" data-toggle="collapse" data-target="#collapseSettings" aria-controls="collapseSettings">
                                         <i class="fa fa-angle-down"></i>
                                     </a>
                                 </span>
@@ -220,7 +240,7 @@
                                         <i class="fa fa-bullhorn"></i>
                                         <span class="sidebar-text">{% translate "Call for Speakers" %}</span>
                                     </a>
-                                    <a class="arrow nav-link" data-toggle="collapse" href="#collapseCfP" aria-controls="collapseCfP">
+                                    <a class="arrow nav-link" data-toggle="collapse" data-target="#collapseCfP" aria-controls="collapseCfP">
                                         <i class="fa fa-angle-down"></i>
                                     </a>
                                 </span>
@@ -234,7 +254,7 @@
                                     <a href="{{ request.event.cfp.urls.questions }}" class="nav-link nav-link-second-level{% if "cfp.question" in url_name %} active{% endif %}">
                                         <span>{{ phrases.cfp.questions }}</span>
                                     </a>
-                                    {% if request.event.feature_flags.use_tracks %}
+                                    {% if request.event|get_feature_flag:"use_tracks" %}
                                         <a href="{{ request.event.cfp.urls.tracks }}" class="nav-link nav-link-second-level{% if "cfp.track" in url_name %} active{% endif %}">
                                             <span>{% translate "Tracks" %}</span>
                                         </a>
@@ -256,7 +276,7 @@
                                     <i class="fa fa-sticky-note-o"></i>
                                     <span class="sidebar-text">{{ phrases.schedule.sessions }}</span>
                                 </a>
-                                <a class="arrow nav-link" data-toggle="collapse" href="#collapseSubmissions" aria-controls="collapseSubmissions">
+                                <a class="arrow nav-link" data-toggle="collapse" data-target="#collapseSubmissions" aria-controls="collapseSubmissions">
                                     <i class="fa fa-angle-down"></i>
                                 </a>
                             </span>
@@ -270,7 +290,7 @@
                                 <a href="{{ request.event.orga_urls.stats }}" class="nav-link nav-link-second-level{% if "submissions.statistics" in url_name %} active{% endif %}">
                                     <span>{% translate "Statistics" %}</span>
                                 </a>
-                                {% if request.event.feature_flags.use_feedback %}
+                                {% if request.event|get_feature_flag:"use_feedback" %}
                                     <a href="{{ request.event.orga_urls.feedback }}" class="nav-link nav-link-second-level{% if "submissions.feedback" in url_name %} active{% endif %}">
                                         <span>{% translate "Feedback" %}</span>
                                     </a>
@@ -287,7 +307,7 @@
                                         <i class="fa fa-eye"></i>
                                         <span class="sidebar-text">{% translate "Review" %}</span>
                                     </a>
-                                    <a class="arrow nav-link" data-toggle="collapse" href="#collapseReviews" aria-controls="collapseReviews">
+                                    <a class="arrow nav-link" data-toggle="collapse" data-target="#collapseReviews" aria-controls="collapseReviews">
                                         <i class="fa fa-angle-down"></i>
                                     </a>
                                 </span>
@@ -316,7 +336,7 @@
                                         <i class="fa fa-address-card-o"></i>
                                         <span class="sidebar-text">{{ phrases.schedule.speakers }}</span>
                                     </a>
-                                    <a class="arrow nav-link" data-toggle="collapse" href="#collapseSpeakers" aria-controls="collapseSpeakers">
+                                    <a class="arrow nav-link" data-toggle="collapse" data-target="#collapseSpeakers" aria-controls="collapseSpeakers">
                                         <i class="fa fa-angle-down"></i>
                                     </a>
                                 </span>
@@ -344,7 +364,7 @@
                                     <i class="fa fa-calendar-o"></i>
                                     <span class="sidebar-text">{{ phrases.schedule.schedule }}</span>
                                 </a>
-                                <a class="arrow nav-link" data-toggle="collapse" href="#collapseSchedule" aria-controls="collapseSchedule">
+                                <a class="arrow nav-link" data-toggle="collapse" data-target="#collapseSchedule" aria-controls="collapseSchedule">
                                     <i class="fa fa-angle-down"></i>
                                 </a>
                             </span>
@@ -370,7 +390,7 @@
                                         {% if request.event.pending_mails %}<span class="pending-mails">{{ request.event.pending_mails }}</span>{% endif %}
                                     </span>
                                 </a>
-                                <a class="arrow nav-link" data-toggle="collapse" href="#collapseMails" aria-controls="collapseMails">
+                                <a class="arrow nav-link" data-toggle="collapse" data-target="#collapseMails" aria-controls="collapseMails">
                                     <i class="fa fa-angle-down"></i>
                                 </a>
                             </span>
@@ -416,6 +436,9 @@
                             <span>{% translate "Speakers" %}</span>
                         </a>
                     {% endif %}
+                    {% for nav_element in nav_global %}
+                        {% include "orga/includes/sidebar_nav.html" %}
+                    {% endfor %}
                 {% else %}  {# elif request.organiser #}
                     {% has_perm "orga.view_organiser_lists" request.user request as can_see_organiser_lists %}
                     {% if can_see_organiser_lists %}
@@ -440,7 +463,7 @@
                                         {% translate "Administration" %}
                                     </span>
                                 </a>
-                                <a class="arrow nav-link" data-toggle="collapse" href="#collapseAdmin" aria-controls="collapseAdmin">
+                                <a class="arrow nav-link" data-toggle="collapse" data-target="#collapseAdmin" aria-controls="collapseAdmin">
                                     <i class="fa fa-angle-down"></i>
                                 </a>
                             </span>
@@ -458,7 +481,7 @@
                         {% include "orga/includes/sidebar_nav.html" %}
                     {% endfor %}
                 {% endif %}  {# if request.event #}
-            </aside>
+            </aside>{% endif %}  {# if not request.user.is_anonymous #}
             <div id="page-content">
                 <main>
                     {% if messages %}
@@ -472,7 +495,7 @@
                     {% block content %}
                     {% endblock content %}
                 </main>
-                <footer class="no-print">
+                <footer>
                     {% include "common/powered_by.html" %}
                     {% if development_mode %}
                         <span class="text-warning">· {% translate "running in development mode" %}</span>
@@ -486,9 +509,5 @@
                 </footer>
             </div>
         </div>
-        {% compress js %}
-            <script defer src="{% static "orga/js/load_late.js" %}"></script>
-            <script defer src="{% static "vendored/typeahead.bundle.min.js" %}"></script>
-        {% endcompress %}
     </body>
 </html>

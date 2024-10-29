@@ -48,3 +48,4 @@ Take-off and landing
 14. Update any plugins waiting for the new release.
 15. Check if the docker image build was successful.
 16. Post about the release on ``chaos.social``, Twitter and LinkedIn.
+17. Notify interested parties (e.g. big self-hosted instances, prominent plugin developers) about the release.

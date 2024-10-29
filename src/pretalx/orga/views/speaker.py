@@ -222,7 +222,7 @@ class SpeakerDetail(SpeakerViewMixin, ActionFromUrl, CreateOrUpdateView):
             )
         if form.has_changed() or self.questions_form.has_changed():
             self.request.event.cache.set("rebuild_schedule_export", True, None)
-        messages.success(self.request, "The speaker profile has been updated.")
+        messages.success(self.request, phrases.base.saved)
         return result
 
     def get_form_kwargs(self):
@@ -360,6 +360,14 @@ class SpeakerExport(EventPermissionRequired, FormView):
             for exporter in get_schedule_exporters(self.request)
             if exporter.group == "speaker"
         ]
+
+    @context
+    def tablist(self):
+        return {
+            "custom": _("CSV/JSON exports"),
+            "general": _("More exports"),
+            "api": _("API"),
+        }
 
     def form_valid(self, form):
         result = form.export_data()

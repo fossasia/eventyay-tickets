@@ -6,6 +6,7 @@ from csp.decorators import csp_exempt
 from django.contrib.staticfiles import finders
 from django.http import Http404, HttpResponse, JsonResponse
 from django.utils.timezone import now
+from django.views.decorators.cache import cache_page
 from django.views.decorators.http import condition
 from i18nfield.utils import I18nJSONEncoder
 
@@ -17,6 +18,10 @@ from pretalx.schedule.exporters import ScheduleData
 
 WIDGET_JS_CHECKSUM = None
 WIDGET_PATH = "agenda/js/pretalx-schedule.min.js"
+
+
+def color_etag(request, event, **kwargs):
+    return request.event.primary_color or "none"
 
 
 def widget_js_etag(request, event, **kwargs):
@@ -162,6 +167,10 @@ def version_prefix(request, event, version=None):
     key_prefix=version_prefix,
     condition=is_public_and_versioned,
     server_timeout=5 * 60,
+    headers={
+        "Access-Control-Allow-Headers": "authorization,content-type",
+        "Access-Control-Allow-Origin": "*",
+    },
 )
 @csp_exempt
 def widget_data(request, event, version=None):
@@ -225,3 +234,15 @@ def widget_script(request, event):
         code = fp.read()
     data = code.encode()
     return HttpResponse(data, content_type="text/javascript")
+
+
+@condition(etag_func=color_etag)
+@cache_page(60 * 60)
+@csp_exempt
+def event_css(request, event):
+    # If this event has custom colours, we send back a simple CSS file that sets the
+    # root colours for the event.
+    result = ""
+    if request.event.primary_color:
+        result = ":root {" + f"--color-primary: {request.event.primary_color};" + "}"
+    return HttpResponse(result, content_type="text/css")

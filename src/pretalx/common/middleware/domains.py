@@ -45,7 +45,7 @@ class MultiDomainMiddleware:
     def process_request(self, request):
         host = self.get_host(request)
         domain, port = split_domain_port(host)
-        default_domain, default_port = split_domain_port(settings.SITE_NETLOC)
+        default_domain, _ = split_domain_port(settings.SITE_NETLOC)
 
         request.host = domain
         request.port = int(port) if port else None
@@ -71,6 +71,17 @@ class MultiDomainMiddleware:
                 if event_domain == domain and event_port == port:
                     request.uses_custom_domain = True
                     return None
+                elif domain == default_domain and not request.path.startswith("/orga"):
+                    return redirect(
+                        urljoin(event.urls.base.full(), request.get_full_path())
+                    )
+            elif domain == default_domain:
+                return None
+            # We are on an event page, but under the incorrect domain. Redirecting
+            # to the proper domain would leak information, so we will show a 404
+            # instead.
+            if not request.path.startswith("/orga"):
+                raise Http404()
 
         if domain == default_domain:
             return None
@@ -79,27 +90,44 @@ class MultiDomainMiddleware:
             return None
 
         if request.path_info.startswith("/orga"):  # pragma: no cover
-            if default_port not in (80, 443):
-                default_domain = f"{default_domain}:{default_port}"
-            return redirect(urljoin(default_domain, request.get_full_path()))
+            return redirect(urljoin(settings.SITE_URL, request.get_full_path()))
 
-        # If this domain is used as custom domain, redirect to most recent event
-        event = (
-            Event.objects.filter(
-                Q(custom_domain=f"{request.scheme}://{domain}")
-                | Q(custom_domain=f"{request.scheme}://{host}"),
-                is_public=True,
-            )
-            .order_by("-date_from")
-            .first()
-        )
-        if event:
-            return redirect(event.urls.base.full())
+        # If this domain is used as custom domain, but we are trying to view a
+        # non-event page, try to redirect to the most recent event instead.
+        events = Event.objects.filter(
+            Q(custom_domain=f"{request.scheme}://{domain}")
+            | Q(custom_domain=f"{request.scheme}://{host}"),
+        ).order_by("-date_from")
+        if events:
+            request.uses_custom_domain = True
+            public_event = events.filter(is_public=True).first()
+            if public_event:
+                return redirect(public_event.urls.base.full())
+            # This domain is configured for an event, but does not have a public event
+            # yet. We will show the start page instead of a confusing (to organisers)
+            # 404.
+            return
+        # This domain is not configured for any event, so we will show a 404.
+        # Note that this should not occur on a well-configured host, as the web server
+        # should make sure that a domain is configured before serving it (as it needs to
+        # provide an SSL certificate for it, etc.), but of course this can still happen
+        # when caches (DNS or otherwise) are involved.
         raise DisallowedHost(f"Unknown host: {host}")
+
+    def process_response(self, request, response):
+        if request.path.startswith("/orga"):
+            if (event := getattr(request, "event", None)) and event.custom_domain:
+                # We need to update the CSP in order to make our fancy login form work
+                response._csp_update = getattr(response, "_csp_update", None) or {}
+                response._csp_update["form-action"] = [event.urls.base.full()]
+        return response
 
     def __call__(self, request):
         response = self.process_request(request)
-        return response or self.get_response(request)
+        if response:
+            # This is used to return redirects directly
+            return response
+        return self.process_response(request, self.get_response(request))
 
 
 class SessionMiddleware(BaseSessionMiddleware):

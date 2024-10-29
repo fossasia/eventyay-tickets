@@ -19,7 +19,7 @@ from pretalx.common.forms.validators import (
     MinDateTimeValidator,
     MinDateValidator,
 )
-from pretalx.common.templatetags.rich_text import rich_text
+from pretalx.common.forms.widgets import HtmlDateInput, HtmlDateTimeInput
 from pretalx.common.text.phrases import phrases
 from pretalx.submission.models.cfp import default_fields
 
@@ -46,7 +46,7 @@ class PublicContent:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         event = getattr(self, "event", None)
-        if event and not event.feature_flags["show_schedule"]:
+        if event and not event.get_feature_flag("show_schedule"):
             return
         for field_name in self.Meta.public_fields:
             field = self.fields.get(field_name)
@@ -143,12 +143,13 @@ class RequestRequire:
 
 class QuestionFieldsMixin:
     def get_field(self, *, question, initial, initial_object, readonly):
+        from pretalx.common.templatetags.rich_text import rich_text
         from pretalx.submission.models import QuestionVariant
 
         read_only = readonly or question.read_only
         original_help_text = question.help_text
         help_text = rich_text(question.help_text)[len("<p>") : -len("</p>")]
-        if question.is_public and self.event.feature_flags["show_schedule"]:
+        if question.is_public and self.event.get_feature_flag("show_schedule"):
             help_text += " " + str(phrases.base.public_content)
         count_chars = self.event.cfp.settings["count_length_in"] == "chars"
         if question.variant == QuestionVariant.BOOLEAN:
@@ -256,26 +257,43 @@ class QuestionFieldsMixin:
                 disabled=read_only,
                 help_text=help_text,
                 initial=initial,
-                extensions=(
-                    ".png",
-                    ".jpg",
-                    ".gif",
-                    ".jpeg",
-                    ".gif",
-                    ".svg",
-                    ".bmp",
-                    ".tif",
-                    ".tiff",
-                    ".pdf",
-                    ".txt",
-                    ".docx",
-                    "doc",
-                    "rtf",
-                    ".pptx",
-                    ".ppt",
-                    ".xlsx",
-                    ".xls",
-                ),
+                extensions={
+                    ".png": ["image/png", ".png"],
+                    ".jpg": ["image/jpeg", ".jpg"],
+                    ".gif": ["image/gif", ".gif"],
+                    ".jpeg": ["image/jpeg", ".jpeg"],
+                    ".svg": ["image/svg+xml", ".svg"],
+                    ".bmp": ["image/bmp", ".bmp"],
+                    ".tif": ["image/tiff", ".tif"],
+                    ".tiff": ["image/tiff", ".tiff"],
+                    ".pdf": [
+                        "application/pdf",
+                        "application/x-pdf",
+                        "application/acrobat",
+                        "applications/vnd.pdf",
+                        ".pdf",
+                    ],
+                    ".txt": ["text/plain"],
+                    ".docx": [
+                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                        "application/msword",
+                        ".docx",
+                    ],
+                    "doc": [".doc"],
+                    "rtf": ["application/rtf"],
+                    ".pptx": [
+                        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                        "application/vnd.ms-powerpoint",
+                        ".pptx",
+                    ],
+                    ".ppt": [".ppt"],
+                    ".xlsx": [
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "application/vnd.ms-excel",
+                        ".xlsx",
+                    ],
+                    ".xls": [".xls"],
+                },
             )
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS
@@ -297,7 +315,7 @@ class QuestionFieldsMixin:
                 widget=(
                     forms.RadioSelect
                     if len(choices) < 4
-                    else forms.Select(attrs={"class": "select2"})
+                    else forms.Select(attrs={"class": "enhanced"})
                 ),
             )
             field.original_help_text = original_help_text
@@ -312,7 +330,7 @@ class QuestionFieldsMixin:
                 widget=(
                     forms.CheckboxSelectMultiple
                     if len(choices) < 8
-                    else forms.SelectMultiple(attrs={"class": "select2"})
+                    else forms.SelectMultiple(attrs={"class": "enhanced"})
                 ),
                 initial=(
                     initial_object.options.all()
@@ -326,7 +344,7 @@ class QuestionFieldsMixin:
             field.widget.attrs["placeholder"] = ""  # XSS
             return field
         if question.variant == QuestionVariant.DATE:
-            attrs = {"class": "datepickerfield"}
+            attrs = {}
             if question.min_date:
                 attrs["data-date-start-date"] = question.min_date.isoformat()
             if question.max_date:
@@ -337,7 +355,7 @@ class QuestionFieldsMixin:
                 disabled=read_only,
                 help_text=help_text,
                 initial=dateutil.parser.parse(initial).date() if initial else None,
-                widget=forms.DateInput(attrs=attrs),
+                widget=HtmlDateInput(attrs=attrs),
             )
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS
@@ -347,11 +365,11 @@ class QuestionFieldsMixin:
                 field.validators.append(MaxDateValidator(question.max_date))
             return field
         elif question.variant == QuestionVariant.DATETIME:
-            attrs = {"class": "datetimepickerfield"}
+            attrs = {}
             if question.min_datetime:
-                attrs["data-date-start-date"] = question.min_datetime.isoformat()
+                attrs["min"] = question.min_datetime.isoformat()
             if question.max_datetime:
-                attrs["data-date-end-date"] = question.max_datetime.isoformat()
+                attrs["max"] = question.max_datetime.isoformat()
             field = forms.DateTimeField(
                 label=question.question,
                 required=question.required,
@@ -362,7 +380,7 @@ class QuestionFieldsMixin:
                     if initial
                     else None
                 ),
-                widget=forms.DateTimeInput(attrs=attrs),
+                widget=HtmlDateTimeInput(attrs=attrs),
             )
             field.original_help_text = original_help_text
             field.widget.attrs["placeholder"] = ""  # XSS

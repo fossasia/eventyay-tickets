@@ -49,8 +49,8 @@ def test_edit_cfp_timezones(orga_client, event):
     event.cfp.save()
     response = orga_client.get(event.cfp.urls.edit_text)
     assert response.status_code == 200
-    assert "2018-03-05 18:39:15" in response.rendered_content
-    assert "2018-03-05 17:39:15" not in response.rendered_content
+    assert "2018-03-05T18:39" in response.rendered_content
+    assert "2018-03-05T17:39" not in response.rendered_content
 
 
 @pytest.mark.django_db
@@ -74,28 +74,6 @@ def test_edit_cfp_flow(orga_client, event):
             content_type="application/json",
         )
     assert response.status_code == 200, response.content.decode()
-
-
-@pytest.mark.django_db
-def test_edit_cfp_flow_shows_in_frontend(orga_client, event):
-    with scope(event=event):
-        new_config = event.cfp_flow.get_editor_config(json_compat=True)
-
-    new_config[0]["title"]["en"] = "TEST CFP WOO"
-    new_config[0]["text"]["en"] = "PLS SUBMIT HERE THX"
-    new_config[0]["fields"][0]["help_text"]["en"] = "titles are hard, y'know"
-    response = orga_client.post(
-        event.cfp.urls.editor,
-        new_config,
-        content_type="application/json",
-    )
-    assert response.status_code == 200, response.content.decode()
-
-    response = orga_client.get(event.cfp.urls.submit, follow=True)
-    assert response.status_code == 200
-    assert "TEST CFP WOO" in response.content.decode()
-    assert "PLS SUBMIT HERE THX" in response.content.decode()
-    assert "titles are hard, y'know" in response.content.decode()
 
 
 @pytest.mark.django_db
@@ -207,113 +185,6 @@ def test_all_questions_in_list(orga_client, question, inactive_question, event):
     response = orga_client.get(event.cfp.urls.questions, follow=True)
     assert question.question in response.content.decode()
     assert inactive_question.question in response.content.decode()
-
-
-@pytest.mark.django_db
-def test_move_questions_in_list_down(orga_client, question, speaker_question, event):
-    with scope(event=event):
-        assert event.questions.count() == 2
-        question.position = 0
-        question.save()
-        speaker_question.position = 1
-        speaker_question.save()
-    orga_client.post(question.urls.down, follow=True)
-    with scope(event=event):
-        question.refresh_from_db()
-        speaker_question.refresh_from_db()
-        assert question.position == 1
-        assert speaker_question.position == 0
-
-
-@pytest.mark.django_db
-def test_move_questions_in_list_up(orga_client, question, speaker_question, event):
-    with scope(event=event):
-        assert event.questions.count() == 2
-        question.position = 1
-        question.save()
-        speaker_question.position = 0
-        speaker_question.save()
-    orga_client.post(question.urls.up, follow=True)
-    with scope(event=event):
-        question.refresh_from_db()
-        speaker_question.refresh_from_db()
-        assert question.position == 0
-        assert speaker_question.position == 1
-
-
-@pytest.mark.django_db
-def test_move_wrong_questions_in_list_down(
-    orga_client, question, speaker_question, event
-):
-    with scope(event=event):
-        assert event.questions.count() == 2
-        question.position = 0
-        question.save()
-        speaker_question.position = 1
-        speaker_question.save()
-    orga_client.post(
-        question.urls.down.replace(str(question.pk), str(question.pk + 100)),
-        follow=True,
-    )
-    with scope(event=event):
-        question.refresh_from_db()
-        speaker_question.refresh_from_db()
-        assert question.position == 0
-        assert speaker_question.position == 1
-
-
-@pytest.mark.django_db
-def test_move_questions_in_list_up_out_of_bounds(
-    orga_client, question, speaker_question, event
-):
-    with scope(event=event):
-        assert event.questions.count() == 2
-        question.position = 0
-        question.save()
-        speaker_question.position = 1
-        speaker_question.save()
-    orga_client.post(question.urls.up, follow=True)
-    with scope(event=event):
-        question.refresh_from_db()
-        speaker_question.refresh_from_db()
-        assert question.position == 0
-        assert speaker_question.position == 1
-
-
-@pytest.mark.django_db
-def test_move_questions_in_list_down_out_of_bounds(
-    orga_client, question, speaker_question, event
-):
-    with scope(event=event):
-        assert event.questions.count() == 2
-        question.position = 0
-        question.save()
-        speaker_question.position = 1
-        speaker_question.save()
-    orga_client.post(speaker_question.urls.down, follow=True)
-    with scope(event=event):
-        question.refresh_from_db()
-        speaker_question.refresh_from_db()
-        assert question.position == 0
-        assert speaker_question.position == 1
-
-
-@pytest.mark.django_db
-def test_move_questions_in_list_wront_user(
-    review_client, question, speaker_question, event
-):
-    with scope(event=event):
-        assert event.questions.count() == 2
-        question.position = 0
-        question.save()
-        speaker_question.position = 1
-        speaker_question.save()
-    review_client.post(question.urls.down, follow=True)
-    with scope(event=event):
-        question.refresh_from_db()
-        speaker_question.refresh_from_db()
-        assert question.position == 0
-        assert speaker_question.position == 1
 
 
 @pytest.mark.django_db
@@ -787,107 +658,6 @@ def test_cannot_delete_used_track(orga_client, track, event, submission):
     assert response.status_code == 200
     with scope(event=event):
         assert event.tracks.count() == 1
-
-
-@pytest.mark.django_db
-def test_move_tracks_in_list_down(orga_client, track, other_track, event):
-    with scope(event=event):
-        assert event.tracks.count() == 2
-        track.position = 0
-        track.save()
-        other_track.position = 1
-        other_track.save()
-    orga_client.post(track.urls.down, follow=True)
-    with scope(event=event):
-        track.refresh_from_db()
-        other_track.refresh_from_db()
-        assert track.position == 1
-        assert other_track.position == 0
-
-
-@pytest.mark.django_db
-def test_move_tracks_in_list_up(orga_client, track, other_track, event):
-    with scope(event=event):
-        assert event.tracks.count() == 2
-        track.position = 1
-        track.save()
-        other_track.position = 0
-        other_track.save()
-    orga_client.post(track.urls.up, follow=True)
-    with scope(event=event):
-        track.refresh_from_db()
-        other_track.refresh_from_db()
-        assert track.position == 0
-        assert other_track.position == 1
-
-
-@pytest.mark.django_db
-def test_move_tracks_in_list_up_out_of_bounds(orga_client, track, other_track, event):
-    with scope(event=event):
-        assert event.tracks.count() == 2
-        track.position = 0
-        track.save()
-        other_track.position = 1
-        other_track.save()
-    orga_client.post(track.urls.up, follow=True)
-    with scope(event=event):
-        track.refresh_from_db()
-        other_track.refresh_from_db()
-        assert track.position == 0
-        assert other_track.position == 1
-
-
-@pytest.mark.django_db
-def test_move_tracks_in_list_down_out_of_bounds(orga_client, track, other_track, event):
-    with scope(event=event):
-        assert event.tracks.count() == 2
-        track.position = 0
-        track.save()
-        other_track.position = 1
-        other_track.save()
-    orga_client.post(other_track.urls.down, follow=True)
-    with scope(event=event):
-        track.refresh_from_db()
-        other_track.refresh_from_db()
-        assert track.position == 0
-        assert other_track.position == 1
-
-
-@pytest.mark.django_db
-def test_move_tracks_in_list_without_track(orga_client, track, other_track, event):
-    with scope(event=event):
-        assert event.tracks.count() == 2
-        track.position = 0
-        track.save()
-        other_track.position = 1
-        other_track.save()
-    orga_client.post(
-        other_track.urls.down.replace(str(other_track.pk), str(other_track.pk + 100)),
-        follow=True,
-    )
-    with scope(event=event):
-        track.refresh_from_db()
-        other_track.refresh_from_db()
-        assert track.position == 0
-        assert other_track.position == 1
-
-
-@pytest.mark.django_db
-def test_reviewer_cannot_move_tracks_in_list_down(
-    review_client, track, other_track, event
-):
-    with scope(event=event):
-        assert event.tracks.count() == 2
-        track.position = 0
-        track.save()
-        other_track.position = 1
-        other_track.save()
-    review_client.post(track.urls.down, follow=True)
-    with scope(event=event):
-        track.refresh_from_db()
-        other_track.refresh_from_db()
-        assert track.position == 0
-        assert other_track.position == 1
 
 
 @pytest.mark.django_db

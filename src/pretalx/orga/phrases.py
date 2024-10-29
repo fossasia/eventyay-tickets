@@ -4,16 +4,6 @@ from pretalx.common.text.phrases import Phrases
 
 
 class OrgaPhrases(Phrases, app="orga"):
-    example_review = [
-        _("I think this session is well-suited to this conference, because ..."),
-        _("I think this session might fit the conference better, if ..."),
-        _("I think this session sounds like a perfect fit for Day 2, since ..."),
-        _("I think this session might be improved by adding ..."),
-        _("I have heard a similar session by this speaker, and I think ..."),
-        _("In my opinion, this session will appeal to ..."),
-        _("While I think the session is a great fit, it might be improved by ..."),
-    ]
-
     event_date_start_invalid = _("The event end cannot be before the start.")
 
     event_header_pattern_label = _("Frontpage header pattern")

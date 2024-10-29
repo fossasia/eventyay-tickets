@@ -1,17 +1,21 @@
 from django import forms
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from django_scopes.forms import SafeModelMultipleChoiceField
-from i18nfield.forms import I18nFormMixin, I18nModelForm
+from i18nfield.forms import I18nModelForm
 
 from pretalx.common.forms.mixins import I18nHelpText
+from pretalx.common.forms.renderers import InlineFormRenderer
+from pretalx.common.forms.widgets import EnhancedSelectMultiple
 from pretalx.common.text.phrases import phrases
 from pretalx.orga.forms.export import ExportForm
-from pretalx.schedule.models import Room, Schedule, TalkSlot
+from pretalx.schedule.models import Schedule, TalkSlot
+from pretalx.schedule.utils import guess_schedule_version
 from pretalx.submission.models.submission import Submission, SubmissionStates
 
 
 class ScheduleReleaseForm(I18nHelpText, I18nModelForm):
+    default_renderer = InlineFormRenderer
+
     notify_speakers = forms.BooleanField(
         label=_("Notify speakers of changes"), required=False, initial=True
     )
@@ -29,6 +33,8 @@ class ScheduleReleaseForm(I18nHelpText, I18nModelForm):
             self.fields["comment"].initial = phrases.schedule.first_schedule
         else:
             self.fields["comment"].initial = _("We released a new schedule version!")
+        if not self.fields["version"].initial:
+            self.fields["version"].initial = guess_schedule_version(self.event)
 
     def clean_version(self):
         version = self.cleaned_data.get("version")
@@ -52,8 +58,13 @@ class ScheduleExportForm(ExportForm):
     target = forms.MultipleChoiceField(
         required=True,
         label=_("Target group"),
-        choices=[("all", phrases.base.all_choices)] + SubmissionStates.valid_choices,
-        widget=forms.CheckboxSelectMultiple,
+        choices=[("all", phrases.base.all_choices)]
+        + [
+            (state, name)
+            for (state, name) in SubmissionStates.valid_choices
+            if state != SubmissionStates.DRAFT
+        ],
+        widget=EnhancedSelectMultiple(color_field=SubmissionStates.get_color),
     )
 
     class Meta:
@@ -205,38 +216,3 @@ class ScheduleExportForm(ExportForm):
 
     def _get_resources_value(self, obj):
         return [resource.url for resource in obj.active_resources if resource.url]
-
-
-class ScheduleRoomForm(I18nFormMixin, forms.Form):
-    room = SafeModelMultipleChoiceField(
-        label=_("Rooms"),
-        required=False,
-        queryset=Room.objects.none(),
-        widget=forms.SelectMultiple(
-            attrs={"class": "select2", "data-placeholder": _("Rooms")}
-        ),
-    )
-
-    def __init__(self, *args, event=None, **kwargs):
-        self.event = event
-        super().__init__(*args, **kwargs)
-        self.fields["room"].queryset = self.event.rooms.all()
-
-
-class ScheduleVersionForm(forms.Form):
-    version = forms.ChoiceField(
-        label=phrases.schedule.version,
-        required=False,
-        choices=[],
-        widget=forms.SelectMultiple(
-            attrs={"class": "select2", "data-placeholder": phrases.schedule.version}
-        ),
-    )
-
-    def __init__(self, *args, event=None, **kwargs):
-        self.event = event
-        super().__init__(*args, **kwargs)
-        self.fields["version"].choices = [
-            (schedule.version, schedule.version)
-            for schedule in self.event.schedules.filter(version__isnull=False)
-        ]

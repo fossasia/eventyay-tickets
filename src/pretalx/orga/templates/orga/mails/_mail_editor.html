@@ -1,6 +1,5 @@
 {% extends "orga/mails/base.html" %}
 
-{% load bootstrap4 %}
 {% load i18n %}
 {% load static %}
 
@@ -22,24 +21,24 @@
             </h3>
         </div>
         <div id="placeholder-neighbour">
-            {% bootstrap_form_errors form %}
+            {% include "common/forms/errors.html" %}
             <fieldset>
                 <legend>{% translate "Recipients" %}</legend>
                 {% block recipient_form %}{% endblock recipient_form %}
-                <details class="card card-default">
+                <details class="card">
                     <summary class="card-header">{% translate "Advanced settings" %}</summary>
                     <div class="card-body">
                         {% block advanced_recipient_form %}
-                            {% bootstrap_field form.reply_to layout="event" %}
-                            {% bootstrap_field form.bcc layout="event" %}
+                            {{ form.reply_to.as_field_group }}
+                            {{ form.bcc.as_field_group }}
                         {% endblock advanced_recipient_form %}
                     </div>
                 </details>
             </fieldset>
             <fieldset>
                 <legend>{% translate "Content" %}</legend>
-                {% bootstrap_field form.subject layout="event" %}
-                {% bootstrap_field form.text layout="event" %}
+                {{ form.subject.as_field_group }}
+                {{ form.text.as_field_group }}
             </fieldset>
         </div>
 
@@ -97,7 +96,7 @@
         {% block skip_queue %}
             {% if form.skip_queue and request.method == "POST" %}
                 <hr />
-                {% bootstrap_field form.skip_queue layout="event" %}
+                {{ form.skip_queue.as_field_group }}
             {% endif %}
         {% endblock skip_queue %}
 

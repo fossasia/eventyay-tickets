@@ -1,44 +1,29 @@
 {% extends "cfp/event/submission_base.html" %}
 
-{% load bootstrap4 %}
-{% load compress %}
 {% load i18n %}
 {% load orga_edit_link %}
-{% load rich_text %}
-{% load rules %}
-{% load static %}
+
+{% block orga_edit_link %}
+    {% orga_edit_link request.event.cfp.urls.text "information" %}
+{% endblock orga_edit_link %}
 
 {% block inner %}
-    <div class="d-flex">
-        <h2>{{ title }}</h2>
-        {% has_perm "orga.edit_cfp" request.user request.event as can_edit_cfp %}
-        {% if can_edit_cfp %}{% orga_edit_link request.event.cfp.urls.text "information" %}{% endif %}
-    </div>
-    <p>{{ text|rich_text }}</p>
-    {% if form.avatar or form.get_gravatar %}
 
-        {% include "common/avatar.html" with user=user form=form %}
-
-    {% endif %}
-    {% if form.avatar_source %}{% bootstrap_field form.avatar_source layout='event' %}{% endif %}
-    {% if form.avatar_license %}{% bootstrap_field form.avatar_license layout='event' %}{% endif %}
-
-    {% bootstrap_field form.name layout="event" %}
+    {{ form.name.as_field_group }}
     {% if form.biography %}
-        {% bootstrap_field form.biography layout="event" %}
+        {{ form.biography.as_field_group }}
     {% endif %}
-    {% if form.availabilities %}
-        {% compress js %}
-            <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-            <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
-        {% endcompress %}
 
+    {% if form.avatar or form.get_gravatar %}
+        {% include "common/avatar.html" with user=user form=form %}
+    {% endif %}
+    {% if form.avatar_source %}{{ form.avatar_source.as_field_group }}{% endif %}
+    {% if form.avatar_license %}{{ form.avatar_license.as_field_group }}{% endif %}
+
+    {% if form.availabilities %}
         {% include "common/availabilities.html" %}
 
-        {% bootstrap_field form.availabilities layout="event" %}
+        {{ form.availabilities.as_field_group }}
     {% endif %}
 
-    {% compress js %}
-        <script defer src="{% static "cfp/js/profile.js" %}"></script>
-    {% endcompress %}
 {% endblock inner %}

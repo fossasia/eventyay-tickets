@@ -88,6 +88,10 @@ class GeneralView(TemplateView):
         result = super().get_context_data(**kwargs)
         _now = now().date()
         qs = Event.objects.order_by("-date_to")
+        if self.request.uses_custom_domain:
+            qs = qs.filter(custom_domain=f"https://{self.request.host}")
+        else:
+            qs = qs.filter(custom_domain__isnull=True)
         result["current_events"] = self.filter_events(
             qs.filter(date_from__lte=_now, date_to__gte=_now)
         )

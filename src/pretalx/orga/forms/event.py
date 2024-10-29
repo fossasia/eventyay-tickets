@@ -8,18 +8,24 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db.models import F, Q
-from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.fields import I18nFormField, I18nTextarea
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 
-from pretalx.common.forms.fields import ImageField
+from pretalx.common.forms.fields import ColorField, ImageField
 from pretalx.common.forms.mixins import (
     HierarkeyMixin,
     I18nHelpText,
     JsonSubfieldMixin,
     ReadOnlyFlag,
+)
+from pretalx.common.forms.widgets import (
+    EnhancedSelect,
+    EnhancedSelectMultiple,
+    HtmlDateInput,
+    HtmlDateTimeInput,
+    TextInputWithAddon,
 )
 from pretalx.common.text.css import validate_css
 from pretalx.common.text.phrases import phrases
@@ -28,7 +34,7 @@ from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
 from pretalx.schedule.models import Availability, TalkSlot
 from pretalx.submission.models import ReviewPhase, ReviewScore, ReviewScoreCategory
 
-ENCRYPTED_PASSWORD_PLACEHOLDER = "*******"
+ENCRYPTED_PASSWORD_PLACEHOLDER = "*" * 24
 
 SCHEDULE_DISPLAY_CHOICES = (
     ("grid", _("Grid")),
@@ -60,7 +66,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
     content_locales = forms.MultipleChoiceField(
         label=_("Content languages"),
         choices=[],
-        widget=forms.SelectMultiple(attrs={"class": "select2"}),
+        widget=EnhancedSelectMultiple,
         help_text=_("Users will be able to submit proposals in these languages."),
     )
     custom_css_text = forms.CharField(
@@ -161,7 +167,6 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         ).format(site_url=site_url)
         self.initial["locales"] = self.instance.locale_array.split(",")
         self.initial["content_locales"] = self.instance.content_locale_array.split(",")
-        year = str(now().year)
         self.fields["show_featured"].help_text = (
             str(self.fields["show_featured"].help_text)
             + " "
@@ -169,18 +174,13 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
                 href=f'href="{self.instance.urls.featured}"'
             )
         )
-        self.fields["name"].widget.attrs["placeholder"] = (
-            _("The name of your conference, e.g. My Conference") + " " + year
-        )
+        if self.instance.custom_domain:
+            self.fields["slug"].widget.addon_before = f"{self.instance.custom_domain}/"
         if not self.is_administrator:
             self.fields["slug"].disabled = True
             self.fields["slug"].help_text = _(
                 "Please contact your administrator if you need to change the short name of your event."
             )
-        self.fields["primary_color"].widget.attrs["placeholder"] = _(
-            "A color hex value, e.g. #ab01de"
-        )
-        self.fields["primary_color"].widget.attrs["class"] = "colorpickerfield"
         self.fields["date_to"].help_text = _(
             "Any sessions you have scheduled already will be moved if you change the event dates. You will have to release a new schedule version to notify all speakers."
         )
@@ -263,6 +263,9 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
             self.change_timezone()
         result = super().save(*args, **kwargs)
         css_text = self.cleaned_data["custom_css_text"]
+        for image_field in ("logo", "header_image"):
+            if image_field in self.changed_data:
+                self.instance.process_image(image_field)
         if css_text:
             self.instance.custom_css.save(
                 self.instance.slug + ".css", ContentFile(css_text)
@@ -354,14 +357,14 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         field_classes = {
             "logo": ImageField,
             "header_image": ImageField,
+            "primary_color": ColorField,
         }
         widgets = {
-            "date_from": forms.DateInput(attrs={"class": "datepickerfield"}),
-            "date_to": forms.DateInput(
-                attrs={"class": "datepickerfield", "data-date-after": "#id_date_from"}
-            ),
-            "locale": forms.Select(attrs={"class": "select2"}),
-            "timezone": forms.Select(attrs={"class": "select2"}),
+            "date_from": HtmlDateInput(attrs={"data-date-before": "#id_date_to"}),
+            "date_to": HtmlDateInput(attrs={"data-date-after": "#id_date_from"}),
+            "locale": EnhancedSelect,
+            "timezone": EnhancedSelect,
+            "slug": TextInputWithAddon(addon_before=settings.SITE_URL + "/"),
         }
         json_fields = {
             "imprint_url": "display_settings",
@@ -424,9 +427,8 @@ class MailSettingsForm(
         label=_("Password"),
         required=False,
         widget=forms.PasswordInput(
-            attrs={
-                "autocomplete": "new-password"  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
-            }
+            attrs={"autocomplete": "new-password"},
+            render_value=True,
         ),
     )
     smtp_use_tls = forms.BooleanField(
@@ -440,13 +442,8 @@ class MailSettingsForm(
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.set_encrypted_password_placeholder()
-
-    def set_encrypted_password_placeholder(self):
-        if self.initial.get("smtp_password"):
-            self.fields["smtp_password"].widget.attrs[
-                "placeholder"
-            ] = ENCRYPTED_PASSWORD_PLACEHOLDER
+        if self.fields["smtp_password"].initial:
+            self.fields["smtp_password"].initial = ENCRYPTED_PASSWORD_PLACEHOLDER
 
     def clean(self):
         data = self.cleaned_data
@@ -454,11 +451,14 @@ class MailSettingsForm(
             # We don't need to validate all the rest when we don't use a custom email server
             return data
 
-        if not data.get("smtp_password") and data.get("smtp_username"):
-            # Leave password unchanged if the username is set and the password field is empty.
+        if data.get("smtp_username"):
+            # Leave password unchanged if the username is set and the password field is empty
+            # or contains the encrypted password placeholder.
             # This makes it impossible to set an empty password as long as a username is set, but
             # Python's smtplib does not support password-less schemes anyway.
-            data["smtp_password"] = self.initial.get("smtp_password")
+            password = data.get("smtp_password")
+            if not password or password == ENCRYPTED_PASSWORD_PLACEHOLDER:
+                data["smtp_password"] = self.initial.get("smtp_password")
 
         if not data.get("mail_from"):
             self.add_error(
@@ -596,7 +596,7 @@ class WidgetGenerationForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ["locale"]
-        widgets = {"locale": forms.Select(attrs={"class": "select2"})}
+        widgets = {"locale": EnhancedSelect}
 
 
 class ReviewPhaseForm(I18nHelpText, I18nModelForm):
@@ -630,8 +630,8 @@ class ReviewPhaseForm(I18nHelpText, I18nModelForm):
             "speakers_can_change_submissions",
         ]
         widgets = {
-            "start": forms.DateInput(attrs={"class": "datetimepickerfield"}),
-            "end": forms.DateInput(attrs={"class": "datetimepickerfield"}),
+            "start": HtmlDateTimeInput,
+            "end": HtmlDateTimeInput,
         }
 
 
@@ -648,7 +648,7 @@ class ReviewScoreCategoryForm(I18nHelpText, I18nModelForm):
     def __init__(self, *args, event=None, **kwargs):
         self.event = event
         super().__init__(*args, **kwargs)
-        if not event or not event.feature_flags["use_tracks"]:
+        if not event or not event.get_feature_flag("use_tracks"):
             self.fields.pop("limit_tracks")
         else:
             self.fields["limit_tracks"].queryset = event.tracks.all()
@@ -725,4 +725,4 @@ class ReviewScoreCategoryForm(I18nHelpText, I18nModelForm):
         field_classes = {
             "limit_tracks": SafeModelMultipleChoiceField,
         }
-        widgets = {"limit_tracks": forms.SelectMultiple(attrs={"class": "select2"})}
+        widgets = {"limit_tracks": EnhancedSelectMultiple(color_field="color")}

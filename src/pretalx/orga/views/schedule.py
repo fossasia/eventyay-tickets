@@ -11,7 +11,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.db.models.deletion import ProtectedError
 from django.http import FileResponse, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.timezone import now
@@ -28,21 +28,15 @@ from pretalx.agenda.views.utils import get_schedule_exporters
 from pretalx.common.language import get_current_language_information
 from pretalx.common.text.path import safe_filename
 from pretalx.common.text.phrases import phrases
-from pretalx.common.views import CreateOrUpdateView, OrderModelView
+from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
     ActionFromUrl,
     EventPermissionRequired,
     PermissionRequired,
 )
-from pretalx.orga.forms.schedule import (
-    ScheduleExportForm,
-    ScheduleReleaseForm,
-    ScheduleRoomForm,
-    ScheduleVersionForm,
-)
+from pretalx.orga.forms.schedule import ScheduleExportForm, ScheduleReleaseForm
 from pretalx.schedule.forms import QuickScheduleForm, RoomForm
 from pretalx.schedule.models import Availability, Room, TalkSlot
-from pretalx.schedule.utils import guess_schedule_version
 
 SCRIPT_SRC = "'self' 'unsafe-eval'"
 DEFAULT_SRC = "'self'"
@@ -75,18 +69,6 @@ class ScheduleView(EventPermissionRequired, TemplateView):
         result["gettext_language"] = path.replace("-", "_")
 
         result["schedule_version"] = version
-        result["schedule_version_form"] = ScheduleVersionForm(
-            {"version": version} if version else None,
-            event=self.request.event,
-        )
-        result["schedule_room_form"] = ScheduleRoomForm(
-            (
-                {"room": self.request.GET.getlist("room")}
-                if "room" in self.request.GET
-                else None
-            ),
-            event=self.request.event,
-        )
         result["active_schedule"] = (
             self.request.event.schedules.filter(version=version).first()
             if version
@@ -112,6 +94,14 @@ class ScheduleExportView(EventPermissionRequired, FormView):
             for exporter in get_schedule_exporters(self.request)
             if exporter.group != "speaker"
         ]
+
+    @context
+    def tablist(self):
+        return {
+            "custom": _("CSV/JSON exports"),
+            "general": _("More exports"),
+            "api": _("API"),
+        }
 
     def form_valid(self, form):
         result = form.export_data()
@@ -189,15 +179,11 @@ class ScheduleReleaseView(EventPermissionRequired, FormView):
     def notifications(self):
         return len(self.request.event.wip_schedule.generate_notifications(save=False))
 
-    @context
-    def suggested_version(self):
-        return guess_schedule_version(self.request.event)
-
     def form_invalid(self, form):
         messages.error(
             self.request, _("You have to provide a new, unique schedule version!")
         )
-        return redirect(self.request.event.orga_urls.release_schedule)
+        return super().form_invalid(form)
 
     def form_valid(self, form):
         self.request.event.release_schedule(
@@ -238,7 +224,7 @@ class ScheduleToggleView(EventPermissionRequired, View):
     def dispatch(self, request, event):
         super().dispatch(request, event)
         self.request.event.feature_flags["show_schedule"] = (
-            not self.request.event.feature_flags["show_schedule"]
+            not self.request.event.get_feature_flag("show_schedule")
         )
         self.request.event.save()
         # Trigger tickets to hidden/unhidden schedule menu
@@ -257,8 +243,11 @@ class ScheduleToggleView(EventPermissionRequired, View):
                 ignore_result=True,
             )
         except (TaskError, ConnectionError) as e:
-            logger.warning("Unexpected error when trying to trigger "
-                           "schedule's state to external system: %s", e)
+            logger.warning(
+                "Unexpected error when trying to trigger "
+                "schedule's state to external system: %s",
+                e,
+            )
         except Exception as e:
             logger.error("Unexpected error in task: %s", e)
         return redirect(self.request.event.orga_urls.schedule)
@@ -571,6 +560,16 @@ class RoomList(EventPermissionRequired, TemplateView):
     template_name = "orga/schedule/room_list.html"
     permission_required = "orga.change_settings"
 
+    def post(self, request, *args, **kwargs):
+        order = request.POST.get("order")
+        if order:
+            order = order.split(",")
+        for index, pk in enumerate(order):
+            room = get_object_or_404(Room.objects, event=request.event, pk=pk)
+            room.position = index
+            room.save(update_fields=["position"])
+        return self.get(request, *args, **kwargs)
+
 
 class RoomDelete(EventPermissionRequired, View):
     permission_required = "orga.change_settings"
@@ -639,11 +638,3 @@ class RoomDetail(EventPermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 "pretalx.event.update", person=self.request.user, orga=True
             )
         return result
-
-
-class RoomOrderView(OrderModelView):
-    model = Room
-    permission_required = "orga.edit_room"
-
-    def get_success_url(self):
-        return self.request.event.orga_urls.room_settings

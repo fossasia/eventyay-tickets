@@ -11,8 +11,8 @@ from i18nfield.forms import I18nModelForm
 from pretalx.cfp.forms.cfp import CfPFormMixin
 from pretalx.common.forms.fields import (
     ImageField,
-    PasswordConfirmationField,
-    PasswordField,
+    NewPasswordConfirmationField,
+    NewPasswordField,
     SizeFileField,
 )
 from pretalx.common.forms.mixins import (
@@ -21,7 +21,12 @@ from pretalx.common.forms.mixins import (
     ReadOnlyFlag,
     RequestRequire,
 )
-from pretalx.common.forms.widgets import MarkdownWidget
+from pretalx.common.forms.renderers import InlineFormLabelRenderer, InlineFormRenderer
+from pretalx.common.forms.widgets import (
+    EnhancedSelect,
+    EnhancedSelectMultiple,
+    MarkdownWidget,
+)
 from pretalx.common.text.phrases import phrases
 from pretalx.event.models import Event
 from pretalx.person.models import SpeakerInformation, SpeakerProfile, User
@@ -32,6 +37,8 @@ EMAIL_ADDRESS_ERROR = _("Please choose a different email address.")
 
 
 class UserForm(CfPFormMixin, forms.Form):
+    default_renderer = InlineFormLabelRenderer
+
     login_email = forms.EmailField(
         max_length=60,
         label=phrases.base.enter_email,
@@ -53,12 +60,11 @@ class UserForm(CfPFormMixin, forms.Form):
         required=False,
         widget=forms.EmailInput(attrs={"autocomplete": "email"}),
     )
-    register_password = PasswordField(
+    register_password = NewPasswordField(
         label=_("Password"),
         required=False,
-        widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
     )
-    register_password_repeat = PasswordConfirmationField(
+    register_password_repeat = NewPasswordConfirmationField(
         label=_("Password (again)"),
         required=False,
         confirm_with="register_password",
@@ -273,7 +279,11 @@ class SpeakerProfileForm(
 
         self.instance.event = self.event
         self.instance.user = self.user
-        super().save(**kwargs)
+        result = super().save(**kwargs)
+
+        if self.user.avatar and "avatar" in self.changed_data:
+            self.user.process_image("avatar", generate_thumbnail=True)
+        return result
 
     class Meta:
         model = SpeakerProfile
@@ -310,8 +320,8 @@ class LoginInfoForm(forms.ModelForm):
     old_password = forms.CharField(
         widget=forms.PasswordInput, label=_("Password (current)"), required=True
     )
-    password = PasswordField(label=phrases.base.new_password, required=False)
-    password_repeat = PasswordConfirmationField(
+    password = NewPasswordField(label=phrases.base.new_password, required=False)
+    password_repeat = NewPasswordConfirmationField(
         label=phrases.base.password_repeat, required=False, confirm_with="password"
     )
 
@@ -360,7 +370,7 @@ class SpeakerInformationForm(I18nHelpText, I18nModelForm):
         self.event = event
         super().__init__(*args, **kwargs)
         self.fields["limit_types"].queryset = event.submission_types.all()
-        if not event.feature_flags["use_tracks"]:
+        if not event.get_feature_flag("use_tracks"):
             self.fields.pop("limit_tracks")
         else:
             self.fields["limit_tracks"].queryset = event.tracks.all()
@@ -385,12 +395,14 @@ class SpeakerInformationForm(I18nHelpText, I18nModelForm):
             "resource": SizeFileField,
         }
         widgets = {
-            "limit_tracks": forms.SelectMultiple(attrs={"class": "select2"}),
-            "limit_types": forms.SelectMultiple(attrs={"class": "select2"}),
+            "limit_tracks": EnhancedSelectMultiple(color_field="color"),
+            "limit_types": EnhancedSelectMultiple,
         }
 
 
 class SpeakerFilterForm(forms.Form):
+    default_renderer = InlineFormRenderer
+
     role = forms.ChoiceField(
         choices=(
             ("", phrases.base.all_choices),
@@ -409,6 +421,8 @@ class SpeakerFilterForm(forms.Form):
 
 
 class UserSpeakerFilterForm(forms.Form):
+    default_renderer = InlineFormRenderer
+
     role = forms.ChoiceField(
         choices=(
             ("speaker", phrases.schedule.speakers),
@@ -416,11 +430,12 @@ class UserSpeakerFilterForm(forms.Form):
             ("all", phrases.base.all_choices),
         ),
         required=False,
+        widget=EnhancedSelect,
     )
     events = SafeModelMultipleChoiceField(
         queryset=Event.objects.none(),
         required=False,
-        widget=forms.SelectMultiple(attrs={"class": "select2"}),
+        widget=EnhancedSelectMultiple,
     )
 
     def __init__(self, *args, events=None, **kwargs):

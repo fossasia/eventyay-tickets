@@ -9,7 +9,16 @@ from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceFie
 from i18nfield.forms import I18nFormMixin, I18nModelForm
 from i18nfield.strings import LazyI18nString
 
+from pretalx.common.forms.fields import ColorField
 from pretalx.common.forms.mixins import I18nHelpText, JsonSubfieldMixin, ReadOnlyFlag
+from pretalx.common.forms.renderers import InlineFormRenderer
+from pretalx.common.forms.widgets import (
+    EnhancedSelect,
+    EnhancedSelectMultiple,
+    HtmlDateInput,
+    HtmlDateTimeInput,
+    TextInputWithAddon,
+)
 from pretalx.common.text.phrases import phrases
 from pretalx.submission.models import (
     AnswerOption,
@@ -40,6 +49,13 @@ class CfPSettingsForm(
         label=_("Send mail on new proposal"),
         help_text=_(
             "If this setting is checked, you will receive an email to the organiser address for every received proposal."
+        ),
+        required=False,
+    )
+    submission_public_review = forms.BooleanField(
+        label=_("Allow submitters to share their proposal publicly"),
+        help_text=_(
+            "Allow submitters to share a secret link to their proposal with others."
         ),
         required=False,
     )
@@ -134,6 +150,7 @@ class CfPSettingsForm(
         # These are JSON fields on event.settings
         json_fields = {
             "use_tracks": "feature_flags",
+            "submission_public_review": "feature_flags",
             "present_multiple_times": "feature_flags",
             "mail_on_new_submission": "mail_settings",
         }
@@ -154,9 +171,7 @@ class CfPForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
     class Meta:
         model = CfP
         fields = ["headline", "text", "deadline"]
-        widgets = {
-            "deadline": forms.DateTimeInput(attrs={"class": "datetimepickerfield"})
-        }
+        widgets = {"deadline": HtmlDateTimeInput}
         # These are JSON fields on cfp.settings
         json_fields = {
             "show_deadline": "settings",
@@ -190,7 +205,7 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         super().__init__(*args, **kwargs)
         instance = kwargs.get("instance")
         if not (
-            event.feature_flags["use_tracks"]
+            event.get_feature_flag("use_tracks")
             and event.tracks.all().count()
             and event.cfp.request_track
         ):
@@ -263,26 +278,37 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         if options_replace:
             instance.answers.all().delete()
             instance.options.all().delete()
-            for option in options:
-                instance.options.create(answer=option)
+            for index, option in enumerate(options):
+                instance.options.create(answer=option, position=index + 1)
             return instance
 
         # If we aren't replacing all existing options, we need to make sure
         # we don't add duplicates.
-        existing_options = list(instance.options.all().values_list("answer", flat=True))
+        existing_options = instance.options.all()
         use_i18n = (
             isinstance(options[0], LazyI18nString) and instance.event.is_multilingual
         )
         if not use_i18n:
             # Monolangual i18n strings with strings aren't equal, so we're normalising.
             with override(instance.event.locale):
-                existing_options = [str(opt) for opt in existing_options]
+                existing_options = {str(opt.answer): opt for opt in existing_options}
                 options = [str(opt) for opt in options]
+        else:
+            existing_options = {str(opt.answer): opt for opt in existing_options}
         new_options = []
-        for option in options:
+        changed_options = []
+        for index, option in enumerate(options):
             if option not in existing_options:
-                new_options.append(AnswerOption(question=instance, answer=option))
+                new_options.append(
+                    AnswerOption(question=instance, answer=option, position=index + 1)
+                )
+            else:
+                existing_option = existing_options[option]
+                if existing_option.position != index + 1:
+                    existing_option.position = index + 1
+                    changed_options.append(existing_option)
         AnswerOption.objects.bulk_create(new_options)
+        AnswerOption.objects.bulk_update(changed_options, ["position"])
 
     class Meta:
         model = Question
@@ -309,15 +335,15 @@ class QuestionForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             "max_datetime",
         ]
         widgets = {
-            "deadline": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
+            "deadline": HtmlDateTimeInput,
             "question_required": forms.RadioSelect(),
-            "freeze_after": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
-            "min_datetime": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
-            "max_datetime": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
-            "min_date": forms.DateInput(attrs={"class": "datepickerfield"}),
-            "max_date": forms.DateInput(attrs={"class": "datepickerfield"}),
-            "tracks": forms.SelectMultiple(attrs={"class": "select2"}),
-            "submission_types": forms.SelectMultiple(attrs={"class": "select2"}),
+            "freeze_after": HtmlDateTimeInput,
+            "min_datetime": HtmlDateTimeInput,
+            "max_datetime": HtmlDateTimeInput,
+            "min_date": HtmlDateInput,
+            "max_date": HtmlDateInput,
+            "tracks": EnhancedSelectMultiple,
+            "submission_types": EnhancedSelectMultiple,
         }
         field_classes = {
             "variant": SafeModelChoiceField,
@@ -357,7 +383,8 @@ class SubmissionTypeForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         model = SubmissionType
         fields = ("name", "default_duration", "deadline", "requires_access_code")
         widgets = {
-            "deadline": forms.DateTimeInput(attrs={"class": "datetimepickerfield"})
+            "deadline": HtmlDateTimeInput,
+            "default_duration": TextInputWithAddon(addon_after=_("minutes")),
         }
 
 
@@ -365,7 +392,6 @@ class TrackForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def __init__(self, *args, event=None, **kwargs):
         self.event = event
         super().__init__(*args, **kwargs)
-        self.fields["color"].widget.attrs["class"] = "colorpickerfield"
         if self.instance.pk:
             url = f"{event.cfp.urls.new_access_code}?track={self.instance.pk}"
             self.fields["requires_access_code"].help_text += " " + _(
@@ -384,6 +410,9 @@ class TrackForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     class Meta:
         model = Track
         fields = ("name", "description", "color", "requires_access_code")
+        field_classes = {
+            "color": ColorField,
+        }
 
 
 class SubmitterAccessCodeForm(forms.ModelForm):
@@ -397,7 +426,7 @@ class SubmitterAccessCodeForm(forms.ModelForm):
         self.fields["submission_type"].queryset = SubmissionType.objects.filter(
             event=self.event
         )
-        if event.feature_flags["use_tracks"]:
+        if event.get_feature_flag("use_tracks"):
             self.fields["track"].queryset = Track.objects.filter(event=self.event)
         else:
             self.fields.pop("track")
@@ -416,9 +445,9 @@ class SubmitterAccessCodeForm(forms.ModelForm):
             "submission_type": SafeModelChoiceField,
         }
         widgets = {
-            "valid_until": forms.DateTimeInput(attrs={"class": "datetimepickerfield"}),
-            "track": forms.Select(attrs={"class": "select2"}),
-            "submission_type": forms.Select(attrs={"class": "select2"}),
+            "valid_until": HtmlDateTimeInput,
+            "track": EnhancedSelect,
+            "submission_type": EnhancedSelect,
         }
 
 
@@ -497,6 +526,8 @@ I’m looking forward to your proposal!
 
 
 class QuestionFilterForm(forms.Form):
+    default_renderer = InlineFormRenderer
+
     role = forms.ChoiceField(
         choices=(
             ("", phrases.base.all_choices),
@@ -505,10 +536,13 @@ class QuestionFilterForm(forms.Form):
         ),
         required=False,
         label=_("Recipients"),
+        widget=EnhancedSelect,
     )
-    track = SafeModelChoiceField(Track.objects.none(), required=False)
+    track = SafeModelChoiceField(
+        Track.objects.none(), required=False, widget=EnhancedSelect
+    )
     submission_type = SafeModelChoiceField(
-        SubmissionType.objects.none(), required=False
+        SubmissionType.objects.none(), required=False, widget=EnhancedSelect
     )
 
     def __init__(self, *args, event, **kwargs):
@@ -517,7 +551,7 @@ class QuestionFilterForm(forms.Form):
         self.fields["submission_type"].queryset = SubmissionType.objects.filter(
             event=event
         )
-        if not event.feature_flags["use_tracks"]:
+        if not event.get_feature_flag("use_tracks"):
             self.fields.pop("track", None)
         elif "track" in self.fields:
             self.fields["track"].queryset = event.tracks.all()
@@ -574,6 +608,7 @@ class ReminderFilterForm(QuestionFilterForm):
         required=False,
         help_text=_("If you select no question, all questions will be used."),
         label=phrases.cfp.questions,
+        widget=EnhancedSelectMultiple,
     )
 
     def get_question_queryset(self):

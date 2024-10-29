@@ -25,7 +25,13 @@ def get_etag(response):
 
 
 def conditional_cache_page(
-    timeout, *, cache=None, key_prefix=None, condition=None, server_timeout=None
+    timeout,
+    *,
+    cache=None,
+    key_prefix=None,
+    condition=None,
+    server_timeout=None,
+    headers=None,
 ):
     """This decorator wraps Django's cache_page decorator, and adds some features:
 
@@ -54,6 +60,7 @@ def conditional_cache_page(
                 request_args=args,
                 request_kwargs=kwargs,
                 handler=func,
+                headers=headers,
             )
 
         return wrapper
@@ -72,8 +79,11 @@ def should_cache(request, response):
     return True
 
 
-def patched_response(response, timeout):
+def patched_response(response, timeout, headers=None):
     patch_response_headers(response, timeout)
+    if headers:
+        for key, value in headers.items():
+            response[key] = value
     return response
 
 
@@ -87,6 +97,7 @@ def etag_cache_page(
     request_args=None,
     request_kwargs=None,
     handler=None,
+    headers=None,
 ):
     server_timeout = server_timeout or timeout
     requested_etag = get_requested_etag(request)
@@ -101,16 +112,16 @@ def etag_cache_page(
     if current_etag and requested_etag and current_etag != requested_etag:
         current_etag = None
     elif requested_etag and current_etag == requested_etag:
-        return patched_response(HttpResponseNotModified(), timeout)
+        return patched_response(HttpResponseNotModified(), timeout, headers=headers)
 
     if cache_key and (cached_response := cache.get(cache_key)):
-        return patched_response(HttpResponse(cached_response), timeout)
+        return patched_response(HttpResponse(cached_response), timeout, headers=headers)
     else:
         response = cache_page(
             timeout=server_timeout, cache=cache_alias, key_prefix=key_prefix
         )(handler)(request, *request_args, **request_kwargs)
         if not should_cache(request, response):
-            return patched_response(response, timeout)
+            return patched_response(response, timeout, headers=headers)
 
     cache_key = cache_key or learn_cache_key(
         request, response, timeout, key_prefix, cache=cache_alias
@@ -123,7 +134,7 @@ def etag_cache_page(
     # If an ETag was requested and we forgot about it, but now our response matches the
     # requested ETag, return 304
     if requested_etag and current_etag == requested_etag:
-        return patched_response(HttpResponseNotModified(), timeout)
+        return patched_response(HttpResponseNotModified(), timeout, headers=headers)
 
     response["ETag"] = f'"{current_etag}"'
-    return patched_response(response, timeout)
+    return patched_response(response, timeout, headers=headers)

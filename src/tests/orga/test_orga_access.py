@@ -19,7 +19,6 @@ def test_user_can_access_url(orga_client, logged_in, url, template_patch):
     [
         ("event.dashboard", 200, 200),
         ("event.history", 200, 404),
-        ("event.user_list", 200, 200),
         ("cfp.questions.view", 200, 404),
         ("cfp.questions.create", 200, 404),
         ("cfp.questions.remind", 200, 404),
@@ -144,6 +143,6 @@ def test_can_access_event_with_custom_domain(orga_client, event):
     )  # First request creates child session
     assert response.status_code == 200
     response = orga_client.get(
-        event.orga_urls.base
+        event.orga_urls.base,
     )  # Second request does not re-create child session
     assert response.status_code == 200

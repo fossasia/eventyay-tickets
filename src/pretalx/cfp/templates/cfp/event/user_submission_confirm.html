@@ -1,11 +1,14 @@
 {% extends "cfp/event/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
 
 {% block title %}{{ submission.title }} :: {% endblock title %}
+
+{% block cfp_header %}
+    {% include "cfp/includes/forms_header.html" %}
+{% endblock cfp_header %}
 
 {% block content %}
     <div class="col-md-10 ml-auto mr-auto">
@@ -28,9 +31,9 @@
             {% if form.availabilities %}
 
                 {% include "common/availabilities.html" %}
+                {{ form.availabilities.as_field_group }}
 
-                {% bootstrap_field form.availabilities layout="inline" %}
-                <small class="form-text text-muted">{{ form.availabilities.help_text }}</small>
+                <div class="text-muted">{{ form.availabilities.help_text }}</div>
             {% endif %}
             <p></p>
             {% blocktranslate trimmed %}

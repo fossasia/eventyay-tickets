@@ -11,6 +11,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, TemplateView
 from django_context_decorator import context
 
+from pretalx.common.forms.renderers import InlineFormRenderer
+from pretalx.common.text.phrases import phrases
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
     ActionConfirmMixin,
@@ -250,7 +252,7 @@ class ReviewDashboard(EventPermissionRequired, BaseSubmissionList):
     @cached_property
     def show_tracks(self):
         return (
-            self.request.event.feature_flags["use_tracks"]
+            self.request.event.get_feature_flag("use_tracks")
             and self.request.event.tracks.all().count() > 1
         )
 
@@ -354,7 +356,7 @@ class BulkReview(EventPermissionRequired, TemplateView):
     @cached_property
     def show_tracks(self):
         return (
-            self.request.event.feature_flags["use_tracks"]
+            self.request.event.get_feature_flag("use_tracks")
             and self.request.event.tracks.all().count() > 1
         )
 
@@ -408,6 +410,7 @@ class BulkReview(EventPermissionRequired, TemplateView):
                 )
                 + categories[None],
                 data=(self.request.POST if self.request.method == "POST" else None),
+                default_renderer=InlineFormRenderer,
             )
             for submission in self.submissions
         }
@@ -430,12 +433,12 @@ class BulkReview(EventPermissionRequired, TemplateView):
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         if not all(form.is_valid() for form in self.forms.values()):
-            messages.error(request, _("There have been errors with your input."))
+            messages.error(self.request, phrases.base.error_saving_changes)
             return super().get(request, *args, **kwargs)
         for form in self.forms.values():
             if form.has_changed():
                 form.save()
-        messages.success(request, _("Your reviews have been saved."))
+        messages.success(self.request, phrases.base.saved)
         return super().get(request, *args, **kwargs)
 
 
@@ -606,10 +609,10 @@ class ReviewSubmission(ReviewViewMixin, PermissionRequired, CreateOrUpdateView):
 
     def form_valid(self, form):
         if not self.qform.is_valid():
-            messages.error(self.request, _("There have been errors with your input."))
+            messages.error(self.request, phrases.base.error_saving_changes)
             return super().form_invalid(form)
         if self.tags_form and not self.tags_form.is_valid():
-            messages.error(self.request, _("There have been errors with your input."))
+            messages.error(self.request, phrases.base.error_saving_changes)
             return super().form_invalid(form)
         form.save()
         self.qform.review = form.instance
@@ -753,6 +756,13 @@ class ReviewAssignment(EventPermissionRequired, FormView):
     def review_teams(self):
         return self.request.event.teams.filter(is_reviewer=True)
 
+    @context
+    def tablist(self):
+        return {
+            "group": _("Assign reviewer teams"),
+            "individual": _("Assign reviewers individually"),
+        }
+
     def get_form(self):
         if self.form_type == "submission":
             form_class = ReviewerForProposalForm
@@ -767,7 +777,7 @@ class ReviewAssignment(EventPermissionRequired, FormView):
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, _("Saved!"))
+        messages.success(self.request, phrases.base.saved)
         return redirect(self.request.event.orga_urls.review_assignments)
 
 
@@ -792,6 +802,13 @@ class ReviewExport(EventPermissionRequired, FormView):
     permission_required = "orga.change_settings"
     template_name = "orga/review/export.html"
     form_class = ReviewExportForm
+
+    @context
+    def tablist(self):
+        return {
+            "custom": _("CSV/JSON exports"),
+            "api": _("API"),
+        }
 
     def get_form_kwargs(self):
         result = super().get_form_kwargs()

@@ -1,18 +1,8 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
-
-{% block scripts %}
-    {% compress js %}
-        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-        <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
-        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
-    {% endcompress %}
-{% endblock scripts %}
 
 {% block extra_title %}{% if form.instance.pk %}{{ form.instance.code }}{% else %}{% translate "New access code" %}{% endif %} :: {% endblock extra_title %}
 
@@ -33,7 +23,8 @@
                 <ul>
                     {% for submission in form.instance.submissions.all %}
                         <li>
-                            <a href="{{ submission.orga_urls.base }}">{{ submission.title }} ({{ submission.display_speaker_names }})</a>
+                            <a href="{{ submission.orga_urls.base }}">{{ submission.title }} –
+                                {% include "orga/includes/submission_speaker_names.html" with submission=submission %}</a>
                         </li>
                     {% endfor %}
                 </ul>
@@ -42,8 +33,7 @@
     {% endif %}
     <form method="post">
         {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        {% bootstrap_form form layout="event" %}
+        {{ form }}
         <div class="submit-group panel">
             <span>
                 {% if form.instance.pk and not form.instance.submissions.exists %}

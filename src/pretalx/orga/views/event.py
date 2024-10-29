@@ -24,10 +24,8 @@ from rest_framework.authtoken.models import Token
 
 from pretalx.common.forms import I18nEventFormSet, I18nFormSet
 from pretalx.common.models import ActivityLog
-from pretalx.common.tasks import regenerate_css
-from pretalx.common.templatetags.rich_text import render_markdown
 from pretalx.common.text.phrases import phrases
-from pretalx.common.views import OrderModelView, is_form_bound
+from pretalx.common.views import is_form_bound
 from pretalx.common.views.mixins import (
     ActionConfirmMixin,
     ActionFromUrl,
@@ -87,8 +85,13 @@ class EventDetail(EventSettingsPermission, ActionFromUrl, UpdateView):
         return response
 
     @context
-    def url_placeholder(self):
-        return f"https://{self.request.host}/"
+    def tablist(self):
+        return {
+            "general": _("General information"),
+            "localisation": _("Localisation"),
+            "display": _("Display settings"),
+            "texts": _("Texts"),
+        }
 
     def get_success_url(self) -> str:
         return self.object.orga_urls.settings
@@ -100,8 +103,7 @@ class EventDetail(EventSettingsPermission, ActionFromUrl, UpdateView):
         form.instance.log_action(
             "pretalx.event.update", person=self.request.user, orga=True
         )
-        messages.success(self.request, _("The event settings have been saved."))
-        regenerate_css.apply_async(args=(form.instance.pk,), ignore_result=True)
+        messages.success(self.request, phrases.base.saved)
         return result
 
 
@@ -136,7 +138,7 @@ class EventLive(EventSettingsPermission, TemplateView):
             )
         # TODO: test that mails can be sent
         if (
-            self.request.event.feature_flags["use_tracks"]
+            self.request.event.get_feature_flag("use_tracks")
             and self.request.event.cfp.request_track
             and self.request.event.tracks.count() < 2
         ):
@@ -180,6 +182,8 @@ class EventLive(EventSettingsPermission, TemplateView):
                     if isinstance(response[1], Exception)
                 ]
                 if exceptions:
+                    from pretalx.common.templatetags.rich_text import render_markdown
+
                     messages.error(
                         request,
                         mark_safe("\n".join(render_markdown(e) for e in exceptions)),
@@ -230,6 +234,14 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
 
     def get_success_url(self) -> str:
         return self.request.event.orga_urls.review_settings
+
+    @context
+    def tablist(self):
+        return {
+            "general": _("General information"),
+            "scores": _("Review scoring"),
+            "phases": _("Review phases"),
+        }
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -374,14 +386,6 @@ class EventReviewSettings(EventSettingsPermission, ActionFromUrl, FormView):
         return True
 
 
-class ReviewPhaseOrderView(OrderModelView):
-    permission_required = "orga.change_settings"
-    model = ReviewPhase
-
-    def get_success_url(self):
-        return self.request.event.orga_urls.review_settings
-
-
 class PhaseActivate(PermissionRequired, View):
     permission_required = "orga.change_settings"
 
@@ -443,7 +447,7 @@ class EventMailSettings(EventSettingsPermission, ActionFromUrl, FormView):
                         ),
                     )
         else:
-            messages.success(self.request, _("Yay! We saved your changes."))
+            messages.success(self.request, phrases.base.saved)
 
         return super().form_valid(form)
 
@@ -537,10 +541,7 @@ class UserSettings(TemplateView):
             request.user.regenerate_token()
             messages.success(request, phrases.cfp.token_regenerated)
         else:
-            messages.error(
-                self.request,
-                _("Oh :( We had trouble saving your input. See below for details."),
-            )
+            messages.error(self.request, phrases.base.error_saving_changes)
             return self.get(request, *args, **kwargs)
         return redirect(self.get_success_url())
 
@@ -570,10 +571,6 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
             self.request.user.teams.filter(can_create_events=True).exists()
             or self.request.user.is_administrator
         )
-
-    @context
-    def url_placeholder(self):
-        return f"https://{self.request.host}/"
 
     @context
     def organiser(self):
@@ -654,6 +651,8 @@ class EventWizard(PermissionRequired, SensibleBackWizardMixin, SessionWizardView
                 value = steps["display"].get(setting)
                 if value:
                     event.settings.set(setting, value)
+            if event.logo:
+                event.process_image("logo")
 
         has_control_rights = self.request.user.teams.filter(
             organiser=event.organiser,
@@ -733,7 +732,7 @@ class WidgetSettings(EventPermissionRequired, FormView):
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, _("The widget settings have been saved."))
+        messages.success(self.request, phrases.base.saved)
         return super().form_valid(form)
 
     def get_form_kwargs(self):

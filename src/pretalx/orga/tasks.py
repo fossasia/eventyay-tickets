@@ -55,7 +55,9 @@ def trigger_public_schedule(
         logger.error(
             "Error occurred when triggering hide/unhide schedule for tickets component."
             "Event: %s, Organiser: %s. Error: %s",
-            event_slug, organiser_slug, e,
+            event_slug,
+            organiser_slug,
+            e,
         )
         # Retry the task if an exception occurs (with exponential backoff by default)
         try:

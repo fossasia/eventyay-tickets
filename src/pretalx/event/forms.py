@@ -7,8 +7,15 @@ from django_scopes import scopes_disabled
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.forms import I18nModelForm
 
-from pretalx.common.forms.fields import ImageField
+from pretalx.common.forms.fields import ColorField, ImageField
 from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
+from pretalx.common.forms.renderers import InlineFormRenderer
+from pretalx.common.forms.widgets import (
+    EnhancedSelect,
+    EnhancedSelectMultiple,
+    HtmlDateInput,
+    TextInputWithAddon,
+)
 from pretalx.common.text.phrases import phrases
 from pretalx.event.models import Event, Organiser, Team, TeamInvite
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
@@ -81,8 +88,8 @@ class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             "limit_tracks",
         ]
         widgets = {
-            "limit_events": forms.SelectMultiple(attrs={"class": "select2"}),
-            "limit_tracks": forms.SelectMultiple(attrs={"class": "select2"}),
+            "limit_events": EnhancedSelectMultiple,
+            "limit_tracks": EnhancedSelectMultiple(color_field="color"),
         }
         field_classes = {
             "limit_tracks": SafeModelMultipleChoiceField,
@@ -90,6 +97,8 @@ class TeamForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
 
 
 class TeamInviteForm(ReadOnlyFlag, forms.ModelForm):
+    default_renderer = InlineFormRenderer
+
     bulk_email = forms.CharField(
         label=_("Email addresses"),
         help_text=_("Enter one email address per line."),
@@ -145,7 +154,7 @@ class OrganiserForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
     def __init__(self, *args, **kwargs):
         kwargs["locales"] = "en"
         super().__init__(*args, **kwargs)
-
+        self.fields["name"].required = True
         if kwargs.get("instance"):
             self.fields["slug"].disabled = True
 
@@ -175,7 +184,7 @@ class EventWizardInitialForm(forms.Form):
                 if not user.is_administrator
                 else Organiser.objects.all()
             ),
-            widget=forms.Select(attrs={"class": "select2"}),
+            widget=EnhancedSelect,
             empty_label=None,
             required=True,
             help_text=_(
@@ -221,8 +230,9 @@ class EventWizardBasicsForm(I18nHelpText, I18nModelForm):
         model = Event
         fields = ("name", "slug", "timezone", "email", "locale")
         widgets = {
-            "locale": forms.Select(attrs={"class": "select2"}),
-            "timezone": forms.Select(attrs={"class": "select2"}),
+            "locale": EnhancedSelect,
+            "timezone": EnhancedSelect,
+            "slug": TextInputWithAddon(addon_before=settings.SITE_URL + "/"),
         }
 
 
@@ -236,7 +246,7 @@ class EventWizardTimelineForm(forms.ModelForm):
 
     def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["deadline"].widget.attrs["class"] = "datetimepickerfield"
+        self.fields["deadline"].widget.attrs["type"] = "datetime-local"
 
     def clean(self):
         data = super().clean()
@@ -251,14 +261,13 @@ class EventWizardTimelineForm(forms.ModelForm):
         model = Event
         fields = ("date_from", "date_to")
         widgets = {
-            "date_from": forms.DateInput(attrs={"class": "datepickerfield"}),
-            "date_to": forms.DateInput(attrs={"class": "datepickerfield"}),
+            "date_from": HtmlDateInput,
+            "date_to": HtmlDateInput,
         }
 
 
 class EventWizardDisplayForm(forms.Form):
-    primary_color = forms.CharField(
-        max_length=7,
+    primary_color = ColorField(
         label=Event._meta.get_field("primary_color").verbose_name,
         help_text=Event._meta.get_field("primary_color").help_text,
         required=False,
@@ -277,7 +286,6 @@ class EventWizardDisplayForm(forms.Form):
         self.fields["logo"] = ImageField(
             required=False, label=logo.verbose_name, help_text=logo.help_text
         )
-        self.fields["primary_color"].widget.attrs["class"] = "colorpickerfield"
 
 
 class EventWizardCopyForm(forms.Form):
@@ -301,7 +309,11 @@ class EventWizardCopyForm(forms.Form):
         self.fields["copy_from_event"] = forms.ModelChoiceField(
             label=_("Copy configuration from"),
             queryset=EventWizardCopyForm.copy_from_queryset(user),
-            widget=forms.RadioSelect,
+            widget=EnhancedSelect(color_field="visible_primary_color"),
+            help_text=_(
+                "You can copy settings from previous events here, such as mail settings, session types, and email templates. "
+                "Please check those settings once the event has been created!"
+            ),
             empty_label=_("Do not copy"),
             required=False,
         )

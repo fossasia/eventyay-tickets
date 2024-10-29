@@ -156,6 +156,7 @@ def test_event_copy_settings(event, submission_type, choice_question, track):
         assert new_event.settings.random_value == "testcopysettings"
         assert not new_event.custom_domain
         assert new_event.feature_flags == {"testing": "working"}
+        assert new_event.get_feature_flag("use_tracks") is True
         assert new_event.cfp.deadline == event.cfp.deadline
         assert new_event.questions.count()
         assert new_event.questions.first().options.count()

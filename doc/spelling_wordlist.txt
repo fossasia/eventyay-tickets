@@ -16,8 +16,10 @@ browsable
 canceled
 categorys
 ccc
+center
 CfP
 changelog
+color
 config
 cron
 cronjob
@@ -55,6 +57,7 @@ installable
 integrations
 iterable
 Jorian
+jQuery
 libffi
 lightbox
 linters
@@ -64,7 +67,9 @@ lossy
 makemessages
 middleware
 mixin
+mixins
 namespace
+nav
 nginx
 nodejs
 noopener
@@ -74,10 +79,13 @@ plugins
 prepend
 prepended
 pretalx
+pretix
+px
 pytest
 queryset
 redis
 ro
+scrollbar
 slugified
 stdout
 strikethrough
@@ -90,6 +98,7 @@ subpath
 subtractive
 systemd
 templating
+textboxes
 transactional
 txt
 typeahead

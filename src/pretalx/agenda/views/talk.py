@@ -153,7 +153,7 @@ class TalkReviewView(TalkView):
     template_name = "agenda/talk.html"
 
     def has_permission(self):
-        return True
+        return self.request.event.get_feature_flag("submission_public_review")
 
     @cached_property
     def object(self):

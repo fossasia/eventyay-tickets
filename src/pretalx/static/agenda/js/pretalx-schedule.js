@@ -30223,12 +30223,12 @@ var addStylesShadow = __webpack_require__("35d6");
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
 var componentNormalizer = __webpack_require__("2877");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"25128047-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=7deb7e1f&lang=pug&shadow
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"25128047-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/App.vue?vue&type=template&id=a1de8dd6&lang=pug&shadow
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"pretalx-schedule",class:_vm.showGrid ? ['grid-schedule'] : ['list-schedule'],style:({'--scrollparent-width': _vm.scrollParentWidth + 'px', '--schedule-max-width': _vm.scheduleMaxWidth + 'px', '--pretalx-sticky-date-offset': _vm.days && _vm.days.length > 1 ? '48px' : '0px'})},[(_vm.scheduleError)?[_vm._m(0)]:(_vm.schedule && _vm.sessions.length)?[(_vm.showFilterModal)?_c('div',{staticClass:"modal-overlay",on:{"click":function($event){$event.stopPropagation();_vm.showFilterModal = false}}},[_c('div',{staticClass:"modal-box",on:{"click":function($event){$event.stopPropagation();}}},[_c('h3',[_vm._v("Tracks")]),_vm._l((_vm.allTracks),function(track){return _c('div',{key:track.value,staticClass:"checkbox-line",style:({'--track-color': track.color})},[_c('bunt-checkbox',{attrs:{"type":"checkbox","label":track.label,"name":track.value + track.label,"value":track.value},on:{"input":function($event){_vm.onlyFavs = false}},model:{value:(track.selected),callback:function ($$v) {_vm.$set(track, "selected", $$v)},expression:"track.selected"}}),(_vm.getLocalizedString(track.description).length)?_c('div',{staticClass:"track-description"},[_vm._v(_vm._s(_vm.getLocalizedString(track.description)))]):_vm._e()],1)})],2)]):_vm._e(),_c('div',{staticClass:"settings"},[_vm._l((_vm.filter),function(item){return _c('app-dropdown',{key:item.id,attrs:{"lazy":true}},[_c('template',{slot:"toggler"},[_c('span',[_vm._v(_vm._s(item.title))])]),_c('app-dropdown-content',_vm._l((item.data),function(track){return _c('app-dropdown-item',{key:track.value},[_c('div',{staticClass:"checkbox-line",style:({'--track-color': track.color})},[_c('bunt-checkbox',{attrs:{"type":"checkbox","label":track.label,"name":track.value + track.label,"value":track.value},on:{"input":function($event){_vm.onlyFavs = false}},model:{value:(track.selected),callback:function ($$v) {_vm.$set(track, "selected", $$v)},expression:"track.selected"}})],1)])}),1)],2)}),(_vm.favs.length)?_c('bunt-button',{staticClass:"fav-toggle",class:_vm.onlyFavs ? ['active'] : [],on:{"click":function($event){_vm.onlyFavs = !_vm.onlyFavs; if (_vm.onlyFavs) { _vm.resetFiltered() }}}},[_c('svg',{attrs:{"id":"star","viewBox":"0 0 24 24"}},[_c('polygon',{style:({fill: '#FFA000', stroke: '#FFA000'}),attrs:{"points":"14.43,10 12,2 9.57,10 2,10 8.18,14.41 5.83,22 12,17.31 18.18,22 15.83,14.41 22,10"}})]),[_vm._v(_vm._s(_vm.favs.length))]],2):_vm._e(),(!_vm.showGrid)?_c('bunt-select',{staticClass:"hide-select",staticStyle:{"margin-left":"0px"},attrs:{"name":"sort","options":_vm.sortOptions,"label":"Sort by"},model:{value:(_vm.selectedSort),callback:function ($$v) {_vm.selectedSort=$$v},expression:"selectedSort"}}):_vm._e(),_c('bunt-button',{staticClass:"sort-icon",attrs:{"tooltip":"Sort By"},on:{"click":_vm.toggleSortOptions}},[_c('svg',{attrs:{"viewBox":"0 0 301.219 301.219"}},[_c('path',{attrs:{"d":"M159.365,23.736v-10c0-5.523-4.477-10-10-10H10c-5.523,0-10,4.477-10,10v10c0,5.523,4.477,10,10,10h139.365C154.888,33.736,159.365,29.259,159.365,23.736z"}}),_c('path',{attrs:{"d":"M130.586,66.736H10c-5.523,0-10,4.477-10,10v10c0,5.523,4.477,10,10,10h120.586c5.523,0,10-4.477,10-10v-10C140.586,71.213,136.109,66.736,130.586,66.736z"}}),_c('path',{attrs:{"d":"M111.805,129.736H10c-5.523,0-10,4.477-10,10v10c0,5.523,4.477,10,10,10h101.805c5.523,0,10-4.477,10-10v-10C121.805,134.213,117.328,129.736,111.805,129.736z"}}),_c('path',{attrs:{"d":"M93.025,199.736H10c-5.523,0-10,4.477-10,10v10c0,5.523,4.477,10,10,10h83.025c5.522,0,10-4.477,10-10v-10C103.025,204.213,98.548,199.736,93.025,199.736z"}}),_c('path',{attrs:{"d":"M74.244,262.736H10c-5.523,0-10,4.477-10,10v10c0,5.523,4.477,10,10,10h64.244c5.522,0,10-4.477,10-10v-10C84.244,267.213,79.767,262.736,74.244,262.736z"}}),_c('path',{attrs:{"d":"M298.29,216.877l-7.071-7.071c-1.875-1.875-4.419-2.929-7.071-2.929c-2.652,0-5.196,1.054-7.072,2.929l-34.393,34.393V18.736c0-5.523-4.477-10-10-10h-10c-5.523,0-10,4.477-10,10v225.462l-34.393-34.393c-1.876-1.875-4.419-2.929-7.071-2.929c-2.652,0-5.196,1.054-7.071,2.929l-7.072,7.071c-3.904,3.905-3.904,10.237,0,14.142l63.536,63.536c1.953,1.953,4.512,2.929,7.071,2.929c2.559,0,5.119-0.976,7.071-2.929l63.536-63.536C302.195,227.113,302.195,220.781,298.29,216.877z"}})]),(_vm.showSortOptions)?_c('div',{directives:[{name:"on-clickaway",rawName:"v-on-clickaway",value:(_vm.toggleSortOptions),expression:"toggleSortOptions"}],staticClass:"dropdown-sort-menu",on:{"click":function($event){$event.stopPropagation();}}},_vm._l((_vm.sortOptions),function(sort){return _c('div',{key:sort.id},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.selectedSortIcon),expression:"selectedSortIcon"}],attrs:{"type":"radio","name":sort.label},domProps:{"value":sort.id,"checked":_vm._q(_vm.selectedSortIcon,sort.id)},on:{"change":[function($event){_vm.selectedSortIcon=sort.id},_vm.handleSortSelected]}}),_c('label',[_vm._v(_vm._s(sort.id))])])}),0):_vm._e()]),(!_vm.inEventTimezone)?[_c('bunt-select',{staticClass:"timezone-item",attrs:{"name":"timezone","options":[{id: _vm.schedule.timezone, label: _vm.schedule.timezone}, {id: _vm.userTimezone, label: _vm.userTimezone}]},on:{"blur":_vm.saveTimezone},model:{value:(_vm.currentTimezone),callback:function ($$v) {_vm.currentTimezone=$$v},expression:"currentTimezone"}})]:[_c('div',{staticClass:"timezone-label timezone-item bunt-tab-header-item"},[_vm._v(_vm._s(_vm.schedule.timezone))])],_c('bunt-button',{staticClass:"fav-toggle",attrs:{"tooltip":"Clear All Filters"},on:{"click":_vm.resetAllFiltered}},[_c('svg',{attrs:{"viewBox":"0 0 24 24"}},[_c('path',{attrs:{"d":"M14.76 20.83L17.6 18l-2.84-2.83l1.41-1.41L19 16.57l2.83-2.81l1.41 1.41L20.43 18l2.81 2.83l-1.41 1.41L19 19.4l-2.83 2.84zM12 12v7.88c.04.3-.06.62-.29.83a.996.996 0 0 1-1.41 0L8.29 18.7a.99.99 0 0 1-.29-.83V12h-.03L2.21 4.62a1 1 0 0 1 .17-1.4c.19-.14.4-.22.62-.22h14c.22 0 .43.08.62.22a1 1 0 0 1 .17 1.4L12.03 12z"}})])])],2),(_vm.days && _vm.days.length > 1)?_c('bunt-tabs',{ref:"tabs",staticClass:"days",class:_vm.showGrid? ['grid-tabs'] : ['list-tabs'],attrs:{"active-tab":_vm.currentDay && _vm.currentDay.format()}},_vm._l((_vm.days),function(day){return _c('bunt-tab',{attrs:{"id":day.format(),"header":day.format(_vm.dateFormat)},on:{"selected":function($event){return _vm.changeDay(day)}}})}),1):_vm._e(),(_vm.showGrid)?_c('grid-schedule',{attrs:{"sessions":_vm.sessions,"rooms":_vm.rooms,"currentDay":_vm.currentDay,"now":_vm.now,"scrollParent":_vm.scrollParent,"favs":_vm.favs},on:{"changeDay":function($event){_vm.currentDay = $event},"fav":function($event){return _vm.fav($event)},"unfav":function($event){return _vm.unfav($event)}}}):_c('linear-schedule',{attrs:{"sessions":_vm.sessions,"rooms":_vm.rooms,"currentDay":_vm.currentDay,"now":_vm.now,"scrollParent":_vm.scrollParent,"favs":_vm.favs,"sortBy":_vm.sortBy},on:{"changeDay":function($event){_vm.currentDay = $event},"fav":function($event){return _vm.fav($event)},"unfav":function($event){return _vm.unfav($event)}}}),(_vm.showModal)?_c('div',{staticClass:"modal"},[_c('div',{staticClass:"modal-content"},[_vm._m(1),_c('div',{staticClass:"modal-body p"},[_vm._v("Please login to add a session to your personal schedule.")]),_c('div',{staticClass:"modal-footer"},[_c('div',{staticClass:"button",on:{"click":_vm.closeModal}},[_vm._v("OK")])])])]):_vm._e()]:_c('bunt-progress-circular',{attrs:{"size":"huge","page":true}}),(_vm.errorMessages.length)?_c('div',{staticClass:"error-messages"},_vm._l((_vm.errorMessages),function(message){return _c('div',{key:message,staticClass:"error-message"},[_c('div',{staticClass:"btn btn-danger",on:{"click":function($event){_vm.errorMessages = _vm.errorMessages.filter(function (m) { return m !== message; })}}},[_vm._v("x")]),_c('div',{staticClass:"message"},[_vm._v(_vm._s(message))])])}),0):_vm._e()],2)}
 var staticRenderFns = [function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"schedule-error"},[_c('div',{staticClass:"error-message"},[_vm._v("An error occurred while loading the schedule. Please try again later.")])])},function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"modal-header"},[_c('div',{staticClass:"h3 modal-title"},[_vm._v("Warning")])])}]
 
 
-// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=7deb7e1f&lang=pug&shadow
+// CONCATENATED MODULE: ./src/App.vue?vue&type=template&id=a1de8dd6&lang=pug&shadow
 
 // EXTERNAL MODULE: ./node_modules/vue-clickaway/dist/vue-clickaway.common.js
 var vue_clickaway_common = __webpack_require__("c7db");
@@ -32861,6 +32861,89 @@ function getPrettyDate(start) {
   const date = moment_default()(start);
   return date.format('ddd DD. MMM');
 }
+function getLanguage() {
+  const lang = document.querySelector('html').lang || 'en';
+  return lang;
+}
+function getSessionType(item) {
+  if (typeof (item === null || item === void 0 ? void 0 : item.session_type) === 'string') {
+    return item.session_type;
+  } else if (typeof (item === null || item === void 0 ? void 0 : item.session_type) === 'object') {
+    const sessionTypeKeys = Object.keys(item.session_type);
+    const keyLanguage = sessionTypeKeys.find(key => key === getLanguage()) || sessionTypeKeys.find(key => key === 'en') || sessionTypeKeys[0];
+    return item.session_type[keyLanguage];
+  }
+
+  return null;
+}
+function getSelectedName(item) {
+  if (typeof (item === null || item === void 0 ? void 0 : item.name) === 'string') {
+    return item.name;
+  } else if (typeof (item === null || item === void 0 ? void 0 : item.name) === 'object') {
+    const keys = Object.keys(item.name);
+    const keyLanguage = keys.find(key => key === getLanguage()) || keys.find(key => key === 'en') || keys[0];
+    return item.name[keyLanguage];
+  }
+
+  return null;
+}
+function filterSessionTypesByLanguage(data) {
+  const uniqueSessionTypes = new Set();
+  data === null || data === void 0 ? void 0 : data.forEach(item => {
+    const sessionType = getSessionType(item);
+
+    if (sessionType) {
+      uniqueSessionTypes.add(sessionType);
+    }
+  });
+  return Array.from(uniqueSessionTypes).map(sessionType => ({
+    value: sessionType,
+    label: sessionType
+  }));
+}
+function filterItemsByLanguage(data) {
+  const languageMap = new Map();
+  data === null || data === void 0 ? void 0 : data.forEach(item => {
+    const selectedName = getSelectedName(item);
+
+    if (selectedName) {
+      languageMap.set(item.id, selectedName);
+    }
+  });
+  return Array.from(languageMap).map(([id, name]) => ({
+    value: id,
+    label: name
+  }));
+}
+function matchesSessionTypeFilter(talk, selectedIds) {
+  if (typeof (talk === null || talk === void 0 ? void 0 : talk.session_type) === 'string') {
+    return selectedIds.includes(talk.session_type);
+  } else if (typeof (talk === null || talk === void 0 ? void 0 : talk.session_type) === 'object') {
+    return Object.keys(talk.session_type).some(key => selectedIds.includes(talk.session_type[key]));
+  }
+
+  return false;
+}
+function filterTalk(talksData, refKey, selectedIds, previousResults) {
+  const talks = talksData;
+  return talks.filter(talk => {
+    const matchesSessionType = refKey === 'session_type' && matchesSessionTypeFilter(talk, selectedIds);
+    const matchesRefKey = selectedIds.includes(talk[refKey]);
+    return (matchesSessionType || matchesRefKey) && (!previousResults || previousResults.includes(talk.id));
+  }).map(talk => talk.id) || [];
+}
+function filteredSessions(filter, data) {
+  let filteredResults = null;
+  Object.entries(filter).forEach(([key, value]) => {
+    const refKey = value.refKey;
+    const selectedIds = value.data.flatMap(item => item.selected ? item.value : []);
+
+    if (selectedIds.length) {
+      filteredResults = filterTalk(data, refKey, selectedIds, filteredResults);
+    }
+  });
+  return filteredResults;
+}
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"25128047-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/Session.vue?vue&type=template&id=7649bfe0&lang=pug&
 var Sessionvue_type_template_id_7649bfe0_lang_pug_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('a',{staticClass:"c-linear-schedule-session",class:{faved: _vm.faved},style:(_vm.style),attrs:{"href":_vm.link,"target":_vm.linkTarget},on:{"click":function($event){return _vm.onSessionLinkClick($event, _vm.session)}}},[_c('div',{staticClass:"time-box"},[_c('div',{staticClass:"start",class:{'has-ampm': _vm.hasAmPm}},[_c('div',{staticClass:"time"},[_vm._v(_vm._s(_vm.startTime.time))]),(_vm.startTime.ampm)?_c('div',{staticClass:"ampm"},[_vm._v(_vm._s(_vm.startTime.ampm))]):_vm._e()]),_c('div',{staticClass:"duration"},[_vm._v(_vm._s(_vm.getPrettyDuration(_vm.session.start, _vm.session.end)))]),_c('div',{staticClass:"session-date"},[_vm._v(_vm._s(_vm.getPrettyDate(_vm.session.start)))]),_c('div',{staticClass:"buffer"}),(_vm.isLive)?_c('div',{staticClass:"is-live"},[_vm._v("live")]):_vm._e()]),_c('div',{staticClass:"info"},[_c('div',{staticClass:"title"},[_vm._v(_vm._s(_vm.getLocalizedString(_vm.session.title)))]),(_vm.session.speakers)?_c('div',{staticClass:"speakers"},[_c('div',{staticClass:"avatars"},[_vm._l((_vm.session.speakers),function(speaker){return [_c('div',{key:speaker.code,staticClass:"speaker-info"},[(speaker.avatar)?_c('img',{attrs:{"src":speaker.avatar}}):_vm._e(),_c('div',{staticClass:"names"},[_vm._v(_vm._s(speaker.name))])])]})],2)]):_vm._e(),_c('div',{staticClass:"tags-box"},_vm._l((_vm.session.tags),function(tag_item){return _c('div',{key:tag_item.id,staticClass:"tags"},[_c('div',{staticClass:"tag-item",style:({'background-color': tag_item.color, 'color': _vm.getContrastColor(tag_item.color)})},[_vm._v(_vm._s(tag_item.tag))])])}),0),(_vm.showAbstract)?_c('div',{staticClass:"abstract",domProps:{"innerHTML":_vm._s(_vm.abstract)}}):_vm._e(),_c('div',{staticClass:"bottom-info"},[(_vm.session.track)?_c('div',{staticClass:"track"},[_vm._v(_vm._s(_vm.getLocalizedString(_vm.session.track.name)))]):_vm._e(),(_vm.showRoom && _vm.session.room)?_c('div',{staticClass:"room"},[_vm._v(_vm._s(_vm.getLocalizedString(_vm.session.room.name)))]):_vm._e()])]),_c('div',{staticClass:"session-icons"},[(_vm.session.fav_count > 0 && _vm.isLinearSchedule)?_c('div',{staticClass:"fav-count"},[_vm._v(_vm._s(_vm.session.fav_count > 99 ? "99+" : _vm.session.fav_count))]):_vm._e(),_c('bunt-icon-button',{staticClass:"btn-fav-container",on:{"click":function($event){$event.preventDefault();$event.stopPropagation();return _vm.toggleFav.apply(null, arguments)}}},[_c('svg',{ref:"star",staticClass:"star",attrs:{"viewBox":"0 0 24 24"}},[_c('path',{attrs:{"d":"M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"}})])]),(_vm.session.do_not_record)?_c('svg',{staticClass:"do-not-record",attrs:{"viewBox":"0 0 116.59076 116.59076","width":"4116.59076mm","height":"116.59076mm","fill":"none","xmlns":"http://www.w3.org/2000/svg"}},[_c('g',{attrs:{"transform":"translate(-9.3465481,-5.441411)"}},[_c('rect',{staticStyle:{"fill":"#000000","stroke":"none","stroke-width":"11.2589","stroke-linecap":"round","stroke-dasharray":"none","stroke-opacity":"1","paint-order":"markers stroke fill"},attrs:{"width":"52.753284","height":"39.619537","x":"35.496307","y":"43.927021","rx":"5.5179553","ry":"7.573648"}}),_c('path',{staticStyle:{"fill":"#000000","fill-opacity":"1","stroke":"none","stroke-width":"18.7997","stroke-linecap":"round","stroke-dasharray":"none","stroke-opacity":"1","paint-order":"markers stroke fill"},attrs:{"d":"M 99.787546,47.04792 V 80.425654 L 77.727407,63.736793 Z"}}),_c('path',{staticStyle:{"fill":"none","stroke":"#b23e65","stroke-width":"12","stroke-linecap":"round","stroke-dasharray":"none","stroke-opacity":"1","paint-order":"markers stroke fill"},attrs:{"d":"m 35.553146,95.825578 64.177559,-64.17757 m 16.294055,32.08879 A 48.382828,48.382828 0 0 1 67.641925,112.11961 48.382828,48.382828 0 0 1 19.259099,63.736798 48.382828,48.382828 0 0 1 67.641925,15.353968 48.382828,48.382828 0 0 1 116.02476,63.736798 Z"}})])]):_vm._e()],1)])}
 var Sessionvue_type_template_id_7649bfe0_lang_pug_staticRenderFns = []
@@ -34144,27 +34227,9 @@ vue_runtime_esm["default"].use(buntpapier_src);
     },
 
     filteredTracks() {
-      let results = null;
-      Object.keys(this.filter).forEach(key => {
-        const refKey = this.filter[key].refKey;
-        const selectedIds = this.filter[key].data.filter(t => t.selected).map(t => t.value);
-        let founds = null;
+      var _this$schedule;
 
-        if (selectedIds.length) {
-          if (results && results.length) {
-            var _this$schedule$talks$;
-
-            founds = ((_this$schedule$talks$ = this.schedule.talks.filter(t => selectedIds.includes(t[refKey]) && results && results.includes(t.id))) === null || _this$schedule$talks$ === void 0 ? void 0 : _this$schedule$talks$.map(i => i.id)) || [];
-          } else {
-            var _this$schedule$talks$2;
-
-            founds = ((_this$schedule$talks$2 = this.schedule.talks.filter(t => selectedIds.includes(t[refKey]))) === null || _this$schedule$talks$2 === void 0 ? void 0 : _this$schedule$talks$2.map(i => i.id)) || [];
-          }
-
-          results = founds;
-        }
-      });
-      return results;
+      return filteredSessions(this === null || this === void 0 ? void 0 : this.filter, this === null || this === void 0 ? void 0 : (_this$schedule = this.schedule) === null || _this$schedule === void 0 ? void 0 : _this$schedule.talks);
     },
 
     speakersLookup() {
@@ -34221,9 +34286,9 @@ vue_runtime_esm["default"].use(buntpapier_src);
     },
 
     inEventTimezone() {
-      var _this$schedule, _this$schedule$talks;
+      var _this$schedule2, _this$schedule2$talks;
 
-      if (!((_this$schedule = this.schedule) !== null && _this$schedule !== void 0 && (_this$schedule$talks = _this$schedule.talks) !== null && _this$schedule$talks !== void 0 && _this$schedule$talks.length)) return false;
+      if (!((_this$schedule2 = this.schedule) !== null && _this$schedule2 !== void 0 && (_this$schedule2$talks = _this$schedule2.talks) !== null && _this$schedule2$talks !== void 0 && _this$schedule2$talks.length)) return false;
       const example = this.schedule.talks[0].start;
       return moment_timezone_default.a.tz(example, this.userTimezone).format('Z') === moment_timezone_default.a.tz(example, this.schedule.timezone).format('Z');
     },
@@ -34256,6 +34321,8 @@ vue_runtime_esm["default"].use(buntpapier_src);
   },
 
   async created() {
+    var _this$schedule3, _this$schedule4, _this$schedule5;
+
     moment_timezone_default.a.locale(this.locale);
     this.userTimezone = moment_timezone_default.a.tz.guess();
     let version = '';
@@ -34307,17 +34374,9 @@ vue_runtime_esm["default"].use(buntpapier_src);
     const baseUrl = this.eventUrl.substring(0, this.eventUrl.lastIndexOf('/', this.eventUrl.length - 2) + 1);
     this.apiUrl = baseUrl + 'api/events/' + this.eventSlug + '/';
     this.favs = this.pruneFavs(await this.loadFavs(), this.schedule);
-    const obj = {};
-    this.schedule.talks.forEach(t => {
-      if (t.session_type && !obj[t.session_type]) {
-        obj[t.session_type] = true;
-        const item = {
-          value: t.session_type,
-          label: t.session_type
-        };
-        this.filter.types.data.push(item);
-      }
-    });
+    this.filter.types.data = filterSessionTypesByLanguage(this === null || this === void 0 ? void 0 : (_this$schedule3 = this.schedule) === null || _this$schedule3 === void 0 ? void 0 : _this$schedule3.talks);
+    this.filter.rooms.data = filterItemsByLanguage(this === null || this === void 0 ? void 0 : (_this$schedule4 = this.schedule) === null || _this$schedule4 === void 0 ? void 0 : _this$schedule4.rooms);
+    this.filter.tracks.data = filterItemsByLanguage(this === null || this === void 0 ? void 0 : (_this$schedule5 = this.schedule) === null || _this$schedule5 === void 0 ? void 0 : _this$schedule5.tracks);
     const fragment = window.location.hash.slice(1);
 
     if (fragment && fragment.length === 10) {

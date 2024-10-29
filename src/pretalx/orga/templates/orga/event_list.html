@@ -1,19 +1,44 @@
 {% extends "orga/base.html" %}
 
+{% load compress %}
 {% load i18n %}
 {% load rules %}
+{% load static %}
 
 {% block extra_title %}{% translate "Dashboard" %} :: {% endblock extra_title %}
 
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "orga/css/dashboard.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
 {% block content %}
     {% has_perm "orga.create_events" request.user request.user as can_create_event %}
+
+    {% if not hide_speaker_events and speaker_events %}
+        <div class="alert alert-info">
+            <div>
+                {% translate "You are currently in the organiser area of pretalx. To view your submitted proposals, please go directly to the event page:" %}
+                {% if speaker_events|length == 1 %}
+                    <a href="{{ event.urls.user_submissions.full }}">{{ event.name }}</a>
+                {% else %}
+                    <ul class="mb-0">
+                        {% for event in speaker_events %}
+                            <li><a href="{{ event.urls.user_submissions.full }}">{{ event.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
     <form class="mb-4 m-2">
         <input type="text" name="q" class="form-control" value="{% if request.GET.q %}{{ request.GET.q }}{% endif %}" placeholder="{% translate "Search" %}">
     </form>
     <h2>{% translate "Your upcoming events" %}</h2>
-    <div class="event-blocks dashboard-list">
+    <div class="dashboard-list">
         {% if not current_orga_events and not past_orga_events and not can_create_event %}
-            <div class="event-block dashboard-block">
+            <div class="dashboard-block">
                 <h2>{% translate "No events" %}</h2>
                 <div class="dashboard-description">
                     {% translate "Please ask an organiser to invite you to an event." %}
@@ -31,7 +56,7 @@
     </div>
     {% if past_orga_events %}
         <h2>{% translate "Your most recent events" %}</h2>
-        <div class="event-blocks dashboard-list">
+        <div class="dashboard-list">
             {% for event in past_orga_events %}
                 {% include "orga/includes/dashboard_block_event.html" %}
             {% endfor %}

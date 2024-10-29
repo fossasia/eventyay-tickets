@@ -118,7 +118,7 @@ class Schedule(PretalxModel):
 
         schedule_release.send_robust(self.event, schedule=self, user=user)
 
-        if self.event.feature_flags["export_html_on_release"]:
+        if self.event.get_feature_flag("export_html_on_release"):
             if settings.HAS_CELERY:
                 export_schedule_html.apply_async(
                     kwargs={"event_id": self.event.id}, ignore_result=True
@@ -540,7 +540,7 @@ class Schedule(PretalxModel):
             ).count(),
             "no_track": [],
         }
-        if self.event.feature_flags["use_tracks"]:
+        if self.event.get_feature_flag("use_tracks"):
             warnings["no_track"] = talks.filter(submission__track_id__isnull=True)
         return warnings
 
@@ -645,6 +645,7 @@ class Schedule(PretalxModel):
             "event_start": self.event.date_from.isoformat(),
             "event_end": self.event.date_to.isoformat(),
         }
+        show_do_not_record = self.event.cfp.request_do_not_record
         for talk in talks:
             rooms.add(talk.room)
             if talk.submission:
@@ -679,7 +680,11 @@ class Schedule(PretalxModel):
                             if talk.submission
                             else 0
                         ),
-                        "do_not_record": talk.submission.do_not_record,
+                        "do_not_record": (
+                            talk.submission.do_not_record
+                            if show_do_not_record
+                            else None
+                        ),
                         "tags": talk.submission.get_tag(),
                         "session_type": talk.submission.submission_type.name,
                     }
@@ -721,6 +726,16 @@ class Schedule(PretalxModel):
                 "name": user.name,
                 "avatar": (
                     user.get_avatar_url(event=self.event) if include_avatar else None
+                ),
+                "avatar_thumbnail_default": (
+                    user.get_avatar_url(event=self.event, thumbnail="default")
+                    if include_avatar
+                    else None
+                ),
+                "avatar_thumbnail_tiny": (
+                    user.get_avatar_url(event=self.event, thumbnail="tiny")
+                    if include_avatar
+                    else None
                 ),
             }
             for user in speakers

@@ -3,6 +3,7 @@ import random
 import uuid
 from contextlib import suppress
 from hashlib import md5
+from pathlib import Path
 from urllib.parse import urljoin
 
 from django.conf import settings
@@ -21,6 +22,7 @@ from django.utils.translation import override
 from django_scopes import scopes_disabled
 from rest_framework.authtoken.models import Token
 
+from pretalx.common.image import create_thumbnail
 from pretalx.common.models import TIMEZONE_CHOICES
 from pretalx.common.models.mixins import FileCleanupMixin, GenerateCode
 from pretalx.common.text.path import path_with_hash
@@ -28,6 +30,9 @@ from pretalx.common.urls import build_absolute_uri
 
 
 def avatar_path(instance, filename):
+    if instance.code:
+        extension = Path(filename).suffix
+        filename = f"{instance.code}{extension}"
     return f"avatars/{path_with_hash(filename)}"
 
 
@@ -117,8 +122,15 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         null=True,
         blank=True,
         verbose_name=_("Profile picture"),
-        help_text=_("If possible, upload an image that is least 120 pixels wide."),
+        help_text=_(
+            "We recommend uploading an image at least 400px wide. "
+            "A square image works best, as we display it in a circle in several places."
+        ),
         upload_to=avatar_path,
+    )
+    avatar_thumbnail = models.ImageField(null=True, blank=True, upload_to="avatars/")
+    avatar_thumbnail_tiny = models.ImageField(
+        null=True, blank=True, upload_to="avatars/"
     )
     get_gravatar = models.BooleanField(
         default=False,
@@ -264,7 +276,7 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         while self.__class__.objects.filter(
             email__iexact=self.email
         ).exists():  # pragma: no cover
-            self.email = f"deleted_user_{random.randint(0, 999)}"
+            self.email = f"deleted_user_{random.randint(0, 99999)}"
         self.name = "Deleted User"
         self.is_active = False
         self.is_superuser = False
@@ -274,13 +286,13 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         self.pw_reset_token = None
         self.pw_reset_time = None
         self.set_unusable_password()
+        self._delete_files()
         self.save()
         self.profiles.all().update(biography="")
         for answer in Answer.objects.filter(
             person=self, question__contains_personal_data=True
         ):
             answer.delete()  # Iterate to delete answer files, too
-        self._delete_files()
         for team in self.teams.all():
             team.members.remove(self)
 
@@ -324,14 +336,26 @@ class User(PermissionsMixin, GenerateCode, FileCleanupMixin, AbstractBaseUser):
         if self.has_avatar:
             return self.avatar.url
 
-    def get_avatar_url(self, event=None):
+    def get_avatar_url(self, event=None, thumbnail=None):
         """Returns the full avatar URL, where user.avatar_url returns the
         absolute URL."""
         if not self.avatar_url:
             return ""
+        if not thumbnail:
+            image = self.avatar
+        else:
+            image = (
+                self.avatar_thumbnail_tiny
+                if thumbnail == "tiny"
+                else self.avatar_thumbnail
+            )
+            if not image:
+                image = create_thumbnail(self.avatar, thumbnail)
+        if not image:
+            return
         if event and event.custom_domain:
-            return urljoin(event.custom_domain, self.avatar_url)
-        return urljoin(settings.SITE_URL, self.avatar_url)
+            return urljoin(event.custom_domain, image.url)
+        return urljoin(settings.SITE_URL, image.url)
 
     def get_events_with_any_permission(self):
         """Returns a queryset of events for which this user has any type of

@@ -3,12 +3,34 @@
 Release Notes
 =============
 
+- :bug:`schedule` The schedule would work only intermittently when used with a custom domain.
+- :bug:`cfp` The resource upload form always mentioned a hard-coded file upload limit (but would in reality allow files up to the size of the real file upload limit).
+- :bug:`schedule` Sessions with session image would not look good on some mobile devices.
+- :bug:`orga,1839` If the organisers initially showed the “do not record” checkbox, but then hid it, the sessions marked as unrecorded would still show the appropriate icon in the public schedule, without anybody being able to uncheck the checkbox. Instead, the indicator is now hidden if the checkbox can’t be accessed anymore.
+- :release:`2024.3.0 <2024-10-21>`
+- :feature:`orga` You can now drag rooms, tracks, questions, and even question options to reorder them.
+- :feature:`admin` You can now configure the maximum file upload size.
+- :feature:`cfp` You can now submit a form from textboxes with Ctrl+Enter.
+- :feature:`cfp` In browsers that support it (currently only Chrome), textboxes will now auto-expand when you write more text, rather than showing a scrollbar.
+- :feature:`schedule` When you look at a talk detail page, the start and end time is now also given in your local time (if you are not in the event timezone).
+- :feature:`orga:submission` The proposal list can now be sorted by session type and track.
+- :feature:`cfp` Organisers can now turn off the public “secret” proposal share URLs.
+- :bug:`cfp` On some registration pages, the password strength indicator was missing.
+- :announcement:`dev` pretalx has dropped its use of SCSS, Bootstrap (while retaining a lot of style rules) and jQuery. If you rely on these in your plugin, you will need to adjust your code. If you require jQuery, you can load `static/js/jquery.js`, as this is still shipped with pretalx core. You can continue using SCSS, but you'll have to use CSS variables rather than SCSS variables, but we do expose all previous SCSS variables as CSS variables.
+- :feature:`admin` pretalx is now better about deleting uploaded files that are not in use anymore, as well as giving predictable filenames to user profile pictures.
 - :bug:`orga` Deleting review phases and review score categories was broken.
+- :feature:`schedule` The schedule navigation to switch between schedule, talk list, and speakers, is now always visible and easier to find.
+- :feature:`orga` Organisers can now open the quick-nav menu with the Alt-K shortcut.
+- :feature:`orga` In order to make the many settings pages more manageable, they are now grouped into tabs.
+- :feature:`orga` Whenever users can select an item associated with a colour (e.g. a track, an event), the colour is also shown in the drop-down.
+- :feature:`orga` On the landing page in the organiser area, there are now links to the events the current user has submitted proposals to, in order to help guide speakers back to the speaker frontend from the (to-them empty) organiser backend.
+- :feature:`orga` There is now an organiser-level dashboard with an events list and team list.
 - :feature:`schedule` The schedule page makes even better use of several caching methods in order to be smaller and faster to load and re-load.
-- :announcement:`admin` Due to a potentially tricky update in Django, and maintenance cost, pretalx is dropping support for MySQL/MariaDB. Please use either PostgreSQL or SQLite. If you are currently running MySLQ.
+- :announcement:`admin` The ``regenerate_css`` command has been dropped without replacement, as it was not needed anymore.
+- :announcement:`admin` Due to a potentially tricky update in Django, and maintenance cost, pretalx is dropping support for MySQL/MariaDB. Please use either PostgreSQL or SQLite. If you are currently running MySLQ, please take a look at this exemplary `MySQL migration guide<https://pretix.readthedocs.io/en/latest/admin/mysql2postgres.html>`_ by the pretix project **BEFORE** starting your pretalx update, in order to migrate your data with ``pgloader`` to PostgreSQL!
 - :announcement:`admin` pretalx now requires Python 3.10 or newer.
 - :feature:`orga` Organisers now have access to a list of all speakers / submitters for all of their events.
-- :bug:`orga:schedule,1828` When exporting an event to a HTML export, files with umlauts or other non-ascii characters in their file name were saved with the encoded version of that name, so when the export was served by a webserver, these files wouldn't be shown.
+- :bug:`orga:schedule,1828` When exporting an event to a HTML export, files with umlauts or other non-ASCII characters in their file name were saved with the encoded version of that name, so when the export was served by a web server, these files wouldn't be shown.
 - :bug:`schedule` When organisers initially asked speakers to upload a profile picture, but then turned off the upload, the profile pictures collected to that date would still show up in the schedule grid and on the individual speaker pages. They will now be hidden from view.
 - :bug:`orga` Organisers could inadvertently remove all access to an event when they updated their team permissions. Pretalx now forbids this, and additionally shows warnings when an event is being orphaned by a team change.
 - :feature:`orga` A lot of info boxes that are mostly useful to new or inexperienced users are now hidden behind ❓ symbols rather than being always visible.
@@ -18,6 +40,7 @@ Release Notes
 - :bug:`orga` When copying an old event's settings to a new one, questions were copied, but their answer options (for choice/multiple choice questions) were omitted.
 - :bug:`orga:email` When sending an email to only speakers with a specific question answer, emails would instead be generated (and placed in the outbox, not sent!) to all speakers.
 - :bug:`orga:submission` When organisers filtered the session list by specific question answers, adding search terms or filters would reset the question filter.
+- :bug:`schedule` When the pretalx schedule widget was used with an event that didn't have a public schedule, it would show a loading spinner indefinitely. It now shows a message that the schedule is not available.
 - :feature:`schedule,1002` Logged-in users can now download an iCal file with their starred talks.
 - :feature:`schedule` For logged in users, pretalx will now save the list of starred/favourited talks, so that you can sync the starred talks across devices.
 - :feature:`schedule` If a talk won't be recorded, this will now be shown in the schedule, rather than just on the individual talk pages.

@@ -25,7 +25,9 @@ from django_context_decorator import context
 
 from pretalx.agenda.permissions import is_submission_visible
 from pretalx.common.exceptions import SubmissionError
+from pretalx.common.forms.fields import SizeFileInput
 from pretalx.common.models import ActivityLog
+from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
@@ -38,6 +40,7 @@ from pretalx.common.views.mixins import (
 )
 from pretalx.mail.models import QueuedMail
 from pretalx.orga.forms.submission import (
+    AddCreateUserForm,
     AnonymiseForm,
     SubmissionForm,
     SubmissionStateChangeForm,
@@ -60,6 +63,7 @@ from pretalx.submission.models import (
 
 
 def create_user_as_orga(email, submission=None, name=None):
+    name = name or "-"
     form = OrgaSpeakerForm({"name": name, "email": email})
     form.is_valid()
 
@@ -288,40 +292,6 @@ class SubmissionStateChange(SubmissionViewMixin, FormView):
         return self.request.GET.get("next")
 
 
-class SubmissionSpeakersAdd(SubmissionViewMixin, View):
-    permission_required = "submission.edit_speaker_list"
-
-    def dispatch(self, request, *args, **kwargs):
-        super().dispatch(request, *args, **kwargs)
-        submission = self.object
-        email = request.POST.get("speaker")
-        name = request.POST.get("name")
-        speaker = None
-        try:
-            speaker = User.objects.get(email__iexact=email)
-        except User.DoesNotExist:
-            with suppress(Exception):
-                speaker = create_user_as_orga(email, submission=submission, name=name)
-        if not speaker:
-            messages.error(request, _("Please provide a valid email address!"))
-        else:
-            if submission not in speaker.submissions.all():
-                speaker.submissions.add(submission)
-                submission.log_action(
-                    "pretalx.submission.speakers.add", person=request.user, orga=True
-                )
-                messages.success(
-                    request, _("The speaker has been added to the proposal.")
-                )
-            else:
-                messages.warning(
-                    request, _("The speaker was already part of the proposal.")
-                )
-            if not speaker.profiles.filter(event=request.event).exists():
-                SpeakerProfile.objects.create(user=speaker, event=request.event)
-        return redirect(submission.orga_urls.speakers)
-
-
 class SubmissionSpeakersDelete(SubmissionViewMixin, View):
     permission_required = "submission.edit_speaker_list"
 
@@ -343,11 +313,13 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
         return redirect(submission.orga_urls.speakers)
 
 
-class SubmissionSpeakers(ReviewerSubmissionFilter, SubmissionViewMixin, TemplateView):
+class SubmissionSpeakers(ReviewerSubmissionFilter, SubmissionViewMixin, FormView):
     template_name = "orga/submission/speakers.html"
     permission_required = "orga.view_speakers"
+    form_class = AddCreateUserForm
 
     @context
+    @cached_property
     def speakers(self):
         submission = self.object
         return [
@@ -361,9 +333,41 @@ class SubmissionSpeakers(ReviewerSubmissionFilter, SubmissionViewMixin, Template
             for speaker in submission.speakers.all()
         ]
 
-    @context
-    def users(self):
-        return User.objects.all()
+    def form_valid(self, form):
+        email = form.cleaned_data.get("email")
+        created = False
+        speaker = None
+        submission = self.object
+        try:
+            speaker = User.objects.get(email__iexact=email.lower().strip())
+        except User.DoesNotExist:
+            with suppress(Exception):
+                speaker = create_user_as_orga(email, submission=submission)
+                created = True
+
+        if not speaker:
+            messages.error(self.request, _("Failed to create the new speaker."))
+            return self.form_invalid(form)
+
+        if submission in speaker.submissions.all():
+            messages.warning(
+                self.request, _("The speaker was already part of the proposal.")
+            )
+            return super().form_valid(form)
+
+        speaker.submissions.add(submission)
+        submission.log_action(
+            "pretalx.submission.speakers.add", person=self.request.user, orga=True
+        )
+        messages.success(self.request, _("The speaker has been added to the proposal."))
+        if not speaker.profiles.filter(event=self.request.event).exists():
+            SpeakerProfile.objects.create(user=speaker, event=self.request.event)
+        if created:
+            return redirect(speaker.event_profile(self.request.event).orga_urls.base)
+        return redirect(submission.orga_urls.speakers)
+
+    def get_success_url(self):
+        return self.object.orga_urls.speakers
 
 
 class SubmissionContent(
@@ -387,6 +391,10 @@ class SubmissionContent(
         if self.kwargs.get("code"):
             return "submission.edit_submission"
         return "orga.create_submission"
+
+    @context
+    def size_warning(self):
+        return SizeFileInput.get_size_warning()
 
     @cached_property
     def _formset(self):
@@ -509,7 +517,7 @@ class SubmissionContent(
         self._questions_form.save()
 
         if created:
-            email = form.cleaned_data["speaker"]
+            email = form.cleaned_data["email"]
             if email:
                 try:
                     speaker = User.objects.get(email__iexact=email)  # TODO: send email!
@@ -566,7 +574,14 @@ class BaseSubmissionList(Sortable, ReviewerSubmissionFilter, PaginationMixin, Li
     model = Submission
     context_object_name = "submissions"
     filter_fields = ()
-    sortable_fields = ("code", "title", "state", "is_featured")
+    sortable_fields = (
+        "code",
+        "title",
+        "state",
+        "is_featured",
+        "submission_type__name",
+        "track__name",
+    )
     usable_states = None
 
     def get_filter_form(self):
@@ -621,7 +636,7 @@ class SubmissionList(EventPermissionRequired, BaseSubmissionList):
 
     @context
     def show_tracks(self):
-        if self.request.event.feature_flags["use_tracks"]:
+        if self.request.event.get_feature_flag("use_tracks"):
             if self.limit_tracks:
                 return len(self.limit_tracks) > 1
             return self.request.event.tracks.all().count() > 1
@@ -759,7 +774,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
     @cached_property
     def show_tracks(self):
         return (
-            self.request.event.feature_flags["use_tracks"]
+            self.request.event.get_feature_flag("use_tracks")
             and self.request.event.tracks.all().count() > 1
         )
 
@@ -864,7 +879,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
 
     @context
     def submission_track_data(self):
-        if self.request.event.feature_flags["use_tracks"]:
+        if self.request.event.get_feature_flag("use_tracks"):
             counter = Counter(
                 str(submission.track)
                 for submission in Submission.objects.filter(
@@ -937,7 +952,7 @@ class SubmissionStats(PermissionRequired, TemplateView):
 
     @context
     def talk_track_data(self):
-        if self.request.event.feature_flags["use_tracks"]:
+        if self.request.event.get_feature_flag("use_tracks"):
             counter = Counter(
                 str(submission.track)
                 for submission in self.request.event.submissions.filter(
@@ -1006,7 +1021,7 @@ class TagDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def form_valid(self, form):
         form.instance.event = self.request.event
         result = super().form_valid(form)
-        messages.success(self.request, _("The tag has been saved."))
+        messages.success(self.request, phrases.base.saved)
         if form.has_changed():
             action = "pretalx.tag." + ("update" if self.object else "create")
             form.instance.log_action(action, person=self.request.user, orga=True)

@@ -22,21 +22,21 @@
               </h3>
               <p class="text">
                   {% trans "Can't find your ticket?" %}
-                  <a id="resend_link" class="btn btn-default" href='{{ request.event.display_settings.ticket_link }}resend'>
+                  <a id="resend_link" class="btn-link" href='{{ request.event.display_settings.ticket_link }}resend'>
                       {% trans "Resend the email" %}
                   </a>
                   {% trans "to receive it." %}
               </p>
               <p class="text">
                   {% trans "Want to order a ticket?" %}
-                  <a id="ticket_link" class="btn btn-default" href='{{ request.event.display_settings.ticket_link }}'>
+                  <a id="ticket_link" class="btn-link" href='{{ request.event.display_settings.ticket_link }}'>
                       {% trans "Get a ticket here" %}
                   </a>
               </p>
           </div>
       </div>
       <div class="join-online-close">
-          <button id="join-online-close-button" class="btn btn-default join-online-close-button">Close</button>
+          <button id="join-online-close-button" class="btn-link join-online-close-button">Close</button>
       </div>
   </div>
 </div>
@@ -54,79 +54,4 @@
       </div>
   </div>
 </div>
-  <nav id="schedule-nav"{% if with_margin %} class="p-3"{% endif %}>
-      <div class="navigation">
-          <a href="{{ request.event.urls.schedule }}" class="btn btn-outline-success {% if "/schedule/" in request.path_info %} active{% endif %}">
-              <i class="fa fa-calendar"></i> {{ phrases.schedule.schedule }}
-          </a>
-          {% if request.event.display_settings.schedule_display != "list" %}
-              <a href="{{ request.event.urls.talks }}" class="btn btn-outline-success {% if "/talk/" in request.path_info %} active{% endif %}">
-                  <i class="fa fa-comments-o"></i> {{ phrases.schedule.sessions }}
-              </a>
-          {% endif %}
-          <a href="{{ request.event.urls.speakers }}" class="btn btn-outline-success {% if "/speaker/" in request.path_info %} active{% endif %}">
-              <i class="fa fa-group"></i> {{ phrases.schedule.speakers }}
-          </a>
-          {% if request.event.display_settings.ticket_link %}
-              <a href="{{ request.event.display_settings.ticket_link }}" class="btn btn-outline-success">
-                  <i class="fa fa-group"></i> {% translate "Tickets" %}
-              </a>
-          {% endif %}
-
-          <a id="join-event-link" href='{% url "agenda:event.onlinevideo.join" event=request.event.slug %}' class="btn btn-outline-success">
-              <i class="fa fa-video-camera"></i> {% translate "Videos" %}
-          </a>
-      </div>
-      <div class="header-right">
-        {% if with_extra %}
-            <span>{{ phrases.schedule.version }} <a href="{{ request.event.urls.changelog }}">{{ schedule.version|default:"–" }}</a></span>
-            <details class="dropdown">
-                <summary class="btn btn-sm btn-outline-info">
-                    <i class="fa fa-calendar-plus-o"></i>
-                        <span class="calendar-text"> Add to Calendar </span>
-                    <i class="fa fa-caret-down"></i>
-                </summary>
-                <ul class="dropdown-content dropdown-content-s{% if rtl %}e{% else %}w{% endif %}">
-                    {% for exporter in exporters %}
-                        <li><a class="dropdown-item" href="{{ exporter.urls.base }}">
-                            {% if exporter.icon|slice:":3" == "fa-" %}
-                                <span class="fa {{ exporter.icon }} export-icon"></span>
-                            {% else %}
-                                <span class="export-icon">{{ exporter.icon }}</span>
-                            {% endif %}
-                            {{ exporter.verbose_name }}
-                            {% if exporter.show_qrcode %}
-                                <span class="export-qrcode">
-                                    <div class="btn btn-default btn-sm">
-                                        <i class="fa fa-qrcode"></i>
-                                    </div>
-                                    <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
-                                </span>
-                            {% endif %}
-                        </a></li>
-                    {% endfor %}
-                    <div class="export-break" style="grid-area: slice-08-07-00-00 / 1 / slice-08-08-00-00;"></div>
-                    {% for exporter in my_exporters %}{% if exporter.public %}
-                        <li><a class="dropdown-item" href="{{ exporter.urls.base }}">
-                            {% if exporter.icon|slice:":3" == "fa-" %}
-                                <span class="fa {{ exporter.icon }} export-icon"></span>
-                            {% else %}
-                                <span class="export-icon">{{ exporter.icon }}</span>
-                            {% endif %}
-                            {{ exporter.verbose_name }}
-                            {% if exporter.show_qrcode %}
-                                <span class="export-qrcode">
-                                    <div class="btn btn-default btn-sm">
-                                        <i class="fa fa-qrcode"></i>
-                                    </div>
-                                    <div class="export-qrcode-image btn btn-default">{{ exporter.get_qrcode }}</div>
-                                </span>
-                            {% endif %}
-                        </a></li>
-                    {% endif %}{% endfor %}
-                </ul>
-            </details>
-        {% endif %}
-    </div>
-  </nav>
 {% endblock %}

@@ -1,10 +1,17 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load copyable %}
+{% load compress %}
 {% load i18n %}
+{% load static %}
 
 {% block extra_title %}{% translate "Users" %} :: {% endblock extra_title %}
+
+{% block scripts %}
+    {% compress js %}
+        <script defer src="{% static "common/js/copy.js" %}"></script>
+    {% endcompress %}
+{% endblock %}
 
 {% block content %}
     <h2>{% translate "Users" %}</h2>

@@ -1,6 +1,6 @@
 from contextlib import suppress
 
-from pretalx.common.signals import register_data_exporters
+from pretalx.common.signals import register_data_exporters, register_my_data_exporters
 
 
 def is_visible(exporter, request, public=False):
@@ -19,9 +19,14 @@ def get_schedule_exporters(request, public=False):
         exporter(request.event)
         for _, exporter in register_data_exporters.send_robust(request.event)
     ]
+    my_exporters = [
+        exporter(request.event)
+        for _, exporter in register_my_data_exporters.send_robust(request.event)
+    ]
+    all_exporters = exporters + my_exporters
     return [
         exporter
-        for exporter in exporters
+        for exporter in all_exporters
         if (
             not isinstance(exporter, Exception)
             and is_visible(exporter, request, public=public)

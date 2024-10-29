@@ -1,12 +1,16 @@
 {% extends "orga/settings/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
 
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
 {% block scripts %}
-    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
     {% compress js %}
         <script defer src="{% static "orga/js/mailSettings.js" %}"></script>
         <script defer src="{% static "common/js/modalDialog.js" %}"></script>
@@ -33,7 +37,7 @@
                 {% endblocktranslate %}
             </div>
         </dialog>
-        {% bootstrap_form form layout="event" %}
+        {{ form }}
         <div class="submit-group panel">
             <span></span>
             <span>

@@ -1,13 +1,19 @@
 import json
 
 from django import forms
-from django.utils.formats import get_format
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceField
 
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.mixins import ReadOnlyFlag, RequestRequire
-from pretalx.common.forms.widgets import MarkdownWidget
+from pretalx.common.forms.renderers import InlineFormRenderer
+from pretalx.common.forms.widgets import (
+    EnhancedSelect,
+    EnhancedSelectMultiple,
+    HtmlDateTimeInput,
+    MarkdownWidget,
+    TextInputWithAddon,
+)
 from pretalx.common.text.phrases import phrases
 from pretalx.schedule.models import TalkSlot
 from pretalx.submission.models import Submission, SubmissionStates, SubmissionType
@@ -24,20 +30,20 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             slot = (
                 instance.slots.filter(schedule__version__isnull=True)
                 .select_related("room")
+                .filter(start__isnull=False)
                 .order_by("start")
                 .first()
             )
             if slot:
-                datetime_format = get_format("DATETIME_INPUT_FORMATS")[0]
                 initial_slot = {
                     "room": slot.room,
                     "start": (
-                        slot.local_start.strftime(datetime_format)
+                        slot.local_start.strftime("%Y-%m-%dT%H:%M")
                         if slot.local_start
                         else ""
                     ),
                     "end": (
-                        slot.local_end.strftime(datetime_format)
+                        slot.local_end.strftime("%Y-%m-%dT%H:%M")
                         if slot.real_end
                         else ""
                     ),
@@ -70,7 +76,7 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
         self.is_creating = False
         if not self.instance.pk:
             self.is_creating = True
-            self.fields["speaker"] = forms.EmailField(
+            self.fields["email"] = forms.EmailField(
                 label=phrases.cfp.speaker_email,
                 help_text=_(
                     "The email address of the speaker holding the session. They will be invited to create an account."
@@ -87,8 +93,15 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             if not anonymise:
                 self.fields["state"] = forms.ChoiceField(
                     label=_("Proposal state"),
-                    choices=SubmissionStates.get_choices(),
+                    choices=[
+                        (choice, name)
+                        for (choice, name) in SubmissionStates.get_choices()
+                        if choice != SubmissionStates.DELETED
+                        and choice != SubmissionStates.DRAFT
+                    ],
                     initial=SubmissionStates.SUBMITTED,
+                    required=True,
+                    widget=EnhancedSelect(color_field=SubmissionStates.get_color),
                 )
         if (
             not self.instance.pk
@@ -99,32 +112,25 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
                 queryset=event.rooms.all(),
                 label=TalkSlot._meta.get_field("room").verbose_name,
                 initial=initial_slot.get("room"),
+                widget=EnhancedSelect,
             )
             self.fields["start"] = forms.DateTimeField(
                 required=False,
                 label=TalkSlot._meta.get_field("start").verbose_name,
-                widget=forms.DateInput(
-                    attrs={
-                        "class": "datetimepickerfield",
-                    }
-                ),
+                widget=HtmlDateTimeInput,
                 initial=initial_slot.get("start"),
             )
             self.fields["end"] = forms.DateTimeField(
                 required=False,
                 label=TalkSlot._meta.get_field("end").verbose_name,
-                widget=forms.DateInput(
-                    attrs={
-                        "class": "datetimepickerfield",
-                    }
-                ),
+                widget=HtmlDateTimeInput,
                 initial=initial_slot.get("end"),
             )
         if "abstract" in self.fields:
             self.fields["abstract"].widget.attrs["rows"] = 2
-        if not event.feature_flags["present_multiple_times"]:
+        if not event.get_feature_flag("present_multiple_times"):
             self.fields.pop("slot_count", None)
-        if not event.feature_flags["use_tracks"]:
+        if not event.get_feature_flag("use_tracks"):
             self.fields.pop("track", None)
         elif "track" in self.fields:
             self.fields["track"].queryset = event.tracks.all()
@@ -208,12 +214,13 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
             "is_featured",
         ]
         widgets = {
-            "tags": forms.SelectMultiple(attrs={"class": "select2"}),
-            "track": forms.Select(attrs={"class": "select2"}),
-            "submission_type": forms.Select(attrs={"class": "select2"}),
+            "tags": EnhancedSelectMultiple(color_field="color"),
+            "track": EnhancedSelect(color_field="color"),
+            "submission_type": EnhancedSelect,
             "abstract": MarkdownWidget,
             "description": MarkdownWidget,
             "notes": MarkdownWidget,
+            "duration": TextInputWithAddon(addon_after=_("minutes")),
         }
         field_classes = {
             "submission_type": SafeModelChoiceField,
@@ -233,6 +240,8 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
 
 
 class AnonymiseForm(SubmissionForm):
+    default_renderer = InlineFormRenderer
+
     def __init__(self, *args, **kwargs):
         instance = kwargs.get("instance")
         if not instance or not instance.pk:
@@ -279,3 +288,7 @@ class SubmissionStateChangeForm(forms.Form):
         required=False,
         initial=False,
     )
+
+
+class AddCreateUserForm(forms.Form):
+    email = forms.EmailField()

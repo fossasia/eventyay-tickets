@@ -1,17 +1,15 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{% static "vendored/colorpicker/css/bootstrap-colorpicker.min.css" %}" />
 {% endblock stylesheets %}
 
 {% block scripts %}
     {% compress js %}
-        <script defer src="{% static "vendored/colorpicker/js/bootstrap-colorpicker.min.js" %}"></script>
+        <script defer src="{% static "vendored/vanilla-picker/vanilla-picker.min.js" %}"></script>
         <script defer src="{% static "orga/js/colorpicker.js" %}"></script>
     {% endcompress %}
 {% endblock scripts %}
@@ -26,16 +24,7 @@
             {% translate "New track" %}
         {% endif %}
     </h2>
-    <form method="post">
-        {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        {% bootstrap_field form.name layout="event" %}
-        {% bootstrap_field form.description layout="event" %}
-        {% bootstrap_field form.color layout="event" addon_before="<i></i>" addon_before_class="colorpicker-input-addon color-visible" %}
-        {% bootstrap_field form.requires_access_code layout="event" %}
 
-        {% include "orga/includes/submit_row.html" %}
-
-    </form>
+    {% include "orga/includes/base_form.html" %}
 
 {% endblock content %}

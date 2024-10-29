@@ -93,11 +93,9 @@ LOCAL_APPS = [
     "pretalx.agenda",
     "pretalx.cfp",
     "pretalx.orga",
-    "pretalx.sso_provider",
     "pretalx.eventyay_common",
 ]
 FALLBACK_APPS = [
-    "bootstrap4",
     "django.forms",
     "rest_framework",
 ]
@@ -132,7 +130,7 @@ FORCE_SCRIPT_NAME = BASE_PATH
 STATIC_URL = config.get("site", "static", fallback=BASE_PATH + "/static/")
 MEDIA_URL = config.get("site", "media", fallback=BASE_PATH + "/media/")
 FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755
-FILE_UPLOAD_DEFAULT_LIMIT = 10 * 1024 * 1024
+FILE_UPLOAD_DEFAULT_LIMIT = int(config.get("files", "upload_limit")) * 1024 * 1024
 IMAGE_DEFAULT_MAX_WIDTH = 1920
 IMAGE_DEFAULT_MAX_HEIGHT = 1080
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
@@ -378,64 +376,64 @@ LANGUAGES_INFORMATION = {
         "name": _("Arabic"),
         "natural_name": "اَلْعَرَبِيَّةُ",
         "official": False,
-        "percentage": 75,
+        "percentage": 72,
     },
     "cs": {
         "name": _("Czech"),
         "natural_name": "Čeština",
         "official": False,
-        "percentage": 100,
+        "percentage": 97,
     },
     "el": {
         "name": _("Greek"),
         "natural_name": "Ελληνικά",
         "official": False,
-        "percentage": 92,
+        "percentage": 90,
     },
     "es": {
         "name": _("Spanish"),
         "natural_name": "Español",
         "official": False,
-        "percentage": 82,
+        "percentage": 80,
     },
     "fr": {
         "name": _("French"),
         "natural_name": "Français",
         "official": False,
-        "percentage": 100,
+        "percentage": 98,
         "path": "fr_FR",
     },
     "it": {
         "name": _("Italian"),
         "natural_name": "Italiano",
         "official": False,
-        "percentage": 98,
+        "percentage": 95,
     },
     "ja-jp": {
         "name": _("Japanese"),
         "natural_name": "日本語",
         "official": False,
-        "percentage": 72,
+        "percentage": 69,
         "public_code": "jp",
     },
     "nl": {
         "name": _("Dutch"),
         "natural_name": "Nederlands",
         "official": False,
-        "percentage": 91,
+        "percentage": 88,
     },
     "pt-br": {
         "name": _("Brasilian Portuguese"),
         "natural_name": "Português brasileiro",
         "official": False,
-        "percentage": 91,
+        "percentage": 89,
         "public_code": "pt",
     },
     "pt-pt": {
         "name": _("Portuguese"),
         "natural_name": "Português",
         "official": False,
-        "percentage": 92,
+        "percentage": 89,
         "public_code": "pt",
     },
     "ru": {
@@ -454,14 +452,14 @@ LANGUAGES_INFORMATION = {
         "name": _("Traditional Chinese (Taiwan)"),
         "natural_name": "漢語",
         "official": False,
-        "percentage": 68,
+        "percentage": 66,
         "public_code": "zh",
     },
     "zh-hans": {
         "name": _("Simplified Chinese"),
         "natural_name": "简体中文",
         "official": False,
-        "percentage": 88,
+        "percentage": 86,
         "public_code": "zh",
     },
 }
@@ -531,12 +529,12 @@ MIDDLEWARE = [
     "pretalx.common.middleware.SessionMiddleware",  # Add session handling
     "django.contrib.auth.middleware.AuthenticationMiddleware",  # Uses sessions
     "pretalx.common.auth.AuthenticationTokenMiddleware",  # Make auth tokens work
+    "csp.middleware.CSPMiddleware",  # Modifies/sets CSP headers
     "pretalx.common.middleware.MultiDomainMiddleware",  # Check which host is used and if it is valid
     "pretalx.common.middleware.EventPermissionMiddleware",  # Sets locales, request.event, available events, etc.
     "pretalx.common.middleware.CsrfViewMiddleware",  # Protect against CSRF attacks before forms/data are processed
     "django.contrib.messages.middleware.MessageMiddleware",  # Uses sessions
     "django.middleware.clickjacking.XFrameOptionsMiddleware",  # Protects against clickjacking
-    "csp.middleware.CSPMiddleware",  # Modifies/sets CSP headers
     "allauth.account.middleware.AccountMiddleware",  # Adds account information to the request
 ]
 
@@ -549,14 +547,14 @@ template_loaders = (
 if not DEBUG:
     template_loaders = (("django.template.loaders.cached.Loader", template_loaders),)
 
-FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
+FORM_RENDERER = "pretalx.common.forms.renderers.TabularFormRenderer"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             DATA_DIR / "templates",
             BASE_DIR / "templates",
-            BASE_DIR / "pretalx" / "sso_provider" / "templates",
+            BASE_DIR / "pretalx" / "templates",
         ],
         "OPTIONS": {
             "context_processors": [
@@ -626,23 +624,13 @@ if DEBUG:
             "JQUERY_URL": "",
             "DISABLE_PANELS": toolbar_settings.PANELS_DEFAULTS,
         }
-BOOTSTRAP4 = {
-    "field_renderers": {
-        "default": "bootstrap4.renderers.FieldRenderer",
-        "inline": "bootstrap4.renderers.InlineFieldRenderer",
-        "event": "pretalx.common.forms.renderers.EventFieldRenderer",
-        "event-inline": "pretalx.common.forms.renderers.EventInlineFieldRenderer",
-    }
-}
 COMPRESS_ENABLED = COMPRESS_OFFLINE = not DEBUG
 COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
 COMPRESS_FILTERS = {
     "js": ["compressor.filters.jsmin.rJSMinFilter"],
     "css": (
-        # CssAbsoluteFilter is incredibly slow, especially when dealing with our _flags.scss
-        # However, we don't need it if we consequently use the static() function in Sass
-        # 'compressor.filters.css_default.CssAbsoluteFilter',
-        "compressor.filters.cssmin.CSSCompressorFilter",
+        "compressor.filters.css_default.CssAbsoluteFilter",
+        "compressor.filters.cssmin.rCSSMinFilter",
     ),
 }
 
@@ -698,8 +686,6 @@ else:
         plugins=PLUGINS,
     )
 
-# Below is configuration for SSO using eventyay-ticket
-
 EVENTYAY_TICKET_BASE_PATH = config.get(
     "urls", "eventyay-ticket", fallback="https://app-test.eventyay.com/tickets"
 )
@@ -711,15 +697,7 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 ACCOUNT_USER_MODEL_USERNAME_FIELD = "name"
 # redirect to home page after login with eventyay-ticket
 LOGIN_REDIRECT_URL = BASE_PATH
-# custom form for signup and adapter
-SOCIALACCOUNT_FORMS = {"signup": "pretalx.sso_provider.forms.CustomSignUpForm"}
-SOCIALACCOUNT_ADAPTER = "pretalx.sso_provider.views.CustomSocialAccountAdapter"
 # disable confirm step when using eventyay-ticket to login
-SOCIALACCOUNT_LOGIN_ON_GET = True
-# eventyay-ticket provider configuration
-EVENTYAY_TICKET_SSO_WELL_KNOW_URL = "/".join(
-    [EVENTYAY_TICKET_BASE_PATH, "{org}", ".well-known/openid-configuration"]
-)
 # redirect_url as https
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 
@@ -731,7 +709,16 @@ OAUTH2_PROVIDER = {
     "CLIENT_SECRET": SSO_CLIENT_SECRET,
     "AUTHORIZE_URL": "/".join([EVENTYAY_TICKET_BASE_PATH, "control/oauth2/authorize/"]),
     "ACCESS_TOKEN_URL": "/".join([EVENTYAY_TICKET_BASE_PATH, "control/oauth2/token/"]),
-    "REDIRECT_URI": "/".join([SITE_URL, BASE_PATH[1:], "oauth2/callback/"]),
+    "REDIRECT_URI": "/".join(
+        filter(
+            None,
+            [
+                SITE_URL.rstrip("/"),
+                BASE_PATH.strip("/") if BASE_PATH else "",
+                "oauth2/callback/",
+            ],
+        )
+    ),
     "SCOPE": ["profile"],
 }
 # Set default Application model if using default

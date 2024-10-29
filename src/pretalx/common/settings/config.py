@@ -148,6 +148,12 @@ CONFIG = {
             "env": os.getenv("PRETALX_TIME_ZONE"),
         },
     },
+    "files": {
+        "upload_limit": {
+            "default": 10,
+            "env": os.getenv("PRETALX_FILE_UPLOAD_LIMIT"),
+        }
+    },
 }
 
 

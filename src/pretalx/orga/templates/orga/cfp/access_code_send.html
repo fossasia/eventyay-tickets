@@ -1,5 +1,4 @@
 {% extends "orga/base.html" %}
-{% load bootstrap4 %}
 {% load compress %}
 {% load i18n %}
 {% load static %}
@@ -8,13 +7,7 @@
 
 {% block content %}
     <h2>{% translate "Send access code" %}</h2>
-    <form method="post">
-        {% csrf_token %}
-        {% bootstrap_form_errors form %}
-        {% bootstrap_form form layout="event" %}
 
-        {% include "orga/includes/submit_row.html" with submit_label=phrases.base.send %}
-
-    </form>
+    {% include "orga/includes/base_form.html" with submit_label=phrases.base.send %}
 
 {% endblock content %}

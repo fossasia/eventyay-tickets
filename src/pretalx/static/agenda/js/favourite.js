@@ -83,7 +83,6 @@ const toggleFavState = async () => {
 
 const pageSetup = async () => {
     setupRun = true
-    console.log('running page setup')
     eventSlug = window.location.pathname.split('/')[1]
     submissionId = window.location.pathname.split('/')[3]
     loggedIn = document.querySelector('#pretalx-messages').dataset.loggedIn === 'true'
@@ -98,6 +97,5 @@ const pageSetup = async () => {
     if (loggedIn) saveLocalFavs()
 }
 
-document.addEventListener('DOMContentLoaded', pageSetup)
-if (document.readyState === 'complete') pageSetup()
+onReady(pageSetup)
 setTimeout(() => { if (!setupRun) pageSetup() }, 500)

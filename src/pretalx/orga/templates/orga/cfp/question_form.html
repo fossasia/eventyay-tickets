@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
 {% load formset_tags %}
 {% load i18n %}
@@ -8,16 +7,23 @@
 
 {% block extra_title %}{% if form.instance.question %}{{ form.instance.question }}{% else %}{% translate "New question" %}{% endif %} :: {% endblock extra_title %}
 
-{% block content %}
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "orga/css/dragsort.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
+{% block scripts %}
     {% compress js %}
+        <script defer src="{% static "js/jquery.js" %}"></script>
         <script defer src="{% static "js/jquery.formset.js" %}"></script>
         <script defer src="{% static "cfp/js/animateFormset.js" %}"></script>
-        <script defer src="{% static "vendored/moment-with-locales.js" %}"></script>
-        <script defer src="{% static "vendored/moment-timezone-with-data-10-year-range.js" %}"></script>
-        <script defer src="{% static "vendored/datetimepicker/bootstrap-datetimepicker.js" %}"></script>
-        <script defer src="{% static "orga/js/datetimepicker.js" %}"></script>
         <script defer src="{% static "orga/js/questionForm.js" %}"></script>
+        <script defer src="{% static "orga/js/dragsort.js" %}"></script>
     {% endcompress %}
+{% endblock scripts %}
+
+{% block content %}
     <h2>
         {% if form.instance.question %}
             {% translate "Question" %}: {{ form.instance.question }}
@@ -27,7 +33,7 @@
     </h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {% bootstrap_form_errors form %}
+        {% include "common/forms/errors.html" %}
         {% if action == "edit" and question.answers.count %}
             <div class="alert alert-warning col-md-9 offset-md-3">
                 {% blocktranslate trimmed %}
@@ -57,76 +63,81 @@
             {% endif %}
         {% endif %}
 
-        {% bootstrap_field form.target layout="event" %}
-        {% bootstrap_field form.variant layout="event" %}
-        {% bootstrap_field form.question layout="event" %}
-        {% bootstrap_field form.help_text layout="event" %}
+        {{ form.target.as_field_group }}
+        {{ form.variant.as_field_group }}
+        {{ form.question.as_field_group }}
+        {{ form.help_text.as_field_group }}
         <div class="alert alert-info col-md-9 offset-md-3" id="alert-required-boolean">
             {% blocktranslate trimmed %}
                 If you mark a Yes/No question as required, it means that the user has to select Yes and No is not
                 accepted. If you want to allow both options, do not make this field required.
             {% endblocktranslate %}
         </div>
-        {% bootstrap_field form.is_public layout="event" %}
-        {% bootstrap_field form.contains_personal_data layout="event" %}
-        <span id="is-visible-to-reviewers">{% bootstrap_field form.is_visible_to_reviewers layout="event" %}</span>
+        {{ form.is_public.as_field_group }}
+        {{ form.contains_personal_data.as_field_group }}
+        <span id="is-visible-to-reviewers">{{ form.is_visible_to_reviewers.as_field_group }}</span>
         <fieldset class="limit-submission">
             <legend>{% translate "Limit to specific proposals" %}</legend>
             {% if form.tracks %}
-                <span class="limit-submission">{% bootstrap_field form.tracks layout="event" %}</span>
+                <span class="limit-submission">{{ form.tracks.as_field_group }}</span>
             {% endif %}
             {% if form.submission_types %}
-                <span class="limit-submission">{% bootstrap_field form.submission_types layout="event" %}</span>
+                <span class="limit-submission">{{ form.submission_types.as_field_group }}</span>
             {% endif %}
         </fieldset>
         <fieldset>
             <legend>{% translate "Input validation" %}</legend>
-            {% bootstrap_field form.question_required layout="event" %}
-            {% bootstrap_field form.deadline layout="event" %}
-            {% bootstrap_field form.freeze_after layout="event" %}
+            {{ form.question_required.as_field_group }}
+            {{ form.deadline.as_field_group }}
+            {{ form.freeze_after.as_field_group }}
             <span id="limit-length">
-                {% bootstrap_field form.min_length layout="event" %}
-                {% bootstrap_field form.max_length layout="event" %}
+                {{ form.min_length.as_field_group }}
+                {{ form.max_length.as_field_group }}
             </span>
             <span id="limit-number">
-                {% bootstrap_field form.min_number layout="event" %}
-                {% bootstrap_field form.max_number layout="event" %}
+                {{ form.min_number.as_field_group }}
+                {{ form.max_number.as_field_group }}
             </span>
             <span id="limit-date">
-                {% bootstrap_field form.min_date layout="event" %}
-                {% bootstrap_field form.max_date layout="event" %}
+                {{ form.min_date.as_field_group }}
+                {{ form.max_date.as_field_group }}
             </span>
             <span id="limit-datetime">
-                {% bootstrap_field form.min_datetime layout="event" %}
-                {% bootstrap_field form.max_datetime layout="event" %}
+                {{ form.min_datetime.as_field_group }}
+                {{ form.max_datetime.as_field_group }}
             </span>
         </fieldset>
 
         <fieldset id="answer-options">
             <legend>{% translate "Answer options" %}</legend>
-            <details class="col-md-9 offset-md-3 mb-3" {% if form.errors.options or form.errors.options_replace %}open{% endif %}>
+            <details class="col-md-9 offset-md-3 mb-3 hide-label" {% if form.errors.options or form.errors.options_replace %}open{% endif %}>
                 <summary>{% translate "Upload answer options" %}</summary>
                 <div class="pt-3"></div>
-                {% bootstrap_field form.options layout="event" %}
-                {% bootstrap_field form.options_replace layout="event" %}
+                {{ form.options.as_field_group }}
+                {{ form.options_replace.as_field_group }}
+                <hr>
             </details>
             <div class="formset" data-formset data-formset-prefix="{{ formset.prefix }}">
                 {{ formset.management_form }}
-                {% bootstrap_formset_errors formset %}
-                <div data-formset-body>
+                {{ formset.non_form_errors }}
+                <div data-formset-body dragsort-url="{{ form.instance.urls.base }}">
                     {% for form in formset %}
-                        <div data-formset-form>
+                        <div data-formset-form dragsort-id="{{ form.instance.id }}">
                             <div class="sr-only">
                                 {{ form.id }}
-                                {% bootstrap_field form.DELETE form_group_class="" layout="inline" %}
+                                {{ form.DELETE }}
                             </div>
-                            <div class="question-option-row flip ml-auto col-md-9">
-                                <div class="question-option-input{% if action == "view" %} disabled{% endif %}">
-                                    {% bootstrap_form_errors form %}
-                                    {% bootstrap_field form.answer layout="inline" form_group_class="" %}
+                            <div class="question-option-row flip ml-auto col-md-9 mb-2 d-flex hide-label">
+                                <div class="question-option-input w-100{% if action == "view" %} disabled{% endif %}">
+                                    {% include "common/forms/errors.html" %}
+                                    {{ form.answer.as_field_group }}
                                 </div>
                                 {% if action != "view" %}
-                                    <div class="question-option-delete">
+                                    <div class="question-option-delete d-flex align-items-start">
+                                        <button draggable="true" type="button" class="btn btn-primary ml-1 mr-1 dragsort-button" title="{% translate "Move item" %}">
+                                            <i class="fa fa-arrows"></i>
+                                        </button>
+
                                         <button type="button" class="btn btn-danger" data-formset-delete-button>
                                             <i class="fa fa-trash"></i>
                                         </button>
@@ -141,13 +152,13 @@
                         <div data-formset-form>
                         <div class="sr-only">
                         {{ formset.empty_form.id }}
-                        {% bootstrap_field formset.empty_form.DELETE form_group_class="" layout="inline" %}
+                        {{ formset.empty_form.DELETE }}
                         </div>
-                        <div class="question-option-row flip ml-auto col-md-9">
-                        <div class="question-option-input">
-                        {% bootstrap_field formset.empty_form.answer layout="inline" form_group_class="" %}
+                        <div class="question-option-row flip ml-auto col-md-9 mb-2 d-flex hide-label">
+                        <div class="question-option-input w-100">
+                        {{ formset.empty_form.answer.as_field_group }}
                         </div>
-                        <div class="question-option-delete">
+                        <div class="question-option-delete ml-2">
                         <button type="button" class="btn btn-danger" data-formset-delete-button>
                         <i class="fa fa-trash"></i></button>
                         </div>

@@ -1,4 +1,3 @@
-{% load bootstrap4 %}
 {% load i18n %}
 {% load rules %}
 
@@ -7,8 +6,8 @@
       <fieldset>
         <legend>{% translate "SSO with Eventyay-ticket" %}</legend>
         {% csrf_token %}
-        {% bootstrap_field sso_client_form.client_id layout='event' %}
-        {% bootstrap_field sso_client_form.secret layout='event' %}
+        {{ sso_client_form.client_id.as_field_group }}
+        {{ sso_client_form.secret.as_field_group }}
         <div class="submit-group panel">
             <span></span>
             <span>

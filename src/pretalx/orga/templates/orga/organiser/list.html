@@ -1,10 +1,17 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
+{% load compress %}
 {% load i18n %}
 {% load rules %}
+{% load static %}
 
 {% block extra_title %}{% translate "Teams" %} :: {% endblock extra_title %}
+
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "orga/css/dashboard.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
 
 {% block content %}
     <form class="mb-4 m-2">

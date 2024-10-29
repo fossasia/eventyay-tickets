@@ -12,14 +12,21 @@ from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView, ListView, TemplateView, UpdateView, View
+from django.views.generic import (
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+    UpdateView,
+    View,
+)
 from django_context_decorator import context
 
 from pretalx.cfp.flow import CfPFlow
 from pretalx.common.forms import I18nFormSet
+from pretalx.common.text.phrases import phrases
 from pretalx.common.text.serialize import I18nStrJSONEncoder
 from pretalx.common.views import CreateOrUpdateView
-from pretalx.common.views.generic import OrderModelView
 from pretalx.common.views.mixins import (
     ActionConfirmMixin,
     ActionFromUrl,
@@ -55,6 +62,13 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     write_permission_required = "orga.edit_cfp"
 
     @context
+    def tablist(self):
+        return {
+            "general": _("General information"),
+            "fields": _("Fields"),
+        }
+
+    @context
     @cached_property
     def sform(self):
         return CfPSettingsForm(
@@ -86,9 +100,9 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
     @transaction.atomic
     def form_valid(self, form):
         if not self.sform.is_valid():
-            messages.error(self.request, _("We had trouble saving your input."))
+            messages.error(self.request, phrases.base.error_saving_changes)
             return self.form_invalid(form)
-        messages.success(self.request, "The CfP update has been saved.")
+        messages.success(self.request, phrases.base.saved)
         form.instance.event = self.request.event
         result = super().form_valid(form)
         if form.has_changed():
@@ -102,6 +116,18 @@ class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
 class CfPQuestionList(EventPermissionRequired, TemplateView):
     template_name = "orga/cfp/question_view.html"
     permission_required = "orga.view_question"
+
+    def post(self, request, *args, **kwargs):
+        order = request.POST.get("order")
+        if order:
+            order = order.split(",")
+        for index, pk in enumerate(order):
+            question = get_object_or_404(
+                Question.all_objects, event=request.event, pk=pk
+            )
+            question.position = index
+            question.save(update_fields=["position"])
+        return self.get(request, *args, **kwargs)
 
     @context
     def questions(self):
@@ -297,8 +323,22 @@ class CfPQuestionDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
                 "update" if "pk" in self.kwargs else "create"
             )
             form.instance.log_action(action, person=self.request.user, orga=True)
-        messages.success(self.request, "The question has been saved.")
+        messages.success(self.request, phrases.base.saved)
         return result
+
+    def post(self, request, *args, **kwargs):
+        order = request.POST.get("order")
+        if not order:
+            return super().post(request, *args, **kwargs)
+        order = order.split(",")
+        for index, pk in enumerate(order):
+            option = get_object_or_404(
+                self.question.options,
+                pk=pk,
+            )
+            option.position = index
+            option.save(update_fields=["position"])
+        return self.get(request, *args, **kwargs)
 
 
 class CfPQuestionDelete(PermissionRequired, ActionConfirmMixin, DetailView):
@@ -340,14 +380,6 @@ class CfPQuestionDelete(PermissionRequired, ActionConfirmMixin, DetailView):
         return redirect(self.request.event.cfp.urls.questions)
 
 
-class QuestionOrderView(OrderModelView):
-    permission_required = "orga.edit_question"
-    model = Question
-
-    def get_success_url(self):
-        return self.request.event.cfp.urls.questions
-
-
 class CfPQuestionToggle(PermissionRequired, View):
     permission_required = "orga.edit_question"
 
@@ -365,15 +397,15 @@ class CfPQuestionToggle(PermissionRequired, View):
         return redirect(question.urls.base)
 
 
-class CfPQuestionRemind(EventPermissionRequired, TemplateView):
+class CfPQuestionRemind(EventPermissionRequired, FormView):
     template_name = "orga/cfp/question_remind.html"
     permission_required = "orga.view_question"
+    form_class = ReminderFilterForm
 
-    @context
-    @cached_property
-    def filter_form(self):
-        data = None if self.request.method == "GET" else self.request.POST
-        return ReminderFilterForm(data, event=self.request.event)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["event"] = self.request.event
+        return kwargs
 
     @staticmethod
     def get_missing_answers(*, questions, person, submissions):
@@ -391,20 +423,18 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
                     missing.append(question)
         return missing
 
-    def post(self, request, *args, **kwargs):
-        if not self.filter_form.is_valid():
-            messages.error(request, _("Could not send mails, error in configuration."))
-            return redirect(request.path)
-        if not getattr(request.event, "question_template", None):
-            request.event.build_initial_data()
-        submissions = self.filter_form.get_submissions()
-        people = request.event.submitters.filter(submissions__in=submissions)
-        questions = (
-            self.filter_form.cleaned_data["questions"]
-            or self.filter_form.get_question_queryset()
-        )
+    def form_invalid(self, form):
+        messages.error(self.request, _("Could not send mails, error in configuration."))
+        return super().form_invalid(form)
+
+    def form_valid(self, form):
+        if not getattr(self.request.event, "question_template", None):
+            self.request.event.build_initial_data()
+        submissions = form.get_submissions()
+        people = self.request.event.submitters.filter(submissions__in=submissions)
+        questions = form.cleaned_data["questions"] or form.get_question_queryset()
         data = {
-            "url": request.event.urls.user_submissions.full(),
+            "url": self.request.event.urls.user_submissions.full(),
         }
         for person in people:
             missing = self.get_missing_answers(
@@ -414,13 +444,16 @@ class CfPQuestionRemind(EventPermissionRequired, TemplateView):
                 data["questions"] = "\n".join(
                     f"- {question.question}" for question in missing
                 )
-                request.event.question_template.to_mail(
+                self.request.event.question_template.to_mail(
                     person,
-                    event=request.event,
+                    event=self.request.event,
                     context=data,
                     context_kwargs={"user": person},
                 )
-        return redirect(request.event.orga_urls.outbox)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.request.event.orga_urls.outbox
 
 
 class SubmissionTypeList(EventPermissionRequired, PaginationMixin, ListView):
@@ -456,7 +489,7 @@ class SubmissionTypeDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView
         return result
 
     def form_valid(self, form):
-        messages.success(self.request, "The Submission Type has been saved.")
+        messages.success(self.request, phrases.base.saved)
         form.instance.event = self.request.event
         result = super().form_valid(form)
         if form.has_changed():
@@ -543,6 +576,16 @@ class TrackList(EventPermissionRequired, PaginationMixin, ListView):
     context_object_name = "tracks"
     permission_required = "orga.view_tracks"
 
+    def post(self, request, *args, **kwargs):
+        order = request.POST.get("order")
+        if order:
+            order = order.split(",")
+        for index, pk in enumerate(order):
+            track = get_object_or_404(Track.objects, event=request.event, pk=pk)
+            track.position = index
+            track.save(update_fields=["position"])
+        return self.get(request, *args, **kwargs)
+
     def get_queryset(self):
         return self.request.event.tracks.all()
 
@@ -571,7 +614,7 @@ class TrackDetail(PermissionRequired, ActionFromUrl, CreateOrUpdateView):
     def form_valid(self, form):
         form.instance.event = self.request.event
         result = super().form_valid(form)
-        messages.success(self.request, _("The track has been saved."))
+        messages.success(self.request, phrases.base.saved)
         if form.has_changed():
             action = "pretalx.track." + ("update" if self.object else "create")
             form.instance.log_action(action, person=self.request.user, orga=True)
@@ -652,7 +695,7 @@ class AccessCodeDetail(PermissionRequired, CreateOrUpdateView):
         if form.has_changed():
             action = "pretalx.access_code." + ("update" if self.object else "create")
             form.instance.log_action(action, person=self.request.user, orga=True)
-        messages.success(self.request, _("The access code has been saved."))
+        messages.success(self.request, phrases.base.saved)
         return result
 
 
@@ -748,7 +791,7 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
             "logo_image": (
                 self.request.event.logo.url if self.request.event.logo else None
             ),
-            "primary_color": self.request.event.get_primary_color(),
+            "primary_color": self.request.event.visible_primary_color,
             "locales": self.request.event.locales,
         }
         return ctx
@@ -765,11 +808,3 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
         else:
             flow.save_config(data)
         return JsonResponse({"success": True})
-
-
-class TrackOrderView(OrderModelView):
-    permission_required = "orga.edit_track"
-    model = Track
-
-    def get_success_url(self):
-        return self.request.event.cfp.urls.tracks

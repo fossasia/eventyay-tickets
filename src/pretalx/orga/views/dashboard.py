@@ -34,10 +34,6 @@ def start_redirect_view(request):
     return redirect(reverse("orga:event.list"))
 
 
-class StartView(TemplateView):
-    template_name = "orga/start.html"
-
-
 class DashboardEventListView(TemplateView):
     template_name = "orga/event_list.html"
 
@@ -59,18 +55,26 @@ class DashboardEventListView(TemplateView):
                     ]
                 ),
             )
-        )
+        ).order_by("-date_from")
         if search := self.request.GET.get("q"):
             qs = qs.filter(Q(name__icontains=search) | Q(slug__icontains=search))
         return qs
 
-    @context
-    def current_orga_events(self):
-        return [e for e in self.queryset if e.date_to >= now().date()]
-
-    @context
-    def past_orga_events(self):
-        return [e for e in self.queryset if e.date_to < now().date()]
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["current_orga_events"] = []
+        context["past_orga_events"] = []
+        for event in self.queryset:
+            if event.date_to >= now().date():
+                context["current_orga_events"].insert(0, event)
+            else:
+                context["past_orga_events"].append(event)
+        context["speaker_events"] = (
+            Event.objects.filter(submissions__speakers__in=[self.request.user])
+            .distinct()
+            .order_by("-date_from")
+        )
+        return context
 
 
 class DashboardOrganiserEventListView(PermissionRequired, DashboardEventListView):
@@ -79,6 +83,10 @@ class DashboardOrganiserEventListView(PermissionRequired, DashboardEventListView
     @property
     def base_queryset(self):
         return self.request.organiser.events.all()
+
+    @context
+    def hide_speaker_events(self):
+        return True
 
 
 class DashboardOrganiserListView(PermissionRequired, TemplateView):

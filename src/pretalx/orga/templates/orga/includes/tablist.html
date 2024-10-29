@@ -1,0 +1,13 @@
+{% load compress %}
+{% load static %}
+
+<div role="tablist">
+  {% for name, label in tablist.items %}
+    <input role="tab" type="radio" id="tab-{{ name }}" name="tablist" aria-controls="tabpanel-{{ name }}" {% if forloop.first %}aria-selected="true" checked{% else %}aria-selected="false"{% endif %}>
+    <label for="tab-{{ name }}">{{ label }}</label>
+  {% endfor %}
+</div>
+
+{% compress js %}
+  <script defer src="{% static "common/js/tabs.js" %}"></script>
+{% endcompress %}

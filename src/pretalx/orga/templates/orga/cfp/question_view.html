@@ -1,13 +1,24 @@
 {% extends "orga/base.html" %}
 
+{% load compress %}
 {% load i18n %}
 {% load static %}
 
 {% block extra_title %}{% translate "Questions" %} :: {% endblock extra_title %}
 
+
+{% block stylesheets %}
+    {% compress css %}
+        <link rel="stylesheet" href="{% static "common/css/dialog.css" %}">
+        <link rel="stylesheet" href="{% static "orga/css/dragsort.css" %}">
+    {% endcompress %}
+{% endblock stylesheets %}
+
 {% block scripts %}
-    <link rel="stylesheet" href="{% static "common/scss/modalDialog.css" %}">
-    <script defer src="{% static "common/js/modalDialog.js" %}"></script>
+    {% compress js %}
+        <script defer src="{% static "common/js/modalDialog.js" %}"></script>
+        <script defer src="{% static "orga/js/dragsort.js" %}"></script>
+    {% endcompress %}
 {% endblock scripts %}
 
 {% block content %}
@@ -52,9 +63,9 @@
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody dragsort-url="{{ request.event.cfp.urls.questions }}">
                 {% for question in questions %}
-                    <tr>
+                    <tr dragsort-id="{{ question.id }}">
                         <td>
                             <a href="{{ question.urls.base }}">{{ question.question }}</a>
                         </td>
@@ -71,10 +82,11 @@
                             </i>
                         </td>
                         <td class="numeric">{{ question.answer_count }}</td>
-                        <td class="action-column">
-
-                            {% include "orga/includes/order_object.html" with object=question %}
-                            <a href="{{ question.urls.edit }}" class="btn btn-sm btn-info" title="{{ phrases.base.edit }}">
+                        <td class="text-right">
+                            <button draggable="true" class="btn btn-sm btn-primary mr-1 dragsort-button" title="{% translate "Move item" %}">
+                                <i class="fa fa-arrows"></i>
+                            </button>
+                            <a href="{{ question.urls.edit }}" class="btn btn-sm btn-info mr-1" title="{{ phrases.base.edit }}">
                                 <i class="fa fa-edit"></i>
                             </a>
                             <a href="{{ question.urls.delete }}" class="btn btn-sm btn-danger" title="{{ phrases.base.delete_button }}">

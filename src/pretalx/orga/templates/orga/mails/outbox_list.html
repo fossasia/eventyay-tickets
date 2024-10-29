@@ -15,21 +15,19 @@
     </h2>
     <div class="submit-group">
         <span>
-
-            {% include "common/search_form.html" %}
-
+            {% include "common/includes/search_form.html" with omit_wrapper=True %}
         </span>
         <span>
             {% if is_paginated and page_obj.paginator.num_pages > 1 %}
                 <a href="{{ request.event.orga_urls.send_outbox }}?pks={% for mail in mails %}{{ mail.pk }}{% if not forloop.last %},{% endif %}{% endfor %}">
-                    <button class="btn btn-lg btn-outline-success">{% translate "Send all on this page" %}</button>
+                    <button class="btn btn-outline-success">{% translate "Send all on this page" %}</button>
                 </a>
             {% endif %}
             <a href="{{ request.event.orga_urls.send_outbox }}">
-                <button class="btn btn-lg btn-success">{% translate "Send all" %}</button>
+                <button class="btn btn-success">{% translate "Send all" %}</button>
             </a>
             <a href="{{ request.event.orga_urls.purge_outbox }}">
-                <button class="btn btn-lg btn-danger">{% translate "Discard all" %}</button>
+                <button class="btn btn-danger">{% translate "Discard all" %}</button>
             </a>
         </span>
     </div>
@@ -82,7 +80,7 @@
                                 {% endif %}
                             {% endif %}
                         </td>
-                        <td class="action-column">
+                        <td class="text-right">
                             <a href="{{ mail.urls.send }}" title="{{ phrases.base.send }}" class="btn btn-sm btn-success">
                                 <i class="fa fa-mail-forward"></i>
                             </a>

@@ -3,19 +3,19 @@
 {% load i18n %}
 {% load rich_text %}
 {% load static %}
+{% load thumbnail %}
 
 {% block agenda_content %}
-    {% include "agenda/header_row.html" %}
     <p></p>
     <article>
-        <section style="--track-color: {{ request.event.get_primary_color }}" class="pretalx-list-day">
+        <section style="--track-color: {{ request.event.visible_primary_color }}" class="pretalx-list-day">
             {% for speaker in speakers %}
                 <a href="{{ speaker.urls.public }}">
                     <div class="pretalx-session">
                         <div class="pretalx-session-time-box avatar">
                             <div class="avatar-wrapper">
                                 {% if speaker.user.avatar_url and request.event.cfp.request_avatar %}
-                                    <img loading="lazy" src="{{ speaker.user.avatar_url }}" alt="{% translate "The speaker’s profile picture" %}">
+                                    <img loading="lazy" src="{{ speaker.user.avatar|thumbnail:"default" }}" alt="{% translate "The speaker’s profile picture" %}">
                                 {% else %}
                                     <img loading="lazy" src="{{ request.event.urls.speakers }}avatar.svg" alt="{% translate "The speaker’s profile picture" %}">
                                 {% endif %}

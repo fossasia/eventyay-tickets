@@ -1,12 +1,15 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from pretalx.common.forms.fields import PasswordConfirmationField, PasswordField
+from pretalx.common.forms.fields import NewPasswordConfirmationField, NewPasswordField
+from pretalx.common.forms.renderers import InlineFormLabelRenderer, InlineFormRenderer
 from pretalx.common.text.phrases import phrases
 from pretalx.person.models import User
 
 
 class ResetForm(forms.Form):
+    default_renderer = InlineFormLabelRenderer
+
     login_email = forms.EmailField(
         max_length=60,
         label=phrases.base.enter_email,
@@ -25,8 +28,10 @@ class ResetForm(forms.Form):
 
 
 class RecoverForm(forms.Form):
-    password = PasswordField(label=phrases.base.new_password, required=False)
-    password_repeat = PasswordConfirmationField(
+    default_renderer = InlineFormRenderer
+
+    password = NewPasswordField(label=phrases.base.new_password, required=False)
+    password_repeat = NewPasswordConfirmationField(
         label=phrases.base.password_repeat,
         required=False,
         confirm_with="password",

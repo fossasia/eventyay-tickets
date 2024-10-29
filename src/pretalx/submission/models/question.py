@@ -273,8 +273,6 @@ class Question(OrderedModel, PretalxModel):
     class urls(EventUrls):
         base = "{self.event.cfp.urls.questions}{self.pk}/"
         edit = "{base}edit"
-        up = "{base}up"
-        down = "{base}down"
         delete = "{base}delete"
         toggle = "{base}toggle"
 
@@ -333,6 +331,7 @@ class AnswerOption(PretalxModel):
         to="submission.Question", on_delete=models.PROTECT, related_name="options"
     )
     answer = I18nCharField(verbose_name=_("Answer"))
+    position = models.IntegerField(default=0)
 
     objects = ScopedManager(event="question__event")
 
@@ -343,6 +342,9 @@ class AnswerOption(PretalxModel):
     def __str__(self):
         """Used in choice forms."""
         return str(self.answer)
+
+    class Meta:
+        ordering = ("position", "id")
 
 
 class Answer(PretalxModel):

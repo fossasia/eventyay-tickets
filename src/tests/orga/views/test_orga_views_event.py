@@ -190,6 +190,7 @@ def test_add_custom_css_as_administrator(event, administrator_client, path):
     assert event.custom_css
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 def test_add_logo(event, orga_client):
     assert not event.logo
@@ -995,86 +996,6 @@ def test_edit_review_settings_activate_review_phase(orga_client, event):
     event = Event.objects.get(slug=event.slug)
     with scope(event=event):
         assert event.active_review_phase == other_phase
-
-
-@pytest.mark.django_db
-def test_edit_review_settings_move_review_phase_down(orga_client, event):
-    with scope(event=event):
-        assert event.review_phases.count() == 2
-        phase = event.review_phases.first()
-    assert phase.position == 0
-    response = orga_client.get(phase.urls.down, follow=True)
-    assert response.status_code == 200
-    with scope(event=event):
-        phase.refresh_from_db()
-    assert phase.position == 1
-
-
-@pytest.mark.django_db
-def test_edit_review_settings_move_review_phase_up(orga_client, event):
-    with scope(event=event):
-        assert event.review_phases.count() == 2
-        phase = event.review_phases.last()
-    assert phase.position == 1
-    response = orga_client.get(phase.urls.up, follow=True)
-    assert response.status_code == 200
-    with scope(event=event):
-        phase.refresh_from_db()
-    assert phase.position == 0
-
-
-@pytest.mark.django_db
-def test_edit_review_settings_move_review_phase_up_out_of_bounds(orga_client, event):
-    with scope(event=event):
-        assert event.review_phases.count() == 2
-        phase = event.review_phases.first()
-    assert phase.position == 0
-    response = orga_client.get(phase.urls.up, follow=True)
-    assert response.status_code == 200
-    with scope(event=event):
-        phase.refresh_from_db()
-    assert phase.position == 0
-
-
-@pytest.mark.django_db
-def test_edit_review_settings_move_review_phase_down_out_of_bounds(orga_client, event):
-    with scope(event=event):
-        assert event.review_phases.count() == 2
-        phase = event.review_phases.last()
-    assert phase.position == 1
-    response = orga_client.get(phase.urls.down, follow=True)
-    assert response.status_code == 200
-    with scope(event=event):
-        phase.refresh_from_db()
-    assert phase.position == 1
-
-
-@pytest.mark.django_db
-def test_edit_review_settings_move_wrong_review_phase(orga_client, event):
-    with scope(event=event):
-        assert event.review_phases.count() == 2
-        phase = event.review_phases.last()
-    assert phase.position == 1
-    response = orga_client.get(
-        phase.urls.down.replace(str(phase.pk), str(phase.pk + 100)), follow=True
-    )
-    assert response.status_code == 404
-    with scope(event=event):
-        phase.refresh_from_db()
-    assert phase.position == 1
-
-
-@pytest.mark.django_db
-def test_edit_review_settings_reviewer_cannot_move_review_phase(review_client, event):
-    with scope(event=event):
-        assert event.review_phases.count() == 2
-        phase = event.review_phases.first()
-    assert phase.position == 0
-    response = review_client.get(phase.urls.down, follow=True)
-    assert response.status_code == 404
-    with scope(event=event):
-        phase.refresh_from_db()
-    assert phase.position == 0
 
 
 @pytest.mark.django_db

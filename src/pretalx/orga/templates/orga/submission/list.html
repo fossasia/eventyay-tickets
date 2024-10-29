@@ -1,14 +1,14 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load compress %}
+{% load event_tags %}
 {% load i18n %}
 {% load rules %}
 {% load static %}
 
 {% block scripts %}
     {% compress js %}
-        <script src="{% static "orga/js/submission_filter.js" %}"></script>
+        <script defer src="{% static "orga/js/submission_filter.js" %}"></script>
     {% endcompress %}
 {% endblock scripts %}
 
@@ -50,51 +50,25 @@
                 <a href="{{ request.event.orga_urls.new_submission }}" class="btn btn-info mt-2">
                     <i class="fa fa-plus"></i> {% translate "Add new session or proposal" %}
                 </a>
-                <a href="{{ request.event.orga_urls.submission_feed }}" title="{% translate "Proposal feed" %}">
-                    <i class="fa fa-feed ml-3 mb-2"></i>
+                <a class="btn btn-link" href="{{ request.event.orga_urls.submission_feed }}" title="{% translate "Proposal feed" %}">
+                    <i class="fa fa-feed"></i>
                 </a>
             {% endif %}
         </p>
     </h2>
 
-    <div class="submit-group search-submit-group">
-        <form class="search-form">
-            {% bootstrap_field filter_form.q %}
-            {% if show_submission_types and filter_form.submission_type %}{% bootstrap_field filter_form.submission_type %}{% endif %}
-            <div class="d-flex flex-column form-group">
-                {% bootstrap_field filter_form.state layout="inline" %}
-                <div id="pending" class="d-none">{% bootstrap_field filter_form.pending_state__isnull layout="inline" %}</div>
-            </div>
-            {% if filter_form.track %}{% bootstrap_field filter_form.track %}{% endif %}
-            {% if filter_form.tags %}{% bootstrap_field filter_form.tags %}{% endif %}
-            {% if filter_form.content_locale %}{% bootstrap_field filter_form.content_locale %}{% endif %}
-            {# These fields are hidden, but included to keep question search intact #}
-            {% if request.GET.question %} <input type="hidden" name="question" value="{{ request.GET.question }}"> {% endif %}
-            {% if request.GET.answer__options %} <input type="hidden" name="answer__options" value="{{ request.GET.answer__options }}"> {% endif %}
-            {% if request.GET.answer %} <input type="hidden" name="answer" value="{{ request.GET.answer }}"> {% endif %}
-            {% if request.GET.unanswered %} <input type="hidden" name="unanswered" value="{{ request.GET.unanswered }}"> {% endif %}
-
-            <button class="btn btn-success" type="submit">{% translate "Search" %}</button>
-        </form>
-        {% if filter_form.is_valid and filter_form.cleaned_data.question %}
-            <p class="text-muted ml-2">
-                <span class="fa fa-filter"></span>
-                {% blocktranslate trimmed with question=filter_form.cleaned_data.question.question %}
-                    List filtered by answers to question “{{ question }}”.
-                {% endblocktranslate %}
-                <a href="{% querystring question="" answer="" answer__options="" %}" class="text-muted">
-                    <span class="fa fa-times"></span>
-                    {% translate "Remove filter" %}
-                </a>
-            </p>
-        {% endif %}
-    </div>
+    {% include "orga/includes/submission_filter_form.html" %}
 
     <div class="table-responsive-sm">
         <table class="table table-sm table-hover table-flip table-sticky">
             <thead>
                 <tr>
-                    <th></th>
+                    <th>
+                        {% if request.event|get_feature_flag:"use_tracks" and filter_form.track %}
+                            <a href="{% querystring sort="track__name" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                            <a href="{% querystring sort="-track__name" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
+                        {% endif %}
+                    </th>
                     <th>
                         {% translate "Title" %}
                         <a href="{% querystring sort="title" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
@@ -104,6 +78,8 @@
                     {% if show_submission_types %}
                         <th>
                             {% translate "Type" %}
+                            <a href="{% querystring sort="submission_type__name" %}"><i class="fa fa-caret-down" title="{% translate "Sort (a-z)" %}"></i></a>
+                            <a href="{% querystring sort="-submission_type__name" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
                         </th>
                     {% endif %}
                     <th>
@@ -114,8 +90,8 @@
                     {% if can_change_submission %}
                         <th>
                             {% translate "Featured" %} <i class="fa fa-question-circle" data-toggle="tooltip" title="{% translate "Show this session on the list of featured sessions, once it was accepted" %}"></i>
-                            <a href="{% querystring sort="-is_featured" %}"><i class="fa fa-caret-down" title="{% translate "Sort (latest first)" %}"></i></a>
-                            <a href="{% querystring sort="is_featured" %}"><i class="fa fa-caret-up" title="{% translate "Sort (oldest first)" %}"></i></a>
+                            <a href="{% querystring sort="-is_featured" %}"><i class="fa fa-caret-down"></i></a>
+                            <a href="{% querystring sort="is_featured" %}"><i class="fa fa-caret-up"></i></a>
                         </th>
                         <th></th>
                     {% endif %}
@@ -125,7 +101,7 @@
                 {% for submission in submissions %}
                     <tr>
                         <td class="text-center">
-                            {% if request.event.feature_flags.use_tracks and submission.track %}
+                            {% if request.event|get_feature_flag:"use_tracks" and submission.track %}
                                 {% if not submission.is_anonymised %}
                                     <div class="color-square" style="background-color: {{ submission.track.color }}" title="{{ submission.track.name }}">
                                     </div>
@@ -151,7 +127,7 @@
                             <td>
                                 {% for speaker in submission.speakers.all %}
                                     <a href="{% url "orga:speakers.view" event=request.event.slug code=speaker.code %}">
-                                        {{ speaker.get_display_name }}
+                                        {% include "orga/includes/user_name.html" with user=speaker %}
                                     </a><br>
                                 {% endfor %}
                             </td>
@@ -175,10 +151,10 @@
                                     <label for="featured_{{ submission.code }}"></label>
                                 </div>
                                 <i class="working fa fa-spinner fa-spin d-none"></i>
-                                <i class="done fa fa-check d-none"></i>
+                                <i class="done fa fa-check d-none text-success"></i>
                                 <i class="fail fa fa-times d-none"></i>
                             </td>
-                            <td class="action-column">
+                            <td class="text-right">
                                 <a href="{{ submission.orga_urls.edit }}" title="{{ phrases.base.edit }}" class="btn btn-sm btn-info">
                                     <i class="fa fa-edit"></i>
                                 </a>

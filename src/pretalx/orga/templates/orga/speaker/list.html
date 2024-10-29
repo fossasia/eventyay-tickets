@@ -1,6 +1,5 @@
 {% extends "orga/base.html" %}
 
-{% load bootstrap4 %}
 {% load i18n %}
 {% load rules %}
 
@@ -16,13 +15,7 @@
         {% endblocktranslate %}
     </h2>
 
-    <div class="submit-group search-submit-group">
-        <form class="search-form">
-            {% bootstrap_form search_form %}
-            {% bootstrap_form filter_form %}
-            <button class="btn btn-info btn-search" type="submit">{% translate "Search" %}</button>
-        </form>
-    </div>
+    {% include "common/includes/search_form.html" %}
 
     {% if filter_form.is_valid and filter_form.cleaned_data.question %}
         <p class="text-muted ml-2">
@@ -53,12 +46,14 @@
                 {% for profile in speakers %}
                     <tr>
                         <td>
-                            <a href="{{ profile.orga_urls.base }}">{{ profile.user.get_display_name }}</a>
+                            <a href="{{ profile.orga_urls.base }}">
+                                {% include "orga/includes/user_name.html" with user=profile.user %}
+                            </a>
                         </td>
                         <td class="numeric">{{ profile.accepted_submission_count }}</td>
                         <td class="numeric">{{ profile.submission_count }}</td>
                         {% if can_mark_speaker or can_see_speaker_status %}
-                            <td class="action-column">
+                            <td class="text-right">
                                 {% if profile.accepted_submission_count %}
                                     {% if can_mark_speaker %}
                                         <a class="btn btn-sm btn-{{ profile.has_arrived|yesno:"success,info" }}" href="{{ profile.orga_urls.toggle_arrived }}?from=list">
