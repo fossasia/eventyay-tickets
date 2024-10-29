@@ -48,12 +48,12 @@ class QuestionForm(I18nModelForm):
     )
 
     def removeDesOption(self):
-        choices = self.fields['type'].choices
+        choices = list(self.fields['type'].choices)
         for value in choices:
             if value[0] == Question.TYPE_DESCRIPTION:
-                choices.pop(choices.index(value))
-                self.fields['type'].choices = choices
+                choices.remove(value)
                 break
+        self.fields['type'].choices = choices
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
