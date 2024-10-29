@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 
 import django.conf.locale
 import importlib_metadata
+from celery.schedules import crontab
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from kombu import Queue
@@ -733,6 +734,15 @@ CELERY_TASK_ROUTES = ([
     ('pretix.presale.style.*', {'queue': 'background'}),
     ('pretix.plugins.banktransfer.*', {'queue': 'background'}),
 ],)
+
+CELERY_BEAT_SCHEDULE = {
+    "billing_collect": {
+        "task": "pretix.eventyay_common.tasks.monthly_billing_collect",
+        "schedule": crontab(day_of_month=1, hour=0, minute=0),  # Runs at midnight on the 1st of every month
+    },
+}
+
+BILLING_REMINDER_SCHEDULE = [15, 29]  # Remind on the 15th and 28th day of the month
 
 BOOTSTRAP3 = {
     'success_css_class': '',
