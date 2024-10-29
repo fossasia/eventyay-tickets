@@ -68,7 +68,7 @@ def test_choose_between_events(device_client, device):
         assert resp.status_code == 200
         assert resp.data['event']['slug'] == 'e1'
     with freeze_time("2020-01-10T16:01:00+09:00"):
-        resp = device_client.get('/api/v1/device/eventselection?current_event=e1&current_checkinlist={cl1.pk}')
+        resp = device_client.get(f'/api/v1/device/eventselection?current_event=e1&current_checkinlist={cl1.pk}')
         assert resp.status_code == 200
         assert resp.data['event']['slug'] == 'e2'
         assert resp.data['checkinlist'] == cl2.pk
