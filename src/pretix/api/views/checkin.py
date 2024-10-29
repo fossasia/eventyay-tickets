@@ -330,8 +330,6 @@ def _redeem_process(*, checkinlists, raw_barcode, answers_data, datetime, force,
         }
 
     common_checkin_args = dict(
-        raw_barcode=raw_barcode,
-        raw_source_type=source_type,
         type=checkin_type,
         list=checkinlists[0],
         datetime=datetime,
@@ -503,19 +501,28 @@ def _redeem_process(*, checkinlists, raw_barcode, answers_data, datetime, force,
                 }, user=user, auth=auth)
                 Checkin.objects.create(
                     position=op,
-                    successful=False,
-                    error_reason=e.code,
-                    error_explanation='unkown',
                     **common_checkin_args,
                 )
+            downloads = CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data['downloads']
+
+            # Check if badges plugin is enabled
+            if 'pretix.plugins.badges' in op.order.event.plugins:
+                badge_url = f"/api/v1/organizers/{request.organizer.slug}/events/{op.order.event.slug}/orderpositions/{op.pk}/download/badge/"
+                downloads.append({
+                    "output": "badge",
+                    "url": badge_url
+                })
             return Response({
-                'status': 'error',
-                'reason': e.code,
+                'status': 'redeemed',
+                'reason': 'Already checked in',
                 'reason_explanation': 'unkown',
                 'require_attention': op.require_checkin_attention,
-                'position': CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data,
+                'position': {
+                    **CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data,
+                    'downloads': downloads
+                },
                 'list': MiniCheckinListSerializer(list_by_event[op.order.event_id]).data,
-            }, status=400)
+            }, status=201)
         else:
             downloads = CheckinListOrderPositionSerializer(op, context=_make_context(context, op.order.event)).data['downloads']
 
