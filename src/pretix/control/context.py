@@ -10,7 +10,8 @@ from django_scopes import scope
 from pretix.base.models.auth import StaffSession
 from pretix.base.settings import GlobalSettingsObject
 from pretix.control.navigation import (
-    get_event_navigation, get_global_navigation, get_organizer_navigation, get_admin_navigation,
+    get_admin_navigation, get_event_navigation, get_global_navigation,
+    get_organizer_navigation,
 )
 
 from ..helpers.i18n import (
