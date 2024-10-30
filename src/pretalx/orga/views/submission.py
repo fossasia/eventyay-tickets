@@ -109,6 +109,7 @@ The {event} orga crew"""
             locale=submission.content_locale,
         )
         mail.to_users.add(user)
+        mail.submissions.add(submission)
     return user
 
 
