@@ -1,5 +1,5 @@
 from django.utils.functional import cached_property
-from django.views.generic import TemplateView, ListView
+from django.views.generic import ListView, TemplateView
 
 from pretix.base.models import Organizer
 from pretix.control.forms.filter import OrganizerFilterForm

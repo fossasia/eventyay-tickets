@@ -2,9 +2,9 @@ from django.urls import include, re_path as url
 from django.views.generic.base import RedirectView
 
 from pretix.control.views import (
-    auth, checkin, dashboards, event, geo, global_settings, item, main, oauth,
-    orderimport, orders, organizer, organizer_views, pdf, search, shredder,
-    subevents, typeahead, user, users, vouchers, waitinglist, admin,
+    admin, auth, checkin, dashboards, event, geo, global_settings, item, main,
+    oauth, orderimport, orders, organizer, organizer_views, pdf, search,
+    shredder, subevents, typeahead, user, users, vouchers, waitinglist,
 )
 from pretix.control.views.auth import CustomAuthorizationView
 

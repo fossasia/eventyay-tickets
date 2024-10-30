@@ -293,7 +293,6 @@ def get_global_navigation(request):
     url = request.resolver_match
     if not url:
         return []
-    has_staff_session = request.user.has_active_staff_session(request.session.session_key)
     nav = [
         {
             'label': _('Dashboard'),
