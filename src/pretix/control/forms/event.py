@@ -294,6 +294,7 @@ class EventWizardCopyForm(forms.Form):
         self.session = kwargs.pop("session")
         kwargs.pop("has_subevents")
         self.user = kwargs.pop("user")
+        kwargs.pop("is_video_creation")
         super().__init__(*args, **kwargs)
 
         self.fields["copy_from_event"] = EventChoiceField(

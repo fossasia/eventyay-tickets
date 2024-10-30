@@ -16,6 +16,9 @@ logger = logging.getLogger(__name__)
 
 def get_event_domain(event, fallback=False, return_info=False):
     assert isinstance(event, Event)
+    if event.pk is None:
+        # Handle case where event is deleted
+        return (None, None) if return_info else None
     suffix = ('_fallback' if fallback else '') + ('_info' if return_info else '')
     domain = getattr(event, '_cached_domain' + suffix, None) or event.cache.get('domain' + suffix)
     if domain is None:
