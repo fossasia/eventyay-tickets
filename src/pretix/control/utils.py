@@ -15,8 +15,8 @@ def get_stripe_key(key_type: str) -> str:
     gs = GlobalSettingsObject()
 
     try:
-        prod_key = getattr(gs.settings, "payment_stripe_connect_{}_key".format(key_type))
-        test_key = getattr(gs.settings, "payment_stripe_connect_test_{}_key".format(key_type))
+        prod_key = getattr(gs.settings, "payment_stripe_connect_{}_key".format(key_type), None)
+        test_key = getattr(gs.settings, "payment_stripe_connect_test_{}_key".format(key_type), None)
     except AttributeError as e:
         raise ValidationError(
             "Missing attribute for Stripe {} key: {}. Please contact the administrator to set the Stripe key.".format(
