@@ -256,7 +256,7 @@ class EventCreateView(SafeSessionWizardView):
                 event.settings.set("create_for", create_for)
 
         # The user automatically creates a world when selecting the add video option in the create ticket form.
-        data = dict(
+        event_data = dict(
             id=basics_data.get("slug"),
             title=basics_data.get("name").data,
             timezone=basics_data.get("timezone"),
@@ -265,7 +265,7 @@ class EventCreateView(SafeSessionWizardView):
             token=generate_token(self.request),
         )
         create_world.delay(
-            is_video_creation=foundation_data.get("is_video_creation"), data=data
+            is_video_creation=foundation_data.get("is_video_creation"), event_data=event_data
         )
 
         return redirect(reverse("eventyay_common:events") + "?congratulations=1")
@@ -318,7 +318,7 @@ class EventUpdate(
         else:
             form.instance.is_video_creation = False
 
-        data = dict(
+        event_data = dict(
             id=form.cleaned_data.get("slug"),
             title=form.cleaned_data.get("name").data,
             timezone=self.sform.cleaned_data.get("timezone"),
@@ -328,7 +328,7 @@ class EventUpdate(
         )
 
         create_world.delay(
-            is_video_creation=form.cleaned_data.get("is_video_creation"), data=data
+            is_video_creation=form.cleaned_data.get("is_video_creation"), event_data=event_data
         )
 
     @transaction.atomic

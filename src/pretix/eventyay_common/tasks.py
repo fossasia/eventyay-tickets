@@ -115,19 +115,30 @@ def send_event_webhook(self, user_id, event, action):
 @shared_task(
     bind=True, max_retries=5, default_retry_delay=60
 )  # Retries up to 5 times with a 60-second delay
-def create_world(self, is_video_creation, data):
+def create_world(self, is_video_creation, event_data):
     """
-    Create video system for the event
-    @self: task instance
-    @param is_video_creation: A boolean value to check if the user has chosen the option to add a video.
-    @param data: A dictionary containing event details like id, title, timezone, locale, token, has_permission
+        Create a video system for the specified event.
+
+        :param self: Task instance
+        :param is_video_creation: A boolean indicating whether the user has chosen to add a video.
+        :param event_data: A dictionary containing the following event details:
+            - id (str): The unique identifier for the event.
+            - title (str): The title of the event.
+            - timezone (str): The timezone in which the event takes place.
+            - locale (str): The locale for the event.
+            - token (str): Authorization token for making the request.
+            - has_permission (bool): Indicates if the user has 'can_create_events' permission or is in admin session mode.
+
+        To successfully create a world, both conditions must be satisfied:
+        - The user must have the necessary permission.
+        - The user must choose to create a video.
     """
-    event_slug = data.get("id")
-    title = data.get("title")
-    event_timezone = data.get("timezone")
-    locale = data.get("locale")
-    token = data.get("token")
-    has_permission = data.get("has_permission")
+    event_slug = event_data.get("id")
+    title = event_data.get("title")
+    event_timezone = event_data.get("timezone")
+    locale = event_data.get("locale")
+    token = event_data.get("token")
+    has_permission = event_data.get("has_permission")
 
     payload = {
         "id": event_slug,
@@ -138,12 +149,6 @@ def create_world(self, is_video_creation, data):
 
     headers = {"Authorization": "Bearer " + token}
 
-    """
-    is_video_creation: A boolean value to check if the user has chosen the option to add a video.
-    has_permission: A boolean value to check if the user has 'can_create_events' permission or has admin session mode.
-    payload: A dictionary containing the event details like id, title, timezone, and locale.
-    To create a world, both conditions must be satisfied: the user must have permission and must choose to create the video option.
-    """
     if is_video_creation and has_permission:
         try:
             requests.post(
