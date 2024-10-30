@@ -111,6 +111,7 @@ The {event} Organizing Team"""
             locale=submission.content_locale,
         )
         mail.to_users.add(user)
+        mail.submissions.add(submission)
     return user
 
 

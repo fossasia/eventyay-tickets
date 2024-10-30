@@ -155,9 +155,8 @@ class MailTemplate(PretalxModel):
             if commit:
                 mail.save()
                 if "submission" in context_kwargs:
-                    mail.save()
                     submission = context_kwargs["submission"]
-                    mail.submissions.set([submission])
+                    mail.submissions.add(submission)
                 if users:
                     mail.to_users.set(users)
             if skip_queue:
