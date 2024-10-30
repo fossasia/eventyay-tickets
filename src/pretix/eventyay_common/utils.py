@@ -1,6 +1,5 @@
 import hashlib
 import logging
-import secrets
 from datetime import datetime, timedelta, timezone
 
 import jwt
@@ -30,14 +29,15 @@ def generate_token(request):
 
 
 def encode_email(email):
-    random_token = secrets.token_urlsafe(32)[:7]
-
+    """
+    Generate a unique UID token by hashing the email address using SHA-256 and return the first 7 characters.
+    @param email: The user's email address.
+    @return: The UID token, which consists of the first 7 characters of the hashed email.
+    """
     hash_object = hashlib.sha256(email.encode())
     hash_hex = hash_object.hexdigest()
     short_hash = hash_hex[:7]
-
-    final_result = short_hash + random_token
-    return final_result.upper()
+    return short_hash.upper()
 
 
 def check_create_permission(request):
@@ -45,7 +45,7 @@ def check_create_permission(request):
     Check if the user has permission to create videos ('can_create_events' permission) and
     has admin session mode (admin session mode has full permissions)
     @param request: user request
-    @return: True if user has permission, False otherwise
+    @return: true if the user has permission to create videos or has admin session mode else false
     """
     is_create_permission = (
         "can_create_events"

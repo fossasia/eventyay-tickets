@@ -119,8 +119,8 @@ def create_world(self, is_video_creation, data):
     """
     Create video system for the event
     @self: task instance
-    @param is_video_creation: allow user to add video system
-    @param data: event's data
+    @param is_video_creation: A boolean value to check if the user has chosen the option to add a video.
+    @param data: A dictionary containing event details like id, title, timezone, locale, token, has_permission
     """
     event_slug = data.get("id")
     title = data.get("title")
@@ -138,7 +138,12 @@ def create_world(self, is_video_creation, data):
 
     headers = {"Authorization": "Bearer " + token}
 
-    # Check if user choose add video option and has permission to create video system ('can_create_events' permission)
+    """
+    is_video_creation: A boolean value to check if the user has chosen the option to add a video.
+    has_permission: A boolean value to check if the user has 'can_create_events' permission or has admin session mode.
+    payload: A dictionary containing the event details like id, title, timezone, and locale.
+    To create a world, both conditions must be satisfied: the user must have permission and must choose to create the video option.
+    """
     if is_video_creation and has_permission:
         try:
             requests.post(
@@ -147,13 +152,13 @@ def create_world(self, is_video_creation, data):
                 headers=headers,
             )
         except requests.exceptions.ConnectionError as e:
-            logger.error(f"Connection error: {e}")
+            logger.error("Connection error: %s", str(e))
             raise self.retry(exc=e)
         except requests.exceptions.Timeout as e:
-            logger.error(f"Request timed out: {e}")
+            logger.error("Request timed out: %s", str(e))
             raise self.retry(exc=e)
         except requests.exceptions.RequestException as e:
-            logger.error(f"Request failed: {e}")
+            logger.error("Request failed: %s", str(e))
             raise self.retry(exc=e)
 
 
