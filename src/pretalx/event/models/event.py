@@ -964,7 +964,6 @@ class Event(PretalxModel):
         for i, phase in enumerate(phases):
             phase.position = i
             phase.save(update_fields=["position"])
-        del self.active_review_phase
 
     def update_review_phase(self):
         """This method activates the next review phase if the current one is
