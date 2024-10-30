@@ -38,10 +38,6 @@ def get_stripe_secret_key() -> str:
 def get_stripe_publishable_key() -> str:
     return get_stripe_key("publishable")
 
-
-stripe.api_key = get_stripe_secret_key()
-
-
 def handle_stripe_errors(operation_name: str):
     def decorator(func):
         @wraps(func)
@@ -117,6 +113,7 @@ def handle_stripe_errors(operation_name: str):
 
 @handle_stripe_errors("create_setup_intent")
 def create_setup_intent(customer_id: str) -> str:
+    stripe.api_key = get_stripe_secret_key()
     stripe_setup_intent = stripe.SetupIntent.create(
         customer=customer_id,
         payment_method_types=["card"],
@@ -148,6 +145,7 @@ def get_stripe_customer_id(organizer_slug: str) -> str:
 
 @handle_stripe_errors("create_stripe_customer")
 def create_stripe_customer(email: str, name: str):
+    stripe.api_key = get_stripe_secret_key()
     customer = stripe.Customer.create(
         email=email,
         name=name,
@@ -157,6 +155,7 @@ def create_stripe_customer(email: str, name: str):
 
 @handle_stripe_errors("update_payment_info")
 def update_payment_info(setup_intent_id: str, customer_id: str):
+    stripe.api_key = get_stripe_secret_key()
     setup_intent = get_setup_intent(setup_intent_id)
     payment_method = setup_intent.payment_method
     OrganizerBillingModel.objects.filter(stripe_customer_id=customer_id).update(
@@ -172,6 +171,7 @@ def update_payment_info(setup_intent_id: str, customer_id: str):
 
 @handle_stripe_errors("get_payment_method_info")
 def get_payment_method_info(stripe_customer_id: str):
+    stripe.api_key = get_stripe_secret_key()
     billing_settings = OrganizerBillingModel.objects.filter(
         stripe_customer_id=stripe_customer_id
     ).first()
@@ -185,12 +185,14 @@ def get_payment_method_info(stripe_customer_id: str):
 
 @handle_stripe_errors("update_customer_info")
 def update_customer_info(customer_id: str, email: str, name: str):
+    stripe.api_key = get_stripe_secret_key()
     updated_customer_info = stripe.Customer.modify(customer_id, email=email, name=name)
     return updated_customer_info
 
 
 @handle_stripe_errors("attach_payment_method_to_customer")
 def attach_payment_method_to_customer(payment_method_id: str, customer_id: str):
+    stripe.api_key = get_stripe_secret_key()
     attached_payment_method = stripe.PaymentMethod.attach(
         payment_method_id, customer=customer_id
     )
@@ -199,5 +201,6 @@ def attach_payment_method_to_customer(payment_method_id: str, customer_id: str):
 
 @handle_stripe_errors("get_setup_intent")
 def get_setup_intent(setup_intent_id: str):
+    stripe.api_key = get_stripe_secret_key()
     setup_intent = stripe.SetupIntent.retrieve(setup_intent_id)
     return setup_intent
