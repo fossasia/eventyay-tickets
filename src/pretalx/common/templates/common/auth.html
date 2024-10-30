@@ -25,19 +25,6 @@
 {% endcompress %}
 <div class="panel-group" id="accordion">
     {% if not hide_login %}
-        {% if request.event and request.event.organiser and request.event.organiser.slug %}
-            {% socialapp_exists request.event.organiser.slug as eventyay_exists %}
-            {% if eventyay_exists %}
-                {% if not no_buttons %}
-                <div class="text-center">
-                    <a class="btn btn-lg btn-primary btn-block mt-3" href="{% provider_login_url request.event.organiser.slug %}?next={{ request.path }}">
-                        {% translate "Login as Attendee with Eventyay-Ticket" %}
-                    </a>
-                </div>
-                <hr>
-                {% endif %}
-            {% endif %}
-        {% endif %}
         <div class="panel panel-default">
             <div class="panel-heading text-center" id="headingOne">
                 <a class="btn btn-lg btn-primary btn-block mt-3" href='{% url "eventyay_common:oauth2_provider.login" %}'>
