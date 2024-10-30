@@ -38,6 +38,7 @@ def get_stripe_secret_key() -> str:
 def get_stripe_publishable_key() -> str:
     return get_stripe_key("publishable")
 
+
 def handle_stripe_errors(operation_name: str):
     def decorator(func):
         @wraps(func)
