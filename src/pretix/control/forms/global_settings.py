@@ -147,6 +147,8 @@ class GlobalSettingsForm(SettingsForm):
                 forms.DecimalField(
                     label=_("Ticket fee percentage"),
                     required=False,
+                    decimal_places=2,
+                    max_digits=10,
                     help_text=_(
                         "A percentage fee will be charged for each ticket sold."
                     ),
