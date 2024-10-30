@@ -124,9 +124,9 @@ class BillingSettingsForm(forms.ModelForm):
             "If you are located in the EU, please provide your VAT ID. "
             "Without this, we will need to charge VAT on our services and will not be able to issue reverse charge invoices."
         ),
-        required=True,
         max_length=255,
         widget=forms.TextInput(attrs={"placeholder": ""}),
+        required=False,
     )
 
     def __init__(self, *args, **kwargs):

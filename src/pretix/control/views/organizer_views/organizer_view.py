@@ -1,5 +1,6 @@
 import logging
 
+import pyvat
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.files import File
@@ -34,6 +35,7 @@ from pretix.control.utils import (
     get_stripe_publishable_key, update_payment_info,
 )
 from pretix.control.views import PaginationMixin
+from pretix.helpers.countries import CachedCountries
 from pretix.presale.style import regenerate_organizer_css
 
 from ...forms.organizer_forms.organizer_form import BillingSettingsForm
@@ -362,11 +364,41 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
             ctx["is_general_information"] = False
         return ctx
 
+    @staticmethod
+    def get_country_name(country_code):
+        country = CachedCountries().countries
+        return country.get(country_code, None)
+
+    def validate_vat_number(self, country_code, vat_number):
+        try:
+            if country_code not in pyvat.VAT_REGISTRIES:
+                country_name = self.get_country_name(country_code)
+                messages.error(self.request, _("VAT validation not supported for country: %s" % str(country_name)))
+                return None
+            result = pyvat.is_vat_number_format_valid(vat_number, country_code)
+            return result
+        except Exception as e:
+            logger.error("Error validating VAT number: %s" % str(e))
+            return None
+
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         form = self.get_form()
 
         if form.is_valid():
+            cleaned_data = form.cleaned_data
+            country_code = cleaned_data.get("country")
+            vat_number = cleaned_data.get("tax_id")
+
+            if vat_number:
+                country_name = self.get_country_name(country_code)
+                is_valid_vat_number = self.validate_vat_number(country_code, vat_number)
+                if is_valid_vat_number is None:
+                    return self.form_invalid(form)
+                elif not is_valid_vat_number:
+                    messages.error(self.request, _("Invalid VAT number for country: %s" % str(country_name)))
+                    return self.form_invalid(form)
+
             try:
                 form.save()
                 messages.success(self.request, _("Your changes have been saved."))
