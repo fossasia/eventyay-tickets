@@ -463,14 +463,14 @@ class OrganizerBillingModel(models.Model):
         null=True,
     )
 
-    payment_method_id = models.CharField(
+    stripe_payment_method_id = models.CharField(
         max_length=255,
         verbose_name=_("Payment Method"),
         blank=True,
         null=True,
     )
 
-    setup_intent_id = models.CharField(
+    stripe_setup_intent_id = models.CharField(
         max_length=255,
         verbose_name=_("Setup Intent ID"),
         blank=True,
@@ -484,3 +484,4 @@ class OrganizerBillingModel(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.organizer.cache.clear()
+
