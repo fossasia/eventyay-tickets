@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`schedule,1874` The calendar parts of the public schedule (day of week, month) were always in English, even if another language was selected.
 - :bug:`orga` Dragging and dropping questions and other elements to change their order was broken in Google Chrome.
 - :bug:`orga:schedule` The HTML export did not work and exported only 404 pages.
 - :bug:`cfp` The upload of files with very long file names would fail instead of showing an error message. pretalx will now truncate the filename instead.
