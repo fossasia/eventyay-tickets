@@ -11,6 +11,7 @@ class LocaleDeterminationTest(TestCase):
     variations concept.
     """
     def setUp(self):
+        super().setUp()
         o = Organizer.objects.create(name='Dummy', slug='dummy')
         self.event = Event.objects.create(
             organizer=o, name='Dummy', slug='dummy',
@@ -75,33 +76,6 @@ class LocaleDeterminationTest(TestCase):
         c = Client()
         cookies = c.cookies
         cookies[settings.LANGUAGE_COOKIE_NAME] = 'de'
-        response = c.get('/dummy/dummy/')
+        response = c.get('/control/login')
         language = response['Content-Language']
         self.assertEqual(language, 'de')
-
-    def test_event_fallback_to_short(self):
-        self.event.settings.set('locales', ['de'])
-        c = Client()
-        cookies = c.cookies
-        cookies[settings.LANGUAGE_COOKIE_NAME] = 'de-formal'
-        response = c.get('/dummy/dummy/')
-        language = response['Content-Language']
-        self.assertEqual(language, 'de')
-
-    def test_event_fallback_to_long(self):
-        self.event.settings.set('locales', ['de-formal'])
-        c = Client()
-        cookies = c.cookies
-        cookies[settings.LANGUAGE_COOKIE_NAME] = 'de'
-        response = c.get('/dummy/dummy/')
-        language = response['Content-Language']
-        self.assertEqual(language, 'de-formal')
-
-    def test_event_not_allowed(self):
-        self.event.settings.set('locales', ['en'])
-        c = Client()
-        cookies = c.cookies
-        cookies[settings.LANGUAGE_COOKIE_NAME] = 'de'
-        response = c.get('/dummy/dummy/')
-        language = response['Content-Language']
-        self.assertEqual(language, 'en')

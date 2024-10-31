@@ -50,7 +50,7 @@ from . import (
     iframe_entry_view_wrapper,
 )
 
-package_name = 'pretix_venueless'
+package_name = 'pretix-venueless'
 
 if importlib.util.find_spec(package_name) is not None:
     pretix_venueless = import_module(package_name)
@@ -442,13 +442,23 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
             context['cart_redirect'] = self.request.path
 
         # Get event_name in language code
-        event_name = self.request.event.name.data.get(self.request.LANGUAGE_CODE)
-        if event_name is None:
-            # If event_name is not available in the language code, get event name in english
-            event_name = self.request.event.name.data.get('en')
-        if event_name is None and len(self.request.event.name.data) > 0:
-            # If event_name is not available in english, get the first available event name
-            event_name = next(iter(self.request.event.name.data.values()))
+        event_name_data = self.request.event.name.data
+
+        if isinstance(event_name_data, dict):
+            # If event_name_data is a dictionary, try to get the name based on LANGUAGE_CODE
+            event_name = event_name_data.get(self.request.LANGUAGE_CODE)
+
+            if event_name is None:
+                # If event_name is not available in the language code, get event name in English
+                event_name = event_name_data.get('en')
+
+            if event_name is None and len(event_name_data) > 0:
+                # If event_name is not available in English, get the first available event name
+                event_name = next(iter(event_name_data.values()))
+        else:
+            # If event_name_data is a string, use it directly
+            event_name = event_name_data
+
         context['event_name'] = event_name
 
         context['is_video_plugin_enabled'] = False
@@ -671,7 +681,7 @@ class JoinOnlineVideoView(EventViewMixin, View):
         }, status=200)
 
     def validate_access(self, request, *args, **kwargs):
-        if not self.request.customer:
+        if not hasattr(self.request, 'customer'):
             # Customer not logged in yet
             return False, None, None
         else:

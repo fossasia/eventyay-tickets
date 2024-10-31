@@ -44,12 +44,6 @@ class OAuthApplicationRegistrationView(ApplicationRegistration):
     def form_valid(self, form):
         form.instance.client_type = 'confidential'
         form.instance.authorization_grant_type = 'authorization-code'
-        secret = generate_client_secret()
-        messages.success(self.request, _('Your application has been successfully created, '
-                                         'and a unique application secret has been generated.  '
-                                         'Please copy and save this secret immediately, '
-                                         'as it will not be displayed again: {secret}').format(secret=secret))
-        form.instance.client_secret = secret
         oauth_application_registered.send(
             sender=self.request, user=self.request.user, application=form.instance
         )
@@ -59,14 +53,18 @@ class OAuthApplicationRegistrationView(ApplicationRegistration):
 class ApplicationUpdateForm(forms.ModelForm):
     class Meta:
         model = OAuthApplication
-        fields = ("name", "client_id", "redirect_uris")
+        fields = ("name", "client_id", "client_secret", "redirect_uris")
 
     def clean_client_id(self):
         return self.instance.client_id
 
+    def clean_client_secret(self):
+        return self.instance.client_secret
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['client_id'].widget.attrs['readonly'] = True
+        self.fields['client_secret'].widget.attrs['readonly'] = True
 
 
 class OAuthApplicationUpdateView(ApplicationUpdate):
@@ -84,10 +82,8 @@ class OAuthApplicationRollView(ApplicationDetail):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        secret = generate_client_secret()
-        messages.success(request, _('Please copy and save this secret immediately, as it will '
-                                    'not be displayed again: {secret}').format(secret=secret))
-        self.object.client_secret = secret
+        messages.success(request, _('A new client secret has been generated and is now effective.'))
+        self.object.client_secret = generate_client_secret()
         self.object.save()
         return HttpResponseRedirect(self.object.get_absolute_url())
 

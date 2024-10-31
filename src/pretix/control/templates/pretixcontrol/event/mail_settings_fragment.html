@@ -35,15 +35,9 @@
                                     {% bootstrap_field field show_label=False form_group_class="" %}
                                 </div>
                                 <div id="{{ item }}_preview" class="tab-pane mail-preview-group">
-                                    {% if request.event %}
-                                        {% for l in request.event.settings.locales %}
-                                            <div lang="{{ l }}" for="{{ item }}" class="mail-preview"></div>
-                                        {% endfor %}
-                                    {% else %}
-                                        {% for l in request.organizer.settings.locales %}
-                                            <div lang="{{ l }}" for="{{ item }}" class="mail-preview"></div>
-                                        {% endfor %}
-                                    {% endif %}
+                                    {% for l in request.event.settings.locales %}
+                                        <div lang="{{ l }}" for="{{ item }}" class="mail-preview"></div>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>

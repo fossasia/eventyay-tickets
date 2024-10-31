@@ -16,6 +16,9 @@ logger = logging.getLogger(__name__)
 
 def get_event_domain(event, fallback=False, return_info=False):
     assert isinstance(event, Event)
+    if event.pk is None:
+        # Handle case where event is deleted
+        return (None, None) if return_info else None
     suffix = ('_fallback' if fallback else '') + ('_info' if return_info else '')
     domain = getattr(event, '_cached_domain' + suffix, None) or event.cache.get('domain' + suffix)
     if domain is None:
@@ -170,7 +173,7 @@ def build_join_video_url(event, order):
 
 def generate_token_url(event, order, position):
     # If customer has account, use customer code to generate token
-    if order.customer:
+    if hasattr(order, 'customer') and order.customer:
         video_url = generate_token(event, order.customer.identifier, position)
     else:
         # else user position Id to generate token
