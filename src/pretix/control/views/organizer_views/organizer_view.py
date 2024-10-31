@@ -12,11 +12,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import (
-    CreateView,
-    DetailView,
-    FormView,
-    ListView,
-    UpdateView,
+    CreateView, DetailView, FormView, ListView, UpdateView,
 )
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -26,24 +22,16 @@ from pretix.base.models.organizer import Organizer, OrganizerBillingModel, Team
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.control.forms.filter import EventFilterForm, OrganizerFilterForm
 from pretix.control.forms.organizer_forms import (
-    OrganizerDeleteForm,
-    OrganizerForm,
-    OrganizerSettingsForm,
+    OrganizerDeleteForm, OrganizerForm, OrganizerSettingsForm,
     OrganizerUpdateForm,
 )
 from pretix.control.permissions import (
-    AdministratorPermissionRequiredMixin,
-    OrganizerPermissionRequiredMixin,
+    AdministratorPermissionRequiredMixin, OrganizerPermissionRequiredMixin,
 )
 from pretix.control.signals import nav_organizer
 from pretix.control.utils import (
-    create_setup_intent,
-    create_stripe_customer,
-    get_payment_method_info,
-    get_setup_intent,
-    get_stripe_customer_id,
-    get_stripe_publishable_key,
-    update_payment_info,
+    create_setup_intent, get_payment_method_info, get_stripe_customer_id,
+    get_stripe_publishable_key, update_payment_info,
 )
 from pretix.control.views import PaginationMixin
 from pretix.presale.style import regenerate_organizer_css
@@ -52,6 +40,7 @@ from ...forms.organizer_forms.organizer_form import BillingSettingsForm
 from .organizer_detail_view_mixin import OrganizerDetailViewMixin
 
 logger = logging.getLogger(__name__)
+
 
 class OrganizerCreate(CreateView):
     model = Organizer
