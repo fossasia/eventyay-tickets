@@ -13,7 +13,7 @@ from pretalx.common.exceptions import SendMailException
 from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import get_mail_context
-from pretalx.mail.signals import queuedmail_post_send
+from pretalx.mail.signals import queuedmail_post_send, queuedmail_pre_send
 
 
 def get_prefixed_subject(event, subject):
@@ -308,22 +308,27 @@ class QueuedMail(PretalxModel):
         to = self.to.split(",") if self.to else []
         if self.id:
             to += [user.email for user in self.to_users.all()]
-        mail_send_task.apply_async(
-            kwargs={
-                "to": to,
-                "subject": self.prefixed_subject,
-                "body": text,
-                "html": body_html,
-                "reply_to": (self.reply_to or "").split(","),
-                "event": self.event.pk if has_event else None,
-                "cc": (self.cc or "").split(","),
-                "bcc": (self.bcc or "").split(","),
-                "attachments": self.attachments,
-            },
-            ignore_result=True,
-        )
+            queuedmail_pre_send.send(
+                sender=self.event,
+                mail=self,
+            )
+        if self.sent is None:
+            mail_send_task.apply_async(
+                kwargs={
+                    "to": to,
+                    "subject": self.prefixed_subject,
+                    "body": text,
+                    "html": body_html,
+                    "reply_to": (self.reply_to or "").split(","),
+                    "event": self.event.pk if has_event else None,
+                    "cc": (self.cc or "").split(","),
+                    "bcc": (self.bcc or "").split(","),
+                    "attachments": self.attachments,
+                },
+                ignore_result=True,
+            )
+            self.sent = now()
 
-        self.sent = now()
         if self.pk:
             self.log_action(
                 "pretalx.mail.sent",
