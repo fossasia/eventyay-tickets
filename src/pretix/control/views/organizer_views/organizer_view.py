@@ -378,7 +378,7 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
             result = pyvat.is_vat_number_format_valid(vat_number, country_code)
             return result
         except Exception as e:
-            logger.error("Error validating VAT number: %s",str(e))
+            logger.error("Error validating VAT number: %s", str(e))
             return None
 
     @transaction.atomic
