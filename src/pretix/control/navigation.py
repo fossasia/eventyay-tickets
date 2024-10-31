@@ -448,6 +448,14 @@ def get_organizer_navigation(request):
                     }),
                     'active': 'organizer.webhook' in url.url_name,
                     'icon': 'bolt',
+                },
+                {
+                    "label": _("Billing settings"),
+                    "url": reverse(
+                        "control:organizer.settings.billing",
+                        kwargs={"organizer": request.organizer.slug},
+                    ),
+                    "active": url.url_name == "organizer.settings.billing",
                 }
             ]
         })

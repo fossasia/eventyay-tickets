@@ -445,3 +445,75 @@ class OrganizerFooterLinkModel(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.organizer.cache.clear()
+
+
+class OrganizerBillingModel(models.Model):
+    """
+    Billing model - support billing information for organizer
+    """
+
+    organizer = models.ForeignKey(
+        "Organizer", on_delete=models.CASCADE, related_name="billing"
+    )
+
+    primary_contact_name = models.CharField(
+        max_length=255,
+        verbose_name=_("Primary Contact Name"),
+    )
+
+    primary_contact_email = models.EmailField(
+        max_length=255,
+        verbose_name=_("Primary Contact Email"),
+    )
+
+    company_or_organization_name = models.CharField(
+        max_length=255,
+        verbose_name=_("Company or Organization Name"),
+    )
+
+    address_line_1 = models.CharField(
+        max_length=255,
+        verbose_name=_("Address Line 1"),
+    )
+
+    address_line_2 = models.CharField(
+        max_length=255,
+        verbose_name=_("Address Line 2"),
+    )
+
+    city = models.CharField(
+        max_length=255,
+        verbose_name=_("City"),
+    )
+
+    zip_code = models.CharField(
+        max_length=255,
+        verbose_name=_("Zip Code"),
+    )
+
+    country = models.CharField(
+        max_length=255,
+        verbose_name=_("Country"),
+    )
+
+    preferred_language = models.CharField(
+        max_length=255,
+        verbose_name=_("Preferred Language"),
+    )
+
+    tax_id = models.CharField(
+        max_length=255,
+        verbose_name=_("Tax ID"),
+    )
+
+    payment_information = models.TextField(
+        verbose_name=_("Payment Information"),
+    )
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self.organizer.cache.clear()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.organizer.cache.clear()

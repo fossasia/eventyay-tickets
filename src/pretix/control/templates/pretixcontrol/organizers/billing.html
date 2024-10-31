@@ -1,0 +1,40 @@
+{% extends "pretixcontrol/event/settings_base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load static %}
+{% load hierarkey_form %}
+{% load formset_tags %}
+{% block title %}{% trans "General settings" %}{% endblock %}
+{% block custom_header %}
+    {{ block.super }}
+    <link type="text/css" rel="stylesheet" href="{% url "control:pdf.css" %}">
+{% endblock %}
+
+{% block inside %}
+    <h1>{% trans "Billing settings" %}</h1>
+    <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        <div class="tabbed-form">
+            <fieldset>
+                <legend>{% trans "General" %}</legend>
+                {% bootstrap_field form.primary_contact_name layout="control" %}
+                {% bootstrap_field form.primary_contact_email layout="control" %}
+                {% bootstrap_field form.company_or_organization_name layout="control" %}
+                {% bootstrap_field form.address_line_1 layout="control" %}
+                {% bootstrap_field form.address_line_2 layout="control" %}
+                {% bootstrap_field form.zip_code layout="control" %}
+                {% bootstrap_field form.city layout="control" %}
+                {% bootstrap_field form.country layout="control" %}
+                {% bootstrap_field form.tax_id layout="control" %}
+                {% bootstrap_field form.preferred_language layout="control" %}
+                {% bootstrap_field form.payment_information layout="control" %}
+            </fieldset>
+            <div class="form-group submit-group">
+                <button type="submit" class="btn btn-primary btn-save">
+                    {% trans "Save" %}
+                </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

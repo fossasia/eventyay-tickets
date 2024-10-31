@@ -1,5 +1,7 @@
+import logging
+
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.files import File
 from django.db import transaction
 from django.db.models import Max, Min, Prefetch, ProtectedError
@@ -14,7 +16,7 @@ from django.views.generic import (
 )
 
 from pretix.base.models.event import Event, EventMetaValue
-from pretix.base.models.organizer import Organizer, Team
+from pretix.base.models.organizer import Organizer, OrganizerBillingModel, Team
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.control.forms.filter import EventFilterForm, OrganizerFilterForm
 from pretix.control.forms.organizer import OrganizerFooterLink
@@ -29,7 +31,10 @@ from pretix.control.signals import nav_organizer
 from pretix.control.views import PaginationMixin
 from pretix.presale.style import regenerate_organizer_css
 
+from ...forms.organizer_forms.organizer_form import BillingSettingsForm
 from .organizer_detail_view_mixin import OrganizerDetailViewMixin
+
+logger = logging.getLogger(__name__)
 
 
 class OrganizerCreate(CreateView):
@@ -393,3 +398,46 @@ class OrganizerList(PaginationMixin, ListView):
     @cached_property
     def filter_form(self):
         return OrganizerFilterForm(data=self.request.GET, request=self.request)
+
+
+class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
+    model = OrganizerBillingModel
+    form_class = BillingSettingsForm
+    template_name = "pretixcontrol/organizers/billing.html"
+    permission = "can_change_organizer_settings"
+
+    def get_success_url(self):
+        return reverse(
+            "control:organizer.settings.billing",
+            kwargs={
+                "organizer": self.request.organizer.slug,
+            },
+        )
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["organizer"] = self.request.organizer
+        return kwargs
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(self.request, _("Your changes have been saved."))
+                return redirect(self.get_success_url())
+            except Exception as e:
+                logger.error("Error saving billing settings: %s", str(e))
+                messages.error(
+                    self.request,
+                    _("We could not save your changes. See below for details."),
+                )
+        else:
+            messages.error(
+                self.request,
+                _("We could not save your changes. See below for details."),
+            )
+
+        return self.form_invalid(form)

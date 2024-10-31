@@ -87,6 +87,11 @@ urlpatterns = [
         organizer_views.organizer_view.OrganizerMailSettings.as_view(), name='organizer.settings.mail'),
     url(r'^organizer/(?P<organizer>[^/]+)/settings/email/preview$',
         organizer_views.MailSettingsPreview.as_view(), name='organizer.settings.mail.preview'),
+    url(
+        r"^organizer/(?P<organizer>[^/]+)/settings/billing$",
+        organizer_views.organizer_view.BillingSettings.as_view(),
+        name="organizer.settings.billing",
+    ),
     url(r'^organizer/(?P<organizer>[^/]+)/delete$', organizer_views.organizer_view.OrganizerDelete.as_view(), name='organizer.delete'),
     url(r'^organizer/(?P<organizer>[^/]+)/settings/display$', organizer_views.organizer_view.OrganizerDisplaySettings.as_view(),
         name='organizer.display'),
