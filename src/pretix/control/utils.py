@@ -18,12 +18,14 @@ def get_stripe_key(key_type: str) -> str:
         prod_key = getattr(gs.settings, "payment_stripe_connect_{}_key".format(key_type), None)
         test_key = getattr(gs.settings, "payment_stripe_connect_test_{}_key".format(key_type), None)
     except AttributeError as e:
+        logger.error("Missing attribute for Stripe %s key: %s", key_type, str(e))
         raise ValidationError(
             "Missing attribute for Stripe {} key: {}. Please contact the administrator to set the Stripe key.".format(
                 key_type, str(e)),
         )
 
     if not prod_key and not test_key:
+        logger.error("No Stripe %s key found", key_type)
         raise ValidationError(
             "Please contact the administrator to set the Stripe {} key.".format(key_type)
         )
@@ -133,7 +135,7 @@ def get_stripe_customer_id(organizer_slug: str) -> str:
     if billing_settings and billing_settings.stripe_customer_id:
         return billing_settings.stripe_customer_id
 
-    logger.warning(
+    logger.error(
         "No billing settings or Stripe customer ID found for organizer %s",
         organizer_slug,
     )
