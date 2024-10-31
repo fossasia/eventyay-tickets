@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-10-20 19:51+0000\n"
-"PO-Revision-Date: 2024-06-14 13:54+0000\n"
+"PO-Revision-Date: 2024-10-30 14:07+0000\n"
 "Last-Translator: Hoi thao Khoa hoc <bantochuc@hoithaokhoahoc.vn>\n"
 "Language-Team: none\n"
 "Language: vi\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.18.2\n"
+"X-Generator: Weblate 5.6.2\n"
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
@@ -32,11 +32,11 @@ msgstr "Phiên này sẽ được ghi lại."
 
 #: pretalx/agenda/phrases.py:13
 msgid "View conference schedule"
-msgstr "Xem lịch trình hội thảo"
+msgstr "Xem chương trình hội thảo"
 
 #: pretalx/agenda/phrases.py:14
 msgid "View schedule preview"
-msgstr "Xem trước lịch trình"
+msgstr "Xem trước chương trình"
 
 #: pretalx/agenda/phrases.py:15
 msgid "Edit or view your proposals"
@@ -45,8 +45,8 @@ msgstr "Sửa hoặc xem các đề xuất tham luận"
 #: pretalx/agenda/templates/agenda/base.html:42
 msgid "This schedule-related page is non-public. Only organisers can see it."
 msgstr ""
-"Trang liên quan đến lịch trình này không công khai. Chỉ có Ban Tổ chức mới "
-"xem được."
+"Trang liên quan đến chương trình hội thảo hiện không công khai. Chỉ có Ban "
+"Tổ chức mới xem được."
 
 #: pretalx/agenda/templates/agenda/changelog_block.html:13
 msgid "We have new sessions!"
@@ -86,22 +86,29 @@ msgid ""
 "conference. Please keep in mind that this is not our full schedule. We will "
 "follow up with the full schedule in time, stay tuned!"
 msgstr ""
+"Chúng tôi đã lên một danh sách các phiên hội thảo thú vị để quý vị có hình "
+"dung ban đầu về hội thảo của chúng tôi. Xin lưu ý rằng đây chưa phải là "
+"chương trình đầy đủ. Chúng tôi sẽ cập nhật chương trình đầy đủ kịp thời, xin "
+"hãy kiên nhẫn chờ đợi!"
 
 #: pretalx/agenda/templates/agenda/featured.html:20
 msgid ""
 "In the near future you will see a curated list of sessions we’d like to show"
 " off here. Right now we are busy reviewing proposals.<br> Check back later!"
 msgstr ""
+"Không lâu nữa, quý vị sẽ thấy danh sách các phiên thuyết trình được chúng "
+"tôi lựa chọn và giới thiệu ở đây. Hiện tại, chúng tôi đang trong quá trình "
+"bình duyệt các đề xuất tham luận.<br> Vui lòng quay lại sau!"
 
 #: pretalx/agenda/templates/agenda/feed/description.html:5
 #, python-format
 msgid "A new %(event_name)s schedule has been released!"
-msgstr ""
+msgstr "Lịch trình Hội thảo %(event_name)s mới đã được phát hành!"
 
 #: pretalx/agenda/templates/agenda/feed/description.html:9
 #, python-format
 msgid "The first %(event_name)s schedule has been released!"
-msgstr ""
+msgstr "Chương trình đầu tiên của Hội thảo %(event_name)s đã được phát hành!"
 
 #: pretalx/agenda/templates/agenda/feedback.html:9
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:137
@@ -110,12 +117,14 @@ msgstr ""
 #: pretalx/orga/templates/orga/submission/feedbacks_list.html:16
 #: pretalx/submission/models/feedback.py:36
 msgid "Feedback"
-msgstr ""
+msgstr "Phản hồi"
 
 #: pretalx/agenda/templates/agenda/feedback.html:19
 msgid ""
 "This review is for you personally, not for all speakers in this session."
 msgstr ""
+"Bài đánh giá này chỉ dành cho cá nhân quý vị, không dành cho tất cả diễn giả "
+"trong phiên này."
 
 #: pretalx/agenda/templates/agenda/feedback_form.html:17
 msgid ""
@@ -123,14 +132,18 @@ msgid ""
 "presentation. Even a short review can prove valuable to a speaker! Please "
 "take the time and communicate your feedback in a constructive way."
 msgstr ""
+"Các bài bình duyệt là một công cụ hữu ích để diễn giả cải tiến nội dung và "
+"hình thức bài thuyết trình của mình. Ngay cả một bình duyệt ngắn cũng có giá "
+"trị đối với diễn giả! Hãy dành thời gian và truyền đạt phản hồi của quý vị "
+"với tinh thần xây dựng."
 
 #: pretalx/agenda/templates/agenda/feedback_form.html:24
 msgid "You can’t give feedback for this session at this time."
-msgstr ""
+msgstr "Hiện tại quý vị không thể đưa ra phản hồi cho phiên này."
 
 #: pretalx/agenda/templates/agenda/schedule.html:23
 msgid "Changelog"
-msgstr ""
+msgstr "Danh sác những thay đổi"
 
 #: pretalx/agenda/templates/agenda/schedule.html:77
 #, python-format
@@ -138,6 +151,9 @@ msgid ""
 "To see our schedule, please either enable JavaScript or go <a "
 "href=\"%(href)s\">here</a> for our NoJS schedule."
 msgstr ""
+"Để xem chương trình hội thảo, vui lòng bật JavaScript hoặc truy cập <a href="
+"\"%(href)s\">vào đây</a> để xem chương trình không có hiệu ứng JavaScript "
+"(NoJS)."
 
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:21
 #, python-format
@@ -146,16 +162,19 @@ msgid ""
 "personal scheduling, please enable JavaScript and go <a "
 "href=\"%(href)s\">here</a>."
 msgstr ""
+"Để xem chương trình của chúng tôi với đầy đủ chức năng, như chuyển đổi múi "
+"giờ và lập lịch trình cá nhân, vui lòng bật JavaScript và truy cập <a href=\""
+"%(href)s\">tại đây</a>."
 
 #: pretalx/agenda/templates/agenda/schedule_nojs.html:77
 #, python-format
 msgid "No sessions on %(weekday)s, %(current_day)s."
-msgstr ""
+msgstr "Không có phiên nào diễn ra vào  %(weekday)s, %(current_day)s."
 
 #: pretalx/agenda/templates/agenda/session_block.html:12
 #, python-format
 msgid "%(minutes)smin"
-msgstr ""
+msgstr "%(minutes)sphút"
 
 #: pretalx/agenda/templates/agenda/speaker.html:51
 #: pretalx/agenda/templates/agenda/speakers.html:18
@@ -163,13 +182,12 @@ msgstr ""
 #: pretalx/agenda/templates/agenda/talk.html:161
 #: pretalx/orga/templates/orga/submission/speakers.html:45
 msgid "The speaker’s profile picture"
-msgstr ""
+msgstr "Ảnh chân dung diễn giả"
 
 #: pretalx/agenda/templates/agenda/speaker.html:69
 msgid "Session"
 msgid_plural "Sessions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Phiên"
 
 #: pretalx/agenda/templates/agenda/talk.html:48
 msgid "Favourite this session"
@@ -177,44 +195,54 @@ msgstr "Đưa phiên này vào danh sách yêu thích"
 
 #: pretalx/agenda/templates/agenda/talk.html:49
 msgid "Remove this session from your favourites"
-msgstr ""
+msgstr "Loại phiên này khỏi danh mục yêu thích"
 
 #: pretalx/agenda/templates/agenda/talk.html:100
 msgid "This session’s header image"
-msgstr ""
+msgstr "Hình ảnh tiêu đề"
 
 #: pretalx/agenda/templates/agenda/talk.html:137
 msgid "See also:"
-msgstr ""
+msgstr "Xem thêm:"
 
 #: pretalx/agenda/templates/agenda/talk.html:174
 msgid "This speaker also appears in:"
-msgstr ""
+msgstr "Diễn giả này cũng thuyết trình ở phiên:"
 
 #: pretalx/agenda/views/schedule.py:175
 msgid "Our schedule is not live yet."
-msgstr ""
+msgstr "Chương trình hội thảo chưa được công bố."
 
 #: pretalx/agenda/views/schedule.py:228
 msgid ""
 "You're currently not logged in, so your favourited talks will only be stored"
 " locally in your browser."
 msgstr ""
+"Quý vị hiện chưa đăng nhập, vì vậy các phiên yêu thích của quý vị hiện mới "
+"chỉ lưu trữ tạm thời trên trình duyệt."
 
 #: pretalx/agenda/views/schedule.py:231
 msgid "Your favourites could only be saved locally in your browser."
-msgstr ""
+msgstr "Các phiên yêu thích chỉ có thể lưu ở trình duyệt trên máy tính này."
 
 #: pretalx/agenda/views/talk.py:117
 #, python-brace-format
 msgid "The session “{title}” at {event}"
-msgstr ""
+msgstr "Phiên “{title}” của Hội thảo {event}"
+
+#: pretalx/api/templates/rest_framework/api.html:18
+#: pretalx/orga/templates/orga/auth/base.html:29
+#: pretalx/orga/templates/orga/base.html:74
+msgid "The pretalx logo"
+msgstr "Logo của pretalx"
 
 #: pretalx/cfp/flow.py:348
 msgid ""
 "Your draft was saved. You can continue to edit it as long as the CfP is "
 "open."
 msgstr ""
+"Bản nháp của quý vị đã được lưu. Quý vị có thể tiếp tục chỉnh sửa cho đến "
+"khi nào hết hạn nộp đề xuất tham luận."
 
 #: pretalx/cfp/flow.py:353
 msgid ""
@@ -222,38 +250,46 @@ msgid ""
 "changes to it up to the submission deadline, and you will be notified of any"
 " changes or questions."
 msgstr ""
+"Chúc mừng quý vị đã nộp đề xuất thành công! Quý vị có thể tiếp tục chỉnh sửa "
+"cho đến hạn chót nộp đề xuất tham luận, và quý vị sẽ được thông báo về bất "
+"kỳ thay đổi hay câu hỏi nào."
 
 #: pretalx/cfp/flow.py:383
 msgid "Hey, nice to meet you!"
-msgstr ""
+msgstr "Xin kính chào quý vị!"
 
 #: pretalx/cfp/flow.py:388
 msgid ""
 "We’re glad that you want to contribute to our event with your proposal. "
 "Let’s get started, this won’t take long."
 msgstr ""
+"Chúng tôi rất vui khi biết quý vị muốn đóng góp cho hội thảo của chúng tôi "
+"qua đề xuất tham luận của mình. Xin hãy bắt đầu, các bước sẽ diễn ra nhanh "
+"chóng."
 
 #: pretalx/cfp/flow.py:447
 msgid "Tell us more!"
-msgstr ""
+msgstr "Vui lòng cho chúng tôi biết thêm!"
 
 #: pretalx/cfp/flow.py:452
 msgid "Before we can save your proposal, we have some more questions for you."
-msgstr ""
+msgstr "Chúng tôi có một số câu hỏi trước khi ghi nhận đề xuất của quý vị."
 
 #: pretalx/cfp/flow.py:476
 msgid ""
 "There was an error when logging in. Please contact the organiser for further"
 " help."
-msgstr ""
+msgstr "Có lỗi khi đăng nhập. Vui lòng liên hệ với Ban Tổ chức để được hỗ trợ."
 
 #: pretalx/cfp/flow.py:485
 msgid "Account"
-msgstr ""
+msgstr "Tài khoản"
 
 #: pretalx/cfp/flow.py:490
 msgid "That’s it about your proposal! We now just need a way to contact you."
 msgstr ""
+"Chúng tôi không yêu cầu gì thêm với đề xuất của quý vị! Bây giờ xin cho biết "
+"một cách để liên lạc với quý vị."
 
 #: pretalx/cfp/flow.py:496
 msgid ""
@@ -261,24 +297,29 @@ msgid ""
 "gives us a way to contact you, it also gives you the possibility to edit "
 "your proposal or to view its current state."
 msgstr ""
+"Để gửi một đề xuất tham luận, quý vị cần có một tài khoản trên trang này. "
+"Tài khoản này không chỉ cho phép chúng tôi liên hệ với quý vị mà còn cho quý "
+"vị khả năng chỉnh sửa đề xuất hoặc xem trạng thái hiện tại của đề xuất."
 
 #: pretalx/cfp/flow.py:538
 msgid "Profile"
-msgstr ""
+msgstr "Hồ sơ"
 
 #: pretalx/cfp/flow.py:542
 msgid "Tell us something about yourself!"
-msgstr ""
+msgstr "Xin cho biết đôi điều về quý vị!"
 
 #: pretalx/cfp/flow.py:547
 msgid ""
 "This information will be publicly displayed next to your session - you can "
 "always edit for as long as proposals are still open."
 msgstr ""
+"Thông tin này sẽ được hiển thị công khai bên cạnh phiên của quý vị - quý vị "
+"luôn có thể chỉnh sửa miễn là đề xuất vẫn còn mở."
 
 #: pretalx/cfp/phrases.py:7
 msgid "Go to CfP"
-msgstr ""
+msgstr "Xem Thông báo Nộp bài"
 
 #: pretalx/cfp/phrases.py:10
 msgid ""
@@ -287,61 +328,73 @@ msgid ""
 "instructions. If you don’t see the email within the next minutes, check your"
 " spam inbox!"
 msgstr ""
+"Nếu địa chỉ email này có trong danh sách người dùng (và họ không gửi yêu cầu "
+"đặt lại mật khẩu trong vòng 24 giờ qua), chúng tôi sẽ gửi cho quý vị một "
+"email có hướng dẫn thêm. Nếu quý vị không thấy email trong vòng vài phút "
+"tới, hãy kiểm tra hộp thư rác!"
 
 #: pretalx/cfp/phrases.py:14
 msgid ""
 "This link was not valid. Make sure you copied the complete URL from the "
 "email and that the email is no more than 24 hours old."
 msgstr ""
+"Liên kết này không hợp lệ. Hãy đảm bảo bạn đã sao chép toàn bộ URL từ email "
+"và email đã nhận cách đây không quá 24 giờ."
 
 #: pretalx/cfp/phrases.py:17
 msgid "Awesome! You can now log in using your new password."
-msgstr ""
+msgstr "Tuyệt vời! Quý vị có thể đăng nhập ngay bây giờ với mật khẩu mới."
 
 #: pretalx/cfp/phrases.py:19
 msgid ""
 "Your API token has been regenerated. The previous token will not be usable "
 "any longer."
-msgstr ""
+msgstr "Token API đã được khởi tạo. Token trước đây không còn dùng được nữa."
 
 #: pretalx/cfp/phrases.py:23
 msgid "Your proposal has been withdrawn."
-msgstr ""
+msgstr "Đề xuất tham luận của quý vị đã được thu hồi."
 
 #: pretalx/cfp/phrases.py:25
 msgid ""
 "Your proposal can’t be withdrawn at this time – please contact us if you "
 "need to withdraw your proposal!"
 msgstr ""
+"Diễn giả không thể thu hồi đề xuất tham luận vào lúc này – vui lòng liên hệ "
+"với chúng tôi nếu quý vị cần thu hồi đề xuất!"
 
 #: pretalx/cfp/phrases.py:28
 msgid "Your session has been confirmed – we’re looking forward to seeing you!"
 msgstr ""
+"Phiên của quý vị đã được chốt - chúng tôi mong được đón quý vị tại hội thảo!"
 
 #: pretalx/cfp/phrases.py:31
 msgid ""
 "This proposal has already been confirmed – we’re looking forward to seeing "
 "you!"
 msgstr ""
+"Phiên này vốn đã được chốt rồi - hân hạnh được chào đón quý vị tại hội thảo!"
 
 #: pretalx/cfp/phrases.py:34
 msgid ""
 "This proposal cannot be confirmed at this time – please contact us if you "
 "think this is an error."
 msgstr ""
+"Hiện tại không thể chốt phiên này - vui lòng liên lạc với chúng tôi nếu quý "
+"vị cho rằng đây là sai sót."
 
 #: pretalx/cfp/phrases.py:36
 msgid "This proposal cannot be edited anymore."
-msgstr ""
+msgstr "Đề xuất tham luận không còn chỉnh sửa được nữa."
 
 #: pretalx/cfp/phrases.py:38
 msgid "Speaker email"
-msgstr ""
+msgstr "Email của diễn giả"
 
 #: pretalx/cfp/phrases.py:39
 #, python-brace-format
 msgid "{speaker} invites you to join their session!"
-msgstr ""
+msgstr "Diễn giả {speaker} mời quý vị tham dự phiên thuyết trình của họ!"
 
 #: pretalx/cfp/phrases.py:41
 #, python-brace-format
@@ -359,24 +412,40 @@ msgid ""
 "I’m looking forward to it!\n"
 "{speaker}"
 msgstr ""
+"Kính thưa quý vị!\n"
+"\n"
+"Tôi trân trọng kính mời quý vị tham gia làm diễn giả của phiên hội thảo\n"
+"\n"
+"  “{title}”\n"
+"\n"
+"tại Hội thảo {event}. Vui lòng theo đường dẫn sau để tham dự:\n"
+"\n"
+"  {url}\n"
+"\n"
+"Tôi rất mong đợi được đồng hành cùng quý vị!\n"
+"Diễn giả {speaker}"
 
 #: pretalx/cfp/phrases.py:54
 msgid "Please provide a valid email address."
-msgstr ""
+msgstr "Vui lòng cung cấp một địa chỉ email hợp lệ."
 
 #: pretalx/cfp/phrases.py:55
 msgid "The invitation was sent!"
-msgstr ""
+msgstr "Lời mời đã được gửi!"
 
 #: pretalx/cfp/phrases.py:57
 msgid "You are now part of this proposal! Please fill in your profile below."
 msgstr ""
+"Quý vị hiện đang tham gia vào đề xuất tham luận này. Vui lòng tạo hồ sơ của "
+"quý vị dưới đây."
 
 #: pretalx/cfp/phrases.py:61
 msgid ""
 "We are experiencing difficulties when sending mails, but your session was "
 "submitted successfully!"
 msgstr ""
+"Chúng tôi đang gặp khó khăn khi gửi thư, nhưng phiên của quý vị đã được gửi "
+"thành công!"
 
 #. Translators: This string is used for headings and refers to the custom
 #. questions
@@ -386,7 +455,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/cfp/question_view.html:26
 #: pretalx/orga/templates/orga/submission/content.html:82
 msgid "Questions"
-msgstr ""
+msgstr "Câu hỏi"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:24
 #, python-format
@@ -394,44 +463,46 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
+"Quý vị có gửi đề xuất từ bây giờ cho đến %(deadline)s (%(timezone)s), "
+"%(until_string)s ."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:28
 #, python-format
 msgid "This Call for Papers closed on %(deadline)s (%(timezone)s)."
-msgstr ""
+msgstr "Thông báo Nộp bài đã hết hạn vào ngày %(deadline)s (%(timezone)s)."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:53
 msgid "Submit a proposal"
-msgstr ""
+msgstr "Gửi đề xuất"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:55 pretalx/cfp/views/wizard.py:45
 msgid "Proposals are closed"
-msgstr ""
+msgstr "Các đề xuất đã đóng"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:9
 #: pretalx/submission/models/submission.py:50
 msgid "accepted"
-msgstr ""
+msgstr "duyệt"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:11
 #: pretalx/submission/models/submission.py:51
 msgid "confirmed"
-msgstr ""
+msgstr "chốt"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:13
 #: pretalx/submission/models/submission.py:53
 msgid "canceled"
-msgstr ""
+msgstr "huỷ"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:15
 #: pretalx/submission/models/submission.py:54
 msgid "withdrawn"
-msgstr ""
+msgstr "thu hồi"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:5
 #: pretalx/cfp/templates/cfp/event/invitation.html:8
 msgid "Accept invitation?"
-msgstr ""
+msgstr "Nhận lời mời?"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:11
 msgid ""
@@ -439,10 +510,12 @@ msgid ""
 "because the invitation has expired, or because the proposal cannot be edited"
 " any more."
 msgstr ""
+"Rất tiếc, quý vị không thể chấp nhận lời mời vào lúc này. Có thể là do lời "
+"mời đã hết hạn hoặc do không thể chỉnh sửa đề xuất được nữa."
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:16
 msgid "Please contact the conference organizers for more information."
-msgstr ""
+msgstr "Vui lòng liên hệ với Ban Tổ chức để hỏi thêm thông tin."
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:20
 #, python-format
@@ -450,28 +523,30 @@ msgid ""
 "You, %(name)s, have been invited to be a speaker for the session “%(talk)s”."
 " Do you accept the invitation?"
 msgstr ""
+"Quý vị, %(name)s, đã được mời làm diễn giả cho phiên “%(talk)s”. Quý vị có "
+"chấp nhận lời mời này không?"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:28
 msgid "Abstract:"
-msgstr ""
+msgstr "Tóm tắt:"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:43
 #: pretalx/event/models/event.py:652 pretalx/submission/models/question.py:422
 #: pretalx/submission/models/submission.py:906
 msgid "No"
-msgstr ""
+msgstr "Không"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:44
 msgid "Accept invitation"
-msgstr ""
+msgstr "Nhận lời"
 
 #: pretalx/cfp/templates/cfp/event/login.html:5
 msgid "Login"
-msgstr ""
+msgstr "Đăng nhập"
 
 #: pretalx/cfp/templates/cfp/event/login.html:8
 msgid "Welcome back!"
-msgstr ""
+msgstr "Chào mừng quý vị quay lại!"
 
 #: pretalx/cfp/templates/cfp/event/login.html:10
 msgid ""
@@ -479,37 +554,42 @@ msgid ""
 " schedule updates. You’ll only need an account if you participate in the "
 "event as speaker or as an organiser."
 msgstr ""
+"Quý vị không cần tài khoản để xem sự kiện, gửi phản hồi hoặc nhận thông tin "
+"cập nhật về chương trình hội thảo. Quý vị chỉ cần tài khoản nếu quý vị tham "
+"gia sự kiện với tư cách là diễn giả hoặc thành viên Ban Tổ chức."
 
 #: pretalx/cfp/templates/cfp/event/login.html:17
 msgid ""
 "If you already created a proposal for a different event on this server, you "
 "can re-use your account to log in for this event."
 msgstr ""
+"Nếu quý vị đã tạo đề xuất cho một sự kiện khác trên máy chủ này, quý vị có "
+"thể sử dụng lại tài khoản của mình để đăng nhập vào sự kiện này."
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:10
 #: pretalx/orga/templates/orga/submission/content.html:27
 msgid "Create proposal"
-msgstr ""
+msgstr "Tạo đề xuất tham luận"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:34
 msgid "Done!"
-msgstr ""
+msgstr "Hoàn thành!"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:55
 msgid "Save as draft"
-msgstr ""
+msgstr "Ghi bản nháp"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:60
 msgid "Continue"
-msgstr ""
+msgstr "Tiếp tục"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:62
 msgid "Submit proposal!"
-msgstr ""
+msgstr "Gửi đề xuất!"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:66
 msgid "or save as draft for now"
-msgstr ""
+msgstr "hoặc tạm ghi bản nháp"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:67
 msgid ""
@@ -517,18 +597,21 @@ msgid ""
 "not be able to see your proposal, though they will be able to send you "
 "reminder emails about the upcoming deadline."
 msgstr ""
+"Quý vị có thể lưu đề xuất của mình dưới dạng bản nháp và gửi sau. Ban Tổ "
+"chức không thể xem được bản nháp, mặc dù họ có thể gửi cho quý vị email nhắc "
+"nhở về thời hạn sắp tới."
 
 #: pretalx/cfp/templates/cfp/event/submission_questions.html:13
 msgid "… about your proposal:"
-msgstr ""
+msgstr "... về đề xuất tham luận của quý vị:"
 
 #: pretalx/cfp/templates/cfp/event/submission_questions.html:21
 msgid "… about yourself:"
-msgstr ""
+msgstr "... về quý vị:"
 
 #: pretalx/cfp/templates/cfp/event/submission_user.html:8
 msgid "Sign in or register to save your draft"
-msgstr ""
+msgstr "Đăng nhập hoặc đăng ký để ghi bản nháp"
 
 #: pretalx/cfp/templates/cfp/event/submission_user.html:17
 msgid ""
@@ -536,11 +619,14 @@ msgid ""
 "will be able to send you reminders about your pending proposal draft closer "
 "to the deadline."
 msgstr ""
+"Ban Tổ chức sẽ không thể nhìn thấy bản nháp hoặc địa chỉ email của quý vị. "
+"Họ sẽ có thể gửi cho quý vị lời nhắc về bản nháp đề xuất đang chờ xử lý của "
+"bạn khi gần đến hạn chót."
 
 #: pretalx/cfp/templates/cfp/event/user_mails.html:4
 #: pretalx/cfp/templates/cfp/event/user_mails.html:7
 msgid "Your E-mails"
-msgstr ""
+msgstr "Địa chỉ email"
 
 #: pretalx/cfp/templates/cfp/event/user_mails.html:9
 msgid ""
@@ -548,33 +634,39 @@ msgid ""
 "them in your email inbox, but this page serves as a helper in case your "
 "email address was unavailable or the emails got lost in some way."
 msgstr ""
+"Đây là những email mà Ban tổ chức đã gửi cho quý vị, vì vậy quý vị có thể "
+"tìm thấy chúng trong hộp thư đến email của quý vị, nhưng trang này sẽ hữu "
+"ích trong trường hợp địa chỉ email của quý vị gặp trục trặc hoặc email bị "
+"thất lạc vì lý do nào đó."
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:7
 #: pretalx/cfp/templates/cfp/event/user_profile.html:21
 msgid "Your Profile"
-msgstr ""
+msgstr "Hồ sơ"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:23
 msgid ""
 "This data will be displayed publicly if your proposal is accepted. It is "
 "also visible to reviewers."
 msgstr ""
+"Dữ liệu này sẽ được hiển thị công khai nếu đề xuất của quý vị được duyệt. "
+"Người bình duyệt cũng có thể xem được."
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:51
 msgid "We have some questions"
-msgstr ""
+msgstr "Chúng tôi có một số câu hỏi"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:66
 msgid "Your Account"
-msgstr ""
+msgstr "Tài khoản"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:67
 msgid "You can change your log in data here."
-msgstr ""
+msgstr "Quý vị có thể thay đổi dữ liệu đăng nhập ở đây."
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:88
 msgid "Account deletion"
-msgstr ""
+msgstr "Xoá tài khoản"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:93
 msgid ""
@@ -582,26 +674,34 @@ msgid ""
 "information will be overwritten. <strong>This action is "
 "irreversible.</strong>"
 msgstr ""
+"Quý vị có thể xóa tài khoản của mình tại đây – tất cả tên, email và thông "
+"tin cá nhân khác sẽ bị ghi đè. <strong>Tác vụ này không thể phục hồi lại "
+"được.</strong>"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:99
 msgid ""
 "I really do want to delete my account, losing access to my proposals and "
 "sessions, and overriding my public and private data."
 msgstr ""
+"Tôi thực sự muốn xóa tài khoản của mình, mất quyền truy cập vào các đề xuất "
+"và phiên họp, cũng như ghi đè lên dữ liệu công khai và riêng tư của mình."
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:106
 msgid "Delete my account"
-msgstr ""
+msgstr "Xoá tài khoản của tôi"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:19
 msgid "Congratulations on your acceptance!"
-msgstr ""
+msgstr "Chúc mừng bài của quý vị đã được duyệt!"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:23
 msgid ""
 "Please provide us with your available hours during the event, so that we can"
 " schedule your event accordingly:"
 msgstr ""
+"Vui lòng cung cấp cho chúng tôi thời gian không vướng bận của quý vị trong "
+"những ngày diễn ra hội thảo để chúng tôi cố gắng sắp xếp phiên của quý vị "
+"cho phù hợp:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:39
 msgid ""
@@ -610,22 +710,26 @@ msgid ""
 "proposal data, such as title, abstract, description, and any uploads you "
 "provided, can be made publicly available once the proposal is confirmed."
 msgstr ""
+"Với việc xác nhận đề xuất của mình, quý vị đồng ý rằng quý vị có khả năng và "
+"sẵn sàng tham gia sự kiện này và trình bày nội dung của đề xuất này. Dữ liệu "
+"đề xuất, chẳng hạn như tiêu đề, tóm tắt, mô tả và bất kỳ nội dung tải lên "
+"nào quý vị cung cấp, có thể được công khai sau khi đề xuất được duyệt."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:49
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:121
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:22
 msgid "Withdraw"
-msgstr ""
+msgstr "Thu hồi"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm.html:52
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:132
 msgid "Confirm"
-msgstr ""
+msgstr "Xác nhận"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:7
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:11
 msgid "Proposal not found"
-msgstr ""
+msgstr "Không tìm thấy đề xuất"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_confirm_error.html:13
 msgid ""
@@ -633,58 +737,63 @@ msgid ""
 "belong to the account you’re currently logged in with. Try logging in with a"
 " different account, or contact the event organisers for further information."
 msgstr ""
+"Đề xuất quý vị đang cố gắng xác nhận không tồn tại hoặc không thuộc về tài "
+"khoản quý vị hiện đang đăng nhập. Hãy thử đăng nhập bằng một tài khoản khác "
+"hoặc liên hệ với Ban Tổ chức sự kiện để biết thêm thông tin."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_discard.html:15
 msgid ""
 "Do you really want to discard your draft proposal? All data will be lost."
 msgstr ""
+"Bạn có thực sự muốn hủy bản dự thảo đề xuất của mình không? Tất cả dữ liệu "
+"sẽ bị mất."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:31
 msgid "Confirm your attendance"
-msgstr ""
+msgstr "Xác nhận tham dự"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:36
 msgid "Audience feedback"
-msgstr ""
+msgstr "Phản hồi từ khán giả"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:38
 msgid "Attendees can leave feedback here after your session has taken place."
-msgstr ""
+msgstr "Người tham dự có thể để lại phản hồi tại đây sau khi phiên đã diễn ra."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:48
 msgid "Speaker"
 msgid_plural "Speakers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Diễn giả"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:50
 msgid "Submitter"
 msgid_plural "Submitters"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Người nộp bài"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:81
 msgid "Save draft"
-msgstr ""
+msgstr "Ghi bản nháp"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:84
 msgid "Submit proposal"
-msgstr ""
+msgstr "Gửi đề xuất"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:100
 msgid "Share proposal"
-msgstr ""
+msgstr "Chia sẻ đề xuất"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:102
 msgid ""
 "If you need a review from a colleague or a friend here’s a link that you can"
 " send out for viewing your proposal:"
 msgstr ""
+"Nếu quý vị cần đánh giá từ đồng nghiệp hoặc bạn bè, đây là liên kết mà quý "
+"vị có thể gửi để họ xem đề xuất của quý vị:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:110
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:13
 msgid "Withdraw proposal"
-msgstr ""
+msgstr "Thu hồi đề xuất"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:112
 msgid ""
@@ -692,10 +801,13 @@ msgid ""
 "undo this - if you are just uncertain if you can or should hold your "
 "session, please contact the organiser instead."
 msgstr ""
+"Quý vị có thể rút đề xuất của mình khỏi quy trình tuyển chọn tại đây. Quý vị "
+"không thể hoàn tác việc này - nếu quý vị chỉ không chắc chắn liệu mình có "
+"thể hoặc nên thuyết trình hay không, vui lòng liên hệ với Ban Tổ chức."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:126
 msgid "Discard draft proposal"
-msgstr ""
+msgstr "Huỷ bản nháp đề xuất"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:128
 msgid ""
@@ -703,15 +815,18 @@ msgid ""
 "just uncertain if you can or should submit your proposal, please contact the"
 " organiser instead."
 msgstr ""
+"Quý vị có thể rút đề xuất của mình khỏi quy trình tuyển chọn tại đây. Quý vị "
+"không thể hoàn tác việc này - nếu quý vị chỉ không chắc chắn liệu mình có "
+"thể hoặc nên thuyết trình hay không, vui lòng liên hệ với Ban Tổ chức."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:137
 #: pretalx/orga/templates/orga/mails/outbox_form.html:86
 msgid "Discard"
-msgstr ""
+msgstr "Huỷ"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:142
 msgid "Cancel proposal"
-msgstr ""
+msgstr "Huỷ đề xuất"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_edit.html:144
 msgid ""
@@ -719,6 +834,9 @@ msgid ""
 "organising team to cancel it. The best way to reach out would be an answer "
 "to your acceptance mail."
 msgstr ""
+"Vì đề xuất của quý vị đã được duyệt, vui lòng liên hệ với Ban Tổ chức để báo "
+"huỷ. Cách tốt nhất để liên hệ là trả lời thư báo duyệt bài mà quý vị đã nhận "
+"được."
 
 #: pretalx/cfp/templates/cfp/event/user_submission_invitation.html:22
 msgid ""
@@ -726,27 +844,30 @@ msgid ""
 "email, (which might get caught by spam filters) you can also give them this "
 "link:"
 msgstr ""
+"Tại đây, quý vị có thể mời một diễn giả khác cùng thuyết trình. Thay vì để "
+"chúng tôi gửi email (có thể bị cho vào hòm thư rác), quý vị cũng có thể tự "
+"gửi cho họ liên kết này:"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:12
 msgid "Do you really want to withdraw your proposal?"
-msgstr ""
+msgstr "Quý vị thực sự muốn thu hồi đề xuất của mình?"
 
 #: pretalx/cfp/templates/cfp/event/user_submission_withdraw.html:24
 msgid "You will not be able to revert this action."
-msgstr ""
+msgstr "Quý vị sẽ không thể hồi lại tác vụ này."
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:12
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:78
 msgid "Your proposals"
-msgstr ""
+msgstr "Các đề xuất của quý vị"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:25
 msgid "Important Information"
-msgstr ""
+msgstr "Thông tin quan trọng"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:37
 msgid "Your drafts"
-msgstr ""
+msgstr "Dự thảo của quý vị"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:42
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:84
@@ -758,20 +879,20 @@ msgstr ""
 #: pretalx/orga/templates/orga/submission/list.html:73
 #: pretalx/orga/templates/orga/submission/review.html:52
 msgid "Title"
-msgstr ""
+msgstr "Tiêu đề"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:58
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:117
 msgid "Copy code for review"
-msgstr ""
+msgstr "Copy mã để bình duyệt"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:66
 msgid "Edit draft"
-msgstr ""
+msgstr "Sửa dự thảo"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:68
 msgid "Open draft"
-msgstr ""
+msgstr "Mở dự thảo"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:85
 #: pretalx/orga/templates/orga/admin/user_detail.html:130
@@ -779,75 +900,83 @@ msgstr ""
 #: pretalx/orga/templates/orga/review/dashboard.html:199
 #: pretalx/orga/templates/orga/submission/list.html:86
 msgid "State"
-msgstr ""
+msgstr "Trạng thái"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:125
 msgid "Edit proposal"
-msgstr ""
+msgstr "Sửa đề xuất"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:127
 msgid "Open proposal"
-msgstr ""
+msgstr "Mở đề xuất"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:149
 msgid "Create a new proposal"
-msgstr ""
+msgstr "Tạo một đề xuất mới"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:153
 msgid "It seems like you haven’t submitted anything to this event yet."
-msgstr ""
+msgstr "Có vẻ như quý vị chưa nộp đề xuất nào cho sự kiện này."
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:154
 msgid "If you did, maybe you used a different account? Check your emails!"
 msgstr ""
+"Nếu đã từng nộp, có thể quý vị đã sử dụng một tài khoản khác? Hãy kiểm tra "
+"các địa chỉ email mà quý vị có!"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:157
 msgid ""
 "If you did not, why not go ahead and create a proposal now? We’d love to "
 "hear from you!"
 msgstr ""
+"Nếu quý vị chưa từng nộp, xin mời tiếp tục và tạo một đề xuất ngay bây giờ. "
+"Chúng tôi rất mong nhận được phản hồi từ quý vị!"
 
 #: pretalx/cfp/templates/cfp/event/user_submissions.html:162
 msgid "Submit something now!"
-msgstr ""
+msgstr "Xin mời nộp đề xuất ngay hôm nay!"
 
 #: pretalx/cfp/templates/cfp/includes/submission_resources_form.html:9
 #: pretalx/orga/forms/schedule.py:132
 #: pretalx/orga/templates/orga/submission/review.html:120
 msgid "Resources"
-msgstr ""
+msgstr "Tài liệu hỗ trợ"
 
 #: pretalx/cfp/templates/cfp/includes/submission_resources_form.html:13
 msgid ""
 "Resources will be publicly visible. Please try to keep your uploads below "
 "16MB."
 msgstr ""
+"Tài liệu hỗ trợ sẽ được xuất bản không khai. Vui lòng tải giữ dung lượng của "
+"mỗi tài liệu dưới 16MB."
 
 #: pretalx/cfp/templates/cfp/includes/submission_resources_form.html:61
 msgid "This proposal has no resources yet."
-msgstr ""
+msgstr "Đề xuất này không có tài liệu hỗ trợ nào kèm theo."
 
 #: pretalx/cfp/templates/cfp/includes/submission_resources_form.html:93
 msgid "You can either provide a URL or upload a file."
-msgstr ""
+msgstr "Quý vị có thể cung cấp đường dẫn (URL) hoặc tải lên một file."
 
 #: pretalx/cfp/templates/cfp/includes/submission_resources_form.html:103
 msgid "Add another resource"
-msgstr ""
+msgstr "Thêm một tài liệu hỗ trợ"
 
 #: pretalx/cfp/templates/cfp/includes/user_submission_header.html:15
 msgid "Draft"
-msgstr ""
+msgstr "Dự thảo"
 
 #: pretalx/cfp/templates/cfp/includes/user_submission_header.html:20
 msgid "Current state of your proposal:"
-msgstr ""
+msgstr "Trạng thái hiện tại của đề xuất:"
 
 #: pretalx/cfp/templates/cfp/includes/user_submission_header.html:27
 msgid ""
 "This is a draft proposal. It will never be visible to anybody else, unless "
 "you submit it or explicitly share it."
 msgstr ""
+"Đây là bản dự thảo đề xuất. Nó sẽ không bao giờ được hiển thị cho bất kỳ ai "
+"khác, trừ khi quý vị gửi cho Ban Tổ chức hoặc chủ động chia sẻ."
 
 #: pretalx/cfp/templates/cfp/includes/user_submission_header.html:46
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:56
@@ -857,7 +986,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/submission/review.html:62
 #: pretalx/orga/views/cfp.py:532 pretalx/submission/models/submission.py:145
 msgid "Session type"
-msgstr ""
+msgstr "Loại phiên hội thảo"
 
 #: pretalx/cfp/templates/cfp/includes/user_submission_header.html:52
 #: pretalx/orga/templates/orga/cfp/access_code_view.html:54
@@ -870,7 +999,7 @@ msgstr ""
 #: pretalx/orga/views/cfp.py:631 pretalx/submission/models/access_code.py:28
 #: pretalx/submission/models/submission.py:151
 msgid "Track"
-msgstr ""
+msgstr "Kênh hội thảo"
 
 #: pretalx/cfp/templates/cfp/includes/user_submission_header.html:63
 #: pretalx/orga/templates/orga/cfp/text.html:164
@@ -878,7 +1007,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/review/dashboard.html:196
 #: pretalx/submission/models/submission.py:205
 msgid "Duration"
-msgstr ""
+msgstr "Thời lượng"
 
 #: pretalx/cfp/templates/cfp/index.html:4
 #: pretalx/cfp/templates/cfp/index.html:8
@@ -886,19 +1015,19 @@ msgstr ""
 #: pretalx/orga/templates/orga/admin/user_list.html:33
 #: pretalx/orga/templates/orga/base.html:447
 msgid "Events"
-msgstr ""
+msgstr "Các sự kiện"
 
 #: pretalx/cfp/templates/cfp/index.html:20
 msgid "No events are currently ongoing."
-msgstr ""
+msgstr "Không có sự kiện nào đang diễn ra."
 
 #: pretalx/cfp/templates/cfp/index.html:23
 msgid "Upcoming events"
-msgstr ""
+msgstr "Sự kiện sắp diễn ra"
 
 #: pretalx/cfp/templates/cfp/index.html:34
 msgid "Past events"
-msgstr ""
+msgstr "Các sự kiện đã diễn ra"
 
 #: pretalx/cfp/views/locale.py:50
 msgid ""
@@ -906,31 +1035,34 @@ msgid ""
 "excellent support for English in pretalx, but if you encounter issues or "
 "errors, please contact us!"
 msgstr ""
+"Tùy chọn ngôn ngữ của quý vị đã được lưu. Chúng tôi muốn nghĩ rằng phiên bản "
+"Tiếng Anh của phần mềm rất hoàn hảo, nhưng nếu quý vị gặp sự cố hoặc lỗi, "
+"vui lòng liên hệ với chúng tôi!"
 
 #: pretalx/cfp/views/user.py:269
 msgid "Your draft was discarded."
-msgstr ""
+msgstr "Dự thảo của quý vị đã được huỷ."
 
 #: pretalx/cfp/views/user.py:410
 msgid "Your proposal has been submitted."
-msgstr ""
+msgstr "Dự thảo của quý vị đã được nộp."
 
 #: pretalx/cfp/views/user.py:425
 msgid "Your account has now been deleted."
-msgstr ""
+msgstr "Tài khoản của quý vị đã được xoá."
 
 #: pretalx/cfp/views/user.py:427
 msgid "Are you really sure? Please tick the box"
-msgstr ""
+msgstr "Quý vị có chắc không? Vui lòng đánh dấu vào ô"
 
 #: pretalx/cfp/views/user.py:484
 msgid "You cannot accept this invitation."
-msgstr ""
+msgstr "Quý vị không thể chấp nhận lời mời này."
 
 #: pretalx/common/forms/fields.py:59
 #, python-brace-format
 msgid "Please do not upload files larger than {size}!"
-msgstr ""
+msgstr "Vui lòng không tải lên các file có kích thước lớn hơn {size}!"
 
 #: pretalx/common/forms/fields.py:101
 #, python-brace-format
@@ -938,6 +1070,8 @@ msgid ""
 "This filetype ({extension}) is not allowed, it has to be one of the "
 "following: "
 msgstr ""
+"Loại file có đuôi ({extension}) không được hệ thống cho phép, file tải lên "
+"phải có đuôi là: "
 
 #: pretalx/common/forms/forms.py:12 pretalx/common/forms/widgets.py:208
 #: pretalx/common/templates/common/includes/search_form.html:7
@@ -947,65 +1081,65 @@ msgstr ""
 #: pretalx/orga/templates/orga/organiser/list.html:18
 #: pretalx/submission/forms/submission.py:277
 msgid "Search"
-msgstr ""
+msgstr "Tìm kiếm"
 
 #: pretalx/common/forms/mixins.py:39
 msgid "You are trying to change read-only data."
-msgstr ""
+msgstr "Quý vị đang cố sửa dữ liệu chỉ đọc."
 
 #: pretalx/common/forms/mixins.py:109
 #, python-brace-format
 msgid "Please write between {min_length} and {max_length} words."
-msgstr ""
+msgstr "Vui lòng viết trong khoảng {min_length} đến {max_length} từ."
 
 #: pretalx/common/forms/mixins.py:112
 #, python-brace-format
 msgid "Please write between {min_length} and {max_length} characters."
-msgstr ""
+msgstr "Vui lòng viết trong khoảng {min_length} đến {max_length} ký tự."
 
 #: pretalx/common/forms/mixins.py:114
 #, python-brace-format
 msgid "Please write at least {min_length} words."
-msgstr ""
+msgstr "Vui lòng viết ít nhất {min_length} từ."
 
 #: pretalx/common/forms/mixins.py:115
 #, python-brace-format
 msgid "Please write at least {min_length} characters."
-msgstr ""
+msgstr "Vui lòng viết ít nhất {min_length} ký tự."
 
 #: pretalx/common/forms/mixins.py:116
 #, python-brace-format
 msgid "Please write at most {max_length} words."
-msgstr ""
+msgstr "Vui lòng viết nhiều nhất {max_length} từ."
 
 #: pretalx/common/forms/mixins.py:117
 #, python-brace-format
 msgid "Please write at most {max_length} characters."
-msgstr ""
+msgstr "Vui lòng viết nhiều nhất {max_length} ký tự."
 
 #: pretalx/common/forms/mixins.py:137
 #, python-brace-format
 msgid "You wrote {count} characters."
-msgstr ""
+msgstr "Quý vị đã viết {count} ký tự."
 
 #: pretalx/common/forms/mixins.py:138
 #, python-brace-format
 msgid "You wrote {count} words."
-msgstr ""
+msgstr "Quý vị đã viết {count} từ."
 
 #: pretalx/common/forms/widgets.py:48
 msgid ""
 "This password would take <em class=\"password_strength_time\"></em> to "
 "crack."
-msgstr ""
+msgstr "Mật khẩu này cần <em class=\"password_strength_time\"></em> để phá mã."
 
 #: pretalx/common/forms/widgets.py:73
 msgid "Warning"
-msgstr ""
+msgstr "Cảnh báo"
 
 #: pretalx/common/forms/widgets.py:73
 msgid "Your passwords don’t match."
-msgstr ""
+msgstr "Mật khẩu không khớp nhau."
 
 #: pretalx/common/log_display.py:28
 #, python-brace-format
