@@ -92,7 +92,7 @@ def handle_stripe_errors(operation_name: str):
                     "Webhook signature verification failed: {}".format(getattr(e, "user_message", str(e)))
                 )
             except stripe.error.PermissionError as e:
-                logger.error("Permission error during %s: %s", operation_name,str(e))
+                logger.error("Permission error during %s: %s",operation_name,str(e))
                 raise ValidationError(
                     "Permission denied: {}".format(getattr(e, "user_message", str(e)))
                 )
