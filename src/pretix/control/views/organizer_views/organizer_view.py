@@ -19,10 +19,9 @@ from pretix.base.models.event import Event, EventMetaValue
 from pretix.base.models.organizer import Organizer, OrganizerBillingModel, Team
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.control.forms.filter import EventFilterForm, OrganizerFilterForm
-from pretix.control.forms.organizer import OrganizerFooterLink
 from pretix.control.forms.organizer_forms import (
-    MailSettingsForm, OrganizerDeleteForm, OrganizerForm,
-    OrganizerSettingsForm, OrganizerUpdateForm,
+    OrganizerDeleteForm, OrganizerForm, OrganizerSettingsForm,
+    OrganizerUpdateForm,
 )
 from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, OrganizerPermissionRequiredMixin,
@@ -93,13 +92,11 @@ class OrganizerUpdate(OrganizerPermissionRequiredMixin, UpdateView):
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
         context['sform'] = self.sform
-        context['footer_links_formset'] = self.footer_links_formset
         return context
 
     @transaction.atomic
     def form_valid(self, form):
         self.sform.save()
-        self.save_footer_links_formset(self.object)
         change_css = False
         if self.sform.has_changed():
             self.request.organizer.log_action(
@@ -114,12 +111,6 @@ class OrganizerUpdate(OrganizerPermissionRequiredMixin, UpdateView):
             )
             if any(p in self.sform.changed_data for p in SETTINGS_AFFECTING_CSS):
                 change_css = True
-        if self.footer_links_formset.has_changed():
-            self.request.organizer.log_action('eventyay.organizer.footerlinks.changed',
-                                              user=self.request.user,
-                                              data={
-                                                  'data': self.footer_links_formset.cleaned_data
-                                              })
         if form.has_changed():
             self.request.organizer.log_action(
                 'pretix.organizer.changed',
@@ -151,20 +142,10 @@ class OrganizerUpdate(OrganizerPermissionRequiredMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = self.get_form()
-        if form.is_valid() and self.sform.is_valid() and self.footer_links_formset.is_valid():
+        if form.is_valid() and self.sform.is_valid():
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
-
-    @cached_property
-    def footer_links_formset(self):
-        return OrganizerFooterLink(self.request.POST if self.request.method == "POST" else None,
-                                   organizer=self.object,
-                                   prefix="footer-links",
-                                   instance=self.object)
-
-    def save_footer_links_formset(self, obj):
-        self.footer_links_formset.save()
 
 
 class OrganizerDelete(AdministratorPermissionRequiredMixin, FormView):
@@ -246,63 +227,6 @@ class OrganizerSettingsFormView(OrganizerDetailViewMixin, OrganizerPermissionReq
         else:
             messages.error(self.request, _('We could not save your changes. See below for details.'))
             return self.get(request)
-
-
-class OrganizerMailSettings(OrganizerSettingsFormView):
-    form_class = MailSettingsForm
-    template_name = 'pretixcontrol/organizers/mail.html'
-    permission = 'can_change_organizer_settings'
-
-    def get_success_url(self):
-        return reverse('control:organizer.settings.mail', kwargs={
-            'organizer': self.request.organizer.slug,
-        })
-
-    @transaction.atomic
-    def post(self, request, *args, **kwargs):
-        """
-        Handles POST requests to process the form, save changes, log actions, and test SMTP settings if requested.
-
-        Args:
-            request (HttpRequest): The HTTP request object.
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
-
-        Returns:
-            HttpResponse: Redirects to the success URL if the form is valid, otherwise re-renders the form with errors.
-        """
-        form = self.get_form()
-
-        if form.is_valid():
-            form.save()
-
-            if form.has_changed():
-                self.request.organizer.log_action(
-                    'pretix.organizer.settings', user=self.request.user, data={
-                        k: form.cleaned_data.get(k) for k in form.changed_data
-                    }
-                )
-
-            if request.POST.get('test', '0').strip() == '1':
-                backend = self.request.organizer.get_mail_backend(force_custom=True, timeout=10)
-                try:
-                    backend.test(self.request.organizer.settings.mail_from)
-                except Exception as e:
-                    messages.warning(self.request, _('An error occurred while contacting the SMTP server: %s') % str(e))
-                else:
-                    success_message = _(
-                        'Your changes have been saved and the connection attempt to your SMTP server was successful.') \
-                        if form.cleaned_data.get('smtp_use_custom') else \
-                        _('We\'ve been able to contact the SMTP server you configured. Remember to check '
-                          'the "use custom SMTP server" checkbox, otherwise your SMTP server will not be used.')
-                    messages.success(self.request, success_message)
-            else:
-                messages.success(self.request, _('Your changes have been saved.'))
-
-            return redirect(self.get_success_url())
-
-        messages.error(self.request, _('We could not save your changes. See below for details.'))
-        return self.get(request)
 
 
 class OrganizerTeamView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DetailView):

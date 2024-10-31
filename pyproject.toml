@@ -16,10 +16,10 @@ classifiers = [
   "Environment :: Web Environment",
   "License :: OSI Approved :: Apache License, Version 2.0",
   "Programming Language :: Python :: 3.11",
-  "Framework :: Django :: 4.2",
+  "Framework :: Django :: 5.1",
 ]
 dependencies = [
-        'Django==4.2.*',
+        'Django==5.1.*',
         'djangorestframework==3.15.*',
         'python-dateutil==2.9.*',
         'isoweek',
@@ -67,7 +67,7 @@ dependencies = [
         'tqdm==4.*',
         'vobject==0.9.*',
         'pycountry',
-        'django-countries==7.5.*',
+        'django-countries==7.6.*',
         'pyuca', # for better sorting of country names in django-countries
         'defusedcsv>=1.1.0',
         'vat_moss_forked==2020.3.20.0.11.0',
@@ -89,7 +89,6 @@ dependencies = [
         'sepaxml==2.6.*',
         'geoip2==4.*',
         'paypalhttp==1.*',
-        'eventyay-stripe @ git+https://your_token@github.com/fossasia/eventyay-tickets-stripe.git@master',
         'sendgrid==6.11.*',
         'importlib_metadata==8.*',
         'qrcode==7.4.*',
@@ -103,14 +102,14 @@ dependencies = [
 [project.optional-dependencies]
 memcached = ["pylibmc"]
 dev = [
-            'django-debug-toolbar==4.0.*',
+            'django-debug-toolbar==4.4.*',
             'pycodestyle==2.12.*',
             'pyflakes==3.2.*',
             'flake8==7.1.*',
             'pep8-naming==0.14.*',
             'coveralls',
             'coverage',
-            'pytest==8.2.*',
+            'pytest==7.2.*',
             'pytest-django==4.*',
             'pytest-xdist==3.6.*',
             'isort==5.13.*',
