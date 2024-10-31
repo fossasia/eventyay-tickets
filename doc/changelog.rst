@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`orga:email,1596` Added the ``queuedmail_pre_send`` signal. This can be used to integrate with issue tracking systems. Receivers can set the ``sent`` timestamp on the queued mail object to skip sending mail via the regular backend.
 - :feature:`orga` Added references to submissions to outgoing mails. This shall facilitate the integration with issue tracking systems.
 - :feature:`orga:schedule` When exporting your sessions or submissions as CSV or JSON, you can now choose to export start and end times as separate date/time values instead of a single combined value.
 - :bug:`orga,1879` The template indicator (showing you which template an email was generated from) in the email lists were invisible.

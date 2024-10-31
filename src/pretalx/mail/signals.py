@@ -8,6 +8,18 @@ an instance of a subclass of pretalx.mail.placeholder.BaseMailTextPlaceholder or
 As with all event-plugin signals, the ``sender`` keyword argument will contain the event.
 """
 
+queuedmail_pre_send = EventPluginSignal()
+"""
+This signal is sent out before a ``QueuedMail`` will been sent.
+Receivers may set the ``sent`` timestamp to skip sending via the regular
+email backend but shall not alter any other data of the ``QueuedMail``
+instance.
+
+As with all event-plugin signals, the ``sender`` keyword argument will
+contain the event. Additionally, the ``mail`` keyword argument contains
+the ``QueuedMail`` instance itself.
+"""
+
 queuedmail_post_send = EventPluginSignal()
 """
 This signal is sent out after a ``QueuedMail`` has been sent. Return value
