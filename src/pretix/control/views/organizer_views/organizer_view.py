@@ -1,7 +1,7 @@
 import logging
 
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import PermissionDenied
 from django.core.files import File
 from django.db import transaction
 from django.db.models import Max, Min, Prefetch, ProtectedError

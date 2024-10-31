@@ -56,7 +56,8 @@ class BillingSettingsForm(forms.ModelForm):
     primary_contact_email = forms.EmailField(
         label=_("Primary Contact Email"),
         help_text=_(
-            "We will use this email address for all communication related to your contract and billing, as well as for important updates about your account and our services."
+            "We will use this email address for all communication related to your contract and billing, "
+            "as well as for important updates about your account and our services."
         ),
         required=True,
         max_length=255,
@@ -65,7 +66,7 @@ class BillingSettingsForm(forms.ModelForm):
 
     company_or_organization_name = forms.CharField(
         label=_("Company or Organization Name"),
-        help_text=_("Enter your organization’s legal name.."),
+        help_text=_("Enter your organization’s legal name."),
         required=True,
         max_length=255,
         widget=forms.TextInput(attrs={"placeholder": ""}),
@@ -120,7 +121,8 @@ class BillingSettingsForm(forms.ModelForm):
     tax_id = forms.CharField(
         label=_("Tax ID (e.g., VAT, GST)"),
         help_text=_(
-            "If you are located in the EU, please provide your VAT ID. Without this, we will need to charge VAT on our services and will not be able to issue reverse charge invoices.."
+            "If you are located in the EU, please provide your VAT ID. "
+            "Without this, we will need to charge VAT on our services and will not be able to issue reverse charge invoices."
         ),
         required=True,
         max_length=255,
