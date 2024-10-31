@@ -1,10 +1,11 @@
-from django.shortcuts import redirect
+import logging
+
+import stripe
+from django.contrib import messages
+
 from pretix.base.models import Organizer
 from pretix.base.models.organizer import OrganizerBillingModel
 from pretix.base.settings import GlobalSettingsObject
-from django.contrib import messages
-import stripe
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +20,7 @@ def get_stripe_secret_key():
         return prod_secret_key
     print('test_secret_key', test_secret_key)
     return test_secret_key
+
 
 def get_stripe_publishable_key():
     gs = GlobalSettingsObject()
@@ -75,7 +77,6 @@ def get_stripe_customer_id(organizer_slug):
 
         if billing_settings and billing_settings.stripe_customer_id:
             return billing_settings.stripe_customer_id
-
 
     except Organizer.DoesNotExist:
         logger.error("Organizer with slug '%s' does not exist", organizer_slug)
@@ -154,6 +155,7 @@ def update_payment_info(setup_intent_id, customer_id):
     except Exception as e:
         logger.error("Unexpected error while updating payment info: %s", str(e))
         return messages.error(f"An unexpected error occurred: {str(e)}")
+
 
 def update_customer_info(customer_id, email, name):
     stripe.api_key = get_stripe_secret_key()

@@ -14,9 +14,11 @@ from django.views import View
 from django.views.generic import (
     CreateView, DetailView, FormView, ListView, UpdateView,
 )
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from pretix.base.models.event import Event, EventMetaValue
-from pretix.base.models.organizer import Organizer, Team, OrganizerBillingModel
+from pretix.base.models.organizer import Organizer, OrganizerBillingModel, Team
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.control.forms.filter import EventFilterForm, OrganizerFilterForm
 from pretix.control.forms.organizer_forms import (
@@ -27,16 +29,15 @@ from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, OrganizerPermissionRequiredMixin,
 )
 from pretix.control.signals import nav_organizer
-from pretix.control.utils import create_stripe_customer, get_stripe_customer_id, create_setup_intent, \
-    get_stripe_publishable_key, update_payment_info
+from pretix.control.utils import (
+    create_setup_intent, get_stripe_customer_id, get_stripe_publishable_key,
+    update_payment_info,
+)
 from pretix.control.views import PaginationMixin
 from pretix.presale.style import regenerate_organizer_css
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
 
-from .organizer_detail_view_mixin import OrganizerDetailViewMixin
 from ...forms.organizer_forms.organizer_form import BillingSettingsForm
-
+from .organizer_detail_view_mixin import OrganizerDetailViewMixin
 
 logger = logging.getLogger(__name__)
 
@@ -328,6 +329,7 @@ class OrganizerList(PaginationMixin, ListView):
     def filter_form(self):
         return OrganizerFilterForm(data=self.request.GET, request=self.request)
 
+
 class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
     model = OrganizerBillingModel
     form_class = BillingSettingsForm
@@ -371,7 +373,6 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
         return self.form_invalid(form)
 
 
-
 @api_view(['GET'])
 def setup_intent(request, organizer):
     try:
@@ -395,6 +396,7 @@ def setup_intent(request, organizer):
         return Response({
             "error": "An unexpected error occurred."
         }, status=500)
+
 
 @api_view(['POST'])
 def save_payment_information(request, organizer):
