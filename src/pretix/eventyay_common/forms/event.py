@@ -1,12 +1,9 @@
 from django import forms
-from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from pytz import common_timezones
 
 from pretix.base.forms import SettingsForm
 from pretix.base.settings import validate_event_settings
-from pretix.control.forms import MultipleLanguagesWidget
-from pretix.control.forms.event import EventWizardFoundationForm
 
 
 class EventCommonSettingsForm(SettingsForm):
@@ -16,8 +13,8 @@ class EventCommonSettingsForm(SettingsForm):
     )
 
     auto_fields = [
-        'locales',
-        'locale',
+        "locales",
+        "locale",
     ]
 
     def clean(self):
@@ -28,14 +25,5 @@ class EventCommonSettingsForm(SettingsForm):
         return data
 
     def __init__(self, *args, **kwargs):
-        self.event = kwargs['obj']
+        self.event = kwargs["obj"]
         super().__init__(*args, **kwargs)
-
-
-class EventWizardCommonFoundationForm(EventWizardFoundationForm):
-    create_for = forms.MultipleChoiceField(
-        choices=settings.LANGUAGES,
-        label=_("Use languages"),
-        widget=MultipleLanguagesWidget,
-        help_text=_('Choose all languages that your event should be available in.')
-    )
