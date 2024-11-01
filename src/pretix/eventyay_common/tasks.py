@@ -1,15 +1,22 @@
+import base64
 import logging
+import smtplib
+import ssl
 from datetime import datetime
 from decimal import Decimal
 
 import requests
 from celery import shared_task
+from celery.exceptions import MaxRetriesExceededError
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.mail import get_connection
 from django.db.models import Sum
 
+from .billing_invoice import generate_invoice_pdf
 from ..base.models import BillingInvoice, Event, Order, Organizer
+from ..base.services.mail import CustomEmail, SendMailException, mail_send_task
 from ..base.settings import GlobalSettingsObject
 from ..helpers.jwt_generate import generate_sso_token
 
@@ -175,6 +182,7 @@ def monthly_billing_collect(self):
                     logger.error('Error: %s', e)
                     continue
         logger.info("End - completed task to collect billing on a monthly basis.")
+        billing_invoice_notification()
     except Exception as e:
         logger.error('Error happen when trying to collect billing: %s', e)
         # Retry the task if an exception occurs (with exponential backoff by default)
@@ -238,3 +246,30 @@ def get_next_reminder_datetime(reminder_schedule):
         next_reminder = datetime(next_year, next_month, reminder_schedule[0])
 
     return next_reminder
+
+
+@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
+def billing_invoice_notification(self):
+    today = datetime.today()
+    first_day_of_current_month = today.replace(day=1)
+    billing_month = (first_day_of_current_month - relativedelta(months=1)).date()
+    last_month_invoices = BillingInvoice.objects.filter(monthly_bill=billing_month)
+    for invoice in last_month_invoices:
+        # Get organizer's contact details
+        organizer = invoice.organizer
+        # generate invoice pdf
+        pdf_buffer = generate_invoice_pdf(invoice)
+        # Send email to organizer
+        pdf_content = pdf_buffer.getvalue()
+        pdf_base64 = base64.b64encode(pdf_content).decode('utf-8')
+        mail_send_task.apply_async(kwargs={
+            'subject': f"Invoice #{invoice.id} for {invoice.event.name}",
+            'body': f"Dear Khang,\n\nPlease find attached the invoice for your recent event.",
+            'sender': settings.PRETIX_EMAIL_NONE_VALUE,
+            'to': ["odkhang@tma.com.vn"],
+            'html': None,
+            'attach_file_base64': pdf_base64,
+            'attach_file_name': pdf_buffer.filename,
+        })
+        break
+    pass

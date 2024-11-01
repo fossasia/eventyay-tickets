@@ -10,6 +10,7 @@ from .views import (
     checkin, device, event, exporters, item, oauth, order, organizer, upload,
     user, version, voucher, waitinglist, webhooks,
 )
+from ..eventyay_common.views.billing import BillingInvoicePreview
 
 router = routers.DefaultRouter()
 router.register(r'organizers', organizer.OrganizerViewSet)
@@ -80,6 +81,8 @@ urlpatterns = [
     url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/settings/$', event.EventSettingsView.as_view(),
         name="event.settings"),
     url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/', include(event_router.urls)),
+    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/billing-invoice',
+        BillingInvoicePreview.as_view(), name="billing-invoice"),
     url(r'^organizers/(?P<organizer>[^/]+)/teams/(?P<team>[^/]+)/', include(team_router.urls)),
     url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/items/(?P<item>[^/]+)/', include(item_router.urls)),
     url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/questions/(?P<question>[^/]+)/',
