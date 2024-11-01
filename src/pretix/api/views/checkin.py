@@ -4,8 +4,7 @@ from functools import reduce
 import django_filters
 from django.core.exceptions import ValidationError as BaseValidationError
 from django.db.models import (
-    Count, Device, Exists, F, Max, OrderBy, OuterRef, Prefetch, Q, Subquery,
-    prefetch_related_objects,
+    Count, Exists, F, Max, OuterRef, Prefetch, Q, Subquery, OrderBy,prefetch_related_objects
 )
 from django.db.models.functions import Coalesce
 from django.http import Http404, HttpResponse
@@ -19,21 +18,17 @@ from rest_framework import views, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import DateTimeField
-from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
+from rest_framework.generics import ListAPIView
 
-from pretix.api.serializers.checkin import (
-    CheckinListSerializer, CheckinRPCRedeemInputSerializer,
-    MiniCheckinListSerializer,
-)
+from pretix.api.serializers.checkin import CheckinListSerializer,CheckinRPCRedeemInputSerializer, MiniCheckinListSerializer
 from pretix.api.serializers.item import QuestionSerializer
 from pretix.api.serializers.order import CheckinListOrderPositionSerializer
 from pretix.api.views import RichOrderingFilter
 from pretix.api.views.order import OrderPositionFilter
 from pretix.base.i18n import language
 from pretix.base.models import (
-    CachedFile, Checkin, CheckinList, Event, Order, OrderPosition, Question,
-    RevokedTicketSecret, TeamAPIToken,
+    CachedFile, Checkin, CheckinList, Event, Order, OrderPosition, Question, Device, TeamAPIToken, RevokedTicketSecret,
 )
 from pretix.base.services.checkin import (
     CheckInError, RequiredQuestionsError, SQLLogic, perform_checkin,
