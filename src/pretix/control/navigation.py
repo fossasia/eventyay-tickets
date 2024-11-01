@@ -293,7 +293,6 @@ def get_global_navigation(request):
     url = request.resolver_match
     if not url:
         return []
-    has_staff_session = request.user.has_active_staff_session(request.session.session_key)
     nav = [
         {
             'label': _('Dashboard'),
@@ -353,43 +352,6 @@ def get_global_navigation(request):
             ]
         },
     ]
-    if has_staff_session:
-        nav.append({
-            'label': _('Users'),
-            'url': reverse('control:users'),
-            'active': False,
-            'icon': 'user',
-            'children': [
-                {
-                    'label': _('All users'),
-                    'url': reverse('control:users'),
-                    'active': ('users' in url.url_name),
-                },
-                {
-                    'label': _('Admin sessions'),
-                    'url': reverse('control:user.sudo.list'),
-                    'active': ('sudo' in url.url_name),
-                },
-            ]
-        })
-        nav.append({
-            'label': _('Global settings'),
-            'url': reverse('control:global.settings'),
-            'active': False,
-            'icon': 'wrench',
-            'children': [
-                {
-                    'label': _('Settings'),
-                    'url': reverse('control:global.settings'),
-                    'active': (url.url_name == 'global.settings'),
-                },
-                {
-                    'label': _('Update check'),
-                    'url': reverse('control:global.update'),
-                    'active': (url.url_name == 'global.update'),
-                },
-            ]
-        })
 
     merge_in(nav, sorted(
         sum((list(a[1]) for a in nav_global.send(request, request=request)), []),
@@ -518,3 +480,65 @@ def merge_in(nav, newnav):
                 parents[0]['children'].append(item)
                 continue
         nav.append(item)
+
+
+def get_admin_navigation(request):
+    url = request.resolver_match
+    if not url:
+        return []
+    nav = [
+        {
+            'label': _('Dashboard'),
+            'url': reverse('control:admin.dashboard'),
+            'active': 'dashboard' in url.url_name,
+            'icon': 'dashboard',
+        },
+        {
+            'label': _('Organizers'),
+            'url': reverse('control:admin.organizers'),
+            'active': 'organizers' in url.url_name,
+            'icon': 'group',
+        },
+        {
+            'label': _('Users'),
+            'url': reverse('control:admin.users'),
+            'active': False,
+            'icon': 'user',
+            'children': [
+                {
+                    'label': _('All users'),
+                    'url': reverse('control:admin.users'),
+                    'active': ('users' in url.url_name),
+                },
+                {
+                    'label': _('Admin sessions'),
+                    'url': reverse('control:admin.user.sudo.list'),
+                    'active': ('sudo' in url.url_name),
+                },
+            ]
+        },
+        {
+            'label': _('Global settings'),
+            'url': reverse('control:admin.global.settings'),
+            'active': False,
+            'icon': 'wrench',
+            'children': [
+                {
+                    'label': _('Settings'),
+                    'url': reverse('control:admin.global.settings'),
+                    'active': (url.url_name == 'admin.global.settings'),
+                },
+                {
+                    'label': _('Update check'),
+                    'url': reverse('control:admin.global.update'),
+                    'active': (url.url_name == 'admin.global.update'),
+                },
+            ]
+        },
+    ]
+
+    merge_in(nav, sorted(
+        sum((list(a[1]) for a in nav_global.send(request, request=request)), []),
+        key=lambda r: (1 if r.get('parent') else 0, r['label'])
+    ))
+    return nav

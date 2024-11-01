@@ -30,7 +30,7 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse('control:global.settings')
+        return reverse('control:admin.global.settings')
 
 
 class UpdateCheckView(StaffMemberRequiredMixin, FormView):
@@ -60,7 +60,7 @@ class UpdateCheckView(StaffMemberRequiredMixin, FormView):
         return ctx
 
     def get_success_url(self):
-        return reverse('control:global.update')
+        return reverse('control:admin.global.update')
 
 
 class MessageView(TemplateView):

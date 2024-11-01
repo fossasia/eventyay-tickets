@@ -115,21 +115,30 @@ def send_event_webhook(self, user_id, event, action):
 @shared_task(
     bind=True, max_retries=5, default_retry_delay=60
 )  # Retries up to 5 times with a 60-second delay
-def create_world(self, is_video_creation, data):
+def create_world(self, is_video_creation, event_data):
     """
-    Create video system for the event
-    @self: task instance
-    @param is_video_creation: allow user to add video system
-    @param data: event's data
+        Create a video system for the specified event.
+
+        :param self: Task instance
+        :param is_video_creation: A boolean indicating whether the user has chosen to add a video.
+        :param event_data: A dictionary containing the following event details:
+            - id (str): The unique identifier for the event.
+            - title (str): The title of the event.
+            - timezone (str): The timezone in which the event takes place.
+            - locale (str): The locale for the event.
+            - token (str): Authorization token for making the request.
+            - has_permission (bool): Indicates if the user has 'can_create_events' permission or is in admin session mode.
+
+        To successfully create a world, both conditions must be satisfied:
+        - The user must have the necessary permission.
+        - The user must choose to create a video.
     """
-    event_slug = data.get("id")
-    title = data.get("title")
-    event_timezone = data.get("timezone")
-    locale = data.get("locale")
-    token = data.get("token")  # jwt token to authenticate user in video system
-    has_permission = data.get(
-        "has_permission", False
-    )  # check if user has permission to create video system ('can_create_events' permission)
+    event_slug = event_data.get("id")
+    title = event_data.get("title")
+    event_timezone = event_data.get("timezone")
+    locale = event_data.get("locale")
+    token = event_data.get("token")
+    has_permission = event_data.get("has_permission")
 
     payload = {
         "id": event_slug,
@@ -140,15 +149,13 @@ def create_world(self, is_video_creation, data):
 
     headers = {"Authorization": "Bearer " + token}
 
-    # Check if user choose add video option and has permission to create video system ('can_create_events' permission)
     if is_video_creation and has_permission:
         try:
-            response = requests.post(
+            requests.post(
                 "{}/api/v1/create-world/".format(settings.VIDEO_SERVER_HOSTNAME),
                 json=payload,
                 headers=headers,
             )
-            response.raise_for_status()
         except requests.exceptions.ConnectionError as e:
             logger.error("Connection error: %s", str(e))
             raise self.retry(exc=e)
