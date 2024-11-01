@@ -1,7 +1,7 @@
 from django.urls import re_path as url
 
 from pretix.api.urls import event_router
-from pretix.plugins.badges.api import BadgeItemViewSet, BadgeLayoutViewSet, BadgeDownloadView
+from pretix.plugins.badges.api import BadgeItemViewSet, BadgeLayoutViewSet, BadgeDownloadView, BadgePreviewView
 
 from .views import (
     LayoutCreate, LayoutDelete, LayoutEditorView, LayoutListView,
@@ -23,6 +23,8 @@ urlpatterns = [
         LayoutEditorView.as_view(), name='edit'),
     url(r'^api/v1/organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/orderpositions/(?P<position>\d+)/download/badge/$',
         BadgeDownloadView.as_view(), name='api-badge-download'),
+    url(r'^api/v1/organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/orderpositions/(?P<position>\d+)/preview/badge/$',
+        BadgePreviewView.as_view(), name='badge-preview'),
 ]
 
 event_router.register('badgelayouts', BadgeLayoutViewSet)

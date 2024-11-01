@@ -14,7 +14,6 @@ class BadgeOutputProvider(BaseTicketOutput):
         try:
             from .api import render_pdf, OPTIONS
             pdf_buffer = render_pdf(op.order.event, [op], OPTIONS['one'])
-
             if pdf_buffer is None:
                 raise Exception("Failed to generate PDF")
 

@@ -528,7 +528,7 @@ def _redeem_process(*, checkinlists, raw_barcode, answers_data, datetime, force,
 
             # Check if badges plugin is enabled
             if 'pretix.plugins.badges' in op.order.event.plugins:
-                badge_url = f"/api/v1/organizers/{request.organizer.slug}/events/{op.order.event.slug}/orderpositions/{op.pk}/download/badge/"
+                badge_url = f"/api/v1/organizers/{request.organizer.slug}/events/{op.order.event.slug}/orderpositions/{op.pk}/preview/badge/"
                 downloads.append({
                     "output": "badge",
                     "url": badge_url

@@ -1,3 +1,4 @@
+import base64
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.core.files.base import ContentFile
@@ -53,13 +54,42 @@ class BadgeItemViewSet(viewsets.ReadOnlyModelViewSet):
         return BadgeItem.objects.filter(item__event=self.request.event)
 
 
+class BadgePreviewView(APIView):
+    renderer_classes = [PDFRenderer]
+
+    def get(self, request, organizer, event, position):
+        op = get_object_or_404(
+            OrderPosition,
+            order__event__slug=event,
+            order__event__organizer__slug=organizer,
+            pk=position
+        )
+
+        # Check if badges plugin is enabled
+        if 'pretix.plugins.badges' not in op.order.event.plugins:
+            return Response(
+                {"error": "Badges plugin is not enabled for this event"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Generate the badge preview
+        from .providers import BadgeOutputProvider
+        provider = BadgeOutputProvider(op.order.event)
+
+        try:
+            _, _, pdf_content = provider.generate(op)
+            base64_pdf = base64.b64encode(pdf_content).decode('utf-8')
+            response = Response({'pdf_base64': base64_pdf}, status=status.HTTP_200_OK)
+            response['Access-Control-Allow-Credentials'] = 'true'
+            return response
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class BadgeDownloadView(APIView):
     renderer_classes = [PDFRenderer]
 
     def get(self, request, organizer, event, position):
-
         try:
             op = get_object_or_404(
                 OrderPosition,
@@ -82,13 +112,12 @@ class BadgeDownloadView(APIView):
             ).last()
 
             if cached_file and cached_file.file:
-                response = Response(
-                    cached_file.file.read(),
-                    content_type='application/pdf',
-                    status=status.HTTP_200_OK
-                )
-                response['Content-Disposition'] = f'attachment; filename="badge_{position}.pdf"'
-                return response
+                base64_pdf = base64.b64encode(cached_file.file.read()).decode('utf-8')
+                return Response({
+                    'filename': cached_file.filename,
+                    'type': 'application/pdf',
+                    'base64_pdf': base64_pdf
+                })
 
             # If no cached file exists, generate one
             from .providers import BadgeOutputProvider
@@ -99,19 +128,13 @@ class BadgeDownloadView(APIView):
                 filename, mimetype, pdf_content = provider.generate(op)
 
                 # Cache the generated file
-                cached_file = CachedFile.objects.create(
-                    filename=f'badge_{position}.pdf',
-                    type='application/pdf'
-                )
-                cached_file.file.save(f'badge_{position}.pdf', ContentFile(pdf_content))
+                base64_pdf = base64.b64encode(pdf_content).decode('utf-8')
 
-                response = Response(
-                    pdf_content,
-                    content_type=mimetype,
-                    status=status.HTTP_200_OK
-                )
-                response['Content-Disposition'] = f'attachment; filename="{filename}"'
-                return response
+                return Response({
+                    'filename': filename,
+                    'mimetype': mimetype,
+                    'pdf_base64': base64_pdf
+                })
 
             except Exception as generation_error:
                 # If immediate generation fails, fall back to async generation
