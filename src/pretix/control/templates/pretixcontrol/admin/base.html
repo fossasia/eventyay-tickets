@@ -1,0 +1,51 @@
+{% extends "pretixcontrol/base.html" %}
+{% load i18n %}
+{% block content %}
+{% endblock %}
+
+{% block nav_top_header %}
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <span class="fa-stack fa-lg">
+          <i class="fa fa-circle fa-stack-2x"></i>
+          <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+        </span>
+
+        <div class="context-indicator">
+            <span class="context-name">Admin</span>
+        </div>
+    </a>
+{% endblock %}
+{% block nav %}
+    {% for nav in admin_nav_items %}
+        <li>
+            <a href="{{ nav.url }}" {% if nav.active %}class="active"{% endif %}
+                    {% if nav.external %}target="_blank"{% endif %}
+                    {% if nav.children %}class="has-children"{% endif %}>
+                {% if nav.icon %}
+                    {% if "<svg" in nav.icon %}
+                        {{ nav.icon|safe }}
+                    {% else %}
+                        <span class="fa fa-fw fa-{{ nav.icon }}"></span>
+                    {% endif %}
+                {% endif %}
+                {{ nav.label }}
+            </a>
+            {% if nav.children %}
+                <a href="#" class="arrow">
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level">
+                    {% for item in nav.children %}
+                        <li>
+                            <a href="{{ item.url }}"
+                                    {% if item.external %}target="_blank"{% endif %}
+                                    {% if item.active %}class="active"{% endif %}>
+                                {{ item.label }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </li>
+    {% endfor %}
+{% endblock %}
