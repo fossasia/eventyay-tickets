@@ -3,10 +3,10 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from pretix.api.serializers.event import SubEventSerializer
-from pretix.base.media import MEDIA_TYPES
 from pretix.api.serializers.i18n import I18nAwareModelSerializer
 from pretix.base.channels import get_all_sales_channels
-from pretix.base.models import CheckinList, Checkin
+from pretix.base.media import MEDIA_TYPES
+from pretix.base.models import Checkin, CheckinList
 
 
 class CheckinListSerializer(I18nAwareModelSerializer):
@@ -15,9 +15,12 @@ class CheckinListSerializer(I18nAwareModelSerializer):
 
     class Meta:
         model = CheckinList
-        fields = ('id', 'name', 'all_products', 'limit_products', 'subevent', 'checkin_count', 'position_count',
-                  'include_pending', 'auto_checkin_sales_channels', 'allow_multiple_entries', 'allow_entry_after_exit',
-                  'rules', 'exit_all_at')
+        fields = (
+            'id', 'name', 'all_products', 'limit_products', 'subevent',
+            'checkin_count', 'position_count', 'include_pending',
+            'auto_checkin_sales_channels', 'allow_multiple_entries',
+            'allow_entry_after_exit', 'rules', 'exit_all_at'
+        )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -42,7 +45,7 @@ class CheckinListSerializer(I18nAwareModelSerializer):
 
         for item in full_data.get('limit_products'):
             if event != item.event:
-               raise ValidationError(_('One or more items do not belong to this event.'))
+                raise ValidationError(_('One or more items do not belong to this event.'))
 
         if event.has_subevents:
             if full_data.get('subevent') and event != full_data.get('subevent').event:
@@ -71,9 +74,13 @@ class CheckinRPCRedeemInputSerializer(serializers.Serializer):
     nonce = serializers.CharField(required=False, allow_null=True)
     datetime = serializers.DateTimeField(required=False, allow_null=True)
     answers = serializers.JSONField(required=False, allow_null=True)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['lists'].child_relation.queryset = CheckinList.objects.filter(event__in=self.context['events']).select_related('event')
+        self.fields['lists'].child_relation.queryset = CheckinList.objects.filter(
+            event__in=self.context['events']
+        ).select_related('event')
+
 
 class MiniCheckinListSerializer(I18nAwareModelSerializer):
     event = serializers.SlugRelatedField(slug_field='slug', read_only=True)

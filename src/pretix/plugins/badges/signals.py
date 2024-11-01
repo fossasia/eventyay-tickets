@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from pretix.base.models import Event, Order
 from pretix.base.signals import (
     event_copy_data, item_copy_data, logentry_display, logentry_object_link,
-    register_data_exporters,
+    register_data_exporters, register_ticket_outputs,
 )
 from pretix.control.signals import (
     item_forms, nav_event, order_info, order_position_buttons,
@@ -21,7 +21,6 @@ from pretix.plugins.badges.models import BadgeItem, BadgeLayout
 
 # In pretix/plugins/badges/signals.py
 
-from pretix.base.signals import register_ticket_outputs
 
 @receiver(register_ticket_outputs)
 def register_badge_output(sender: Event, **kwargs):

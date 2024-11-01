@@ -1,7 +1,9 @@
 from django.urls import re_path as url
 
 from pretix.api.urls import event_router
-from pretix.plugins.badges.api import BadgeItemViewSet, BadgeLayoutViewSet, BadgeDownloadView, BadgePreviewView
+from pretix.plugins.badges.api import (
+    BadgeDownloadView, BadgeItemViewSet, BadgeLayoutViewSet, BadgePreviewView,
+)
 
 from .views import (
     LayoutCreate, LayoutDelete, LayoutEditorView, LayoutListView,

@@ -1,18 +1,22 @@
 import base64
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
+
 from django.core.files.base import ContentFile
-from rest_framework import viewsets, status
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from rest_framework import status, viewsets
+from rest_framework.renderers import BaseRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.renderers import BaseRenderer
+
 from pretix.api.serializers.i18n import I18nAwareModelSerializer
 from pretix.api.serializers.order import CompatibleJSONField
-from pretix.base.models import OrderPosition, CachedFile
-from pretix.plugins.badges.exporters import render_pdf, OPTIONS
+from pretix.base.models import CachedFile, OrderPosition
 from pretix.base.services.tickets import generate_orderposition
-from .models import BadgeItem, BadgeLayout
+from pretix.plugins.badges.exporters import OPTIONS, render_pdf
+
 from .apps import PDFRenderer
+from .models import BadgeItem, BadgeLayout
+
 
 class BadgeItemAssignmentSerializer(I18nAwareModelSerializer):
     class Meta:

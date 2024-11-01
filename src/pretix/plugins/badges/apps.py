@@ -2,12 +2,13 @@ import json
 import os
 
 from django.apps import AppConfig
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.utils.translation import gettext, gettext_lazy as _
-from django.conf import settings
+from rest_framework.renderers import BaseRenderer
 
 from pretix import __version__ as version
-from rest_framework.renderers import BaseRenderer
+
 
 class PDFRenderer(BaseRenderer):
     media_type = 'application/pdf'
@@ -34,7 +35,6 @@ class BadgesApp(AppConfig):
 
     def ready(self):
         from . import signals  # NOQA
-
         # Register PDF format with REST framework
         if not hasattr(settings, 'REST_FRAMEWORK'):
             settings.REST_FRAMEWORK = {}

@@ -1,5 +1,7 @@
 from typing import Tuple
+
 from django.utils.translation import gettext_lazy as _
+
 from pretix.base.models import OrderPosition
 from pretix.base.ticketoutput import BaseTicketOutput
 
@@ -12,7 +14,7 @@ class BadgeOutputProvider(BaseTicketOutput):
 
     def generate(self, op: OrderPosition) -> Tuple[str, str, bytes]:
         try:
-            from .api import render_pdf, OPTIONS
+            from .api import OPTIONS, render_pdf
             pdf_buffer = render_pdf(op.order.event, [op], OPTIONS['one'])
             if pdf_buffer is None:
                 raise Exception("Failed to generate PDF")
