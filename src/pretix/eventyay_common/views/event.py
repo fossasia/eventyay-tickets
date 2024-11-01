@@ -446,7 +446,7 @@ class VideoAccessAuthenticator(views.APIView):
     def generate_token_url(self, request):
         uid_token = encode_email(request.user.email)
         iat = dt.datetime.utcnow()
-        exp = iat + dt.timedelta(days=30)
+        exp = iat + dt.timedelta(days=1)
         payload = {
             "iss": self.request.event.settings.venueless_issuer,
             "aud": self.request.event.settings.venueless_audience,
