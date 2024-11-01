@@ -788,15 +788,15 @@ def test_impersonate(user, client):
     session['pretix_auth_last_used'] = t1
     session.save()
     user2 = User.objects.create_user('dummy2@dummy.dummy', 'dummy')
-    response = client.post('/control/users/{user}/impersonate'.format(user=user2.pk), follow=True)
+    response = client.post('/control/admin/users/{user}/impersonate'.format(user=user2.pk), follow=True)
     assert b'dummy2@' in response.content
-    response = client.get('/control/global/settings/')
+    response = client.get('/control/admin/global/settings/')
     assert response.status_code == 403
     response = client.get('/control/')
-    response = client.post('/control/users/impersonate/stop/', follow=True)
+    response = client.post('/control/admin/users/impersonate/stop/', follow=True)
     assert b'dummy@' in response.content
     assert b'dummy2@' not in response.content
-    response = client.get('/control/global/settings/')
+    response = client.get('/control/admin/global/settings/')
     assert response.status_code == 200  # staff session is preserved
 
 
@@ -828,17 +828,17 @@ def test_staff_session(user, client):
     session['pretix_auth_login_time'] = t1
     session['pretix_auth_last_used'] = t1
     session.save()
-    response = client.get('/control/global/settings/')
+    response = client.get('/control/admin/global/settings/')
     assert response.status_code == 302
     response = client.post('/control/sudo/')
     assert response['Location'] == '/control/'
-    response = client.get('/control/global/settings/')
+    response = client.get('/control/admin/global/settings/')
     assert response.status_code == 200
     response = client.get('/control/sudo/stop/', follow=True)
     assert response.status_code == 200
-    response = client.get('/control/global/settings/')
+    response = client.get('/control/admin/global/settings/')
     assert response.status_code == 302
-    assert user.staffsession_set.last().logs.filter(url='/control/global/settings/').exists()
+    assert user.staffsession_set.last().logs.filter(url='/control/admin/global/settings/').exists()
 
 
 @pytest.mark.django_db

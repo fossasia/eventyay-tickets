@@ -201,7 +201,7 @@
                     {% endif %}
                     {% if warning_update_available %}
                         <li>
-                            <a href="{% url 'control:global.update' %}" class="danger">
+                            <a href="{% url 'control:admin.global.update' %}" class="danger">
                                 <i class="fa fa-bell"></i>
                             </a>
                         </li>
@@ -221,53 +221,55 @@
                 <div class="navbar-default sidebar" role="navigation">
                     <div class="sidebar-nav navbar-nav-collapse navbar-collapse">
                         <div class="dropdown context-selector">
-                            {% if request.event %}
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="fa-stack fa-lg">
-                                      <i class="fa fa-circle fa-stack-2x"></i>
-                                      <i class="fa fa-calendar fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                    <div class="context-indicator">
-                                        <span class="context-name">{{ request.event }}</span>
-                                        <span class="context-meta">{{ request.event.get_date_range_display }}</span>
-                                    </div>
-                                    <span class="caret"></span></a>
-                            {% elif request.organizer %}
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="fa-stack fa-lg">
-                                      <i class="fa fa-circle fa-stack-2x"></i>
-                                      <i class="fa fa-group fa-stack-1x fa-inverse"></i>
-                                    </span>
-                                    <div class="context-indicator">
-                                        <span class="context-name">{{ request.organizer }}</span>
-                                        <span class="context-meta">{% trans "Organizer account" %}</span>
-                                    </div>
-                                    <span class="caret"></span></a>
-                            {% else %}
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="fa-stack fa-lg">
-                                      <i class="fa fa-circle fa-stack-2x"></i>
-                                      <i class="fa fa-user fa-stack-1x fa-inverse"></i>
-                                    </span>
-
-                                    <div class="context-indicator">
-                                        <span class="context-name">{{ request.user }}</span>
-                                    </div>
-                                    <span class="caret"></span></a>
-                            {% endif %}
-                            <ul class="dropdown-menu event-dropdown" role="menu" data-event-typeahead
-                                data-source="{% url "control:nav.typeahead" %}"
+                            {% block nav_top_header %}
                                 {% if request.event %}
-                                    data-organizer="{{ request.organizer.id }}"
-                                {% endif %}>
-                                <li class="query-holder">
-                                    <div class="form-box">
-                                        <input type="text" class="form-control" id="event-dropdown-field"
-                                               placeholder="{% trans "Search for events" %}"
-                                               data-typeahead-query autocomplete="off">
-                                    </div>
-                                </li>
-                            </ul>
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <span class="fa-stack fa-lg">
+                                          <i class="fa fa-circle fa-stack-2x"></i>
+                                          <i class="fa fa-calendar fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                        <div class="context-indicator">
+                                            <span class="context-name">{{ request.event }}</span>
+                                            <span class="context-meta">{{ request.event.get_date_range_display }}</span>
+                                        </div>
+                                        <span class="caret"></span></a>
+                                {% elif request.organizer %}
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <span class="fa-stack fa-lg">
+                                          <i class="fa fa-circle fa-stack-2x"></i>
+                                          <i class="fa fa-group fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                        <div class="context-indicator">
+                                            <span class="context-name">{{ request.organizer }}</span>
+                                            <span class="context-meta">{% trans "Organizer account" %}</span>
+                                        </div>
+                                        <span class="caret"></span></a>
+                                {% else %}
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <span class="fa-stack fa-lg">
+                                          <i class="fa fa-circle fa-stack-2x"></i>
+                                          <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+                                        </span>
+
+                                        <div class="context-indicator">
+                                            <span class="context-name">{{ request.user }}</span>
+                                        </div>
+                                        <span class="caret"></span></a>
+                                {% endif %}
+                                <ul class="dropdown-menu event-dropdown" role="menu" data-event-typeahead
+                                    data-source="{% url "control:nav.typeahead" %}"
+                                    {% if request.event %}
+                                        data-organizer="{{ request.organizer.id }}"
+                                    {% endif %}>
+                                    <li class="query-holder">
+                                        <div class="form-box">
+                                            <input type="text" class="form-control" id="event-dropdown-field"
+                                                   placeholder="{% trans "Search for events" %}"
+                                                   data-typeahead-query autocomplete="off">
+                                        </div>
+                                    </li>
+                                </ul>
+                            {% endblock %}
                         </div>
                         <ul class="nav" id="side-menu">
                             {% if request.event and request.event.testmode %}
@@ -326,7 +328,7 @@
                     <ul>
                         {% for s in staff_need_to_explain %}
                             <li>
-                                <a href="{% url "control:user.sudo.edit" id=s.pk %}">#{{ s.pk }}</a>
+                                <a href="{% url "control:admin.user.sudo.edit" id=s.pk %}">#{{ s.pk }}</a>
                             </li>
                         {% endfor %}
                     </ul>
@@ -337,7 +339,7 @@
                     <span class="fa fa-user-secret"></span>
                     {% blocktrans with user=request.user%}You are currently working on behalf of {{ user }}.{% endblocktrans %}
 
-                    <form action="{% url 'control:users.impersonate.stop' %}" method="post" class="helper-display-inline">
+                    <form action="{% url 'control:admin.users.impersonate.stop' %}" method="post" class="helper-display-inline">
                         {% csrf_token %}
                         <button class="btn btn-default btn-sm">
                             {% trans "Stop impersonating" %}
@@ -350,7 +352,7 @@
                     <span class="fa fa-bell"></span>
                     {{ global_settings.banner_message }}
                     {% if global_settings.banner_message_detail %}
-                        <a href="{% url 'control:global.message' %}">
+                        <a href="{% url 'control:admin.global.message' %}">
                             {% trans "Read more" %}
                         </a>
                     {% endif %}
@@ -382,7 +384,7 @@
                     {% endif %}
                     {% if warning_update_check_active %}
                         <div class="alert alert-info">
-                            <a href="{% url "control:global.update" %}">
+                            <a href="{% url "control:admin.global.update" %}">
                                 {% blocktrans trimmed %}
                                 The system automatically checks for updates in the background.
                                 {% endblocktrans %}
