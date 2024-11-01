@@ -205,3 +205,46 @@ def get_setup_intent(setup_intent_id: str):
     stripe.api_key = get_stripe_secret_key()
     setup_intent = stripe.SetupIntent.retrieve(setup_intent_id)
     return setup_intent
+
+
+@handle_stripe_errors("create_product")
+def create_product(name: str):
+    stripe.api_key = get_stripe_secret_key()
+    product = stripe.Product.create(
+        name=name,
+    )
+    return product
+
+
+@handle_stripe_errors("create_price")
+def create_price(product_id: str, amount: int):
+    stripe.api_key = get_stripe_secret_key()
+    price = stripe.Price.create(
+        product=product_id,
+        unit_amount=amount,
+        currency='usd',
+
+    )
+    return price
+
+
+@handle_stripe_errors("create_subscription")
+def create_subscription(customer_id: str, price_id: str):
+    stripe.api_key = get_stripe_secret_key()
+    subscription = stripe.Subscription.create(
+        customer=customer_id,
+        items=[
+            {
+                "price": price_id,
+            },
+        ],
+    )
+    return subscription
+
+
+def process_auto_billing_charge_stripe(product_name: str, amount: int, customer_id: str):
+    product = create_product(product_name)
+    price = create_price(product.id, amount)
+    subscription = create_subscription(customer_id, price.id)
+    return subscription
+
