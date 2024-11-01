@@ -393,15 +393,7 @@ MIDDLEWARE = [
     'pretix.api.middleware.ApiScopeMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
-]
-
-CORS_ALLOW_HEADERS = list(default_headers) + [
-    'exhibitor',
-]
-
-CORS_ALLOW_CREDENTIALS = True
+# Configure CORS for testing
 
 # Configure the authentication backends
 AUTHENTICATION_BACKENDS = (
