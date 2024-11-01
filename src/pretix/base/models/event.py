@@ -524,6 +524,11 @@ class Event(EventMixin, LoggedModel):
         ),
         default=["web"],
     )
+    is_video_creation = models.BooleanField(
+        verbose_name=_("Add video call"),
+        help_text=_("Create Video platform for Event."),
+        default=False,
+    )
     objects = ScopedManager(organizer="organizer")
 
     class Meta:

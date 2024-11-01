@@ -93,8 +93,8 @@ def logged_in_client(client, event):
     ('/control/settings/oauth/apps/', 200),
     ('/control/settings/oauth/apps/add', 200),
 
-    ('/control/global/settings/', 200),
-    ('/control/global/update/', 200),
+    ('/control/admin/global/settings/', 200),
+    ('/control/admin/global/update/', 200),
 
     ('/control/organizers/', 200),
     ('/control/organizers/add', 200),

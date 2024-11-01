@@ -2,9 +2,9 @@ from django.urls import include, re_path as url
 from django.views.generic.base import RedirectView
 
 from pretix.control.views import (
-    auth, checkin, dashboards, event, geo, global_settings, item, main, oauth,
-    orderimport, orders, organizer, organizer_views, pdf, search, shredder,
-    subevents, typeahead, user, users, vouchers, waitinglist,
+    admin, auth, checkin, dashboards, event, geo, global_settings, item, main,
+    oauth, orderimport, orders, organizer, organizer_views, pdf, search,
+    shredder, subevents, typeahead, user, users, vouchers, waitinglist,
 )
 from pretix.control.views.auth import CustomAuthorizationView
 
@@ -26,9 +26,6 @@ urlpatterns = [
     url(r'^forgot/recover$', auth.Recover.as_view(), name='auth.forgot.recover'),
     url(r'^$', dashboards.user_index, name='index'),
     url(r'^widgets.json$', dashboards.user_index_widgets_lazy, name='index.widgets'),
-    url(r'^global/settings/$', global_settings.GlobalSettingsView.as_view(), name='global.settings'),
-    url(r'^global/update/$', global_settings.UpdateCheckView.as_view(), name='global.update'),
-    url(r'^global/message/$', global_settings.MessageView.as_view(), name='global.message'),
     url(r'^logdetail/$', global_settings.LogDetailView.as_view(), name='global.logdetail'),
     url(r'^logdetail/payment/$', global_settings.PaymentDetailView.as_view(), name='global.paymentdetail'),
     url(r'^logdetail/refund/$', global_settings.RefundDetailView.as_view(), name='global.refunddetail'),
@@ -36,16 +33,6 @@ urlpatterns = [
     url(r'^reauth/$', user.ReauthView.as_view(), name='user.reauth'),
     url(r'^sudo/$', user.StartStaffSession.as_view(), name='user.sudo'),
     url(r'^sudo/stop/$', user.StopStaffSession.as_view(), name='user.sudo.stop'),
-    url(r'^sudo/(?P<id>\d+)/$', user.EditStaffSession.as_view(), name='user.sudo.edit'),
-    url(r'^sudo/sessions/$', user.StaffSessionList.as_view(), name='user.sudo.list'),
-    url(r'^users/$', users.UserListView.as_view(), name='users'),
-    url(r'^users/select2$', typeahead.users_select2, name='users.select2'),
-    url(r'^users/add$', users.UserCreateView.as_view(), name='users.add'),
-    url(r'^users/impersonate/stop', users.UserImpersonateStopView.as_view(), name='users.impersonate.stop'),
-    url(r'^users/(?P<id>\d+)/$', users.UserEditView.as_view(), name='users.edit'),
-    url(r'^users/(?P<id>\d+)/reset$', users.UserResetView.as_view(), name='users.reset'),
-    url(r'^users/(?P<id>\d+)/impersonate', users.UserImpersonateView.as_view(), name='users.impersonate'),
-    url(r'^users/(?P<id>\d+)/anonymize', users.UserAnonymizeView.as_view(), name='users.anonymize'),
     url(r'^pdf/editor/webfonts.css', pdf.FontsCSSView.as_view(), name='pdf.css'),
     url(r'^settings/?$', user.UserSettings.as_view(), name='user.settings'),
     url(r'^settings/history/$', user.UserHistoryView.as_view(), name='user.settings.history'),
@@ -340,6 +327,23 @@ urlpatterns = [
             name='event.orders.checkinlists.edit'),
         url(r'^checkinlists/(?P<list>\d+)/delete$', checkin.CheckinListDelete.as_view(),
             name='event.orders.checkinlists.delete'),
+    ])),
+    url(r'^admin/', include([
+        url(r'^$', admin.AdminDashboard.as_view(), name='admin.dashboard'),
+        url(r'^organizers/$', admin.OrganizerList.as_view(), name='admin.organizers'),
+        url(r'^sudo/(?P<id>\d+)/$', user.EditStaffSession.as_view(), name='admin.user.sudo.edit'),
+        url(r'^sudo/sessions/$', user.StaffSessionList.as_view(), name='admin.user.sudo.list'),
+        url(r'^users/$', users.UserListView.as_view(), name='admin.users'),
+        url(r'^users/select2$', typeahead.users_select2, name='admin.users.select2'),
+        url(r'^users/add$', users.UserCreateView.as_view(), name='admin.users.add'),
+        url(r'^users/impersonate/stop', users.UserImpersonateStopView.as_view(), name='admin.users.impersonate.stop'),
+        url(r'^users/(?P<id>\d+)/$', users.UserEditView.as_view(), name='admin.users.edit'),
+        url(r'^users/(?P<id>\d+)/reset$', users.UserResetView.as_view(), name='admin.users.reset'),
+        url(r'^users/(?P<id>\d+)/impersonate', users.UserImpersonateView.as_view(), name='admin.users.impersonate'),
+        url(r'^users/(?P<id>\d+)/anonymize', users.UserAnonymizeView.as_view(), name='admin.users.anonymize'),
+        url(r'^global/settings/$', global_settings.GlobalSettingsView.as_view(), name='admin.global.settings'),
+        url(r'^global/update/$', global_settings.UpdateCheckView.as_view(), name='admin.global.update'),
+        url(r'^global/message/$', global_settings.MessageView.as_view(), name='admin.global.message'),
     ])),
     url(r'^event/(?P<organizer>[^/]+)/$', RedirectView.as_view(pattern_name='control:organizer'), name='event.organizerredirect'),
 ]
