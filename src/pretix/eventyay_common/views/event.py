@@ -91,7 +91,7 @@ class EventList(PaginationMixin, ListView):
         """
         if plugin_list is None:
             return []
-        return plugin_list.split(",")
+        return [p.strip() for p in plugin_list.split(",") if p.strip()]
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -455,7 +455,7 @@ class VideoAccessAuthenticator(views.APIView):
             "uid": uid_token,
             "traits": list(
                 {
-                    "eventyay-video-event-{}-orgnanizer".format(request.event.slug),
+                    "eventyay-video-event-{}-organizer".format(request.event.slug),
                     "admin",
                 }
             ),

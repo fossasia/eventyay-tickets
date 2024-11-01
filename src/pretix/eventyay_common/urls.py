@@ -19,6 +19,6 @@ urlpatterns = [
     url(r'^events/add$', event.EventCreateView.as_view(), name='events.add'),
     url(r'^event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/', include([
         url(r'^settings/$', event.EventUpdate.as_view(), name='event.update'),
-        url('', event.VideoAccessAuthenticator.as_view(), name='event.create_access_to_video'),
+        url(r'^video-access/$', event.VideoAccessAuthenticator.as_view(), name='event.create_access_to_video'),
     ])),
 ]
