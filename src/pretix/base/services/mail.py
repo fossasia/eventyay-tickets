@@ -1,3 +1,4 @@
+import base64
 import inspect
 import logging
 import os
@@ -277,7 +278,8 @@ class CustomEmail(EmailMultiAlternatives):
 def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: str, sender: str,
                    event: int = None, position: int = None, headers: dict = None, bcc: List[str] = None,
                    invoices: List[int] = None, order: int = None, attach_tickets=False, user=None,
-                   attach_ical=False, attach_cached_files: List[int] = None) -> bool:
+                   attach_ical=False, attach_cached_files: List[int] = None, attach_file_base64: str = None,
+                   attach_file_name: str = None) -> bool:
     email = CustomEmail(subject, body, sender, to=to, bcc=bcc, headers=headers)
     if html is not None:
         html_message = SafeMIMEMultipart(_subtype='related', encoding=settings.DEFAULT_CHARSET)
@@ -385,6 +387,9 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
                         pass
 
         email = global_email_filter.send_chained(event, 'message', message=email, user=user, order=order)
+        if attach_file_base64:
+            attach_file_content = base64.b64decode(attach_file_base64)
+            email.attach(attach_file_name, attach_file_content, "application/pdf")
 
         try:
             backend.send_messages([email])
