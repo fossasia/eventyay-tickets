@@ -100,7 +100,7 @@ def send_update_notification_email():
             )
         ),
         {
-            'url': build_absolute_uri('control:global.update')
+            'url': build_absolute_uri('control:admin.global.update')
         },
     )
 

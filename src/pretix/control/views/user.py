@@ -701,7 +701,7 @@ class UserNotificationsEditView(TemplateView):
 
 
 class StartStaffSession(StaffMemberRequiredMixin, RecentAuthenticationRequiredMixin, TemplateView):
-    template_name = 'pretixcontrol/user/staff_session_start.html'
+    template_name = 'pretixcontrol/admin/user/staff_session_start.html'
 
     def post(self, request, *args, **kwargs):
         if not request.user.has_active_staff_session(request.session.session_key):
@@ -727,12 +727,12 @@ class StopStaffSession(StaffMemberRequiredMixin, View):
 
         session.date_end = now()
         session.save()
-        return redirect(reverse("control:user.sudo.edit", kwargs={'id': session.pk}))
+        return redirect(reverse("control:admin.user.sudo.edit", kwargs={'id': session.pk}))
 
 
 class StaffSessionList(AdministratorPermissionRequiredMixin, ListView):
     context_object_name = 'sessions'
-    template_name = 'pretixcontrol/user/staff_session_list.html'
+    template_name = 'pretixcontrol/admin/user/staff_session_list.html'
     paginate_by = 25
     model = StaffSession
 
@@ -742,11 +742,11 @@ class StaffSessionList(AdministratorPermissionRequiredMixin, ListView):
 
 class EditStaffSession(StaffMemberRequiredMixin, UpdateView):
     context_object_name = 'session'
-    template_name = 'pretixcontrol/user/staff_session_edit.html'
+    template_name = 'pretixcontrol/admin/user/staff_session_edit.html'
     form_class = StaffSessionForm
 
     def get_success_url(self):
-        return reverse("control:user.sudo.edit", kwargs={'id': self.object.pk})
+        return reverse("control:admin.user.sudo.edit", kwargs={'id': self.object.pk})
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
