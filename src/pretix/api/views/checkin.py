@@ -456,7 +456,7 @@ def _process_given_answers(op, answers_data, user, auth):
 
 def _append_badge_download(downloads, op, request):
     if 'pretix.plugins.badges' in op.order.event.plugins:
-        badge_url = f"/api/v1/organizers/{request.organizer.slug}/events/{op.order.event.slug}/orderpositions/{op.pk}/preview/badge/"
+        badge_url = f"/api/v1/organizers/{request.organizer.slug}/events/{op.order.event.slug}/orderpositions/{op.pk}/download/badge/"
         downloads.append({
             "output": "badge",
             "url": badge_url
