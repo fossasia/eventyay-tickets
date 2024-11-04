@@ -416,8 +416,8 @@ class VideoAccessAuthenticator(views.APIView):
         Check if the video configuration is complete, the plugin is enabled, and the user has permission to modify the event settings.
         If all conditions are met, generate a token and include it in the URL for the video system.
         @param request: user request
-        @param args:
-        @param kwargs:
+        @param args: arguments
+        @param kwargs: keyword arguments
         @return: redirect to the video system
         """
         #  Check if the video configuration is fulfilled and the plugin is enabled
