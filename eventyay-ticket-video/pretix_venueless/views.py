@@ -1,4 +1,8 @@
 import datetime
+import hashlib
+import random
+import string
+
 import jwt
 from django import forms
 from django.core.exceptions import PermissionDenied
@@ -116,6 +120,18 @@ class SettingsView(EventSettingsViewMixin, EventSettingsFormView):
         })
 
 
+def encode_email(email):
+    hash_object = hashlib.sha256(email.encode())
+    hash_hex = hash_object.hexdigest()
+    short_hash = hash_hex[:7]
+    characters = string.ascii_letters + string.digits
+    random_suffix = "".join(
+        random.choice(characters) for _ in range(7 - len(short_hash))
+    )
+    final_result = short_hash + random_suffix
+    return final_result.upper()
+
+
 @method_decorator(xframe_options_exempt, 'dispatch')
 class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
 
@@ -132,7 +148,8 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
         if forbidden:
             raise PermissionDenied()
 
-        if request.event.settings.venueless_start and request.event.settings.venueless_start.datetime(self.position.subevent or request.event) > now():
+        if request.event.settings.venueless_start and request.event.settings.venueless_start.datetime(
+                self.position.subevent or request.event) > now():
             raise PermissionDenied()
 
         iat = datetime.datetime.utcnow()
@@ -145,10 +162,11 @@ class OrderPositionJoin(EventViewMixin, OrderPositionDetailMixin, View):
         if self.position.company:
             profile['fields']['company'] = self.position.company
 
-        for a in self.position.answers.filter(question_id__in=request.event.settings.venueless_questions).select_related('question'):
+        for a in self.position.answers.filter(
+                question_id__in=request.event.settings.venueless_questions).select_related('question'):
             profile['fields'][a.question.identifier] = a.answer
 
-        uid_token = self.order.customer.identifier if self.order.customer else self.position.pseudonymization_id
+        uid_token = encode_email(self.order.email) if self.order.email else self.position.pseudonymization_id
 
         payload = {
             "iss": request.event.settings.venueless_issuer,
