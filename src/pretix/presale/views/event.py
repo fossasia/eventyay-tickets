@@ -12,6 +12,7 @@ import isoweek
 import jwt
 import pytz
 from django.conf import settings
+from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db.models import (
     Count, Exists, IntegerField, OuterRef, Prefetch, Q, Value,
@@ -467,6 +468,9 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
                 context['is_video_plugin_enabled'] = True
 
         context['guest_checkout_allowed'] = not self.request.event.settings.require_registered_account_for_tickets
+
+        if not context['guest_checkout_allowed'] and not self.request.user.is_authenticated:
+            messages.error(self.request, _("This event only available for registered users. Please login to continue."))
 
         return context
 
