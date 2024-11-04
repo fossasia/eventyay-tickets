@@ -1,5 +1,8 @@
+import logging
+
+import pyvat
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.files import File
 from django.db import transaction
 from django.db.models import Max, Min, Prefetch, ProtectedError
@@ -12,9 +15,11 @@ from django.views import View
 from django.views.generic import (
     CreateView, DetailView, FormView, ListView, UpdateView,
 )
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from pretix.base.models.event import Event, EventMetaValue
-from pretix.base.models.organizer import Organizer, Team
+from pretix.base.models.organizer import Organizer, OrganizerBillingModel, Team
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.control.forms.filter import EventFilterForm, OrganizerFilterForm
 from pretix.control.forms.organizer_forms import (
@@ -25,10 +30,18 @@ from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, OrganizerPermissionRequiredMixin,
 )
 from pretix.control.signals import nav_organizer
+from pretix.control.stripe import (
+    create_setup_intent, get_payment_method_info, get_stripe_customer_id,
+    get_stripe_publishable_key, update_payment_info,
+)
 from pretix.control.views import PaginationMixin
+from pretix.helpers.countries import CachedCountries
 from pretix.presale.style import regenerate_organizer_css
 
+from ...forms.organizer_forms.organizer_form import BillingSettingsForm
 from .organizer_detail_view_mixin import OrganizerDetailViewMixin
+
+logger = logging.getLogger(__name__)
 
 
 class OrganizerCreate(CreateView):
@@ -317,3 +330,125 @@ class OrganizerList(PaginationMixin, ListView):
     @cached_property
     def filter_form(self):
         return OrganizerFilterForm(data=self.request.GET, request=self.request)
+
+
+class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
+    model = OrganizerBillingModel
+    form_class = BillingSettingsForm
+    template_name = "pretixcontrol/organizers/billing.html"
+    permission = "can_change_organizer_settings"
+
+    def get_success_url(self):
+        return reverse(
+            "control:organizer.settings.billing",
+            kwargs={
+                "organizer": self.request.organizer.slug,
+            },
+        )
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["organizer"] = self.request.organizer
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+
+        billing_settings = OrganizerBillingModel.objects.filter(
+            organizer_id=self.request.organizer.id
+        ).first()
+
+        if billing_settings and billing_settings.stripe_customer_id:
+            ctx["is_general_information_fulfilled"] = True
+        else:
+            ctx["is_general_information_fulfilled"] = False
+        return ctx
+
+    @staticmethod
+    def get_country_name(country_code):
+        country = CachedCountries().countries
+        return country.get(country_code, None)
+
+    def validate_vat_number(self, country_code, vat_number):
+        try:
+            if country_code not in pyvat.VAT_REGISTRIES:
+                country_name = self.get_country_name(country_code)
+                messages.error(self.request, _("VAT validation not supported for country: %s" % str(country_name)))
+                return None
+            result = pyvat.is_vat_number_format_valid(vat_number, country_code)
+            return result
+        except Exception as e:
+            logger.error("Error validating VAT number: %s", str(e))
+            return None
+
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            country_code = cleaned_data.get("country")
+            vat_number = cleaned_data.get("tax_id")
+
+            if vat_number:
+                country_name = self.get_country_name(country_code)
+                is_valid_vat_number = self.validate_vat_number(country_code, vat_number)
+                if is_valid_vat_number is None:
+                    return self.form_invalid(form)
+                elif not is_valid_vat_number:
+                    messages.error(self.request, _("Invalid VAT number for country: %s" % str(country_name)))
+                    return self.form_invalid(form)
+
+            try:
+                form.save()
+                messages.success(self.request, _("Your changes have been saved."))
+                return redirect(self.get_success_url())
+            except Exception as e:
+                logger.error("Error saving billing settings: %s", str(e))
+                messages.error(
+                    self.request,
+                    _("We could not save your changes. See below for details."),
+                )
+        else:
+            messages.error(
+                self.request,
+                _("We could not save your changes. See below for details."),
+            )
+
+        return self.form_invalid(form)
+
+
+@api_view(["GET"])
+def setup_intent(request, organizer):
+    try:
+        stripe_customer_id = get_stripe_customer_id(organizer)
+        payment_method_info = get_payment_method_info(stripe_customer_id)
+        client_secret = create_setup_intent(stripe_customer_id)
+
+        return Response(
+            {
+                "client_secret": client_secret,
+                "stripe_public_key": get_stripe_publishable_key(),
+                "payment_method_info": payment_method_info,
+            }
+        )
+    except ValidationError as e:
+        logger.error("Validation error creating setup intent: %s", str(e))
+        return Response({"error": str(e)}, status=400)
+
+
+@api_view(["POST"])
+def save_payment_information(request, organizer):
+    setup_intent_id = request.data.get("setup_intent_id")
+    try:
+        stripe_customer_id = get_stripe_customer_id(organizer)
+        update_payment_info(setup_intent_id, stripe_customer_id)
+
+        return Response(
+            {
+                "success": True,
+            }
+        )
+    except ValidationError as e:
+        logger.error("Validation error updating payment information: %s", str(e))
+        return Response({"error": str(e)}, status=400)

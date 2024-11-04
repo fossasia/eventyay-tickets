@@ -1,0 +1,74 @@
+{% extends "pretixcontrol/event/settings_base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load static %}
+{% load hierarkey_form %}
+{% load formset_tags %}
+{% block title %}{% trans "General settings" %}{% endblock %}
+{% block custom_header %}
+    {{ block.super }}
+    <link type="text/css" rel="stylesheet" href="{% url "control:pdf.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "billing/css/billing.css" %}" />
+{% endblock %}
+
+{% block inside %}
+    <h1>{% trans "Billing settings" %}</h1>
+    <div class="tabbed-form">
+        <fieldset>
+            <legend>{% trans "General" %}</legend>
+            <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% bootstrap_form_errors form %}
+                {% bootstrap_field form.primary_contact_name layout="control" %}
+                {% bootstrap_field form.primary_contact_email layout="control" %}
+                {% bootstrap_field form.company_or_organization_name layout="control" %}
+                {% bootstrap_field form.address_line_1 layout="control" %}
+                {% bootstrap_field form.address_line_2 layout="control" %}
+                {% bootstrap_field form.zip_code layout="control" %}
+                {% bootstrap_field form.city layout="control" %}
+                {% bootstrap_field form.country layout="control" %}
+                {% bootstrap_field form.tax_id layout="control" %}
+                {% bootstrap_field form.preferred_language layout="control" %}
+                <div class="form-group submit-group">
+                    <button type="submit" class="btn btn-primary btn-save">
+                        {% trans "Save" %}
+                    </button>
+                </div>
+            </form>
+        </fieldset>
+            <fieldset>
+                <legend>{% trans "Payment information" %}</legend>
+                {% if is_general_information_fulfilled %}
+                    {{ base_path|json_script:"base_path" }}
+                    <script type="text/javascript" src="{% static "billing/js/billing.js" %}"></script>
+                    <div id="payment-information">
+                        <div class="card">
+                            <div class="chip"></div>
+                            <div class="logo"></div>
+                            <div class="card-number"></div>
+                            <div class="expiration"></div>
+                            <div class="design"></div>
+                        </div>
+                    </div>
+                    <button id="change-card-btn">Use a different card</button>
+                    <div id="payment-element"></div>
+                    <div class="form-group submit-group">
+                        <button type="button" class="btn btn-primary btn-save" id="save-payment-information">
+                            {% trans "Save" %}
+                        </button>
+                    </div>
+                {% else %}
+                    {{ base_path|json_script:"base_path" }}
+                    <div class="notification">
+                        <p>⚠️ Please complete the Billing Settings in the General tab before filling in the Payment Information tab.</p>
+                    </div>
+                     <div class="form-group submit-group">
+                        <button type="button" class="btn btn-primary btn-save" id="back-btn">
+                            {% trans "Back" %}
+                        </button>
+                     <script type="text/javascript" src="{% static "billing/js/event.js" %}"></script>
+                    </div>
+                {% endif %}
+            </fieldset>
+    </div>
+{% endblock %}

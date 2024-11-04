@@ -48,6 +48,12 @@ class EventWizardFoundationForm(forms.Form):
         label=_("This is an event series"),
         required=False,
     )
+    is_video_creation = forms.BooleanField(
+        label=_("Create Video platform for this Event."),
+        help_text=_("This will create a new Video platform for this event."),
+        required=False,
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+    )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
@@ -152,6 +158,7 @@ class EventWizardBasicsForm(I18nModelForm):
         self.organizer = kwargs.pop("organizer")
         self.locales = kwargs.get("locales")
         self.has_subevents = kwargs.pop("has_subevents")
+        self.is_video_creation = kwargs.pop("is_video_creation")
         self.user = kwargs.pop("user")
         kwargs.pop("session")
         super().__init__(*args, **kwargs)
@@ -287,6 +294,7 @@ class EventWizardCopyForm(forms.Form):
         self.session = kwargs.pop("session")
         kwargs.pop("has_subevents")
         self.user = kwargs.pop("user")
+        kwargs.pop("is_video_creation")
         super().__init__(*args, **kwargs)
 
         self.fields["copy_from_event"] = EventChoiceField(
@@ -361,6 +369,9 @@ class EventMetaValueForm(forms.ModelForm):
 
 
 class EventUpdateForm(I18nModelForm):
+    is_video_creation = forms.BooleanField(
+        required=False,
+    )
 
     def __init__(self, *args, **kwargs):
         self.change_slug = kwargs.pop("change_slug", False)
@@ -400,6 +411,9 @@ class EventUpdateForm(I18nModelForm):
             ),
             widget=forms.CheckboxSelectMultiple,
         )
+        self.is_video_creation = self.initial.get("is_video_creation")
+        if self.is_video_creation:
+            self.fields["is_video_creation"].disabled = True
 
     def clean_domain(self):
         d = self.cleaned_data["domain"]
@@ -470,6 +484,7 @@ class EventUpdateForm(I18nModelForm):
             "geo_lat",
             "geo_lon",
             "sales_channels",
+            "is_video_creation",
         ]
         field_classes = {
             "date_from": SplitDateTimeField,
