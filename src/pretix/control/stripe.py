@@ -1,10 +1,15 @@
 import logging
 from functools import wraps
+from datetime import datetime
 
 import stripe
 from django.core.exceptions import ValidationError
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from django_scopes import scopes_disabled
 
-from pretix.base.models import Organizer
+from pretix.base.models import Organizer, BillingInvoice
 from pretix.base.models.organizer import OrganizerBillingModel
 from pretix.base.settings import GlobalSettingsObject
 
@@ -191,44 +196,72 @@ def get_setup_intent(setup_intent_id: str):
     return setup_intent
 
 
-@handle_stripe_errors("create_product")
-def create_product(name: str):
+@handle_stripe_errors("create_payment_intent")
+def create_payment_intent(amount: int, currency: str, customer_id: str, payment_method_id: str):
     stripe.api_key = get_stripe_secret_key()
-    product = stripe.Product.create(
-        name=name,
-    )
-    return product
-
-
-@handle_stripe_errors("create_price")
-def create_price(product_id: str, amount: int):
-    stripe.api_key = get_stripe_secret_key()
-    price = stripe.Price.create(
-        product=product_id,
-        unit_amount=amount,
-        currency='usd',
-
-    )
-    return price
-
-
-@handle_stripe_errors("create_subscription")
-def create_subscription(customer_id: str, price_id: str):
-    stripe.api_key = get_stripe_secret_key()
-    subscription = stripe.Subscription.create(
+    payment_intent = stripe.PaymentIntent.create(
+        amount=int(amount*100),
+        currency=currency,
         customer=customer_id,
-        items=[
-            {
-                "price": price_id,
-            },
-        ],
+        payment_method = payment_method_id,
+        automatic_payment_methods={"enabled": True},
+        confirm=True,
+        off_session=True,
     )
-    return subscription
+    logger.info("Created a successful payment intent %s", payment_intent.id)
+    return payment_intent
 
 
-def process_auto_billing_charge_stripe(product_name: str, amount: int, customer_id: str):
-    product = create_product(product_name)
-    price = create_price(product.id, amount)
-    subscription = create_subscription(customer_id, price.id)
-    return subscription
+def process_auto_billing_charge_stripe(organizer_slug: str, amount: int, currency: str):
+    stripe.api_key = get_stripe_secret_key()
+    customer_id = get_stripe_customer_id(organizer_slug)
+    payment_method = get_payment_method_info(customer_id)
+
+    if payment_method is None:
+        logger.error("No payment method found for the customer %s", customer_id)
+        raise ValidationError("No payment method found for the customer.")
+
+    payment_intent = create_payment_intent(amount, currency, customer_id, payment_method.id)
+    return payment_intent
+
+
+@csrf_exempt
+def stripe_webhook_view(request):
+    stripe.api_key = get_stripe_secret_key()
+    payload = request.body
+
+    try:
+        event = stripe.Event.construct_from(
+            json.loads(payload), stripe.api_key
+        )
+
+        if event.type in ['charge.succeeded', 'payment_intent.succeeded']:
+            customer_id = event.data.object.customer
+            billing_setting = OrganizerBillingModel.objects.filter(
+                stripe_customer_id=customer_id
+            ).first()
+
+            if billing_setting:
+                with scopes_disabled():
+                    BillingInvoice.objects.filter(
+                        organizer_id=billing_setting.organizer_id
+                    ).update(
+                        status=BillingInvoice.STATUS_PAID,
+                        paid_datetime=datetime.today(),
+                        payment_method='stripe',
+                        updated_at=datetime.today(),
+                    )
+                logger.info(f"Payment successful for customer {customer_id}")
+
+        elif event.type in ['charge.failed', 'payment_intent.payment_failed']:
+            customer_id = event.data.object.customer
+            error_message = event.data.object.get('failure_message', 'Unknown error')
+            logger.error(f"Payment failed for customer {customer_id}: {error_message}")
+
+    except Exception as e:
+        logger.error(f"Error processing webhook: {str(e)}")
+        return HttpResponse(status=400)
+
+    return HttpResponse(status=200)
+
 

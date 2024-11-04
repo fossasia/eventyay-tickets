@@ -20,7 +20,7 @@ from ..base.models import BillingInvoice, Event, Order, Organizer
 from ..base.models.organizer import OrganizerBillingModel
 from ..base.services.mail import CustomEmail, SendMailException, mail_send_task
 from ..base.settings import GlobalSettingsObject
-from ..control.utils import process_auto_billing_charge_stripe
+from ..control.stripe import process_auto_billing_charge_stripe
 from ..helpers.jwt_generate import generate_sso_token
 
 logger = logging.getLogger(__name__)
@@ -277,7 +277,7 @@ def process_auto_billing_charge(self):
                 logger.info("Processing auto billing charge for event: %s", invoice.event.name)
 
                 # Get the organizer's billing settings
-                billing_settings = OrganizerBillingModel.objects.filter(organizer_id=invoice.organizer).first()
+                billing_settings = OrganizerBillingModel.objects.filter(organizer_id=invoice.organizer_id).first()
                 if not billing_settings or not billing_settings.stripe_customer_id:
                     logger.error("No billing settings or Stripe customer ID found for organizer %s",
                                  invoice.organizer.slug)
@@ -288,14 +288,16 @@ def process_auto_billing_charge(self):
                     continue
 
                 # Charge the organizer's payment method
-                stripe_subscription = process_auto_billing_charge_stripe()
+                payment_intent = process_auto_billing_charge_stripe(billing_settings.organizer.slug, invoice.ticket_fee, currency=invoice.currency)
+                # BillingInvoice.objects.filter(id=invoice.id).update(
+                #     status='p',
+                #     payment_intent_id=payment_intent.id,
+                #     updated_at=today,
+                # )
 
             except Exception as e:
-                logger.error('Error happen when trying to process auto billing charge for event: %s', invoice.event.slug)
-                logger.error('Error: %s', e)
+                logger.error('Error happen when trying to process auto billing charge: %s', e)
                 continue
-
-
     except Exception as e:
         logger.error('Error happen when trying to process auto billing charge: %s', e)
         # Retry the task if an exception occurs (with exponential backoff by default)
@@ -303,9 +305,6 @@ def process_auto_billing_charge(self):
             self.retry(exc=e)
         except self.MaxRetriesExceededError:
             logger.error("Max retries exceeded for auto billing charge.")
-
-
-
 
 
 def calculate_total_amount_on_monthly(event, last_month_date_start):
