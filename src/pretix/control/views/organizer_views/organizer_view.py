@@ -30,7 +30,7 @@ from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, OrganizerPermissionRequiredMixin,
 )
 from pretix.control.signals import nav_organizer
-from pretix.control.utils import (
+from pretix.control.stripe import (
     create_setup_intent, get_payment_method_info, get_stripe_customer_id,
     get_stripe_publishable_key, update_payment_info,
 )
@@ -359,9 +359,9 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
         ).first()
 
         if billing_settings and billing_settings.stripe_customer_id:
-            ctx["is_general_information"] = True
+            ctx["is_general_information_fulfilled"] = True
         else:
-            ctx["is_general_information"] = False
+            ctx["is_general_information_fulfilled"] = False
         return ctx
 
     @staticmethod

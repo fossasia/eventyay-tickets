@@ -38,7 +38,7 @@
         </fieldset>
             <fieldset>
                 <legend>{% trans "Payment information" %}</legend>
-                {% if is_general_information %}
+                {% if is_general_information_fulfilled %}
                     {{ base_path|json_script:"base_path" }}
                     <script type="text/javascript" src="{% static "billing/js/billing.js" %}"></script>
                     <div id="payment-information">
