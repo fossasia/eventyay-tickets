@@ -40,7 +40,7 @@
                     </a>
                 {% endif %}
                 {% if can_register %}
-                    <a href='{% url "control:auth.register" %}{% append_next request.GET.next %}}' class="btn btn-link btn-block">
+                    <a href='{% url "control:auth.register" %}{% append_next request.GET.next %}' class="btn btn-link btn-block">
                         {% trans "Register" %}
                     </a>
                 {% endif %}
