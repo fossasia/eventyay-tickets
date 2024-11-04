@@ -53,6 +53,7 @@ class QuestionsStep(QuestionsViewMixin, CartMixin, TemplateFlowStep):
         wd = self.cart_session.get('widget_data', {})
         initial = {
             'email': (
+                (self.request.user.email if self.request.user.is_authenticated else '') or
                 self.cart_session.get('email', '') or
                 wd.get('email', '')
             ),

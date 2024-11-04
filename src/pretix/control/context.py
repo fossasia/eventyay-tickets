@@ -111,6 +111,7 @@ def _default_context(request):
     ctx['js_time_format'] = get_javascript_format('TIME_INPUT_FORMATS')
     ctx['js_locale'] = get_moment_locale()
     ctx['select2locale'] = get_language()[:2]
+    ctx['base_path'] = settings.BASE_PATH
 
     ctx['warning_update_available'] = False
     ctx['warning_update_check_active'] = False
