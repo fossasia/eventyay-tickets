@@ -71,6 +71,8 @@ $(document).ready(function () {
             layout: 'tabs',
         });
         paymentElement.mount(el);
+
+        $(changeCardBtn).prop('disabled', true);
     })
 
 
@@ -86,7 +88,7 @@ $(document).ready(function () {
 
             const csrfToken = document.cookie.match(/pretix_csrftoken=([^;]+)/)[1];
 
-            if (!organizerSlug || !result.setupIntent.id || !csrfToken) {
+            if (!organizerSlug || !result?.setupIntent?.id || !csrfToken) {
                 console.error('Organizer slug, setup intent id or csrf token not found');
                 return;
             }
@@ -98,7 +100,7 @@ $(document).ready(function () {
                     'X-CSRFToken': csrfToken,
                 },
                 body: JSON.stringify({
-                    setup_intent_id: result.setupIntent.id,
+                    setup_intent_id: result?.setupIntent?.id,
                 }),
             });
 

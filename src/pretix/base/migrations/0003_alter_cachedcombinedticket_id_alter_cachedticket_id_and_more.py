@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("pretixbase", "0002_question_description"),
+        ("pretixbase", "0003_event_is_video_creation_and_more"),
     ]
 
     operations = [

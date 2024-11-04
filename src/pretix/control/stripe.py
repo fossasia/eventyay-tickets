@@ -30,6 +30,8 @@ def get_stripe_key(key_type: str) -> str:
             "Please contact the administrator to set the Stripe {} key.".format(key_type)
         )
 
+    logger.info("Get successful %s key", key_type)
+
     return prod_key or test_key
 
 
@@ -49,63 +51,34 @@ def handle_stripe_errors(operation_name: str):
                 return func(*args, **kwargs)
             except stripe.error.APIError as e:
                 logger.error("Stripe API error during %s: %s", operation_name, str(e))
-                raise ValidationError(
-                    "Stripe service error: {}".format(getattr(e, "user_message", str(e)))
-                )
+                raise ValidationError("Stripe service error.")
             except stripe.error.APIConnectionError as e:
-                logger.error(
-                    "API connection error during %s: %s", operation_name, str(e)
-                )
-                raise ValidationError("Network communication error: {}".format(str(e)))
+                logger.error("API connection error during %s: %s", operation_name, str(e))
+                raise ValidationError("Network communication error.")
             except stripe.error.AuthenticationError as e:
-                logger.error(
-                    "Authentication error during %s: %s", operation_name, str(e)
-                )
-                raise ValidationError(
-                    "Authentication failed: {}".format(getattr(e, "user_message", str(e)))
-                )
+                logger.error("Authentication error during %s: %s", operation_name, str(e))
+                raise ValidationError("Authentication failed.")
             except stripe.error.CardError as e:
-                logger.error(
-                    "Card error during %s: %s | Code: %s | Decline code: %s",
-                    operation_name,
-                    str(e),
-                    e.code,
-                    getattr(e, "decline_code", "N/A"),
-                )
-                raise ValidationError("Card error: {}".format(getattr(e, "user_message", str(e))))
+                logger.error("Card error during %s: %s", operation_name, str(e))
+                raise ValidationError("Card error.")
             except stripe.error.RateLimitError as e:
                 logger.error("Rate limit error during %s: %s", operation_name, str(e))
-                raise ValidationError(
-                    "Too many requests. Please try again later: {}".format(getattr(e, "user_message", str(e)))
-                )
+                raise ValidationError("Too many requests. Please try again later.")
             except stripe.error.InvalidRequestError as e:
-                logger.error(
-                    "Invalid request error during %s: %s | Param: %s",
-                    operation_name,
-                    str(e),
-                    getattr(e, "param", "N/A"),
-                )
-                raise ValidationError("Invalid request: {}".format(getattr(e, "user_message", str(e))))
+                logger.error("Invalid request error during %s: %s", operation_name, str(e))
+                raise ValidationError("Invalid request.")
             except stripe.error.SignatureVerificationError as e:
                 logger.error("Signature verification failed during %s: %s", operation_name, str(e))
-                raise ValidationError(
-                    "Webhook signature verification failed: {}".format(getattr(e, "user_message", str(e)))
-                )
+                raise ValidationError("Webhook signature verification failed.")
             except stripe.error.PermissionError as e:
                 logger.error("Permission error during %s: %s", operation_name, str(e))
-                raise ValidationError(
-                    "Permission denied: {}".format(getattr(e, "user_message", str(e)))
-                )
+                raise ValidationError("Permission denied.")
             except stripe.error.IdempotencyError as e:
                 logger.error("Idempotency error during %s: %s", operation_name, str(e))
-                raise ValidationError(
-                    "Idempotency error: {}".format(getattr(e, "user_message", str(e)))
-                )
+                raise ValidationError("Idempotency error.")
             except stripe.error.StripeError as e:
                 logger.error("Stripe error during %s: %s", operation_name, str(e))
-                raise ValidationError(
-                    "Payment processing error: {}".format(getattr(e, "user_message", str(e)))
-                )
+                raise ValidationError("Payment processing error.")
 
         return wrapper
 
@@ -120,6 +93,7 @@ def create_setup_intent(customer_id: str) -> str:
         payment_method_types=["card"],
         usage="off_session",
     )
+    logger.info("Created a successful setup intent %s", stripe_setup_intent.id)
     OrganizerBillingModel.objects.filter(stripe_customer_id=customer_id).update(
         stripe_setup_intent_id=stripe_setup_intent.id
     )
@@ -151,6 +125,7 @@ def create_stripe_customer(email: str, name: str):
         email=email,
         name=name,
     )
+    logger.info("Created a successful customer %s", customer.id)
     return customer
 
 
@@ -167,6 +142,7 @@ def update_payment_info(setup_intent_id: str, customer_id: str):
     updated_customer_info = stripe.Customer.modify(
         customer_id, invoice_settings={"default_payment_method": payment_method}
     )
+    logger.info("Updated successful payment information for the customer %s", customer_id)
     return updated_customer_info
 
 
@@ -181,6 +157,7 @@ def get_payment_method_info(stripe_customer_id: str):
     payment_method = stripe.PaymentMethod.retrieve(
         billing_settings.stripe_payment_method_id
     )
+    logger.info("Retrieve successful payment information %s", payment_method.id)
     return payment_method
 
 
@@ -188,6 +165,7 @@ def get_payment_method_info(stripe_customer_id: str):
 def update_customer_info(customer_id: str, email: str, name: str):
     stripe.api_key = get_stripe_secret_key()
     updated_customer_info = stripe.Customer.modify(customer_id, email=email, name=name)
+    logger.info("Updated successful customer information for the customer %s", customer_id)
     return updated_customer_info
 
 
@@ -197,6 +175,11 @@ def attach_payment_method_to_customer(payment_method_id: str, customer_id: str):
     attached_payment_method = stripe.PaymentMethod.attach(
         payment_method_id, customer=customer_id
     )
+    logger.info(
+        "Attached successful payment method %s to the customer %s",
+        payment_method_id,
+        customer_id,
+    )
     return attached_payment_method
 
 
@@ -204,6 +187,7 @@ def attach_payment_method_to_customer(payment_method_id: str, customer_id: str):
 def get_setup_intent(setup_intent_id: str):
     stripe.api_key = get_stripe_secret_key()
     setup_intent = stripe.SetupIntent.retrieve(setup_intent_id)
+    logger.info("Retrieve successful setup intent %s", setup_intent.id)
     return setup_intent
 
 
