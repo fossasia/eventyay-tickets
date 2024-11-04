@@ -17,7 +17,6 @@ from .settings_helpers import build_db_tls_config, build_redis_tls_config
 
 from django.contrib.messages import constants as messages  # NOQA
 from django.utils.translation import gettext_lazy as _  # NOQA
-from corsheaders.defaults import default_headers
 _config = configparser.RawConfigParser()
 if 'PRETIX_CONFIG_FILE' in os.environ:
     _config.read_file(open(os.environ.get('PRETIX_CONFIG_FILE'), encoding='utf-8'))

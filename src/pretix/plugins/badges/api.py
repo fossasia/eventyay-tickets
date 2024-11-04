@@ -1,10 +1,7 @@
 import base64
 
-from django.core.files.base import ContentFile
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
-from rest_framework.renderers import BaseRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -12,7 +9,6 @@ from pretix.api.serializers.i18n import I18nAwareModelSerializer
 from pretix.api.serializers.order import CompatibleJSONField
 from pretix.base.models import CachedFile, OrderPosition
 from pretix.base.services.tickets import generate_orderposition
-from pretix.plugins.badges.exporters import OPTIONS, render_pdf
 
 from .apps import PDFRenderer
 from .models import BadgeItem, BadgeLayout
@@ -140,7 +136,7 @@ class BadgeDownloadView(APIView):
                     'pdf_base64': base64_pdf
                 })
 
-            except Exception as generation_error:
+            except Exception:
                 # If immediate generation fails, fall back to async generation
                 generate_orderposition.apply_async(args=(op.pk, 'badge'))
                 return Response(

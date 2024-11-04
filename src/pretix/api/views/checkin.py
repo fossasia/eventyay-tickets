@@ -2,33 +2,38 @@ import operator
 from functools import reduce
 
 import django_filters
+from django.conf import settings
 from django.core.exceptions import ValidationError as BaseValidationError
 from django.db.models import (
-    Count, Exists, F, Max, OuterRef, Prefetch, Q, Subquery, OrderBy,prefetch_related_objects
+    Count, Exists, F, Max, OrderBy, OuterRef, Prefetch, Q, Subquery,
+    prefetch_related_objects,
 )
 from django.db.models.functions import Coalesce
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.functional import cached_property
 from django.utils.timezone import now
-from django.utils.translation import gettext, gettext_lazy
 from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 from django_scopes import scopes_disabled
 from rest_framework import views, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.fields import DateTimeField
-from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
 
-from pretix.api.serializers.checkin import CheckinListSerializer,CheckinRedeemInputSerializer, MiniCheckinListSerializer
+from pretix.api.serializers.checkin import (
+    CheckinListSerializer, CheckinRedeemInputSerializer,
+    MiniCheckinListSerializer,
+)
 from pretix.api.serializers.item import QuestionSerializer
 from pretix.api.serializers.order import CheckinListOrderPositionSerializer
 from pretix.api.views import RichOrderingFilter
 from pretix.api.views.order import OrderPositionFilter
 from pretix.base.i18n import language
 from pretix.base.models import (
-    CachedFile, Checkin, CheckinList, Event, Order, OrderPosition, Question, Device, TeamAPIToken, RevokedTicketSecret,
+    CachedFile, Checkin, CheckinList, Device, Event, Order, OrderPosition,
+    Question, RevokedTicketSecret, TeamAPIToken,
 )
 from pretix.base.services.checkin import (
     CheckInError, RequiredQuestionsError, SQLLogic, perform_checkin,
@@ -290,7 +295,7 @@ def _handle_file_upload(data, user, auth):
             file__isnull=False,
             pk=data[len("file:"):],
         )
-    except (BaseValidationError, BaseBaseValidationError, IndexError):  # invalid uuid
+    except (BaseValidationError, IndexError):  # invalid uuid
         raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
     except CachedFile.DoesNotExist:
         raise BaseValidationError('The submitted file ID "{fid}" was not found.'.format(fid=data))
@@ -906,11 +911,12 @@ class CheckinListPositionViewSet(viewsets.ReadOnlyModelViewSet):
 
         return cf.file
 
+
 class CheckinRedeemView(views.APIView):
     def post(self, request, *args, **kwargs):
         auth = self.request.auth
         user = self.request.user
-        
+
         if isinstance(auth, (TeamAPIToken, Device)):
             events = auth.get_events_with_permission(('can_change_orders', 'can_checkin_orders'))
         elif user.is_authenticated:

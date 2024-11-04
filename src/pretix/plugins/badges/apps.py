@@ -21,6 +21,7 @@ class PDFRenderer(BaseRenderer):
             return data
         return data.getvalue() if hasattr(data, 'getvalue') else data
 
+
 class BadgesApp(AppConfig):
     name = 'pretix.plugins.badges'
     verbose_name = _("Badges")
@@ -75,5 +76,6 @@ class BadgesApp(AppConfig):
                         layout=template_data['layout'],
                         background=content_file
                     )
+
 
 default_app_config = 'pretix.plugins.badges.BadgesApp'
