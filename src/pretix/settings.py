@@ -111,7 +111,7 @@ if config.has_section('replica'):
     }
     DATABASE_ROUTERS = ['pretix.helpers.database.ReplicaRouter']
 
-BASE_PATH = ""
+BASE_PATH = config.get('pretix', 'base_path', fallback='/tickets')
 
 FORCE_SCRIPT_NAME = BASE_PATH
 
@@ -373,7 +373,6 @@ CORE_MODULES = {
 }
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'pretix.api.middleware.IdempotencyMiddleware',
     'pretix.multidomain.middlewares.MultiDomainMiddleware',

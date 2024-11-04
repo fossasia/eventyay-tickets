@@ -947,7 +947,7 @@ class CheckinRedeemView(views.APIView):
         )
 
 
-class CheckinRPCSearchView(ListAPIView):
+class CheckinSearchView(ListAPIView):
     serializer_class = CheckinListOrderPositionSerializer
     queryset = OrderPosition.all.none()
     filter_backends = (ExtendedBackend, RichOrderingFilter)
