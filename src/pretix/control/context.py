@@ -10,7 +10,8 @@ from django_scopes import scope
 from pretix.base.models.auth import StaffSession
 from pretix.base.settings import GlobalSettingsObject
 from pretix.control.navigation import (
-    get_event_navigation, get_global_navigation, get_organizer_navigation,
+    get_admin_navigation, get_event_navigation, get_global_navigation,
+    get_organizer_navigation,
 )
 
 from ..helpers.i18n import (
@@ -37,7 +38,7 @@ def _default_context(request):
     except Resolver404:
         return {}
 
-    if not request.path.startswith(get_script_prefix() + 'control'):
+    if not request.path.startswith(get_script_prefix() + 'control') or not hasattr(request, 'user'):
         return {}
     ctx = {
         'url_name': url.url_name,
@@ -92,6 +93,9 @@ def _default_context(request):
         ctx['nav_items'] = get_organizer_navigation(request)
     elif request.user.is_authenticated:
         ctx['nav_items'] = get_global_navigation(request)
+
+    if request.user.is_authenticated and request.user.has_active_staff_session(request.session.session_key):
+        ctx['admin_nav_items'] = get_admin_navigation(request)
 
     ctx['js_payment_weekdays_disabled'] = _js_payment_weekdays_disabled
 

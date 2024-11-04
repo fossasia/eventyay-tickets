@@ -46,7 +46,7 @@ def keep_session_age(session):
 
 
 class UserListView(AdministratorPermissionRequiredMixin, ListView):
-    template_name = 'pretixcontrol/users/index.html'
+    template_name = 'pretixcontrol/admin/users/index.html'
     context_object_name = 'users'
     paginate_by = 30
 
@@ -67,7 +67,7 @@ class UserListView(AdministratorPermissionRequiredMixin, ListView):
 
 
 class UserEditView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, UpdateView):
-    template_name = 'pretixcontrol/users/form.html'
+    template_name = 'pretixcontrol/admin/users/form.html'
     context_object_name = 'user'
     form_class = UserEditForm
 
@@ -84,7 +84,7 @@ class UserEditView(AdministratorPermissionRequiredMixin, RecentAuthenticationReq
         return ctx
 
     def get_success_url(self):
-        return reverse('control:users.edit', kwargs=self.kwargs)
+        return reverse('control:admin.users.edit', kwargs=self.kwargs)
 
     def form_valid(self, form):
         messages.success(self.request, _('Your changes have been saved.'))
@@ -111,7 +111,7 @@ class UserEditView(AdministratorPermissionRequiredMixin, RecentAuthenticationReq
 class UserResetView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
-        return redirect(reverse('control:users.edit', kwargs=self.kwargs))
+        return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
 
     def post(self, request, *args, **kwargs):
         self.object = get_object_or_404(User, pk=self.kwargs.get("id"))
@@ -127,11 +127,11 @@ class UserResetView(AdministratorPermissionRequiredMixin, RecentAuthenticationRe
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('control:users.edit', kwargs=self.kwargs)
+        return reverse('control:admin.users.edit', kwargs=self.kwargs)
 
 
 class UserAnonymizeView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, TemplateView):
-    template_name = "pretixcontrol/users/anonymize.html"
+    template_name = "pretixcontrol/admin/users/anonymize.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -157,13 +157,13 @@ class UserAnonymizeView(AdministratorPermissionRequiredMixin, RecentAuthenticati
             le.shredded = True
             le.save(update_fields=['data', 'shredded'])
 
-        return redirect(reverse('control:users.edit', kwargs=self.kwargs))
+        return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
 
 
 class UserImpersonateView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
-        return redirect(reverse('control:users.edit', kwargs=self.kwargs))
+        return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
 
     def post(self, request, *args, **kwargs):
         self.object = get_object_or_404(User, pk=self.kwargs.get("id"))
@@ -236,7 +236,7 @@ class UserImpersonateStopView(LoginRequiredMixin, View):
 
 
 class UserCreateView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, CreateView):
-    template_name = 'pretixcontrol/users/create.html'
+    template_name = 'pretixcontrol/admin/users/create.html'
     context_object_name = 'user'
     form_class = UserEditForm
 
@@ -252,7 +252,7 @@ class UserCreateView(AdministratorPermissionRequiredMixin, RecentAuthenticationR
         return i
 
     def get_success_url(self):
-        return reverse('control:users')
+        return reverse('control:admin.users')
 
     def form_valid(self, form):
         messages.success(self.request, _('The new user has been created.'))

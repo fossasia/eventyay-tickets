@@ -61,7 +61,7 @@
             <span class="fa fa-user-secret"></span>
             {% blocktrans with user=request.user%}You are currently working on behalf of {{ user }}.{% endblocktrans %}
 
-            <form action="{% url 'control:users.impersonate.stop' %}" method="post" class="helper-display-inline">
+            <form action="{% url 'control:admin.users.impersonate.stop' %}" method="post" class="helper-display-inline">
                 {% csrf_token %}
                 <button class="btn btn-default btn-sm">
                     {% trans "Stop impersonating" %}
