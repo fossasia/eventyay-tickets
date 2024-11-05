@@ -60,6 +60,7 @@
             <script type="text/javascript" src="{% static "fileupload/jquery.fileupload.js" %}"></script>
             <script type="text/javascript" src="{% static "lightbox/js/lightbox.min.js" %}"></script>
             <script type="text/javascript" src="{% static "are-you-sure/jquery.are-you-sure.js" %}"></script>
+            <script type="text/javascript" src="{% static "pretixcontrol/js/ui/popover.js" %}"></script>
 		{% endcompress %}
         {{ html_head|safe }}
 
@@ -207,15 +208,12 @@
                             </a>
                         </li>
                     {% endif %}
+                    {{ 'popover-profile'|json_script:"popover_toggle" }}
+                    {{ base_path|json_script:"base_path" }}
                     <li>
-                        <a href="{% url 'control:user.settings' %}" title="{% trans "Account Settings" %}" >
+                        <a target="_blank" class="header-nav btn btn-outline-success" data-toggle="popover-profile">
                             <i class="fa fa-user"></i> {{ request.user.get_full_name }}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'control:auth.logout' %}" title="{% trans "Log out" %}">
-                            <i class="fa fa-sign-out"></i>
-                            <span class="visible-xs-inline">{% trans "Log out" %}</span>
+                            <i class="fa fa-solid fa-caret-down"></i>
                         </a>
                     </li>
                 </ul>
