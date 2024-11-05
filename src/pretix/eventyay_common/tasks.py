@@ -12,11 +12,14 @@ from django.contrib.auth import get_user_model
 from django.db import DatabaseError
 from django.db.models import Sum
 from django_scopes import scopes_disabled
+from django.db.models import Q
 
 from ..base.models import BillingInvoice, Event, Order, Organizer
 from ..base.models.organizer import OrganizerBillingModel
 from ..base.services.mail import mail_send_task
+from ..base.services.mail import CustomEmail, SendMailException, mail_send_task
 from ..base.settings import GlobalSettingsObject
+from ..control.stripe import process_auto_billing_charge_stripe
 from ..helpers.jwt_generate import generate_sso_token
 from .billing_invoice import generate_invoice_pdf
 
@@ -273,6 +276,55 @@ def monthly_billing_collect(self):
             self.retry(exc=e)
         except self.MaxRetriesExceededError:
             logger.error("Max retries exceeded for billing collect.")
+
+
+@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
+def process_auto_billing_charge(self):
+    """
+    Process auto billing charge for all events
+    schedule on 1st day of the month and collect billing for the previous month
+    @param self: task instance
+    """
+    try:
+        today = datetime.today()
+        first_day_of_current_month = today.replace(day=1)
+        logger.info("Start - running task to process auto billing charge on: %s", first_day_of_current_month)
+        # Get the last month by subtracting one month from today
+        last_month_date = (first_day_of_current_month - relativedelta(months=1)).date()
+        billing_invoice = BillingInvoice.objects.filter(Q(monthly_bill=last_month_date) & Q(status='n'))
+        for invoice in billing_invoice:
+            try:
+                logger.info("Processing auto billing charge for event: %s", invoice.event.name)
+
+                # Get the organizer's billing settings
+                billing_settings = OrganizerBillingModel.objects.filter(organizer_id=invoice.organizer_id).first()
+                if not billing_settings or not billing_settings.stripe_customer_id:
+                    logger.error("No billing settings or Stripe customer ID found for organizer %s",
+                                 invoice.organizer.slug)
+                    continue
+                if not billing_settings.stripe_payment_method_id:
+                    logger.error("No billing settings or Stripe payment method ID found for organizer %s",
+                                 invoice.organizer.slug)
+                    continue
+
+                # Charge the organizer's payment method
+                payment_intent = process_auto_billing_charge_stripe(billing_settings.organizer.slug, invoice.ticket_fee, currency=invoice.currency)
+                # BillingInvoice.objects.filter(id=invoice.id).update(
+                #     status='p',
+                #     payment_intent_id=payment_intent.id,
+                #     updated_at=today,
+                # )
+
+            except Exception as e:
+                logger.error('Error happen when trying to process auto billing charge: %s', e)
+                continue
+    except Exception as e:
+        logger.error('Error happen when trying to process auto billing charge: %s', e)
+        # Retry the task if an exception occurs (with exponential backoff by default)
+        try:
+            self.retry(exc=e)
+        except self.MaxRetriesExceededError:
+            logger.error("Max retries exceeded for auto billing charge.")
 
 
 def calculate_total_amount_on_monthly(event, last_month_date_start):

@@ -35,6 +35,7 @@ from pretix.control.stripe import (
     get_stripe_publishable_key, update_payment_info,
 )
 from pretix.control.views import PaginationMixin
+from pretix.eventyay_common.tasks import monthly_billing_collect, process_auto_billing_charge
 from pretix.helpers.countries import CachedCountries
 from pretix.presale.style import regenerate_organizer_css
 
@@ -353,6 +354,8 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+        monthly_billing_collect()
+        process_auto_billing_charge()
 
         billing_settings = OrganizerBillingModel.objects.filter(
             organizer_id=self.request.organizer.id

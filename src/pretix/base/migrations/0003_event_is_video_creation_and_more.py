@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("pretixbase", "0002_question_description"),
+        ("pretixbase", "0003_create_billing_invoice_table"),
     ]
 
     operations = [
