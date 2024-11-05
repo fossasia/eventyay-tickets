@@ -1,4 +1,5 @@
 import datetime as dt
+from datetime import datetime, timezone as tz
 
 import jwt
 from django.conf import settings
@@ -445,7 +446,7 @@ class VideoAccessAuthenticator(views.APIView):
 
     def generate_token_url(self, request):
         uid_token = encode_email(request.user.email)
-        iat = dt.datetime.utcnow()
+        iat = datetime.now(tz.utc)
         exp = iat + dt.timedelta(days=1)
         payload = {
             "iss": self.request.event.settings.venueless_issuer,
