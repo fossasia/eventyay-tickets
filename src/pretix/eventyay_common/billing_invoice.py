@@ -15,7 +15,7 @@ def generate_invoice_pdf(billing_invoice, organizer_billing_info):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4)
     elements = []
-    styles = getSampleStyleSheet()
+    getSampleStyleSheet()
 
     # Custom Styles with Adjusted Font Sizes
     title_style = ParagraphStyle(

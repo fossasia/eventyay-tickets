@@ -5,6 +5,7 @@ from django.urls import include, re_path as url
 from rest_framework import routers
 
 from pretix.api.views import cart
+
 from .views import (
     checkin, device, event, exporters, item, oauth, order, organizer, upload,
     user, version, voucher, waitinglist, webhooks,

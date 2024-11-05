@@ -1,25 +1,21 @@
 import base64
 import logging
-import smtplib
-import ssl
 from datetime import datetime, timezone as tz
 from decimal import Decimal
 
 import pytz
 import requests
 from celery import shared_task
-from celery.exceptions import MaxRetriesExceededError
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.mail import get_connection
 from django.db import DatabaseError
 from django.db.models import Sum
 from django_scopes import scopes_disabled
 
 from ..base.models import BillingInvoice, Event, Order, Organizer
 from ..base.models.organizer import OrganizerBillingModel
-from ..base.services.mail import CustomEmail, SendMailException, mail_send_task
+from ..base.services.mail import mail_send_task
 from ..base.settings import GlobalSettingsObject
 from ..helpers.jwt_generate import generate_sso_token
 from .billing_invoice import generate_invoice_pdf
