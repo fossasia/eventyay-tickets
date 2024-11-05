@@ -2,6 +2,7 @@ from io import BytesIO
 
 from django.conf import settings
 from django.http import FileResponse
+from django.templatetags.static import static
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import inch
@@ -9,7 +10,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image, HRFlowable
 
 
-def generate_invoice_pdf(billing_invoice):
+def generate_invoice_pdf(billing_invoice, organizer_billing_info):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4)
     elements = []
@@ -27,21 +28,15 @@ def generate_invoice_pdf(billing_invoice):
     footer_style = ParagraphStyle(name='TitleStyle', fontSize=10, alignment=0,
                                   textColor=colors.HexColor("#333333"))
 
-    # Logo
-    logo_path = "D:/Projects/lcduong/eventyay-tickets/src/pretix/static/pretixbase/img/eventyay-logo.png"
-    logo = Image(logo_path, width=1 * inch, height=1 * inch)
-    logo.hAlign = 'LEFT'
-
     # Header Table: Logo on the left, title and info in a stacked format on the right
     header_data = [
         [
-            logo,
             Table([
                 [Paragraph(f"<b>{str(billing_invoice.event.name)} Invoice</b>", title_style)],
                 [Paragraph("<br/>", title_style)],
                 [Paragraph(
                     "Eventyay's address<br/>"
-                    "(818) XXX XXXX<br/>"
+                    f"(818) XXX XXXX<br/>"
                     f"{settings.PRETIX_EMAIL_NONE_VALUE}", body_text_style)]
             ], colWidths=[4.5 * inch])
         ]
@@ -61,10 +56,10 @@ def generate_invoice_pdf(billing_invoice):
     # Invoice Information Table
     invoice_data = [
         [Paragraph("INVOICE TO:", header_style), "", "", Paragraph(f"INVOICE ID: #{billing_invoice.id}", header_style)],
-        [Paragraph("Organizer's Name", bold_style), "", "",
+        [Paragraph(f"{organizer_billing_info.primary_contact_name}", bold_style), "", "",
          "Date of Invoice: " + billing_invoice.monthly_bill.strftime('%Y-%m-%d')],
-        ["Organizer's address", "", "", ""],
-        ["Organizer's contact", "", "", ""]
+        [f"{organizer_billing_info.address_line_1}", "", "", ""],
+        [f"{organizer_billing_info.city}, {organizer_billing_info.country}, {organizer_billing_info.zip_code}", "", "", ""]
     ]
     invoice_table = Table(invoice_data, colWidths=[1.5 * inch, 2 * inch, 1 * inch, 2 * inch])
     invoice_table.setStyle(TableStyle([
@@ -83,8 +78,8 @@ def generate_invoice_pdf(billing_invoice):
          Paragraph("RATE", row_header_style),
          Paragraph("QUANTITY", row_header_style), Paragraph("TOTAL", row_header_style)],
         ["1", "Ticket fee for " + f"{billing_invoice.monthly_bill.strftime('%B %Y')}",
-         f"{billing_invoice.amount} {billing_invoice.currency}", "1",
-         f"{billing_invoice.amount} {billing_invoice.currency}"]
+         f"{billing_invoice.ticket_fee} {billing_invoice.currency}", "1",
+         f"{billing_invoice.ticket_fee} {billing_invoice.currency}"]
     ]
     item_table = Table(item_data, colWidths=[0.5 * inch, 3 * inch, 1 * inch, 1 * inch, 1 * inch])
     item_table.setStyle(TableStyle([
@@ -100,9 +95,10 @@ def generate_invoice_pdf(billing_invoice):
 
     # Footer Totals Section
     totals_data = [
-        ["SUBTOTAL", f"{billing_invoice.amount}"],
+        ["SUBTOTAL", f"{billing_invoice.ticket_fee}"],
+        ["TAX", "0"],
         [Paragraph("<b>GRAND TOTAL</b>", bold_style),
-         Paragraph(f"<b>{billing_invoice.amount} {billing_invoice.currency}</b>", bold_style)]
+         Paragraph(f"<b>{billing_invoice.ticket_fee} {billing_invoice.currency}</b>", bold_style)]
     ]
     totals_table = Table(totals_data, colWidths=[5 * inch, 1.5 * inch])
     totals_table.setStyle(TableStyle([

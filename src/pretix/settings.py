@@ -737,9 +737,17 @@ CELERY_TASK_ROUTES = ([
 ],)
 
 CELERY_BEAT_SCHEDULE = {
-    "billing_collect": {
+    "monthly_billing_collect": {
         "task": "pretix.eventyay_common.tasks.monthly_billing_collect",
-        "schedule": crontab(day_of_month=1, hour=0, minute=0),  # Runs at midnight on the 1st of every month
+        "schedule": crontab(day_of_month=1, hour=0, minute=0), # Run every month at 00:00
+    },
+    "billing_invoice_notification": {
+        "task": "pretix.eventyay_common.tasks.billing_invoice_notification",
+        "schedule": crontab(day_of_month=1, hour=0, minute=10), # Run every month at 00:10
+    },
+    "check_billing_status_for_warning": {
+        "task": "pretix.eventyay_common.tasks.check_billing_status_for_warning",
+        "schedule": crontab(hour=0, minute=30),  # Run every day at 00:30
     },
 }
 
