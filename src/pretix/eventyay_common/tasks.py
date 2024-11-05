@@ -2,7 +2,7 @@ import base64
 import logging
 import smtplib
 import ssl
-from datetime import datetime
+from datetime import datetime, timezone as tz
 from decimal import Decimal
 
 import pytz
@@ -13,15 +13,16 @@ from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import get_connection
+from django.db import DatabaseError
 from django.db.models import Sum
 from django_scopes import scopes_disabled
 
-from .billing_invoice import generate_invoice_pdf
 from ..base.models import BillingInvoice, Event, Order, Organizer
 from ..base.models.organizer import OrganizerBillingModel
 from ..base.services.mail import CustomEmail, SendMailException, mail_send_task
 from ..base.settings import GlobalSettingsObject
 from ..helpers.jwt_generate import generate_sso_token
+from .billing_invoice import generate_invoice_pdf
 
 logger = logging.getLogger(__name__)
 
@@ -133,21 +134,21 @@ def send_event_webhook(self, user_id, event, action):
 )  # Retries up to 5 times with a 60-second delay
 def create_world(self, is_video_creation, event_data):
     """
-        Create a video system for the specified event.
+    Create a video system for the specified event.
 
-        :param self: Task instance
-        :param is_video_creation: A boolean indicating whether the user has chosen to add a video.
-        :param event_data: A dictionary containing the following event details:
-            - id (str): The unique identifier for the event.
-            - title (str): The title of the event.
-            - timezone (str): The timezone in which the event takes place.
-            - locale (str): The locale for the event.
-            - token (str): Authorization token for making the request.
-            - has_permission (bool): Indicates if the user has 'can_create_events' permission or is in admin session mode.
+    :param self: Task instance
+    :param is_video_creation: A boolean indicating whether the user has chosen to add a video.
+    :param event_data: A dictionary containing the following event details:
+        - id (str): The unique identifier for the event.
+        - title (str): The title of the event.
+        - timezone (str): The timezone in which the event takes place.
+        - locale (str): The locale for the event.
+        - token (str): Authorization token for making the request.
+        - has_permission (bool): Indicates if the user has 'can_create_events' permission or is in admin session mode.
 
-        To successfully create a world, both conditions must be satisfied:
-        - The user must have the necessary permission.
-        - The user must choose to create a video.
+    To successfully create a world, both conditions must be satisfied:
+    - The user must have the necessary permission.
+    - The user must choose to create a video.
     """
     event_slug = event_data.get("id")
     title = event_data.get("title")
@@ -198,7 +199,9 @@ def get_header_token(user_id):
     return headers
 
 
-@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
+@shared_task(
+    bind=True, max_retries=5, default_retry_delay=60
+)  # Retries up to 5 times with a 60-second delay
 def monthly_billing_collect(self):
     """
     Collect billing on a monthly basis for all events
@@ -208,23 +211,30 @@ def monthly_billing_collect(self):
     try:
         today = datetime.today()
         first_day_of_current_month = today.replace(day=1)
-        logger.info("Start - running task to collect billing on: %s", first_day_of_current_month)
+        logger.info(
+            "Start - running task to collect billing on: %s", first_day_of_current_month
+        )
         # Get the last month by subtracting one month from today
         last_month_date = (first_day_of_current_month - relativedelta(months=1)).date()
         gs = GlobalSettingsObject()
-        ticket_rate = gs.settings.get('ticket_fee_percentage') or 2.5
+        ticket_rate = gs.settings.get("ticket_fee_percentage") or 2.5
         organizers = Organizer.objects.all()
         for organizer in organizers:
             events = Event.objects.filter(organizer=organizer)
             for event in events:
                 try:
                     logger.info("Collecting billing data for event: %s", event.name)
-                    billing_invoice = BillingInvoice.objects.filter(event=event, monthly_bill=last_month_date,
-                                                                    organizer=organizer)
+                    billing_invoice = BillingInvoice.objects.filter(
+                        event=event, monthly_bill=last_month_date, organizer=organizer
+                    )
                     if billing_invoice:
-                        logger.debug("Billing invoice already created for event: %s", event.name)
+                        logger.debug(
+                            "Billing invoice already created for event: %s", event.name
+                        )
                         continue
-                    total_amount = calculate_total_amount_on_monthly(event, last_month_date)
+                    total_amount = calculate_total_amount_on_monthly(
+                        event, last_month_date
+                    )
                     tickets_fee = calculate_ticket_fee(total_amount, ticket_rate)
                     # Create a new billing invoice
                     billing_invoice = BillingInvoice(
@@ -238,18 +248,30 @@ def monthly_billing_collect(self):
                         created_at=today,
                         created_by=settings.PRETIX_EMAIL_NONE_VALUE,
                         updated_at=today,
-                        updated_by=settings.PRETIX_EMAIL_NONE_VALUE
+                        updated_by=settings.PRETIX_EMAIL_NONE_VALUE,
                     )
                     billing_invoice.next_reminder_datetime = get_next_reminder_datetime(
-                        settings.BILLING_REMINDER_SCHEDULE)
+                        settings.BILLING_REMINDER_SCHEDULE
+                    )
                     billing_invoice.save()
                 except Exception as e:
-                    logger.error('Error happen when trying to collect billing for event: %s', event.slug)
-                    logger.error('Error: %s', e)
+                    # If unexpected error happened, skip the event and continue to the next one
+                    logger.error(
+                        "Unexpected error happen when trying to collect billing for event: %s",
+                        event.slug,
+                    )
+                    logger.error("Error: %s", e)
                     continue
         logger.info("End - completed task to collect billing on a monthly basis.")
+    except DatabaseError as e:
+        logger.error("Database error when trying to collect billing: %s", e)
+        # Retry the task if an exception occurs (with exponential backoff by default)
+        try:
+            self.retry(exc=e)
+        except self.MaxRetriesExceededError:
+            logger.error("Max retries exceeded for billing collect.")
     except Exception as e:
-        logger.error('Error happen when trying to collect billing: %s', e)
+        logger.error("Error happen when trying to collect billing: %s", e)
         # Retry the task if an exception occurs (with exponential backoff by default)
         try:
             self.retry(exc=e)
@@ -265,13 +287,18 @@ def calculate_total_amount_on_monthly(event, last_month_date_start):
     @return: total amount of all paid orders for the event in the previous month
     """
     # Calculate the end date for last month
-    last_month_date_end = (last_month_date_start + relativedelta(months=1, day=1)) - relativedelta(days=1)
+    last_month_date_end = (
+        last_month_date_start + relativedelta(months=1, day=1)
+    ) - relativedelta(days=1)
 
     # Use aggregate to sum the total of all paid orders within the date range
-    total_amount = event.orders.filter(
-        status=Order.STATUS_PAID,
-        datetime__range=[last_month_date_start, last_month_date_end]
-    ).aggregate(total=Sum('total'))['total'] or 0  # Return 0 if the result is None
+    total_amount = (
+        event.orders.filter(
+            status=Order.STATUS_PAID,
+            datetime__range=[last_month_date_start, last_month_date_end],
+        ).aggregate(total=Sum("total"))["total"]
+        or 0
+    )  # Return 0 if the result is None
 
     return total_amount
 
@@ -313,7 +340,7 @@ def get_next_reminder_datetime(reminder_schedule):
     return next_reminder
 
 
-@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
+@shared_task(bind=True)
 def billing_invoice_notification(self):
     """
     Send billing invoice notification to organizers
@@ -329,20 +356,28 @@ def billing_invoice_notification(self):
             # Do not send notification if ticket fee is 0
             continue
         # Get organizer's contact details
-        organizer_billing = OrganizerBillingModel.objects.filter(organizer=invoice.organizer).first()
+        organizer_billing = OrganizerBillingModel.objects.filter(
+            organizer=invoice.organizer
+        ).first()
         # Send email to organizer with invoice pdf
         mail_subject = f"Invoice #{invoice.id} for {invoice.event.name}"
         mail_content = f"Dear {organizer_billing.primary_contact_name},\n\nPlease find attached the invoice for your recent event."
-        billing_invoice_send_email(mail_subject, mail_content, invoice, organizer_billing)
+        billing_invoice_send_email(
+            mail_subject, mail_content, invoice, organizer_billing
+        )
     logger.info("End - completed task to send billing invoice notification.")
 
 
-@shared_task(bind=True, max_retries=5, default_retry_delay=60)  # Retries up to 5 times with a 60-second delay
+@shared_task(bind=True)
 def check_billing_status_for_warning(self):
     with scopes_disabled():
-        pending_invoices = BillingInvoice.objects.filter(status=BillingInvoice.STATUS_PENDING, reminder_enabled=True)
-        today = datetime.now()
-        logger.info("Start - running task to check billing status for warning on: %s", today)
+        pending_invoices = BillingInvoice.objects.filter(
+            status=BillingInvoice.STATUS_PENDING, reminder_enabled=True
+        )
+        today = datetime.now(tz.utc)
+        logger.info(
+            "Start - running task to check billing status for warning on: %s", today
+        )
         timezone = pytz.timezone(settings.TIME_ZONE)
         for invoice in pending_invoices:
             if invoice.ticket_fee <= 0:
@@ -354,20 +389,31 @@ def check_billing_status_for_warning(self):
             for reminder_date in reminder_dates:
                 reminder_date = datetime(today.year, today.month, reminder_date)
                 reminder_date = timezone.localize(reminder_date)
-                if ((not invoice.last_reminder_datetime or invoice.last_reminder_datetime < reminder_date)
-                        and reminder_date <= today):
+                if (
+                    not invoice.last_reminder_datetime
+                    or invoice.last_reminder_datetime < reminder_date
+                ) and reminder_date <= today:
                     # Send warning email to organizer
-                    logger.info("Warning email is send to the organizer of %s", invoice.event.slug)
+                    logger.info(
+                        "Warning email is send to the organizer of %s",
+                        invoice.event.slug,
+                    )
 
                     # Get organizer's contact details
-                    organizer_billing = OrganizerBillingModel.objects.filter(organizer=invoice.organizer).first()
+                    organizer_billing = OrganizerBillingModel.objects.filter(
+                        organizer=invoice.organizer
+                    ).first()
 
                     mail_subject = f"Warning: Invoice #{invoice.id} for {invoice.event.name} need to be paid"
                     mail_content = f"Dear {organizer_billing.primary_contact_name},\n\nPlease find attached the invoice for your recent event."
-                    billing_invoice_send_email(mail_subject, mail_content, invoice, organizer_billing)
+                    billing_invoice_send_email(
+                        mail_subject, mail_content, invoice, organizer_billing
+                    )
 
                     invoice.last_reminder_datetime = reminder_date
-                    invoice.next_reminder_datetime = get_next_reminder_datetime(invoice.reminder_schedule)
+                    invoice.next_reminder_datetime = get_next_reminder_datetime(
+                        invoice.reminder_schedule
+                    )
                     invoice.save()
                     break
         logger.info("End - completed task to check billing status for warning.")
@@ -379,13 +425,15 @@ def billing_invoice_send_email(subject, content, invoice, organizer_billing):
     pdf_buffer = generate_invoice_pdf(invoice, organizer_billing)
     # Send email to organizer
     pdf_content = pdf_buffer.getvalue()
-    pdf_base64 = base64.b64encode(pdf_content).decode('utf-8')
-    mail_send_task.apply_async(kwargs={
-        'subject': subject,
-        'body': content,
-        'sender': settings.PRETIX_EMAIL_NONE_VALUE,
-        'to': organizer_billing_contact,
-        'html': None,
-        'attach_file_base64': pdf_base64,
-        'attach_file_name': pdf_buffer.filename,
-    })
+    pdf_base64 = base64.b64encode(pdf_content).decode("utf-8")
+    mail_send_task.apply_async(
+        kwargs={
+            "subject": subject,
+            "body": content,
+            "sender": settings.PRETIX_EMAIL_NONE_VALUE,
+            "to": organizer_billing_contact,
+            "html": None,
+            "attach_file_base64": pdf_base64,
+            "attach_file_name": pdf_buffer.filename,
+        }
+    )
