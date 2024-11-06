@@ -67,7 +67,7 @@ def handle_stripe_errors(operation_name: str):
                 raise ValidationError("Network communication error.")
             except stripe.error.AuthenticationError as e:
                 logger.error("Authentication error during %s: %s", operation_name, str(e))
-                raise ValidationError("Authentication failed.")
+                raise ValidationError("Authentication failed. Please contact the administrator to check the configuration of the Stripe API key.")
             except stripe.error.CardError as e:
                 logger.error("Card error during %s: %s", operation_name, str(e))
                 raise ValidationError("Card error.")
