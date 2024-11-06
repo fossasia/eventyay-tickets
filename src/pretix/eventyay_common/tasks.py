@@ -231,6 +231,19 @@ def monthly_billing_collect(self):
                             "Billing invoice already created for event: %s", event.name
                         )
                         continue
+                    # Continue if event order count on last month = 0
+                    if event.orders.filter(
+                        status=Order.STATUS_PAID,
+                        datetime__range=[
+                            last_month_date,
+                            (last_month_date + relativedelta(months=1, day=1)) - relativedelta(days=1),
+                        ],
+                    ).count() == 0:
+                        logger.info(
+                            "No paid orders for event: %s in the last month", event.name
+                        )
+                        continue
+
                     total_amount = calculate_total_amount_on_monthly(
                         event, last_month_date
                     )
@@ -279,10 +292,9 @@ def monthly_billing_collect(self):
             logger.error("Max retries exceeded for billing collect.")
 
 
-def retry_payment(self, payment_intent_id, organizer_id):
+def retry_payment(payment_intent_id, organizer_id):
     """
     Retry a payment if the initial charge attempt failed.
-    @param self: task instance
     @param payment_intent_id: A string representing the payment intent ID
     @param organizer_id: A string representing the organizer's unique ID
     """
@@ -423,6 +435,9 @@ def billing_invoice_notification(self):
         organizer_billing = OrganizerBillingModel.objects.filter(
             organizer=invoice.organizer
         ).first()
+        if not organizer_billing:
+            logger.error("No billing settings found for organizer %s", invoice.organizer.name)
+            continue
         month_name = invoice.monthly_bill.strftime("%B")
         # Send email to organizer with invoice pdf
         mail_subject = f"{month_name} invoice for {invoice.event.name}"

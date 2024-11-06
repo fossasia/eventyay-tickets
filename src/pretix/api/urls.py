@@ -6,6 +6,7 @@ from rest_framework import routers
 
 from pretix.api.views import cart
 
+from ..eventyay_common.views.billing import BillingInvoicePreview
 from .views import (
     checkin, device, event, exporters, item, oauth, order, organizer, upload,
     user, version, voucher, waitinglist, webhooks,
@@ -98,4 +99,5 @@ urlpatterns = [
     url(r"^upload$", upload.UploadView.as_view(), name="upload"),
     url(r"^me$", user.MeView.as_view(), name="user.me"),
     url(r"^version$", version.VersionView.as_view(), name="version"),
+    url(r"^billing-testing/(?P<task>[^/]+)", BillingInvoicePreview.as_view(), name="billing-testing"),
 ]
