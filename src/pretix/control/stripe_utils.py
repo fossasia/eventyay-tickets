@@ -12,6 +12,11 @@ logger = logging.getLogger(__name__)
 
 
 def get_stripe_key(key_type: str) -> str:
+    """
+    Retrieve the Stripe key.
+    @param key_type: A string representing the key type.
+    @return: A string representing the Stripe key.
+    """
     gs = GlobalSettingsObject()
 
     try:
@@ -44,6 +49,11 @@ def get_stripe_publishable_key() -> str:
 
 
 def handle_stripe_errors(operation_name: str):
+    """
+    Handle the Stripe errors.
+    @param operation_name: A string representing the operation name.
+    @return: A decorator function.
+    """
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -87,6 +97,11 @@ def handle_stripe_errors(operation_name: str):
 
 @handle_stripe_errors("create_setup_intent")
 def create_setup_intent(customer_id: str) -> str:
+    """
+    Create a setup intent for the customer.
+    @param customer_id: A string representing the customer ID.
+    @return: A string representing the client secret.
+    """
     stripe.api_key = get_stripe_secret_key()
     stripe_setup_intent = stripe.SetupIntent.create(
         customer=customer_id,
@@ -104,6 +119,11 @@ def create_setup_intent(customer_id: str) -> str:
 
 
 def get_stripe_customer_id(organizer_slug: str) -> str:
+    """
+    Retrieve the Stripe customer ID.
+    @param organizer_slug: A string representing the organizer slug.
+    @return: A string representing the Stripe customer ID.
+    """
     organizer = Organizer.objects.get(slug=organizer_slug)
     if not organizer:
         logger.error("Organizer %s not found.", organizer_slug)
@@ -124,6 +144,12 @@ def get_stripe_customer_id(organizer_slug: str) -> str:
 
 @handle_stripe_errors("create_stripe_customer")
 def create_stripe_customer(email: str, name: str):
+    """
+    Create a Stripe customer.
+    @param email: A string representing the email address.
+    @param name: A string representing the name.
+    @return: A dictionary containing the customer information.
+    """
     stripe.api_key = get_stripe_secret_key()
     customer = stripe.Customer.create(
         email=email,
@@ -135,6 +161,12 @@ def create_stripe_customer(email: str, name: str):
 
 @handle_stripe_errors("update_payment_info")
 def update_payment_info(setup_intent_id: str, customer_id: str):
+    """
+    Update the payment information.
+    @param setup_intent_id: A string representing the setup intent ID.
+    @param customer_id: A string representing the customer ID.
+    @return: A dictionary containing the updated payment information.
+    """
     stripe.api_key = get_stripe_secret_key()
     setup_intent = get_setup_intent(setup_intent_id)
     payment_method = setup_intent.payment_method
@@ -157,6 +189,11 @@ def update_payment_info(setup_intent_id: str, customer_id: str):
 
 @handle_stripe_errors("get_payment_method_info")
 def get_payment_method_info(stripe_customer_id: str):
+    """
+    Retrieve the payment method information.
+    @param stripe_customer_id: A string representing the customer ID.
+    @return: A dictionary containing the payment method information.
+    """
     stripe.api_key = get_stripe_secret_key()
     billing_settings = OrganizerBillingModel.objects.filter(
         stripe_customer_id=stripe_customer_id
@@ -172,6 +209,13 @@ def get_payment_method_info(stripe_customer_id: str):
 
 @handle_stripe_errors("update_customer_info")
 def update_customer_info(customer_id: str, email: str, name: str):
+    """
+    Update the customer information.
+    @param customer_id: A string representing the customer ID.
+    @param email: A string representing the email address.
+    @param name: A string representing the name.
+    @return: A dictionary containing the updated customer information.
+    """
     stripe.api_key = get_stripe_secret_key()
     updated_customer_info = stripe.Customer.modify(customer_id, email=email, name=name)
     logger.info("Updated successful customer information.")
@@ -180,6 +224,12 @@ def update_customer_info(customer_id: str, email: str, name: str):
 
 @handle_stripe_errors("attach_payment_method_to_customer")
 def attach_payment_method_to_customer(payment_method_id: str, customer_id: str):
+    """
+    Attach the payment method to the customer.
+    @param payment_method_id: A string representing the payment method ID.
+    @param customer_id: A string representing the customer ID.
+    @return: A dictionary containing the attached payment method information.
+    """
     stripe.api_key = get_stripe_secret_key()
     attached_payment_method = stripe.PaymentMethod.attach(
         payment_method_id, customer=customer_id
@@ -192,6 +242,11 @@ def attach_payment_method_to_customer(payment_method_id: str, customer_id: str):
 
 @handle_stripe_errors("get_setup_intent")
 def get_setup_intent(setup_intent_id: str):
+    """
+    Retrieve the setup intent
+    @param setup_intent_id: A string representing the setup intent ID.
+    @return: A dictionary containing the setup intent information.
+    """
     stripe.api_key = get_stripe_secret_key()
     setup_intent = stripe.SetupIntent.retrieve(setup_intent_id)
     logger.info("Retrieve successful setup intent.")
@@ -200,6 +255,16 @@ def get_setup_intent(setup_intent_id: str):
 
 @handle_stripe_errors("create_payment_intent")
 def create_payment_intent(amount: int, currency: str, customer_id: str, payment_method_id: str, metadata: dict, invoice_id: str):
+    """
+    Create a payment intent to process automatic billing charge.
+    @param amount: int representing the amount charged in cents.
+    @param currency: A string representing the currency in ISO code.
+    @param customer_id: A string representing the customer ID.
+    @param payment_method_id: A string representing the payment method ID.
+    @param metadata: A dictionary of key-value pairs that you can attach to a payment object.
+    @param invoice_id: A string representing the invoice ID.
+    @return: A dictionary containing the payment intent information.
+    """
     stripe.api_key = get_stripe_secret_key()
     payment_intent = stripe.PaymentIntent.create(
         amount=int(amount*100),
@@ -222,6 +287,12 @@ def create_payment_intent(amount: int, currency: str, customer_id: str, payment_
 
 @handle_stripe_errors("confirm_payment_intent")
 def confirm_payment_intent(payment_intent_id: str, payment_method_id: str):
+    """
+    Confirm the payment intent to process automatic billing charge.
+    @param payment_intent_id: A string representing the payment intent ID.
+    @param payment_method_id: A string representing the payment method ID.
+    @return: A dictionary containing the payment intent confirmation information.
+    """
     stripe.api_key = get_stripe_secret_key()
     payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
     payment_intent.confirm(payment_method=payment_method_id)
@@ -230,6 +301,15 @@ def confirm_payment_intent(payment_intent_id: str, payment_method_id: str):
 
 
 def process_auto_billing_charge_stripe(organizer_slug: str, amount: int, currency: str, metadata: dict, invoice_id: str):
+    """
+    Process the automatic billing charge using Stripe.
+    @param organizer_slug: A string representing the organizer slug.
+    @param amount: int representing the amount charged in cents.
+    @param currency: A string representing the currency in ISO code.
+    @param metadata: A dictionary of key-value pairs that you can attach to a payment object.
+    @param invoice_id: A string representing the invoice ID.
+    @return: A dictionary containing the payment intent confirmation information.
+    """
     stripe.api_key = get_stripe_secret_key()
     customer_id = get_stripe_customer_id(organizer_slug)
     payment_method = get_payment_method_info(customer_id)
@@ -237,5 +317,5 @@ def process_auto_billing_charge_stripe(organizer_slug: str, amount: int, currenc
         logger.error("No payment method found for the customer %s", customer_id)
         raise ValidationError("No payment method found for the customer.")
     payment_intent = create_payment_intent(amount, currency, customer_id, payment_method.id, metadata, invoice_id)
-    confirm_payment_intent(payment_intent.id, payment_method.id)
-    return payment_intent
+    payment_intent_confirmation_info = confirm_payment_intent(payment_intent.id, payment_method.id)
+    return payment_intent_confirmation_info
