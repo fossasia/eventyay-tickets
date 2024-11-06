@@ -30,10 +30,7 @@ from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, OrganizerPermissionRequiredMixin,
 )
 from pretix.control.signals import nav_organizer
-from pretix.control.stripe import (
-    create_setup_intent, get_payment_method_info, get_stripe_customer_id,
-    get_stripe_publishable_key, update_payment_info,
-)
+
 from pretix.control.views import PaginationMixin
 from pretix.eventyay_common.tasks import monthly_billing_collect, process_auto_billing_charge
 from pretix.helpers.countries import CachedCountries
@@ -41,6 +38,8 @@ from pretix.presale.style import regenerate_organizer_css
 
 from ...forms.organizer_forms.organizer_form import BillingSettingsForm
 from .organizer_detail_view_mixin import OrganizerDetailViewMixin
+from ...stripe_utils import get_stripe_customer_id, update_payment_info, get_payment_method_info, create_setup_intent, \
+    get_stripe_publishable_key
 
 logger = logging.getLogger(__name__)
 
@@ -354,7 +353,6 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        monthly_billing_collect()
         process_auto_billing_charge()
 
         billing_settings = OrganizerBillingModel.objects.filter(
