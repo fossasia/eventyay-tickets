@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from io import BytesIO
 
 from django.conf import settings
@@ -18,16 +19,27 @@ def generate_invoice_pdf(billing_invoice, organizer_billing_info):
     getSampleStyleSheet()
 
     # Custom Styles with Adjusted Font Sizes
+    no_style = ParagraphStyle(
+        name="NoStyle",
+        fontSize=8,
+        alignment=2,
+        leftIndent=0,
+        rightIndent=0,
+        textColor=colors.HexColor("#333333"),
+    )
     title_style = ParagraphStyle(
         name="TitleStyle",
-        fontSize=16,
-        alignment=2,
+        fontSize=20,
+        alignment=1,
+        leftIndent=0,
+        rightIndent=0,
         textColor=colors.HexColor("#333333"),
     )
     body_text_style = ParagraphStyle(
         name="BodyTextStyle",
         fontSize=10,
         alignment=2,
+        rightIndent=0,
         textColor=colors.HexColor("#333333"),
     )  # Uniform font size for other text
     header_style = ParagraphStyle(
@@ -55,6 +67,7 @@ def generate_invoice_pdf(billing_invoice, organizer_billing_info):
         alignment=0,
         textColor=colors.HexColor("#333333"),
     )
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
     # Header Table: Logo on the left, title and info in a stacked format on the right
     header_data = [
@@ -63,63 +76,74 @@ def generate_invoice_pdf(billing_invoice, organizer_billing_info):
                 [
                     [
                         Paragraph(
-                            f"<b>{str(billing_invoice.event.name)} Invoice</b>",
+                            f"<b>NO. {billing_invoice.id}</b>",
+                            no_style,
+                        )
+                    ],
+                    [
+                        Paragraph(
+                            f"<b>{str(billing_invoice.event.name)} invoice</b>",
                             title_style,
                         )
                     ],
                     [Paragraph("<br/>", title_style)],
+                    [Paragraph("<br/>", title_style)],
+                    [Paragraph("<br/>", title_style)],
                     [
                         Paragraph(
-                            "Eventyay's address<br/>"
-                            f"(818) XXX XXXX<br/>"
-                            f"{settings.PRETIX_EMAIL_NONE_VALUE}",
+                            f"Date: {today}<br/>",
                             body_text_style,
                         )
                     ],
                 ],
-                colWidths=[4.5 * inch],
+                colWidths=[6.5 * inch],
             )
         ]
     ]
     header_table = Table(header_data, colWidths=[1.5 * inch, 4.5 * inch])
     header_table.setStyle(
         TableStyle(
-            [("VALIGN", (0, 0), (-1, -1), "TOP"), ("ALIGN", (1, 0), (1, 0), "LEFT")]
+            [
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+            ]
         )
     )
     elements.append(header_table)
 
     # Line Break (Separator)
-    elements.append(Spacer(1, 0.2 * inch))
+    elements.append(Spacer(1, 0.3 * inch))
     elements.append(
-        HRFlowable(width="100%", thickness=1, color=colors.HexColor("#27aae1"))
+        HRFlowable(width="120%", thickness=1, color=colors.HexColor("#27aae1"))
     )
-    elements.append(Spacer(1, 0.2 * inch))
+    elements.append(Spacer(1, 0.3 * inch))
 
     # Invoice Information Table
     invoice_data = [
         [
+            Paragraph("INVOICE FROM:", header_style),
+            "",
+            "",
             Paragraph("INVOICE TO:", header_style),
-            "",
-            "",
-            Paragraph(f"INVOICE ID: #{billing_invoice.id}", header_style),
         ],
         [
+            Paragraph("Eventyay's name", bold_style),
+            "",
+            "",
             Paragraph(f"{organizer_billing_info.primary_contact_name}", bold_style),
-            "",
-            "",
-            "Date of Invoice: " + billing_invoice.monthly_bill.strftime("%Y-%m-%d"),
         ],
         [f"{organizer_billing_info.address_line_1}", "", "", ""],
         [
+            f"City, Country, ZIP",
+            "",
+            "",
             f"{organizer_billing_info.city}, {organizer_billing_info.country}, {organizer_billing_info.zip_code}",
-            "",
-            "",
-            "",
         ],
     ]
     invoice_table = Table(
-        invoice_data, colWidths=[1.5 * inch, 2 * inch, 1 * inch, 2 * inch]
+        invoice_data, colWidths=[1.5 * inch, 2 * inch, 1.5 * inch, 1.5 * inch]
     )
     invoice_table.setStyle(
         TableStyle(
@@ -140,9 +164,9 @@ def generate_invoice_pdf(billing_invoice, organizer_billing_info):
         [
             Paragraph("#", row_header_style),
             Paragraph("DESCRIPTION", row_header_style),
-            Paragraph("RATE", row_header_style),
+            Paragraph("PRICE", row_header_style),
             Paragraph("QUANTITY", row_header_style),
-            Paragraph("TOTAL", row_header_style),
+            Paragraph("AMOUNT", row_header_style),
         ],
         [
             "1",
@@ -196,7 +220,7 @@ def generate_invoice_pdf(billing_invoice, organizer_billing_info):
     elements.append(totals_table)
     elements.append(Spacer(1, 0.3 * inch))
 
-    elements.append(Spacer(1, 0.2 * inch))
+    elements.append(Spacer(1, 0.3 * inch))
     notice = f"""
     <font color="#27aae1"><b>NOTICE:</b></font><br/>
     - Payment due within 30 days of the invoice date.<br/>
@@ -210,5 +234,6 @@ def generate_invoice_pdf(billing_invoice, organizer_billing_info):
     buffer.seek(0)
 
     return FileResponse(
-        buffer, as_attachment=True, filename=f"Invoice_{billing_invoice.id}.pdf"
+        buffer, as_attachment=True,
+        filename=f"invoice_{billing_invoice.event.slug}_{billing_invoice.monthly_bill}.pdf"
     )

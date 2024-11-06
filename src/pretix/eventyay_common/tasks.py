@@ -227,7 +227,7 @@ def monthly_billing_collect(self):
                         event=event, monthly_bill=last_month_date, organizer=organizer
                     )
                     if billing_invoice:
-                        logger.debug(
+                        logger.info(
                             "Billing invoice already created for event: %s", event.name
                         )
                         continue
@@ -270,7 +270,7 @@ def monthly_billing_collect(self):
         except self.MaxRetriesExceededError:
             logger.error("Max retries exceeded for billing collect.")
     except Exception as e:
-        logger.error("Error happen when trying to collect billing: %s", e)
+        logger.error("Unexpected error happen when trying to collect billing: %s", e)
         # Retry the task if an exception occurs (with exponential backoff by default)
         try:
             self.retry(exc=e)
@@ -400,16 +400,19 @@ def billing_invoice_notification(self):
     billing_month = (first_day_of_current_month - relativedelta(months=1)).date()
     last_month_invoices = BillingInvoice.objects.filter(monthly_bill=billing_month)
     for invoice in last_month_invoices:
-        if invoice.ticket_fee <= 0:
-            # Do not send notification if ticket fee is 0
-            continue
         # Get organizer's contact details
         organizer_billing = OrganizerBillingModel.objects.filter(
             organizer=invoice.organizer
         ).first()
+        month_name = invoice.monthly_bill.strftime("%B")
         # Send email to organizer with invoice pdf
-        mail_subject = f"Invoice #{invoice.id} for {invoice.event.name}"
-        mail_content = f"Dear {organizer_billing.primary_contact_name},\n\nPlease find attached the invoice for your recent event."
+        mail_subject = f"{month_name} invoice for {invoice.event.name}"
+        mail_content = (f"Dear {organizer_billing.primary_contact_name},\n\n"
+                        f"Thank you for using our services! "
+                        f"Please find attached for a summary of your invoice for {month_name}.\n\n"
+                        f"Best regards,\n"
+                        f"EventYay Team")
+
         billing_invoice_send_email(
             mail_subject, mail_content, invoice, organizer_billing
         )
@@ -451,9 +454,25 @@ def check_billing_status_for_warning(self):
                     organizer_billing = OrganizerBillingModel.objects.filter(
                         organizer=invoice.organizer
                     ).first()
+                    month_name = invoice.monthly_bill.strftime("%B")
 
-                    mail_subject = f"Warning: Invoice #{invoice.id} for {invoice.event.name} need to be paid"
-                    mail_content = f"Dear {organizer_billing.primary_contact_name},\n\nPlease find attached the invoice for your recent event."
+                    mail_subject = f"Warning: {month_name} invoice for {invoice.event.name} need to be paid"
+                    mail_content = (
+                        f"Dear {organizer_billing.primary_contact_name},\n\n"
+                        f"This is a gentle reminder that your invoice for {month_name} is still pending "
+                        f"and is due for payment soon. We value your prompt attention to this matter "
+                        f"to ensure continued service without interruption.\n\n"
+                        f"Invoice Details:\n"
+                        f"- Invoice Date: {invoice.monthly_bill}\n"
+                        f"- Due Date: {invoice.created_at + relativedelta(months=1)} \n"
+                        f"- Total Amount Due: {invoice.ticket_fee} {invoice.currency}\n\n"
+                        f"If you have already made the payment, please disregard this notice. "
+                        f"However, if you need additional time or have any questions, "
+                        f"feel free to reach out to us at {settings.PRETIX_EMAIL_NONE_VALUE}.\n\n"
+                        f"Thank you for your attention and for choosing us!\n\n"
+                        f"Warm regards,\n"
+                        f"EventYay Team"
+                    )
                     billing_invoice_send_email(
                         mail_subject, mail_content, invoice, organizer_billing
                     )
