@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`schedule` The schedule widget can now be used for a selected number of dates, which is very useful when some of your rooms are not in use on some days (like switching to a workshop-heavy programme on some conference days). For conferences like this, you could embed the schedule widget twice: Once for one set of days and once for the other set.
 - :bug:`schedule,1874` The calendar parts of the public schedule (day of week, month) were always in English, even if another language was selected.
 - :bug:`orga` Dragging and dropping questions and other elements to change their order was broken in Google Chrome.
 - :bug:`orga:schedule` The HTML export did not work and exported only 404 pages.
