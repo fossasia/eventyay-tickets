@@ -4,7 +4,7 @@ from functools import wraps
 import stripe
 from django.core.exceptions import ValidationError
 
-from pretix.base.models import Organizer
+from pretix.base.models import Organizer, BillingInvoice
 from pretix.base.models.organizer import OrganizerBillingModel
 from pretix.base.settings import GlobalSettingsObject
 
@@ -199,20 +199,23 @@ def get_setup_intent(setup_intent_id: str):
 
 
 @handle_stripe_errors("create_payment_intent")
-def create_payment_intent(amount: int, currency: str, customer_id: str, payment_method_id: str, metadata: dict):
+def create_payment_intent(amount: int, currency: str, customer_id: str, payment_method_id: str, metadata: dict, invoice_id: str):
     stripe.api_key = get_stripe_secret_key()
     payment_intent = stripe.PaymentIntent.create(
         amount=int(amount*100),
         currency=currency,
         customer=customer_id,
         payment_method=payment_method_id,
-        confirm=True,
         automatic_payment_methods={
             'enabled': True,
             'allow_redirects': 'never'
         },
         metadata=metadata
     )
+    billing_invoice_updated = BillingInvoice.objects.filter(id=invoice_id).update(stripe_payment_intent_id=payment_intent.id)
+    if not billing_invoice_updated:
+        logger.error("No billing invoice found for the invoice %s", invoice_id)
+        raise ValidationError("No billing invoice found for the invoice.")
     logger.info("Created a successful payment intent.")
     return payment_intent
 
@@ -226,12 +229,13 @@ def confirm_payment_intent(payment_intent_id: str, payment_method_id: str):
     return payment_intent
 
 
-def process_auto_billing_charge_stripe(organizer_slug: str, amount: int, currency: str, metadata: dict):
+def process_auto_billing_charge_stripe(organizer_slug: str, amount: int, currency: str, metadata: dict, invoice_id: str):
     stripe.api_key = get_stripe_secret_key()
     customer_id = get_stripe_customer_id(organizer_slug)
     payment_method = get_payment_method_info(customer_id)
     if not payment_method:
         logger.error("No payment method found for the customer %s", customer_id)
         raise ValidationError("No payment method found for the customer.")
-    payment_intent = create_payment_intent(amount, currency, customer_id, payment_method.id, metadata)
+    payment_intent = create_payment_intent(amount, currency, customer_id, payment_method.id, metadata, invoice_id)
+    confirm_payment_intent(payment_intent.id, payment_method.id)
     return payment_intent

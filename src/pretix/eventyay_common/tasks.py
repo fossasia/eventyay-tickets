@@ -326,8 +326,7 @@ def process_auto_billing_charge(self):
                 }
                 payment_intent = process_auto_billing_charge_stripe(billing_settings.organizer.slug,
                                                                     invoice.ticket_fee, currency=invoice.currency,
-                                                                    metadata=metadata)
-                BillingInvoice.objects.filter(id=invoice.id).update(stripe_payment_intent_id=payment_intent.id)
+                                                                    metadata=metadata, invoice_id=invoice.id)
                 return payment_intent
             else:
                 logger.info("No ticket fee for event: %s", invoice.event.slug)
