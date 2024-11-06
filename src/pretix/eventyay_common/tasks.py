@@ -281,6 +281,12 @@ def monthly_billing_collect(self):
 
 @shared_task(bind=True, max_retries=3)
 def retry_payment(self, payment_intent_id, organizer_id):
+    """
+    Retry a payment if the initial charge attempt failed.
+    @param self: task instance
+    @param payment_intent_id: A string representing the payment intent ID
+    @param organizer_id: A string representing the organizer's unique ID
+    """
     try:
         billing_settings = OrganizerBillingModel.objects.filter(
             organizer_id=organizer_id
@@ -298,6 +304,13 @@ def retry_payment(self, payment_intent_id, organizer_id):
 
 @shared_task(bind=True)
 def process_auto_billing_charge(self):
+    """
+    Process auto billing charge
+    @param self: task instance
+    - If the ticket fee is greater than 0, the monthly bill is from the previous month, and the status is "pending" (n),
+      the system will process the auto-billing charge for that invoice.
+    - This task is scheduled to run on the 1st day of each month.
+    """
     try:
         today = datetime.today()
         first_day_of_current_month = today.replace(day=1)
@@ -324,10 +337,9 @@ def process_auto_billing_charge(self):
                     'next_reminder_datetime': invoice.next_reminder_datetime,
                     'last_reminder_datetime': invoice.last_reminder_datetime,
                 }
-                payment_intent = process_auto_billing_charge_stripe(billing_settings.organizer.slug,
-                                                                    invoice.ticket_fee, currency=invoice.currency,
-                                                                    metadata=metadata, invoice_id=invoice.id)
-                return payment_intent
+                process_auto_billing_charge_stripe(billing_settings.organizer.slug,
+                                                   invoice.ticket_fee, currency=invoice.currency,
+                                                   metadata=metadata, invoice_id=invoice.id)
             else:
                 logger.info("No ticket fee for event: %s", invoice.event.slug)
                 continue
