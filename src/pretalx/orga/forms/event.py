@@ -573,7 +573,9 @@ class WidgetGenerationForm(forms.ModelForm):
         choices=[],
         widget=EnhancedSelectMultiple,
         required=False,
-        help_text=_("You can limit the days shown in the widget. Leave empty to show all days."),
+        help_text=_(
+            "You can limit the days shown in the widget. Leave empty to show all days."
+        ),
     )
 
     def __init__(self, *args, **kwargs):
@@ -581,7 +583,10 @@ class WidgetGenerationForm(forms.ModelForm):
         self.fields["locale"].label = _("Widget language")
         event = self.instance
         self.fields["days"].choices = [
-            (event.date_from + dt.timedelta(days=i), event.date_from + dt.timedelta(days=i))
+            (
+                event.date_from + dt.timedelta(days=i),
+                event.date_from + dt.timedelta(days=i),
+            )
             for i in range(event.duration)
         ]
 
