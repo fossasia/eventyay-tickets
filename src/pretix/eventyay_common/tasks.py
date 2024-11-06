@@ -235,6 +235,7 @@ def monthly_billing_collect(self):
                     total_amount = calculate_total_amount_on_monthly(
                         event, last_month_date
                     )
+                    # TODO: tickets fee should be calculated based on net amount
                     tickets_fee = calculate_ticket_fee(total_amount, ticket_rate)
                     # Create a new billing invoice
                     billing_invoice = BillingInvoice(
@@ -279,7 +280,6 @@ def monthly_billing_collect(self):
             logger.error("Max retries exceeded for billing collect.")
 
 
-@shared_task(bind=True, max_retries=3)
 def retry_payment(self, payment_intent_id, organizer_id):
     """
     Retry a payment if the initial charge attempt failed.
@@ -440,70 +440,109 @@ def billing_invoice_notification(self):
 
 
 @shared_task(bind=True)
-def check_billing_status_for_warning(self):
-    with scopes_disabled():
-        pending_invoices = BillingInvoice.objects.filter(
-            status=BillingInvoice.STATUS_PENDING, reminder_enabled=True
-        )
-        today = datetime.now(tz.utc)
-        logger.info(
-            "Start - running task to check billing status for warning on: %s", today
-        )
-        timezone = pytz.timezone(settings.TIME_ZONE)
-        for invoice in pending_invoices:
-            if invoice.ticket_fee <= 0:
-                continue
-            reminder_dates = invoice.reminder_schedule  # [15, 29]
-            if not reminder_dates:
-                continue
-            reminder_dates.sort()
-            for reminder_date in reminder_dates:
-                reminder_date = datetime(today.year, today.month, reminder_date)
-                reminder_date = timezone.localize(reminder_date)
-                if (
+def retry_failed_payment(self):
+    pending_invoices = BillingInvoice.objects.filter(
+        status=BillingInvoice.STATUS_PENDING
+    )
+    today = datetime.now(tz.utc)
+    logger.info(
+        "Start - running task to retry failed payment: %s", today
+    )
+    timezone = pytz.timezone(settings.TIME_ZONE)
+    for invoice in pending_invoices:
+        if invoice.ticket_fee <= 0:
+            continue
+        reminder_dates = invoice.reminder_schedule
+        if not reminder_dates or not invoice.stripe_payment_intent_id:
+            continue
+        reminder_dates.sort()
+        for reminder_date in reminder_dates:
+            reminder_date = datetime(today.year, today.month, reminder_date)
+            reminder_date = timezone.localize(reminder_date)
+            if (
                     not invoice.last_reminder_datetime
                     or invoice.last_reminder_datetime < reminder_date
-                ) and reminder_date <= today:
-                    # Send warning email to organizer
-                    logger.info(
-                        "Warning email is send to the organizer of %s",
-                        invoice.event.slug,
-                    )
+            ) and reminder_date <= today:
 
-                    # Get organizer's contact details
-                    organizer_billing = OrganizerBillingModel.objects.filter(
-                        organizer=invoice.organizer
-                    ).first()
-                    month_name = invoice.monthly_bill.strftime("%B")
+                retry_payment(payment_intent_id=invoice.stripe_payment_intent_id, organizer_id=invoice.organizer_id)
+                logger.info("Payment is retried for event %s", invoice.event.name)
 
-                    mail_subject = f"Warning: {month_name} invoice for {invoice.event.name} need to be paid"
-                    mail_content = (
-                        f"Dear {organizer_billing.primary_contact_name},\n\n"
-                        f"This is a gentle reminder that your invoice for {month_name} is still pending "
-                        f"and is due for payment soon. We value your prompt attention to this matter "
-                        f"to ensure continued service without interruption.\n\n"
-                        f"Invoice Details:\n"
-                        f"- Invoice Date: {invoice.monthly_bill}\n"
-                        f"- Due Date: {invoice.created_at + relativedelta(months=1)} \n"
-                        f"- Total Amount Due: {invoice.ticket_fee} {invoice.currency}\n\n"
-                        f"If you have already made the payment, please disregard this notice. "
-                        f"However, if you need additional time or have any questions, "
-                        f"feel free to reach out to us at {settings.PRETIX_EMAIL_NONE_VALUE}.\n\n"
-                        f"Thank you for your attention and for choosing us!\n\n"
-                        f"Warm regards,\n"
-                        f"EventYay Team"
-                    )
-                    billing_invoice_send_email(
-                        mail_subject, mail_content, invoice, organizer_billing
-                    )
+                break
+    logger.info("End - completed task to retry failed payment.")
 
-                    invoice.last_reminder_datetime = reminder_date
-                    invoice.next_reminder_datetime = get_next_reminder_datetime(
-                        invoice.reminder_schedule
-                    )
-                    invoice.save()
-                    break
-        logger.info("End - completed task to check billing status for warning.")
+
+@shared_task(bind=True)
+def check_billing_status_for_warning(self):
+    pending_invoices = BillingInvoice.objects.filter(
+        status=BillingInvoice.STATUS_PENDING, reminder_enabled=True
+    )
+    today = datetime.now(tz.utc)
+    logger.info(
+        "Start - running task to check billing status for warning on: %s", today
+    )
+    timezone = pytz.timezone(settings.TIME_ZONE)
+    for invoice in pending_invoices:
+        if invoice.ticket_fee <= 0:
+            continue
+        reminder_dates = invoice.reminder_schedule  # [15, 29]
+        if not reminder_dates:
+            continue
+        reminder_dates.sort()
+        # marked invoice as expired if the due date is passed
+        if today > (invoice.created_at + relativedelta(months=1)):
+            logger.info("Invoice is expired for event %s", invoice.event.name)
+            invoice.status = BillingInvoice.STATUS_EXPIRED
+            invoice.reminder_enabled = False
+            invoice.save()
+            # TODO: move event's status to non-public
+            continue
+        for reminder_date in reminder_dates:
+            reminder_date = datetime(today.year, today.month, reminder_date)
+            reminder_date = timezone.localize(reminder_date)
+            if (
+                not invoice.last_reminder_datetime
+                or invoice.last_reminder_datetime < reminder_date
+            ) and reminder_date <= today:
+                # Send warning email to organizer
+                logger.info(
+                    "Warning email is send to the organizer of %s",
+                    invoice.event.slug,
+                )
+
+                # Get organizer's contact details
+                organizer_billing = OrganizerBillingModel.objects.filter(
+                    organizer=invoice.organizer
+                ).first()
+                month_name = invoice.monthly_bill.strftime("%B")
+
+                mail_subject = f"Warning: {month_name} invoice for {invoice.event.name} need to be paid"
+                mail_content = (
+                    f"Dear {organizer_billing.primary_contact_name},\n\n"
+                    f"This is a gentle reminder that your invoice for {month_name} is still pending "
+                    f"and is due for payment soon. We value your prompt attention to this matter "
+                    f"to ensure continued service without interruption.\n\n"
+                    f"Invoice Details:\n"
+                    f"- Invoice Date: {invoice.monthly_bill}\n"
+                    f"- Due Date: {invoice.created_at + relativedelta(months=1)} \n"
+                    f"- Total Amount Due: {invoice.ticket_fee} {invoice.currency}\n\n"
+                    f"If you have already made the payment, please disregard this notice. "
+                    f"However, if you need additional time or have any questions, "
+                    f"feel free to reach out to us at {settings.PRETIX_EMAIL_NONE_VALUE}.\n\n"
+                    f"Thank you for your attention and for choosing us!\n\n"
+                    f"Warm regards,\n"
+                    f"EventYay Team"
+                )
+                billing_invoice_send_email(
+                    mail_subject, mail_content, invoice, organizer_billing
+                )
+
+                invoice.last_reminder_datetime = reminder_date
+                invoice.next_reminder_datetime = get_next_reminder_datetime(
+                    invoice.reminder_schedule
+                )
+                invoice.save()
+                break
+    logger.info("End - completed task to check billing status for warning.")
 
 
 def billing_invoice_send_email(subject, content, invoice, organizer_billing):
