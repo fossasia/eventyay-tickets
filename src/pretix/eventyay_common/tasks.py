@@ -1,7 +1,6 @@
 import base64
 import logging
-from datetime import datetime
-from datetime import timezone as tz
+from datetime import datetime, timezone as tz
 from decimal import Decimal
 
 import pytz
@@ -12,17 +11,17 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import DatabaseError
-from django.db.models import Q
-from django.db.models import Sum
-from django_scopes import scopes_disabled
+from django.db.models import Q, Sum
 
-from .billing_invoice import generate_invoice_pdf
 from ..base.models import BillingInvoice, Event, Order, Organizer
 from ..base.models.organizer import OrganizerBillingModel
 from ..base.services.mail import mail_send_task
 from ..base.settings import GlobalSettingsObject
-from ..control.stripe_utils import confirm_payment_intent, process_auto_billing_charge_stripe
+from ..control.stripe_utils import (
+    confirm_payment_intent, process_auto_billing_charge_stripe,
+)
 from ..helpers.jwt_generate import generate_sso_token
+from .billing_invoice import generate_invoice_pdf
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 from io import BytesIO
 
-from django.conf import settings
 from django.http import FileResponse
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -136,7 +135,7 @@ def generate_invoice_pdf(billing_invoice, organizer_billing_info):
         ],
         [f"{organizer_billing_info.address_line_1}", "", "", ""],
         [
-            f"City, Country, ZIP",
+            "City, Country, ZIP",
             "",
             "",
             f"{organizer_billing_info.city}, {organizer_billing_info.country}, {organizer_billing_info.zip_code}",

@@ -4,7 +4,7 @@ from functools import wraps
 import stripe
 from django.core.exceptions import ValidationError
 
-from pretix.base.models import Organizer, BillingInvoice
+from pretix.base.models import BillingInvoice, Organizer
 from pretix.base.models.organizer import OrganizerBillingModel
 from pretix.base.settings import GlobalSettingsObject
 
@@ -267,7 +267,7 @@ def create_payment_intent(amount: int, currency: str, customer_id: str, payment_
     """
     stripe.api_key = get_stripe_secret_key()
     payment_intent = stripe.PaymentIntent.create(
-        amount=int(amount*100),
+        amount=int(amount * 100),
         currency=currency,
         customer=customer_id,
         payment_method=payment_method_id,

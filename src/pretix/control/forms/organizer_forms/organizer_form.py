@@ -4,8 +4,9 @@ from django.utils.translation import gettext_lazy as _
 
 from pretix.base.forms import I18nModelForm
 from pretix.base.models.organizer import Organizer, OrganizerBillingModel
-from pretix.control.stripe_utils import update_customer_info, create_stripe_customer
-
+from pretix.control.stripe_utils import (
+    create_stripe_customer, update_customer_info,
+)
 from pretix.helpers.countries import CachedCountries
 
 
