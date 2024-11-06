@@ -49,6 +49,7 @@ class BillingInvoice(LoggedModel):
         help_text="Days after creation for reminders, e.g., [14, 28]"
     )
     reminder_enabled = models.BooleanField(default=True)
+    stripe_payment_intent_id = models.CharField(max_length=50, null=True, blank=True)
 
     objects = ScopedManager(organizer='organizer')
 

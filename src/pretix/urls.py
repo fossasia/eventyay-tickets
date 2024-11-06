@@ -34,7 +34,7 @@ common_patterns = [
 ]
 
 webhook_patterns = [
-    url(r'^webhook/$', stripe_webhook_view, name='stripe-webhook'),
+    url(r'^webhook$', stripe_webhook_view, name='stripe-webhook'),
 ]
 
 debug_patterns = []
