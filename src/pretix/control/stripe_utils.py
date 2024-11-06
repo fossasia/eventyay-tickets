@@ -218,7 +218,7 @@ def create_payment_intent(amount: int, currency: str, customer_id: str, payment_
 
 
 @handle_stripe_errors("confirm_payment_intent")
-def confirm_payment_intent(payment_intent_id: str , payment_method_id: str):
+def confirm_payment_intent(payment_intent_id: str, payment_method_id: str):
     stripe.api_key = get_stripe_secret_key()
     payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
     payment_intent.confirm(payment_method=payment_method_id)

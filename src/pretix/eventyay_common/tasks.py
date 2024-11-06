@@ -280,7 +280,7 @@ def monthly_billing_collect(self):
 
 
 @shared_task(bind=True, max_retries=3)
-def retry_payment(self, payment_intent_id, organizer_id, retry_count=0):
+def retry_payment(self, payment_intent_id, organizer_id):
     try:
         billing_settings = OrganizerBillingModel.objects.filter(
             organizer_id=organizer_id
@@ -290,7 +290,7 @@ def retry_payment(self, payment_intent_id, organizer_id, retry_count=0):
                 "No billing settings or Stripe payment method ID found for organizer %s", organizer_id
             )
             return
-        payment_intent = confirm_payment_intent(payment_intent_id, billing_settings.stripe_payment_method_id)
+        confirm_payment_intent(payment_intent_id, billing_settings.stripe_payment_method_id)
         logger.info("Payment confirmed for payment intent: %s", payment_intent_id)
     except ValidationError as e:
         logger.error("Error retrying payment for %s: %s", payment_intent_id, str(e))
@@ -302,36 +302,36 @@ def process_auto_billing_charge(self):
         today = datetime.today()
         first_day_of_current_month = today.replace(day=1)
         last_month_date = (first_day_of_current_month - relativedelta(months=1)).date()
-        billing_invoice = BillingInvoice.objects.filter(Q(monthly_bill=last_month_date) & Q(status='n'))
-        for invoice in billing_invoice:
-                if invoice.ticket_fee > 0:
+        pending_invoices = BillingInvoice.objects.filter(Q(monthly_bill=last_month_date) & Q(status='n'))
+        for invoice in pending_invoices:
+            if invoice.ticket_fee > 0:
 
-                    billing_settings = OrganizerBillingModel.objects.filter(organizer_id=invoice.organizer_id).first()
-                    if not billing_settings or not billing_settings.stripe_customer_id:
-                        logger.error("No billing settings or Stripe customer ID found for organizer %s",
-                                     invoice.organizer.slug)
-                        continue
-                    if not billing_settings.stripe_payment_method_id:
-                        logger.error("No billing settings or Stripe payment method ID found for organizer %s",
-                                     invoice.organizer.slug)
-                        continue
-
-                    metadata = {
-                        'event_id': invoice.event_id,
-                        'invoice_id': invoice.id,
-                        'monthly_bill': invoice.monthly_bill,
-                        'organizer_id': invoice.organizer_id,
-                        'next_reminder_datetime': invoice.next_reminder_datetime,
-                        'last_reminder_datetime': invoice.last_reminder_datetime,
-                    }
-                    payment_intent = process_auto_billing_charge_stripe(billing_settings.organizer.slug,
-                                                                        invoice.ticket_fee, currency=invoice.currency,
-                                                                        metadata=metadata)
-                    BillingInvoice.objects.filter(id=invoice.id).update(stripe_payment_intent_id=payment_intent.id)
-                    return payment_intent
-                else:
-                    logger.info("No ticket fee for organizer: %s", invoice.organizer.slug)
+                billing_settings = OrganizerBillingModel.objects.filter(organizer_id=invoice.organizer_id).first()
+                if not billing_settings or not billing_settings.stripe_customer_id:
+                    logger.error("No billing settings or Stripe customer ID found for organizer %s",
+                                 invoice.organizer.slug)
                     continue
+                if not billing_settings.stripe_payment_method_id:
+                    logger.error("No billing settings or Stripe payment method ID found for organizer %s",
+                                 invoice.organizer.slug)
+                    continue
+
+                metadata = {
+                    'event_id': invoice.event_id,
+                    'invoice_id': invoice.id,
+                    'monthly_bill': invoice.monthly_bill,
+                    'organizer_id': invoice.organizer_id,
+                    'next_reminder_datetime': invoice.next_reminder_datetime,
+                    'last_reminder_datetime': invoice.last_reminder_datetime,
+                }
+                payment_intent = process_auto_billing_charge_stripe(billing_settings.organizer.slug,
+                                                                    invoice.ticket_fee, currency=invoice.currency,
+                                                                    metadata=metadata)
+                BillingInvoice.objects.filter(id=invoice.id).update(stripe_payment_intent_id=payment_intent.id)
+                return payment_intent
+            else:
+                logger.info("No ticket fee for event: %s", invoice.event.slug)
+                continue
     except ValidationError as e:
         logger.error('Error happen when trying to process auto billing charge: %s', e)
 
