@@ -92,7 +92,8 @@
     font-size: 16px;
     display: flex;
     align-items: center;
-    margin: 20px 0;
+    margin-top: 10px;
+    margin-bottom: 20px;
 }
 
 .notification p {

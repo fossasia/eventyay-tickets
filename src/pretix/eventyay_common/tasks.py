@@ -12,14 +12,16 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import DatabaseError
 from django.db.models import Q, Sum
+from django_scopes import scopes_disabled
+
+from pretix.helpers.stripe_utils import (
+    confirm_payment_intent, process_auto_billing_charge_stripe,
+)
 
 from ..base.models import BillingInvoice, Event, Order, Organizer
 from ..base.models.organizer import OrganizerBillingModel
 from ..base.services.mail import mail_send_task
 from ..base.settings import GlobalSettingsObject
-from ..control.stripe_utils import (
-    confirm_payment_intent, process_auto_billing_charge_stripe,
-)
 from ..helpers.jwt_generate import generate_sso_token
 from .billing_invoice import generate_invoice_pdf
 
@@ -292,6 +294,38 @@ def monthly_billing_collect(self):
             logger.error("Max retries exceeded for billing collect.")
 
 
+@shared_task()
+def update_billing_invoice_information(invoice_id: str):
+    """
+    Update billing invoice information after payment is succeeded
+    @param invoice_id: A string representing the invoice ID
+    """
+    try:
+        if not invoice_id:
+            logger.error("Missing invoice_id in Stripe webhook metadata")
+            return None
+        with scopes_disabled():
+            invoice_information_updated = BillingInvoice.objects.filter(
+                id=invoice_id,
+            ).update(
+                status=BillingInvoice.STATUS_PAID,
+                paid_datetime=datetime.now(),
+                payment_method='stripe',
+                updated_at=datetime.now(),
+                reminder_enabled=False
+            )
+            if not invoice_information_updated:
+                logger.error("Invoice not found or already updated: %s", invoice_id)
+                return None
+            logger.info("Payment succeeded for invoice: %s", invoice_id)
+    except BillingInvoice.DoesNotExist as e:
+        logger.error("Invoice not found in database: %s", str(e))
+        return None
+    except DatabaseError as e:
+        logger.error("Database error updating invoice: %s", str(e))
+        return None
+
+
 def retry_payment(payment_intent_id, organizer_id):
     """
     Retry a payment if the initial charge attempt failed.
@@ -313,11 +347,10 @@ def retry_payment(payment_intent_id, organizer_id):
         logger.error("Error retrying payment for %s: %s", payment_intent_id, str(e))
 
 
-@shared_task(bind=True)
-def process_auto_billing_charge(self):
+@shared_task()
+def process_auto_billing_charge():
     """
     Process auto billing charge
-    @param self: task instance
     - If the ticket fee is greater than 0, the monthly bill is from the previous month, and the status is "pending" (n),
       the system will process the auto-billing charge for that invoice.
     - This task is scheduled to run on the 1st day of each month.
@@ -345,8 +378,6 @@ def process_auto_billing_charge(self):
                     'invoice_id': invoice.id,
                     'monthly_bill': invoice.monthly_bill,
                     'organizer_id': invoice.organizer_id,
-                    'next_reminder_datetime': invoice.next_reminder_datetime,
-                    'last_reminder_datetime': invoice.last_reminder_datetime,
                 }
                 process_auto_billing_charge_stripe(billing_settings.organizer.slug,
                                                    invoice.ticket_fee, currency=invoice.currency,
