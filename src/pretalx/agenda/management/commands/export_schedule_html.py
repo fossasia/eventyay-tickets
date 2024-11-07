@@ -176,7 +176,8 @@ def export_event(event, destination):
         logging.info(f"Exporting {len(urls)} pages")
         for url in map(get_path, urls):
             content = dump_content(destination, url, get)
-            assets |= set(map(get_path, find_assets(content)))
+            if not url.startswith("/media/") and not url.startswith("/static/"):
+                assets |= set(map(get_path, find_assets(content)))
 
         css_assets = set()
 
