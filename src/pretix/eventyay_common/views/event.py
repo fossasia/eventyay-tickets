@@ -1,5 +1,10 @@
+import datetime as dt
+from datetime import datetime, timezone as tz
+
+import jwt
 from django.conf import settings
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import F, Max, Min, Prefetch
 from django.db.models.functions import Coalesce, Greatest
@@ -9,6 +14,7 @@ from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView
 from pytz import timezone
+from rest_framework import views
 
 from pretix.base.forms import SafeSessionWizardView
 from pretix.base.i18n import language
@@ -26,7 +32,7 @@ from pretix.control.views.item import MetaDataEditorMixin
 from pretix.eventyay_common.forms.event import EventCommonSettingsForm
 from pretix.eventyay_common.tasks import create_world, send_event_webhook
 from pretix.eventyay_common.utils import (
-    check_create_permission, generate_token,
+    check_create_permission, encode_email, generate_token,
 )
 
 
@@ -78,12 +84,23 @@ class EventList(PaginationMixin, ListView):
             query_set = self.filter_form.filter_qs(query_set)
         return query_set
 
+    def get_plugins(self, plugin_list):
+        """
+        Format the plugin list into an array
+        @param plugin_list: list of plugins
+        @return: array of plugins
+        """
+        if plugin_list is None:
+            return []
+        return [p.strip() for p in plugin_list.split(",") if p.strip()]
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["filter_form"] = self.filter_form
 
         quotas = []
         for s in ctx["events"]:
+            s.plugins_array = self.get_plugins(s.plugins)
             s.first_quotas = s.first_quotas[:4]
             quotas += list(s.first_quotas)
 
@@ -392,3 +409,60 @@ class EventUpdate(
     @staticmethod
     def reset_timezone(tz, dt):
         return tz.localize(dt.replace(tzinfo=None)) if dt is not None else None
+
+
+class VideoAccessAuthenticator(views.APIView):
+    def get(self, request, *args, **kwargs):
+        """
+        Check if the video configuration is complete, the plugin is enabled, and the user has permission to modify the event settings.
+        If all conditions are met, generate a token and include it in the URL for the video system.
+        @param request: user request
+        @param args: arguments
+        @param kwargs: keyword arguments
+        @return: redirect to the video system
+        """
+        #  Check if the video configuration is fulfilled and the plugin is enabled
+        if (
+            "pretix_venueless" not in self.request.event.get_plugins()
+            or not self.request.event.settings.venueless_url
+            or not self.request.event.settings.venueless_issuer
+            or not self.request.event.settings.venueless_audience
+            or not self.request.event.settings.venueless_secret
+        ):
+            raise PermissionDenied(
+                _(
+                    "Event information is not available or the video plugin is turned off."
+                )
+            )
+        # Check if the organizer has permission for the event
+        if not self.request.user.has_event_permission(
+            self.request.organizer, self.request.event, "can_change_event_settings"
+        ):
+            raise PermissionDenied(
+                _("You do not have permission to access this video system.")
+            )
+        # Generate token and include in url to video system
+        return redirect(self.generate_token_url(request))
+
+    def generate_token_url(self, request):
+        uid_token = encode_email(request.user.email)
+        iat = datetime.now(tz.utc)
+        exp = iat + dt.timedelta(days=1)
+        payload = {
+            "iss": self.request.event.settings.venueless_issuer,
+            "aud": self.request.event.settings.venueless_audience,
+            "exp": exp,
+            "iat": iat,
+            "uid": uid_token,
+            "traits": list(
+                {
+                    "eventyay-video-event-{}-organizer".format(request.event.slug),
+                    "admin",
+                }
+            ),
+        }
+        token = jwt.encode(
+            payload, self.request.event.settings.venueless_secret, algorithm="HS256"
+        )
+        base_url = self.request.event.settings.venueless_url
+        return "{}/#token={}".format(base_url, token).replace("//#", "/#")
