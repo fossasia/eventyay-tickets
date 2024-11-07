@@ -12,7 +12,7 @@
 <h2>
     {{ quotation_open }}{{ submission.title }}{{ quotation_close }}
     {% if submission.state == "draft" %}
-        <span class="badge badge-secondary">{% translate "Draft" %}</span>
+        <span class="badge color-secondary">{% translate "Draft" %}</span>
     {% endif %}
 </h2>
 {% if submission.state != "draft" %}

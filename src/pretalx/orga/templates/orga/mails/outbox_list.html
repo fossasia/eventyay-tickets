@@ -70,13 +70,13 @@
                             {% endif %}
                             {% if mail.template %}
                                 {% if mail.template == request.event.accept_template %}
-                                    <span class="badge badge-success">{% translate "Accept email" %}</span>
+                                    <span class="badge color-success">{% translate "Accept email" %}</span>
                                 {% elif mail.template == request.event.reject_template %}
-                                    <span class="badge badge-danger">{% translate "Reject email" %}</span>
+                                    <span class="badge color-danger">{% translate "Reject email" %}</span>
                                 {% elif mail.template == request.event.update_template %}
-                                    <span class="badge badge-info">{% translate "Schedule update" %}</span>
+                                    <span class="badge color-info">{% translate "Schedule update" %}</span>
                                 {% elif mail.template == request.event.question_template %}
-                                    <span class="badge badge-info">{% translate "Unanswered questions reminder" %}</span>
+                                    <span class="badge color-info">{% translate "Unanswered questions reminder" %}</span>
                                 {% endif %}
                             {% endif %}
                         </td>
