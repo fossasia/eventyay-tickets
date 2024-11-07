@@ -30,12 +30,12 @@ from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, OrganizerPermissionRequiredMixin,
 )
 from pretix.control.signals import nav_organizer
-from pretix.control.stripe import (
+from pretix.control.views import PaginationMixin
+from pretix.helpers.countries import CachedCountries
+from pretix.helpers.stripe_utils import (
     create_setup_intent, get_payment_method_info, get_stripe_customer_id,
     get_stripe_publishable_key, update_payment_info,
 )
-from pretix.control.views import PaginationMixin
-from pretix.helpers.countries import CachedCountries
 from pretix.presale.style import regenerate_organizer_css
 
 from ...forms.organizer_forms.organizer_form import BillingSettingsForm
@@ -370,16 +370,12 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
         return country.get(country_code, None)
 
     def validate_vat_number(self, country_code, vat_number):
-        try:
-            if country_code not in pyvat.VAT_REGISTRIES:
-                country_name = self.get_country_name(country_code)
-                messages.error(self.request, _("VAT validation not supported for country: %s" % str(country_name)))
-                return None
-            result = pyvat.is_vat_number_format_valid(vat_number, country_code)
-            return result
-        except Exception as e:
-            logger.error("Error validating VAT number: %s", str(e))
-            return None
+        if country_code not in pyvat.VAT_REGISTRIES:
+            country_name = self.get_country_name(country_code)
+            messages.warning(self.request, _("VAT validation not supported for country: %s" % str(country_name)))
+            return True
+        result = pyvat.is_vat_number_format_valid(vat_number, country_code)
+        return result
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
@@ -393,9 +389,7 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
             if vat_number:
                 country_name = self.get_country_name(country_code)
                 is_valid_vat_number = self.validate_vat_number(country_code, vat_number)
-                if is_valid_vat_number is None:
-                    return self.form_invalid(form)
-                elif not is_valid_vat_number:
+                if not is_valid_vat_number:
                     messages.error(self.request, _("Invalid VAT number for country: %s" % str(country_name)))
                     return self.form_invalid(form)
 
@@ -403,12 +397,9 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
                 form.save()
                 messages.success(self.request, _("Your changes have been saved."))
                 return redirect(self.get_success_url())
-            except Exception as e:
-                logger.error("Error saving billing settings: %s", str(e))
-                messages.error(
-                    self.request,
-                    _("We could not save your changes. See below for details."),
-                )
+            except ValidationError as e:
+                logger.error("Validation error saving billing settings: %s", str(e))
+                messages.error(self.request, str(e.messages[0]))
         else:
             messages.error(
                 self.request,

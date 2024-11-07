@@ -5,8 +5,10 @@ $(document).ready(function () {
     const el = document.getElementById('payment-element');
     const basePath = JSON.parse(document.getElementById('base_path').textContent);
     const changeCardBtn = document.getElementById('change-card-btn');
-    const savePaymentInformation = document.getElementById('save-payment-information');
+    const savePaymentInformationBtn = document.getElementById('save-payment-information');
     const paymentInformation = document.getElementById('payment-information');
+    const notification = document.getElementsByClassName('notification')[0];
+    const backBtn = document.getElementById('back-btn');
     let elements;
     let stripe;
     let paymentElement;
@@ -15,6 +17,10 @@ $(document).ready(function () {
    async function initializeStripeAndAPI() {
         paymentInformation.style.display = 'none';
         changeCardBtn.style.display = 'none';
+        notification.style.display = 'none';
+        backBtn.style.display = 'inline-block';
+        savePaymentInformationBtn.style.display = 'none';
+
 
         if (!organizerSlug) {
             console.error('Organizer slug not found');
@@ -29,10 +35,13 @@ $(document).ready(function () {
         })
             .then(response => {
                 if (!response.ok) {
-                    if (response.status === 404) {
-                        throw new Error('No setup intent found');
-                    }
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    return response.json().then(errorData => {
+                        if (response.status === 400) {
+                            savePaymentInformationBtn.style.display = 'none';
+                            backBtn.style.display = 'inline-block';
+                            throw new Error(JSON.stringify(errorData));
+                        }
+                    });
                 }
                 return response.json();
             })
@@ -53,10 +62,16 @@ $(document).ready(function () {
                         layout: 'tabs',
                     });
                     paymentElement.mount(el);
+                    savePaymentInformationBtn.style.display = 'inline-block';
+                    backBtn.style.display = 'none';
                 }
             })
             .catch((error) => {
-                console.error('Error initializing stripe:', error);
+                const parsedError = JSON.parse(error.message);
+                const errorArray = JSON.parse(parsedError.error.replace(/'/g, '"'));
+                const errorMessage = errorArray[0];
+                notification.style.display = 'block';
+                notification.innerText = errorMessage;
             });
     }
 
@@ -73,13 +88,24 @@ $(document).ready(function () {
         paymentElement.mount(el);
 
         $(changeCardBtn).prop('disabled', true);
+        backBtn.style.display = 'none';
+        savePaymentInformationBtn.style.display = 'inline-block';
     })
 
 
-    $(savePaymentInformation).on('click', async function (event) {
+    document.getElementById("back-btn").addEventListener("click", function () {
+        if (!organizerSlug) {
+            console.error('Organizer slug not found');
+            return window.location.href = `${basePath}/control/organizers/`
+        }
+        window.location.href = `${basePath}/control/organizer/${organizerSlug}/settings/billing`;
+    });
+
+
+    $(savePaymentInformationBtn).on('click', async function (event) {
         event.preventDefault();
 
-        $(savePaymentInformation).prop('disabled', true);
+        $(savePaymentInformationBtn).prop('disabled', true);
         try {
             const result = await stripe.confirmSetup({
                 elements,
@@ -89,11 +115,15 @@ $(document).ready(function () {
             const csrfToken = document.cookie.match(/pretix_csrftoken=([^;]+)/)[1];
 
             if (!organizerSlug || !result?.setupIntent?.id || !csrfToken) {
-                console.error('Organizer slug, setup intent id or csrf token not found');
+                notification.style.display = 'block';
+                notification.innerText = 'An error occurred while saving payment information. Please try again.';
+                savePaymentInformationBtn.style.display = 'inline-block';
+                backBtn.style.display = 'none';
                 return;
             }
 
-            const response = await fetch(`${basePath}/control/organizer/${organizerSlug}/save_payment_information`, {
+            if (result) {
+                await fetch(`${basePath}/control/organizer/${organizerSlug}/save_payment_information`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -102,16 +132,35 @@ $(document).ready(function () {
                 body: JSON.stringify({
                     setup_intent_id: result?.setupIntent?.id,
                 }),
+            }).then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        if (response.status === 400) {
+                            savePaymentInformationBtn.style.display = 'none';
+                            backBtn.style.display = 'inline-block';
+                            throw new Error(JSON.stringify(errorData));
+                        }
+                    });
+                }
+                return response.json();
+            }).then(data => {
+                notification.style.display = 'block';
+                notification.innerText = 'Payment information saved successfully.';
+                notification.style.color = 'green';
+                window.location.reload()
+            })
+            .catch((error) => {
+                const parsedError = JSON.parse(error.message);
+                const errorArray = JSON.parse(parsedError.error.replace(/'/g, '"'));
+                const errorMessage = errorArray[0];
+                notification.style.display = 'block';
+                notification.innerText = errorMessage;
             });
-
-            if (response.status === 200) {
-                window.location.reload();
             }
-
         } catch (error) {
             console.error('Error saving payment information:', error);
         } finally {
-            $(savePaymentInformation).prop('disabled', false);
+            $(savePaymentInformationBtn).prop('disabled', false);
         }
     });
 });
