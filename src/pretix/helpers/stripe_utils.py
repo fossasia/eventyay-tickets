@@ -11,6 +11,20 @@ from pretix.base.settings import GlobalSettingsObject
 logger = logging.getLogger(__name__)
 
 
+def get_stripe_webhook_secret_key() -> str:
+    """
+    Retrieve the Stripe webhook secret key.
+    @return: A string representing the Stripe webhook secret key.
+    """
+    gs = GlobalSettingsObject()
+    stripe_webhook_secret_key = getattr(gs.settings, "stripe_webhook_secret_key", None)
+    if not stripe_webhook_secret_key:
+        logger.error("Stripe webhook secret key not found")
+        raise ValidationError("Stripe webhook secret key not found.")
+    logger.info("Get successful Stripe webhook secret key")
+    return stripe_webhook_secret_key
+
+
 def get_stripe_key(key_type: str) -> str:
     """
     Retrieve the Stripe key.

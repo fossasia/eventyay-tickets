@@ -8,7 +8,6 @@ import pretix.presale.urls
 from pretix.base.views import js_helpers
 
 from .base.views import cachedfiles, csp, health, js_catalog, metrics, redirect
-from .control.stripe import stripe_webhook_view
 
 base_patterns = [
     url(r'^download/(?P<id>[^/]+)/$', cachedfiles.DownloadView.as_view(),
@@ -33,10 +32,6 @@ common_patterns = [
     url(r'^common/', include((pretix.eventyay_common.urls, 'common'))),
 ]
 
-webhook_patterns = [
-    url(r'^webhook$', stripe_webhook_view, name='stripe-webhook'),
-]
-
 debug_patterns = []
 if settings.DEBUG:
     try:
@@ -46,4 +41,4 @@ if settings.DEBUG:
     except ImportError:
         pass
 
-common_patterns = base_patterns + control_patterns + debug_patterns + common_patterns + webhook_patterns
+common_patterns = base_patterns + control_patterns + debug_patterns + common_patterns

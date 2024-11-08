@@ -5,7 +5,7 @@ $(document).ready(function () {
     const el = document.getElementById('payment-element');
     const basePath = JSON.parse(document.getElementById('base_path').textContent);
     const changeCardBtn = document.getElementById('change-card-btn');
-    const savePaymentInformation = document.getElementById('save-payment-information');
+    const savePaymentInformationBtn = document.getElementById('save-payment-information');
     const paymentInformation = document.getElementById('payment-information');
     const notification = document.getElementsByClassName('notification')[0];
     const backBtn = document.getElementById('back-btn');
@@ -18,7 +18,8 @@ $(document).ready(function () {
         paymentInformation.style.display = 'none';
         changeCardBtn.style.display = 'none';
         notification.style.display = 'none';
-        backBtn.style.display = 'none';
+        backBtn.style.display = 'inline-block';
+        savePaymentInformationBtn.style.display = 'none';
 
 
         if (!organizerSlug) {
@@ -36,7 +37,7 @@ $(document).ready(function () {
                 if (!response.ok) {
                     return response.json().then(errorData => {
                         if (response.status === 400) {
-                            savePaymentInformation.style.display = 'none';
+                            savePaymentInformationBtn.style.display = 'none';
                             backBtn.style.display = 'inline-block';
                             throw new Error(JSON.stringify(errorData));
                         }
@@ -61,6 +62,8 @@ $(document).ready(function () {
                         layout: 'tabs',
                     });
                     paymentElement.mount(el);
+                    savePaymentInformationBtn.style.display = 'inline-block';
+                    backBtn.style.display = 'none';
                 }
             })
             .catch((error) => {
@@ -85,14 +88,12 @@ $(document).ready(function () {
         paymentElement.mount(el);
 
         $(changeCardBtn).prop('disabled', true);
+        backBtn.style.display = 'none';
+        savePaymentInformationBtn.style.display = 'inline-block';
     })
 
 
     document.getElementById("back-btn").addEventListener("click", function () {
-        const basePath = JSON.parse(document.getElementById('base_path').textContent);
-        const url = window.location.href
-        const organizerMatch = url.match(/organizer\/([^/]+)/);
-        const organizerSlug = organizerMatch ? organizerMatch[1] : null;
         if (!organizerSlug) {
             console.error('Organizer slug not found');
             return window.location.href = `${basePath}/control/organizers/`
@@ -101,10 +102,10 @@ $(document).ready(function () {
     });
 
 
-    $(savePaymentInformation).on('click', async function (event) {
+    $(savePaymentInformationBtn).on('click', async function (event) {
         event.preventDefault();
 
-        $(savePaymentInformation).prop('disabled', true);
+        $(savePaymentInformationBtn).prop('disabled', true);
         try {
             const result = await stripe.confirmSetup({
                 elements,
@@ -116,12 +117,13 @@ $(document).ready(function () {
             if (!organizerSlug || !result?.setupIntent?.id || !csrfToken) {
                 notification.style.display = 'block';
                 notification.innerText = 'An error occurred while saving payment information. Please try again.';
-                savePaymentInformation.style.display = 'none';
-                backBtn.style.display = 'inline-block';
+                savePaymentInformationBtn.style.display = 'inline-block';
+                backBtn.style.display = 'none';
                 return;
             }
 
-            await fetch(`${basePath}/control/organizer/${organizerSlug}/save_payment_information`, {
+            if (result) {
+                await fetch(`${basePath}/control/organizer/${organizerSlug}/save_payment_information`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -134,7 +136,7 @@ $(document).ready(function () {
                 if (!response.ok) {
                     return response.json().then(errorData => {
                         if (response.status === 400) {
-                            savePaymentInformation.style.display = 'none';
+                            savePaymentInformationBtn.style.display = 'none';
                             backBtn.style.display = 'inline-block';
                             throw new Error(JSON.stringify(errorData));
                         }
@@ -142,6 +144,9 @@ $(document).ready(function () {
                 }
                 return response.json();
             }).then(data => {
+                notification.style.display = 'block';
+                notification.innerText = 'Payment information saved successfully.';
+                notification.style.color = 'green';
                 window.location.reload()
             })
             .catch((error) => {
@@ -151,10 +156,11 @@ $(document).ready(function () {
                 notification.style.display = 'block';
                 notification.innerText = errorMessage;
             });
+            }
         } catch (error) {
             console.error('Error saving payment information:', error);
         } finally {
-            $(savePaymentInformation).prop('disabled', false);
+            $(savePaymentInformationBtn).prop('disabled', false);
         }
     });
 });
