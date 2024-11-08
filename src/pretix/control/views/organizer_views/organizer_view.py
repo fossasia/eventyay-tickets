@@ -370,12 +370,12 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
         return country.get(country_code, None)
 
     def validate_vat_number(self, country_code, vat_number):
-            if country_code not in pyvat.VAT_REGISTRIES:
-                country_name = self.get_country_name(country_code)
-                messages.error(self.request, _("VAT validation not supported for country: %s" % str(country_name)))
-                return None
-            result = pyvat.is_vat_number_format_valid(vat_number, country_code)
-            return result
+        if country_code not in pyvat.VAT_REGISTRIES:
+            country_name = self.get_country_name(country_code)
+            messages.warning(self.request, _("VAT validation not supported for country: %s" % str(country_name)))
+            return True
+        result = pyvat.is_vat_number_format_valid(vat_number, country_code)
+        return result
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
@@ -389,9 +389,7 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
             if vat_number:
                 country_name = self.get_country_name(country_code)
                 is_valid_vat_number = self.validate_vat_number(country_code, vat_number)
-                if is_valid_vat_number is None:
-                    return self.form_invalid(form)
-                elif not is_valid_vat_number:
+                if not is_valid_vat_number:
                     messages.error(self.request, _("Invalid VAT number for country: %s" % str(country_name)))
                     return self.form_invalid(form)
 
