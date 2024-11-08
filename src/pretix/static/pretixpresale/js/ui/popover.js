@@ -72,10 +72,16 @@ $(function () {
         trigger: 'manual'
 
     }
-    $('[data-toggle="popover-profile"]').popover(options).click(function(evt) {
+    $('[data-toggle="popover-profile"]').popover(options).click(function (evt) {
         evt.stopPropagation();
-        $(this).popover('show');
+        const isVisible = $(this).data('bs.popover').tip().hasClass('in');
         $('[data-toggle="popover"]').popover('hide');
+
+        if (isVisible) {
+            $(this).popover('hide');
+        } else {
+            $(this).popover('show');
+        }
 
         // Ensure Organizer Area is hidden initially
         $('.organizer-area').hide();
