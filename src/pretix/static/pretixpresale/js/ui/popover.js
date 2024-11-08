@@ -84,6 +84,16 @@ $(function () {
         if (show_organizer_area) {
             $('.organizer-area').show(); // Show the hidden Organizer Area
         }
+
+        $(this).on('shown.bs.popover', function () {
+            $('.profile-menu').off('click').on('click', function (event) {
+                event.preventDefault();
+                const link = $(this).find('a');
+                if (link.length > 0) {
+                    window.location.href = link.attr('href');
+                }
+            });
+        });
     })
 })
 
