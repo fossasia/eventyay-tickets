@@ -5,21 +5,21 @@
 {% block title %}{% trans "Order overview" %}{% endblock %}
 {% block content %}
     {% url "control:event.orders" organizer=request.event.organizer.slug event=request.event.slug as listurl %}
-    <div class="pull-right flip">
-        <div class="btn-group" role="group" id="sumtoggle">
-            <button type="button" data-target=".count" class="btn btn-default active">{% trans "Sales" %}</button>
-            <button type="button" data-target=".sum-gross" class="btn btn-default">{% trans "Revenue (gross)" %}</button>
-            <button type="button" data-target=".sum-net" class="btn btn-default">{% trans "Revenue (net)" %}</button>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>
+                    {% trans "Order overview" %}
+                    <a href="{% url "control:event.orders.export" event=request.event.slug organizer=request.event.organizer.slug %}?identifier=pdfreport"
+                       class="btn btn-default" target="_blank">
+                        <span class="fa fa-download"></span>
+                        {% trans "PDF" %}
+                    </a>
+                </h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
         </div>
-    </div>
-	<h1>
-        {% trans "Order overview" %}
-        <a href="{% url "control:event.orders.export" event=request.event.slug organizer=request.event.organizer.slug %}?identifier=pdfreport"
-           class="btn btn-default" target="_blank">
-            <span class="fa fa-download"></span>
-            {% trans "PDF" %}
-        </a>
-    </h1>
+    </nav>
     <div class="row filter-form">
         <form class="" action="" method="get">
             {% if request.event.has_subevents %}
@@ -50,6 +50,9 @@
             </div>
         </form>
     </div>
+    <button type="button" data-target=".count" class="btn btn-default active">{% trans "Sales" %}</button>
+    <button type="button" data-target=".sum-gross" class="btn btn-default">{% trans "Revenue (gross)" %}</button>
+    <button type="button" data-target=".sum-net" class="btn btn-default">{% trans "Revenue (net)" %}</button>
     {% if subevent_warning %}
         <div class="alert alert-info">
             {% blocktrans trimmed context "subevent" %}

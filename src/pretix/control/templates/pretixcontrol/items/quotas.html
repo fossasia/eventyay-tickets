@@ -3,7 +3,14 @@
 {% load urlreplace %}
 {% block title %}{% trans "Quotas" %}{% endblock %}
 {% block inside %}
-    <h1>{% trans "Quotas" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "Quotas" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <p>
         {% blocktrans trimmed %}
         To ensure your products are available as intended, you need to set quotas. Quotas determine how many instances of your product can be sold on the platform. This allows you to configure whether your event can accommodate an unlimited number of attendees or if the number of attendees is capped. You can assign a product to multiple quotas to meet more complex requirements, such as limiting the total number of tickets sold while also restricting the number of specific ticket types simultaneously.

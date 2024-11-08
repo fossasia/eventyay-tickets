@@ -50,6 +50,10 @@ def _default_context(request):
     if hasattr(request, 'event') and request.user.is_authenticated:
         for receiver, response in html_head.send(request.event, request=request):
             _html_head.append(response)
+        ctx["talk_edit_url"] = (
+                settings.TALK_HOSTNAME + "/orga/event/" + request.event.slug + "/settings"
+        )
+        ctx['is_video_enabled'] = _is_video_enabled(request.event)
     ctx['html_head'] = "".join(_html_head)
 
     _js_payment_weekdays_disabled = '[]'
@@ -133,3 +137,31 @@ def _default_context(request):
         )
 
     return ctx
+
+
+def _get_plugins(plugin_list):
+    """
+    Format the plugin list into an array
+    @param plugin_list: list of plugins
+    @return: array of plugins
+    """
+    if plugin_list is None:
+        return []
+    return [p.strip() for p in plugin_list.split(",") if p.strip()]
+
+
+def _is_video_enabled(event):
+    """
+    Check if the video plugin is enabled
+    @param event: event object
+    @return: boolean
+    """
+    if (
+            "pretix_venueless" not in _get_plugins(event.plugins)
+            or not event.settings.venueless_url
+            or not event.settings.venueless_issuer
+            or not event.settings.venueless_audience
+            or not event.settings.venueless_secret
+    ):
+        return False
+    return True

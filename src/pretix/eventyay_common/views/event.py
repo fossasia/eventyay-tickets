@@ -316,6 +316,31 @@ class EventUpdate(
             files=self.request.FILES if self.request.method == "POST" else None,
         )
 
+    def _get_plugins(self, plugin_list):
+        """
+        Format the plugin list into an array
+        @param plugin_list: list of plugins
+        @return: array of plugins
+        """
+        if plugin_list is None:
+            return []
+        return [p.strip() for p in plugin_list.split(",") if p.strip()]
+
+    def _is_video_enabled(self):
+        """
+        Check if the video plugin is enabled
+        @return: boolean
+        """
+        if (
+                "pretix_venueless" not in self._get_plugins(self.object.plugins)
+                or not self.object.settings.venueless_url
+                or not self.object.settings.venueless_issuer
+                or not self.object.settings.venueless_audience
+                or not self.object.settings.venueless_secret
+        ):
+            return False
+        return True
+
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
         context["sform"] = self.sform
@@ -323,6 +348,7 @@ class EventUpdate(
         context["talk_edit_url"] = (
             talk_host + "/orga/event/" + self.object.slug + "/settings"
         )
+        context['is_video_enabled'] = self._is_video_enabled()
         return context
 
     def handle_video_creation(self, form):

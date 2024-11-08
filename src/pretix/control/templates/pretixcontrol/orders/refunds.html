@@ -6,7 +6,14 @@
 {% load bootstrap3 %}
 {% block title %}{% trans "Refunds" %}{% endblock %}
 {% block content %}
-    <h1>{% trans "Refunds" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "Refunds" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <div class="row filter-form">
         <form class="" action="" method="get">
             <div class="col-md-5 col-xs-6">
