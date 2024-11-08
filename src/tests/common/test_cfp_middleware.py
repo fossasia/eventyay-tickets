@@ -1,5 +1,5 @@
 import pytest
-from django.conf import settings
+from django.test import override_settings
 
 
 @pytest.fixture
@@ -77,10 +77,7 @@ def test_unknown_event_on_custom_domain(event_on_foobar, client):
 
 
 @pytest.mark.django_db
+@override_settings(USE_X_FORWARDED_HOST=True)
 def test_with_forwarded_host(event_on_foobar, client):
-    settings.USE_X_FORWARDED_HOST = True
     r = client.get(f"/{event_on_foobar.slug}/", HTTP_X_FORWARDED_HOST="foobar")
     assert r.status_code == 200
-
-
-settings.USE_X_FORWARDED_HOST = False
