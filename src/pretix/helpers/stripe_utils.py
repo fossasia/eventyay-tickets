@@ -5,7 +5,6 @@ import stripe
 from django.core.exceptions import ValidationError
 
 from pretix.base.models import BillingInvoice, Organizer
-from pretix.base.models import Organizer
 from pretix.base.models.organizer import OrganizerBillingModel
 from pretix.base.settings import GlobalSettingsObject
 

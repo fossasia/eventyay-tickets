@@ -558,6 +558,12 @@ def check_billing_status_for_warning(self):
                 organizer_billing = OrganizerBillingModel.objects.filter(
                     organizer=invoice.organizer
                 ).first()
+                if not organizer_billing:
+                    logger.error(
+                        "No billing settings found for organizer %s",
+                        invoice.organizer.name,
+                    )
+                    break
                 month_name = invoice.monthly_bill.strftime("%B")
 
                 mail_subject = f"Warning: {month_name} invoice for {invoice.event.name} need to be paid"
