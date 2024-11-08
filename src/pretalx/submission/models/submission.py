@@ -368,6 +368,17 @@ class Submission(GenerateCode, PretalxModel):
 
     update_duration.alters_data = True
 
+    def save(self, *args, **kwargs):
+        is_creating = not self.pk
+        super().save(*args, **kwargs)
+        if is_creating and not self.state == SubmissionStates.DRAFT:
+            submission_state_change.send_robust(
+                self.event,
+                submission=self,
+                old_state=None,
+                user=None,
+            )
+
     def update_review_scores(self):
         """Apply the submission's calculated review scores.
 
@@ -404,7 +415,10 @@ class Submission(GenerateCode, PretalxModel):
             self.save(update_fields=["state", "pending_state"])
             self.update_talk_slots()
             submission_state_change.send_robust(
-                self.event, submission=self, old_state=old_state, user=person
+                self.event,
+                submission=self,
+                old_state=old_state if old_state != SubmissionStates.DRAFT else None,
+                user=person,
             )
         else:
             source_states = (

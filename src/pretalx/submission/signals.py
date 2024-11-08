@@ -10,4 +10,6 @@ Any exceptions raised will be ignored.
 As with all plugin signals, the ``sender`` keyword argument will contain the event.
 Additionally, you will receive the keyword arguments ``submission``, ``old_state``,
 and ``user`` (which may be ``None``).
+When the submission is created or submitted from a draft state, ``old_state`` will be
+``None``.
 """

@@ -8,6 +8,7 @@ from pretalx.orga.signals import (
     nav_event_settings,
     nav_global,
 )
+from pretalx.submission.signals import submission_state_change
 
 
 @receiver(register_locales)
@@ -53,3 +54,9 @@ def nav_global_test(sender, request, **kwargs):
 def activate_event_test(sender, request, **kwargs):
     if sender.slug == "donottakelive":
         raise Exception("It's not safe to go alone take this")
+
+
+@receiver(submission_state_change)
+def submission_state_change_test(sender, submission, **kwargs):
+    submission._state_change_called = getattr(submission, "_state_change_called", 0) + 1
+    submission.event.settings.submission_state_change_called = submission.code

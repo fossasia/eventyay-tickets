@@ -212,7 +212,9 @@ class TestWizard:
     @pytest.mark.django_db
     def test_wizard_new_user(self, event, question, client):
         event.mail_settings["mail_on_new_submission"] = True
+        event.plugins = "tests"
         event.save()
+        event.settings.submission_state_change_called = ""
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first()
             submission_type.deadline = event.cfp.deadline
@@ -259,6 +261,9 @@ class TestWizard:
         submission = self.assert_submission(event, question=question)
         self.assert_user(submission, email="testuser@example.com")
         assert len(djmail.outbox) == 2  # user email plus orga email
+        assert (
+            submission.event.settings.submission_state_change_called == submission.code
+        )
 
     @pytest.mark.django_db
     def test_wizard_existing_user(
