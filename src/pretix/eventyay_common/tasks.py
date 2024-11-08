@@ -249,7 +249,6 @@ def monthly_billing_collect(self):
                     total_amount = calculate_total_amount_on_monthly(
                         event, last_month_date
                     )
-                    # TODO: tickets fee should be calculated based on net amount
                     tickets_fee = calculate_ticket_fee(total_amount, ticket_rate)
                     # Create a new billing invoice
                     billing_invoice = BillingInvoice(
@@ -402,13 +401,12 @@ def calculate_total_amount_on_monthly(event, last_month_date_start):
     ) - relativedelta(days=1)
 
     # Use aggregate to sum the total of all paid orders within the date range
-    total_amount = (
-        event.orders.filter(
+    total_amount = sum(
+        order.net_total for order in event.orders.filter(
             status=Order.STATUS_PAID,
             datetime__range=[last_month_date_start, last_month_date_end],
-        ).aggregate(total=Sum("total"))["total"]
-        or 0
-    )  # Return 0 if the result is None
+        )
+    ) or 0  # Return 0 if the result is None
 
     return total_amount
 
