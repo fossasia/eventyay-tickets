@@ -51,7 +51,7 @@ def _default_context(request):
         for receiver, response in html_head.send(request.event, request=request):
             _html_head.append(response)
         ctx["talk_edit_url"] = (
-                settings.TALK_HOSTNAME + "/orga/event/" + request.event.slug + "/settings"
+            settings.TALK_HOSTNAME + "/orga/event/" + request.event.slug + "/settings"
         )
         ctx['is_video_enabled'] = _is_video_enabled(request.event)
     ctx['html_head'] = "".join(_html_head)
