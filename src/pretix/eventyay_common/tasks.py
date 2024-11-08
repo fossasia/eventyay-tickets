@@ -17,12 +17,13 @@ from django_scopes import scopes_disabled
 from pretix.helpers.stripe_utils import (
     confirm_payment_intent, process_auto_billing_charge_stripe,
 )
-from .billing_invoice import generate_invoice_pdf
+
 from ..base.models import BillingInvoice, Event, Order, Organizer
 from ..base.models.organizer import OrganizerBillingModel
 from ..base.services.mail import mail_send_task
 from ..base.settings import GlobalSettingsObject
 from ..helpers.jwt_generate import generate_sso_token
+from .billing_invoice import generate_invoice_pdf
 
 logger = logging.getLogger(__name__)
 
