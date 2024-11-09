@@ -114,12 +114,18 @@ class ScheduleExportForm(ExportForm):
         )
         self.fields["start_date"] = forms.BooleanField(
             required=False,
-            label=TalkSlot._meta.get_field("start").verbose_name + " (" + _("date") + ")",
+            label=TalkSlot._meta.get_field("start").verbose_name
+            + " ("
+            + _("date")
+            + ")",
             help_text=TalkSlot._meta.get_field("start").help_text,
         )
         self.fields["start_time"] = forms.BooleanField(
             required=False,
-            label=TalkSlot._meta.get_field("start").verbose_name + " (" + _("time") + ")",
+            label=TalkSlot._meta.get_field("start").verbose_name
+            + " ("
+            + _("time")
+            + ")",
             help_text=TalkSlot._meta.get_field("start").help_text,
         )
         self.fields["end"] = forms.BooleanField(
