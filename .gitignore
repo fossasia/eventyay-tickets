@@ -88,6 +88,7 @@ local/
 *.xml
 pretalx.cfg
 override_settings.py
+pyrightconfig.json
 
 # OS X
 .DS_Store
