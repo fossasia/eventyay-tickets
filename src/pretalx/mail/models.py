@@ -85,6 +85,7 @@ class MailTemplate(PretalxModel):
         skip_queue: bool = False,
         commit: bool = True,
         allow_empty_address: bool = False,
+        submissions: list = None,
         attachments: list = False,
     ):
         """Creates a :class:`~pretalx.mail.models.QueuedMail` object from a
@@ -92,6 +93,9 @@ class MailTemplate(PretalxModel):
 
         :param user: Either a :class:`~pretalx.person.models.user.User` or an
             email address as a string.
+        :param submissions: A list of submissions to which this email belongs.
+            This is handled as an addition to any `submission` object present
+            in ``context_kwargs``.
         :param event: The event to which this email belongs. May be ``None``.
         :param locale: The locale will be set via the event and the recipient,
             but can be overridden with this parameter.
@@ -154,9 +158,11 @@ class MailTemplate(PretalxModel):
             )
             if commit:
                 mail.save()
-                if "submission" in context_kwargs:
-                    submission = context_kwargs["submission"]
-                    mail.submissions.add(submission)
+                submissions = set(submissions or [])
+                if submission := context.get("submission"):
+                    submissions.add(submission)
+                if submissions:
+                    mail.submissions.set(submissions)
                 if users:
                     mail.to_users.set(users)
             if skip_queue:
