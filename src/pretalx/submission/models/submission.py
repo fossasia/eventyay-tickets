@@ -1,3 +1,4 @@
+import copy
 import datetime as dt
 import json
 import statistics
@@ -14,9 +15,9 @@ from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy as _n
-from django.utils.translation import pgettext_lazy
 from django_scopes import ScopedManager, scopes_disabled
 from rest_framework import serializers
+from django.utils.translation import override, pgettext_lazy
 
 from pretalx.common.exceptions import SubmissionError
 from pretalx.common.models.choices import Choices
@@ -497,18 +498,34 @@ class Submission(GenerateCode, PretalxModel):
     update_talk_slots.alters_data = True
 
     def send_initial_mails(self, person):
-        self.event.ack_template.to_mail(
+        template = self.event.ack_template
+        template_text = copy.deepcopy(template.text)
+        locale = self.get_email_locale(person.locale)
+        with override(locale):
+            if "{full_submission_content}" not in str(template.text):
+                template.text = (
+                    str(template.text)
+                    + "\n\n\n***********\n\n"
+                    + str(_("Full proposal content:\n\n") + "{full_submission_content}")
+                )
+        template.to_mail(
             user=person,
             event=self.event,
             context_kwargs={
                 "user": person,
                 "submission": self,
             },
+            context={
+                "full_submission_content": self.get_content_for_mail(),
+            },
             skip_queue=True,
             commit=True,  # Send immediately, but save a record
             locale=self.get_email_locale(person.locale),
-            full_submission_content=True,
         )
+        template.refresh_from_db()
+        if template.text != template_text:
+            template.text = template_text
+            template.save()
         if self.event.mail_settings["mail_on_new_submission"]:
             MailTemplate(
                 event=self.event,
