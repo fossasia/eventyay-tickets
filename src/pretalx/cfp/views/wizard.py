@@ -46,6 +46,7 @@ class SubmitWizard(EventPageMixin, View):
             return redirect(
                 reverse("cfp:event.start", kwargs={"event": request.event.slug})
             )
+        step = None
         for step in request.event.cfp_flow.steps:
             if not step.is_applicable(request):
                 continue
