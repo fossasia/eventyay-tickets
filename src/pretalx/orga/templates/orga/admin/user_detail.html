@@ -137,7 +137,7 @@
             <td><a href="{{ submission.orga_urls.base }}">{{ submission.title }}</a></td>
             <td><a href="{{ submission.event.orga_urls.base }}">{{ submission.event.name }}</a></td>
             <td>{% include "cfp/event/fragment_state.html" with state=submission.state as_badge=True %}</td>
-            <td>{{ submission.created | date:"SHORT_DATE_FORMAT" }}</td>
+            <td>{{ submission.created | date }}</td>
           </tr>
         {% empty %}
           <tr>
