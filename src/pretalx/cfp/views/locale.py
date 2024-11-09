@@ -33,13 +33,17 @@ class LocaleSet(View):
                 request.user.save()
 
             max_age = dt.timedelta(seconds=10 * 365 * 24 * 60 * 60)
+            if hasattr(dt, "UTC"):
+                expires = dt.datetime.now(dt.UTC) + max_age
+            else:
+                # TODO: drop when we stop supporting Python 3.10,
+                # which is end of life in October 2026
+                expires = dt.datetime.utcnow() + max_age
             resp.set_cookie(
                 settings.LANGUAGE_COOKIE_NAME,
                 locale,
                 max_age=max_age,
-                expires=(dt.datetime.now(dt.UTC) + max_age).strftime(
-                    "%a, %d-%b-%Y %H:%M:%S GMT"
-                ),
+                expires=expires.strftime("%a, %d-%b-%Y %H:%M:%S GMT"),
                 domain=settings.SESSION_COOKIE_DOMAIN,
             )
             with override(locale):
