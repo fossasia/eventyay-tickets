@@ -37,7 +37,7 @@ class LocaleSet(View):
                 settings.LANGUAGE_COOKIE_NAME,
                 locale,
                 max_age=max_age,
-                expires=(dt.datetime.utcnow() + max_age).strftime(
+                expires=(dt.datetime.now(dt.UTC) + max_age).strftime(
                     "%a, %d-%b-%Y %H:%M:%S GMT"
                 ),
                 domain=settings.SESSION_COOKIE_DOMAIN,
