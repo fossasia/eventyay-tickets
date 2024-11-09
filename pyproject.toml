@@ -143,3 +143,50 @@ extend_exclude="static,docs"
 max_blank_lines=1
 preserve_blank_lines=1
 profile="django"
+
+[tool.pyright]
+venv = "pretalx"
+exclude = [
+    "src/pretalx/frontend/",
+    "src/pretalx/static/",
+    "src/pretalx/locale/",
+    "src/pretalx/settings.py",
+    "src/pretalx/common/settings/test_settings.py",
+    "src/local/",
+    "build/",
+    "doc/*",
+    "**/.*",
+    "**/__pycache__",
+]
+# We don’t use types, Django doesn’t have good pyright support even with django-types.
+# So we disable type checking, and then manually re-enable useful checks.
+# Refer to https://github.com/microsoft/pyright/blob/main/docs/configuration.md#diagnostic-settings-defaults
+# for the full list of settings.
+typeCheckingMode = "off"
+# pyright doesn’t understand optional imports
+reportMissingImports = false
+enableReachabilityAnalysis = true
+reportAssertAlwaysTrue = true
+reportInvalidStringEscapeSequence = true
+reportSelfClsParameterName = true
+reportUnsupportedDunderAll = true
+reportUnusedExpression = true
+reportWildcardImportFromLibrary = true
+reportAbstractUsage = true
+reportInconsistentOverload = true
+reportNoOverloadImplementation = true
+reportRedeclaration = true
+reportUnboundVariable = true
+reportUnhashable = true
+reportUnusedExcept = true
+reportOverlappingOverload = true
+reportPossiblyUnboundVariable = true
+reportDeprecated = true
+reportMatchNotExhaustive = true
+reportUnnecessaryCast = true
+reportUnnecessaryContains = true
+reportUnusedClass = true
+reportUnusedFunction = true
+reportUnusedVariable = true
+reportCallInDefaultInitializer = true
+reportShadowedImports = true
