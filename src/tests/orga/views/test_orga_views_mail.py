@@ -471,7 +471,7 @@ def test_orga_can_compose_single_mail_with_specific_submission(
     orga_client, speaker, event, slot, other_submission
 ):
     with scope(event=event):
-        assert QueuedMail.objects.filter(sent__isnull=True).delete()
+        QueuedMail.objects.filter(sent__isnull=True).delete()
     response = orga_client.post(
         event.orga_urls.compose_mails_sessions,
         follow=True,
