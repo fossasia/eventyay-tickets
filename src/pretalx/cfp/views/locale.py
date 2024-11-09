@@ -27,7 +27,7 @@ class LocaleSet(View):
 
         resp = HttpResponseRedirect(url)
         locale = request.GET.get("locale")
-        if locale in (lc for lc, ll in settings.LANGUAGES):
+        if locale in (lc for lc, __ in settings.LANGUAGES):
             if request.user.is_authenticated:
                 request.user.locale = locale
                 request.user.save()
