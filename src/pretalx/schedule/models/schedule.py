@@ -586,6 +586,7 @@ class Schedule(PretalxModel):
             slots = list(data.get("create") or []) + [
                 talk["new_slot"] for talk in (data.get("update") or [])
             ]
+            submissions = [slot.submission for slot in slots]
             mails.append(
                 self.event.update_template.to_mail(
                     user=speaker,
@@ -594,6 +595,7 @@ class Schedule(PretalxModel):
                     context={"notifications": notifications},
                     commit=save,
                     locale=locale,
+                    submissions=submissions,
                     attachments=[
                         {
                             "name": f"{slot.frab_slug}.ics",
