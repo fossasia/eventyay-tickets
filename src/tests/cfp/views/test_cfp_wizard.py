@@ -537,9 +537,10 @@ class TestWizard:
         event.cfp.save()
         access_code.valid_until = now() - dt.timedelta(hours=1)
         access_code.save()
-        response, current_url = self.perform_init_wizard(
+        response, _ = self.perform_init_wizard(
             client, event=event, access_code=access_code, success=False
         )
+        assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_wizard_track_access_code_and_question(
