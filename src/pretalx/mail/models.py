@@ -159,7 +159,7 @@ class MailTemplate(PretalxModel):
             if commit:
                 mail.save()
                 submissions = set(submissions or [])
-                if submission := context.get("submission"):
+                if submission := context_kwargs.get("submission"):
                     submissions.add(submission)
                 if submissions:
                     mail.submissions.set(submissions)
@@ -306,34 +306,40 @@ class QueuedMail(PretalxModel):
             )
 
         has_event = getattr(self, "event", None)
-        text = self.make_text()
-        body_html = self.make_html()
-
-        from pretalx.common.mail import mail_send_task
 
         to = self.to.split(",") if self.to else []
         if self.id:
             to += [user.email for user in self.to_users.all()]
-            queuedmail_pre_send.send(
-                sender=self.event,
-                mail=self,
-            )
-        if self.sent is None:
-            mail_send_task.apply_async(
-                kwargs={
-                    "to": to,
-                    "subject": self.prefixed_subject,
-                    "body": text,
-                    "html": body_html,
-                    "reply_to": (self.reply_to or "").split(","),
-                    "event": self.event.pk if has_event else None,
-                    "cc": (self.cc or "").split(","),
-                    "bcc": (self.bcc or "").split(","),
-                    "attachments": self.attachments,
-                },
-                ignore_result=True,
-            )
-            self.sent = now()
+            if has_event:
+                queuedmail_pre_send.send_robust(
+                    sender=self.event,
+                    mail=self,
+                )
+
+        if self.sent is not None:
+            # The pre_send signal must have handled the sending already,
+            # so there is nothing left for us to do.
+            return
+
+        from pretalx.common.mail import mail_send_task
+
+        text = self.make_text()
+        body_html = self.make_html()
+        mail_send_task.apply_async(
+            kwargs={
+                "to": to,
+                "subject": self.prefixed_subject,
+                "body": text,
+                "html": body_html,
+                "reply_to": (self.reply_to or "").split(","),
+                "event": self.event.pk if has_event else None,
+                "cc": (self.cc or "").split(","),
+                "bcc": (self.bcc or "").split(","),
+                "attachments": self.attachments,
+            },
+            ignore_result=True,
+        )
+        self.sent = now()
 
         if self.pk:
             self.log_action(
