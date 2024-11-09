@@ -3,8 +3,8 @@
 Release Notes
 =============
 
-- :feature:`orga:email,1596` Added the ``queuedmail_pre_send`` signal. This can be used to integrate with issue tracking systems. Receivers can set the ``sent`` timestamp on the queued mail object to skip sending mail via the regular backend.
-- :feature:`orga` Added references to submissions to outgoing mails. This shall facilitate the integration with issue tracking systems.
+- :feature:`dev,1596` With the new ``queuedmail_pre_send`` signal, your plugin can modify a `QueuedMail` object before it is sent out. You can handle the sending entirely by setting the object’s `sent` attribute, or e.g. modify the email text before it is sent out by pretalx.
+- :feature:`orga` Outgoing mails now know which proposals or sessions they are about. This information can’t be added to existing mails, but will be included in all new mails, which will link to the proposals in question, and will help you find relevant emails by showing the linked proposals and their track colours (if any).
 - :feature:`orga:schedule` When exporting your sessions or submissions as CSV or JSON, you can now choose to export start and end times as separate date/time values instead of a single combined value.
 - :bug:`orga,1879` The template indicator (showing you which template an email was generated from) in the email lists were invisible.
 - :feature:`schedule` The schedule widget can now be used for a selected number of dates, which is very useful when some of your rooms are not in use on some days (like switching to a workshop-heavy programme on some conference days). For conferences like this, you could embed the schedule widget twice: Once for one set of days and once for the other set.
