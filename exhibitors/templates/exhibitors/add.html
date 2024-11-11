@@ -56,6 +56,18 @@
   </div>
 
   <div class="form-group">
+    <label class="col-md-3 control-label" for="id_booth">{% trans "Booth Name" %}</label>
+    <div class="col-md-9">
+      {{ form.booth_name }}
+    </div>
+  </div>
+  <div class="form-group">
+      <label class="col-md-3 control-label" for="id_booth_id">{% trans "Booth ID" %}</label>
+      <div class="col-md-9">
+          {{ form.booth_id }}
+      </div>
+  </div>
+  <div class="form-group">
     <label class="col-md-3 control-label label-empty" for="id_allow_voucher_access">&nbsp;</label>
     <div class="col-md-9">
       <div class="checkbox">
@@ -70,13 +82,12 @@
   <div class="form-group">
     <label class="col-md-3 control-label label-empty" for="id_lead_scanning">&nbsp;</label>
     <div class="col-md-9">
-      <div class="checkbox">
-        <label for="id_lead_scanning">
-          <input type="checkbox" name="lead_scanning_enabled" id="id_lead_scanning" 
-            {% if form.instance.lead_scanning_enabled %} checked {% endif %}>
-          {% trans "Allow Lead scanning" %}
-        </label>
-      </div>
+        <div class="checkbox">
+            <label for="id_lead_scanning">
+                {{ form.lead_scanning_enabled }}
+                {% trans "Allow Lead scanning" %}
+            </label>
+        </div>
     </div>
   </div>
 
@@ -110,15 +121,15 @@
     </div>
   </div>
 
-  <div class="form-group">
+<div class="form-group">
     <label class="col-md-3 control-label" for="id_comment">{% trans "Comment" %}</label>
     <div class="col-md-9">
-      <textarea name="comment" cols="40" rows="10" class="form-control" placeholder="{% trans 'Comment' %}"></textarea>
-      <div class="help-block">
-        {% trans "The text entered in this field will not be visible to the user and is available for your convenience." %}
-      </div>
+        {{ form.comment }}
+        <div class="help-block">
+            {% trans "The text entered in this field will not be visible to the user and is available for your convenience." %}
+        </div>
     </div>
-  </div>
+</div>
 
 <div class="form-actions row">
         <div class="col-md-6 text-right">

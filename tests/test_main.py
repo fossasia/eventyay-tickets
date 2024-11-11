@@ -1,6 +1,9 @@
 import pytest
-from exhibitors.models import ExhibitorInfo
+
 from django.core.files.uploadedfile import SimpleUploadedFile
+
+from exhibitors.models import ExhibitorInfo
+
 
 @pytest.mark.django_db
 def test_create_exhibitor_info(event):

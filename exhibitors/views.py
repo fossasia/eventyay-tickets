@@ -1,21 +1,20 @@
 from django.core.exceptions import PermissionDenied
-from django.db import transaction
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.utils.functional import cached_property
 from django.utils.translation import gettext, gettext_lazy as _
 from django.views import View
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
-
 from pretix.base.forms import SettingsForm
 from pretix.base.models import Event
 from pretix.control.permissions import EventPermissionRequiredMixin
-from pretix.control.views.event import EventSettingsFormView, EventSettingsViewMixin
+from pretix.control.views.event import (
+    EventSettingsFormView, EventSettingsViewMixin,
+)
 from pretix.helpers.models import modelcopy
 
-from .forms import ExhibitorInfoForm, ExhibitorSettingForm
-from .models import ExhibitorInfo
+from .forms import ExhibitorInfoForm
+from .models import ExhibitorInfo, ExhibitorSettings
 
 
 class SettingsView(EventPermissionRequiredMixin, ListView):
@@ -24,21 +23,27 @@ class SettingsView(EventPermissionRequiredMixin, ListView):
     context_object_name = 'exhibitors'
     permission = 'can_change_settings'
 
-    def get_queryset(self):
-        return ExhibitorInfo.objects.filter(event=self.request.event)
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        settings, _ = ExhibitorSettings.objects.get_or_create(event=self.request.event)
+        ctx['settings'] = settings
+        ctx['default_fields'] = ['attendee_name', 'attendee_email']
+        return ctx
 
     def post(self, request, *args, **kwargs):
-        exhibitor_id = request.POST.get('exhibitor_id')
-        exhibitor = get_object_or_404(
-            ExhibitorInfo, id=exhibitor_id, event=request.event
-        )
-        lead_scanning_enabled = request.POST.get('lead_scanning_enabled') == 'true'
-        exhibitor.lead_scanning_enabled = lead_scanning_enabled
-        exhibitor.save()
-        return JsonResponse({
-            'success': True,
-            'status': 'enabled' if lead_scanning_enabled else 'disabled'
-        })
+        settings, _ = ExhibitorSettings.objects.get_or_create(event=self.request.event)
+        
+        # Get selected fields, excluding default fields
+        allowed_fields = request.POST.getlist('exhibitors_access_voucher')
+        
+        # Update settings
+        settings.allowed_fields = allowed_fields
+        settings.exhibitors_access_mail_subject = request.POST.get('exhibitors_access_mail_subject', '')
+        settings.exhibitors_access_mail_body = request.POST.get('exhibitors_access_mail_body', '')
+        settings.save()
+        
+        messages.success(request, _('Settings have been saved.'))
+        return redirect(request.path)
 
 
 class ExhibitorListView(EventPermissionRequiredMixin, ListView):
@@ -65,6 +70,11 @@ class ExhibitorCreateView(EventPermissionRequiredMixin, CreateView):
         form.instance.lead_scanning_enabled = (
             self.request.POST.get('lead_scanning_enabled') == 'on'
         )
+
+        # Only generate booth_id if none was provided
+        if not form.cleaned_data.get('booth_id'):
+            form.instance.booth_id = generate_booth_id()
+
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -85,10 +95,21 @@ class ExhibitorEditView(EventPermissionRequiredMixin, UpdateView):
     template_name = 'exhibitors/add.html'
     permission = 'can_change_event_settings'
 
+    def get_initial(self):
+        initial = super().get_initial()
+        obj = self.get_object()
+        initial['lead_scanning_enabled'] = obj.lead_scanning_enabled
+        return initial
+
     def form_valid(self, form):
-        form.instance.lead_scanning_enabled = (
-            self.request.POST.get('lead_scanning_enabled') == 'on'
-        )
+        exhibitor = form.save(commit=False)
+        exhibitor.lead_scanning_enabled = self.request.POST.get('lead_scanning_enabled') == 'on'
+        
+        # generate booth_id if none provided and there isn't an existing one
+        if not form.cleaned_data.get('booth_id') and not exhibitor.booth_id:
+            exhibitor.booth_id = generate_booth_id()
+            
+        exhibitor.save()
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
