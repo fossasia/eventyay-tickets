@@ -148,4 +148,9 @@ def _default_context(request):
     ctx["settings"] = pretix_settings
     ctx["django_settings"] = settings
 
+    # Check to show organizer area
+    ctx['show_organizer_area'] = False
+    if request.user and request.user.is_authenticated and hasattr(request, 'organizer') and request.organizer and hasattr(request, 'event') and request.event:
+        ctx['show_organizer_area'] = request.user.has_event_permission(request.organizer, request.event, 'can_change_event_settings', request=request)
+
     return ctx

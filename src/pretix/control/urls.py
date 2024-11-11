@@ -36,6 +36,7 @@ urlpatterns = [
     url(r'^pdf/editor/webfonts.css', pdf.FontsCSSView.as_view(), name='pdf.css'),
     url(r'^settings/?$', user.UserSettings.as_view(), name='user.settings'),
     url(r'^settings/history/$', user.UserHistoryView.as_view(), name='user.settings.history'),
+    url(r'^settings/orders/$', user.UserOrdersView.as_view(), name='user.settings.orders'),
     url(r'^settings/notifications/$', user.UserNotificationsEditView.as_view(), name='user.settings.notifications'),
     url(r'^settings/notifications/off/(?P<id>\d+)/(?P<token>[^/]+)/$', user.UserNotificationsDisableView.as_view(),
         name='user.settings.notifications.off'),
