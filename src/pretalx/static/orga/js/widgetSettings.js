@@ -16,7 +16,7 @@ document
         if (days.length) {
             secondPre.innerHTML = secondPre.innerHTML.replace(
                 "FILTER_DAYS",
-                ` filter-days="${days.join(",")}"`
+                ` date-filter="${days.join(",")}"`
             )
         } else {
             secondPre.innerHTML = secondPre.innerHTML.replace(
