@@ -36,7 +36,7 @@ from pretix.helpers.json import safe_string
 from pretix.helpers.thumb import get_thumbnail
 
 from ..settings import settings_hierarkey
-from .organizer import Organizer, Team
+from .organizer import Organizer, OrganizerBillingModel, Team
 
 
 class EventMixin:
@@ -1172,6 +1172,27 @@ class Event(EventMixin, LoggedModel):
                         ),
                     )
                 )
+
+        billing_obj = OrganizerBillingModel.objects.filter(organizer=self.organizer).first()
+
+        if not billing_obj or not billing_obj.stripe_payment_method_id:
+            issues.append(
+                (
+                    "<a {a_attr}>"
+                    + gettext('You need to fill the billing information.')
+                    + "</a>"
+                ).format(
+                    a_attr='href="%s#tab-0-1-open"'
+                           % (
+                               reverse(
+                                   "control:organizer.settings.billing",
+                                   kwargs={
+                                       "organizer": self.organizer.slug,
+                                   },
+                               ),
+                           ),
+                )
+            )
 
         responses = event_live_issues.send(self)
         for receiver, response in sorted(responses, key=lambda r: str(r[0])):
