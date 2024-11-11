@@ -1,24 +1,24 @@
 $(function () {
-    var basePath = JSON.parse(document.getElementById('base_path').textContent);
-    let is_admin_mode = JSON.parse(document.getElementById('is_admin_mode').textContent);
-    var currentPath = window.location.pathname;
-    var queryString = window.location.search;
+    const basePath = JSON.parse(document.getElementById('base_path').textContent);
+    const is_admin_mode = JSON.parse(document.getElementById('is_admin_mode').textContent);
+    const currentPath = window.location.pathname;
+    const queryString = window.location.search;
 
-    var backUrl = `${currentPath}${queryString}`;
+    const backUrl = `${currentPath}${queryString}`;
 
     // Constructing logout path using URLSearchParams
-    let logoutParams = new URLSearchParams({ back: backUrl });
+    const logoutParams = new URLSearchParams({ back: backUrl });
 
-    let dashboardPath = `/control/`;
-    let eventPath = `/control/events/`;
-    let organizerPath = `/control/organizers/`;
+    const dashboardPath = `/control/`;
+    const eventPath = `/control/events/`;
+    const organizerPath = `/control/organizers/`;
 
-    let accountPath = `/control/settings/`;
-    let adminPath = `/control/admin/`;
+    const accountPath = `/control/settings/`;
+    const adminPath = `/control/admin/`;
 
-    let logoutPath = `/control/logout?${logoutParams}`;
+    const logoutPath = `/control/logout?${logoutParams}`;
 
-    var options = {
+    const options = {
         html: true,
         content: `<div data-name="popover-profile-menu">
                     <div class="profile-menu">
