@@ -1150,6 +1150,11 @@ class Event(EventMixin, LoggedModel):
                 _("You need to configure at least one quota to sell anything.")
             )
 
+        if self.organizer.has_unpaid_invoice():
+            issues.append(
+                _("You have unpaid invoices, please pay them before going live.")
+            )
+
         for mp in self.organizer.meta_properties.all():
             if mp.required and not self.meta_data.get(mp.name):
                 issues.append(
