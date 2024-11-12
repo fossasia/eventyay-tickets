@@ -1,10 +1,15 @@
 import logging
+import importlib.util
+from importlib import import_module
 
 import requests
 from celery import shared_task
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from pretix_venueless.views import VenuelessSettingsForm
 
+from tests.base.test_plugins import plugins
+from ..base.models import Event
 from ..helpers.jwt_generate import generate_sso_token
 
 logger = logging.getLogger(__name__)
@@ -112,10 +117,7 @@ def send_event_webhook(self, user_id, event, action):
             logger.error("Max retries exceeded for sending organizer webhook.")
 
 
-@shared_task(
-    bind=True, max_retries=5, default_retry_delay=60
-)  # Retries up to 5 times with a 60-second delay
-def create_world(self, is_video_creation, event_data):
+def create_world(is_video_creation, event_data):
     """
         Create a video system for the specified event.
 
@@ -151,20 +153,95 @@ def create_world(self, is_video_creation, event_data):
 
     if is_video_creation and has_permission:
         try:
-            requests.post(
+            response = requests.post(
                 "{}/api/v1/create-world/".format(settings.VIDEO_SERVER_HOSTNAME),
                 json=payload,
                 headers=headers,
             )
+            try:
+                configure_video_event_auto(response.json())
+            except Exception as e:
+                logger.error("Error configuring video event: %s", e)
         except requests.exceptions.ConnectionError as e:
             logger.error("Connection error: %s", str(e))
-            raise self.retry(exc=e)
         except requests.exceptions.Timeout as e:
             logger.error("Request timed out: %s", str(e))
-            raise self.retry(exc=e)
         except requests.exceptions.RequestException as e:
             logger.error("Request failed: %s", str(e))
-            raise self.retry(exc=e)
+
+
+def configure_video_event_auto(world_data):
+    try:
+        jwt_config = world_data.get('config', {}).get('JWT_secrets', [])
+        video_plugin = get_installed_plugin('pretix_venueless')
+        event_id = world_data.get("id")
+        if video_plugin:
+            add_plugin_to_event('pretix_venueless', event_id)
+            video_settings = {
+                'venueless_url': world_data.get("domain", ""),
+                'venueless_secret': jwt_config[0].get('secret') if jwt_config else None,
+                'venueless_issuer': jwt_config[0].get('issuer') if jwt_config else None,
+                'venueless_audience': jwt_config[0].get('audience') if jwt_config else None,
+                'venueless_all_items': True,
+                'venueless_items': [],
+                'venueless_questions': [],
+            }
+            save_video_settings(event_id, video_settings)
+        else:
+            logger.error("Video integration configuration failed - Plugin not installed")
+            raise ValueError("Failed to configure video integration")
+    except Exception as e:
+        logger.error("Error configuring video event: %s", e)
+        raise ValueError("Failed to configure video integration")
+
+
+def save_video_settings(event_id, video_settings):
+    try:
+        event_instance = Event.objects.get(slug=event_id)
+        video_config_form = VenuelessSettingsForm(
+            data=video_settings,
+            obj=event_instance
+        )
+        if video_config_form.is_valid():
+            video_config_form.save()
+        else:
+            logger.error("Video integration configuration failed - Validation errors: %s", video_config_form.errors)
+            raise ValueError("Failed to validate video integration settings")
+        return video_config_form
+    except Exception as e:
+        logger.error("Error saving video settings: %s", e)
+        raise ValueError("Failed to save video settings")
+
+
+def get_installed_plugin(plugin_name):
+    try:
+        if importlib.util.find_spec(plugin_name) is not None:
+            installed_plugin = import_module(plugin_name)
+        else:
+            installed_plugin = None
+
+        return installed_plugin
+    except Exception as e:
+        logger.error("Error getting installed plugin: %s", e)
+        raise ValueError("Failed to get installed plugin")
+
+
+def add_plugin_to_event(plugin_name, event_slug):
+    try:
+        event = Event.objects.get(slug=event_slug)
+
+        if not event.plugins:
+            event.plugins = plugin_name
+        else:
+            current_plugins = event.plugins.split(',')
+            if plugin_name not in current_plugins:
+                current_plugins.append(plugin_name)
+                event.plugins = ','.join(current_plugins)
+        event.save()
+        return event
+    except Exception as e:
+        logger.error("Error adding plugin to event: %s", e)
+        raise ValueError("Failed to add plugin to event")
 
 
 def get_header_token(user_id):

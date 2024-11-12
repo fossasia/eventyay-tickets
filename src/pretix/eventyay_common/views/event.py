@@ -264,7 +264,7 @@ class EventCreateView(SafeSessionWizardView):
             has_permission=check_create_permission(self.request),
             token=generate_token(self.request),
         )
-        create_world.delay(
+        create_world(
             is_video_creation=foundation_data.get("is_video_creation"), event_data=event_data
         )
 
@@ -327,7 +327,7 @@ class EventUpdate(
             token=generate_token(self.request),
         )
 
-        create_world.delay(
+        create_world(
             is_video_creation=form.cleaned_data.get("is_video_creation"), event_data=event_data
         )
 
