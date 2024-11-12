@@ -1,0 +1,76 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load urlreplace %}
+{% load money %}
+{% block title %}{% trans "Vouchers" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "Vouchers" %}</h1>
+    {% if vouchers|length == 0 %}
+        <div class="empty-collection">
+            <p>
+                {% blocktrans trimmed %}
+                    You haven't created any vouchers yet.
+                {% endblocktrans %}
+            </p>
+
+            <a href='{% url "control:admin.vouchers.add" %}'
+                    class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> {% trans "Create a new voucher" %}</a>
+        </div>
+    {% else %}
+        <p>
+            <a href='{% url "control:admin.vouchers.add" %}'
+                    class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> {% trans "Create a new voucher" %}</a>
+        </p>
+        <form action='{% url "control:admin.vouchers" %}' method="post">
+            {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table table-hover table-quotas">
+                    <thead>
+                    <tr>
+                        <th>
+                            {% trans "Voucher code" %}
+                            <a href="?{% url_replace request 'ordering' '-code' %}"><i class="fa fa-caret-down"></i></a>
+                            <a href="?{% url_replace request 'ordering' 'code' %}"><i class="fa fa-caret-up"></i></a>
+                        </th>
+                        <th>
+                            {% trans "Redemptions" %}
+                            <a href="?{% url_replace request 'ordering' '-redeemed' %}"><i class="fa fa-caret-down"></i></a>
+                            <a href="?{% url_replace request 'ordering' 'redeemed' %}"><i class="fa fa-caret-up"></i></a>
+                        </th>
+                        <th>
+                            {% trans "Expiry" %}
+                            <a href="?{% url_replace request 'ordering' '-valid_until' %}"><i class="fa fa-caret-down"></i></a>
+                            <a href="?{% url_replace request 'ordering' 'valid_until' %}"><i class="fa fa-caret-up"></i></a>
+                        </th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for v in vouchers %}
+                        <tr>
+                            <td>
+                                {% if not v.is_active %}
+                                    <del>
+                                {% endif %}
+                                <strong><a href='{% url "control:admin.voucher" voucher=v.id %}'>{{ v.code }}</a></strong>
+                                {% if not v.is_active %}
+                                    </del>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ v.redeemed }} / {{ v.max_usages }}
+                            </td>
+                            <td>{{ v.valid_until|date }}</td>
+                            <td class="text-right flip">
+                                <a href='#' class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        {% include "pretixcontrol/pagination.html" %}
+    {% endif %}
+{% endblock %}
