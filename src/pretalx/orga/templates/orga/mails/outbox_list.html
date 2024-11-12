@@ -47,6 +47,7 @@
                     </th>
                     <th></th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -63,6 +64,19 @@
                                     </a>{% else %}{{ user }}{% endif %}{% if not forloop.last or mail.to %}, {% endif %}
                             {% endfor %}
                             {% if mail.to %}{{ mail.to }}{% endif %}
+                        </td>
+                        <td>
+                            {% for submission in mail.submissions.all %}
+                                <div class="d-flex align-items-center">
+                                    {% if show_tracks and submission.track %}
+                                        <div class="color-square" style="background-color: {{ submission.track.color }}" title="{{ submission.track.name }}">
+                                        </div>
+                                    {% endif %}
+                                    <a href="{{ submission.orga_urls.base }}">
+                                        {{ submission.title }}
+                                    </a>
+                                </div>
+                            {% endfor %}
                         </td>
                         <td class="text-right">
                             {% if mail.attachments %}

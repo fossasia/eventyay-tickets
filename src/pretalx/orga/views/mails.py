@@ -51,12 +51,19 @@ class OutboxList(
 
     def get_queryset(self):
         qs = (
-            self.request.event.queued_mails.prefetch_related("to_users")
+            self.request.event.queued_mails.prefetch_related(
+                "to_users", "submissions", "submissions__track"
+            )
             .filter(sent__isnull=True)
             .order_by("-id")
         )
         qs = self.filter_queryset(qs)
         return self.sort_queryset(qs)
+
+    @context
+    @cached_property
+    def show_tracks(self):
+        return self.request.event.get_feature_flag("use_tracks")
 
 
 class SentMail(
@@ -78,12 +85,19 @@ class SentMail(
 
     def get_queryset(self):
         qs = (
-            self.request.event.queued_mails.prefetch_related("to_users")
+            self.request.event.queued_mails.prefetch_related(
+                "to_users", "submissions", "submissions__track"
+            )
             .filter(sent__isnull=False)
             .order_by("-sent")
         )
         qs = self.filter_queryset(qs)
         return self.sort_queryset(qs)
+
+    @context
+    @cached_property
+    def show_tracks(self):
+        return self.request.event.get_feature_flag("use_tracks")
 
 
 class OutboxSend(EventPermissionRequired, ActionConfirmMixin, TemplateView):
