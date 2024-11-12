@@ -6,6 +6,7 @@
 {% block extra_title %}{% translate "Email editor" %} :: {% endblock extra_title %}
 
 {% block mail_content %}
+    <script defer src="{% static "common/js/tabs.js" %}"></script>
     <form method="post" class="form-with-placeholder">
         {% csrf_token %}
         <div class="mb-2">
@@ -19,38 +20,47 @@
                     {% block email_editor_title_detail %}{% endblock email_editor_title_detail %}
                 </small>
             </h3>
+            {% include "common/forms/errors.html" %}
         </div>
         <div id="placeholder-neighbour">
-            {% include "common/forms/errors.html" %}
-            <fieldset>
-                <legend>{% translate "Recipients" %}</legend>
-                {% block recipient_form %}{% endblock recipient_form %}
-                <details class="card">
-                    <summary class="card-header">{% translate "Advanced settings" %}</summary>
-                    <div class="card-body">
-                        {% block advanced_recipient_form %}
-                            {{ form.reply_to.as_field_group }}
-                            {{ form.bcc.as_field_group }}
-                        {% endblock advanced_recipient_form %}
-                    </div>
-                </details>
-            </fieldset>
-            <fieldset>
-                <legend>{% translate "Content" %}</legend>
-                {{ form.subject.as_field_group }}
-                {{ form.text.as_field_group }}
-            </fieldset>
-        </div>
+            <div role="tablist">
+                <input role="tab" type="radio" id="tab-recipients" name="tablist" aria-controls="tabpanel-recipients" aria-selected="true" checked>
+                <label for="tab-recipients">{% translate "Recipients" %}</label>
 
-        <div class="col col-md-2" id="placeholder-column">
-            <legend>{% translate "Placeholders" %}</legend>
+                <input role="tab" type="radio" id="tab-content" name="tablist" aria-controls="tabpanel-content" aria-selected="false">
+                <label for="tab-content">{% translate "Content" %}</label>
+            </div>
 
-            {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.submission tag="submission" %}
-            {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.slot tag="slot" %}
-            {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.user tag="user" %}
-            {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.event tag="event" %}
-            {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.other tag="other" %}
+            <section id="tabpanel-recipients" role="tabpanel" aria-labelledby="tab-recipients" tabindex="0" aria-hidden="false">
+                <fieldset>
+                    {% block recipient_form %}{% endblock recipient_form %}
+                    <details class="card">
+                        <summary class="card-header">{% translate "Advanced settings" %}</summary>
+                        <div class="card-body">
+                            {% block advanced_recipient_form %}
+                                {{ form.reply_to.as_field_group }}
+                                {{ form.bcc.as_field_group }}
+                            {% endblock advanced_recipient_form %}
+                        </div>
+                    </details>
+                </fieldset>
+            </section>
 
+            <section id="tabpanel-content" role="tabpanel" aria-labelledby="tab-content" aria-hidden="true">
+                <fieldset>
+                    {{ form.subject.as_field_group }}
+                    {{ form.text.as_field_group }}
+                </fieldset>
+            </section>
+            <div class="col col-md-2" id="placeholder-column">
+                <legend>{% translate "Placeholders" %}</legend>
+
+                {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.submission tag="submission" %}
+                {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.slot tag="slot" %}
+                {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.user tag="user" %}
+                {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.event tag="event" %}
+                {% include "orga/mails/_placeholder_group.html" with placeholders=form.grouped_placeholders.other tag="other" %}
+            </div>
         </div>
 
         {% block email_editor_preview %}
