@@ -63,7 +63,7 @@
                             </td>
                             <td>{{ v.valid_until|date }}</td>
                             <td class="text-right flip">
-                                <a href='#' class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                                <a href='{% url "control:admin.voucher.delete" voucher=v.id %}' class="btn btn-delete btn-danger btn-sm"><i class="fa fa-trash"></i></a>
                             </td>
                         </tr>
                     {% endfor %}

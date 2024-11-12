@@ -333,6 +333,8 @@ urlpatterns = [
         url(r'^vouchers/$', admin.VoucherList.as_view(), name='admin.vouchers'),
         url(r'^vouchers/add$', admin.VoucherCreate.as_view(), name='admin.vouchers.add'),
         url(r'^vouchers/(?P<voucher>\d+)/$', admin.VoucherUpdate.as_view(), name='admin.voucher'),
+        url(r'^vouchers/(?P<voucher>\d+)/delete$', admin.VoucherDelete.as_view(),
+            name='admin.voucher.delete'),
     ])),
     url(r'^event/(?P<organizer>[^/]+)/$', RedirectView.as_view(pattern_name='control:organizer'), name='event.organizerredirect'),
 ]

@@ -574,6 +574,9 @@ class InvoiceVoucher(LoggedModel):
         verbose_name_plural = _("Invoice Vouchers")
         ordering = ('code', )
 
+    def __str__(self):
+        return self.code
+
     def is_active(self):
         if self.redeemed >= self.max_usages:
             return False

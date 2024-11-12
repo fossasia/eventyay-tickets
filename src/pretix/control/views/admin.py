@@ -1,10 +1,10 @@
 from django.conf import settings
 from django.contrib import messages
 from django.db import transaction
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, resolve
 from django.utils.functional import cached_property
-from django.views.generic import ListView, TemplateView, CreateView, UpdateView
+from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DeleteView
 
 from pretix.base.models import Organizer
 from pretix.base.models.vouchers import InvoiceVoucher
@@ -104,10 +104,9 @@ class VoucherUpdate(AdministratorPermissionRequiredMixin, UpdateView):
         return form_class
 
     def get_object(self, queryset=None) -> InvoiceVoucherForm:
-        url = resolve(self.request.path_info)
         try:
             return InvoiceVoucher.objects.get(
-                id=url.kwargs['voucher']
+                id=self.kwargs['voucher']
             )
         except InvoiceVoucher.DoesNotExist:
             raise Http404(_("The requested voucher does not exist."))
@@ -116,6 +115,41 @@ class VoucherUpdate(AdministratorPermissionRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, _('Your changes have been saved.'))
         return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse('control:admin.vouchers')
+
+
+class VoucherDelete(AdministratorPermissionRequiredMixin, DeleteView):
+    model = InvoiceVoucher
+    template_name = 'pretixcontrol/admin/vouchers/delete.html'
+    context_object_name = 'invoice_voucher'
+
+    def get_object(self, queryset=None) -> InvoiceVoucher:
+        try:
+            return InvoiceVoucher.objects.get(
+                id=self.kwargs['voucher']
+            )
+        except InvoiceVoucher.DoesNotExist:
+            raise Http404(_("The requested voucher does not exist."))
+
+    def get(self, request, *args, **kwargs):
+        if self.get_object().redeemed > 0:
+            messages.error(request, _('A voucher can not be deleted if it already has been redeemed.'))
+            return HttpResponseRedirect(self.get_success_url())
+        return super().get(request, *args, **kwargs)
+
+    @transaction.atomic
+    def form_valid(self, form):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        if self.object.redeemed > 0:
+            messages.error(self.request, _('A voucher can not be deleted if it already has been redeemed.'))
+        else:
+            self.object.delete()
+            messages.success(self.request, _('The selected voucher has been deleted.'))
+        return HttpResponseRedirect(success_url)
 
     def get_success_url(self) -> str:
         return reverse('control:admin.vouchers')
