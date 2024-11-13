@@ -692,6 +692,29 @@ h1 .label {
     }
 }
 
+.popover-content {
+    .profile-menu {
+        color: darken($btn-primary-bg, 10%);
+        border-color: darken($btn-primary-bg, 12%);
+        border: 1px solid;
+        font-size: 16px;
+        font-weight: normal;
+        border-radius: 0;
+        margin-bottom: 8px;
+        a {
+            color: darken($btn-primary-bg, 10%) !important;
+        }
+        a:hover {
+            color: #fff !important;
+            background-color: darken($btn-primary-bg, 10%) !important;
+        }
+    }
+    .profile-menu:hover {
+        color: #fff;
+        background-color: darken($btn-primary-bg, 10%) !important;
+    }
+}
+
 @media(max-width: $screen-sm-max) {
     .timeline {
         .col-date {
