@@ -120,7 +120,7 @@ def send_event_webhook(self, user_id, event, action):
 @shared_task(
     bind=True, max_retries=5, default_retry_delay=60
 )  # Retries up to 5 times with a 60-second delay
-def create_world(self,is_video_creation, event_data):
+def create_world(self, is_video_creation, event_data):
     """
         Create a video system for the specified event.
 
