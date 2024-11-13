@@ -181,4 +181,3 @@ class BillingSettingsForm(forms.ModelForm):
                 instance.stripe_customer_id = stripe_customer.id
                 instance.save()
         return instance
-    
