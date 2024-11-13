@@ -22,5 +22,4 @@ urlpatterns = [
     url(r'^event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/', include([
         url(r'^settings/$', event.EventUpdate.as_view(), name='event.update'),
     ])),
-    url("pages/faq/create", pages.PageCreate.as_view(), name="pages.faq.create"),
 ]

@@ -99,5 +99,5 @@ urlpatterns = [
     url(r"^upload$", upload.UploadView.as_view(), name="upload"),
     url(r"^me$", user.MeView.as_view(), name="user.me"),
     url(r"^version$", version.VersionView.as_view(), name="version"),
-    url("pages/(?P<page>[^/]+)/view", pages.ShowPageView.as_view(), name="pages.faq.view"),
+    url("pages/(?P<page>[^/]+)/view", pages.ShowPageView.as_view(), name="pages.view"),
 ]

@@ -15,11 +15,32 @@ class PageCreate(AdministratorPermissionRequiredMixin, FormView):
     template_name = 'eventyay_common/pages/form.html'
     form_class = PageSettingsForm
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['page'] = self.kwargs.get("page")
+        return kwargs
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["locales"] = [
             locale for locale in settings.LANGUAGES
         ]
+        page_name = self.kwargs.get('page')
+        ctx["page_name"] = page_name
+        page_titles = {
+            'faq': _('FAQ settings'),
+            'pricing': _('Pricing settings'),
+            'privacy': _('Privacy settings'),
+            'terms': _('Terms settings'),
+        }
+        ctx["page_title"] = page_titles.get(page_name, _('Page settings'))
+
+        field_title = f"{page_name}_title"
+        field_content = f"{page_name}_content"
+        if field_title in self.get_form().fields:
+            ctx["dynamic_field_title"] = self.get_form()[field_title]
+        if field_content in self.get_form().fields:
+            ctx["dynamic_field_content"] = self.get_form()[field_content]
         return ctx
 
     def form_valid(self, form):
@@ -32,7 +53,9 @@ class PageCreate(AdministratorPermissionRequiredMixin, FormView):
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse('eventyay_common:pages.faq.create')
+        return reverse('control:admin.pages.create', kwargs={
+            'page': self.kwargs.get("page")
+        })
 
 
 class ShowPageView(TemplateView):

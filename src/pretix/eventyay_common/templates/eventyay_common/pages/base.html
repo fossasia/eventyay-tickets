@@ -9,8 +9,17 @@
         <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/auth.scss" %}"/>
         <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/main.scss" %}" />
         <link type="text/css" rel="stylesheet" href="{% static "pages/css/quill.snow.css" %}">
+        <link type="text/css" rel="stylesheet" href="{% static "pages/css/quill-show.css" %}">
         <link type="text/css" rel="stylesheet" href="{% static "pages/css/quill-edit.css" %}">
     {% endcompress %}
+    {% if development_warning or debug_warning %}
+        <link rel="shortcut icon" href="{% static "pretixbase/img/favicon-debug.ico" %}">
+    {% else %}
+        <link rel="shortcut icon" href="{% static "pretixbase/img/favicon.ico" %}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{% static "pretixbase/img/icons/favicon-32x32.png" %}">
+        <link rel="icon" type="image/png" sizes="194x194" href="{% static "pretixbase/img/icons/favicon-194x194.png" %}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static "pretixbase/img/icons/favicon-16x16.png" %}">
+    {% endif %}
 </head>
 <body>
     <div id="wrapper">
@@ -23,8 +32,23 @@
             </div>
             <ul class="nav navbar-nav navbar-top-links navbar-right flip">
                 <li>
-                    <a href='{% url "api-v1:pages.faq.view" page="faq" %}' title='{% trans "FAQ" %}' >
+                    <a href='{% url "api-v1:pages.view" page="faq" %}' title='{% trans "FAQ" %}' >
                         <i class="fa fa-question"></i> {% trans "Frequently asked question" %}
+                    </a>
+                </li>
+                <li>
+                    <a href='{% url "api-v1:pages.view" page="pricing" %}' title='{% trans "FAQ" %}' >
+                        <i class="fa fa-money"></i> {% trans "Pricing" %}
+                    </a>
+                </li>
+                <li>
+                    <a href='{% url "api-v1:pages.view" page="privacy" %}' title='{% trans "FAQ" %}' >
+                        <i class="fa fa-shield"></i> {% trans "Privacy" %}
+                    </a>
+                </li>
+                <li>
+                    <a href='{% url "api-v1:pages.view" page="terms" %}' title='{% trans "FAQ" %}' >
+                        <i class="fa fa-check"></i> {% trans "Terms" %}
                     </a>
                 </li>
             </ul>

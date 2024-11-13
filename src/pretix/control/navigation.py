@@ -524,6 +524,44 @@ def get_admin_navigation(request):
             ]
         },
         {
+            'label': _('Pages'),
+            'url': reverse('control:admin.pages.create', kwargs={
+                        'page': 'faq'
+                    }),
+            'active': False,
+            'icon': "file-text",
+            'children': [
+                {
+                    'label': _('FAQ'),
+                    'url': reverse('control:admin.pages.create', kwargs={
+                        'page': 'faq'
+                    }),
+                    'active': url.kwargs.get('page') == 'faq',
+                },
+                {
+                    'label': _('Pricing'),
+                    'url': reverse('control:admin.pages.create', kwargs={
+                        'page': 'pricing'
+                    }),
+                    'active': url.kwargs.get('page') == 'pricing',
+                },
+                {
+                    'label': _('Privacy'),
+                    'url': reverse('control:admin.pages.create', kwargs={
+                        'page': 'privacy'
+                    }),
+                    'active': url.kwargs.get('page') == 'privacy',
+                },
+                {
+                    'label': _('Terms'),
+                    'url': reverse('control:admin.pages.create', kwargs={
+                        'page': 'terms'
+                    }),
+                    'active': url.kwargs.get('page') == 'terms',
+                },
+            ]
+        },
+        {
             'label': _('Global settings'),
             'url': reverse('control:admin.global.settings'),
             'active': False,

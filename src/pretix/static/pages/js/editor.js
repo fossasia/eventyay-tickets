@@ -1,5 +1,7 @@
 /*global $, Quill*/
 $(function () {
+    var page_name = $('#content').data('page-name');
+
     var slug_generated = !$("form[data-id]").attr("data-id");
     $('#id_slug').on("keydown keyup keypress", function () {
         slug_generated = false;
@@ -24,14 +26,14 @@ $(function () {
     });
 
     $('#content ul.nav-tabs a').click(function (e) {
-        e.preventDefault()
+        e.preventDefault();
         $(this).tab('show');
     });
 
 
     var quills = {};
     $('.editor').each(function () {
-        const a = $(this).html($("textarea[name^=faq_content_][lang=" + $(this).attr("data-lng") + "]").val());
+        const a = $(this).html($("textarea[name^=" + page_name + "_content_][lang=" + $(this).attr("data-lng") + "]").val());
         quills[$(this).attr("data-lng")] = new Quill($(this).get(0), {
             theme: 'snow',
             formats: [
@@ -56,7 +58,7 @@ $(function () {
     $('.editor').closest('form').submit(function () {
         $('.editor').each(function () {
             var val = $(this).find('.ql-editor').html();
-            $("textarea[name^=faq_content_][lang=" + $(this).attr("data-lng") + "]").val(val);
+            $("textarea[name^=" + page_name + "_content_][lang=" + $(this).attr("data-lng") + "]").val(val);
         });
     });
 });
