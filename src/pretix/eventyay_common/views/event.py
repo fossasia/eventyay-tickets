@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.db.models import F, Max, Min, Prefetch
 from django.db.models.functions import Coalesce, Greatest
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -24,7 +25,9 @@ from pretix.control.views import PaginationMixin, UpdateView
 from pretix.control.views.event import DecoupleMixin, EventSettingsViewMixin
 from pretix.control.views.item import MetaDataEditorMixin
 from pretix.eventyay_common.forms.event import EventCommonSettingsForm
-from pretix.eventyay_common.tasks import create_world, send_event_webhook
+from pretix.eventyay_common.tasks import (
+    add_plugin, create_world, send_event_webhook,
+)
 from pretix.eventyay_common.utils import (
     check_create_permission, generate_token,
 )
@@ -264,7 +267,7 @@ class EventCreateView(SafeSessionWizardView):
             has_permission=check_create_permission(self.request),
             token=generate_token(self.request),
         )
-        create_world(
+        create_world.delay(
             is_video_creation=foundation_data.get("is_video_creation"), event_data=event_data
         )
 
@@ -309,39 +312,44 @@ class EventUpdate(
         return context
 
     def handle_video_creation(self, form):
-        if check_create_permission(self.request):
-            form.instance.is_video_creation = form.cleaned_data.get("is_video_creation")
-        elif not check_create_permission(self.request) and form.cleaned_data.get(
-            "is_video_creation"
-        ):
-            form.instance.is_video_creation = True
-        else:
-            form.instance.is_video_creation = False
+        has_permission = check_create_permission(self.request)
+        video_requested = form.cleaned_data.get("is_video_creation", False)
 
-        event_data = dict(
-            id=form.cleaned_data.get("slug"),
-            title=form.cleaned_data.get("name").data,
-            timezone=self.sform.cleaned_data.get("timezone"),
-            locale=self.sform.cleaned_data.get("locale"),
-            has_permission=check_create_permission(self.request),
-            token=generate_token(self.request),
-        )
+        if video_requested and not has_permission:
+            messages.error(self.request, "You do not have permission to create videos.")
+            return None
 
-        create_world(
-            is_video_creation=form.cleaned_data.get("is_video_creation"), event_data=event_data
-        )
+        form.instance.is_video_creation = video_requested and has_permission
+
+        if form.instance.is_video_creation:
+            form.event.plugins = add_plugin(form.event, "pretix_venueless")
+            event_data = {
+                "id": form.cleaned_data.get("slug"),
+                "title": form.cleaned_data.get("name").data,
+                "timezone": self.sform.cleaned_data.get("timezone"),
+                "locale": self.sform.cleaned_data.get("locale"),
+                "has_permission": has_permission,
+                "token": generate_token(self.request)
+            }
+            create_world.delay(
+                is_video_creation=True,
+                event_data=event_data
+            )
+
+        messages.success(self.request, "Your changes have been saved.")
+        return form
 
     @transaction.atomic
     def form_valid(self, form):
+        processed_form = self.handle_video_creation(form)
+        if processed_form is None:
+            return HttpResponseRedirect(self.request.path)
         self._save_decoupled(self.sform)
         self.sform.save()
 
         tickets.invalidate_cache.apply_async(kwargs={"event": self.request.event.pk})
 
-        self.handle_video_creation(form)
-
-        messages.success(self.request, _("Your changes have been saved."))
-        return super().form_valid(form)
+        return super().form_valid(processed_form)
 
     def get_success_url(self) -> str:
         return reverse(
@@ -355,39 +363,42 @@ class EventUpdate(
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         if self.request.user.has_active_staff_session(self.request.session.session_key):
-            kwargs["change_slug"] = True
             kwargs["domain"] = True
         return kwargs
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        form.instance.sales_channels = ["web"]
-        if form.is_valid() and self.sform.is_valid():
-            zone = timezone(self.sform.cleaned_data["timezone"])
-            event = form.instance
-            event.date_from = self.reset_timezone(zone, event.date_from)
-            event.date_to = self.reset_timezone(zone, event.date_to)
-            if event.settings.create_for and event.settings.create_for == "all":
-                event_dict = {
-                    "organiser_slug": event.organizer.slug,
-                    "name": event.name.data,
-                    "slug": event.slug,
-                    "date_from": str(event.date_from),
-                    "date_to": str(event.date_to),
-                    "timezone": str(event.settings.timezone),
-                    "locale": event.settings.locale,
-                    "locales": event.settings.locales,
-                }
-                send_event_webhook.delay(
-                    user_id=self.request.user.id, event=event_dict, action="update"
+        if form.changed_data:
+            form.instance.sales_channels = ["web"]
+            if form.is_valid() and self.sform.is_valid():
+                zone = timezone(self.sform.cleaned_data["timezone"])
+                event = form.instance
+                event.date_from = self.reset_timezone(zone, event.date_from)
+                event.date_to = self.reset_timezone(zone, event.date_to)
+                if event.settings.create_for and event.settings.create_for == "all":
+                    event_dict = {
+                        "organiser_slug": event.organizer.slug,
+                        "name": event.name.data,
+                        "slug": event.slug,
+                        "date_from": str(event.date_from),
+                        "date_to": str(event.date_to),
+                        "timezone": str(event.settings.timezone),
+                        "locale": event.settings.locale,
+                        "locales": event.settings.locales,
+                    }
+                    send_event_webhook.delay(
+                        user_id=self.request.user.id, event=event_dict, action="update"
+                    )
+                return self.form_valid(form)
+            else:
+                messages.error(
+                    self.request,
+                    _("We could not save your changes. See below for details."),
                 )
-            return self.form_valid(form)
+                return self.form_invalid(form)
         else:
-            messages.error(
-                self.request,
-                _("We could not save your changes. See below for details."),
-            )
-            return self.form_invalid(form)
+            messages.warning(self.request, _("You haven't made any changes."))
+            return HttpResponseRedirect(self.request.path)
 
     @staticmethod
     def reset_timezone(tz, dt):
