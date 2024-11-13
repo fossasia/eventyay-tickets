@@ -111,6 +111,11 @@ class VoucherUpdate(AdministratorPermissionRequiredMixin, UpdateView):
         except InvoiceVoucher.DoesNotExist:
             raise Http404(_("The requested voucher does not exist."))
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['currency'] = settings.DEFAULT_CURRENCY
+        return ctx
+
     @transaction.atomic
     def form_valid(self, form):
         messages.success(self.request, _('Your changes have been saved.'))
