@@ -133,14 +133,14 @@ class BillingSettingsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.organizer = kwargs.pop("organizer", None)
+        super().__init__(*args, **kwargs)
         selected_languages = [
             (code, name)
             for code, name in settings.LANGUAGES
             if code in self.organizer.settings.locales
         ]
-        self.base_fields["preferred_language"].choices = selected_languages
-        self.base_fields["preferred_language"].initial = self.organizer.settings.locale
-        super().__init__(*args, **kwargs)
+        self.fields["preferred_language"].choices = selected_languages
+        self.fields["preferred_language"].initial = self.organizer.settings.locale
         self.set_initial_data()
 
     def set_initial_data(self):
@@ -153,27 +153,32 @@ class BillingSettingsForm(forms.ModelForm):
                 self.initial[field] = getattr(billing_settings, field, "")
 
     def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.organizer_id = self.organizer.id
-        billing_settings = OrganizerBillingModel.objects.filter(
+        instance = OrganizerBillingModel.objects.filter(
             organizer_id=self.organizer.id
         ).first()
 
-        if billing_settings:
+        if instance:
             for field in self.Meta.fields:
-                setattr(billing_settings, field, self.cleaned_data[field])
+                setattr(instance, field, self.cleaned_data[field])
+
             if commit:
                 update_customer_info(
-                    billing_settings.stripe_customer_id,
+                    instance.stripe_customer_id,
                     email=self.cleaned_data.get("primary_contact_email"),
                     name=self.cleaned_data.get("primary_contact_name"),
                 )
-                billing_settings.save()
-            return billing_settings
+                instance.save()
         else:
+            instance = OrganizerBillingModel(organizer_id=self.organizer.id)
+            for field in self.Meta.fields:
+                setattr(instance, field, self.cleaned_data[field])
+
             if commit:
-                stripe_customer = create_stripe_customer(email=self.cleaned_data.get("primary_contact_email"),
-                                                         name=self.cleaned_data.get("primary_contact_name"))
+                stripe_customer = create_stripe_customer(
+                    email=self.cleaned_data.get("primary_contact_email"),
+                    name=self.cleaned_data.get("primary_contact_name")
+                )
                 instance.stripe_customer_id = stripe_customer.id
                 instance.save()
-            return instance
+        return instance
+    
