@@ -466,11 +466,10 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
         context['event_name'] = event_name
 
         context['is_video_plugin_enabled'] = False
-        if (pretix_venueless is not None
-                and pretix_venueless.apps is not None
-                and pretix_venueless.apps.PluginApp is not None):
-            if pretix_venueless.apps.PluginApp.name in self.request.event.get_plugins():
-                context['is_video_plugin_enabled'] = True
+
+        if getattr(getattr(getattr(pretix_venueless, 'apps', None), 'PluginApp', None), 'name',
+                   None) in self.request.event.get_plugins():
+            context['is_video_plugin_enabled'] = True
 
         context['guest_checkout_allowed'] = not self.request.event.settings.require_registered_account_for_tickets
 
