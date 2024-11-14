@@ -526,8 +526,8 @@ def get_admin_navigation(request):
         {
             'label': _('Pages'),
             'url': reverse('control:admin.pages.create', kwargs={
-                        'page': 'faq'
-                    }),
+                'page': 'faq'
+            }),
             'active': False,
             'icon': "file-text",
             'children': [
