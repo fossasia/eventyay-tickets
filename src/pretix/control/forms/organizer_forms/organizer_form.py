@@ -1,3 +1,4 @@
+import pyvat
 from django import forms
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
@@ -133,6 +134,7 @@ class BillingSettingsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.organizer = kwargs.pop("organizer", None)
+        self.add_warning = None
         super().__init__(*args, **kwargs)
         selected_languages = [
             (code, name)
@@ -151,6 +153,35 @@ class BillingSettingsForm(forms.ModelForm):
         if billing_settings:
             for field in self.Meta.fields:
                 self.initial[field] = getattr(billing_settings, field, "")
+
+    @staticmethod
+    def get_country_name(country_code):
+        country = CachedCountries().countries
+        return country.get(country_code, None)
+
+    def validate_vat_number(self, country_code, vat_number):
+        if country_code not in pyvat.VAT_REGISTRIES:
+            country_name = self.get_country_name(country_code)
+            self.add_warning = _("VAT number validation is not supported for %s" % country_name)
+            return True
+        result = pyvat.is_vat_number_format_valid(vat_number, country_code)
+        return result
+
+    def is_valid(self):
+        if not super().is_valid():
+            return False
+
+        cleaned_data = self.cleaned_data
+        country_code = cleaned_data.get("country")
+        vat_number = cleaned_data.get("tax_id")
+
+        if vat_number:
+            country_name = self.get_country_name(country_code)
+            is_valid_vat_number = self.validate_vat_number(country_code, vat_number)
+            if not is_valid_vat_number:
+                self.add_error("tax_id", _("Invalid VAT number for %s" % country_name))
+                return False
+        return True
 
     def save(self, commit=True):
         instance = OrganizerBillingModel.objects.filter(
