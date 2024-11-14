@@ -1,7 +1,10 @@
 import calendar
 import datetime as dt
+import hashlib
 import importlib.util
 import logging
+import random
+import string
 import sys
 from collections import defaultdict
 from datetime import date, datetime, timedelta
@@ -51,7 +54,7 @@ from . import (
     iframe_entry_view_wrapper,
 )
 
-package_name = 'pretix-venueless'
+package_name = 'pretix_venueless'
 
 if importlib.util.find_spec(package_name) is not None:
     pretix_venueless = import_module(package_name)
@@ -685,13 +688,13 @@ class JoinOnlineVideoView(EventViewMixin, View):
         }, status=200)
 
     def validate_access(self, request, *args, **kwargs):
-        if not hasattr(self.request, 'customer'):
+        if not hasattr(self.request, 'user'):
             # Customer not logged in yet
             return False, None, None
         else:
             # Get all orders of customer which belong to this event
             order_list = (Order.objects.filter(Q(event=self.request.event)
-                                               & (Q(customer=self.request.customer) | Q(email__iexact=self.request.customer.email)))
+                                               & (Q(email__iexact=self.request.user.email)))
                           .select_related('event').order_by('-datetime'))
             # Check qs is empty
             if not order_list:
@@ -728,7 +731,7 @@ class JoinOnlineVideoView(EventViewMixin, View):
         for a in order_position.answers.filter(question_id__in=self.request.event.settings.venueless_questions).select_related('question'):
             profile['fields'][a.question.identifier] = a.answer
 
-        uid_token = self.request.customer.identifier if self.request.customer else order_position.pseudonymization_id
+        uid_token = encode_email(order.email) if order.email else order_position.pseudonymization_id
         iat = dt.datetime.utcnow()
         exp = iat + dt.timedelta(days=30)
 
@@ -764,3 +767,20 @@ class JoinOnlineVideoView(EventViewMixin, View):
         )
         baseurl = self.request.event.settings.venueless_url
         return '{}/#token={}'.format(baseurl, token).replace("//#", "/#")
+
+
+def encode_email(email):
+    """
+    Encode email to a short hash and get first 7 characters
+    @param email: User's email
+    @return: encoded string
+    """
+    hash_object = hashlib.sha256(email.encode())
+    hash_hex = hash_object.hexdigest()
+    short_hash = hash_hex[:7]
+    characters = string.ascii_letters + string.digits
+    random_suffix = "".join(
+        random.choice(characters) for _ in range(7 - len(short_hash))
+    )
+    final_result = short_hash + random_suffix
+    return final_result.upper()
