@@ -73,6 +73,18 @@ details.dropdown {
         border-bottom-left-radius: var(--size-border-radius);
         border-bottom-right-radius: var(--size-border-radius);
       }
+      transition:
+        color 0.15s ease-in-out,
+        background-color 0.15s ease-in-out,
+        border-color 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out;
+    }
+    button.dropdown-item {
+      width: 100%;
+      text-align: left;
+      font-family: var(--font-family);
+      font-weight: normal;
+      border-radius: 0;
     }
     hr {
       width: 100%;
