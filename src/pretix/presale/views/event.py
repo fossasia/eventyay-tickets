@@ -47,6 +47,7 @@ from pretix.presale.views.organizer import (
     EventListMixin, add_subevents_for_days, days_for_template,
     filter_qs_by_attr, weeks_for_template,
 )
+from ...eventyay_common.utils import encode_email
 
 from ...helpers.formats.en.formats import WEEK_FORMAT
 from . import (
@@ -768,20 +769,3 @@ class JoinOnlineVideoView(EventViewMixin, View):
         )
         baseurl = self.request.event.settings.venueless_url
         return '{}/#token={}'.format(baseurl, token).replace("//#", "/#")
-
-
-def encode_email(email):
-    """
-    Encode email to a short hash and get first 7 characters
-    @param email: User's email
-    @return: encoded string
-    """
-    hash_object = hashlib.sha256(email.encode())
-    hash_hex = hash_object.hexdigest()
-    short_hash = hash_hex[:7]
-    characters = string.ascii_letters + string.digits
-    random_suffix = "".join(
-        random.choice(characters) for _ in range(7 - len(short_hash))
-    )
-    final_result = short_hash + random_suffix
-    return final_result.upper()
