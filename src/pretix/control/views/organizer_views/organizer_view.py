@@ -367,14 +367,14 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
         if form.has_changed():
             if form.is_valid():
                 if form.warning_message:
-                    messages.warning(self.request, form.warning_message)
+                    messages.warning(self.request, _(form.warning_message))
                 try:
                     form.save()
                     messages.success(self.request, _("Your changes have been saved."))
                     return redirect(self.get_success_url())
                 except ValidationError as e:
                     logger.error("Validation error saving billing settings: %s", str(e))
-                    messages.error(self.request, str(e.messages[0]))
+                    messages.error(self.request, _(str(e.messages[0])))
             else:
                 messages.error(
                     self.request,
