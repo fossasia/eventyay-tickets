@@ -129,10 +129,13 @@
                                         </a>
                                     {% endif %}
                                     <hr>
-                                    <a href="{% url "cfp:event.logout" event=request.event.slug %}" class="dropdown-item" role="menuitem" tabindex="-1">
-                                        <i class="fa fa-sign-out mr-2"></i>
-                                        {% translate "Logout" %}
-                                    </a>
+                                    <form action="{% url "cfp:event.logout" event=request.event.slug %}" method="post">
+                                        {% csrf_token %}
+                                        <button class="dropdown-item" role="menuitem" type="submit" tabindex="-1">
+                                            <i class="fa fa-sign-out mr-2 ml-1"></i>
+                                            {% translate "Logout" %}
+                                        </button>
+                                    </form>
                                 </div>
                             </details>
                         {% elif not is_html_export %}
