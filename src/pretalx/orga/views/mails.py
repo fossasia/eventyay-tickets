@@ -65,6 +65,14 @@ class OutboxList(
     def show_tracks(self):
         return self.request.event.get_feature_flag("use_tracks")
 
+    @context
+    @cached_property
+    def is_filtered(self):
+        return (
+            self.get_queryset().count()
+            != self.request.event.queued_mails.filter(sent__isnull=True).count()
+        )
+
 
 class SentMail(
     EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView
@@ -100,7 +108,7 @@ class SentMail(
         return self.request.event.get_feature_flag("use_tracks")
 
 
-class OutboxSend(EventPermissionRequired, ActionConfirmMixin, TemplateView):
+class OutboxSend(ActionConfirmMixin, OutboxList):
     permission_required = "orga.send_mails"
     action_object_name = ""
     action_confirm_label = phrases.base.send
@@ -145,12 +153,12 @@ class OutboxSend(EventPermissionRequired, ActionConfirmMixin, TemplateView):
 
     @cached_property
     def queryset(self):
-        qs = self.request.event.queued_mails.filter(sent__isnull=True)
         pks = self.request.GET.get("pks") or ""
         if pks:
-            pks = pks.split(",")
-            qs = qs.filter(pk__in=pks)
-        return qs
+            return self.request.event.queued_mails.filter(sent__isnull=True).filter(
+                pk__in=pks.split(",")
+            )
+        return self.get_queryset()
 
     def post(self, request, *args, **kwargs):
         mails = self.queryset
@@ -228,12 +236,9 @@ class MailDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
         return redirect(request.event.orga_urls.outbox)
 
 
-class OutboxPurge(PermissionRequired, ActionConfirmMixin, TemplateView):
+class OutboxPurge(ActionConfirmMixin, OutboxList):
     permission_required = "orga.purge_mails"
     action_object_name = ""
-
-    def get_permission_object(self):
-        return self.request.event
 
     @context
     def question(self):
@@ -250,7 +255,7 @@ class OutboxPurge(PermissionRequired, ActionConfirmMixin, TemplateView):
 
     @cached_property
     def queryset(self):
-        return self.request.event.queued_mails.filter(sent__isnull=True)
+        return self.get_queryset()
 
     def post(self, request, *args, **kwargs):
         qs = self.queryset

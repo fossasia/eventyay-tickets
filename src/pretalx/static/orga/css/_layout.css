@@ -551,6 +551,12 @@ footer {
     }
   }
 }
+.submit-group form {
+  .form-group,
+  button {
+    margin-bottom: 0;
+  }
+}
 
 .dashboard-history {
   max-height: none;
