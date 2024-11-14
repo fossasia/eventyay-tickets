@@ -120,9 +120,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="{% url "orga:logout" %}">
-                        <i class="fa fa-sign-out"></i>
-                    </a>
+                    <form action="{% url "orga:logout" %}" method="post">
+                        {% csrf_token %}
+                        <button class="nav-link active" type="submit">
+                            <i class="fa fa-sign-out"></i>
+                        </button>
+                    </form>
                 </li>
             </ul>
         </nav>

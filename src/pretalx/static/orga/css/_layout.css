@@ -441,6 +441,7 @@ nav.navbar,
     padding-left: 0;
     margin-bottom: 0;
     list-style: none;
+    align-items: center;
   }
   .nav-link {
     padding: 0.5rem;
@@ -453,11 +454,16 @@ nav.navbar,
     flex-basis: auto;
   }
 
-  a {
+  a,
+  button {
     color: var(--color-primary);
     &:hover {
       text-decoration: none;
+      color: var(--color-primary);
     }
+  }
+  button {
+    padding: 0.5rem;
   }
   form.mobile-navbar-view-form button {
     font-family: var(--font-family);

@@ -49,7 +49,8 @@ details.dropdown {
     }
 
     .dropdown-item,
-    a.dropdown-item {
+    a.dropdown-item,
+    button.dropdown-item {
       display: block;
       padding: 4px 16px;
       overflow: hidden;

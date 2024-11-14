@@ -34,7 +34,8 @@ class LoginView(GenericLoginView):
 
 
 def logout_view(request):
-    logout(request)
+    if request.method == "POST":
+        logout(request)
     return redirect(
         GenericLoginView.get_next_url_or_fallback(request, reverse("orga:login"))
     )
