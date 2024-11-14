@@ -313,13 +313,13 @@ class EventUpdate(
 
     def handle_video_creation(self, form):
         has_permission = check_create_permission(self.request)
-        video_requested = form.cleaned_data.get("is_video_creation", False)
+        is_video_creation = form.cleaned_data.get("is_video_creation", False)
 
-        if video_requested and not has_permission:
+        if is_video_creation and not has_permission:
             messages.error(self.request, "You do not have permission to create videos.")
             return None
 
-        form.instance.is_video_creation = video_requested and has_permission
+        form.instance.is_video_creation = is_video_creation and has_permission
 
         if form.instance.is_video_creation:
             form.event.plugins = add_plugin(form.event, "pretix_venueless")

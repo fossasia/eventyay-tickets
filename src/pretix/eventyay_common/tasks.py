@@ -161,7 +161,7 @@ def create_world(self, is_video_creation, event_data):
                 json=payload,
                 headers=headers,
             )
-            configure_video_event_auto(response.json())
+            setup_video_plugin(response.json())
         except requests.exceptions.ConnectionError as e:
             logger.error("Connection error: %s", str(e))
             self.retry(exc=e)
@@ -176,9 +176,9 @@ def create_world(self, is_video_creation, event_data):
             self.retry(exc=e)
 
 
-def configure_video_event_auto(world_data):
+def setup_video_plugin(world_data):
     """
-    Configure the video integration for the event.
+    Setup the video plugin for the event.
     @param world_data: A dictionary containing the world data.
     if the plugin is installed, add the plugin to the event and save the video settings information.
     """
