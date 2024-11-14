@@ -1,10 +1,7 @@
 import calendar
 import datetime as dt
-import hashlib
 import importlib.util
 import logging
-import random
-import string
 import sys
 from collections import defaultdict
 from datetime import date, datetime, timedelta
@@ -47,8 +44,8 @@ from pretix.presale.views.organizer import (
     EventListMixin, add_subevents_for_days, days_for_template,
     filter_qs_by_attr, weeks_for_template,
 )
-from ...eventyay_common.utils import encode_email
 
+from ...eventyay_common.utils import encode_email
 from ...helpers.formats.en.formats import WEEK_FORMAT
 from . import (
     CartMixin, EventViewMixin, allow_frame_if_namespaced, get_cart,
