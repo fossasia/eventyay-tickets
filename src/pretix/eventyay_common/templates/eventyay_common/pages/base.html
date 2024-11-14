@@ -30,28 +30,6 @@
                     {{ django_settings.INSTANCE_NAME }}
                 </a>
             </div>
-            <ul class="nav navbar-nav navbar-top-links navbar-right flip">
-                <li>
-                    <a href='{% url "api-v1:pages.view" page="faq" %}' title='{% trans "FAQ" %}' >
-                        <i class="fa fa-question"></i> {% trans "Frequently asked question" %}
-                    </a>
-                </li>
-                <li>
-                    <a href='{% url "api-v1:pages.view" page="pricing" %}' title='{% trans "FAQ" %}' >
-                        <i class="fa fa-money"></i> {% trans "Pricing" %}
-                    </a>
-                </li>
-                <li>
-                    <a href='{% url "api-v1:pages.view" page="privacy" %}' title='{% trans "FAQ" %}' >
-                        <i class="fa fa-shield"></i> {% trans "Privacy" %}
-                    </a>
-                </li>
-                <li>
-                    <a href='{% url "api-v1:pages.view" page="terms" %}' title='{% trans "FAQ" %}' >
-                        <i class="fa fa-check"></i> {% trans "Terms" %}
-                    </a>
-                </li>
-            </ul>
         </nav>
     </div>
 <div class="container">
