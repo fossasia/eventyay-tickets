@@ -385,6 +385,7 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
             messages.warning(self.request, _("You haven't made any changes."))
             return redirect(self.get_success_url())
 
+
 @api_view(["GET"])
 def setup_intent(request, organizer):
     try:
