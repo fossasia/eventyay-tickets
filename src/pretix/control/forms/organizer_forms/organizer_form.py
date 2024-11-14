@@ -134,7 +134,7 @@ class BillingSettingsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.organizer = kwargs.pop("organizer", None)
-        self.add_warning = None
+        self.warning_message = None
         super().__init__(*args, **kwargs)
         selected_languages = [
             (code, name)
@@ -162,7 +162,7 @@ class BillingSettingsForm(forms.ModelForm):
     def validate_vat_number(self, country_code, vat_number):
         if country_code not in pyvat.VAT_REGISTRIES:
             country_name = self.get_country_name(country_code)
-            self.add_warning = _("VAT number validation is not supported for %s" % country_name)
+            self.warning_message = _("VAT number validation is not supported for {}".format(country_name))
             return True
         result = pyvat.is_vat_number_format_valid(vat_number, country_code)
         return result
@@ -179,7 +179,7 @@ class BillingSettingsForm(forms.ModelForm):
             country_name = self.get_country_name(country_code)
             is_valid_vat_number = self.validate_vat_number(country_code, vat_number)
             if not is_valid_vat_number:
-                self.add_error("tax_id", _("Invalid VAT number for %s" % country_name))
+                self.add_error("tax_id", _("Invalid VAT number for {}".format(country_name)))
                 return False
         return True
 

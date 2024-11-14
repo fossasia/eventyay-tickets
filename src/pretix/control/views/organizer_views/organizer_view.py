@@ -364,24 +364,26 @@ class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-
-        if form.is_valid():
-            if form.add_warning:
-                messages.warning(self.request, form.add_warning)
-            try:
-                form.save()
-                messages.success(self.request, _("Your changes have been saved."))
-                return redirect(self.get_success_url())
-            except ValidationError as e:
-                logger.error("Validation error saving billing settings: %s", str(e))
-                messages.error(self.request, str(e.messages[0]))
+        if form.has_changed():
+            if form.is_valid():
+                if form.warning_message:
+                    messages.warning(self.request, form.warning_message)
+                try:
+                    form.save()
+                    messages.success(self.request, _("Your changes have been saved."))
+                    return redirect(self.get_success_url())
+                except ValidationError as e:
+                    logger.error("Validation error saving billing settings: %s", str(e))
+                    messages.error(self.request, str(e.messages[0]))
+            else:
+                messages.error(
+                    self.request,
+                    _("We could not save your changes. See below for details."),
+                )
+            return self.form_invalid(form)
         else:
-            messages.error(
-                self.request,
-                _("We could not save your changes. See below for details."),
-            )
-        return self.form_invalid(form)
-
+            messages.warning(self.request, _("You haven't made any changes."))
+            return redirect(self.get_success_url())
 
 @api_view(["GET"])
 def setup_intent(request, organizer):
