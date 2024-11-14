@@ -1,8 +1,6 @@
 from django.urls import include, re_path as url
 
-from pretix.eventyay_common.views import (
-    dashboards, event, organizer, team,
-)
+from pretix.eventyay_common.views import dashboards, event, organizer, team
 
 app_name = 'eventyay_common'
 
