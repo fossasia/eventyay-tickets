@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from pretix.base.forms import I18nModelForm
 from pretix.base.models.organizer import Organizer, OrganizerBillingModel
-from pretix.helpers.countries import CachedCountries
+from pretix.helpers.countries import CachedCountries, get_country_name
 from pretix.helpers.stripe_utils import (
     create_stripe_customer, update_customer_info,
 )
@@ -154,34 +154,24 @@ class BillingSettingsForm(forms.ModelForm):
             for field in self.Meta.fields:
                 self.initial[field] = getattr(billing_settings, field, "")
 
-    @staticmethod
-    def get_country_name(country_code):
-        country = CachedCountries().countries
-        return country.get(country_code, None)
-
     def validate_vat_number(self, country_code, vat_number):
         if country_code not in pyvat.VAT_REGISTRIES:
-            country_name = self.get_country_name(country_code)
+            country_name = get_country_name(country_code)
             self.warning_message = _("VAT number validation is not supported for {}".format(country_name))
             return True
         result = pyvat.is_vat_number_format_valid(vat_number, country_code)
         return result
 
-    def is_valid(self):
-        if not super().is_valid():
-            return False
-
-        cleaned_data = self.cleaned_data
+    def clean(self):
+        cleaned_data = super().clean()
         country_code = cleaned_data.get("country")
         vat_number = cleaned_data.get("tax_id")
 
-        if vat_number:
-            country_name = self.get_country_name(country_code)
+        if vat_number and country_code:
+            country_name = get_country_name(country_code)
             is_valid_vat_number = self.validate_vat_number(country_code, vat_number)
             if not is_valid_vat_number:
                 self.add_error("tax_id", _("Invalid VAT number for {}".format(country_name)))
-                return False
-        return True
 
     def save(self, commit=True):
         instance = OrganizerBillingModel.objects.filter(
