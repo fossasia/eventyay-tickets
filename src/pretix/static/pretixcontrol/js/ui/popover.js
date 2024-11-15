@@ -1,6 +1,6 @@
 $(function () {
     const basePath = JSON.parse(document.getElementById('base_path').textContent);
-    const is_admin_mode = JSON.parse(document.getElementById('is_admin_mode').textContent);
+    const isAdminMode = JSON.parse(document.getElementById('is_admin_mode').textContent);
     const currentPath = window.location.pathname;
     const queryString = window.location.search;
 
@@ -65,7 +65,7 @@ $(function () {
 
         $('.admin').hide();
 
-        if (is_admin_mode) {
+        if (isAdminMode) {
             $('.admin').show();
         }
 
