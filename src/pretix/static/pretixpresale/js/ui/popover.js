@@ -11,8 +11,8 @@ $(function () {
                                 </a>
                             </div>
                             <div class="options">
-                                <a href="${basePath}/${organizerName}/${eventSlug}/resend/" target="_self" class="btn btn-outline-success">
-                                    <i class="fa fa-shopping-cart"></i> ${window.gettext('Resend My Orders')}
+                                <a href="${basePath}/control/settings/orders/" target="_self" class="btn btn-outline-success">
+                                    <i class="fa fa-shopping-cart"></i> ${window.gettext('My Orders')}
                                 </a>
                             </div>
                     </div>`,
@@ -29,22 +29,37 @@ $(function () {
 
 $(function () {
     var organizerName = JSON.parse(document.getElementById('organizer_name').textContent);
+    var eventSlug = JSON.parse(document.getElementById('event_slug').textContent);
     var basePath = JSON.parse(document.getElementById('base_path').textContent);
+    var show_organizer_area = JSON.parse(document.getElementById('show_organizer_area').textContent);
     var currentPath = window.location.pathname;
     var queryString = window.location.search;
-    var logoutPath = `/${organizerName}/account/logout?next=${encodeURIComponent(currentPath)}%3F${encodeURIComponent(queryString)}`;
-    logoutPath = decodeURIComponent(logoutPath);
+
+    var backUrl = `${currentPath}${queryString}`;
+
+    // Constructing logout path using URLSearchParams
+    let logoutParams = new URLSearchParams({ back: backUrl });
+    var logoutPath = `/control/logout?${logoutParams}`;
+
+    var profilePath = `/control/settings/`;
+    var orderPath = `/control/settings/orders/`;
+
     var options = {
         html: true,
         content: `<div data-name="popover-profile-menu">
                     <div class="profile-menu">
-                        <a href="${basePath}/${organizerName}/account/order" target="_self" class="btn btn-outline-success">
+                        <a href="${basePath}${orderPath}" target="_self" class="btn btn-outline-success">
                             <i class="fa fa-shopping-cart"></i> ${window.gettext('My Orders')}
                         </a>
                     </div>
                     <div class="profile-menu">
-                        <a href="${basePath}/${organizerName}/account" target="_self" class="btn btn-outline-success">
-                            <i class="fa fa-user"></i> ${window.gettext('Account')}
+                        <a href="${basePath}${profilePath}" target="_self" class="btn btn-outline-success">
+                            <i class="fa fa-user"></i> ${window.gettext('My Account')}
+                        </a>
+                    </div>
+                    <div class="profile-menu organizer-area">
+                        <a href="${basePath}/control/event/${organizerName}/${eventSlug}" target="_self" class="btn btn-outline-success">
+                            <i class="fa fa-users"></i> ${window.gettext('Organizer Area')}
                         </a>
                     </div>
                     <div class="profile-menu">
@@ -57,10 +72,17 @@ $(function () {
         trigger: 'manual'
 
     }
-    $('[data-toggle="popover-profile"]').popover(options).click(function(evt) {
+    $('[data-toggle="popover-profile"]').popover(options).click(function (evt) {
         evt.stopPropagation();
-        $(this).popover('show');
-        $('[data-toggle="popover"]').popover('hide');
+        togglePopover(this);
+
+        // Ensure Organizer Area is hidden initially
+        $('.organizer-area').hide();
+
+        // Show Organizer Area if the condition is true
+        if (show_organizer_area) {
+            $('.organizer-area').show(); // Show the hidden Organizer Area
+        }
     })
 })
 
