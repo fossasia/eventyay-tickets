@@ -84,23 +84,13 @@ class EventList(PaginationMixin, ListView):
             query_set = self.filter_form.filter_qs(query_set)
         return query_set
 
-    def get_plugins(self, plugin_list):
-        """
-        Format the plugin list into an array
-        @param plugin_list: list of plugins
-        @return: array of plugins
-        """
-        if plugin_list is None:
-            return []
-        return [p.strip() for p in plugin_list.split(",") if p.strip()]
-
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["filter_form"] = self.filter_form
 
         quotas = []
         for s in ctx["events"]:
-            s.plugins_array = self.get_plugins(s.plugins)
+            s.plugins_array = s.get_plugins()
             s.first_quotas = s.first_quotas[:4]
             quotas += list(s.first_quotas)
 
