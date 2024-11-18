@@ -97,6 +97,7 @@ dependencies = [
         'django-sso==3.0.2',
         'PyJWT~=2.8.0',
         'exhibitors @ git+https://github.com/fossasia/eventyay-tickets-exhibitors.git@master',
+        'pyvat==1.3.18',
 ]
 
 [project.optional-dependencies]

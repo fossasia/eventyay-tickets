@@ -98,4 +98,8 @@ urlpatterns = [
     url(r"^upload$", upload.UploadView.as_view(), name="upload"),
     url(r"^me$", user.MeView.as_view(), name="user.me"),
     url(r"^version$", version.VersionView.as_view(), name="version"),
+    url(r"(?P<organizer>[^/]+)/(?P<event>[^/]+)/schedule-public", event.talk_schedule_public,
+        name="event.schedule-public"),
+    url(r"(?P<organizer>[^/]+)/(?P<event>[^/]+)/ticket-check", event.CustomerOrderCheckView.as_view(),
+        name="event.ticket-check"),
 ]

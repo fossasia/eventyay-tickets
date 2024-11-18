@@ -72,10 +72,9 @@ $(function () {
         trigger: 'manual'
 
     }
-    $('[data-toggle="popover-profile"]').popover(options).click(function(evt) {
+    $('[data-toggle="popover-profile"]').popover(options).click(function (evt) {
         evt.stopPropagation();
-        $(this).popover('show');
-        $('[data-toggle="popover"]').popover('hide');
+        togglePopover(this);
 
         // Ensure Organizer Area is hidden initially
         $('.organizer-area').hide();
@@ -84,6 +83,10 @@ $(function () {
         if (show_organizer_area) {
             $('.organizer-area').show(); // Show the hidden Organizer Area
         }
+
+        $(this).on('shown.bs.popover', function () {
+            handleProfileMenuClick();
+        });
     })
 })
 
