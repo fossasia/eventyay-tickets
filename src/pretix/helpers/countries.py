@@ -62,3 +62,8 @@ class FastCountryField(CountryField):
             *self._check_multiple(),
             *self._check_max_length_attribute(**kwargs),
         ]
+
+
+def get_country_name(country_code):
+    country = CachedCountries().countries
+    return country.get(country_code, None)
