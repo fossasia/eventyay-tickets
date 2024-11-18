@@ -15,6 +15,7 @@ from django.views.generic import FormView, TemplateView, View
 from django_context_decorator import context
 
 from pretalx.agenda.signals import register_recording_provider
+from pretalx.agenda.views.utils import encode_email
 from pretalx.cfp.views.event import EventPageMixin
 from pretalx.common.text.phrases import phrases
 from pretalx.common.views.mixins import (
@@ -295,9 +296,11 @@ class OnlineVideoJoin(EventPermissionRequired, View):
         if not organizer or not event or not base_url:
             return HttpResponse(status=403, content="missing_configuration")
 
+        check_payload = {"user_email": request.user.email}
+
         # call to ticket to check if user order ticket yet or not
-        response = requests.get(
-            f"{base_url}/api/v1/{organizer}/{event}/customer/{request.user.code}/ticket-check"
+        response = requests.post(
+            f"{base_url}/api/v1/{organizer}/{event}/ticket-check", json=check_payload
         )
 
         if response.status_code != 200:
@@ -321,7 +324,7 @@ class OnlineVideoJoin(EventPermissionRequired, View):
                 "aud": request.event.venueless_settings.audience,
                 "exp": exp,
                 "iat": iat,
-                "uid": request.user.code,
+                "uid": encode_email(request.user.email),
                 "profile": profile,
                 "traits": list(
                     {

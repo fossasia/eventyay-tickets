@@ -1,3 +1,6 @@
+import hashlib
+import random
+import string
 from contextlib import suppress
 
 from pretalx.common.signals import register_data_exporters, register_my_data_exporters
@@ -39,3 +42,20 @@ def find_schedule_exporter(request, name, public=False):
         if exporter.identifier == name:
             return exporter
     return None
+
+
+def encode_email(email):
+    """
+    Encode email to a short hash and get first 7 characters
+    @param email: User's email
+    @return: encoded string
+    """
+    hash_object = hashlib.sha256(email.encode())
+    hash_hex = hash_object.hexdigest()
+    short_hash = hash_hex[:7]
+    characters = string.ascii_letters + string.digits
+    random_suffix = "".join(
+        random.choice(characters) for _ in range(7 - len(short_hash))
+    )
+    final_result = short_hash + random_suffix
+    return final_result.upper()
