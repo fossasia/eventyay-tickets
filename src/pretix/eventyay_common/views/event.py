@@ -368,7 +368,7 @@ class EventUpdate(
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        if form.changed_data:
+        if form.changed_data or self.sform.changed_data:
             form.instance.sales_channels = ["web"]
             if form.is_valid() and self.sform.is_valid():
                 zone = timezone(self.sform.cleaned_data["timezone"])
