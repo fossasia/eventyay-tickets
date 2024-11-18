@@ -694,25 +694,34 @@ h1 .label {
 }
 
 .popover-content {
+    padding: 5px 0;
+    min-width: 200px;
     .profile-menu {
         color: darken($btn-primary-bg, 10%);
-        border-color: darken($btn-primary-bg, 12%);
-        border: 1px solid;
         font-size: 16px;
         font-weight: normal;
-        border-radius: 0;
-        margin-bottom: 8px;
+        cursor: pointer;
         a {
             color: darken($btn-primary-bg, 10%) !important;
         }
-        a:hover {
-            color: #fff !important;
-            background-color: darken($btn-primary-bg, 10%) !important;
+        i {
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+        &.separator {
+            height: 1px;
+            background-color: #e5e5e5;
+            margin: 5px 0;
+            padding: 0;
         }
     }
     .profile-menu:hover {
         color: #fff;
         background-color: darken($btn-primary-bg, 10%) !important;
+        a {
+            color: #fff !important;
+        }
     }
 }
 
