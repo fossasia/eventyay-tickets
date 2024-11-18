@@ -48,6 +48,12 @@ class EventWizardFoundationForm(forms.Form):
         label=_("This is an event series"),
         required=False,
     )
+    is_video_creation = forms.BooleanField(
+        label=_("Create Video platform for this Event."),
+        help_text=_("This will create a new Video platform for this event."),
+        required=False,
+        widget=forms.CheckboxInput(attrs={"class": "form-check-input"}),
+    )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
@@ -152,6 +158,7 @@ class EventWizardBasicsForm(I18nModelForm):
         self.organizer = kwargs.pop("organizer")
         self.locales = kwargs.get("locales")
         self.has_subevents = kwargs.pop("has_subevents")
+        self.is_video_creation = kwargs.pop("is_video_creation")
         self.user = kwargs.pop("user")
         kwargs.pop("session")
         super().__init__(*args, **kwargs)
@@ -287,6 +294,7 @@ class EventWizardCopyForm(forms.Form):
         self.session = kwargs.pop("session")
         kwargs.pop("has_subevents")
         self.user = kwargs.pop("user")
+        kwargs.pop("is_video_creation")
         super().__init__(*args, **kwargs)
 
         self.fields["copy_from_event"] = EventChoiceField(
@@ -361,6 +369,9 @@ class EventMetaValueForm(forms.ModelForm):
 
 
 class EventUpdateForm(I18nModelForm):
+    is_video_creation = forms.BooleanField(
+        required=False,
+    )
 
     def __init__(self, *args, **kwargs):
         self.change_slug = kwargs.pop("change_slug", False)
@@ -400,6 +411,9 @@ class EventUpdateForm(I18nModelForm):
             ),
             widget=forms.CheckboxSelectMultiple,
         )
+        self.is_video_creation = self.initial.get("is_video_creation")
+        if self.is_video_creation:
+            self.fields["is_video_creation"].disabled = True
 
     def clean_domain(self):
         d = self.cleaned_data["domain"]
@@ -470,6 +484,7 @@ class EventUpdateForm(I18nModelForm):
             "geo_lat",
             "geo_lon",
             "sales_channels",
+            "is_video_creation",
         ]
         field_classes = {
             "date_from": SplitDateTimeField,
@@ -517,73 +532,70 @@ class EventSettingsForm(SettingsForm):
     )
 
     auto_fields = [
-        "imprint_url",
-        "checkout_email_helptext",
-        "presale_has_ended_text",
-        "voucher_explanation_text",
-        "checkout_success_text",
-        "show_dates_on_frontpage",
-        "show_date_to",
-        "show_times",
-        "show_items_outside_presale_period",
-        "display_net_prices",
-        "presale_start_show_date",
-        "locales",
-        "locale",
-        "region",
-        "show_quota_left",
-        "waiting_list_enabled",
-        "waiting_list_hours",
-        "waiting_list_auto",
-        "waiting_list_names_asked",
-        "waiting_list_names_required",
-        "waiting_list_phones_asked",
-        "waiting_list_phones_required",
-        "waiting_list_phones_explanation_text",
-        "max_items_per_order",
-        "reservation_time",
-        "contact_mail",
-        "show_variations_expanded",
-        "hide_sold_out",
-        "meta_noindex",
-        "redirect_to_checkout_directly",
-        "frontpage_subevent_ordering",
-        "event_list_type",
-        "event_list_available_only",
-        "frontpage_text",
-        "event_info_text",
-        "attendee_names_asked",
-        "attendee_names_required",
-        "attendee_emails_asked",
-        "attendee_emails_required",
-        "attendee_company_asked",
-        "attendee_company_required",
-        "attendee_addresses_asked",
-        "attendee_addresses_required",
-        "attendee_data_explanation_text",
-        "order_phone_asked",
-        "order_phone_required",
-        "checkout_phone_helptext",
-        "banner_text",
-        "banner_text_bottom",
-        "order_email_asked_twice",
-        "last_order_modification_date",
-        "allow_modifications_after_checkin",
-        "checkout_show_copy_answers_button",
-        "primary_color",
-        "theme_color_success",
-        "theme_color_danger",
-        "theme_color_background",
-        "theme_round_borders",
-        "hover_button_color",
-        "primary_font",
-        "logo_image",
-        "logo_image_large",
-        "logo_show_title",
-        "og_image",
-        "schedule_link",
-        "session_link",
-        "speaker_link",
+        'imprint_url',
+        'checkout_email_helptext',
+        'presale_has_ended_text',
+        'voucher_explanation_text',
+        'checkout_success_text',
+        'show_dates_on_frontpage',
+        'show_date_to',
+        'show_times',
+        'show_items_outside_presale_period',
+        'display_net_prices',
+        'presale_start_show_date',
+        'locales',
+        'locale',
+        'region',
+        'show_quota_left',
+        'waiting_list_enabled',
+        'waiting_list_hours',
+        'waiting_list_auto',
+        'waiting_list_names_asked',
+        'waiting_list_names_required',
+        'waiting_list_phones_asked',
+        'waiting_list_phones_required',
+        'waiting_list_phones_explanation_text',
+        'max_items_per_order',
+        'reservation_time',
+        'contact_mail',
+        'show_variations_expanded',
+        'hide_sold_out',
+        'meta_noindex',
+        'redirect_to_checkout_directly',
+        'frontpage_subevent_ordering',
+        'event_list_type',
+        'event_list_available_only',
+        'frontpage_text',
+        'event_info_text',
+        'attendee_names_asked',
+        'attendee_names_required',
+        'attendee_emails_asked',
+        'attendee_emails_required',
+        'attendee_company_asked',
+        'attendee_company_required',
+        'attendee_addresses_asked',
+        'attendee_addresses_required',
+        'attendee_data_explanation_text',
+        'order_phone_asked',
+        'order_phone_required',
+        'checkout_phone_helptext',
+        'banner_text',
+        'banner_text_bottom',
+        'order_email_asked_twice',
+        'last_order_modification_date',
+        'allow_modifications_after_checkin',
+        'checkout_show_copy_answers_button',
+        'primary_color',
+        'theme_color_success',
+        'theme_color_danger',
+        'theme_color_background',
+        'theme_round_borders',
+        'hover_button_color',
+        'primary_font',
+        'logo_image',
+        'logo_image_large',
+        'logo_show_title',
+        'og_image',
     ]
 
     def clean(self):
@@ -1468,21 +1480,6 @@ class QuickSetupForm(I18nForm):
             "This should point e.g. to a part of your website that has your contact details and legal "
             "information."
         ),
-        required=False,
-    )
-    schedule_link = forms.URLField(
-        label=_("Schedule URL"),
-        help_text=_("This should point to your session schedule."),
-        required=False,
-    )
-    session_link = forms.URLField(
-        label=_("Session URL"),
-        help_text=_("This should point to your session list."),
-        required=False,
-    )
-    speaker_link = forms.URLField(
-        label=_("Speaker URL"),
-        help_text=_("This should point to your speakers."),
         required=False,
     )
     contact_mail = forms.EmailField(

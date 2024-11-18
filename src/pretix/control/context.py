@@ -10,7 +10,8 @@ from django_scopes import scope
 from pretix.base.models.auth import StaffSession
 from pretix.base.settings import GlobalSettingsObject
 from pretix.control.navigation import (
-    get_event_navigation, get_global_navigation, get_organizer_navigation,
+    get_admin_navigation, get_event_navigation, get_global_navigation,
+    get_organizer_navigation,
 )
 
 from ..helpers.i18n import (
@@ -93,6 +94,9 @@ def _default_context(request):
     elif request.user.is_authenticated:
         ctx['nav_items'] = get_global_navigation(request)
 
+    if request.user.is_authenticated and request.user.has_active_staff_session(request.session.session_key):
+        ctx['admin_nav_items'] = get_admin_navigation(request)
+
     ctx['js_payment_weekdays_disabled'] = _js_payment_weekdays_disabled
 
     _nav_topbar = []
@@ -107,6 +111,7 @@ def _default_context(request):
     ctx['js_time_format'] = get_javascript_format('TIME_INPUT_FORMATS')
     ctx['js_locale'] = get_moment_locale()
     ctx['select2locale'] = get_language()[:2]
+    ctx['base_path'] = settings.BASE_PATH
 
     ctx['warning_update_available'] = False
     ctx['warning_update_check_active'] = False

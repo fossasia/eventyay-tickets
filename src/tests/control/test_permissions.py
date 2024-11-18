@@ -26,23 +26,23 @@ def env():
 
 
 superuser_urls = [
-    "global/settings/",
+    "admin/global/settings/",
     "logdetail/",
     "logdetail/payment/",
     "logdetail/refund/",
-    "users/select2",
-    "users/",
-    "users/add",
-    "users/1/",
-    "users/1/impersonate",
-    "users/1/reset",
-    "sudo/sessions/",
+    "admin/users/select2",
+    "admin/users/",
+    "admin/users/add",
+    "admin/users/1/",
+    "admin/users/1/impersonate",
+    "admin/users/1/reset",
+    "admin/sudo/sessions/",
 ]
 
 staff_urls = [
-    "global/update/",
+    "admin/global/update/",
     "sudo/",
-    "sudo/2/",
+    "admin/sudo/2/",
 ]
 
 event_urls = [
