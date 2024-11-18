@@ -139,17 +139,6 @@ def _default_context(request):
     return ctx
 
 
-def _get_plugins(plugin_list):
-    """
-    Format the plugin list into an array
-    @param plugin_list: list of plugins
-    @return: array of plugins
-    """
-    if plugin_list is None:
-        return []
-    return [p.strip() for p in plugin_list.split(",") if p.strip()]
-
-
 def _is_video_enabled(event):
     """
     Check if the video plugin is enabled
@@ -157,7 +146,7 @@ def _is_video_enabled(event):
     @return: boolean
     """
     if (
-            "pretix_venueless" not in _get_plugins(event.plugins)
+            "pretix_venueless" not in event.get_plugins()
             or not event.settings.venueless_url
             or not event.settings.venueless_issuer
             or not event.settings.venueless_audience
