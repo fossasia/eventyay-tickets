@@ -46,6 +46,7 @@
     <meta name="theme-color" content="{{ settings.primary_color|default:"#2185d0" }}">
     {% compress js %}
         <script type="text/javascript" src="{% static "pretixpresale/js/ui/popover.js" %}"></script>
+        <script type="text/javascript" src="{% static "utils/js/utils.js" %}"></script>
     {% endcompress %}
 </head>
 <body class="nojs" data-locale="{{ request.LANGUAGE_CODE }}" data-now="{% now "U.u" %}" data-datetimeformat="{{ js_datetime_format }}" data-timeformat="{{ js_time_format }}" data-dateformat="{{ js_date_format }}" data-datetimelocale="{{ js_locale }}" data-currency="{{ request.event.currency }}">

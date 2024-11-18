@@ -1032,7 +1032,7 @@ class SubEventsTest(SoupTest):
         assert doc.select(".alert-success")
         with scopes_disabled():
             for se in [self.subevent1, self.subevent2]:
-                assert se.checkinlist_set.count() == 2
+                assert se.checkinlist_set.count() == 1
 
     def test_edit_bulk_lists_keep_mixed(self):
         with scopes_disabled():

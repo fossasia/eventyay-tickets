@@ -395,3 +395,92 @@ class TeamAPIToken(models.Model):
             return self.get_events_with_any_permission()
         else:
             return self.team.organizer.events.none()
+
+
+class OrganizerBillingModel(models.Model):
+    """
+    Billing model - support billing information for organizer
+    """
+
+    organizer = models.ForeignKey(
+        "Organizer", on_delete=models.CASCADE, related_name="billing"
+    )
+
+    primary_contact_name = models.CharField(
+        max_length=255,
+        verbose_name=_("Primary Contact Name"),
+    )
+
+    primary_contact_email = models.EmailField(
+        max_length=255,
+        verbose_name=_("Primary Contact Email"),
+    )
+
+    company_or_organization_name = models.CharField(
+        max_length=255,
+        verbose_name=_("Company or Organization Name"),
+    )
+
+    address_line_1 = models.CharField(
+        max_length=255,
+        verbose_name=_("Address Line 1"),
+    )
+
+    address_line_2 = models.CharField(
+        max_length=255,
+        verbose_name=_("Address Line 2"),
+    )
+
+    city = models.CharField(
+        max_length=255,
+        verbose_name=_("City"),
+    )
+
+    zip_code = models.CharField(
+        max_length=255,
+        verbose_name=_("Zip Code"),
+    )
+
+    country = models.CharField(
+        max_length=255,
+        verbose_name=_("Country"),
+    )
+
+    preferred_language = models.CharField(
+        max_length=255,
+        verbose_name=_("Preferred Language"),
+    )
+
+    tax_id = models.CharField(
+        max_length=255,
+        verbose_name=_("Tax ID"),
+    )
+
+    stripe_customer_id = models.CharField(
+        max_length=255,
+        verbose_name=_("Stripe Customer ID"),
+        blank=True,
+        null=True,
+    )
+
+    stripe_payment_method_id = models.CharField(
+        max_length=255,
+        verbose_name=_("Payment Method"),
+        blank=True,
+        null=True,
+    )
+
+    stripe_setup_intent_id = models.CharField(
+        max_length=255,
+        verbose_name=_("Setup Intent ID"),
+        blank=True,
+        null=True,
+    )
+
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+        self.organizer.cache.clear()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.organizer.cache.clear()
