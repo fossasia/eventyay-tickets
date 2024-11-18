@@ -34,6 +34,7 @@ from pretix.eventyay_common.tasks import create_world, send_event_webhook
 from pretix.eventyay_common.utils import (
     check_create_permission, encode_email, generate_token,
 )
+from pretix.helpers.plugin_enable import is_video_enabled
 
 
 class EventList(PaginationMixin, ListView):
@@ -306,21 +307,6 @@ class EventUpdate(
             files=self.request.FILES if self.request.method == "POST" else None,
         )
 
-    def _is_video_enabled(self):
-        """
-        Check if the video plugin is enabled
-        @return: boolean
-        """
-        if (
-                "pretix_venueless" not in self.object.get_plugins()
-                or not self.object.settings.venueless_url
-                or not self.object.settings.venueless_issuer
-                or not self.object.settings.venueless_audience
-                or not self.object.settings.venueless_secret
-        ):
-            return False
-        return True
-
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
         context["sform"] = self.sform
@@ -328,7 +314,7 @@ class EventUpdate(
         context["talk_edit_url"] = (
             talk_host + "/orga/event/" + self.object.slug + "/settings"
         )
-        context['is_video_enabled'] = self._is_video_enabled()
+        context['is_video_enabled'] = is_video_enabled(self.object)
         return context
 
     def handle_video_creation(self, form):

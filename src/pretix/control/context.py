@@ -17,6 +17,7 @@ from pretix.control.navigation import (
 from ..helpers.i18n import (
     get_javascript_format, get_javascript_output_format, get_moment_locale,
 )
+from ..helpers.plugin_enable import is_video_enabled
 from ..multidomain.urlreverse import get_event_domain
 from .signals import html_head, nav_topbar
 
@@ -53,7 +54,7 @@ def _default_context(request):
         ctx["talk_edit_url"] = (
             settings.TALK_HOSTNAME + "/orga/event/" + request.event.slug + "/settings"
         )
-        ctx['is_video_enabled'] = _is_video_enabled(request.event)
+        ctx['is_video_enabled'] = is_video_enabled(request.event)
     ctx['html_head'] = "".join(_html_head)
 
     _js_payment_weekdays_disabled = '[]'
@@ -137,20 +138,3 @@ def _default_context(request):
         )
 
     return ctx
-
-
-def _is_video_enabled(event):
-    """
-    Check if the video plugin is enabled
-    @param event: event object
-    @return: boolean
-    """
-    if (
-            "pretix_venueless" not in event.get_plugins()
-            or not event.settings.venueless_url
-            or not event.settings.venueless_issuer
-            or not event.settings.venueless_audience
-            or not event.settings.venueless_secret
-    ):
-        return False
-    return True
