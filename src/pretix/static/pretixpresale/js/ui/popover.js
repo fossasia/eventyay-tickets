@@ -83,6 +83,10 @@ $(function () {
         if (show_organizer_area) {
             $('.organizer-area').show(); // Show the hidden Organizer Area
         }
+
+        $(this).on('shown.bs.popover', function () {
+            handleProfileMenuClick();
+        });
     })
 })
 

@@ -45,13 +45,14 @@ from pretix.presale.views.organizer import (
     filter_qs_by_attr, weeks_for_template,
 )
 
+from ...eventyay_common.utils import encode_email
 from ...helpers.formats.en.formats import WEEK_FORMAT
 from . import (
     CartMixin, EventViewMixin, allow_frame_if_namespaced, get_cart,
     iframe_entry_view_wrapper,
 )
 
-package_name = 'pretix-venueless'
+package_name = 'pretix_venueless'
 
 if importlib.util.find_spec(package_name) is not None:
     pretix_venueless = import_module(package_name)
@@ -463,9 +464,10 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
         context['event_name'] = event_name
 
         context['is_video_plugin_enabled'] = False
-        if pretix_venueless is not None:
-            if pretix_venueless.apps.PluginApp.name in self.request.event.get_plugins():
-                context['is_video_plugin_enabled'] = True
+
+        if getattr(getattr(getattr(pretix_venueless, 'apps', None), 'PluginApp', None), 'name',
+                   None) in self.request.event.get_plugins():
+            context['is_video_plugin_enabled'] = True
 
         context['guest_checkout_allowed'] = not self.request.event.settings.require_registered_account_for_tickets
 
@@ -685,13 +687,13 @@ class JoinOnlineVideoView(EventViewMixin, View):
         }, status=200)
 
     def validate_access(self, request, *args, **kwargs):
-        if not hasattr(self.request, 'customer'):
+        if not hasattr(self.request, 'user'):
             # Customer not logged in yet
             return False, None, None
         else:
             # Get all orders of customer which belong to this event
             order_list = (Order.objects.filter(Q(event=self.request.event)
-                                               & (Q(customer=self.request.customer) | Q(email__iexact=self.request.customer.email)))
+                                               & (Q(email__iexact=self.request.user.email)))
                           .select_related('event').order_by('-datetime'))
             # Check qs is empty
             if not order_list:
@@ -728,7 +730,7 @@ class JoinOnlineVideoView(EventViewMixin, View):
         for a in order_position.answers.filter(question_id__in=self.request.event.settings.venueless_questions).select_related('question'):
             profile['fields'][a.question.identifier] = a.answer
 
-        uid_token = self.request.customer.identifier if self.request.customer else order_position.pseudonymization_id
+        uid_token = encode_email(order.email) if order.email else order_position.pseudonymization_id
         iat = dt.datetime.utcnow()
         exp = iat + dt.timedelta(days=30)
 
