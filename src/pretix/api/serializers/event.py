@@ -724,9 +724,6 @@ class EventSettingsSerializer(SettingsSerializer):
         'logo_image_large',
         'logo_show_title',
         'og_image',
-        'schedule_link',
-        'session_link',
-        'speaker_link',
     ]
 
     def __init__(self, *args, **kwargs):

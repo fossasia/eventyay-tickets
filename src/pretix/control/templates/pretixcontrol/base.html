@@ -211,6 +211,7 @@
                     {% endif %}
                     {{ 'popover-profile'|json_script:"popover_toggle" }}
                     {{ base_path|json_script:"base_path" }}
+                    {{ staff_session|json_script:"is_admin_mode" }}
                     <li>
                         <a target="_blank" class="header-nav btn btn-outline-success" data-toggle="popover-profile">
                             <i class="fa fa-user"></i> {{ request.user.get_full_name }}
