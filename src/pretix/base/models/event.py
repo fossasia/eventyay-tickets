@@ -1132,6 +1132,24 @@ class Event(EventMixin, LoggedModel):
             ).exists()
         )
 
+    @property
+    def talk_schedule_url(self):
+        talk_host = settings.TALK_HOSTNAME
+        url = urljoin(talk_host, f"{self.slug}/schedule")
+        return url
+
+    @property
+    def talk_session_url(self):
+        talk_host = settings.TALK_HOSTNAME
+        url = urljoin(talk_host, f"{self.slug}/talk")
+        return url
+
+    @property
+    def talk_speaker_url(self):
+        talk_host = settings.TALK_HOSTNAME
+        url = urljoin(talk_host, f"{self.slug}/speaker")
+        return url
+
     @cached_property
     def live_issues(self):
         from pretix.base.signals import event_live_issues
