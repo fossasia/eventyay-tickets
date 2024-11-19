@@ -204,10 +204,10 @@ def setup_video_plugin(world_data):
     if video_plugin:
         attach_plugin_to_event('pretix_venueless', event_id)
         video_settings = {
-            'venueless_url': world_data.get("domain", ""),
-            'venueless_secret': jwt_config['secret'],
-            'venueless_issuer': jwt_config['issuer'],
-            'venueless_audience': jwt_config['audience'],
+            'venueless_url': world_data.get('domain', ""),
+            'venueless_secret': jwt_config.get('secret', ""),
+            'venueless_issuer': jwt_config.get('issuer', ""),
+            'venueless_audience': jwt_config.get('audience', ""),
             'venueless_all_items': True,
             'venueless_items': [],
             'venueless_questions': [],
