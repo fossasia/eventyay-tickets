@@ -2524,41 +2524,11 @@ Your {event} team"""
         ),
         "serializer_class": I18nURLField,
     },
-    "schedule_link": {
-        "default": None,
-        "type": str,
-        "form_class": forms.URLField,
-        "serializer_class": serializers.URLField,
-        "form_kwargs": dict(
-            label=_("Schedule URL"),
-            help_text=_("This should point to your session schedule."),
-        ),
-    },
-    "session_link": {
-        "default": None,
-        "type": str,
-        "form_class": forms.URLField,
-        "serializer_class": serializers.URLField,
-        "form_kwargs": dict(
-            label=_("Session URL"),
-            help_text=_("This should point to your session list."),
-        ),
-    },
-    "speaker_link": {
-        "default": None,
-        "type": str,
-        "form_class": forms.URLField,
-        "serializer_class": serializers.URLField,
-        "form_kwargs": dict(
-            label=_("Speaker URL"),
-            help_text=_("This should point to your speakers."),
-        ),
-    },
-    "seating_choice": {
-        "default": "True",
-        "form_class": forms.BooleanField,
-        "serializer_class": serializers.BooleanField,
-        "form_kwargs": dict(
+    'seating_choice': {
+        'default': 'True',
+        'form_class': forms.BooleanField,
+        'serializer_class': serializers.BooleanField,
+        'form_kwargs': dict(
             label=_("Customers can choose their own seats"),
             help_text=_(
                 "If disabled, you will need to manually assign seats in the backend. Note that this can mean "
