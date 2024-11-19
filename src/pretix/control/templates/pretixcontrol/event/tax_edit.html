@@ -10,11 +10,18 @@
     {% endif %}
 {% endblock %}
 {% block inside %}
-    {% if rule %}
-        <h1>{% blocktrans with name=rule.name %}Tax rule: {{ name }}{% endblocktrans %}</h1>
-    {% else %}
-        <h1>{% trans "Tax rule" %}</h1>
-    {% endif %}
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                {% if rule %}
+                    <h1>{% blocktrans with name=rule.name %}Tax rule: {{ name }}{% endblocktrans %}</h1>
+                {% else %}
+                    <h1>{% trans "Tax rule" %}</h1>
+                {% endif %}
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <form action="" method="post" class="form-horizontal">
         {% csrf_token %}
         {% bootstrap_form_errors form %}

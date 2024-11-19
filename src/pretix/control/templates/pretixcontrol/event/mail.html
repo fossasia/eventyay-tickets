@@ -4,7 +4,14 @@
 {% load hierarkey_form %}
 {% load static %}
 {% block inside %}
-    <h1>{% trans "E-mail settings" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "E-mail settings" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <form action="" method="post" class="form-horizontal" enctype="multipart/form-data"
             mail-preview-url="{% url "control:event.settings.mail.preview" event=request.event.slug organizer=request.event.organizer.slug %}">
         {% csrf_token %}

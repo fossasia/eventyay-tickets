@@ -11,11 +11,18 @@
     {% endif %}
 {% endblock %}
 {% block inside %}
-    {% if question %}
-        <h1>{% blocktrans with name=question.question %}Question: {{ name }}{% endblocktrans %}</h1>
-    {% else %}
-        <h1>{% trans "Question" %}</h1>
-    {% endif %}
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                {% if question %}
+                    <h1>{% blocktrans with name=question.question %}Question: {{ name }}{% endblocktrans %}</h1>
+                {% else %}
+                    <h1>{% trans "Question" %}</h1>
+                {% endif %}
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <form action="" method="post" class="form-horizontal">
         {% csrf_token %}
         {% bootstrap_form_errors form %}

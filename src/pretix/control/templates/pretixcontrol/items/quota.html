@@ -5,16 +5,23 @@
 {% load eventsignal %}
 {% block title %}{% blocktrans with name=quota.name %}Quota: {{ name }}{% endblocktrans %}{% endblock %}
 {% block inside %}
-    <h1>
-        {% blocktrans with name=quota.name %}Quota: {{ name }}{% endblocktrans %}
-        {% if 'can_change_items' in request.eventpermset %}
-            <a href="{% url "control:event.items.quotas.edit" event=request.event.slug organizer=request.event.organizer.slug quota=quota.pk %}"
-               class="btn btn-default">
-                <span class="fa fa-edit"></span>
-                {% trans "Edit quota" %}
-            </a>
-        {% endif %}
-    </h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>
+                    {% blocktrans with name=quota.name %}Quota: {{ name }}{% endblocktrans %}
+                    {% if 'can_change_items' in request.eventpermset %}
+                        <a href="{% url "control:event.items.quotas.edit" event=request.event.slug organizer=request.event.organizer.slug quota=quota.pk %}"
+                           class="btn btn-default">
+                            <span class="fa fa-edit"></span>
+                            {% trans "Edit quota" %}
+                        </a>
+                    {% endif %}
+                </h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     {% if quota.subevent %}
         <p>
             <span class="fa fa-calendar"></span> {{ quota.subevent.name }} – {{ quota.subevent.get_date_range_display }}
