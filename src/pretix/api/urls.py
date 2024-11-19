@@ -102,4 +102,8 @@ urlpatterns = [
     url(r"^version$", version.VersionView.as_view(), name="version"),
     url(r"^billing-testing/(?P<task>[^/]+)", BillingInvoicePreview.as_view(), name="billing-testing"),
     url(r'^webhook/stripe$', stripe_webhook_view, name='stripe-webhook'),
+    url(r"(?P<organizer>[^/]+)/(?P<event>[^/]+)/schedule-public", event.talk_schedule_public,
+        name="event.schedule-public"),
+    url(r"(?P<organizer>[^/]+)/(?P<event>[^/]+)/ticket-check", event.CustomerOrderCheckView.as_view(),
+        name="event.ticket-check"),
 ]

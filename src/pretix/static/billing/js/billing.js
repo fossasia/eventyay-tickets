@@ -96,7 +96,8 @@ $(document).ready(function () {
     document.getElementById("back-btn").addEventListener("click", function () {
         if (!organizerSlug) {
             console.error('Organizer slug not found');
-            return window.location.href = `${basePath}/control/organizers/`
+            window.location.href = `${basePath}/control/organizers/`
+            return;
         }
         window.location.href = `${basePath}/control/organizer/${organizerSlug}/settings/billing`;
     });
