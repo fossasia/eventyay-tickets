@@ -1,11 +1,14 @@
 import datetime as dt
 import random
+from urllib.parse import urlparse
 
 import pytest
+from django.conf import settings
 from django.core.management import call_command
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_scopes import scope
+from selenium.webdriver.common.by import By
 
 SEED = random.randint(0, 100000)
 
@@ -15,6 +18,13 @@ def chrome_options(chrome_options):
     chrome_options.add_argument("headless")
     chrome_options.add_argument("window-size=1024x768")
     return chrome_options
+
+
+@pytest.fixture(autouse=True)
+def fix_settings(live_server):
+    # Override the Django settings as to use the live_server fixture's URL
+    settings.SITE_URL = live_server.url
+    settings.SITE_NETLOC = urlparse(settings.SITE_URL).netloc
 
 
 @pytest.fixture(autouse=True)
@@ -94,20 +104,21 @@ def user(event):
 
 @pytest.fixture
 def client(live_server, selenium, user):
-    selenium.implicitly_wait(10)
+    selenium.implicitly_wait(2)
     return selenium
 
 
 @pytest.fixture
 def logged_in_client(live_server, selenium, user):
     selenium.get(live_server.url + "/orga/login/")
+    assert "Sign in" in selenium.title, selenium.title
     selenium.implicitly_wait(10)
 
-    selenium.find_element_by_css_selector("form input[name=login_email]").send_keys(
+    selenium.find_element(By.CSS_SELECTOR, "form input[name=login_email]").send_keys(
         user.email
     )
-    selenium.find_element_by_css_selector("form input[name=login_password]").send_keys(
+    selenium.find_element(By.CSS_SELECTOR, "form input[name=login_password]").send_keys(
         "john"
     )
-    selenium.find_element_by_css_selector("form button[type=submit]").click()
+    selenium.find_element(By.CSS_SELECTOR, "form button[type=submit]").click()
     return selenium
