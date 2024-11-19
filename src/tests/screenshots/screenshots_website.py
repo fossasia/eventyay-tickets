@@ -1,5 +1,6 @@
 import pytest
 from django_scopes import scope
+from selenium.webdriver.common.by import By
 
 from .utils import screenshot
 
@@ -40,7 +41,7 @@ def screenshot_edit_question_settings(live_server, logged_in_client, event):
         logged_in_client.get(
             live_server.url + f"/orga/event/{event.slug}/cfp/questions/new"
         )
-        logged_in_client.find_element_by_css_selector("#id_variant").click()
+        logged_in_client.find_element(By.CSS_SELECTOR, "#id_variant").click()
     screenshot(logged_in_client, "website/question_settings.png")
 
 
@@ -100,5 +101,5 @@ def screenshot_export_schedule_editor(live_server, logged_in_client, event):
         logged_in_client.get(
             live_server.url + f"/orga/event/{event.slug}/schedule/export"
         )
-        logged_in_client.find_element_by_css_selector("#custom-tab").click()
+        logged_in_client.find_element(By.CSS_SELECTOR, "#custom-tab").click()
     screenshot(logged_in_client, "website/schedule_export.png")
