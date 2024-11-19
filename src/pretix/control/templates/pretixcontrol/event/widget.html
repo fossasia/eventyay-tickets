@@ -5,7 +5,14 @@
 {% load eventurl %}
 {% load eventsignal %}
 {% block inside %}
-    <h1>{% trans "Widget" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "Widget" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <p>
         {% blocktrans trimmed %}
         A widget allows you to embed your ticket shop directly into your event website. This enables your visitors to purchase tickets instantly without leaving your site.

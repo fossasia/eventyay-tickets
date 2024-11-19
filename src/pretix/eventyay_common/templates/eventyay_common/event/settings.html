@@ -7,10 +7,40 @@
 {% block title %}{% trans "General settings" %}{% endblock %}
 {% block custom_header %}
     {{ block.super }}
-    <link type="text/css" rel="stylesheet" href="{% url "control:pdf.css" %}">
+    <link type="text/css" rel="stylesheet" href='{% url "control:pdf.css" %}'>
 {% endblock %}
 {% block inside %}
-    <h1>{{ request.event.name }} {% trans "- Settings" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{{ request.event.name }} {% trans "- Settings" %}</h1>
+            </div>
+            <div class="navigation-button">
+                <a href="#" class="header-nav btn btn-outline-success active">
+                    <i class="fa fa-home"></i> {% trans "Home" %}
+                </a>
+                <a href='{% url "control:event.settings" organizer=request.organizer.slug event=request.event.slug %}'
+                   class="header-nav btn btn-outline-success">
+                    <i class="fa fa-ticket"></i> {% trans "Tickets" %}
+                </a>
+                <a href="{{ talk_edit_url }}" class="header-nav btn btn-outline-success">
+                    <i class="fa fa-group"></i> {% trans "Talk" %}
+                </a>
+                {% if is_video_enabled %}
+                    <a class="header-nav btn btn-outline-success"
+                       href='{% url "eventyay_common:event.create_access_to_video" organizer=request.organizer.slug event=request.event.slug %}'
+                       title="{% trans 'Access videos related to this event' %}">
+                        <i class="fa fa-video-camera"></i> {% trans "Videos" %}
+                    </a>
+                {% else %}
+                    <a class="header-nav btn btn-outline-success disabled" href="#" disabled
+                       title="{% trans 'Videos are not available because the plugin is inactive or missing settings for this event' %}">
+                        <i class="fa fa-video-camera"></i> {% trans "Videos" %}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
     <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form_errors form %}

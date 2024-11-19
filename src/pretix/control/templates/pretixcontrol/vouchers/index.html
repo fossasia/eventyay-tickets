@@ -5,7 +5,14 @@
 {% load money %}
 {% block title %}{% trans "Vouchers" %}{% endblock %}
 {% block content %}
-    <h1>{% trans "Vouchers" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "Vouchers" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <p>
         {% blocktrans trimmed %}
             Vouchers allow you to assign tickets to specific persons for a lower price. They also enable you to
