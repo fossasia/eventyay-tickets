@@ -307,7 +307,7 @@ def get_global_navigation(request):
             'icon': 'shopping-cart',
         },
         {
-            'label': _('Events'),
+            'label': _('My events'),
             'url': reverse('control:events'),
             'active': 'events' in url.url_name,
             'icon': 'calendar',
@@ -325,7 +325,7 @@ def get_global_navigation(request):
             'icon': 'search',
         },
         {
-            'label': _('User settings'),
+            'label': _('Account'),
             'url': reverse('control:user.settings'),
             'active': False,
             'icon': 'user',
@@ -372,7 +372,7 @@ def get_organizer_navigation(request):
         return []
     nav = [
         {
-            'label': _('Events'),
+            'label': _('My events'),
             'url': reverse('control:organizer', kwargs={
                 'organizer': request.organizer.slug
             }),
