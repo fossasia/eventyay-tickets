@@ -176,22 +176,38 @@ def create_world(self, is_video_creation, event_data):
             self.retry(exc=e)
 
 
+def extract_jwt_config(world_data):
+    """
+    Extract the JWT configuration from the world data.
+    @param world_data: A dictionary containing the world data.
+    @return: A dictionary containing the JWT configuration.
+    """
+    config = world_data.get('config', {})
+    jwt_secrets = config.get('JWT_secrets', [])
+    jwt_config = jwt_secrets[0] if jwt_secrets else {}
+    return {
+        'secret': jwt_config.get('secret'),
+        'issuer': jwt_config.get('issuer'),
+        'audience': jwt_config.get('audience')
+    }
+
+
 def setup_video_plugin(world_data):
     """
     Setup the video plugin for the event.
     @param world_data: A dictionary containing the world data.
     if the plugin is installed, add the plugin to the event and save the video settings information.
     """
-    jwt_config = world_data.get('config', {}).get('JWT_secrets', [])
+    jwt_config = extract_jwt_config(world_data)
     video_plugin = get_installed_plugin('pretix_venueless')
     event_id = world_data.get("id")
     if video_plugin:
         attach_plugin_to_event('pretix_venueless', event_id)
         video_settings = {
             'venueless_url': world_data.get("domain", ""),
-            'venueless_secret': jwt_config[0].get('secret') if jwt_config else None,
-            'venueless_issuer': jwt_config[0].get('issuer') if jwt_config else None,
-            'venueless_audience': jwt_config[0].get('audience') if jwt_config else None,
+            'venueless_secret': jwt_config['secret'],
+            'venueless_issuer': jwt_config['issuer'],
+            'venueless_audience': jwt_config['audience'],
             'venueless_all_items': True,
             'venueless_items': [],
             'venueless_questions': [],
@@ -267,11 +283,9 @@ def add_plugin(event, plugin_name):
     """
     if not event.plugins:
         return plugin_name
-    current_plugins = event.plugins.split(',')
-    if plugin_name not in current_plugins:
-        current_plugins.append(plugin_name)
-        return ','.join(current_plugins)
-    return event.plugins
+    plugins = set(event.plugins.split(','))
+    plugins.add(plugin_name)
+    return ','.join(plugins)
 
 
 def get_header_token(user_id):
