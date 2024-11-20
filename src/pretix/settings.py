@@ -305,6 +305,7 @@ INSTALLED_APPS = [
     'pretix.plugins.manualpayment',
     'pretix.plugins.returnurl',
     'pretix.plugins.webcheckin',
+    'pretix.plugins.scheduledtasks',
     'django_markup',
     'django_otp',
     'django_otp.plugins.otp_totp',
@@ -315,6 +316,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'phonenumber_field',
     'pretix.eventyay_common',
+    'django_celery_beat'
 ]
 
 if db_backend == 'postgresql':
@@ -716,6 +718,8 @@ if config.has_option('sentry', 'dsn') and not any(c in sys.argv for c in ('shell
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_DEFAULT_QUEUE = 'default'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_TASK_QUEUES = (
     Queue('default', routing_key='default.#'),
     Queue('checkout', routing_key='checkout.#'),
@@ -736,28 +740,28 @@ CELERY_TASK_ROUTES = ([
     ('pretix.plugins.banktransfer.*', {'queue': 'background'}),
 ],)
 
-CELERY_BEAT_SCHEDULE = {
-    "monthly_billing_collect": {
-        "task": "pretix.eventyay_common.tasks.monthly_billing_collect",
-        "schedule": crontab(day_of_month=1, hour=0, minute=0),  # Run 1st every month at 00:00
-    },
-    "billing_invoice_notification": {
-        "task": "pretix.eventyay_common.tasks.billing_invoice_notification",
-        "schedule": crontab(day_of_month=1, hour=0, minute=10),  # Run 1st every month at 00:10
-    },
-    "process_auto_billing_charge": {
-        "task": "pretix.eventyay_common.tasks.process_auto_billing_charge",
-        "schedule": crontab(day_of_month=1, hour=0, minute=20),  # Run 1st every month at 00:20
-    },
-    "retry_failed_payment": {
-        "task": "pretix.eventyay_common.tasks.retry_failed_payment",
-        "schedule": crontab(hour=0, minute=30),  # Run every day at 00:30
-    },
-    "check_billing_status_for_warning": {
-        "task": "pretix.eventyay_common.tasks.check_billing_status_for_warning",
-        "schedule": crontab(hour=0, minute=40),  # Run every day at 00:40
-    },
-}
+# CELERY_BEAT_SCHEDULE = {
+#     "monthly_billing_collect": {
+#         "task": "pretix.eventyay_common.tasks.monthly_billing_collect",
+#         "schedule": crontab(day_of_month=1, hour=0, minute=0),  # Run 1st every month at 00:00
+#     },
+#     "billing_invoice_notification": {
+#         "task": "pretix.eventyay_common.tasks.billing_invoice_notification",
+#         "schedule": crontab(day_of_month=1, hour=0, minute=10),  # Run 1st every month at 00:10
+#     },
+#     "process_auto_billing_charge": {
+#         "task": "pretix.eventyay_common.tasks.process_auto_billing_charge",
+#         "schedule": crontab(day_of_month=1, hour=0, minute=20),  # Run 1st every month at 00:20
+#     },
+#     "retry_failed_payment": {
+#         "task": "pretix.eventyay_common.tasks.retry_failed_payment",
+#         "schedule": crontab(hour=0, minute=30),  # Run every day at 00:30
+#     },
+#     "check_billing_status_for_warning": {
+#         "task": "pretix.eventyay_common.tasks.check_billing_status_for_warning",
+#         "schedule": crontab(hour=0, minute=40),  # Run every day at 00:40
+#     },
+# }
 
 BILLING_REMINDER_SCHEDULE = [15, 29]  # Remind on the 15th and 28th day of the month
 
