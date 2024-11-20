@@ -502,13 +502,19 @@ def get_admin_navigation(request):
         return []
     nav = [
         {
-            'label': _('Dashboard'),
+            'label': _('Admin Dashboard'),
             'url': reverse('control:admin.dashboard'),
             'active': 'dashboard' in url.url_name,
             'icon': 'dashboard',
         },
         {
-            'label': _('Organizers'),
+            'label': _('All Events'),
+            'url': reverse('control:admin.events'),
+            'active': 'events' in url.url_name,
+            'icon': 'calendar',
+        },
+        {
+            'label': _('All Organizers'),
             'url': reverse('control:admin.organizers'),
             'active': 'organizers' in url.url_name,
             'icon': 'group',
