@@ -1296,6 +1296,7 @@ class QuickSetupView(FormView):
             'ticket_download': True,
             'contact_mail': self.request.event.settings.contact_mail,
             'imprint_url': self.request.event.settings.imprint_url,
+            'require_registered_account_for_tickets': True,
         }
 
     def post(self, request, *args, **kwargs):
@@ -1356,6 +1357,9 @@ class QuickSetupView(FormView):
         self.request.event.log_action('pretix.event.settings', user=self.request.user, data={
             k: self.request.event.settings.get(k) for k in form.changed_data
         })
+        self.request.event.settings.require_registered_account_for_tickets = form.cleaned_data[
+            'require_registered_account_for_tickets'
+        ]
 
         items = []
         category = None
