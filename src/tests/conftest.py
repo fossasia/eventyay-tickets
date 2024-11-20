@@ -35,6 +35,17 @@ def collect_static(request):
     management.call_command("collectstatic", "--noinput", "--clear")
 
 
+@pytest.fixture(scope="session", autouse=True)
+def disable_update_last_login():
+    """
+    Disable the update_last_login signal receiver to reduce login overhead.
+
+    See: https://adamj.eu/tech/2024/09/18/django-test-speed-last-login/
+    """
+    user_logged_in.disconnect(dispatch_uid="update_last_login")
+    yield
+
+
 @pytest.fixture
 def template_patch(monkeypatch):
     # Patch out template rendering for performance improvements
