@@ -672,7 +672,7 @@ class Event(EventMixin, LoggedModel):
             if gs.settings.email_vendor == "sendgrid":
                 return SendGridEmail(api_key=gs.settings.send_grid_api_key)
             else:
-                CustomSMTPBackend(
+                return CustomSMTPBackend(
                     host=gs.settings.smtp_host,
                     port=gs.settings.smtp_port,
                     username=gs.settings.smtp_username,
