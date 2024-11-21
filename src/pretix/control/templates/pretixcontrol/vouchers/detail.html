@@ -5,7 +5,14 @@
 {% load eventurl %}
 {% block title %}{% trans "Voucher" %}{% endblock %}
 {% block inside %}
-    <h1>{% trans "Voucher" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "Voucher" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     {% if voucher.redeemed %}
         <div class="alert alert-warning">
             {% trans "This voucher already has been used. It is not recommended to modify it." %}

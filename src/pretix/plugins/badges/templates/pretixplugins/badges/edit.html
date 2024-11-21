@@ -9,11 +9,18 @@
     {% endif %}
 {% endblock %}
 {% block content %}
-    {% if layout %}
-        <h1>{% blocktrans with name=layout.name %}Badge layout: {{ name }}{% endblocktrans %}</h1>
-    {% else %}
-        <h1>{% trans "Badge layout" %}</h1>
-    {% endif %}
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                {% if layout %}
+                    <h1>{% blocktrans with name=layout.name %}Badge layout: {{ name }}{% endblocktrans %}</h1>
+                {% else %}
+                    <h1>{% trans "Badge layout" %}</h1>
+                {% endif %}
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <form action="" method="post" class="form-horizontal">
         {% csrf_token %}
         {% bootstrap_form_errors form %}

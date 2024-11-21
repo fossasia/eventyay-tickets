@@ -2,7 +2,14 @@
 {% load i18n %}
 {% block title %}{% trans "Product categories" %}{% endblock %}
 {% block inside %}
-    <h1>{% trans "Product categories" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "Product categories" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <p>
         {% blocktrans trimmed %}
             You can use categories to group multiple products together in an organized way.

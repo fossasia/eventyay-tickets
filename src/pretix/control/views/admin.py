@@ -5,6 +5,7 @@ from pretix.base.models import Organizer
 from pretix.control.forms.filter import OrganizerFilterForm
 from pretix.control.permissions import AdministratorPermissionRequiredMixin
 from pretix.control.views import PaginationMixin
+from pretix.control.views.main import EventList
 
 
 class AdminDashboard(AdministratorPermissionRequiredMixin, TemplateView):
@@ -37,3 +38,8 @@ class OrganizerList(PaginationMixin, ListView):
     @cached_property
     def filter_form(self):
         return OrganizerFilterForm(data=self.request.GET, request=self.request)
+
+
+class AdminEventList(EventList):
+    """ Inherit from EventList to add a custom template for the admin event list. """
+    template_name = 'pretixcontrol/admin/events/index.html'

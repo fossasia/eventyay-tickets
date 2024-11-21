@@ -2,7 +2,14 @@
 {% load i18n %}
 {% block title %}{% trans "Products" %}{% endblock %}
 {% block inside %}
-    <h1>{% trans "Products" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "Products" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <p>
         {% blocktrans trimmed %}
             Below, you find a list of all available products. You can click on a product name to inspect and change
