@@ -13,9 +13,9 @@ from django.utils.translation import gettext_lazy as _
 
 from pretix.base.models.base import LoggedModel
 from pretix.base.validators import OrganizerSlugBanlistValidator
-from . import BillingInvoice
 
 from ..settings import settings_hierarkey
+from . import BillingInvoice
 from .auth import User
 
 
