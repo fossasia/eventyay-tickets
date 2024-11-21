@@ -1,5 +1,6 @@
 import datetime as dt
 from datetime import datetime, timezone as tz
+from enum import Enum
 
 import jwt
 from django.conf import settings
@@ -35,6 +36,12 @@ from pretix.eventyay_common.utils import (
     check_create_permission, encode_email, generate_token,
 )
 from pretix.helpers.plugin_enable import is_video_enabled
+
+
+class EventCreatedFor(Enum):
+    BOTH = "all"
+    TICKET = "ticket"
+    TALK = "talk"
 
 
 class EventList(PaginationMixin, ListView):
@@ -159,7 +166,7 @@ class EventCreateView(SafeSessionWizardView):
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form, **kwargs)
-        context["create_for"] = self.storage.extra_data.get("create_for", "all")
+        context["create_for"] = self.storage.extra_data.get("create_for", EventCreatedFor.BOTH.value)
         context["has_organizer"] = self.request.user.teams.filter(
             can_create_events=True
         ).exists()
@@ -206,7 +213,7 @@ class EventCreateView(SafeSessionWizardView):
 
         self.request.organizer = foundation_data["organizer"]
 
-        if create_for == "talk":
+        if create_for == EventCreatedFor.TALK.value:
             event_dict = {
                 "organiser_slug": (
                     foundation_data.get("organizer").slug
@@ -246,7 +253,7 @@ class EventCreateView(SafeSessionWizardView):
                 event.settings.set("timezone", basics_data["timezone"])
                 event.settings.set("locale", basics_data["locale"])
                 event.settings.set("locales", foundation_data["locales"])
-                if create_for == "all":
+                if create_for == EventCreatedFor.BOTH.value:
                     event_dict = {
                         "organiser_slug": event.organizer.slug,
                         "name": event.name.data,
@@ -315,6 +322,13 @@ class EventUpdate(
             talk_host + "/orga/event/" + self.object.slug + "/settings"
         )
         context['is_video_enabled'] = is_video_enabled(self.object)
+        context["is_talk_event_created"] = False
+        if (
+            self.object.settings.create_for == EventCreatedFor.BOTH.value
+            or self.object.settings.talk_schedule_public is not None
+        ):
+            # Ignore case Event is created only for Talk as it not enable yet.
+            context["is_talk_event_created"] = True
         return context
 
     def handle_video_creation(self, form):
@@ -376,7 +390,7 @@ class EventUpdate(
             event = form.instance
             event.date_from = self.reset_timezone(zone, event.date_from)
             event.date_to = self.reset_timezone(zone, event.date_to)
-            if event.settings.create_for and event.settings.create_for == "all":
+            if event.settings.create_for and event.settings.create_for == EventCreatedFor.BOTH.value:
                 event_dict = {
                     "organiser_slug": event.organizer.slug,
                     "name": event.name.data,

@@ -14,6 +14,7 @@ from pretix.control.navigation import (
     get_organizer_navigation,
 )
 
+from ..eventyay_common.views.event import EventCreatedFor
 from ..helpers.i18n import (
     get_javascript_format, get_javascript_output_format, get_moment_locale,
 )
@@ -55,6 +56,12 @@ def _default_context(request):
             settings.TALK_HOSTNAME + "/orga/event/" + request.event.slug + "/settings"
         )
         ctx['is_video_enabled'] = is_video_enabled(request.event)
+        ctx["is_talk_event_created"] = False
+        if (
+            request.event.settings.create_for == EventCreatedFor.BOTH.value
+            or request.event.settings.talk_schedule_public is not None
+        ):
+            ctx["is_talk_event_created"] = True
     ctx['html_head'] = "".join(_html_head)
 
     _js_payment_weekdays_disabled = '[]'
