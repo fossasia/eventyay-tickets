@@ -1,21 +1,23 @@
 {% load i18n %}
 <div class="navigation-button">
-    <a href="#" class="header-nav btn btn-outline-success active">
-        <i class="fa fa-ticket"></i> {% trans "Tickets" %}
-    </a>
-    <a href="{{ talk_edit_url }}" class="header-nav btn btn-outline-success">
-        <i class="fa fa-group"></i> {% trans "Talk" %}
-    </a>
-    {% if is_video_enabled %}
-        <a class="header-nav btn btn-outline-success"
-           href='{% url "eventyay_common:event.create_access_to_video" organizer=request.organizer.slug event=request.event.slug %}'
-           title="{% trans 'Access videos related to this event' %}">
-            <i class="fa fa-video-camera"></i> {% trans "Videos" %}
+    {% if request.organizer and request.event %}
+        <a href='{% url "eventyay_common:event.update" organizer=request.organizer.slug event=request.event.slug %}' class="header-nav btn btn-outline-success">
+            <i class="fa fa-home"></i> {% trans "Home" %}
         </a>
-    {% else %}
-        <a class="header-nav btn btn-outline-success disabled" href="#" disabled
-           title="{% trans 'Videos are not available because the plugin is inactive or missing settings for this event' %}">
-            <i class="fa fa-video-camera"></i> {% trans "Videos" %}
+        <a href="#" class="header-nav btn btn-outline-success active">
+            <i class="fa fa-ticket"></i> {% trans "Tickets" %}
         </a>
+        {% if is_talk_event_created %}
+        <a href="{{ talk_edit_url }}" class="header-nav btn btn-outline-success">
+            <i class="fa fa-group"></i> {% trans "Talk" %}
+        </a>
+        {% endif %}
+        {% if is_video_enabled %}
+            <a class="header-nav btn btn-outline-success"
+               href='{% url "eventyay_common:event.create_access_to_video" organizer=request.organizer.slug event=request.event.slug %}'
+               title="{% trans 'Access videos related to this event' %}">
+                <i class="fa fa-video-camera"></i> {% trans "Videos" %}
+            </a>
+        {% endif %}
     {% endif %}
 </div>
