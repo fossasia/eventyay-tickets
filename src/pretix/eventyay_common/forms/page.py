@@ -2,6 +2,7 @@ from collections import OrderedDict
 from urllib.request import urlopen
 
 import lxml.html
+from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from django.utils.crypto import get_random_string
@@ -55,7 +56,10 @@ class PageSettingsForm(SettingsForm):
         return data
 
     def _clean_content_field(self, content_field):
-        page_content = self.cleaned_data[content_field]
+        try:
+            page_content = self.cleaned_data[content_field]
+        except (lxml.etree.ParserError, ValueError) as e:
+            raise ValidationError(_('Invalid HTML content')) from e
 
         for locale, html_content in page_content.data.items():
             fragments = lxml.html.fragments_fromstring(html_content)

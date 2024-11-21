@@ -83,16 +83,7 @@ class ShowPageView(TemplateView):
             protocols=bleach.ALLOWED_PROTOCOLS + ["data"],
         )
         gs = GlobalSettingsObject()
-        ctx['faq_content'] = False
-        if gs.settings.faq_content:
-            ctx['faq_content'] = True
-        ctx['pricing_content'] = False
-        if gs.settings.pricing_content:
-            ctx['pricing_content'] = True
-        ctx['privacy_content'] = False
-        if gs.settings.privacy_content:
-            ctx['privacy_content'] = True
-        ctx['terms_content'] = False
-        if gs.settings.terms_content:
-            ctx['terms_content'] = True
+        page_types = ['faq', 'pricing', 'privacy', 'terms']
+        for page_type in page_types:
+            ctx[f'{page_type}_content'] = bool(getattr(gs.settings, f'{page_type}_content', False))
         return ctx
