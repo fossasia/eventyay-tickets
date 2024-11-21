@@ -10,8 +10,14 @@
     <link type="text/css" rel="stylesheet" href="{% url "control:pdf.css" %}">
 {% endblock %}
 {% block inside %}
-    <h1>{% trans "General settings" %}</h1>
-
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "General settings" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
         {% csrf_token %}
         {% bootstrap_form_errors form %}
@@ -32,9 +38,6 @@
                 {% bootstrap_field sform.imprint_url layout="control" %}
                 {% bootstrap_field form.is_public layout="control" %}
                 {% bootstrap_field form.sales_channels layout="control" %}
-                {% bootstrap_field sform.schedule_link layout="control" %}
-                {% bootstrap_field sform.session_link layout="control" %}
-                {% bootstrap_field sform.speaker_link layout="control" %}
 
                 {% if meta_forms %}
                     <div class="form-group metadata-group">

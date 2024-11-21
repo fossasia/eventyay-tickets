@@ -2,7 +2,14 @@
 {% load i18n %}
 {% load bootstrap3 %}
 {% block inside %}
-    <h1>{% trans "Invoice settings" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "Invoice settings" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
         <div class="tabbed-form">
             {% csrf_token %}

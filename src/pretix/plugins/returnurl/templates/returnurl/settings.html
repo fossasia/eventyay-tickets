@@ -2,7 +2,14 @@
 {% load i18n %}
 {% load bootstrap3 %}
 {% block inside %}
-    <h1>{% trans "Redirection from order page" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "Redirection from order page" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <p>
         {% blocktrans trimmed %}
             This feature is useful if you use only the payment component of eventyay but build your own checkout interface

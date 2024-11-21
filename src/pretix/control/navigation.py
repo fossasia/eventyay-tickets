@@ -307,7 +307,7 @@ def get_global_navigation(request):
             'icon': 'shopping-cart',
         },
         {
-            'label': _('Events'),
+            'label': _('My events'),
             'url': reverse('control:events'),
             'active': 'events' in url.url_name,
             'icon': 'calendar',
@@ -325,7 +325,7 @@ def get_global_navigation(request):
             'icon': 'search',
         },
         {
-            'label': _('User settings'),
+            'label': _('Account'),
             'url': reverse('control:user.settings'),
             'active': False,
             'icon': 'user',
@@ -372,7 +372,7 @@ def get_organizer_navigation(request):
         return []
     nav = [
         {
-            'label': _('Events'),
+            'label': _('My events'),
             'url': reverse('control:organizer', kwargs={
                 'organizer': request.organizer.slug
             }),
@@ -409,6 +409,14 @@ def get_organizer_navigation(request):
                     }),
                     'active': 'organizer.webhook' in url.url_name,
                     'icon': 'bolt',
+                },
+                {
+                    "label": _("Billing settings"),
+                    "url": reverse(
+                        "control:organizer.settings.billing",
+                        kwargs={"organizer": request.organizer.slug},
+                    ),
+                    "active": url.url_name == "organizer.settings.billing",
                 }
             ]
         })
@@ -494,13 +502,19 @@ def get_admin_navigation(request):
         return []
     nav = [
         {
-            'label': _('Dashboard'),
+            'label': _('Admin Dashboard'),
             'url': reverse('control:admin.dashboard'),
             'active': 'dashboard' in url.url_name,
             'icon': 'dashboard',
         },
         {
-            'label': _('Organizers'),
+            'label': _('All Events'),
+            'url': reverse('control:admin.events'),
+            'active': 'events' in url.url_name,
+            'icon': 'calendar',
+        },
+        {
+            'label': _('All Organizers'),
             'url': reverse('control:admin.organizers'),
             'active': 'organizers' in url.url_name,
             'icon': 'group',

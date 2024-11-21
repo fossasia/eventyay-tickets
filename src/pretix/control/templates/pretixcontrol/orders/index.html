@@ -6,7 +6,14 @@
 {% load bootstrap3 %}
 {% block title %}{% trans "Orders" %}{% endblock %}
 {% block content %}
-    <h1>{% trans "Orders" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "Orders" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     {% if not filter_form.filtered and orders|length == 0 and not filter_strings %}
         <div class="empty-collection">
             <p>
