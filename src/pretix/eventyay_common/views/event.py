@@ -174,6 +174,7 @@ class EventCreateView(SafeSessionWizardView):
             context["organizer"] = self.get_cleaned_data_for_step("foundation").get(
                 "organizer"
             )
+        context["event_creation_for_choice"] = {e.name: e.value for e in EventCreatedFor}
         return context
 
     def render(self, form=None, **kwargs):
