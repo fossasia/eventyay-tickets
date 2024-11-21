@@ -22,7 +22,7 @@ This means that all URLs within Django are prefixed with ``/tickets``, allowing 
 NGINX Configuration
 -------------------
 
-The following NGINX configuration serves the ``eventyay-tickets`` application along with other services such as ``talk`` and ``video``. The configuration is hosted on ``app-test.eventyay.com``.
+The following NGINX configuration serves the ``eventyay-tickets`` application along with other services such as ``talk`` and ``video``. The configuration is hosted on server.
 
 Key Sections of NGINX Configuration
 -----------------------------------
@@ -34,7 +34,7 @@ Key Sections of NGINX Configuration
    .. code-block:: nginx
 
        server {
-           server_name app-test.eventyay.com;
+           server_name your-domain;
            listen 443 ssl;
 
            ssl_certificate /etc/../fullchain.pem;
@@ -46,11 +46,11 @@ Key Sections of NGINX Configuration
 2. **URL Path Configurations**:
 
    - **Root Location**:
-     - Proxies requests from ``https://app-test.eventyay.com/`` to the backend on ``localhost:8455/common/``.
+     - Proxies requests from ``https://your-domain/`` to the backend on ``localhost:8455/common/``.
 
    - **/tickets**:
      - This location is for the ``eventyay-tickets`` application.
-     - Requests to ``https://app-test.eventyay.com/tickets/`` are proxied to ``localhost:8455/``.
+     - Requests to ``https://your-domain/tickets/`` are proxied to ``localhost:8455/``.
 
      .. code-block:: nginx
 
@@ -66,12 +66,12 @@ Key Sections of NGINX Configuration
 
 3. **Custom Redirects**:
    - **/video/admin**:
-     - Redirects requests from ``/video/admin/`` to the ``control`` panel at ``https://app-test.eventyay.com:8443/control``.
+     - Redirects requests from ``/video/admin/`` to the ``control`` panel at ``https://your-domain:8443/control``.
 
      .. code-block:: nginx
 
          location /video/admin/ {
-             return 301 https://app-test.eventyay.com:8443/control;
+             return 301 https://your-domain:8443/control;
          }
 
    - **/talk/static** and **/media**:
@@ -91,8 +91,8 @@ Key Sections of NGINX Configuration
 
        server {
            listen 80;
-           server_name app-test.eventyay.com;
-           if ($host = app-test.eventyay.com) {
+           server_name your-domain;
+           if ($host = your-domain) {
                return 301 https://$host$request_uri;
            }
            return 404;
@@ -105,7 +105,7 @@ Key Sections of NGINX Configuration
 
        server {
            listen 8443 ssl;
-           server_name app-test.eventyay.com;
+           server_name your-domain;
 
            ssl_certificate /etc/../fullchain.pem;
            ssl_certificate_key /etc/../privkey.pem;
@@ -128,7 +128,7 @@ Accessing eventyay-tickets
 
 With this setup:
 
-- The URL for accessing the ``eventyay-tickets`` application control panel is ``https://app-test.eventyay.com/tickets/control``.
+- The URL for accessing the ``eventyay-tickets`` application control panel is ``https://your-domain/tickets/control``.
 - NGINX routes requests to the correct backend ports based on path prefixes, ensuring that each application (tickets, talk, video) is isolated within its respective path.
 
 Summary
