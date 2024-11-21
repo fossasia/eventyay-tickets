@@ -15,6 +15,7 @@ from pretix.base.models.base import LoggedModel
 from pretix.base.validators import OrganizerSlugBanlistValidator
 
 from ..settings import settings_hierarkey
+from . import BillingInvoice
 from .auth import User
 
 
@@ -143,6 +144,11 @@ class Organizer(LoggedModel):
             e.delete_sub_objects()
             e.delete()
         self.teams.all().delete()
+
+    def has_unpaid_invoice(self):
+        # Check if Organizer has unpaid invoices which status is pending or expired
+        return BillingInvoice.objects.filter(organizer=self, status__in=[BillingInvoice.STATUS_PENDING,
+                                                                         BillingInvoice.STATUS_EXPIRED]).exists()
 
 
 def generate_invite_token():
