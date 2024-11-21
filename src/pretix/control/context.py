@@ -17,6 +17,7 @@ from pretix.control.navigation import (
 from ..helpers.i18n import (
     get_javascript_format, get_javascript_output_format, get_moment_locale,
 )
+from ..helpers.plugin_enable import is_video_enabled
 from ..multidomain.urlreverse import get_event_domain
 from .signals import html_head, nav_topbar
 
@@ -50,6 +51,10 @@ def _default_context(request):
     if hasattr(request, 'event') and request.user.is_authenticated:
         for receiver, response in html_head.send(request.event, request=request):
             _html_head.append(response)
+        ctx["talk_edit_url"] = (
+            settings.TALK_HOSTNAME + "/orga/event/" + request.event.slug + "/settings"
+        )
+        ctx['is_video_enabled'] = is_video_enabled(request.event)
     ctx['html_head'] = "".join(_html_head)
 
     _js_payment_weekdays_disabled = '[]'

@@ -10,6 +10,7 @@ $(function () {
     const logoutParams = new URLSearchParams({ back: backUrl });
 
     const dashboardPath = `/control/`;
+    const orderPath = `/control/settings/orders/`;
     const eventPath = `/control/events/`;
     const organizerPath = `/control/organizers/`;
 
@@ -27,13 +28,18 @@ $(function () {
                         </a>
                     </div>
                     <div class="profile-menu">
+                        <a href="${basePath}${orderPath}" target="_self" class="btn btn-outline-success">
+                            <i class="fa fa-shopping-cart"></i> ${window.gettext('My Orders')}
+                        </a>
+                    </div>
+                    <div class="profile-menu">
                         <a href="${basePath}${eventPath}" target="_self" class="btn btn-outline-success">
-                            <i class="fa fa-calendar"></i> ${window.gettext('My Event')}
+                            <i class="fa fa-calendar"></i> ${window.gettext('My Events')}
                         </a>
                     </div>
                      <div class="profile-menu">
                         <a href="${basePath}${organizerPath}" target="_self" class="btn btn-outline-success">
-                            <i class="fa fa-users"></i> ${window.gettext('Organizer')}
+                            <i class="fa fa-users"></i> ${window.gettext('Organizers')}
                         </a>
                     </div>
                     <div class="profile-menu separator"></div>

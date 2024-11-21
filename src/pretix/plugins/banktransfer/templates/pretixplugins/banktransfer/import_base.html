@@ -3,14 +3,21 @@
 {% load static %}
 {% block title %}{% trans "Import bank data" %}{% endblock %}
 {% block content %}
-    <h1>
-        {% trans "Import bank data" %}
-        {% if runningimport %}
-            <small>{% trans "Import currently running…" %}</small>
-        {% else %}
-            <small>{% blocktrans trimmed with date=lastimport.created|date:"SHORT_DATETIME_FORMAT" %}Last import: {{ date }}{% endblocktrans %}</small>
-        {% endif %}
-    </h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>
+                    {% trans "Import bank data" %}
+                    {% if runningimport %}
+                        <small>{% trans "Import currently running…" %}</small>
+                    {% else %}
+                        <small>{% blocktrans trimmed with date=lastimport.created|date:"SHORT_DATETIME_FORMAT" %}Last import: {{ date }}{% endblocktrans %}</small>
+                    {% endif %}
+                </h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     {% block inner %}
     {% endblock %}
 {% endblock %}

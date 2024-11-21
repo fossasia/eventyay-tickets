@@ -142,6 +142,10 @@ class GlobalSettingsForm(SettingsForm):
         self.fields['banner_message'].widget.attrs['rows'] = '2'
         self.fields['banner_message_detail'].widget.attrs['rows'] = '3'
         self.fields = OrderedDict(list(self.fields.items()) + [
+            ('stripe_webhook_secret_key', SecretKeySettingsField(
+                label=_('Stripe Webhook: Secret key'),
+                required=False,
+            )),
             (
                 "ticket_fee_percentage",
                 forms.DecimalField(

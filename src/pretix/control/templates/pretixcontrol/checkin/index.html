@@ -7,26 +7,33 @@
     {% blocktrans with name=checkinlist.name %}Check-in list: {{ name }}{% endblocktrans %}
 {% endblock %}
 {% block content %}
-    <h1>
-        {% blocktrans with name=checkinlist.name %}Check-in list: {{ name }}{% endblocktrans %}
-        {% if 'can_change_event_settings' in request.eventpermset %}
-            <a href="{% url "control:event.orders.checkinlists.edit" event=request.event.slug organizer=request.event.organizer.slug list=checkinlist.pk %}"
-                    class="btn btn-default">
-                <span class="fa fa-wrench"></span>
-                {% trans "Edit list configuration" %}
-            </a>
-        {% endif %}
-        <a href="{% url "control:event.orders.export" event=request.event.slug organizer=request.event.organizer.slug %}?identifier=checkinlistpdf&checkinlistpdf-list={{ checkinlist.pk }}"
-                class="btn btn-default" target="_blank">
-            <span class="fa fa-download"></span>
-            {% trans "PDF" %}
-        </a>
-        <a href="{% url "control:event.orders.export" event=request.event.slug organizer=request.event.organizer.slug %}?identifier=checkinlist&checkinlist-list={{ checkinlist.pk }}"
-                class="btn btn-default" target="_blank">
-            <span class="fa fa-download"></span>
-            {% trans "CSV" %}
-        </a>
-    </h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                    <h1>
+                        {% blocktrans with name=checkinlist.name %}Check-in list: {{ name }}{% endblocktrans %}
+                        {% if 'can_change_event_settings' in request.eventpermset %}
+                            <a href="{% url "control:event.orders.checkinlists.edit" event=request.event.slug organizer=request.event.organizer.slug list=checkinlist.pk %}"
+                                    class="btn btn-default">
+                                <span class="fa fa-wrench"></span>
+                                {% trans "Edit list configuration" %}
+                            </a>
+                        {% endif %}
+                        <a href="{% url "control:event.orders.export" event=request.event.slug organizer=request.event.organizer.slug %}?identifier=checkinlistpdf&checkinlistpdf-list={{ checkinlist.pk }}"
+                                class="btn btn-default" target="_blank">
+                            <span class="fa fa-download"></span>
+                            {% trans "PDF" %}
+                        </a>
+                        <a href="{% url "control:event.orders.export" event=request.event.slug organizer=request.event.organizer.slug %}?identifier=checkinlist&checkinlist-list={{ checkinlist.pk }}"
+                                class="btn btn-default" target="_blank">
+                            <span class="fa fa-download"></span>
+                            {% trans "CSV" %}
+                        </a>
+                    </h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <form class="row filter-form" action="" method="get">
         <div class="col-md-4 col-sm-6 col-xs-12">
             {% bootstrap_field filter_form.user layout='inline' %}

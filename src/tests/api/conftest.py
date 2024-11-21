@@ -8,6 +8,7 @@ from rest_framework.test import APIClient
 
 from pretix.base.models import Device, Event, Organizer, Team, User
 from pretix.base.models.devices import generate_api_token
+from pretix.base.models.organizer import OrganizerBillingModel
 
 
 @pytest.fixture
@@ -19,6 +20,26 @@ def client():
 @scopes_disabled()
 def organizer():
     return Organizer.objects.create(name='Dummy', slug='dummy')
+
+
+@pytest.fixture
+@scopes_disabled()
+def organizer_billing(organizer):
+    return OrganizerBillingModel.objects.create(
+        organizer=organizer,
+        primary_contact_name="John Doe",
+        primary_contact_email="joindeo@eventyay.com",
+        company_or_organization_name="Eventyay",
+        address_line_1="123 Main Street",
+        city="San Francisco",
+        zip_code="94105",
+        country="US",
+        preferred_language="en",
+        tax_id="123456789",
+        stripe_customer_id="cus_123456789",
+        stripe_payment_method_id="pm_123456789",
+        stripe_setup_intent_id="seti_123456789"
+    )
 
 
 @pytest.fixture

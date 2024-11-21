@@ -34,6 +34,7 @@ from pretix.eventyay_common.tasks import create_world, send_event_webhook
 from pretix.eventyay_common.utils import (
     check_create_permission, encode_email, generate_token,
 )
+from pretix.helpers.plugin_enable import is_video_enabled
 
 
 class EventList(PaginationMixin, ListView):
@@ -313,6 +314,7 @@ class EventUpdate(
         context["talk_edit_url"] = (
             talk_host + "/orga/event/" + self.object.slug + "/settings"
         )
+        context['is_video_enabled'] = is_video_enabled(self.object)
         return context
 
     def handle_video_creation(self, form):
