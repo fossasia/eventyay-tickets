@@ -13,6 +13,7 @@ from django.utils.translation import gettext_lazy as _
 
 from pretix.base.models.base import LoggedModel
 from pretix.base.validators import OrganizerSlugBanlistValidator
+from . import BillingInvoice
 
 from ..settings import settings_hierarkey
 from .auth import User
@@ -143,6 +144,10 @@ class Organizer(LoggedModel):
             e.delete_sub_objects()
             e.delete()
         self.teams.all().delete()
+
+    def has_unpaid_invoice(self):
+        # Check if Organizer has unpaid invoices which status is pending or expired
+        return BillingInvoice.objects.filter(organizer=self, status__in=['n', 'e']).count() > 0
 
 
 def generate_invite_token():
