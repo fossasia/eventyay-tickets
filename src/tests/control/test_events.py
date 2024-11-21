@@ -10,6 +10,7 @@ from pytz import timezone
 from tests.base import SoupTest, extract_form_fields
 
 from pretix.base.models import Event, Order, Organizer, Team, User
+from pretix.base.models.organizer import OrganizerBillingModel
 from pretix.testutils.mock import mocker_context
 
 
@@ -20,6 +21,21 @@ class EventsTest(SoupTest):
         self.user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
         self.orga1 = Organizer.objects.create(name='CCC', slug='ccc')
         self.orga2 = Organizer.objects.create(name='MRM', slug='mrm')
+        self.orgabilling1 = OrganizerBillingModel.objects.create(
+            organizer=self.orga1,
+            primary_contact_name="John Doe",
+            primary_contact_email="joindeo@eventyay.com",
+            company_or_organization_name="Eventyay",
+            address_line_1="123 Main Street",
+            city="San Francisco",
+            zip_code="94105",
+            country="US",
+            preferred_language="en",
+            tax_id="123456789",
+            stripe_customer_id="cus_123456789",
+            stripe_payment_method_id="pm_123456789",
+            stripe_setup_intent_id="seti_123456789"
+        )
         self.event1 = Event.objects.create(
             organizer=self.orga1, name='30C3', slug='30c3',
             date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc),

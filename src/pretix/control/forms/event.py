@@ -1510,6 +1510,14 @@ class QuickSetupForm(I18nForm):
         ),
         required=False,
     )
+    require_registered_account_for_tickets = forms.BooleanField(
+        label=_("Only allow registered accounts to get a ticket"),
+        help_text=_(
+            "If this option is turned on, only registered accounts will be allowed to purchase tickets. The "
+            "'Continue as a Guest' option will not be available for attendees."
+        ),
+        required=False,
+    )
     btf = BankTransfer.form_fields()
     payment_banktransfer_bank_details_type = btf["bank_details_type"]
     payment_banktransfer_bank_details_sepa_name = btf["bank_details_sepa_name"]

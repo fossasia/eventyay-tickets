@@ -635,7 +635,7 @@ def test_event_update_live_no_payment_method(token_client, organizer, event, ite
 
 
 @pytest.mark.django_db
-def test_event_update_live_free_product(token_client, organizer, event, free_item, free_quota):
+def test_event_update_live_free_product(token_client, organizer, event, free_item, free_quota, organizer_billing):
     resp = token_client.patch(
         '/api/v1/organizers/{}/events/{}/'.format(organizer.slug, event.slug),
         {
