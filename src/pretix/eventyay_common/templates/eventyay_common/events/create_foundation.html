@@ -20,7 +20,7 @@
                 <label>
                     <input
                         type="radio" name="create_for"
-                        value={{ event_creation_for_choice.TALK }}
+                        value="{{ event_creation_for_choice.TALK }}"
                         {% if create_for == event_creation_for_choice.TALK %}checked{% endif %} disabled>
                     <strong>{% trans "Talk system" %}</strong>
                     <div class="help-block">
@@ -34,7 +34,7 @@
                 <label>
                     <input
                         type="radio" name="create_for"
-                        value={{ event_creation_for_choice.BOTH }}
+                        value="{{ event_creation_for_choice.BOTH }}"
                         {% if create_for == event_creation_for_choice.BOTH %}checked{% endif %}>
                     <strong>{% trans "Both tickets and talk system" %}</strong>
                 </label>
