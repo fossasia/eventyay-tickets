@@ -40,7 +40,7 @@ from pretix.helpers.plugin_enable import is_video_enabled
 
 class EventCreatedFor(Enum):
     BOTH = "all"
-    TICKET = "ticket"
+    TICKET = "tickets"
     TALK = "talk"
 
 
