@@ -147,7 +147,7 @@ class Organizer(LoggedModel):
 
     def has_unpaid_invoice(self):
         # Check if Organizer has unpaid invoices which status is pending or expired
-        return BillingInvoice.objects.filter(organizer=self, status__in=['n', 'e']).count() > 0
+        return BillingInvoice.objects.filter(organizer=self, status__in=['n', 'e']).exists()
 
 
 def generate_invite_token():
