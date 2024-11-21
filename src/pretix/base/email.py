@@ -1,5 +1,6 @@
 import inspect
 import logging
+import secrets
 from datetime import timedelta
 from decimal import Decimal
 from email import policy
@@ -374,6 +375,11 @@ def get_best_name(position_or_address, parts=False):
     return {} if parts else ""
 
 
+def generate_sample_video_url():
+    sample_token = secrets.token_urlsafe(16)
+    return "{}/#token={}".format(settings.SITE_URL, sample_token)
+
+
 @receiver(register_mail_placeholders, dispatch_uid="pretixbase_register_mail_placeholders")
 def base_placeholders(sender, **kwargs):
     from pretix.multidomain.urlreverse import (
@@ -598,14 +604,14 @@ def base_placeholders(sender, **kwargs):
         ),
     ]
     if 'pretix_venueless' in sender.get_plugins():
-        ph.append(SimpleFunctionalMailTextPlaceholder(
-            'join_online_event', ['order', 'event'], lambda order, event: build_join_video_url(
-                event=event, order=order
-            ), 'https://sample-wikimania-live.eventyay.com/#token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.'
-               'eyJpc3MiOiJldmVudHlheSIsImF1ZCI6ImF1ZGllbmNVfkuiZXhwIjoxNzI1NjkzMDkyLCJpYXQiOjE3MjMxMDEw'
-               'OTIsInVpZCI6IjRKRDJGRzMiLCJwcm9maWxlIjp7ImZpZWxkcyI6e319LCJ0cmFpdHMiOlsiZXZlbnR5YXktdmlkZ'
-               'W8tc3ViZXZlbnQtTm9uZSIsImV2ZW50eWF5LXZpZGVvLWl0ZW0tMiIsImV2ZW50eWF5LXZpZGVvLWNhdGVnb3J5LTEi',
-        ), )
+        ph.append(
+            SimpleFunctionalMailTextPlaceholder(
+                "join_online_event",
+                ["order", "event"],
+                lambda order, event: build_join_video_url(event=event, order=order),
+                generate_sample_video_url(),
+            ),
+        )
     name_scheme = PERSON_NAME_SCHEMES[sender.settings.name_scheme]
     for f, l, w in name_scheme['fields']:
         if f == 'full_name':

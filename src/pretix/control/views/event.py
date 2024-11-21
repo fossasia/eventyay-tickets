@@ -642,14 +642,26 @@ class MailSettingsPreview(EventPermissionRequiredMixin, View):
     # get all supported placeholders with dummy values
     def placeholders(self, item):
         ctx = {}
-        for p in get_available_placeholders(self.request.event, MailSettingsForm.base_context[item]).values():
-            s = str(p.render_sample(self.request.event))
-            if s.strip().startswith('*'):
+        url_pattern = re.compile(r"^(https?://|www\.)[^\s]+$")
+
+        for p in get_available_placeholders(
+                self.request.event, MailSettingsForm.base_context[item]
+        ).values():
+            s = str(p.render_sample(self.request.event)).strip()
+
+            if s.startswith("*"):
                 ctx[p.identifier] = s
+            elif url_pattern.match(s):
+                ctx[p.identifier] = (
+                    '<a href="{}" target="_blank" rel="noopener noreferrer">{}</a>'.format(
+                        s, s
+                    )
+                )
             else:
-                ctx[p.identifier] = '<span class="placeholder" title="{}">{}</span>'.format(
-                    _('This value will be replaced based on dynamic parameters.'),
-                    s
+                ctx[p.identifier] = (
+                    '<span class="placeholder" title="{}">{}</span>'.format(
+                        _("This value will be replaced based on dynamic parameters."), s
+                    )
                 )
         return self.SafeDict(ctx)
 
