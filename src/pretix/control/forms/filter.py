@@ -14,6 +14,7 @@ from django.utils.formats import date_format, localize
 from django.utils.functional import cached_property
 from django.utils.timezone import get_current_timezone, make_aware, now
 from django.utils.translation import gettext, gettext_lazy as _, pgettext_lazy
+from django_celery_beat.models import CrontabSchedule
 
 from pretix.base.channels import get_all_sales_channels
 from pretix.base.forms.widgets import (
@@ -1626,3 +1627,36 @@ class OverviewFilterForm(FilterForm):
             self.fields['subevent'].widget.choices = self.fields['subevent'].choices
         elif 'subevent':
             del self.fields['subevent']
+
+
+class TaskFilterForm(forms.Form):
+    name = forms.CharField(
+        label=_('Task name'),
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': _('Search task name')})
+    )
+    status = forms.ChoiceField(
+        label=_('Status'),
+        choices=[
+            ('', _('All')),
+            ('enabled', _('Enabled')),
+            ('disabled', _('Disabled'))
+        ],
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def filter_qs(self, qs):
+        fdata = self.cleaned_data
+
+        if fdata.get('name'):
+            qs = qs.filter(name__icontains=fdata.get('name'))
+
+        if fdata.get('status') == 'enabled':
+            qs = qs.filter(enabled=True)
+        elif fdata.get('status') == 'disabled':
+            qs = qs.filter(enabled=False)
+
+        return qs

@@ -9,26 +9,26 @@ def initialize_billing_schedules(apps, schema_editor):
     MIDNIGHT_HOUR = '0'
 
     schedules = {
-        'monthly_billing': CrontabSchedule.objects.get_or_create(
-            hour='14',
-            minute='50'
-        )[0],
-        'invoice_notification': CrontabSchedule.objects.get_or_create(
-            hour='14',
-            minute='53'
-        )[0],
-        'auto_billing': CrontabSchedule.objects.get_or_create(
-            hour='14',
-            minute='56'
-        )[0],
-        'retry_payment': CrontabSchedule.objects.get_or_create(
-            hour='14',
-            minute='59'
-        )[0],
-        'billing_status': CrontabSchedule.objects.get_or_create(
-            hour='15',
-            minute='02'
-        )[0]
+        'monthly_billing': CrontabSchedule.objects.create(
+            hour='09',
+            minute='43'
+        ),
+        'invoice_notification': CrontabSchedule.objects.create(
+            hour='09',
+            minute='45'
+        ),
+        'auto_billing': CrontabSchedule.objects.create(
+            hour='09',
+            minute='47'
+        ),
+        'retry_payment': CrontabSchedule.objects.create(
+            hour='09',
+            minute='49'
+        ),
+        'billing_status': CrontabSchedule.objects.create(
+            hour='09',
+            minute='52'
+        )
     }
 
     billing_tasks = [
