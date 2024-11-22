@@ -10,15 +10,12 @@ from i18nfield.strings import LazyI18nString
 
 from pretix.base.configurations import (
     COUNTRIES_WITH_STATE, CSS_SETTINGS, DEFAULT_SETTINGS, NAME_SALUTION,
-    NAME_SCHEMES, TITLE_GROUP, LazyI18nStringListBase,
+    NAME_SCHEMES, TITLE_GROUP,
+)
+from pretix.base.configurations.lazy_i18n_string_list_base import (
+    LazyI18nStringList,
 )
 from pretix.base.reldate import RelativeDateWrapper
-
-
-class LazyI18nStringList(LazyI18nStringListBase):
-    def __init__(self, init_list=None):
-        super().__init__(init_list)
-
 
 DEFAULTS = DEFAULT_SETTINGS.copy()
 SETTINGS_AFFECTING_CSS = CSS_SETTINGS.copy()
