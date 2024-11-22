@@ -285,13 +285,6 @@ def monthly_billing_collect(self):
             self.retry(exc=e)
         except self.MaxRetriesExceededError:
             logger.error("Max retries exceeded for billing collect.")
-    except Exception as e:
-        logger.error("Unexpected error happen when trying to collect billing: %s", e)
-        # Retry the task if an exception occurs (with exponential backoff by default)
-        try:
-            self.retry(exc=e)
-        except self.MaxRetriesExceededError:
-            logger.error("Max retries exceeded for billing collect.")
 
 
 @shared_task()

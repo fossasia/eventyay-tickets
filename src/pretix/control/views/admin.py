@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils.formats import date_format
 from django.utils.functional import cached_property
 from django.views.generic import ListView, TemplateView
-from django_celery_beat.models import CrontabSchedule, PeriodicTask
+from django_celery_beat.models import PeriodicTask, PeriodicTasks
 
 from pretix.base.models import Organizer
 from pretix.control.forms.filter import OrganizerFilterForm, TaskFilterForm
@@ -118,6 +118,7 @@ class TaskList(PaginationMixin, ListView):
             new_status = not current_enabled
 
             PeriodicTask.objects.filter(id=task_id).update(enabled=new_status)
+            PeriodicTasks.changed(task)
 
             status_text = 'enabled' if new_status else 'disabled'
             messages.success(
