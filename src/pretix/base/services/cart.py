@@ -13,6 +13,9 @@ from django.utils.translation import gettext as _, pgettext_lazy
 from django_scopes import scopes_disabled
 
 from pretix.base.channels import get_all_sales_channels
+from pretix.base.configurations.lazy_i18n_string_list_base import (
+    LazyI18nStringList,
+)
 from pretix.base.i18n import language
 from pretix.base.models import (
     CartPosition, Event, InvoiceAddress, Item, ItemVariation, Seat,
@@ -27,7 +30,7 @@ from pretix.base.services.locking import LockTimeoutException, NoLockManager
 from pretix.base.services.pricing import get_price
 from pretix.base.services.quotas import QuotaAvailability
 from pretix.base.services.tasks import ProfiledEventTask
-from pretix.base.settings import PERSON_NAME_SCHEMES, LazyI18nStringList
+from pretix.base.settings import PERSON_NAME_SCHEMES
 from pretix.base.signals import validate_cart_addons
 from pretix.base.templatetags.rich_text import rich_text
 from pretix.celery_app import app

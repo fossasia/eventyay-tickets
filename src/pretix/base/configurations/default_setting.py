@@ -21,6 +21,9 @@ from pretix.api.serializers.fields import (
     ListMultipleChoiceField, UploadedFileField,
 )
 from pretix.api.serializers.i18n import I18nField, I18nURLField
+from pretix.base.configurations.lazy_i18n_string_list_base import (
+    LazyI18nStringList,
+)
 from pretix.base.forms import I18nURLFormField
 from pretix.base.models.tax import TaxRule
 from pretix.base.reldate import (
@@ -31,8 +34,6 @@ from pretix.control.forms import (
     ExtFileField, FontSelect, MultipleLanguagesWidget, SingleLanguageWidget,
 )
 from pretix.helpers.countries import CachedCountries
-
-from .lazy_i18n_string_list_base import LazyI18nStringListBase
 
 
 def country_choice_kwargs():
@@ -1566,8 +1567,8 @@ DEFAULT_SETTINGS = {
         "serializer_class": serializers.URLField,
     },
     "confirm_texts": {
-        "default": LazyI18nStringListBase(),
-        "type": LazyI18nStringListBase,
+        "default": LazyI18nStringList(),
+        "type": LazyI18nStringList,
         "serializer_class": serializers.ListField,
         "serializer_kwargs": lambda: dict(child=I18nField()),
     },
