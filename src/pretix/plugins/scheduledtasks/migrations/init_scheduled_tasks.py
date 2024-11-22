@@ -5,45 +5,37 @@ def initialize_billing_schedules(apps, schema_editor):
     PeriodicTask = apps.get_model('django_celery_beat', 'PeriodicTask')
     CrontabSchedule = apps.get_model('django_celery_beat', 'CrontabSchedule')
 
-    FIRST_DAY_OF_MONTH = '1'
-    MIDNIGHT_HOUR = '0'
-
     schedules = {
         'monthly_billing': CrontabSchedule.objects.create(
-            hour='09',
-            minute='43'
+            day_of_month=1, hour=0, minute=0
         ),
         'invoice_notification': CrontabSchedule.objects.create(
-            hour='09',
-            minute='45'
+            day_of_month=1, hour=0, minute=10
         ),
         'auto_billing': CrontabSchedule.objects.create(
-            hour='09',
-            minute='47'
+            day_of_month=1, hour=0, minute=20
         ),
         'retry_payment': CrontabSchedule.objects.create(
-            hour='09',
-            minute='49'
+            hour=0, minute=30
         ),
         'billing_status': CrontabSchedule.objects.create(
-            hour='09',
-            minute='52'
+            hour=0, minute=40
         )
     }
 
     billing_tasks = [
         {
-            'name': 'monthly_billing_collection',
+            'name': 'collect_monthly_billing',
             'task': 'pretix.eventyay_common.tasks.monthly_billing_collect',
             'schedule': schedules['monthly_billing']
         },
         {
-            'name': 'billing_invoice_notification',
+            'name': 'send_billing_invoice_notification',
             'task': 'pretix.eventyay_common.tasks.billing_invoice_notification',
             'schedule': schedules['invoice_notification']
         },
         {
-            'name': 'process_auto_billing',
+            'name': 'auto_billing_charge',
             'task': 'pretix.eventyay_common.tasks.process_auto_billing_charge',
             'schedule': schedules['auto_billing']
         },

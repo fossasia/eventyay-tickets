@@ -42,10 +42,9 @@
             <tr>
                 <th>{% trans "Id" %}</th>
                 <th>{% trans "Task name" %}</th>
-                <th>{% trans "Task path" %}</th>
+                <th>{% trans "Run at" %}</th>
                 <th>{% trans "Last run at" %}</th>
                 <th>{% trans "Total run count" %}</th>
-                <th>{% trans "Schedule Id" %}</th>
                 <th>{% trans "Enabled" %}</th>
             </tr>
             </thead>
@@ -57,10 +56,9 @@
                            <strong>{{ task.id }}</strong>
                        </td>
                        <td data-label="{% trans 'Task name' %}">{{ task.name }}</td>
-                       <td data-label="{% trans 'Task path' %}">{{ task.task }}</td>
-                       <td data-label="{% trans 'Last run at' %}">{{ task.last_run_at }}</td>
+                       <td data-label="{% trans 'Run at' %}">{{ task.run_at }}</td>
+                       <td data-label="{% trans 'Last run at' %}">{{ task.formatted_last_run_at }}</td>
                        <td data-label="{% trans 'Total run count' %}">{{ task.total_run_count }}</td>
-                       <td data-label="{% trans 'Schedule' %}">{{ task.crontab_id }}</td>
                        <td data-label="{% trans 'Enabled' %}">
                            <form method="post" action="{% url 'control:admin.task_management' %}" class="task-form">
                                {% csrf_token %}

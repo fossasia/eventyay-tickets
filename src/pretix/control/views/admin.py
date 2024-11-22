@@ -1,9 +1,13 @@
+from zoneinfo import ZoneInfo
+
+from cron_descriptor import Options, get_description
+from django.conf import settings
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils.formats import date_format
 from django.utils.functional import cached_property
-from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView, TemplateView
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
@@ -56,14 +60,52 @@ class TaskList(PaginationMixin, ListView):
     context_object_name = 'tasks'
     model = PeriodicTask
 
+    @cached_property
+    def filter_form(self):
+        return TaskFilterForm(data=self.request.GET)
+
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = (
+            super()
+            .get_queryset()
+            .exclude(name='celery.backend_cleanup')
+            .select_related('crontab')
+        )
+
         if self.filter_form.is_valid():
             queryset = self.filter_form.filter_qs(queryset)
+
         return queryset
+
+    def process_task_data(self, task):
+        if task.last_run_at is None:
+            task.formatted_last_run_at = '-'
+        else:
+            local_timezone = ZoneInfo(settings.TIME_ZONE)
+            task.formatted_last_run_at = date_format(
+                task.last_run_at.astimezone(local_timezone),
+                format="M. d, Y, g:i a"
+            )
+
+        task.name = task.name.replace("_", " ").capitalize()
+
+        options = Options()
+        options.locale_code = settings.LANGUAGE_CODE
+        options.verbose = True
+        schedule = task.crontab
+        cron_expression = f"{schedule.minute} {schedule.hour} {schedule.day_of_month} {schedule.month_of_year} {schedule.day_of_week}"
+        task.run_at = get_description(cron_expression, options)
+
+        return task
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        context['tasks'] = [
+            self.process_task_data(task)
+            for task in context['tasks']
+        ]
+
         context['filter_form'] = self.filter_form
         return context
 
@@ -73,14 +115,14 @@ class TaskList(PaginationMixin, ListView):
 
         if task_id:
             task = get_object_or_404(PeriodicTask, id=task_id)
-            task.enabled = not current_enabled
-            task.save()
-            messages.success(self.request, _('The task {} has been successfully {}.'.format(task.name,
-                'enabled' if task.enabled else 'disabled'
-            )))
+            new_status = not current_enabled
 
-        return HttpResponseRedirect(reverse('control:admin.task_management'))
+            PeriodicTask.objects.filter(id=task_id).update(enabled=new_status)
 
-    @cached_property
-    def filter_form(self):
-        return TaskFilterForm(data=self.request.GET)
+            status_text = 'enabled' if new_status else 'disabled'
+            messages.success(
+                self.request,
+                f'The task {task.name} has been successfully {status_text}.'
+            )
+
+            return HttpResponseRedirect(reverse('control:admin.task_management'))
