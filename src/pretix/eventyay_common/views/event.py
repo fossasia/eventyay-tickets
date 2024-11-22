@@ -398,7 +398,7 @@ class EventUpdate(
                 event = form.instance
                 event.date_from = self.reset_timezone(zone, event.date_from)
                 event.date_to = self.reset_timezone(zone, event.date_to)
-                if event.settings.create_for and event.settings.create_for == "all":
+                if event.settings.create_for and event.settings.create_for == EventCreatedFor.BOTH.value:
                     event_dict = {
                         "organiser_slug": event.organizer.slug,
                         "name": event.name.data,
