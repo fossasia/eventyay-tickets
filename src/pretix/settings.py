@@ -6,7 +6,6 @@ from urllib.parse import urlparse
 
 import django.conf.locale
 import importlib_metadata
-from celery.schedules import crontab
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from kombu import Queue

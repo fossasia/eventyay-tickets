@@ -14,7 +14,6 @@ from django.utils.formats import date_format, localize
 from django.utils.functional import cached_property
 from django.utils.timezone import get_current_timezone, make_aware, now
 from django.utils.translation import gettext, gettext_lazy as _, pgettext_lazy
-from django_celery_beat.models import CrontabSchedule
 
 from pretix.base.channels import get_all_sales_channels
 from pretix.base.forms.widgets import (
