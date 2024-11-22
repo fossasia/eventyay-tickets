@@ -27,7 +27,7 @@ dependencies = [
         'pytz',
         'django-bootstrap3==24.3',
         'django-formset-js-improved==0.5.0.3',
-        'django-compressor==4.5',
+        'django-compressor==4.5.1',
         'django-hierarkey==1.2.*',
         'django-filter==24.3',
         'django-scopes==2.0.*',
