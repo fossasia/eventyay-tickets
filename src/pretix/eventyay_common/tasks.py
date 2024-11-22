@@ -189,7 +189,6 @@ def create_world(self, is_video_creation, event_data):
             self.retry(exc=e)
         except ValueError as e:
             logger.error("Value error: %s", str(e))
-            self.retry(exc=e)
 
 
 def extract_jwt_config(world_data):
