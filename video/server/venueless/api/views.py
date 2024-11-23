@@ -31,6 +31,7 @@ from venueless.core.models import Channel, User
 from venueless.core.services.world import notify_schedule_change, notify_world_change
 
 from ..core.models import Room, World
+from .utils import get_protocol
 
 logger = logging.getLogger(__name__)
 
@@ -150,20 +151,18 @@ class CreateWorldView(APIView):
 
             # if world already exists, update it, otherwise create a new world
             world_id = request.data.get("id")
+            domain_path = "{}{}/{}".format(
+                settings.DOMAIN_PATH,
+                settings.BASE_PATH,
+                request.data.get("id"),
+            )
             try:
                 if not world_id:
                     raise ValidationError("World ID is required")
                 if World.objects.filter(id=world_id).exists():
                     world = World.objects.get(id=world_id)
                     world.title = title
-                    world.domain = (
-                        "{}{}/{}".format(
-                            settings.DOMAIN_PATH,
-                            settings.BASE_PATH,
-                            request.data.get("id"),
-                        )
-                        or ""
-                    )
+                    world.domain = domain_path
                     world.locale = request.data.get("locale") or "en"
                     world.timezone = request.data.get("timezone") or "UTC"
                     world.save()
@@ -171,16 +170,16 @@ class CreateWorldView(APIView):
                     world = World.objects.create(
                         id=world_id,
                         title=title,
-                        domain="{}{}/{}".format(
-                            settings.DOMAIN_PATH,
-                            settings.BASE_PATH,
-                            request.data.get("id"),
-                        )
-                        or "",
+                        domain=domain_path,
                         locale=request.data.get("locale") or "en",
                         timezone=request.data.get("timezone") or "UTC",
                         config=config,
                     )
+
+                site_url = settings.SITE_URL
+                protocol = get_protocol(site_url)
+                world.domain = "{}://{}".format(protocol, domain_path)
+                return JsonResponse(model_to_dict(world, exclude=["roles"]), status=201)
             except IntegrityError as e:
                 logger.error(f"Database integrity error while saving world: {e}")
                 return JsonResponse(
@@ -197,8 +196,6 @@ class CreateWorldView(APIView):
                 return JsonResponse(
                     {"error": "An unexpected error occurred"}, status=500
                 )
-
-            return JsonResponse(model_to_dict(world, exclude=["roles"]), status=201)
         else:
             return JsonResponse(
                 {"error": "World cannot be created due to missing permission"},
