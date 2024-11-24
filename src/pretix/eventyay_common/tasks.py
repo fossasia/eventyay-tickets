@@ -1,7 +1,9 @@
 import base64
+import importlib.util
 import logging
 from datetime import datetime, timezone as tz
 from decimal import Decimal
+from importlib import import_module
 
 import pytz
 import requests
@@ -13,6 +15,7 @@ from django.core.exceptions import ValidationError
 from django.db import DatabaseError
 from django.db.models import Q
 from django_scopes import scopes_disabled
+from pretix_venueless.views import VenuelessSettingsForm
 
 from pretix.helpers.stripe_utils import (
     confirm_payment_intent, process_auto_billing_charge_stripe,
@@ -169,20 +172,135 @@ def create_world(self, is_video_creation, event_data):
 
     if is_video_creation and has_permission:
         try:
-            requests.post(
+            response = requests.post(
                 "{}/api/v1/create-world/".format(settings.VIDEO_SERVER_HOSTNAME),
                 json=payload,
                 headers=headers,
             )
+            setup_video_plugin(response.json())
         except requests.exceptions.ConnectionError as e:
             logger.error("Connection error: %s", str(e))
-            raise self.retry(exc=e)
+            self.retry(exc=e)
         except requests.exceptions.Timeout as e:
             logger.error("Request timed out: %s", str(e))
-            raise self.retry(exc=e)
+            self.retry(exc=e)
         except requests.exceptions.RequestException as e:
             logger.error("Request failed: %s", str(e))
-            raise self.retry(exc=e)
+            self.retry(exc=e)
+        except ValueError as e:
+            logger.error("Value error: %s", str(e))
+
+
+def extract_jwt_config(world_data):
+    """
+    Extract the JWT configuration from the world data.
+    @param world_data: A dictionary containing the world data.
+    @return: A dictionary containing the JWT configuration.
+    """
+    config = world_data.get('config', {})
+    jwt_secrets = config.get('JWT_secrets', [])
+    jwt_config = jwt_secrets[0] if jwt_secrets else {}
+    return {
+        'secret': jwt_config.get('secret'),
+        'issuer': jwt_config.get('issuer'),
+        'audience': jwt_config.get('audience')
+    }
+
+
+def setup_video_plugin(world_data):
+    """
+     Setup the video plugin for the event.
+     @param world_data: A dictionary containing the world data.
+     if the plugin is installed, add the plugin to the event and save the video settings information.
+     """
+    jwt_config = extract_jwt_config(world_data)
+    video_plugin = get_installed_plugin('pretix_venueless')
+    event_id = world_data.get("id")
+    if video_plugin:
+        attach_plugin_to_event('pretix_venueless', event_id)
+        video_settings = {
+            'venueless_url': world_data.get('domain', ""),
+            'venueless_secret': jwt_config.get('secret', ""),
+            'venueless_issuer': jwt_config.get('issuer', ""),
+            'venueless_audience': jwt_config.get('audience', ""),
+            'venueless_all_items': True,
+            'venueless_items': [],
+            'venueless_questions': [],
+        }
+        save_video_settings_information(event_id, video_settings)
+    else:
+        logger.error("Video integration configuration failed - Plugin not installed")
+        raise ValueError("Failed to configure video integration")
+
+
+def save_video_settings_information(event_id, video_settings):
+    """
+    Save the video settings information to the event.
+    @param event_id: A string representing the unique identifier for the event.
+    @param video_settings:  A dictionary containing the video settings information.
+    @return: The video configuration form.
+    """
+    try:
+        with scopes_disabled():
+            event_instance = Event.objects.get(slug=event_id)
+            video_config_form = VenuelessSettingsForm(
+                data=video_settings,
+                obj=event_instance
+            )
+            if video_config_form.is_valid():
+                video_config_form.save()
+            else:
+                logger.error("Video integration configuration failed - Validation errors: %s", video_config_form.errors)
+                raise ValueError("Failed to validate video integration settings")
+            return video_config_form
+    except Event.DoesNotExist:
+        logger.error("Event does not exist: %s", event_id)
+        raise ValueError("Event does not exist")
+
+
+def get_installed_plugin(plugin_name):
+    """
+    Check if a plugin is installed.
+    @param plugin_name: A string representing the name of the plugin to check.
+    @return: The installed plugin if it exists, otherwise None.
+    """
+    if importlib.util.find_spec(plugin_name) is not None:
+        installed_plugin = import_module(plugin_name)
+    else:
+        installed_plugin = None
+    return installed_plugin
+
+
+def attach_plugin_to_event(plugin_name, event_slug):
+    """
+    Attach a plugin to an event.
+    @param plugin_name: A string representing the name of the plugin to add.
+    @param event_slug: A string representing the slug of the event to which the plugin should be added.
+    @return: The event instance with the added plugin.
+    """
+    try:
+        with scopes_disabled():
+            event = Event.objects.get(slug=event_slug)
+            event.plugins = add_plugin(event, plugin_name)
+            event.save()
+            return event
+    except Event.DoesNotExist:
+        logger.error("Event does not exist: %s", event_slug)
+        raise ValueError("Event does not exist")
+
+
+def add_plugin(event, plugin_name):
+    """
+    Add a plugin
+    @param event: The event instance to which the plugin should be added.
+    @param plugin_name: A string representing the name of the plugin to add.
+    @return: The updated list of plugins for the event.
+    """
+    if not event.plugins:
+        return plugin_name
+    plugins = set(event.plugins.split(','))
+    plugins.add(plugin_name)
+    return ','.join(plugins)
 
 
 def get_header_token(user_id):

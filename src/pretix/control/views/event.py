@@ -30,7 +30,6 @@ from i18nfield.utils import I18nJSONEncoder
 from pytz import timezone
 
 from pretix.base.channels import get_all_sales_channels
-from pretix.base.configurations import LazyI18nStringListBase
 from pretix.base.email import get_available_placeholders
 from pretix.base.models import (
     Event, LogEntry, Order, RequiredAction, TaxRule, Voucher,
@@ -54,11 +53,14 @@ from pretix.helpers.database import rolledback_transaction
 from pretix.multidomain.urlreverse import get_event_domain
 from pretix.presale.style import regenerate_css
 
+from ...base.configurations.lazy_i18n_string_list_base import (
+    LazyI18nStringList,
+)
 from ...base.i18n import language
 from ...base.models.items import (
     Item, ItemCategory, ItemMetaProperty, Question, Quota,
 )
-from ...base.settings import SETTINGS_AFFECTING_CSS, LazyI18nStringList
+from ...base.settings import SETTINGS_AFFECTING_CSS
 from ..logdisplay import OVERVIEW_BANLIST
 from . import CreateView, PaginationMixin, UpdateView
 
@@ -250,7 +252,7 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
     @cached_property
     def confirm_texts_formset(self):
         initial = [{"text": text, "ORDER": order} for order, text in
-                   enumerate(self.object.settings.get("confirm_texts", as_type=LazyI18nStringListBase))]
+                   enumerate(self.object.settings.get("confirm_texts", as_type=LazyI18nStringList))]
         return ConfirmTextFormset(self.request.POST if self.request.method == "POST" else None, event=self.object,
                                   prefix="confirm-texts", initial=initial)
 
