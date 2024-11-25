@@ -24130,9 +24130,6 @@ msgstr "Kosovo"
 #~ msgid "General "
 #~ msgstr "Algemeen "
 
-#~ msgid "View event"
-#~ msgstr "Ga naar de winkel"
-
 #~ msgid "You haven't created any questions yet."
 #~ msgstr "U heeft nog geen vragen aangemaakt."
 

@@ -24299,9 +24299,6 @@ msgstr ""
 #~ msgid "General "
 #~ msgstr "جنرال لواء"
 
-#~ msgid "View event"
-#~ msgstr "الذهاب إلى متجر"
-
 #~ msgid "You haven't created any questions yet."
 #~ msgstr "لم تقم بإنشاء أي أسئلة بعد."
 

@@ -23898,9 +23898,6 @@ msgstr ""
 #~ msgid "General "
 #~ msgstr "一般"
 
-#~ msgid "View event"
-#~ msgstr "去商店"
-
 #~ msgid "You haven't created any questions yet."
 #~ msgstr "您尚未创建任何问题。"
 

@@ -24317,9 +24317,6 @@ msgstr ""
 #~ msgid "General "
 #~ msgstr "Generelt"
 
-#~ msgid "View event"
-#~ msgstr "Vis butik"
-
 #~ msgid "You haven't created any questions yet."
 #~ msgstr "Du har endnu ikke oprettet nogen spørgsmål."
 

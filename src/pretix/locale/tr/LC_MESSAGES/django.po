@@ -25394,9 +25394,6 @@ msgstr ""
 #~ msgid "General "
 #~ msgstr "Genel"
 
-#~ msgid "View event"
-#~ msgstr "Dükkana git"
-
 #~ msgid "You haven't created any questions yet."
 #~ msgstr "Henüz hiç soru oluşturmadınız."
 

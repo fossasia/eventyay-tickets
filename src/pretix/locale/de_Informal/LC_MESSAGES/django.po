@@ -24097,9 +24097,6 @@ msgstr "Kosovo"
 #~ msgid "General "
 #~ msgstr "Allgemeines "
 
-#~ msgid "View event"
-#~ msgstr "Shop ansehen"
-
 #~ msgid "You haven't created any questions yet."
 #~ msgstr "Du hast noch keine Fragen erstellt."
 

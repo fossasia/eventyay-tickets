@@ -25421,9 +25421,6 @@ msgstr ""
 #~ msgid "General "
 #~ msgstr "General"
 
-#~ msgid "View event"
-#~ msgstr "Ir a la tienda"
-
 #~ msgid "You haven't created any questions yet."
 #~ msgstr "Aún no ha creado ninguna pregunta."
 

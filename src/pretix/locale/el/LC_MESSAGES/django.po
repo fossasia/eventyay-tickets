@@ -25429,9 +25429,6 @@ msgstr ""
 #~ msgid "General "
 #~ msgstr "Γενικά"
 
-#~ msgid "View event"
-#~ msgstr "Πηγαίνετε στο κατάστημα"
-
 #~ msgid "You haven't created any questions yet."
 #~ msgstr "Δεν έχετε δημιουργήσει ακόμα ερωτήσεις."
 
