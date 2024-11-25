@@ -473,7 +473,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
                 mail_dict[mail.subject + mail.text].append((mail, context))
             # Now we can create the emails and add the speakers to them
             for mail_list in mail_dict.values():
-                mail = mail_list[0]
+                mail = mail_list[0][0]
                 mail.save()
                 mail.to_users.add(user)
                 for __, context in mail_list:
