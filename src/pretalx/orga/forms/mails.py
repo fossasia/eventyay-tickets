@@ -476,7 +476,7 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
                 mail = mail_list[0]
                 mail.save()
                 mail.to_users.add(user)
-                for _, context in mail_list:
+                for __, context in mail_list:
                     if submission := context.get("submission"):
                         mail.submissions.add(submission)
                 result.append(mail)
