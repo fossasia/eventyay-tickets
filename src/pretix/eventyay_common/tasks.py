@@ -342,59 +342,50 @@ def monthly_billing_collect(self):
             for organizer in organizers:
                 events = Event.objects.filter(organizer=organizer)
                 for event in events:
-                    try:
-                        logger.info("Collecting billing data for event: %s", event.name)
-                        billing_invoice = BillingInvoice.objects.filter(
-                            event=event, monthly_bill=last_month_date, organizer=organizer
+                    logger.info("Collecting billing data for event: %s", event.name)
+                    billing_invoice = BillingInvoice.objects.filter(
+                        event=event, monthly_bill=last_month_date, organizer=organizer
+                    )
+                    if billing_invoice:
+                        logger.info(
+                            "Billing invoice already created for event: %s", event.name
                         )
-                        if billing_invoice:
-                            logger.info(
-                                "Billing invoice already created for event: %s", event.name
-                            )
-                            continue
-                        # Continue if event order count on last month = 0
-                        if event.orders.filter(
-                                status=Order.STATUS_PAID,
-                                datetime__range=[
-                                    last_month_date,
-                                    (last_month_date + relativedelta(months=1, day=1)) - relativedelta(days=1),
-                                ],
-                        ).count() == 0:
-                            logger.info(
-                                "No paid orders for event: %s in the last month", event.name
-                            )
-                            continue
-
-                        total_amount = calculate_total_amount_on_monthly(
-                            event, last_month_date
-                        )
-                        tickets_fee = calculate_ticket_fee(total_amount, ticket_rate)
-                        # Create a new billing invoice
-                        billing_invoice = BillingInvoice(
-                            organizer=organizer,
-                            event=event,
-                            amount=total_amount,
-                            currency=event.currency,
-                            ticket_fee=tickets_fee,
-                            monthly_bill=last_month_date,
-                            reminder_schedule=settings.BILLING_REMINDER_SCHEDULE,
-                            created_at=today,
-                            created_by=settings.PRETIX_EMAIL_NONE_VALUE,
-                            updated_at=today,
-                            updated_by=settings.PRETIX_EMAIL_NONE_VALUE,
-                        )
-                        billing_invoice.next_reminder_datetime = get_next_reminder_datetime(
-                            settings.BILLING_REMINDER_SCHEDULE
-                        )
-                        billing_invoice.save()
-                    except Exception as e:
-                        # If unexpected error happened, skip the event and continue to the next one
-                        logger.error(
-                            "Unexpected error happen when trying to collect billing for event: %s",
-                            event.slug,
-                        )
-                        logger.error("Error: %s", e)
                         continue
+                    # Continue if event order count on last month = 0
+                    if event.orders.filter(
+                            status=Order.STATUS_PAID,
+                            datetime__range=[
+                                last_month_date,
+                                (last_month_date + relativedelta(months=1, day=1)) - relativedelta(days=1),
+                            ],
+                    ).count() == 0:
+                        logger.info(
+                            "No paid orders for event: %s in the last month", event.name
+                        )
+                        continue
+
+                    total_amount = calculate_total_amount_on_monthly(
+                        event, last_month_date
+                    )
+                    tickets_fee = calculate_ticket_fee(total_amount, ticket_rate)
+                    # Create a new billing invoice
+                    billing_invoice = BillingInvoice(
+                        organizer=organizer,
+                        event=event,
+                        amount=total_amount,
+                        currency=event.currency,
+                        ticket_fee=tickets_fee,
+                        monthly_bill=last_month_date,
+                        reminder_schedule=settings.BILLING_REMINDER_SCHEDULE,
+                        created_at=today,
+                        created_by=settings.PRETIX_EMAIL_NONE_VALUE,
+                        updated_at=today,
+                        updated_by=settings.PRETIX_EMAIL_NONE_VALUE,
+                    )
+                    billing_invoice.next_reminder_datetime = get_next_reminder_datetime(
+                        settings.BILLING_REMINDER_SCHEDULE
+                    )
+                    billing_invoice.save()
                     logger.info("End - completed task to collect billing on a monthly basis.")
     except DatabaseError as e:
         logger.error("Database error when trying to collect billing: %s", e)
