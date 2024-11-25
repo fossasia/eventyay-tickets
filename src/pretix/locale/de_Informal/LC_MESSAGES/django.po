@@ -205,7 +205,7 @@ msgstr ""
 #, fuzzy
 #| msgid "pretix account invitation"
 msgid "eventyay account invitation"
-msgstr "pretix Team-Einladung"
+msgstr "development team-Einladung"
 
 #: pretix/api/serializers/organizer.py:164
 #: pretix/control/views/organizer.py:610
@@ -5067,12 +5067,12 @@ msgid "Not set"
 msgstr "Nicht gesetzt"
 
 #: pretix/base/secrets.py:84
-msgid "Random (default, works with all pretix apps)"
+msgid "Random (default, works with all apps in the ecosystem ecosystem)"
 msgstr "Zufällig (Standard, funktioniert mit allen pretix-Apps)"
 
 #: pretix/base/secrets.py:114
 msgid ""
-"pretix signature scheme 1 (for very large events, does not work with "
+"signature scheme very large events, does not work with "
 "pretixSCAN on iOS and changes semantics of offline scanning – please refer "
 "to documentation or support for details)"
 msgstr ""
@@ -12229,7 +12229,7 @@ msgstr "Andere Funktionen"
 #| "%(url)s\n"
 #| "\n"
 #| "Best regards,\n"
-#| "Your pretix team\n"
+#| "Your development team\n"
 msgid ""
 "Hello,\n"
 "\n"
@@ -12249,7 +12249,7 @@ msgstr ""
 "%(url)s\n"
 "\n"
 "Viele Grüße,\n"
-"Dein pretix Team\n"
+"Dein development team\n"
 
 #: pretix/control/templates/pretixcontrol/email/invitation.txt:1
 #, fuzzy, python-format
@@ -12269,7 +12269,7 @@ msgstr ""
 #| "\n"
 #| "Best regards,\n"
 #| "\n"
-#| "Your pretix team\n"
+#| "Your development team\n"
 msgid ""
 "Hello,\n"
 "\n"
@@ -12325,7 +12325,7 @@ msgstr ""
 #| "%(url)s\n"
 #| "\n"
 #| "Best regards,\n"
-#| "Your pretix team\n"
+#| "Your development team\n"
 msgid ""
 "Hello,\n"
 "\n"
@@ -19147,7 +19147,7 @@ msgstr "Badges"
 #: pretix/plugins/statistics/apps.py:13
 #: pretix/plugins/ticketoutputpdf/apps.py:14
 #: pretix/plugins/webcheckin/apps.py:13
-msgid "the pretix team"
+msgid "the development team"
 msgstr "Das pretix-Team"
 
 #: pretix/plugins/badges/apps.py:16
@@ -23787,7 +23787,7 @@ msgstr "Kosovo"
 #~ "sobald sie einmal angeklickt wurde."
 
 #~ msgid ""
-#~ "This translation is not maintained by the pretix team. We cannot vouch "
+#~ "This translation is not maintained by the development team. We cannot vouch "
 #~ "for its correctness and new or recently changed features might not be "
 #~ "translated and will show in English instead. You can help translating at "
 #~ "translate.eventyay.com."
@@ -25095,7 +25095,7 @@ msgstr "Kosovo"
 #~ "\n"
 #~ "Best regards,\n"
 #~ "\n"
-#~ "Your pretix team\n"
+#~ "Your development team\n"
 #~ msgstr ""
 #~ "Hallo,\n"
 #~ "\n"

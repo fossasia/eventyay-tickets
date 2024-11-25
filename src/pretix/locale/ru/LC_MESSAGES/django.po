@@ -5203,12 +5203,12 @@ msgid "Not set"
 msgstr "Не установлено"
 
 #: pretix/base/secrets.py:84
-msgid "Random (default, works with all pretix apps)"
+msgid "Random (default, works with all apps in the ecosystem)"
 msgstr ""
 
 #: pretix/base/secrets.py:114
 msgid ""
-"pretix signature scheme 1 (for very large events, does not work with "
+"signature scheme 1 (for very large events, does not work with "
 "pretixSCAN on iOS and changes semantics of offline scanning – please refer "
 "to documentation or support for details)"
 msgstr ""
@@ -17981,7 +17981,7 @@ msgstr ""
 #: pretix/plugins/statistics/apps.py:13
 #: pretix/plugins/ticketoutputpdf/apps.py:14
 #: pretix/plugins/webcheckin/apps.py:13
-msgid "the pretix team"
+msgid "the development team"
 msgstr ""
 
 #: pretix/plugins/badges/apps.py:16

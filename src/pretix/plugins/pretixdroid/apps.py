@@ -10,7 +10,6 @@ class PretixdroidApp(AppConfig):
 
     class PretixPluginMeta:
         name = _("Old check-in device API")
-        author = _("the pretix team")
         version = version
         visible = False
         restricted = True
