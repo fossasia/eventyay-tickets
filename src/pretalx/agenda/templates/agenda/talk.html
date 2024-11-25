@@ -127,8 +127,8 @@
                     <hr />
                     <section class="answers">
                         {% for answer in answers %}
-                            <span class="question"><strong>{{ answer.question.question }}</strong></span>
-                            <span class="answer">– {% include "common/question_answer.html" with answer=answer %}</span>
+                            <span class="question"><strong>{{ answer.question.question }}:</strong></span>
+                            <span class="answer {% if question.variant != "text" %}answer-strip-paragraph{% endif %}">{% include "common/question_answer.html" with answer=answer %}</span>
                         {% endfor %}
                 {% endif %}
             </section>

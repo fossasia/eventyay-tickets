@@ -190,6 +190,10 @@ article .pretalx-session .pretalx-session-info .abstract {
   padding-top: 56.25%;
 }
 
+.answer.answer-strip-paragraph p {
+    display: contents;
+}
+
 @media (max-width: 1200px) {
   header {
     text-align: right;
