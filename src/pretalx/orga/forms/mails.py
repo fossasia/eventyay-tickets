@@ -446,7 +446,6 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
         template = super().save()
 
         mails_by_user = defaultdict(list)
-        submissions = []
         contexts = self.get_recipients()
         for context in contexts:
             with suppress(
@@ -455,7 +454,6 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
                 locale = context["user"].locale
                 if submission := context.get("submission"):
                     locale = submission.get_email_locale(context["user"].locale)
-                    submissions.append(submission)
                 mail = template.to_mail(
                     user=None,
                     event=self.event,
@@ -475,7 +473,8 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
             for mail in mail_dict.values():
                 mail.save()
                 mail.to_users.add(user)
-                mail.submissions.set(submissions)
+                if submission := mail.context.get("submission"):
+                    mail.submissions.add(submission)
                 result.append(mail)
         if self.cleaned_data.get("skip_queue"):
             for mail in result:
