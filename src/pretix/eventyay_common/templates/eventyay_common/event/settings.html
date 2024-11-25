@@ -19,7 +19,7 @@
                 <a href="#" class="header-nav btn btn-outline-success active">
                     <i class="fa fa-home"></i> {% trans "Home" %}
                 </a>
-                <a href='{% url "control:event.settings" organizer=request.organizer.slug event=request.event.slug %}'
+                <a href='{% url "control:event.index" organizer=request.organizer.slug event=request.event.slug %}'
                    class="header-nav btn btn-outline-success">
                     <i class="fa fa-ticket"></i> {% trans "Tickets" %}
                 </a>
