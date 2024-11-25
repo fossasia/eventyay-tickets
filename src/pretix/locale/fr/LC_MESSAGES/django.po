@@ -12581,8 +12581,8 @@ msgstr "Basculer la navigation"
 #: pretix/control/templates/pretixcontrol/base.html:136
 #: pretix/control/templates/pretixcontrol/base.html:140
 #: pretix/control/templates/pretixcontrol/base.html:141
-msgid "Go to shop"
-msgstr "Accéder à la boutique"
+msgid "View event"
+msgstr "voir l'événement"
 
 #: pretix/control/templates/pretixcontrol/base.html:119
 #: pretix/control/templates/pretixcontrol/base.html:147
@@ -25894,7 +25894,7 @@ msgstr ""
 #~ msgid "General "
 #~ msgstr "Général"
 
-#~ msgid "Go to Shop"
+#~ msgid "View event"
 #~ msgstr "Accéder à la Boutique"
 
 #~ msgid "You haven't created any questions yet."

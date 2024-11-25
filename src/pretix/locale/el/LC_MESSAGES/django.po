@@ -12355,8 +12355,8 @@ msgstr "Εναλλαγή πλοήγησης"
 #: pretix/control/templates/pretixcontrol/base.html:136
 #: pretix/control/templates/pretixcontrol/base.html:140
 #: pretix/control/templates/pretixcontrol/base.html:141
-msgid "Go to shop"
-msgstr "Πηγαίνετε στο κατάστημα"
+msgid "View event"
+msgstr "προβολή εκδήλωσης"
 
 #: pretix/control/templates/pretixcontrol/base.html:119
 #: pretix/control/templates/pretixcontrol/base.html:147
@@ -25429,7 +25429,7 @@ msgstr ""
 #~ msgid "General "
 #~ msgstr "Γενικά"
 
-#~ msgid "Go to Shop"
+#~ msgid "View event"
 #~ msgstr "Πηγαίνετε στο κατάστημα"
 
 #~ msgid "You haven't created any questions yet."

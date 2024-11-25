@@ -11601,7 +11601,7 @@ msgstr "切换导航"
 #: pretix/control/templates/pretixcontrol/base.html:136
 #: pretix/control/templates/pretixcontrol/base.html:140
 #: pretix/control/templates/pretixcontrol/base.html:141
-msgid "Go to shop"
+msgid "View event"
 msgstr "去购物"
 
 #: pretix/control/templates/pretixcontrol/base.html:119
@@ -23898,7 +23898,7 @@ msgstr ""
 #~ msgid "General "
 #~ msgstr "一般"
 
-#~ msgid "Go to Shop"
+#~ msgid "View event"
 #~ msgstr "去商店"
 
 #~ msgid "You haven't created any questions yet."

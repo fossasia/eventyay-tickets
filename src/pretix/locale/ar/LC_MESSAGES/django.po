@@ -11784,8 +11784,8 @@ msgstr "تبديل الملاحة"
 #: pretix/control/templates/pretixcontrol/base.html:136
 #: pretix/control/templates/pretixcontrol/base.html:140
 #: pretix/control/templates/pretixcontrol/base.html:141
-msgid "Go to shop"
-msgstr "الذهاب للتسوق"
+msgid "View event"
+msgstr "عرض الحدث"
 
 #: pretix/control/templates/pretixcontrol/base.html:119
 #: pretix/control/templates/pretixcontrol/base.html:147
@@ -24299,7 +24299,7 @@ msgstr ""
 #~ msgid "General "
 #~ msgstr "جنرال لواء"
 
-#~ msgid "Go to Shop"
+#~ msgid "View event"
 #~ msgstr "الذهاب إلى متجر"
 
 #~ msgid "You haven't created any questions yet."

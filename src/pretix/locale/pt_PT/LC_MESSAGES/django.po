@@ -11795,7 +11795,7 @@ msgstr "Alternar navegação"
 #: pretix/control/templates/pretixcontrol/base.html:136
 #: pretix/control/templates/pretixcontrol/base.html:140
 #: pretix/control/templates/pretixcontrol/base.html:141
-msgid "Go to shop"
+msgid "View event"
 msgstr "Ir para a loja"
 
 #: pretix/control/templates/pretixcontrol/base.html:119

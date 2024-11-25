@@ -12462,7 +12462,7 @@ msgstr "Gezinmeyi değiştir"
 #: pretix/control/templates/pretixcontrol/base.html:136
 #: pretix/control/templates/pretixcontrol/base.html:140
 #: pretix/control/templates/pretixcontrol/base.html:141
-msgid "Go to shop"
+msgid "View event"
 msgstr "Dükkana git"
 
 #: pretix/control/templates/pretixcontrol/base.html:119
@@ -25394,7 +25394,7 @@ msgstr ""
 #~ msgid "General "
 #~ msgstr "Genel"
 
-#~ msgid "Go to Shop"
+#~ msgid "View event"
 #~ msgstr "Dükkana git"
 
 #~ msgid "You haven't created any questions yet."
