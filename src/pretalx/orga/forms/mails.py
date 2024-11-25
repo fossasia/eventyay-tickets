@@ -462,19 +462,23 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
                     commit=False,
                     allow_empty_address=True,
                 )
-                mails_by_user[context["user"]].append(mail)
+                mails_by_user[context["user"]].append((mail, context))
 
         result = []
         for user, user_mails in mails_by_user.items():
             # Deduplicate emails: we don't want speakers to receive the same
             # email twice, just because they have multiple submissions.
-            mail_dict = {mail.subject + mail.text: mail for mail in user_mails}
+            mail_dict = defaultdict(list)
+            for mail, context in user_mails:
+                mail_dict[mail.subject + mail.text].append((mail, context))
             # Now we can create the emails and add the speakers to them
-            for mail in mail_dict.values():
+            for mail_list in mail_dict.values():
+                mail = mail_list[0]
                 mail.save()
                 mail.to_users.add(user)
-                if submission := mail.context.get("submission"):
-                    mail.submissions.add(submission)
+                for _, context in mail_list:
+                    if submission := context.get("submission"):
+                        mail.submissions.add(submission)
                 result.append(mail)
         if self.cleaned_data.get("skip_queue"):
             for mail in result:
