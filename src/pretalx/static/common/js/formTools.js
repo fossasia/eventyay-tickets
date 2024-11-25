@@ -144,6 +144,7 @@ const initSelect = (element) => {
         removeItemLabelText: "×",
         removeItemIconText: "×",
         maxItemText: "",
+        allowHTML: true,
     }
     if (element.querySelectorAll("option[data-description]").length || element.querySelectorAll("option[data-color]").length) {
         choicesOptions.callbackOnCreateTemplates = (strToEl, escapeForTemplates, getClassNames) => ({
