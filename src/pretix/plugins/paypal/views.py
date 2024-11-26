@@ -1,5 +1,6 @@
 import json
 import logging
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
 from django.contrib import messages
@@ -237,6 +238,16 @@ def webhook(request, *args, **kwargs):
         "PAYPAL-TRANSMISSION-TIME",
     ]
     if not all(header in request.headers for header in required_headers):
+        return HttpResponse(
+            "Unable to get required headers to verify webhook signature", status=200
+        )
+
+    # Prevent replay attacks: check timestamp
+    current_time = datetime.now(timezone.utc)
+    transmission_time = datetime.isoformat(
+        request.headers.get("PAYPAL-TRANSMISSION-TIME")
+    )
+    if current_time - transmission_time > timedelta(minutes=10):
         return HttpResponse(
             "Unable to get required headers to verify webhook signature", status=200
         )
