@@ -70,7 +70,7 @@ def get_global_navigation(request):
             'icon': 'dashboard',
         },
         {
-            'label': _('Events'),
+            'label': _('My events'),
             'url': reverse('eventyay_common:events'),
             'active': 'events' in url.url_name,
             'icon': 'calendar',
