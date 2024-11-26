@@ -1,0 +1,52 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+{% load compress %}
+{% load static %}
+{% load eventurl %}
+{% block title %}{% trans "Page settings" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "Page settings" %}</h1>
+    {% if pages|length == 0 %}
+        <div class="empty-collection">
+            <p>
+                {% blocktrans trimmed %}
+                    You haven't created any pages yet.
+                {% endblocktrans %}
+            </p>
+
+            <a href="{% url "control:admin.pages.add" %}"
+                    class="btn btn-primary btn-lg"><i class="fa fa-plus"></i> {% trans "Create a new page" %}</a>
+        </div>
+    {% else %}
+        <p>
+            <a href="{% url "control:admin.pages.add" %}" class="btn btn-default"><i class="fa fa-plus"></i> {% trans "Create a new page" %}
+            </a>
+        </p>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>{% trans "Page title" %}</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for p in pages %}
+                    <tr>
+                        <td>
+                            <strong><a href="{% url "control:admin.pages.edit" id=p.id%}">{{ p.title }}</a></strong>
+                        </td>
+                        <td class="text-right">
+                            <a href="{% url "page" slug=p.slug %}" class="btn btn-default btn-sm" target="_blank"><i class="fa fa-eye"></i></a>
+                            <a href="{% url "control:admin.pages.edit" id=p.id %}" class="btn btn-default btn-sm"><i class="fa fa-edit"></i></a>
+                            <a href="{% url "control:admin.pages.delete" id=p.id %}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include "pretixcontrol/pagination.html" %}
+    {% endif %}
+{% endblock %}

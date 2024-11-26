@@ -1,0 +1,92 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load static %}
+{% load compress %}
+{% block title %}{% trans "Page settings" %}{% endblock %}
+{% block content %}
+    {% compress css %}
+        <link type="text/css" rel="stylesheet" href="{% static "pages/css/quill.snow.css" %}">
+        <link type="text/css" rel="stylesheet" href="{% static "pages/css/quill-edit.css" %}">
+    {% endcompress %}
+    <h1>{% trans "Page settings" %}</h1>
+    <div class="tabbed-form">
+        <form action="" method="post" class="form-horizontal" data-id="{{ page.id }}">
+            {% csrf_token %}
+            {% bootstrap_form_errors form type='non_fields' %}
+                    <fieldset>
+                        <legend>{% trans "General information" %}</legend>
+                        {% bootstrap_field form.title layout="horizontal" %}
+                        {% bootstrap_field form.slug layout="horizontal" %}
+                        {% if page.id %}
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="id_url">{% trans "Page link" %}</label>
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        <input class="form-control" readonly="readonly" type="text"
+                                               value="{{ url }}" id="id_url">
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default btn-clipboard"
+                                                    data-clipboard-target="#id_url">
+                                                <i class="fa fa-clipboard" aria-hidden="true"></i>
+                                                <span class="sr-only">
+                                                {% trans "Copy" %}
+                                            </span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% bootstrap_field form.link_on_website_start_page layout="horizontal" %}
+                        {% bootstrap_field form.link_in_header layout="horizontal" %}
+                        {% bootstrap_field form.link_in_footer layout="horizontal" %}
+                        {% bootstrap_field form.require_confirmation layout="horizontal" %}
+                    </fieldset>
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">{% trans "Page content" %}</label>
+                            <div class="col-md-9">
+                                <noscript>
+                                    <div class="alert alert-danger">
+                                        {% trans "Please enable JavaScript" %}
+                                    </div>
+                                </noscript>
+
+                                <ul class="nav nav-tabs">
+                                    {% for lng, text in locales %}
+                                        <li role="presentation" {% if forloop.first %}class="active"{% endif %}>
+                                            <a href="#editor-{{ lng }}" data-toggle="tab">{{ text }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+
+                                <div class="tab-content">
+                                    {% for lng, text in locales %}
+                                        <div class="tab-pane {% if forloop.first %}active{% endif %}" id="editor-{{ lng }}">
+                                            <div class="editor" data-lng="{{ lng }}">
+                                                {{ text|safe }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="sr-only">
+                                    {{ form.text }}
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form-group submit-group">
+                        <a href="{% url 'control:admin.pages' %}" class="btn btn-default btn-lg pull-left flip">
+                            {% trans "Back" %}
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-save">
+                            {% trans "Save" %}
+                        </button>
+                    </div>
+        </form>
+    </div>
+    <script type="application/javascript" src="{% static "pretix_pages/quill/quill.js" %}"></script>
+    <script type="application/javascript" src="{% static "pretix_pages/editor.js" %}"></script>
+{% endblock %}

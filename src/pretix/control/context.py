@@ -8,6 +8,7 @@ from django.utils.translation import get_language
 from django_scopes import scope
 
 from pretix.base.models.auth import StaffSession
+from pretix.base.models.page import Page
 from pretix.base.settings import GlobalSettingsObject
 from pretix.control.navigation import (
     get_admin_navigation, get_event_navigation, get_global_navigation,
@@ -144,8 +145,7 @@ def _default_context(request):
             if request.user.is_staff and settings.PRETIX_ADMIN_AUDIT_COMMENTS else StaffSession.objects.none()
         )
 
-    page_types = ['faq', 'pricing', 'privacy', 'terms']
-    for page_type in page_types:
-        ctx[f'{page_type}_content'] = bool(getattr(gs.settings, f'{page_type}_content', False))
+    ctx['show_link_in_header_for_all_pages'] = Page.objects.filter(link_in_header=True)
+    ctx['show_link_in_footer_for_all_pages'] = Page.objects.filter(link_in_footer=True)
 
     return ctx

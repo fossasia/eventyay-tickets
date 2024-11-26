@@ -21,6 +21,12 @@
                 If you're looking to configure this installation, please <a {{ a_attr }}>head over here</a>.
             {% endblocktrans %}
         </p>
-        <p>{% trans "Enjoy!" %}</p>
+        {% if show_link_in_start_pages %}
+            Please read below links for more information:
+            {% for page in show_link_in_start_pages %}
+                    <a href='{% url "page" slug=page.slug %}' title='{{ page.title|safe }}'>{{ page.title|safe }}</a>{% if not forloop.last %}, {% else %}.{% endif %}
+            {% endfor %}
+        {% endif %}
+        <p style="margin-top: 20px">Enjoy!</p>
     </div>
 {% endblock %}

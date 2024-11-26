@@ -1,13 +1,11 @@
-{% extends "eventyay_common/pages/base.html" %}
+{% extends "pretixcontrol/admin/pages/base.html" %}
 {% load i18n %}
 {% load bootstrap3 %}
 
-{% block title %}
-    {{ page_title }}
-{% endblock %}
+{% block title %}{{ page.title }}{% endblock %}
 {% block content %}
 
-    <h2>{{ page_title }}</h2>
+    <h2>{{ page.title }}</h2>
     <div class="ql-content">
         {{ content|safe }}
     </div>

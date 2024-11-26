@@ -37,33 +37,14 @@
                 </a>
             </div>
             <ul class="nav navbar-nav navbar-top-links navbar-right flip">
-                {% if faq_content %}
-                    <li>
-                        <a href='{% url "api-v1:pages.view" page="faq" %}' title='{% trans "FAQ" %}' >
-                            <i class="fa fa-question"></i> {% trans "Frequently asked question" %}
-                        </a>
-                    </li>
-                {% endif %}
-                {% if pricing_content %}
-                <li>
-                    <a href='{% url "api-v1:pages.view" page="pricing" %}' title='{% trans "Pricing" %}' >
-                        <i class="fa fa-money"></i> {% trans "Pricing" %}
-                    </a>
-                </li>
-                {% endif %}
-                {% if privacy_content %}
-                <li>
-                    <a href='{% url "api-v1:pages.view" page="privacy" %}' title='{% trans "Privacy" %}' >
-                        <i class="fa fa-shield"></i> {% trans "Privacy" %}
-                    </a>
-                </li>
-                {% endif %}
-                {% if terms_content %}
-                <li>
-                    <a href='{% url "api-v1:pages.view" page="terms" %}' title='{% trans "Terms" %}' >
-                        <i class="fa fa-check"></i> {% trans "Terms" %}
-                    </a>
-                </li>
+                {% if show_link_in_header_for_all_pages %}
+                    {% for page in show_link_in_header_for_all_pages %}
+                            <li>
+                                <a href='{% url "page" slug=page.slug %}' title='{{ page.title|safe }}'>
+                                    {{ page.title|safe }}
+                                </a>
+                            </li>
+                    {% endfor %}
                 {% endif %}
             </ul>
         </nav>
@@ -101,6 +82,17 @@
                 powered by <a {{ a_attr }}>eventyay</a>
             {% endblocktrans %}
         {% endwith %}
+        <ul class="list-inline text-center" style="margin-top: 20px">
+            {% if show_link_in_footer_for_all_pages %}
+                {% for page in show_link_in_footer_for_all_pages %}
+                        <li>
+                            <a href='{% url "page" slug=page.slug %}' title='{{ page.title|safe }}'>
+                                {{ page.title|safe }}
+                            </a>
+                        </li>
+                {% endfor %}
+            {% endif %}
+        </ul>
     </footer>
 </div>
 </body>
