@@ -191,7 +191,7 @@ article .pretalx-session .pretalx-session-info .abstract {
 }
 
 .answer.answer-strip-paragraph p {
-    display: contents;
+  display: contents;
 }
 
 @media (max-width: 1200px) {
