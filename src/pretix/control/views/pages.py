@@ -8,8 +8,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, ListView, TemplateView, UpdateView
 
 from pretix.base.models.page import Page
-from pretix.control.permissions import AdministratorPermissionRequiredMixin
 from pretix.control.forms.page import PageSettingsForm
+from pretix.control.permissions import AdministratorPermissionRequiredMixin
 from pretix.helpers.compat import CompatDeleteView
 
 
@@ -68,7 +68,7 @@ class PageEditForm(PageSettingsForm):
 
 
 class PageUpdate(
-    AdministratorPermissionRequiredMixin, PageDetailMixin,  UpdateView
+    AdministratorPermissionRequiredMixin, PageDetailMixin, UpdateView
 ):
     model = Page
     form_class = PageEditForm
@@ -92,8 +92,8 @@ class PageUpdate(
             dataline = (
                 self.object.text.data[lng_code]
                 if self.object.text is not None
-                   and (isinstance(self.object.text.data, dict))
-                   and lng_code in self.object.text.data
+                and (isinstance(self.object.text.data, dict))
+                and lng_code in self.object.text.data
                 else ""
             )
             ctx["locales"].append((lng_code, lng_name))
