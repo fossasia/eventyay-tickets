@@ -29,12 +29,12 @@ $(function () {
                     </div>
                     <div class="profile-menu">
                         <a href="${basePath}${orderPath}" target="_self" class="btn btn-outline-success">
-                            <i class="fa fa-shopping-cart"></i> ${window.gettext('My Orders')}
+                            <i class="fa fa-shopping-cart"></i> ${window.gettext('My orders')}
                         </a>
                     </div>
                     <div class="profile-menu">
                         <a href="${basePath}${eventPath}" target="_self" class="btn btn-outline-success">
-                            <i class="fa fa-calendar"></i> ${window.gettext('My Events')}
+                            <i class="fa fa-calendar"></i> ${window.gettext('My events')}
                         </a>
                     </div>
                      <div class="profile-menu">
