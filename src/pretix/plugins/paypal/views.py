@@ -249,7 +249,7 @@ def webhook(request, *args, **kwargs):
     )
     if current_time - transmission_time > timedelta(minutes=10):
         return HttpResponse(
-            "Unable to get required headers to verify webhook signature", status=200
+            "Webhook timestamp is old.", status=200
         )
 
     verify_response = prov.paypal_request_handler.verify_webhook_signature(
