@@ -16,3 +16,8 @@ class LazyI18nStringListBase(UserList):
     @classmethod
     def unserialize(cls, s):
         return cls(json.loads(s))
+
+
+class LazyI18nStringList(LazyI18nStringListBase):
+    def __init__(self, init_list=None):
+        super().__init__(init_list)

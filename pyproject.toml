@@ -27,7 +27,7 @@ dependencies = [
         'pytz',
         'django-bootstrap3==24.3',
         'django-formset-js-improved==0.5.0.3',
-        'django-compressor==4.5',
+        'django-compressor==4.5.1',
         'django-hierarkey==1.2.*',
         'django-filter==24.3',
         'django-scopes==2.0.*',
@@ -72,13 +72,13 @@ dependencies = [
         'defusedcsv>=1.1.0',
         'vat_moss_forked==2020.3.20.0.11.0',
         'jsonschema',
-        'django-hijack==3.5.*',
+        'django-hijack==3.7.*',
         'openpyxl==3.1.*',
         'django-oauth-toolkit==2.4.*',
         'oauthlib==3.2.*',
         'django-phonenumber-field==7.3.*',
         'phonenumberslite==8.13.*',
-        'python-bidi==0.4.*',  # Support for Arabic in reportlab
+        'python-bidi==0.6.*',  # Support for Arabic in reportlab
         'arabic-reshaper==3.0.0',  # Support for Arabic in reportlab
         'packaging',
         'tlds>=2020041600',
