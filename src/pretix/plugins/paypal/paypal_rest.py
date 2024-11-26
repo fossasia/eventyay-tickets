@@ -1,17 +1,16 @@
-import jwt
-import uuid
-import json
-import time
 import base64
 import hashlib
+import json
 import logging
-import requests
+import time
 import urllib.parse
+import uuid
 from typing import List, Optional
-from cryptography.fernet import Fernet
 
+import jwt
+import requests
+from cryptography.fernet import Fernet
 from django.core.cache import cache
-from django.utils.translation import gettext as __, gettext_lazy as _
 
 logger = logging.getLogger("pretix.plugins.paypal")
 
