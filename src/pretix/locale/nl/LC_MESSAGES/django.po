@@ -11699,8 +11699,8 @@ msgstr "Navigatie schakelen"
 #: pretix/control/templates/pretixcontrol/base.html:136
 #: pretix/control/templates/pretixcontrol/base.html:140
 #: pretix/control/templates/pretixcontrol/base.html:141
-msgid "Go to shop"
-msgstr "Ga naar de winkel"
+msgid "View event"
+msgstr "Bekijk evenement"
 
 #: pretix/control/templates/pretixcontrol/base.html:119
 #: pretix/control/templates/pretixcontrol/base.html:147
@@ -24129,9 +24129,6 @@ msgstr "Kosovo"
 
 #~ msgid "General "
 #~ msgstr "Algemeen "
-
-#~ msgid "Go to Shop"
-#~ msgstr "Ga naar de winkel"
 
 #~ msgid "You haven't created any questions yet."
 #~ msgstr "U heeft nog geen vragen aangemaakt."
