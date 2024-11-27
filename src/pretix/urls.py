@@ -34,7 +34,7 @@ common_patterns = [
 ]
 
 page_patterns = [
-    path('<slug:slug>', pages.ShowPageView.as_view(), name="page"),
+    path('<slug:slug>/', pages.ShowPageView.as_view(), name="page"),
 ]
 
 debug_patterns = []
