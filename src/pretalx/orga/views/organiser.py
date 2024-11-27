@@ -1,6 +1,5 @@
 import logging
 
-from allauth.socialaccount.models import SocialApp
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Count, Q
@@ -16,7 +15,7 @@ from django_scopes import scopes_disabled
 
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.text.phrases import phrases
-from pretalx.common.views import CreateOrUpdateView, is_form_bound
+from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
     ActionConfirmMixin,
     Filterable,
@@ -32,7 +31,6 @@ from pretalx.event.models.organiser import (
     TeamInvite,
     check_access_permissions,
 )
-from pretalx.orga.forms.sso_client_form import SSOClientForm
 from pretalx.person.forms import UserSpeakerFilterForm
 from pretalx.person.models import User
 from pretalx.submission.models.submission import SubmissionStates
@@ -318,68 +316,6 @@ class OrganiserDetail(PermissionRequired, CreateOrUpdateView):
     def get_success_url(self):
         messages.success(self.request, phrases.base.saved)
         return self.request.path
-
-    @context
-    @cached_property
-    def sso_client_form(self):
-        organiser = self.kwargs.get("organiser", None)
-        if self.request.POST.get("form") == "remove_sso_client":
-            bind = is_form_bound(self.request, "remove_sso_client")
-        else:
-            bind = is_form_bound(self.request, "sso_client")
-        return SSOClientForm(
-            provider_id=organiser,
-            data=self.request.POST if bind else None,
-        )
-
-    def save_sso_client(self, request, *args, **kwargs):
-        try:
-            self.sso_client_form.save(organiser=self.kwargs.get("organiser", None))
-        except Exception as e:
-            logger.error(
-                f"Error saving SSO client for organiser {self.kwargs.get('organiser', None)}: {e}"
-            )
-            messages.error(request, _("An error occurred: ") + str(e))
-            return redirect(self.request.path)
-        return redirect(self.get_success_url())
-
-    def post(self, request, *args, **kwargs):
-        try:
-            if self.is_remove_sso_client_request(request):
-                return self.handle_remove_sso_client(request)
-            elif self.is_sso_client_request(request):
-                return self.handle_sso_client(request, *args, **kwargs)
-            else:
-                self.set_object()
-                return super().post(request, *args, **kwargs)
-        except Exception as e:
-            messages.error(request, _("An error occurred: ") + str(e))
-            return redirect(self.request.path)
-
-    def is_remove_sso_client_request(self, request):
-        return (
-            is_form_bound(self.request, "remove_sso_client")
-            and request.POST.get("form") == "remove_sso_client"
-        )
-
-    def handle_remove_sso_client(self, request):
-        provider_id = self.kwargs.get("organiser")
-        try:
-            social_app = SocialApp.objects.get(provider=provider_id)
-            social_app.delete()
-        except SocialApp.DoesNotExist:
-            messages.error(request, _("The key does not exist."))
-        return redirect(self.request.path)
-
-    def is_sso_client_request(self, request):
-        return (
-            is_form_bound(self.request, "sso_client")
-            and request.POST.get("form") == "sso_client"
-            and self.sso_client_form.is_valid()
-        )
-
-    def handle_sso_client(self, request, *args, **kwargs):
-        return self.save_sso_client(request, *args, **kwargs)
 
 
 class OrganiserDelete(PermissionRequired, ActionConfirmMixin, DetailView):

@@ -474,6 +474,9 @@
                                 <a href='{% url "orga:admin.user.list" %}' class="nav-link nav-link-second-level{% if "/orga/admin/users" in request.path_info %} active{% endif %}">
                                     <span>{% translate "Users" %}</span>
                                 </a>
+                                <a href='{% url "orga:admin.sso.settings" %}' class="nav-link nav-link-second-level{% if "/orga/admin/sso/settings" in request.path_info %} active{% endif %}">
+                                    <span>{% translate "SSO settings" %}</span>
+                                </a>
                             </div>
                         </div>
                     {% endif %}

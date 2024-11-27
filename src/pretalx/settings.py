@@ -702,11 +702,7 @@ LOGIN_REDIRECT_URL = BASE_PATH
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 
 # OAuth2 Client settings
-SSO_CLIENT_ID = config.get("sso", "client_id", fallback="")
-SSO_CLIENT_SECRET = config.get("sso", "client_secret", fallback="")
 OAUTH2_PROVIDER = {
-    "CLIENT_ID": SSO_CLIENT_ID,
-    "CLIENT_SECRET": SSO_CLIENT_SECRET,
     "AUTHORIZE_URL": "/".join([EVENTYAY_TICKET_BASE_PATH, "control/oauth2/authorize/"]),
     "ACCESS_TOKEN_URL": "/".join([EVENTYAY_TICKET_BASE_PATH, "control/oauth2/token/"]),
     "REDIRECT_URI": "/".join(
@@ -736,3 +732,4 @@ LOGOUT_REDIRECT_URL = "/"
 LOGIN_URL = BASE_PATH + "/login/"
 
 CORS_ORIGIN_WHITELIST = [EVENTYAY_TICKET_BASE_PATH]
+EVENTYAY_SSO_PROVIDER = "eventyay"

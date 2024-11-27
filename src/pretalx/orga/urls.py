@@ -1,6 +1,7 @@
 from django.urls import include, path
 from django.views.generic.base import RedirectView
 
+from pretalx.eventyay_common.views import sso
 from pretalx.orga.views import (
     admin,
     auth,
@@ -39,6 +40,19 @@ urlpatterns = [
         name="admin.user.delete",
     ),
     path("admin/users/", admin.AdminUserList.as_view(), name="admin.user.list"),
+    path(
+        "admin/sso/",
+        include(
+            [
+                path(
+                    "settings",
+                    sso.SSOConfigureView.as_view(),
+                    name="admin.sso.settings",
+                ),
+                path("delete", sso.SSODeleteView.as_view(), name="admin.sso.delete"),
+            ]
+        ),
+    ),
     path("me", event.UserSettings.as_view(), name="user.view"),
     path("me/subuser", person.SubuserView.as_view(), name="user.subuser"),
     path(
