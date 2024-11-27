@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :bug:`orga:schedule,1900` The HTML export did not work and exported only 404 pages if the schedule was not public.
 - :feature:`schedule` When a room is empty during a day, pretalx will not show it anymore in the grid schedule (rather than only hiding rooms that are *never* used).
 - :feature:`orga` You can now send or discard only a filtered list of emails from the outbox.
 - :feature:`dev,1596` With the new ``queuedmail_pre_send`` signal, your plugin can modify a `QueuedMail` object before it is sent out. You can handle the sending entirely by setting the object’s `sent` attribute, or e.g. modify the email text before it is sent out by pretalx.
