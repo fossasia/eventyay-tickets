@@ -25,6 +25,7 @@ class PageSettingsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['link_on_website_start_page'].widget = forms.HiddenInput()
 
     mimes = {
         "image/gif": "gif",
