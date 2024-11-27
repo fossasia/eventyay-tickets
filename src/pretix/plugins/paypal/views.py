@@ -221,11 +221,10 @@ def webhook(request, *args, **kwargs):
     )
     if rpo:
         event = rpo.order.event
+    elif hasattr(request, "event"):
+        event = request.event
     else:
-        if hasattr(request, "event"):
-            event = request.event
-        else:
-            return HttpResponse("Unable to detect event", status=200)
+        return HttpResponse("Unable to detect event", status=200)
 
     prov = Paypal(event)
 
