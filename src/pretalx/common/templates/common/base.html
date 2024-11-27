@@ -20,7 +20,7 @@
             <meta name="robots" content="index, follow">
         {% endif %}
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="{% if request.event %}{{ request.event.visible_primary_color }}{% else %}#3aa57c{% endif %}">
+        <meta name="theme-color" content="{% if request.event %}{{ request.event.visible_primary_color }}{% else %}#2185d0{% endif %}">
         <meta name="HandheldFriendly" content="True"/>
         {% block meta_image %}{% if request.event %}<meta property="thumbnail" content="{{ request.event.urls.social_image.full }}">
             <meta property="og:image" content="{{ request.event.urls.social_image.full }}">

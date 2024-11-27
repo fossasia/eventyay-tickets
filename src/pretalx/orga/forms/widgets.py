@@ -38,7 +38,7 @@ class MultipleLanguagesWidget(CheckboxSelectMultiple):
                 (
                     _("Community translations"),
                     _(
-                        "These translations are not maintained by the pretalx team. "
+                        "These translations are not maintained by the eventyay team. "
                         "We cannot vouch for their correctness, and new or recently changed features "
                         "might not be translated and will show in English instead. "
                         'You can <a href="{url}" target="_blank">contribute to the translations</a>.'

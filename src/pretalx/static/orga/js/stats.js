@@ -59,7 +59,7 @@ const drawTimeline = () => {
                 },
             },
         },
-        colors: ["#3aa57c", "#4697c9", "#cccccc"],
+        colors: ["#2185d0", "#4697c9", "#cccccc"],
         fill: {
             type: ["gradient", "gradient", "gradient"],
         },

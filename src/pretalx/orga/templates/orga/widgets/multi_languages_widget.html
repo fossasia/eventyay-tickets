@@ -3,7 +3,7 @@
 {% include "django/forms/widgets/input_option.html" %}
 {% if not widget.official %}
     {% if widget.percentage %}
-        <a href="https://translate.pretalx.com/engage/pretalx/{{ widget.value }}/">
+        <a href="#">
             <span class="badge badge-pill color-{% if widget.percentage >= 90 %}success{% elif widget.percentage >= 80 %}warning{% else %}danger{% endif %}">
                 {% blocktranslate trimmed with percentage=widget.percentage %}{{ percentage }} % translated{% endblocktranslate %}</span></a> {# We need to avoid trailing whitespace here, sadly #}
     {% endif %}

@@ -135,7 +135,7 @@ main {
 
 header {
     height: 70px;
-    background-color: #3aa57c;
+    background-color: #2185d0;
     width: 100%;
     position: fixed;
     z-index: 100;
@@ -194,8 +194,8 @@ header #related .dropdown .dropdown-body .dropdown-item a {
     color: #2c3e50;
 }
 header #related .dropdown .dropdown-body .dropdown-item a:hover {
-    color: #3aa57c;
-    border-bottom: 2px solid #3aa57c;
+    color: #2185d0;
+    border-bottom: 2px solid #2185d0;
 }
 header #related .dropdown .dropdown-title {
     color: white;
@@ -286,7 +286,7 @@ footer a.fa {
 }
 
 a, a:hover {
-    color: #3aa57c;
+    color: #2185d0;
     font-weight: bold;
     text-decoration: none;
     cursor: pointer
@@ -453,11 +453,11 @@ legend {
     background: #4697c9
 }
 .hint, .important, .tip {
-    border: 1px solid #3aa57c;
+    border: 1px solid #2185d0;
     background: white;
 }
 .hint .admonition-title, .important .admonition-title, .tip .admonition-title {
-    background: #3aa57c
+    background: #2185d0
 }
 .note p:last-child, .attention p:last-child, .caution p:last-child, .danger p:last-child, .error p:last-child, .hint p:last-child, .important p:last-child, .tip p:last-child, .warning p:last-child, .seealso p:last-child, .admonition-todo p:last-child {
     margin-bottom: 0
@@ -749,7 +749,7 @@ div[class^='highlight'] pre {
     color: #7f8c8d;
 }
 #toctree a:hover {
-    border-bottom: 2px #3aa57c solid;
+    border-bottom: 2px #2185d0 solid;
 }
 #toctree .toctree-l1 > a {
     color: #2c3e50;
@@ -765,11 +765,11 @@ div[class^='highlight'] pre {
     padding-left: 1.5em;
 }
 #toctree .toctree-l2.current > a, #toctree .toctree-l3.current > a, #toctree .toctree-l4.current > a {
-    color: #3aa57c;
+    color: #2185d0;
     font-weight: bold;
 }
 #toctree .toctree-l2.current a, #toctree .toctree-l3.current a, #toctree .toctree-l4.current a {
-    color: #3aa57c;
+    color: #2185d0;
 }
 #toctree code {
     border: none;
@@ -980,7 +980,7 @@ dl:not(.docutils) .property {
 }
 .sectionbox .fa {
   font-size: 48px;
-  color: #3aa57c;
+  color: #2185d0;
   margin-right: 8px;
 }
 .sectionbox .content {
@@ -990,7 +990,7 @@ dl:not(.docutils) .property {
   margin-top: 10px;
 }
 .sectionbox .heading {
-    color: #3aa57c;
+    color: #2185d0;
     font-size: 20px;
 }
 .sectionbox .text p {

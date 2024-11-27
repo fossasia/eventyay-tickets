@@ -92,5 +92,5 @@ jobs:
           filename: covbadge.json
           label: coverage
           message: ${{ env.TOTAL_COV }}%
-          color: "#3aa57c"
+          color: "#2185d0"
         if: env.TOTAL_COV && github.ref == 'refs/heads/development'

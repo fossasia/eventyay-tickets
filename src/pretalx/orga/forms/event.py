@@ -58,7 +58,7 @@ class EventForm(ReadOnlyFlag, I18nHelpText, JsonSubfieldMixin, I18nModelForm):
         choices=[],
         widget=MultipleLanguagesWidget,
         help_text=_(
-            "Users will be able to use pretalx in these languages, and you will be able to provide all texts in these"
+            "Users will be able to use eventyay in these languages, and you will be able to provide all texts in these"
             " languages. If you don’t provide a text in the language a user selects, it will be shown in your event’s"
             " default language instead."
         ),
@@ -573,7 +573,7 @@ class WidgetSettingsForm(JsonSubfieldMixin, forms.Form):
     show_widget_if_not_public = forms.BooleanField(
         label=_("Show the widget even if the schedule is not public"),
         help_text=_(
-            "Set to allow external pages to show the schedule widget, even if the schedule is not shown here using pretalx."
+            "Set to allow external pages to show the schedule widget, even if the schedule is not shown here using eventyay."
         ),
         required=False,
     )

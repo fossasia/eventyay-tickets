@@ -6,7 +6,7 @@
   --color-text-lighter: rgb(0 0 0 / 0.6);
 
   /* We're making the text colour version of the primary colour a tad darker for contrast */
-  --color-pretalx: #3aa57c;
+  --color-pretalx: #2185d0;
 
   --color-primary: var(--color-pretalx);
   --color-primary-text: color-mix(in srgb, var(--color-primary), black 10%);

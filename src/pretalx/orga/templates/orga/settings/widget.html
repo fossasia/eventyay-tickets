@@ -30,7 +30,7 @@
     <dialog id="info-dialog">
         <div class="alert alert-info flip ml-auto">
             {% blocktranslate trimmed %}
-                You can configure a pretalx schedule widget to show your event schedule
+                You can configure a eventyay schedule widget to show your event schedule
                 on your homepage, instead of using this page. If you want to disable the
                 schedule on here entirely, please activate the setting below.
             {% endblocktranslate %}
@@ -42,7 +42,7 @@
     <h2>{% translate "Widget generation" %}</h2>
     <p>
         {% blocktranslate trimmed %}
-            The pretalx schedule widget is a way to embed your schedule into your event website. This way, your attendees can see your schedule without leaving your website, and you can style the schedule to fit right in with your website.
+            The eventyay schedule widget is a way to embed your schedule into your event website. This way, your attendees can see your schedule without leaving your website, and you can style the schedule to fit right in with your website.
         {% endblocktranslate %}
     </p>
 
@@ -87,7 +87,7 @@
             <span class="text-success">
                 <i class="fa fa-info-circle"></i>
             </span>
-            {% blocktranslate trimmed with link="https://docs.pretalx.org/user/event/widget.html" %}
+            {% blocktranslate trimmed with link="#" %}
 
                 Please look at <a href="{{ link }}">our documentation</a> for more information.
             {% endblocktranslate %}
@@ -102,7 +102,7 @@
                     This is roughly what your widget will look like if you choose the grid format:
                 {% endblocktranslate %}
             </p>
-            <pretalx-schedule event-url="{{ request.event.urls.base }}" locale="{{ request.event.locale }}" style="--pretalx-clr-primary: {{ request.event.primary_color|default:"#3aa57c" }}"></pretalx-schedule>
+            <pretalx-schedule event-url="{{ request.event.urls.base }}" locale="{{ request.event.locale }}" style="--pretalx-clr-primary: {{ request.event.primary_color|default:"#2185d0" }}"></pretalx-schedule>
       </div>
    <script type="text/javascript" src="{{ request.event.urls.schedule_widget_script }}" async></script>
         <noscript>

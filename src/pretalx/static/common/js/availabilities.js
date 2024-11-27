@@ -99,7 +99,7 @@ const initAvailabilities = (element) => {
         eventDurationEditable: editable,
         allDayMaintainDuration: true,
         eventsSet: save_events,
-        eventColor: "#3aa57c",
+        eventColor: "#2185d0",
         eventConstraint: constraints ? "mainConstraint" : null,
         eventOverlap: !!constraints, // we can't use element with constraints, because those are also only background events
         selectOverlap: !!constraints, // we have to set element, otherwise events can only be created *outside* our available times

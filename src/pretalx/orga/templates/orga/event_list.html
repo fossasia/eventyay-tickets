@@ -19,7 +19,7 @@
     {% if not hide_speaker_events and speaker_events %}
         <div class="alert alert-info">
             <div>
-                {% translate "You are currently in the organiser area of pretalx. To view your submitted proposals, please go directly to the event page:" %}
+                {% translate "You are currently in the organiser area of eventyay. To view your submitted proposals, please go directly to the event page:" %}
                 {% if speaker_events|length == 1 %}
                     <a href="{{ event.urls.user_submissions.full }}">{{ event.name }}</a>
                 {% else %}

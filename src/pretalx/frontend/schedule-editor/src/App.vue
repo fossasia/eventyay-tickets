@@ -540,7 +540,7 @@ export default {
 				#btn-save
 					margin-left: auto
 					font-weight: bold;
-					button-style(color: #3aa57c)
+					button-style(color: #2185d0)
 				[type=submit]
 					display: none
 			.data

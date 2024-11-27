@@ -129,7 +129,7 @@
             <div class="global-top-warning">
                 <i class="fa fa-exclamation-triangle"></i>
                 {% blocktranslate with link=link trimmed %}
-                    You’re using pretalx as a superuser. This is not recommended.
+                    You’re using eventyay as a superuser. This is not recommended.
                 {% endblocktranslate %}
                 <a href="{% url "orga:user.subuser" %}?next={{ request.path|urlencode }}">
                     {% translate "Please click here to switch to an administrator account." %}
@@ -140,8 +140,8 @@
             <div class="global-top-warning">
                 <a href="{% url "orga:admin.update" %}">
                     {% blocktranslate trimmed %}
-                        Starting with version 1.1.0, pretalx automatically checks for updates in the background.
-                        During this check, anonymous data is transmitted to servers operated by the pretalx
+                        Starting with version 1.1.0, eventyay automatically checks for updates in the background.
+                        During this check, anonymous data is transmitted to servers operated by the eventyay
                         developers. Click on this message to find out more, disable this feature or enter your
                         email address to get notified via email if a new update arrives. This message will
                         disappear once you clicked it.

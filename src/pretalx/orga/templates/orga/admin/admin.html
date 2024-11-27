@@ -29,7 +29,7 @@
     {% endif %}
 
     <p>
-        {% translate "Your pretalx version is:" %} <strong>{{ pretalx_version|copyable }}</strong>.
+        {% translate "Your eventyay version is:" %} <strong>{{ pretalx_version|copyable }}</strong>.
         {% url 'orga:admin.update' as update_url %}
         {% blocktranslate trimmed %}
             You can check for updates <a href="{{ update_url }}">here</a>.

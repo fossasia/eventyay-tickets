@@ -27,9 +27,9 @@
         <div class="alert alert-danger">
             {% translate "The last update check was not successful." %}
             {% if gs.settings.update_check_result.error == "http_error" %}
-                {% translate "The pretalx.com server returned an error code." %}
+                {% translate "The eventyay.com server returned an error code." %}
             {% elif gs.settings.update_check_result.error == "unavailable" %}
-                {% translate "The pretalx.com server could not be reached." %}
+                {% translate "The eventyay.com server could not be reached." %}
             {% elif gs.settings.update_check_result.error == "development" %}
                 {% translate "This installation appears to be a development installation." %}
             {% endif %}

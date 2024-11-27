@@ -218,7 +218,7 @@ class Event(PretalxModel):
         ],
         verbose_name=_("Main event colour"),
         help_text=_(
-            "Provide a hex value like #00ff00 if you want to style pretalx in your event’s colour scheme."
+            "Provide a hex value like #00ff00 if you want to style eventyay in your event’s colour scheme."
         ),
     )
     custom_css = models.FileField(

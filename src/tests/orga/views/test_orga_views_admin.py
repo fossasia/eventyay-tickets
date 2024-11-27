@@ -44,7 +44,7 @@ def test_update_notice_displayed(client, user):
 
     r = client.get("/orga/", follow=True)
     assert (
-        "pretalx automatically checks for updates in the background"
+        "eventyay automatically checks for updates in the background"
         not in r.content.decode()
     )
 
@@ -52,14 +52,14 @@ def test_update_notice_displayed(client, user):
     user.save()
     r = client.get("/orga/", follow=True)
     assert (
-        "pretalx automatically checks for updates in the background"
+        "eventyay automatically checks for updates in the background"
         in r.content.decode()
     )
 
     client.get("/orga/admin/update/")  # Click it
     r = client.get("/orga/", follow=True)
     assert (
-        "pretalx automatically checks for updates in the background"
+        "eventyay automatically checks for updates in the background"
         not in r.content.decode()
     )
 

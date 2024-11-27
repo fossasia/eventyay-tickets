@@ -381,7 +381,7 @@ Vue.component("step", {
 var app = new Vue({
     el: "#flow",
     template: `
-    <div :class="currentModal.data ? 'defocused' : 'focused'" :style="{'--color': eventConfiguration.primary_color || '#3aa57c'}">
+    <div :class="currentModal.data ? 'defocused' : 'focused'" :style="{'--color': eventConfiguration.primary_color || '#2185d0'}">
       <div id="flow-modal" v-if="currentModal.data">
         <form>
           <field :field="currentModal.data" :isModal="true" key="modal" :locales="locales"></field>
