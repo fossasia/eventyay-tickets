@@ -23,5 +23,5 @@ urlpatterns = [
         url(r'^settings/$', event.EventUpdate.as_view(), name='event.update'),
         url(r'^video-access/$', event.VideoAccessAuthenticator.as_view(), name='event.create_access_to_video'),
     ])),
-    url(r'^account/$', account.UserSettings.as_view(), name='account'),
+    url(r'^account/$', account.AccountSettings.as_view(), name='account'),
 ]
