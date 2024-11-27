@@ -177,22 +177,72 @@ def abort(request, *args, **kwargs):
         )
 
 
-@csrf_exempt
-@require_POST
-@scopes_disabled()
-def webhook(request, *args, **kwargs):
+def check_webhook_signature(request, event, event_json, prov) -> bool:
     """
-    https://developer.paypal.com/api/rest/webhooks/event-names/
-    Webhook reference
+    Verifies the signature of a webhook from PayPal.
+
+    :param request: The current request object
+    :param event: The event object
+    :param event_json: The json payload of the webhook
+    :param prov: The payment provider instance
+    :return: True if the signature is valid, False otherwise
     """
-    event_body = request.body.decode("utf-8").strip()
-    event_json = json.loads(event_body)
 
-    if event_json["resource_type"] not in ("checkout-order", "refund", "capture"):
-        return HttpResponse("Wrong resource type", status=200)
+    required_headers = [
+        "PAYPAL-AUTH-ALGO",
+        "PAYPAL-CERT-URL",
+        "PAYPAL-TRANSMISSION-ID",
+        "PAYPAL-TRANSMISSION-SIG",
+        "PAYPAL-TRANSMISSION-TIME",
+    ]
+    if not all(header in request.headers for header in required_headers):
+        logger.error("Paypal webhook missing required headers")
+        return False
 
+    # Prevent replay attacks: check timestamp
+    current_time = datetime.now(timezone.utc)
+    transmission_time = datetime.isoformat(
+        request.headers.get("PAYPAL-TRANSMISSION-TIME")
+    )
+    if current_time - transmission_time > timedelta(minutes=7):
+        logger.error("Paypal webhook timestamp is too old.")
+        return False
+
+    verify_response = prov.paypal_request_handler.verify_webhook_signature(
+        data={
+            "auth_algo": request.headers.get("PAYPAL-AUTH-ALGO"),
+            "transmission_id": request.headers.get("PAYPAL-TRANSMISSION-ID"),
+            "cert_url": request.headers.get("PAYPAL-CERT-URL"),
+            "transmission_sig": request.headers.get("PAYPAL-TRANSMISSION-SIG"),
+            "transmission_time": request.headers.get("PAYPAL-TRANSMISSION-TIME"),
+            "webhook_id": event.settings.payment_paypal_webhook_id,
+            "webhook_event": event_json,
+        }
+    )
+
+    if (
+        verify_response.get("errors")
+        or verify_response.get("response", {}).get("verification_status") == "FAILURE"
+    ):
+        errors = verify_response.get("errors")
+        logger.error(
+            "Unable to verify signature of webhook: {}".format(errors["reason"])
+        )
+        return False
+    return True
+
+
+def parse_webhook_event(request, event_json):
+    """
+    Parse the given webhook event and return the corresponding event, payment ID and RPO.
+
+    :param request: The current request object
+    :param event_json: The json payload of the webhook
+    :return: A tuple of (event, payment_id, referenced_paypal_object)
+    """
+    event = None
+    payment_id = None
     if event_json["resource_type"] == "refund":
-        payment_id = None
         for link in event_json["resource"]["links"]:
             if link["rel"] == "up":
                 refund_url = link["href"]
@@ -219,69 +269,39 @@ def webhook(request, *args, **kwargs):
         .filter(reference__in=references)
         .first()
     )
+
     if rpo:
         event = rpo.order.event
+        if "id" in rpo.payment.info_data:
+            payment_id = rpo.payment.info_data["id"]
     elif hasattr(request, "event"):
         event = request.event
-    else:
-        return HttpResponse("Unable to detect event", status=200)
 
-    prov = Paypal(event)
+    return event, payment_id, rpo
 
-    # Verify signature
-    required_headers = [
-        "PAYPAL-AUTH-ALGO",
-        "PAYPAL-CERT-URL",
-        "PAYPAL-TRANSMISSION-ID",
-        "PAYPAL-TRANSMISSION-SIG",
-        "PAYPAL-TRANSMISSION-TIME",
-    ]
-    if not all(header in request.headers for header in required_headers):
-        return HttpResponse(
-            "Unable to get required headers to verify webhook signature", status=200
-        )
 
-    # Prevent replay attacks: check timestamp
-    current_time = datetime.now(timezone.utc)
-    transmission_time = datetime.isoformat(
-        request.headers.get("PAYPAL-TRANSMISSION-TIME")
-    )
-    if current_time - transmission_time > timedelta(minutes=10):
-        return HttpResponse(
-            "Webhook timestamp is old.", status=200
-        )
+def extract_order_and_payment(payment_id, event, event_json, prov, rpo=None):
+    """
+    Extracts order details and associated payment information from PayPal webhook data.
 
-    verify_response = prov.paypal_request_handler.verify_webhook_signature(
-        data={
-            "auth_algo": request.headers.get("PAYPAL-AUTH-ALGO"),
-            "transmission_id": request.headers.get("PAYPAL-TRANSMISSION-ID"),
-            "cert_url": request.headers.get("PAYPAL-CERT-URL"),
-            "transmission_sig": request.headers.get("PAYPAL-TRANSMISSION-SIG"),
-            "transmission_time": request.headers.get("PAYPAL-TRANSMISSION-TIME"),
-            "webhook_id": event.settings.payment_paypal_webhook_id,
-            "webhook_event": event_json,
-        }
-    )
+    :param payment_id: The ID of the payment to be extracted.
+    :param event: The event object associated with the payment.
+    :param event_json: The JSON payload of the webhook event.
+    :param prov: The payment provider instance.
+    :param rpo: Optional. The referenced PayPal object containing order and payment information.
 
-    if (
-        verify_response.get("errors")
-        or verify_response.get("response", {}).get("verification_status") == "FAILURE"
-    ):
-        errors = verify_response.get("errors")
-        logger.error(
-            "Unable to verify signature of webhook: {}".format(errors["reason"])
-        )
-        return HttpResponse("Unable to verify signature of webhook", status=200)
-
-    if rpo and "id" in rpo.payment.info_data:
-        payment_id = rpo.payment.info_data["id"]
+    :returns: A tuple containing the order details and the payment object.
+              Returns (None, None) if an error occurs while retrieving order details.
+    """
+    order_detail = None
+    payment = None
 
     order_response = prov.paypal_request_handler.get_order(order_id=payment_id)
     if order_response.get("errors"):
         errors = order_response.get("errors")
         logger.error("Paypal error on webhook: {}".format(errors["reason"]))
         logger.exception("PayPal error on webhook. Event data: %s" % str(event_json))
-        return HttpResponse("Order {} not found".format(payment_id), status=200)
+        return order_detail, payment
 
     order_detail = order_response.get("response")
 
@@ -301,8 +321,38 @@ def webhook(request, *args, **kwargs):
                     payment = p
                     break
 
-    if not payment:
-        return HttpResponse("Payment not found", status=200)
+    return order_detail, payment
+
+
+@csrf_exempt
+@require_POST
+@scopes_disabled()
+def webhook(request, *args, **kwargs):
+    """
+    https://developer.paypal.com/api/rest/webhooks/event-names/
+    Webhook reference
+    """
+    event_body = request.body.decode("utf-8").strip()
+    event_json = json.loads(event_body)
+
+    if event_json["resource_type"] not in ("checkout-order", "refund", "capture"):
+        return HttpResponse("Wrong resource type", status=200)
+
+    event, payment_id, rpo = parse_webhook_event(request, event_json)
+    if event is None:
+        return HttpResponse("Unable to get event from webhook", status=200)
+
+    prov = Paypal(event)
+
+    # Verify signature
+    if check_webhook_signature(request, event, event_json, prov) is False:
+        return HttpResponse("Unable to verify signature of webhook", status=200)
+
+    order_detail, payment = extract_order_and_payment(
+        payment_id, event, event_json, prov, rpo
+    )
+    if order_detail is None or payment is None:
+        return HttpResponse("Order or payment not found", status=200)
 
     payment.order.log_action("pretix.plugins.paypal.event", data=event_json)
 
