@@ -1,0 +1,77 @@
+{% extends "pretixcontrol/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load eventurl %}
+{% load money %}
+{% block title %}{% trans "My Orders" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "My Orders" %}</h1>
+        <div class="row filter-form">
+            <form action="" method="get">
+                <div class="col-md-3 col-xs-6">
+                    <!-- Add the event filter here -->
+                    {% bootstrap_field filter_form.event layout='inline' %}
+                </div>
+                <div class="col-md-2 col-xs-6">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="fa fa-filter"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-condensed table-hover table-quotas">
+                <thead>
+                <tr>
+                    <th>{% trans "Order code" %}</th>
+                    <th>{% trans "Organizer" %}</th>
+                    <th>{% trans "Event" %}</th>
+                    <th>{% trans "Order date" %}</th>
+                    <th class="text-right">{% trans "Order total" %}</th>
+                    <th class="text-right">{% trans "Status" %}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>
+                                <strong>
+                                    <a href='{% abseventurl order.event "presale:event.order" order=order.code secret=order.secret %}' target="_blank">
+                                        {{ order.code }}
+                                    </a>
+                                </strong>
+                            </td>
+                            <td>
+                                {{ order.event.organizer }}
+                            </td>
+                            <td>
+                                {{ order.event }}
+                            </td>
+                            <td>
+                                {{ order.datetime|date:"SHORT_DATETIME_FORMAT" }}
+                            </td>
+                            <td class="text-right flip">
+                                {{ order.total|money:order.event.currency }}
+                            </td>
+                            <td class="text-right flip">{% include "pretixpresale/event/fragment_order_status.html" with order=order event=order.event %}</td>
+                            <td class="text-right flip">
+                                <a href='{% abseventurl order.event "presale:event.order" order=order.code secret=order.secret %}'
+                                        target="_blank"
+                                        class="btn btn-default">
+                                    {% trans "Details" %}
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">
+                                {% trans "You have not made any orders yet." %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% include "pretixcontrol/pagination.html" %}
+{% endblock %}

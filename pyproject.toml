@@ -27,15 +27,15 @@ dependencies = [
         'pytz',
         'django-bootstrap3==24.3',
         'django-formset-js-improved==0.5.0.3',
-        'django-compressor==4.5',
+        'django-compressor==4.5.1',
         'django-hierarkey==1.2.*',
-        'django-filter==24.2',
+        'django-filter==24.3',
         'django-scopes==2.0.*',
         'django-localflavor==4.0',
         'django-cors-headers',
         'reportlab==4.2.*',
         'Pillow==10.4.*',
-        'pypdf==4.2.*',
+        'pypdf==5.1.*',
         'django-libsass==0.9',
         'libsass==0.23.*',
         'django-otp==1.5.*',
@@ -73,18 +73,18 @@ dependencies = [
         'defusedcsv>=1.1.0',
         'vat_moss_forked==2020.3.20.0.11.0',
         'jsonschema',
-        'django-hijack==3.5.*',
+        'django-hijack==3.7.*',
         'openpyxl==3.1.*',
         'django-oauth-toolkit==2.4.*',
         'oauthlib==3.2.*',
         'django-phonenumber-field==7.3.*',
         'phonenumberslite==8.13.*',
-        'python-bidi==0.4.*',  # Support for Arabic in reportlab
+        'python-bidi==0.6.*',  # Support for Arabic in reportlab
         'arabic-reshaper==3.0.0',  # Support for Arabic in reportlab
         'packaging',
         'tlds>=2020041600',
         'text-unidecode==1.*',
-        'protobuf==5.27.*',
+        'protobuf==5.28.*',
         'cryptography>=3.4.2',
         'pycryptodome==3.20.*',
         'sepaxml==2.6.*',
@@ -98,6 +98,7 @@ dependencies = [
         'django-sso==3.0.2',
         'PyJWT~=2.8.0',
         'exhibitors @ git+https://github.com/fossasia/eventyay-tickets-exhibitors.git@master',
+        'pyvat==1.3.18',
 ]
 
 [project.optional-dependencies]

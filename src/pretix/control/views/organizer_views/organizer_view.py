@@ -1,5 +1,7 @@
+import logging
+
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.db import transaction
 from django.db.models import Max, Min, Prefetch, ProtectedError
@@ -12,9 +14,11 @@ from django.views import View
 from django.views.generic import (
     CreateView, DetailView, FormView, ListView, UpdateView,
 )
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from pretix.base.models.event import Event, EventMetaValue
-from pretix.base.models.organizer import Organizer, Team
+from pretix.base.models.organizer import Organizer, OrganizerBillingModel, Team
 from pretix.base.settings import SETTINGS_AFFECTING_CSS
 from pretix.control.forms.filter import EventFilterForm, OrganizerFilterForm
 from pretix.control.forms.organizer_forms import (
@@ -26,9 +30,16 @@ from pretix.control.permissions import (
 )
 from pretix.control.signals import nav_organizer
 from pretix.control.views import PaginationMixin
+from pretix.helpers.stripe_utils import (
+    create_setup_intent, get_payment_method_info, get_stripe_customer_id,
+    get_stripe_publishable_key, update_payment_info,
+)
 from pretix.presale.style import regenerate_organizer_css
 
+from ...forms.organizer_forms.organizer_form import BillingSettingsForm
 from .organizer_detail_view_mixin import OrganizerDetailViewMixin
+
+logger = logging.getLogger(__name__)
 
 
 class OrganizerCreate(CreateView):
@@ -38,8 +49,6 @@ class OrganizerCreate(CreateView):
     context_object_name = 'organizer'
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.user.has_active_staff_session(self.request.session.session_key):
-            raise PermissionDenied()  # TODO
         return super().dispatch(request, *args, **kwargs)
 
     @transaction.atomic
@@ -317,3 +326,95 @@ class OrganizerList(PaginationMixin, ListView):
     @cached_property
     def filter_form(self):
         return OrganizerFilterForm(data=self.request.GET, request=self.request)
+
+
+class BillingSettings(FormView, OrganizerPermissionRequiredMixin):
+    model = OrganizerBillingModel
+    form_class = BillingSettingsForm
+    template_name = "pretixcontrol/organizers/billing.html"
+    permission = "can_change_organizer_settings"
+
+    def get_success_url(self):
+        return reverse(
+            "control:organizer.settings.billing",
+            kwargs={
+                "organizer": self.request.organizer.slug,
+            },
+        )
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["organizer"] = self.request.organizer
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+
+        billing_settings = OrganizerBillingModel.objects.filter(
+            organizer_id=self.request.organizer.id
+        ).first()
+
+        if billing_settings and billing_settings.stripe_customer_id:
+            ctx["is_general_information_fulfilled"] = True
+        else:
+            ctx["is_general_information_fulfilled"] = False
+        return ctx
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.has_changed():
+            if form.is_valid():
+                if form.warning_message:
+                    messages.warning(self.request, _(form.warning_message))
+                try:
+                    form.save()
+                    messages.success(self.request, _("Your changes have been saved."))
+                    return redirect(self.get_success_url())
+                except ValidationError as e:
+                    logger.error("Validation error saving billing settings: %s", str(e))
+                    messages.error(self.request, _(str(e.messages[0])))
+            else:
+                messages.error(
+                    self.request,
+                    _("We could not save your changes. See below for details."),
+                )
+            return self.form_invalid(form)
+        else:
+            messages.warning(self.request, _("You haven't made any changes."))
+            return redirect(self.get_success_url())
+
+
+@api_view(["GET"])
+def setup_intent(request, organizer):
+    try:
+        stripe_customer_id = get_stripe_customer_id(organizer)
+        payment_method_info = get_payment_method_info(stripe_customer_id)
+        client_secret = create_setup_intent(stripe_customer_id)
+
+        return Response(
+            {
+                "client_secret": client_secret,
+                "stripe_public_key": get_stripe_publishable_key(),
+                "payment_method_info": payment_method_info,
+            }
+        )
+    except ValidationError as e:
+        logger.error("Validation error creating setup intent: %s", str(e))
+        return Response({"error": str(e)}, status=400)
+
+
+@api_view(["POST"])
+def save_payment_information(request, organizer):
+    setup_intent_id = request.data.get("setup_intent_id")
+    try:
+        stripe_customer_id = get_stripe_customer_id(organizer)
+        update_payment_info(setup_intent_id, stripe_customer_id)
+
+        return Response(
+            {
+                "success": True,
+            }
+        )
+    except ValidationError as e:
+        logger.error("Validation error updating payment information: %s", str(e))
+        return Response({"error": str(e)}, status=400)

@@ -30,7 +30,6 @@ from i18nfield.utils import I18nJSONEncoder
 from pytz import timezone
 
 from pretix.base.channels import get_all_sales_channels
-from pretix.base.configurations import LazyI18nStringListBase
 from pretix.base.email import get_available_placeholders
 from pretix.base.models import (
     Event, LogEntry, Order, RequiredAction, TaxRule, Voucher,
@@ -54,11 +53,14 @@ from pretix.helpers.database import rolledback_transaction
 from pretix.multidomain.urlreverse import get_event_domain
 from pretix.presale.style import regenerate_css
 
+from ...base.configurations.lazy_i18n_string_list_base import (
+    LazyI18nStringList,
+)
 from ...base.i18n import language
 from ...base.models.items import (
     Item, ItemCategory, ItemMetaProperty, Question, Quota,
 )
-from ...base.settings import SETTINGS_AFFECTING_CSS, LazyI18nStringList
+from ...base.settings import SETTINGS_AFFECTING_CSS
 from ..logdisplay import OVERVIEW_BANLIST
 from . import CreateView, PaginationMixin, UpdateView
 
@@ -250,7 +252,7 @@ class EventUpdate(DecoupleMixin, EventSettingsViewMixin, EventPermissionRequired
     @cached_property
     def confirm_texts_formset(self):
         initial = [{"text": text, "ORDER": order} for order, text in
-                   enumerate(self.object.settings.get("confirm_texts", as_type=LazyI18nStringListBase))]
+                   enumerate(self.object.settings.get("confirm_texts", as_type=LazyI18nStringList))]
         return ConfirmTextFormset(self.request.POST if self.request.method == "POST" else None, event=self.object,
                                   prefix="confirm-texts", initial=initial)
 
@@ -642,14 +644,26 @@ class MailSettingsPreview(EventPermissionRequiredMixin, View):
     # get all supported placeholders with dummy values
     def placeholders(self, item):
         ctx = {}
-        for p in get_available_placeholders(self.request.event, MailSettingsForm.base_context[item]).values():
-            s = str(p.render_sample(self.request.event))
-            if s.strip().startswith('*'):
+        url_pattern = re.compile(r"^(https?://|www\.)[^\s]+$")
+
+        for p in get_available_placeholders(
+                self.request.event, MailSettingsForm.base_context[item]
+        ).values():
+            s = str(p.render_sample(self.request.event)).strip()
+
+            if s.startswith("*"):
                 ctx[p.identifier] = s
+            elif url_pattern.match(s):
+                ctx[p.identifier] = (
+                    '<a href="{}" target="_blank" rel="noopener noreferrer">{}</a>'.format(
+                        s, s
+                    )
+                )
             else:
-                ctx[p.identifier] = '<span class="placeholder" title="{}">{}</span>'.format(
-                    _('This value will be replaced based on dynamic parameters.'),
-                    s
+                ctx[p.identifier] = (
+                    '<span class="placeholder" title="{}">{}</span>'.format(
+                        _("This value will be replaced based on dynamic parameters."), s
+                    )
                 )
         return self.SafeDict(ctx)
 
@@ -1296,6 +1310,7 @@ class QuickSetupView(FormView):
             'ticket_download': True,
             'contact_mail': self.request.event.settings.contact_mail,
             'imprint_url': self.request.event.settings.imprint_url,
+            'require_registered_account_for_tickets': True,
         }
 
     def post(self, request, *args, **kwargs):
@@ -1356,6 +1371,9 @@ class QuickSetupView(FormView):
         self.request.event.log_action('pretix.event.settings', user=self.request.user, data={
             k: self.request.event.settings.get(k) for k in form.changed_data
         })
+        self.request.event.settings.require_registered_account_for_tickets = form.cleaned_data[
+            'require_registered_account_for_tickets'
+        ]
 
         items = []
         category = None

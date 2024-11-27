@@ -21,6 +21,9 @@ from pretix.api.serializers.fields import (
     ListMultipleChoiceField, UploadedFileField,
 )
 from pretix.api.serializers.i18n import I18nField, I18nURLField
+from pretix.base.configurations.lazy_i18n_string_list_base import (
+    LazyI18nStringList,
+)
 from pretix.base.forms import I18nURLFormField
 from pretix.base.models.tax import TaxRule
 from pretix.base.reldate import (
@@ -31,8 +34,6 @@ from pretix.control.forms import (
     ExtFileField, FontSelect, MultipleLanguagesWidget, SingleLanguageWidget,
 )
 from pretix.helpers.countries import CachedCountries
-
-from .lazy_i18n_string_list_base import LazyI18nStringListBase
 
 
 def country_choice_kwargs():
@@ -1566,8 +1567,8 @@ DEFAULT_SETTINGS = {
         "serializer_class": serializers.URLField,
     },
     "confirm_texts": {
-        "default": LazyI18nStringListBase(),
-        "type": LazyI18nStringListBase,
+        "default": LazyI18nStringList(),
+        "type": LazyI18nStringList,
         "serializer_class": serializers.ListField,
         "serializer_kwargs": lambda: dict(child=I18nField()),
     },
@@ -2524,41 +2525,11 @@ Your {event} team"""
         ),
         "serializer_class": I18nURLField,
     },
-    "schedule_link": {
-        "default": None,
-        "type": str,
-        "form_class": forms.URLField,
-        "serializer_class": serializers.URLField,
-        "form_kwargs": dict(
-            label=_("Schedule URL"),
-            help_text=_("This should point to your session schedule."),
-        ),
-    },
-    "session_link": {
-        "default": None,
-        "type": str,
-        "form_class": forms.URLField,
-        "serializer_class": serializers.URLField,
-        "form_kwargs": dict(
-            label=_("Session URL"),
-            help_text=_("This should point to your session list."),
-        ),
-    },
-    "speaker_link": {
-        "default": None,
-        "type": str,
-        "form_class": forms.URLField,
-        "serializer_class": serializers.URLField,
-        "form_kwargs": dict(
-            label=_("Speaker URL"),
-            help_text=_("This should point to your speakers."),
-        ),
-    },
-    "seating_choice": {
-        "default": "True",
-        "form_class": forms.BooleanField,
-        "serializer_class": serializers.BooleanField,
-        "form_kwargs": dict(
+    'seating_choice': {
+        'default': 'True',
+        'form_class': forms.BooleanField,
+        'serializer_class': serializers.BooleanField,
+        'form_kwargs': dict(
             label=_("Customers can choose their own seats"),
             help_text=_(
                 "If disabled, you will need to manually assign seats in the backend. Note that this can mean "

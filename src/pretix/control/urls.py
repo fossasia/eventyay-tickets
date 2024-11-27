@@ -36,6 +36,7 @@ urlpatterns = [
     url(r'^pdf/editor/webfonts.css', pdf.FontsCSSView.as_view(), name='pdf.css'),
     url(r'^settings/?$', user.UserSettings.as_view(), name='user.settings'),
     url(r'^settings/history/$', user.UserHistoryView.as_view(), name='user.settings.history'),
+    url(r'^settings/orders/$', user.UserOrdersView.as_view(), name='user.settings.orders'),
     url(r'^settings/notifications/$', user.UserNotificationsEditView.as_view(), name='user.settings.notifications'),
     url(r'^settings/notifications/off/(?P<id>\d+)/(?P<token>[^/]+)/$', user.UserNotificationsDisableView.as_view(),
         name='user.settings.notifications.off'),
@@ -73,6 +74,21 @@ urlpatterns = [
     url(r'^organizer/(?P<organizer>[^/]+)/delete$', organizer_views.organizer_view.OrganizerDelete.as_view(), name='organizer.delete'),
     url(r'^organizer/(?P<organizer>[^/]+)/settings/display$', organizer_views.organizer_view.OrganizerDisplaySettings.as_view(),
         name='organizer.display'),
+    url(
+        r"^organizer/(?P<organizer>[^/]+)/settings/billing$",
+        organizer_views.organizer_view.BillingSettings.as_view(),
+        name="organizer.settings.billing",
+    ),
+    url(
+        r"^organizer/(?P<organizer>[^/]+)/setup_intent$",
+        organizer_views.organizer_view.setup_intent,
+        name="organizer.setup_intent",
+    ),
+    url(
+        r"^organizer/(?P<organizer>[^/]+)/save_payment_information$",
+        organizer_views.organizer_view.save_payment_information,
+        name="organizer.save_payment_information",
+    ),
     url(r'^organizer/(?P<organizer>[^/]+)/properties$', organizer.EventMetaPropertyListView.as_view(), name='organizer.properties'),
     url(r'^organizer/(?P<organizer>[^/]+)/property/add$', organizer.EventMetaPropertyCreateView.as_view(),
         name='organizer.property.add'),
@@ -316,6 +332,7 @@ urlpatterns = [
     url(r'^admin/', include([
         url(r'^$', admin.AdminDashboard.as_view(), name='admin.dashboard'),
         url(r'^organizers/$', admin.OrganizerList.as_view(), name='admin.organizers'),
+        url(r'^events/$', admin.AdminEventList.as_view(), name='admin.events'),
         url(r'^sudo/(?P<id>\d+)/$', user.EditStaffSession.as_view(), name='admin.user.sudo.edit'),
         url(r'^sudo/sessions/$', user.StaffSessionList.as_view(), name='admin.user.sudo.list'),
         url(r'^users/$', users.UserListView.as_view(), name='admin.users'),

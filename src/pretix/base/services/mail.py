@@ -1,3 +1,4 @@
+import base64
 import inspect
 import logging
 import os
@@ -35,6 +36,7 @@ from pretix.base.models import (
 from pretix.base.services.invoices import invoice_pdf_task
 from pretix.base.services.tasks import TransactionAwareTask
 from pretix.base.services.tickets import get_tickets_for_order
+from pretix.base.settings import GlobalSettingsObject
 from pretix.base.signals import email_filter, global_email_filter
 from pretix.celery_app import app
 from pretix.multidomain.urlreverse import build_absolute_uri
@@ -277,7 +279,8 @@ class CustomEmail(EmailMultiAlternatives):
 def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: str, sender: str,
                    event: int = None, position: int = None, headers: dict = None, bcc: List[str] = None,
                    invoices: List[int] = None, order: int = None, attach_tickets=False, user=None,
-                   attach_ical=False, attach_cached_files: List[int] = None) -> bool:
+                   attach_ical=False, attach_cached_files: List[int] = None, attach_file_base64: str = None,
+                   attach_file_name: str = None) -> bool:
     email = CustomEmail(subject, body, sender, to=to, bcc=bcc, headers=headers)
     if html is not None:
         html_message = SafeMIMEMultipart(_subtype='related', encoding=settings.DEFAULT_CHARSET)
@@ -295,7 +298,7 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
         backend = event.get_mail_backend()
         def cm(): return scope(organizer=event.organizer)  # noqa
     else:
-        backend = get_connection(fail_silently=False)
+        backend = get_mail_backend()
         def cm(): return scopes_disabled()  # noqa
     with cm():
 
@@ -385,6 +388,9 @@ def mail_send_task(self, *args, to: List[str], subject: str, body: str, html: st
                         pass
 
         email = global_email_filter.send_chained(event, 'message', message=email, user=user, order=order)
+        if attach_file_base64:
+            attach_file_content = base64.b64decode(attach_file_base64)
+            email.attach(attach_file_name, attach_file_content, "application/pdf")
 
         try:
             backend.send_messages([email])
@@ -592,3 +598,30 @@ def normalize_image_url(url):
         else:
             url = urljoin(settings.MEDIA_URL, url)
     return url
+
+
+def get_mail_backend(timeout=None):
+    """
+    Returns an email server connection, either by using the system-wide connection
+    or by returning a custom one based on the system's settings.
+    """
+    from pretix.base.email import CustomSMTPBackend, SendGridEmail
+
+    gs = GlobalSettingsObject()
+
+    if gs.settings.email_vendor is not None:
+        if gs.settings.email_vendor == "sendgrid":
+            return SendGridEmail(api_key=gs.settings.send_grid_api_key)
+        else:
+            return CustomSMTPBackend(
+                host=gs.settings.smtp_host,
+                port=gs.settings.smtp_port,
+                username=gs.settings.smtp_username,
+                password=gs.settings.smtp_password,
+                use_tls=gs.settings.smtp_use_tls,
+                use_ssl=gs.settings.smtp_use_ssl,
+                fail_silently=False,
+                timeout=timeout,
+            )
+    else:
+        return get_connection(fail_silently=False)

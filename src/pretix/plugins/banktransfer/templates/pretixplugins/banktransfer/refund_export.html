@@ -4,7 +4,14 @@
 {% load static %}
 {% block title %}{% trans "Export bank transfer refunds" %}{% endblock %}
 {% block content %}
-    <h1>{% trans "Export bank transfer refunds" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "Export bank transfer refunds" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <p>
         {% blocktrans trimmed %}
             <strong>{{ num_new }}</strong> Bank transfer refunds have been placed and are not yet part of an export.

@@ -1,6 +1,7 @@
 from ..settings import GlobalSettingsObject_SettingsStore
 from .auth import U2FDevice, User, WebAuthnDevice
 from .base import CachedFile, LoggedModel, cachedfile_name
+from .billing import BillingInvoice
 from .checkin import Checkin, CheckinList
 from .devices import Device, Gate
 from .event import (
