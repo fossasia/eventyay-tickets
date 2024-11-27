@@ -86,7 +86,7 @@ class PageUpdate(
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
         ctx["locales"] = []
-        ctx["url"] = f'{settings.SITE_URL}/{settings.BASE_PATH}{self.object.slug}'
+        ctx["url"] = f'{settings.SITE_URL}/{settings.BASE_PATH}page/{self.object.slug}'
 
         for lng_code, lng_name in settings.LANGUAGES:
             dataline = (

@@ -11,7 +11,6 @@ from pretix.control.views import pages
 from .base.views import cachedfiles, csp, health, js_catalog, metrics, redirect
 
 base_patterns = [
-
     url(r'^download/(?P<id>[^/]+)/$', cachedfiles.DownloadView.as_view(),
         name='cachedfile.download'),
     url(r'^healthcheck/$', health.healthcheck,
@@ -34,9 +33,9 @@ common_patterns = [
     url(r'^common/', include((pretix.eventyay_common.urls, 'common'))),
 ]
 
-# page_patterns = [
-#     path('<slug:slug>/', pages.ShowPageView.as_view(), name="page"),
-# ]
+page_patterns = [
+    path('page/<slug:slug>/', pages.ShowPageView.as_view(), name="page"),
+]
 
 debug_patterns = []
 if settings.DEBUG:
@@ -47,4 +46,4 @@ if settings.DEBUG:
     except ImportError:
         pass
 
-common_patterns = base_patterns + control_patterns + debug_patterns + common_patterns
+common_patterns = base_patterns + control_patterns + debug_patterns + common_patterns + page_patterns
