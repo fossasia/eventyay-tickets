@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`schedule` When a room is empty during a day, pretalx will not show it anymore in the grid schedule (rather than only hiding rooms that are *never* used).
 - :feature:`orga` You can now send or discard only a filtered list of emails from the outbox.
 - :feature:`dev,1596` With the new ``queuedmail_pre_send`` signal, your plugin can modify a `QueuedMail` object before it is sent out. You can handle the sending entirely by setting the object’s `sent` attribute, or e.g. modify the email text before it is sent out by pretalx.
 - :feature:`orga` Outgoing mails now know which proposals or sessions they are about. This information can’t be added to existing mails, but will be included in all new mails, which will link to the proposals in question, and will help you find relevant emails by showing the linked proposals and their track colours (if any).
