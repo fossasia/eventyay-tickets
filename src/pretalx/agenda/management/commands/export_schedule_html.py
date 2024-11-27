@@ -24,6 +24,7 @@ def fake_admin(event):
     with rolledback_transaction():
         event.is_public = True
         event.custom_domain = None
+        event.feature_flags["show_schedule"] = True
         event.save()
         client = Client()
 
