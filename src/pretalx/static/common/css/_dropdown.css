@@ -7,6 +7,9 @@ details.dropdown {
 
   summary {
     list-style: none;
+    display: flex;
+    align-items: baseline;
+
     &::before,
     &::marker {
       display: none;

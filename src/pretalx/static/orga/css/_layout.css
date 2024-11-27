@@ -669,7 +669,7 @@ details.submission-state-dropdown {
   summary {
     color: var(--submission-color-primary);
     background-color: white;
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem;
     h4 {
       font-size: 0.875rem;
       margin-bottom: 0;
@@ -681,6 +681,7 @@ details.submission-state-dropdown {
     }
     .pending-indicator {
       padding-left: 2px;
+      white-space: nowrap;
     }
     &:hover {
       background-color: inherit;
@@ -1242,8 +1243,6 @@ div.mail-preview {
 }
 
 .user-name-display {
-  display: inline-flex;
-  align-items: center;
   img {
     border-radius: 50%;
     height: 1rem;
@@ -1254,6 +1253,8 @@ div.mail-preview {
   a[data-lightbox] img,
   a[data-lightbox] img:hover {
     box-shadow: var(--shadow-lightest);
+    display: inline;
+    vertical-align: text-top;
   }
 }
 .col-form-label .user-name-display {
