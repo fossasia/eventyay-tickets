@@ -4,7 +4,7 @@
 {% load bootstrap3 %}
 {% block title %}{% trans "Events" %}{% endblock %}
 {% block content %}
-    <h1>{% trans "Events" %}</h1>
+    <h1>{% trans "My events" %}</h1>
     <p>{% trans "The list below shows all events you have administrative access to. Click on the event name to access event details." %}</p>
     {% if events|length == 0 and not filter_form.filtered %}
         <div class="empty-collection">

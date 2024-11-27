@@ -295,13 +295,13 @@ def get_global_navigation(request):
         return []
     nav = [
         {
-            'label': _('Dashboard'),
+            'label': _('Tickets dashboard'),
             'url': reverse('control:index'),
             'active': (url.url_name == 'index'),
             'icon': 'dashboard',
         },
         {
-            'label': _('My Orders'),
+            'label': _('My orders'),
             'url': reverse('control:user.settings.orders'),
             'active': 'user.settings.orders' in url.url_name,
             'icon': 'shopping-cart',
