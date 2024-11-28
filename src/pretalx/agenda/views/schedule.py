@@ -164,6 +164,7 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
             result = draw_ascii_schedule(data, output_format=output_format)
         except StopIteration:
             result = draw_ascii_schedule(data, output_format="list")
+        result += "\n\n  📆 powered by pretalx"
         return HttpResponse(
             response_start + result, content_type="text/plain; charset=utf-8"
         )
