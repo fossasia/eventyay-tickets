@@ -66,7 +66,7 @@
         {% block email_editor_preview %}
             {% if request.method == "POST" %}
                 <fieldset class="mt-4">
-                    <legend>{% translate "E-mail preview" %}</legend>
+                    <legend>{% translate "Email preview" %}</legend>
                     <div class="alert alert-info">
                         {% blocktranslate trimmed with count=mail_count %}
                             Roughly {{ count }} emails will be generated.
