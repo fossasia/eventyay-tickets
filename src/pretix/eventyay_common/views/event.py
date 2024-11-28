@@ -323,7 +323,7 @@ class EventUpdate(
         context["sform"] = self.sform
         talk_host = settings.TALK_HOSTNAME
         context["talk_edit_url"] = (
-            talk_host + "/orga/event/" + self.object.slug + "/settings"
+            talk_host + "/orga/event/" + self.object.slug
         )
         context['is_video_enabled'] = is_video_enabled(self.object)
         context["is_talk_event_created"] = False
