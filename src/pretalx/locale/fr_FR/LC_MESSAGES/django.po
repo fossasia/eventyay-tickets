@@ -6617,10 +6617,6 @@ msgstr ""
 "Ajouter un intervenant – si l'adresse électronique n'est pas connue du "
 "système, un compte sera créé et une invitation sera envoyée."
 
-#: pretalx/orga/templates/orga/submission/speakers.html:30
-msgid "Email address"
-msgstr "Adresse électronique"
-
 #: pretalx/orga/templates/orga/submission/speakers.html:31
 msgid "Add speaker"
 msgstr "Ajouter un intervenant"

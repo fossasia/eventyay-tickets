@@ -6547,10 +6547,6 @@ msgstr ""
 "Voeg een spreker toe - Als het email adres nog niet bekend is, zal een "
 "account worden aangemaakt en een uitnodiging worden verstuurd."
 
-#: pretalx/orga/templates/orga/submission/speakers.html:30
-msgid "Email address"
-msgstr "E-mail adres"
-
 #: pretalx/orga/templates/orga/submission/speakers.html:31
 msgid "Add speaker"
 msgstr "Voeg spreker toe"

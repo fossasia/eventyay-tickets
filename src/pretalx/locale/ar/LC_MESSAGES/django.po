@@ -6705,10 +6705,6 @@ msgstr ""
 "إضافة متحدث - إذا لم يتم تسجيل عنوان البريد الإلكتروني بعد ، فسيتم إنشاء "
 "حساب لهم وإرسال دعوة."
 
-#: pretalx/orga/templates/orga/submission/speakers.html:30
-msgid "Email address"
-msgstr "عنوان البريد الالكتروني"
-
 #: pretalx/orga/templates/orga/submission/speakers.html:31
 msgid "Add speaker"
 msgstr "إضافة متحدث"

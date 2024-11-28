@@ -6717,10 +6717,6 @@ msgstr ""
 "εγγραφεί ακόμα, θα δημιουργηθεί ένας λογαριασμός για αυτόν και θα σταλεί "
 "πρόσκληση."
 
-#: pretalx/orga/templates/orga/submission/speakers.html:30
-msgid "Email address"
-msgstr "Διεύθυνση ηλεκτρονικού ταχυδρομείου"
-
 #: pretalx/orga/templates/orga/submission/speakers.html:31
 msgid "Add speaker"
 msgstr "Προσθήκη ηχείου"

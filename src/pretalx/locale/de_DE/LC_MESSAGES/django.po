@@ -6518,10 +6518,6 @@ msgstr ""
 "Zusätzliche Vortragende – wenn die E-Mail-Adresse noch keinen Account hat, "
 "wird einer erstellt und eine Einladung verschickt."
 
-#: pretalx/orga/templates/orga/submission/speakers.html:30
-msgid "Email address"
-msgstr "E-Mail-Adresse"
-
 #: pretalx/orga/templates/orga/submission/speakers.html:31
 msgid "Add speaker"
 msgstr "Vortragende hinzufügen"

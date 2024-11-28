@@ -6521,10 +6521,6 @@ msgid ""
 "be created for them and an invitation sent."
 msgstr "講演者を追加 - メールアドレスが登録されていない場合、アカウントが作成され、招待状が送信されます。"
 
-#: pretalx/orga/templates/orga/submission/speakers.html:30
-msgid "Email address"
-msgstr "メールアドレス"
-
 #: pretalx/orga/templates/orga/submission/speakers.html:31
 msgid "Add speaker"
 msgstr "講演者を追加"

@@ -6752,10 +6752,6 @@ msgstr ""
 "Añadir un/a orador/a - si todavía no se ha registrado el correo electrónico,"
 " se creará una cuenta y se enviará una invitación."
 
-#: pretalx/orga/templates/orga/submission/speakers.html:30
-msgid "Email address"
-msgstr "Dirección de correo electrónico"
-
 #: pretalx/orga/templates/orga/submission/speakers.html:31
 msgid "Add speaker"
 msgstr "Añadir ponente"

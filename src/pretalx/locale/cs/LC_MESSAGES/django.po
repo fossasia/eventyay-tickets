@@ -6469,10 +6469,6 @@ msgstr ""
 "Přidá přednášejícího – pokud e-mailová adresa ještě není registrovaná, bude "
 "jim vytvořen účet a poslána pozvánka."
 
-#: pretalx/orga/templates/orga/submission/speakers.html:30
-msgid "Email address"
-msgstr "E-mailová adresa"
-
 #: pretalx/orga/templates/orga/submission/speakers.html:31
 msgid "Add speaker"
 msgstr "Přidat přednášejícího"
