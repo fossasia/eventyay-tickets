@@ -6616,10 +6616,6 @@ msgstr ""
 "Adicionar um palestrante – se o endereço de e-mail ainda não estiver "
 "registrado, uma conta será criada para ele e um convite será enviado."
 
-#: pretalx/orga/templates/orga/submission/speakers.html:30
-msgid "Email address"
-msgstr "Endereço de e-mail"
-
 #: pretalx/orga/templates/orga/submission/speakers.html:31
 msgid "Add speaker"
 msgstr "Adicionar palestrante"
