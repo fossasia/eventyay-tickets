@@ -17,13 +17,13 @@
     {% endcompress %}
 {% endblock scripts %}
 
-{% block extra_title %}{% translate "E-mail settings" %} :: {% endblock extra_title %}
+{% block extra_title %}{% translate "Email settings" %} :: {% endblock extra_title %}
 
 {% block settings_content %}
     <form method="post">
         {% csrf_token %}
         <h2>
-            {% translate "E-mail settings" %}
+            {% translate "Email settings" %}
             <span class="dialog-anchor" data-target="#info-dialog" data-toggle="dialog">
                 <i class="fa fa-question-circle-o text-info"></i>
             </span>
