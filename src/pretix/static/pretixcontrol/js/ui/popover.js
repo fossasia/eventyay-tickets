@@ -3,13 +3,16 @@ $(function () {
     const isAdminMode = JSON.parse(document.getElementById('is_admin_mode').textContent);
     const currentPath = window.location.pathname;
     const queryString = window.location.search;
+    const talkHostNamePath= JSON.parse(document.getElementById('talk_hostname_url').textContent);
 
     const backUrl = `${currentPath}${queryString}`;
 
     // Constructing logout path using URLSearchParams
     const logoutParams = new URLSearchParams({ back: backUrl });
 
-    const dashboardPath = `/control/`;
+    const ticketsPath = `/control/`;
+    const talksPath = `${talkHostNamePath}/orga/event/`
+    const mainDashboardPath = `/common/`;
     const orderPath = `/control/settings/orders/`;
     const eventPath = `/control/events/`;
     const organizerPath = `/control/organizers/`;
@@ -22,11 +25,28 @@ $(function () {
     const options = {
         html: true,
         content: `<div data-name="popover-profile-menu">
-                    <div class="profile-menu">
-                        <a href="${basePath}${dashboardPath}" target="_self" class="btn btn-outline-success">
+                    <div class="dashboard-item">
+                        <div class="btn btn-outline-succes dashboard-content">
                             <i class="fa fa-tachometer"></i> ${window.gettext('Dashboard')}
-                        </a>
-                    </div>
+                        </div>
+                        <div id="submenu">
+                            <div class="submenu-item">
+                                <a href="${mainDashboardPath}" class="btn btn-outline-success">
+                                    <i class="fa fa-tachometer"></i> ${window.gettext('Main dashboard')}
+                                 </a>
+                            </div>
+                            <div class="submenu-item">
+                                <a href="${basePath}${ticketsPath}" class="btn btn-outline-success">
+                                    <i class="fa fa-ticket"></i> ${window.gettext('Tickets')}
+                                </a>
+                            </div>
+                            <div class="submenu-item">
+                                <a href="${talksPath}" class="btn btn-outline-success">
+                                    <i class="fa fa-microphone"></i> ${window.gettext('Talks')}
+                                </a>
+                            </div>
+                        </div>
+                    </div> 
                     <div class="profile-menu">
                         <a href="${basePath}${orderPath}" target="_self" class="btn btn-outline-success">
                             <i class="fa fa-shopping-cart"></i> ${window.gettext('My orders')}

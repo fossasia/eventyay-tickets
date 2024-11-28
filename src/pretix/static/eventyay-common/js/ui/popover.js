@@ -11,6 +11,7 @@ $(function () {
 
     const ticketsPath = `/control/`;
     const talksPath = `${talkHostNamePath}/orga/event/`
+    const mainDashboardPath = `/common/`;
     const eventPath = `/common/events/`;
     const organizerPath = `/common/organizers/`;
 
@@ -28,6 +29,11 @@ $(function () {
                     <i class="fa fa-tachometer"></i> ${window.gettext('Dashboard')}
                </div>
                 <div id="submenu">
+                    <div class="submenu-item">
+                        <a href="${mainDashboardPath}" class="btn btn-outline-success">
+                            <i class="fa fa-tachometer"></i> ${window.gettext('Main dashboard')}
+                        </a>
+                    </div>
                     <div class="submenu-item">
                         <a href="${basePath}${ticketsPath}" class="btn btn-outline-success">
                             <i class="fa fa-ticket"></i> ${window.gettext('Tickets')}
