@@ -13,16 +13,11 @@ if not github_token:
     pyproject['project']['dependencies'] = [
         dep
         for dep in pyproject['project']['dependencies']
-        if not (dep.startswith('eventyay-stripe') or dep.startswith('eventyay-paypal'))
+        if not dep.startswith('eventyay-paypal')
     ]
 else:
     # Iterate over the dependencies
     for i, dep in enumerate(pyproject['project']['dependencies']):
-        if dep.startswith('eventyay-stripe'):
-            # Update the stripe dependency with the github_token
-            pyproject['project']['dependencies'][
-                i
-            ] = f'eventyay-stripe @ git+https://{github_token}@github.com/fossasia/eventyay-tickets-stripe.git@master'
         if dep.startswith('eventyay-paypal'):
             # Update the PayPal dependency with the github_token
             pyproject['project']['dependencies'][
