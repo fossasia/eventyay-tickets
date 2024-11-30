@@ -332,7 +332,17 @@ class SubmissionFilterForm(forms.Form):
             self.fields.pop("submission_type", None)
         if len(tracks) > 1:
             self.fields["track"].queryset = tracks.annotate(
-                count=Count("submissions", distinct=True, filter=Q(event=event))
+                count=Count(
+                    "submissions",
+                    distinct=True,
+                    filter=Q(event=event)
+                    & ~Q(
+                        submissions__state__in=[
+                            SubmissionStates.DELETED,
+                            SubmissionStates.DRAFT,
+                        ]
+                    ),
+                )
             ).order_by("-count")
         else:
             self.fields.pop("track", None)
