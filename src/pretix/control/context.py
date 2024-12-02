@@ -145,6 +145,8 @@ def _default_context(request):
             if request.user.is_staff and settings.PRETIX_ADMIN_AUDIT_COMMENTS else StaffSession.objects.none()
         )
 
+    ctx['talk_hostname'] = settings.TALK_HOSTNAME
+
     ctx['show_link_in_header_for_all_pages'] = Page.objects.filter(link_in_header=True)
     ctx['show_link_in_footer_for_all_pages'] = Page.objects.filter(link_in_footer=True)
 
