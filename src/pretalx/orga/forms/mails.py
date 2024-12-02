@@ -486,3 +486,41 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
             for mail in result:
                 mail.send()
         return result
+
+
+class QueuedMailFilterForm(forms.Form):
+    track = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Track.objects.none(),
+        widget=SelectMultipleWithCount(
+            attrs={"title": _("Tracks")}, color_field="color"
+        ),
+    )
+
+    default_renderer = InlineFormRenderer
+
+    def __init__(self, *args, event=None, sent=None, **kwargs):
+        self.event = event
+        super().__init__(*args, **kwargs)
+
+        # Only show track filter if tracks are enabled
+        if not event.get_feature_flag("use_tracks"):
+            self.fields.pop("track")
+        else:
+            mail_filter = Q(submissions__mails__event=event)
+            if sent is not None:
+                mail_filter &= Q(submissions__mails__sent__isnull=not sent)
+
+            self.fields["track"].queryset = event.tracks.annotate(
+                count=Count(
+                    "submissions__mails",
+                    distinct=True,
+                    filter=mail_filter,
+                )
+            ).order_by("-count")
+
+    def filter_queryset(self, qs):
+        tracks = self.cleaned_data.get("track")
+        if tracks:
+            qs = qs.filter(submissions__track__in=tracks)
+        return qs.distinct()
