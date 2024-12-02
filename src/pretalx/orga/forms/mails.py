@@ -5,6 +5,7 @@ from contextlib import suppress
 from bs4 import BeautifulSoup
 from django import forms
 from django.db import transaction
+from django.db.models import Count, Q
 from django.utils.functional import cached_property
 from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
@@ -12,8 +13,8 @@ from i18nfield.forms import I18nModelForm
 
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
-from pretalx.common.forms.renderers import TabularFormRenderer
-from pretalx.common.forms.widgets import EnhancedSelectMultiple
+from pretalx.common.forms.renderers import InlineFormRenderer, TabularFormRenderer
+from pretalx.common.forms.widgets import EnhancedSelectMultiple, SelectMultipleWithCount
 from pretalx.common.language import language
 from pretalx.common.text.phrases import phrases
 from pretalx.mail.context import get_available_placeholders
@@ -21,6 +22,7 @@ from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.mail.placeholders import SimpleFunctionalMailTextPlaceholder
 from pretalx.person.models import User
 from pretalx.submission.forms import SubmissionFilterForm
+from pretalx.submission.models import Track
 from pretalx.submission.models.submission import Submission, SubmissionStates
 
 

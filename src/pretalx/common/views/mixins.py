@@ -141,6 +141,12 @@ class Filterable:
         if "q" in self.request.GET:
             query = urllib.parse.unquote(self.request.GET["q"])
             qs = self.handle_search(qs, query, self.get_default_filters())
+        if (
+            (filter_form := self.filter_form)
+            and filter_form.is_valid()
+            and hasattr(filter_form, "filter_queryset")
+        ):
+            qs = filter_form.filter_queryset(qs)
         return qs
 
     def _handle_filter(self, qs):
@@ -191,7 +197,7 @@ class Filterable:
     @cached_property
     def filter_form(self):
         if hasattr(self, "filter_form_class"):
-            return self.filter_form_class(self.request.event, self.request.GET)
+            return self.filter_form_class(self.request.GET, event=self.request.event)
         if hasattr(self, "get_filter_form"):
             return self.get_filter_form()
         if self.filter_fields:

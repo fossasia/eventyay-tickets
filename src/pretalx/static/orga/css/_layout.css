@@ -491,9 +491,6 @@ footer {
   background-color: var(--color-bg) !important;
 }
 
-.search-submit-group {
-  padding-bottom: 0;
-}
 .search-form {
   display: flex;
   flex-wrap: wrap;
