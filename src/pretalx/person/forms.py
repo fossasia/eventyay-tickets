@@ -417,7 +417,7 @@ class SpeakerFilterForm(forms.Form):
         queryset=Question.objects.none(), required=False, widget=forms.HiddenInput()
     )
 
-    def __init__(self, event, *args, **kwargs):
+    def __init__(self, *args, event=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.event = event
         self.fields["question"].queryset = event.questions.all()
