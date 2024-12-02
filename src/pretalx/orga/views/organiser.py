@@ -2,7 +2,7 @@ import logging
 
 from django.contrib import messages
 from django.db import transaction
-from django.db.models import Count, Q
+from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -33,7 +33,6 @@ from pretalx.event.models.organiser import (
 )
 from pretalx.person.forms import UserSpeakerFilterForm
 from pretalx.person.models import User
-from pretalx.submission.models.submission import SubmissionStates
 
 logger = logging.getLogger(__name__)
 
@@ -380,9 +379,7 @@ class OrganiserSpeakerList(
     def get_permission_object(self):
         return self.request.organiser
 
-    @context
-    @cached_property
-    def filter_form(self):
+    def get_filter_form(self):
         return UserSpeakerFilterForm(self.request.GET, events=self.events)
 
     @context
@@ -393,40 +390,7 @@ class OrganiserSpeakerList(
         )
 
     def get_queryset(self):
-        events = self.events
-        if (
-            self.filter_form.fields.get("events")
-            and self.filter_form.is_valid()
-            and self.filter_form.cleaned_data.get("events")
-        ):
-            events = self.filter_form.cleaned_data["events"]
-
-        qs = (
-            User.objects.filter(profiles__event__in=events)
-            .prefetch_related("profiles", "profiles__event")
-            .annotate(
-                submission_count=Count(
-                    "submissions",
-                    filter=Q(submissions__event__in=events),
-                    distinct=True,
-                ),
-                accepted_submission_count=Count(
-                    "submissions",
-                    filter=Q(submissions__event__in=events)
-                    & Q(submissions__state__in=SubmissionStates.accepted_states),
-                    distinct=True,
-                ),
-            )
-        )
-
-        qs = self.filter_queryset(qs)
-        role = self.request.GET.get("role") or "speaker"
-        if role == "speaker":
-            qs = qs.filter(accepted_submission_count__gt=0)
-        elif role == "submitter":
-            qs = qs.filter(accepted_submission_count=0)
-
-        qs = qs.order_by("id").distinct()
+        qs = self.filter_queryset(User.objects.all())
         return self.sort_queryset(qs)
 
     def get_context_data(self, **kwargs):

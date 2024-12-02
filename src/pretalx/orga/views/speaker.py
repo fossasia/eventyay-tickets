@@ -67,10 +67,7 @@ class SpeakerList(
     sortable_fields = ("user__email", "user__name")
     default_sort_field = "user__name"
     permission_required = "orga.view_speakers"
-
-    @context
-    def filter_form(self):
-        return SpeakerFilterForm(self.request.event, self.request.GET)
+    filter_form_class = SpeakerFilterForm
 
     def get_queryset(self):
         qs = (
@@ -92,19 +89,6 @@ class SpeakerList(
         )
 
         qs = self.filter_queryset(qs)
-        if "role" in self.request.GET:
-            if self.request.GET["role"] == "true":
-                qs = qs.filter(
-                    user__submissions__in=self.request.event.submissions.filter(
-                        state__in=SubmissionStates.accepted_states
-                    )
-                )
-            elif self.request.GET["role"] == "false":
-                qs = qs.exclude(
-                    user__submissions__in=self.request.event.submissions.filter(
-                        state__in=SubmissionStates.accepted_states
-                    )
-                )
 
         question = self.request.GET.get("question")
         unanswered = self.request.GET.get("unanswered")

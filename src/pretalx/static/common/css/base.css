@@ -90,6 +90,7 @@ table {
     &.numeric {
       text-align: right;
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
     &.numeric-left {
       font-variant-numeric: tabular-nums;
