@@ -144,4 +144,6 @@ def _default_context(request):
             if request.user.is_staff and settings.PRETIX_ADMIN_AUDIT_COMMENTS else StaffSession.objects.none()
         )
 
+    ctx['talk_hostname'] = settings.TALK_HOSTNAME
+
     return ctx
