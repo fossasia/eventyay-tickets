@@ -46,17 +46,6 @@ def screenshot_edit_question_settings(live_server, logged_in_client, event):
 
 
 @pytest.mark.django_db
-def screenshot_edit_plugins(live_server, logged_in_client, user, event):
-    with scope(event=event):
-        user.is_administrator = True
-        user.save()
-        logged_in_client.get(
-            live_server.url + f"/orga/event/{event.slug}/settings/plugins"
-        )
-    screenshot(logged_in_client, "website/plugin_settings.png", scroll=False)
-
-
-@pytest.mark.django_db
 def screenshot_edit_mail_templates(live_server, logged_in_client, event):
     with scope(event=event):
         logged_in_client.get(
@@ -76,30 +65,3 @@ def screenshot_review_submission(live_server, logged_in_client, event):
             )
         )
     screenshot(logged_in_client, "website/review_submission.png")
-
-
-@pytest.mark.django_db
-def screenshot_bare_schedule_editor(live_server, logged_in_client, event):
-    with scope(event=event):
-        logged_in_client.get(live_server.url + f"/orga/event/{event.slug}/schedule/")
-        logged_in_client.execute_script(
-            """
-    const selectors = [".alert"]
-    for (selector of selectors) {
-        var element = document.querySelector(selector);
-        if (element)
-            element.parentNode.removeChild(element);
-    }"""
-        )
-    screenshot(logged_in_client, "website/edit_schedule.png")
-
-
-@pytest.mark.django_db
-def screenshot_export_schedule_editor(live_server, logged_in_client, event):
-    with scope(event=event):
-        event.wip_schedule.freeze("v1")
-        logged_in_client.get(
-            live_server.url + f"/orga/event/{event.slug}/schedule/export"
-        )
-        logged_in_client.find_element(By.CSS_SELECTOR, "#custom-tab").click()
-    screenshot(logged_in_client, "website/schedule_export.png")
