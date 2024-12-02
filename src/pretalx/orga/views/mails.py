@@ -27,6 +27,7 @@ from pretalx.orga.forms.mails import (
     DraftRemindersForm,
     MailDetailForm,
     MailTemplateForm,
+    QueuedMailFilterForm,
     WriteSessionMailForm,
     WriteTeamsMailForm,
 )
@@ -73,6 +74,11 @@ class OutboxList(
             != self.request.event.queued_mails.filter(sent__isnull=True).count()
         )
 
+    def get_filter_form(self):
+        return QueuedMailFilterForm(
+            self.request.GET, event=self.request.event, sent=False
+        )
+
 
 class SentMail(
     EventPermissionRequired, Sortable, Filterable, PaginationMixin, ListView
@@ -90,6 +96,11 @@ class SentMail(
     sortable_fields = ("to", "subject", "sent")
     paginate_by = 25
     permission_required = "orga.view_mails"
+
+    def get_filter_form(self):
+        return QueuedMailFilterForm(
+            self.request.GET, event=self.request.event, sent=True
+        )
 
     def get_queryset(self):
         qs = (
