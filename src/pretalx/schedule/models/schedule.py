@@ -16,6 +16,7 @@ from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
+from pretalx.mail.models import MailTemplateRoles
 from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.notifications import render_notifications
 from pretalx.schedule.signals import schedule_release
@@ -590,7 +591,7 @@ class Schedule(PretalxModel):
             ]
             submissions = [slot.submission for slot in slots]
             mails.append(
-                self.event.update_template.to_mail(
+                self.event.get_mail_template(MailTemplateRoles.NEW_SCHEDULE).to_mail(
                     user=speaker,
                     event=self.event,
                     context_kwargs={"user": speaker},

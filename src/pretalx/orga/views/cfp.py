@@ -34,6 +34,7 @@ from pretalx.common.views.mixins import (
     PaginationMixin,
     PermissionRequired,
 )
+from pretalx.mail.models import MailTemplateRoles
 from pretalx.orga.forms import CfPForm, QuestionForm, SubmissionTypeForm, TrackForm
 from pretalx.orga.forms.cfp import (
     AccessCodeSendForm,
@@ -423,13 +424,15 @@ class CfPQuestionRemind(EventPermissionRequired, FormView):
                     missing.append(question)
         return missing
 
+    @context
+    def reminder_template(self):
+        return self.request.event.get_mail_template(MailTemplateRoles.QUESTION_REMINDER)
+
     def form_invalid(self, form):
         messages.error(self.request, _("Could not send mails, error in configuration."))
         return super().form_invalid(form)
 
     def form_valid(self, form):
-        if not getattr(self.request.event, "question_template", None):
-            self.request.event.build_initial_data()
         submissions = form.get_submissions()
         people = self.request.event.submitters.filter(submissions__in=submissions)
         questions = form.cleaned_data["questions"] or form.get_question_queryset()
@@ -444,7 +447,9 @@ class CfPQuestionRemind(EventPermissionRequired, FormView):
                 data["questions"] = "\n".join(
                     f"- {question.question}" for question in missing
                 )
-                self.request.event.question_template.to_mail(
+                self.request.event.get_mail_template(
+                    MailTemplateRoles.QUESTION_REMINDER
+                ).to_mail(
                     person,
                     event=self.request.event,
                     context=data,

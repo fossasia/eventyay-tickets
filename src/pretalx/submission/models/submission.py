@@ -26,8 +26,8 @@ from pretalx.common.text.path import path_with_hash
 from pretalx.common.text.phrases import phrases
 from pretalx.common.text.serialize import serialize_duration
 from pretalx.common.urls import EventUrls
-from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.person.models import User
+from pretalx.mail.models import MailTemplateRoles, QueuedMail
 from pretalx.submission.signals import submission_state_change
 
 
@@ -498,7 +498,7 @@ class Submission(GenerateCode, PretalxModel):
     update_talk_slots.alters_data = True
 
     def send_initial_mails(self, person):
-        template = self.event.ack_template
+        template = self.event.get_mail_template(MailTemplateRoles.NEW_SUBMISSION)
         template_text = copy.deepcopy(template.text)
         locale = self.get_email_locale(person.locale)
         with override(locale):
@@ -527,10 +527,8 @@ class Submission(GenerateCode, PretalxModel):
             template.text = template_text
             template.save()
         if self.event.mail_settings["mail_on_new_submission"]:
-            MailTemplate(
-                event=self.event,
-                subject=str(_("New proposal")) + f": {self.title}",
-                text=self.event.settings.mail_text_new_submission,
+            self.event.get_mail_template(
+                MailTemplateRoles.NEW_SUBMISSION_INTERNAL
             ).to_mail(
                 user=self.event.email,
                 event=self.event,
@@ -663,9 +661,9 @@ class Submission(GenerateCode, PretalxModel):
 
     def send_state_mail(self):
         if self.state == SubmissionStates.ACCEPTED:
-            template = self.event.accept_template
+            template = self.event.get_mail_template(MailTemplateRoles.SUBMISSION_ACCEPT)
         elif self.state == SubmissionStates.REJECTED:
-            template = self.event.reject_template
+            template = self.event.get_mail_template(MailTemplateRoles.SUBMISSION_REJECT)
         else:
             return
 

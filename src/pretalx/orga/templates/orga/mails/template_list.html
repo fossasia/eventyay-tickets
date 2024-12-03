@@ -45,29 +45,31 @@
 
     {# HACK: This isn"t really a form, but we want to make the templates look like normal forms #}
     <div class="accordion form" id="template-accordion">
-        {% for template in templates %}
+        {% for form in template_forms %}
             <div class="card">
-                <div class="card-header" id="heading{{ template.obj.id }}">
+                <div class="card-header" id="heading{{ form.instance.id }}">
                     <h2 class="d-flex">
-                        <button class="btn btn-block text-left" data-toggle="collapse" data-target="#collapse{{ template.obj.id }}" aria-expanded="false" aria-controls="collapse{{ template.obj.id }}">
-                            {% if template.custom %}
+                        <button class="btn btn-block text-left" data-toggle="collapse" data-target="#collapse{{ form.instance.id }}" aria-expanded="false" aria-controls="collapse{{ form.instance.id }}">
+                            {% if not form.instance.role %}
                                 {% translate "Custom Mail" %}:
+                                {{ form.instance.subject }}
+                            {% else %}
+                                {{ form.instance.get_role_display }}
                             {% endif %}
-                            {{ template.title }}
                             <i class="fa fa-2x ml-auto"></i>
                         </button>
                         <div class="d-flex">
-                            {% if template.custom %}
-                                <a href="{{ template.obj.urls.delete }}" class="btn btn-danger flip mr-1 nowrap">{% translate "Delete template" %}</a>
-                                <a href="{{ request.event.orga_urls.compose_mails_sessions }}?template={{ template.obj.pk }}" class="btn btn-success mr-1 nowrap">{% translate "Send mails" %}</a>
+                            {% if not form.instance.role %}
+                                <a href="{{ form.instance.urls.delete }}" class="btn btn-danger flip mr-1 nowrap">{% translate "Delete template" %}</a>
+                                <a href="{{ request.event.orga_urls.compose_mails_sessions }}?template={{ form.instance.pk }}" class="btn btn-success mr-1 nowrap">{% translate "Send mails" %}</a>
                             {% endif %}
-                            <a href="{{ template.obj.urls.edit }}" class="btn btn-info flip nowrap">{% translate "Edit template" %}</a>
+                            <a href="{{ form.instance.urls.edit }}#tab-content" class="btn btn-info flip nowrap">{% translate "Edit template" %}</a>
                         </div>
                     </h2>
                 </div>
-                <div id="collapse{{ template.obj.id }}" class="collapse" aria-labelledby="heading{{ template.obj.id }}" data-parent="#template-accordion">
+                <div id="collapse{{ form.instance.id }}" class="collapse" aria-labelledby="heading{{ form.instance.id }}" data-parent="#template-accordion">
                     <div class="card-body">
-                        {{ template.form }}
+                        {{ form }}
                     </div>
                 </div>
             </div>

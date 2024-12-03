@@ -38,7 +38,7 @@ from pretalx.common.views.mixins import (
     PermissionRequired,
     Sortable,
 )
-from pretalx.mail.models import QueuedMail
+from pretalx.mail.models import MailTemplateRoles, QueuedMail
 from pretalx.orga.forms.submission import (
     AddCreateUserForm,
     AnonymiseForm,
@@ -257,11 +257,15 @@ class SubmissionStateChange(SubmissionViewMixin, FormView):
             (
                 SubmissionStates.ACCEPTED,
                 SubmissionStates.REJECTED,
-            ): self.request.event.accept_template,
+            ): self.request.event.get_mail_template(
+                MailTemplateRoles.SUBMISSION_ACCEPT
+            ),
             (
                 SubmissionStates.REJECTED,
                 SubmissionStates.ACCEPTED,
-            ): self.request.event.reject_template,
+            ): self.request.event.get_mail_template(
+                MailTemplateRoles.SUBMISSION_REJECT
+            ),
         }
         if template := check_mail_template.get((current, self.object.state)):
             pending_emails = self.request.event.queued_mails.filter(

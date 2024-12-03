@@ -84,3 +84,39 @@ Please do not hesitate to contact us if you have any questions in turn!
 The {event_name} organisers"""
     )
 )
+
+NEW_SUBMISSION_SUBJECT = LazyI18nString.from_gettext(
+    _("New proposal: {proposal_title}")
+)
+NEW_SUBMISSION_TEXT = LazyI18nString.from_gettext(
+    _(
+        """Hi,
+
+you have received a new proposal for your event {event_name}:
+“{submission_title}” by {speakers}.
+You can see details at
+
+  {orga_url}
+
+All the best,
+your {event_name} CfP system.
+"""
+    )
+)
+
+
+def get_default_template(role):
+    from pretalx.mail.models import MailTemplateRoles
+
+    if role == MailTemplateRoles.SUBMISSION_ACCEPT:
+        return (GENERIC_SUBJECT, ACCEPT_TEXT)
+    if role == MailTemplateRoles.SUBMISSION_REJECT:
+        return (GENERIC_SUBJECT, REJECT_TEXT)
+    if role == MailTemplateRoles.NEW_SUBMISSION:
+        return (GENERIC_SUBJECT, ACK_TEXT)
+    if role == MailTemplateRoles.NEW_SUBMISSION_INTERNAL:
+        return (NEW_SUBMISSION_SUBJECT, NEW_SUBMISSION_TEXT)
+    if role == MailTemplateRoles.NEW_SCHEDULE:
+        return (UPDATE_SUBJECT, UPDATE_TEXT)
+    if role == MailTemplateRoles.QUESTION_REMINDER:
+        return (QUESTION_SUBJECT, QUESTION_TEXT)

@@ -436,11 +436,9 @@ class TestWizard:
     ):
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first().pk
-
-            event.ack_template.text = (
-                str(event.ack_template.text) + "{name} and {nonexistent}"
-            )
-            event.ack_template.save()
+            ack_template = event.get_mail_template("submission.new")
+            ack_template.text = str(ack_template.text) + "{name} and {nonexistent}"
+            ack_template.save()
 
         client.force_login(user)
         response, current_url = self.perform_init_wizard(client, event=event)

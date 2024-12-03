@@ -15,14 +15,7 @@ def task_periodic_event_services(event_slug):
     with scopes_disabled():
         event = (
             Event.objects.filter(slug=event_slug)
-            .select_related(
-                "ack_template",
-                "accept_template",
-                "reject_template",
-                "update_template",
-                "question_template",
-                "cfp",
-            )
+            .select_related("cfp")
             .prefetch_related(
                 "_settings_objects",
                 "submissions__slots",
@@ -37,7 +30,6 @@ def task_periodic_event_services(event_slug):
 
     _now = now()
     with scope(event=event):
-        event.build_initial_data()  # Make sure the required mail templates are there
         if not event.settings.sent_mail_event_created and (
             dt.timedelta(0)
             <= (_now - event.log_entries.last().timestamp)
