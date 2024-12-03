@@ -22,7 +22,12 @@ from pretalx.common.views.mixins import (
     PermissionRequired,
     Sortable,
 )
-from pretalx.mail.models import MailTemplate, QueuedMail, get_prefixed_subject
+from pretalx.mail.models import (
+    MailTemplate,
+    MailTemplateRoles,
+    QueuedMail,
+    get_prefixed_subject,
+)
 from pretalx.orga.forms.mails import (
     DraftRemindersForm,
     MailDetailForm,
@@ -495,69 +500,28 @@ class TemplateList(EventPermissionRequired, TemplateView):
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
-        result["templates"] = [
-            {
-                "title": _("Acknowledge Mail"),
-                "obj": self.request.event.ack_template,
-                "form": MailTemplateForm(
-                    instance=self.request.event.ack_template,
-                    read_only=True,
-                    event=self.request.event,
-                ),
-            },
-            {
-                "title": _("Accept Mail"),
-                "obj": self.request.event.accept_template,
-                "form": MailTemplateForm(
-                    instance=self.request.event.accept_template,
-                    read_only=True,
-                    event=self.request.event,
-                ),
-            },
-            {
-                "title": _("Reject Mail"),
-                "obj": self.request.event.reject_template,
-                "form": MailTemplateForm(
-                    instance=self.request.event.reject_template,
-                    read_only=True,
-                    event=self.request.event,
-                ),
-            },
-            {
-                "title": _("New schedule version"),
-                "obj": self.request.event.update_template,
-                "form": MailTemplateForm(
-                    instance=self.request.event.update_template,
-                    read_only=True,
-                    event=self.request.event,
-                ),
-            },
-            {
-                "title": _("Unanswered questions reminder"),
-                "obj": self.request.event.question_template,
-                "form": MailTemplateForm(
-                    instance=self.request.event.question_template,
-                    read_only=True,
-                    event=self.request.event,
-                ),
-            },
+        templates = [
+            self.request.event.get_mail_template(role)
+            for role, __ in MailTemplateRoles.choices
         ]
-        pks = [
-            template.pk if template else None
-            for template in self.request.event.fixed_templates
+        result["template_forms"] = [
+            MailTemplateForm(
+                instance=template,
+                read_only=True,
+                event=self.request.event,
+            )
+            for template in templates
         ]
-        result["templates"] += [
-            {
-                "title": str(template.subject),
-                "obj": template,
-                "form": MailTemplateForm(
-                    instance=template, read_only=True, event=self.request.event
-                ),
-                "custom": True,
-            }
-            for template in self.request.event.mail_templates.exclude(
-                pk__in=pks
-            ).exclude(is_auto_created=True)
+        templates = self.request.event.mail_templates.filter(
+            is_auto_created=False, role__isnull=True
+        )
+        result["template_forms"] += [
+            MailTemplateForm(
+                instance=template,
+                read_only=True,
+                event=self.request.event,
+            )
+            for template in templates.order_by("subject")
         ]
         return result
 

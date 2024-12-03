@@ -24,6 +24,17 @@ def get_prefixed_subject(event, subject):
     return f"{prefix} {subject}"
 
 
+class MailTemplateRoles(models.TextChoices):
+    NEW_SUBMISSION = "submission.new", _("Acknowledge proposal submission")
+    NEW_SUBMISSION_INTERNAL = "submission.new.internal", _(
+        "New proposal (organiser notification)"
+    )
+    SUBMISSION_ACCEPT = "submission.state.accepted", _("Proposal accepted")
+    SUBMISSION_REJECT = "submission.state.rejected", _("Proposal rejected")
+    QUESTION_REMINDER = "question.reminder", _("Unanswered questions reminder")
+    NEW_SCHEDULE = "schedule.new", _("New schedule published")
+
+
 class MailTemplate(PretalxModel):
     """MailTemplates can be used to create.
 
@@ -37,6 +48,12 @@ class MailTemplate(PretalxModel):
         to="event.Event",
         on_delete=models.PROTECT,
         related_name="mail_templates",
+    )
+    role = models.CharField(
+        choices=MailTemplateRoles.choices,
+        max_length=30,
+        null=True,
+        default=None,
     )
     subject = I18nCharField(
         max_length=200,
@@ -66,6 +83,9 @@ class MailTemplate(PretalxModel):
     # Auto-created templates are created when mass emails are sent out. They are only used to re-create similar
     # emails, and are never shown in a list of email templates or anywhere else.
     is_auto_created = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = (("event", "role"),)
 
     class urls(EventUrls):
         base = edit = "{self.event.orga_urls.mail_templates}{self.pk}/"
@@ -127,10 +147,11 @@ class MailTemplate(PretalxModel):
         if users and not commit:
             address = ",".join(user.email for user in users)
             users = None
+        event = event or self.event
 
         with override(locale):
             context_kwargs = context_kwargs or {}
-            context_kwargs["event"] = event or self.event
+            context_kwargs["event"] = event
             default_context = get_mail_context(**context_kwargs)
             default_context.update(context or {})
             context = default_context
@@ -146,7 +167,7 @@ class MailTemplate(PretalxModel):
                 subject = subject[:198] + "…"
 
             mail = QueuedMail(
-                event=event or self.event,
+                event=event,
                 template=self,
                 to=address,
                 reply_to=self.reply_to,

@@ -562,8 +562,6 @@ def test_can_remind_answered_submission_question(
         question.deadline = None
         question.save()
         original_count = QueuedMail.objects.count()
-        event.question_template = None
-        event.save()
         Answer.objects.create(
             submission=slot.submission,
             question=question,

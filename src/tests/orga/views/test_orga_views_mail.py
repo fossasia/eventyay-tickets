@@ -2,7 +2,7 @@ import pytest
 from django.core import mail as djmail
 from django_scopes import scope
 
-from pretalx.mail.models import MailTemplate, QueuedMail
+from pretalx.mail.models import MailTemplate, MailTemplateRoles, QueuedMail
 
 
 @pytest.mark.django_db
@@ -259,7 +259,7 @@ def test_orga_can_view_templates(orga_client, event, mail_template):
 @pytest.mark.django_db
 def test_orga_can_create_template(orga_client, event, mail_template):
     with scope(event=event):
-        assert MailTemplate.objects.count() == 6
+        assert MailTemplate.objects.count() == len(MailTemplateRoles.choices) + 1
     response = orga_client.post(
         event.orga_urls.new_template,
         follow=True,
@@ -267,19 +267,19 @@ def test_orga_can_create_template(orga_client, event, mail_template):
     )
     assert response.status_code == 200
     with scope(event=event):
-        assert MailTemplate.objects.count() == 7
+        assert MailTemplate.objects.count() == len(MailTemplateRoles.choices) + 2
         assert MailTemplate.objects.get(event=event, subject__contains="[test] subject")
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("variant", ("custom", "fixed", "update"))
 def test_orga_can_edit_template(orga_client, event, mail_template, variant):
-    if variant == "fixed":
-        mail_template = event.ack_template
-    elif variant == "update":
-        mail_template = event.update_template
     with scope(event=event):
-        assert MailTemplate.objects.count() == 6
+        if variant == "fixed":
+            mail_template = event.get_mail_template("submission.new")
+        elif variant == "update":
+            mail_template = event.get_mail_template("schedule.new")
+        assert MailTemplate.objects.count() == len(MailTemplateRoles.choices) + 1
         count = mail_template.logged_actions().count()
     response = orga_client.get(mail_template.urls.edit, follow=True)
     assert response.status_code == 200
@@ -293,7 +293,7 @@ def test_orga_can_edit_template(orga_client, event, mail_template, variant):
     )
     assert response.status_code == 200
     with scope(event=event):
-        assert MailTemplate.objects.count() == 6
+        assert MailTemplate.objects.count() == len(MailTemplateRoles.choices) + 1
         assert count + 1 == mail_template.logged_actions().count()
         assert MailTemplate.objects.get(
             event=event, subject__contains="COMPLETELY NEW AND UNHEARD OF"
@@ -323,8 +323,8 @@ def test_orga_can_edit_template_without_change(orga_client, event, mail_template
 @pytest.mark.django_db
 def test_orga_cannot_add_wrong_placeholder_in_template(orga_client, event):
     with scope(event=event):
-        assert MailTemplate.objects.count() == 5
-    mail_template = event.ack_template
+        assert MailTemplate.objects.count() == 6
+        mail_template = event.get_mail_template("submission.new")
     response = orga_client.post(
         mail_template.urls.edit,
         follow=True,
@@ -343,11 +343,11 @@ def test_orga_cannot_add_wrong_placeholder_in_template(orga_client, event):
 @pytest.mark.django_db
 def test_orga_can_delete_template(orga_client, event, mail_template):
     with scope(event=event):
-        assert MailTemplate.objects.count() == 6
+        assert MailTemplate.objects.count() == len(MailTemplateRoles.choices) + 1
     response = orga_client.post(mail_template.urls.delete, follow=True)
     assert response.status_code == 200
     with scope(event=event):
-        assert MailTemplate.objects.count() == 5
+        assert MailTemplate.objects.count() == len(MailTemplateRoles.choices)
 
 
 @pytest.mark.django_db
@@ -691,25 +691,29 @@ def test_orga_can_compose_mail_to_speakers_with_no_slides(
 def test_orga_can_compose_single_mail_from_template(
     orga_client, event, submission, orga_user
 ):
+    with scope(event=event):
+        mail_template = event.get_mail_template("submission.new")
     response = orga_client.get(
         event.orga_urls.compose_mails_sessions
-        + f"?template={event.ack_template.pk}&submission={submission.code}&email={orga_user.email}",
+        + f"?template={mail_template.pk}&submission={submission.code}&email={orga_user.email}",
         follow=True,
     )
     assert response.status_code == 200
     with scope(event=event):
-        assert str(event.ack_template.subject) in response.content.decode()
+        assert str(mail_template.subject) in response.content.decode()
 
 
 @pytest.mark.django_db
 def test_orga_can_compose_single_mail_from_wrong_template(
     orga_client, event, submission
 ):
+    with scope(event=event):
+        mail_template = event.get_mail_template("submission.new")
     response = orga_client.get(
         event.orga_urls.compose_mails_sessions
-        + f"?template={event.ack_template.pk}000&submission={submission.code}EEE&email=r",
+        + f"?template={mail_template.pk}000&submission={submission.code}EEE&email=r",
         follow=True,
     )
     assert response.status_code == 200
     with scope(event=event):
-        assert str(event.ack_template.subject) not in response.content.decode()
+        assert str(mail_template.subject) not in response.content.decode()

@@ -44,20 +44,21 @@ def test_initial_data(event):
     with scope(event=event):
         assert event.cfp
         assert event.cfp.default_type
-        assert event.accept_template
-        assert event.ack_template
-        assert event.reject_template
+        assert event.get_mail_template("submission.state.accepted")
+        assert event.get_mail_template("submission.new")
+        assert event.get_mail_template("submission.state.rejected")
         assert event.schedules.count()
         assert event.wip_schedule
 
         event.cfp.delete()
+        event.mail_templates.all().delete()
         event.build_initial_data()
 
         assert event.cfp
         assert event.cfp.default_type
-        assert event.accept_template
-        assert event.ack_template
-        assert event.reject_template
+        assert event.get_mail_template("submission.state.accepted")
+        assert event.get_mail_template("submission.new")
+        assert event.get_mail_template("submission.state.rejected")
         assert event.schedules.count()
         assert event.wip_schedule
 
@@ -127,8 +128,9 @@ def test_event_copy_settings(event, submission_type, choice_question, track):
     with scope(event=event):
         event.custom_domain = "https://testeventcopysettings.example.org"
         event.settings.random_value = "testcopysettings"
-        event.accept_template.text = "testtemplate"
-        event.accept_template.save()
+        accept_template = event.get_mail_template("submission.state.accepted")
+        accept_template.text = "testtemplate"
+        accept_template.save()
         event.feature_flags = {"testing": "working"}
         choice_question.tracks.add(track)
         event.cfp.deadline = now()
@@ -151,8 +153,8 @@ def test_event_copy_settings(event, submission_type, choice_question, track):
         new_event.copy_data_from(event)
     with scope(event=new_event):
         assert new_event.submission_types.count() == 2
-        assert new_event.accept_template
-        assert new_event.accept_template.text == "testtemplate"
+        accept_template = new_event.get_mail_template("submission.state.accepted")
+        assert accept_template.text == "testtemplate"
         assert new_event.settings.random_value == "testcopysettings"
         assert not new_event.custom_domain
         assert new_event.feature_flags == {"testing": "working"}

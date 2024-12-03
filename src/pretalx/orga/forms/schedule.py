@@ -7,6 +7,7 @@ from pretalx.common.forms.mixins import I18nHelpText
 from pretalx.common.forms.renderers import InlineFormRenderer
 from pretalx.common.forms.widgets import EnhancedSelectMultiple
 from pretalx.common.text.phrases import phrases
+from pretalx.mail.models import MailTemplateRoles
 from pretalx.orga.forms.export import ExportForm
 from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.schedule.utils import guess_schedule_version
@@ -25,7 +26,7 @@ class ScheduleReleaseForm(I18nHelpText, I18nModelForm):
         self.event = event
         self.fields["version"].required = True
         self.fields["comment"].widget.attrs["rows"] = 4
-        url = self.event.update_template.urls.base
+        url = self.event.get_mail_template(MailTemplateRoles.NEW_SCHEDULE).urls.base
         self.fields["notify_speakers"].help_text = (
             f"<a href='{url}'>{_('Email template')}</a>"
         )

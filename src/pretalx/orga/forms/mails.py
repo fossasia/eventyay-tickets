@@ -18,7 +18,7 @@ from pretalx.common.forms.widgets import EnhancedSelectMultiple, SelectMultipleW
 from pretalx.common.language import language
 from pretalx.common.text.phrases import phrases
 from pretalx.mail.context import get_available_placeholders
-from pretalx.mail.models import MailTemplate, QueuedMail
+from pretalx.mail.models import MailTemplate, MailTemplateRoles, QueuedMail
 from pretalx.mail.placeholders import SimpleFunctionalMailTextPlaceholder
 from pretalx.person.models import User
 from pretalx.submission.forms import SubmissionFilterForm
@@ -57,9 +57,9 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         valid_placeholders = {}
 
         if self.instance and self.instance.id:
-            if self.instance == self.event.update_template:
+            if self.instance.role == MailTemplateRoles.NEW_SCHEDULE:
                 kwargs = ["event", "user"]
-            elif self.instance == self.event.question_template:
+            elif self.instance.role == MailTemplateRoles.QUESTION_REMINDER:
                 valid_placeholders["questions"] = SimpleFunctionalMailTextPlaceholder(
                     "questions",
                     ["user"],
@@ -77,11 +77,13 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                     is_visible=False,
                 )
                 kwargs = ["event", "user"]
-            elif self.instance in (
-                self.event.accept_template,
-                self.event.reject_template,
+            elif self.instance.role in (
+                MailTemplateRoles.SUBMISSION_ACCEPT,
+                MailTemplateRoles.SUBMISSION_REJECT,
             ):
                 kwargs.remove("slot")
+            elif self.instance.role == MailTemplateRoles.NEW_SUBMISSION_INTERNAL:
+                kwargs = ["event", "submission"]
 
         valid_placeholders.update(
             get_available_placeholders(event=self.event, kwargs=kwargs)
