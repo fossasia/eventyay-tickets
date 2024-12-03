@@ -55,6 +55,14 @@ class BaseExporter:
         raise NotImplementedError()  # NOQA
 
     @property
+    def show_public(self) -> bool:
+        """This value determines if the exporter is listed among the public
+        exporters on the schedule page. It defaults to the `public` property,
+        but you can override it in order to hide public exports from the
+        user-facing menu."""
+        return self.public
+
+    @property
     def cors(self) -> str:
         """If you want to let this exporter be accessed with JavaScript, set
         cors = '*' for all accessing domains, or supply a specific domain."""
