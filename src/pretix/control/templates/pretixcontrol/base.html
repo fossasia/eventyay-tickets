@@ -112,7 +112,7 @@
                                 </button>
                             </form>
                         {% else %}
-                            <a href="{% eventurl request.event "presale:event.index" %}" title="{% trans "Go to shop" %}"
+                            <a href="{% eventurl request.event "presale:event.index" %}" title="{% trans "View event" %}"
                                     target="_blank" class="navbar-toggle mobile-navbar-view-link">
                                 <i class="fa fa-eye"></i>
                             </a>
@@ -135,12 +135,12 @@
                                 <form action="{% eventurl request.event "presale:event.auth" %}" method="post" target="_blank">
                                     <input type="hidden" value="{{ new_session }}" name="session">
                                     <button type="submit" class="btn btn-link" id="button-shop">
-                                       <i class="fa fa-eye"></i> {% trans "Go to shop" %}
+                                       <i class="fa fa-eye"></i> {% trans "View event" %}
                                     </button>
                                 </form>
                             {% else %}
-                                <a href="{% eventurl request.event "presale:event.index" %}" title="{% trans "Go to shop" %}"  target="_blank">
-                                    <i class="fa fa-eye"></i> {% trans "Go to shop" %}
+                                <a href="{% eventurl request.event "presale:event.index" %}" title="{% trans "View event" %}"  target="_blank">
+                                    <i class="fa fa-eye"></i> {% trans "View event" %}
                                 </a>
                             {% endif %}
                         </li>
@@ -212,6 +212,7 @@
                     {{ 'popover-profile'|json_script:"popover_toggle" }}
                     {{ base_path|json_script:"base_path" }}
                     {{ staff_session|json_script:"is_admin_mode" }}
+                    {{ talk_hostname|json_script:"talk_hostname_url" }}
                     <li>
                         <a target="_blank" class="header-nav btn btn-outline-success" data-toggle="popover-profile">
                             <i class="fa fa-user"></i> {{ request.user.get_full_name }}
