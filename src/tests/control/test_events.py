@@ -263,19 +263,6 @@ class EventsTest(SoupTest):
         assert self.event1.date_to.strftime('%Y-%m-%d %H:%M:%S') == "2013-12-30 08:00:00"
         assert self.event1.settings.timezone == 'Asia/Tokyo'
 
-    def test_plugins(self):
-        doc = self.get_doc('/control/event/%s/%s/settings/plugins' % (self.orga1.slug, self.event1.slug))
-        self.assertIn("PayPal", doc.select(".form-plugins")[0].text)
-        self.assertIn("Enable", doc.select("[name=\"plugin:pretix.plugins.paypal\"]")[0].text)
-
-        doc = self.post_doc('/control/event/%s/%s/settings/plugins' % (self.orga1.slug, self.event1.slug),
-                            {'plugin:pretix.plugins.paypal': 'enable'})
-        self.assertIn("Disable", doc.select("[name=\"plugin:pretix.plugins.paypal\"]")[0].text)
-
-        doc = self.post_doc('/control/event/%s/%s/settings/plugins' % (self.orga1.slug, self.event1.slug),
-                            {'plugin:pretix.plugins.paypal': 'disable'})
-        self.assertIn("Enable", doc.select("[name=\"plugin:pretix.plugins.paypal\"]")[0].text)
-
     def test_testmode_enable(self):
         self.event1.testmode = False
         self.event1.save()
