@@ -940,6 +940,42 @@ class Submission(GenerateCode, PretalxModel):
             result += f"**{field_name}**: {field_content}\n\n"
         return result
 
+    def add_speaker(self, email, name=None, locale=None, user=None):
+        from pretalx.common.urls import build_absolute_uri
+        from pretalx.person.models import SpeakerProfile, User
+        from pretalx.person.services import create_user
+
+        user_created = False
+        context = {}
+        try:
+            speaker = User.objects.get(email__iexact=email)
+            if not speaker.profiles.filter(event=self.event).exists():
+                SpeakerProfile.objects.create(user=speaker, event=self.event)
+        except User.DoesNotExist:
+            speaker = create_user(email=email, name=name, event=self.event)
+            user_created = True
+            context["invitation_link"] = build_absolute_uri(
+                "cfp:event.new_recover",
+                kwargs={"event": self.event.slug, "token": speaker.pw_reset_token},
+            )
+
+        self.speakers.add(speaker)
+        self.log_action("pretalx.submission.speakers.add", person=user, orga=True)
+        context["user"] = speaker
+        template = self.event.get_mail_template(
+            MailTemplateRoles.EXISTING_SPEAKER_INVITE
+            if not user_created
+            else MailTemplateRoles.NEW_SPEAKER_INVITE
+        )
+        template.to_mail(
+            user=speaker,
+            event=self.event,
+            context=context,
+            context_kwargs={"user": speaker, "submission": self, "event": self.event},
+            locale=locale or self.event.locale,
+        )
+        return speaker
+
     def send_invite(self, to, _from=None, subject=None, text=None):
         if not _from and (not subject or not text):
             raise Exception("Please enter a sender for this invitation.")

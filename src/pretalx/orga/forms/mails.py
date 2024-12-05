@@ -53,13 +53,31 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         return used_placeholders - valid_placeholders
 
     def get_valid_placeholders(self, **kwargs):
-        kwargs = ["event", "submission", "user", "slot"]
+        kwargs = ["event", "user", "submission", "slot"]
         valid_placeholders = {}
 
-        if self.instance and self.instance.id:
-            if self.instance.role == MailTemplateRoles.NEW_SCHEDULE:
-                kwargs = ["event", "user"]
-            elif self.instance.role == MailTemplateRoles.QUESTION_REMINDER:
+        if self.instance and (role := self.instance.role):
+            kwarg_mapping = {
+                MailTemplateRoles.NEW_SUBMISSION: [
+                    "submission",
+                    "event",
+                    "user",
+                    "slot",
+                ],
+                MailTemplateRoles.NEW_SUBMISSION_INTERNAL: ["submission", "event"],
+                MailTemplateRoles.SUBMISSION_ACCEPT: ["submission", "event", "user"],
+                MailTemplateRoles.SUBMISSION_REJECT: ["submission", "event", "user"],
+                MailTemplateRoles.NEW_SPEAKER_INVITE: ["submission", "event", "user"],
+                MailTemplateRoles.EXISTING_SPEAKER_INVITE: [
+                    "submission",
+                    "event",
+                    "user",
+                ],
+                MailTemplateRoles.QUESTION_REMINDER: ["event", "user"],
+                MailTemplateRoles.NEW_SCHEDULE: ["event", "user"],
+            }
+            kwargs = kwarg_mapping.get(role, kwargs)
+            if self.instance.role == MailTemplateRoles.QUESTION_REMINDER:
                 valid_placeholders["questions"] = SimpleFunctionalMailTextPlaceholder(
                     "questions",
                     ["user"],
@@ -77,13 +95,15 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                     is_visible=False,
                 )
                 kwargs = ["event", "user"]
-            elif self.instance.role in (
-                MailTemplateRoles.SUBMISSION_ACCEPT,
-                MailTemplateRoles.SUBMISSION_REJECT,
-            ):
-                kwargs.remove("slot")
-            elif self.instance.role == MailTemplateRoles.NEW_SUBMISSION_INTERNAL:
-                kwargs = ["event", "submission"]
+            elif role == MailTemplateRoles.NEW_SPEAKER_INVITE:
+                valid_placeholders["invitation_link"] = (
+                    SimpleFunctionalMailTextPlaceholder(
+                        "invitation_link",
+                        ["event", "user"],
+                        None,
+                        "https://pretalx.example.com/democon/invitation/123abc/",
+                    )
+                )
 
         valid_placeholders.update(
             get_available_placeholders(event=self.event, kwargs=kwargs)

@@ -38,10 +38,16 @@
             {% csrf_token %}
 
             {{ form.title.as_field_group }}
+
             {% if action == "create" %}
-                {{ form.email.as_field_group }}
-                {{ form.speaker_name.as_field_group }}
                 {{ form.state.as_field_group }}
+                </fieldset>
+                <fieldset>
+                    <legend>{% translate "Speaker" %}</legend>
+                    {{ new_speaker_form }}
+                </fieldset>
+                <fieldset>
+                    <legend>{% translate "Proposal" %}</legend>
             {% endif %}
             {% if form.room %}
                 <div id="show-if-state" {% if action == "create" %}class="d-none"{% endif %}>

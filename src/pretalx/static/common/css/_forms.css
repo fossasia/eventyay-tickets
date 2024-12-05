@@ -519,6 +519,10 @@ input.password_strength {
   }
 }
 
+.hide-optional .optional {
+  display: none;
+}
+
 .password-input-form,
 .labelless-password-input-form {
   p.text-muted {

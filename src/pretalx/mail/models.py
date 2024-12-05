@@ -31,6 +31,12 @@ class MailTemplateRoles(models.TextChoices):
     )
     SUBMISSION_ACCEPT = "submission.state.accepted", _("Proposal accepted")
     SUBMISSION_REJECT = "submission.state.rejected", _("Proposal rejected")
+    NEW_SPEAKER_INVITE = "speaker.invite", _(
+        "Add a speaker to a proposal (new account)"
+    )
+    EXISTING_SPEAKER_INVITE = "speaker.invite.existing", _(
+        "Add a speaker to a proposal (existing account)"
+    )
     QUESTION_REMINDER = "question.reminder", _("Unanswered questions reminder")
     NEW_SCHEDULE = "schedule.new", _("New schedule published")
 
