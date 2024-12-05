@@ -1251,7 +1251,7 @@ div.mail-preview {
   a[data-lightbox] img:hover {
     box-shadow: var(--shadow-lightest);
     display: inline;
-    vertical-align: text-top;
+    vertical-align: middle;
   }
 }
 .col-form-label .user-name-display {
