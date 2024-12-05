@@ -11,7 +11,6 @@ class BankTransferApp(AppConfig):
 
     class PretixPluginMeta:
         name = _("Bank transfer")
-        author = _("the pretix team")
         category = 'PAYMENT'
         featured = True
         version = version
