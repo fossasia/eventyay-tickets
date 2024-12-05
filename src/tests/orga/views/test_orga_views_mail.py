@@ -323,7 +323,7 @@ def test_orga_can_edit_template_without_change(orga_client, event, mail_template
 @pytest.mark.django_db
 def test_orga_cannot_add_wrong_placeholder_in_template(orga_client, event):
     with scope(event=event):
-        assert MailTemplate.objects.count() == 6
+        assert MailTemplate.objects.count() == len(MailTemplateRoles.choices)
         mail_template = event.get_mail_template("submission.new")
     response = orga_client.post(
         mail_template.urls.edit,

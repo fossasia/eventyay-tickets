@@ -1,7 +1,9 @@
-from pretalx.person.models import User, SpeakerProfile
+import datetime as dt
+
 from django.utils.crypto import get_random_string
 from django.utils.timezone import now
-import datetime as dt
+
+from pretalx.person.models import SpeakerProfile, User
 
 
 def create_user(email, name=None, pw_reset_days=60, event=None):

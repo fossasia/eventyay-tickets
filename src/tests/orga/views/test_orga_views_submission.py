@@ -374,8 +374,9 @@ def test_orga_can_create_submission(orga_client, event, known_speaker, orga_user
             "slot_count": 1,
             "notes": "notes",
             "internal_notes": "internal_notes",
-            "email": "foo@bar.com" if not known_speaker else orga_user.email,
-            "speaker_name": "Foo Speaker",
+            "speaker-email": "foo@bar.com" if not known_speaker else orga_user.email,
+            "speaker-name": "Foo Speaker",
+            "speaker-locale": "en",
             "title": "title",
             "submission_type": type_pk,
             "state": "submitted",
@@ -388,6 +389,7 @@ def test_orga_can_create_submission(orga_client, event, known_speaker, orga_user
         sub = event.submissions.first()
         assert sub.title == "title"
         assert sub.speakers.count() == 1
+        assert sub.mails.all().count() == 1
 
 
 @pytest.mark.django_db
