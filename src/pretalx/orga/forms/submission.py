@@ -6,7 +6,7 @@ from django_scopes.forms import SafeModelChoiceField, SafeModelMultipleChoiceFie
 
 from pretalx.common.forms.fields import ImageField
 from pretalx.common.forms.mixins import ReadOnlyFlag, RequestRequire
-from pretalx.common.forms.renderers import InlineFormRenderer
+from pretalx.common.forms.renderers import InlineFormLabelRenderer, InlineFormRenderer
 from pretalx.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
@@ -76,20 +76,6 @@ class SubmissionForm(ReadOnlyFlag, RequestRequire, forms.ModelForm):
         self.is_creating = False
         if not self.instance.pk:
             self.is_creating = True
-            self.fields["email"] = forms.EmailField(
-                label=phrases.cfp.speaker_email,
-                help_text=_(
-                    "The email address of the speaker holding the session. They will be invited to create an account."
-                ),
-                required=False,
-            )
-            self.fields["speaker_name"] = forms.CharField(
-                label=_("Speaker name"),
-                help_text=_(
-                    "The name of the speaker that should be displayed publicly."
-                ),
-                required=False,
-            )
             if not anonymise:
                 self.fields["state"] = forms.ChoiceField(
                     label=_("Proposal state"),
@@ -290,5 +276,41 @@ class SubmissionStateChangeForm(forms.Form):
     )
 
 
-class AddCreateUserForm(forms.Form):
-    email = forms.EmailField()
+class AddSpeakerForm(forms.Form):
+    email = forms.EmailField(
+        label=phrases.cfp.speaker_email,
+        help_text=_(
+            "The email address of the speaker holding the session. They will be invited to create an account."
+        ),
+        required=False,
+        widget=forms.Select,
+    )
+    name = forms.CharField(
+        label=_("Speaker name"),
+        help_text=_("The name of the speaker that should be displayed publicly."),
+        required=False,
+    )
+    locale = forms.ChoiceField(
+        label=_("Invite language"),
+        choices=[],
+        required=False,
+        help_text=_(
+            "The language in which the speaker will receive their invitation email."
+        ),
+        widget=EnhancedSelect,
+    )
+
+    def __init__(self, *args, event=None, form_renderer=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["locale"].choices = event.named_locales
+        self.fields["locale"].initial = event.locale
+
+    def clean(self):
+        data = super().clean()
+        if data.get("name") and not data.get("email"):
+            raise forms.ValidationError(_("Please provide an email address."))
+        return data
+
+
+class AddSpeakerInlineForm(AddSpeakerForm):
+    default_renderer = InlineFormLabelRenderer

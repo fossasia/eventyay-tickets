@@ -308,12 +308,6 @@ class OrgaProfileForm(forms.ModelForm):
         fields = ("name", "locale")
 
 
-class OrgaSpeakerForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ("name", "email")
-
-
 class LoginInfoForm(forms.ModelForm):
     error_messages = {
         "pw_current_wrong": _("The current password you entered was not correct.")
