@@ -22,7 +22,6 @@ from pretalx.common.text.path import path_with_hash
 from pretalx.common.text.phrases import phrases
 from pretalx.common.text.serialize import serialize_duration
 from pretalx.common.urls import EventUrls
-from pretalx.mail.models import MailTemplateRoles, QueuedMail
 from pretalx.submission.signals import submission_state_change
 
 
@@ -487,6 +486,8 @@ class Submission(GenerateCode, PretalxModel):
     update_talk_slots.alters_data = True
 
     def send_initial_mails(self, person):
+        from pretalx.mail.models import MailTemplateRoles
+
         template = self.event.get_mail_template(MailTemplateRoles.NEW_SUBMISSION)
         template_text = copy.deepcopy(template.text)
         locale = self.get_email_locale(person.locale)
@@ -649,6 +650,8 @@ class Submission(GenerateCode, PretalxModel):
         return str(dict(self.event.named_content_locales)[self.content_locale])
 
     def send_state_mail(self):
+        from pretalx.mail.models import MailTemplateRoles
+
         if self.state == SubmissionStates.ACCEPTED:
             template = self.event.get_mail_template(MailTemplateRoles.SUBMISSION_ACCEPT)
         elif self.state == SubmissionStates.REJECTED:
@@ -942,6 +945,7 @@ class Submission(GenerateCode, PretalxModel):
 
     def add_speaker(self, email, name=None, locale=None, user=None):
         from pretalx.common.urls import build_absolute_uri
+        from pretalx.mail.models import MailTemplateRoles
         from pretalx.person.models import SpeakerProfile, User
         from pretalx.person.services import create_user
 
@@ -977,6 +981,8 @@ class Submission(GenerateCode, PretalxModel):
         return speaker
 
     def send_invite(self, to, _from=None, subject=None, text=None):
+        from pretalx.mail.models import QueuedMail
+
         if not _from and (not subject or not text):
             raise Exception("Please enter a sender for this invitation.")
 

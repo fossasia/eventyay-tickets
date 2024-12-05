@@ -15,11 +15,8 @@ from pretalx.agenda.tasks import export_schedule_html
 from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.text.phrases import phrases
 from pretalx.common.urls import EventUrls
-from pretalx.mail.models import MailTemplateRoles
-from pretalx.person.models import SpeakerProfile, User
 from pretalx.schedule.notifications import render_notifications
 from pretalx.schedule.signals import schedule_release
-from pretalx.submission.models import SubmissionStates
 
 
 class Schedule(PretalxModel):
@@ -74,6 +71,7 @@ class Schedule(PretalxModel):
         :rtype: Schedule
         """
         from pretalx.schedule.models import TalkSlot
+        from pretalx.submission.models import SubmissionStates
 
         if name in ("wip", "latest"):
             raise Exception(f'Cannot use reserved name "{name}" for schedule version.')
@@ -167,6 +165,8 @@ class Schedule(PretalxModel):
         """Returns all :class:`~pretalx.schedule.models.slot.TalkSlot` objects
         that have been scheduled and are visible in the schedule (that is, have
         been confirmed at the time of release)."""
+        from pretalx.submission.models import SubmissionStates
+
         return (
             self.talks.select_related(
                 "submission",
@@ -489,6 +489,8 @@ class Schedule(PretalxModel):
         speaker_avails = None
         speaker_profiles = None
         if with_speakers:
+            from pretalx.person.models import SpeakerProfile
+
             speaker_profiles = {
                 profile.user: profile
                 for profile in SpeakerProfile.objects.filter(
@@ -527,6 +529,8 @@ class Schedule(PretalxModel):
         visible due to their unconfirmed status, and ``no_track`` are
         submissions without a track in a conference that uses tracks.
         """
+        from pretalx.submission.models import SubmissionStates
+
         talks = self.talks.filter(submission__isnull=False)
         warnings = {
             "talk_warnings": [
@@ -553,6 +557,8 @@ class Schedule(PretalxModel):
         """
         result = {}
         if self.changes["action"] == "create":
+            from pretalx.person.models import User
+
             for speaker in User.objects.filter(submissions__slots__schedule=self):
                 talks = self.talks.filter(
                     submission__speakers=speaker,
@@ -578,6 +584,8 @@ class Schedule(PretalxModel):
     def generate_notifications(self, save=False):
         """A list of unsaved :class:`~pretalx.mail.models.QueuedMail` objects
         to be sent on schedule release."""
+        from pretalx.mail.models import MailTemplateRoles
+
         mails = []
         for speaker, data in self.speakers_concerned.items():
             locale = speaker.get_locale_for_event(self.event)
