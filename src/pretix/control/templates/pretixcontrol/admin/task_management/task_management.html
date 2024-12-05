@@ -1,0 +1,88 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load urlreplace %}
+{% load eventurl %}
+
+{% block title %}{% trans "Task management" %}{% endblock %}
+
+{% block content %}
+    <h1>{% trans "Task management" %}</h1>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{% trans "Filter" %}</h3>
+        </div>
+        <div class="panel-body">
+            <form class="" action="" method="get">
+                <div class="row filter-form">
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                         {% bootstrap_field filter_form.name layout='inline' %}
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                         {% bootstrap_field filter_form.status layout='inline' %}
+                    </div>
+                    {% for mf in meta_fields %}
+                        <div class="col-md-3 col-sm-6 col-xs-12">
+                            {% bootstrap_field mf layout='inline' %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="text-right">
+                    <button class="btn btn-primary" type="submit">
+                        <span class="fa fa-filter"></span>
+                        <span class="hidden-md">{% trans "Filter" %}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-condensed table-hover table-quotas">
+            <thead>
+            <tr>
+                <th>{% trans "Id" %}</th>
+                <th>{% trans "Task name" %}</th>
+                <th>{% trans "Run at" %}</th>
+                <th>{% trans "Last run at" %}</th>
+                <th>{% trans "Total run count" %}</th>
+                <th>{% trans "Enabled" %}</th>
+            </tr>
+            </thead>
+            <tbody>
+           {% if tasks %}
+               {% for task in tasks %}
+                   <tr>
+                       <td data-label="{% trans 'Id' %}">
+                           <strong>{{ task.id }}</strong>
+                       </td>
+                       <td data-label="{% trans 'Task name' %}">{{ task.name }}</td>
+                       <td data-label="{% trans 'Run at' %}">{{ task.run_at }}</td>
+                       <td data-label="{% trans 'Last run at' %}">{{ task.formatted_last_run_at }}</td>
+                       <td data-label="{% trans 'Total run count' %}">{{ task.total_run_count }}</td>
+                       <td data-label="{% trans 'Enabled' %}">
+                           <form method="post" action="{% url 'control:admin.task_management' %}" class="task-form">
+                               {% csrf_token %}
+                               <input type="hidden" name="task_id" value="{{ task.id }}">
+                               <input type="hidden" name="enabled" value="{{ task.enabled|lower }}">
+                               <div class="form-check">
+                                   <input class="form-check-input task-checkbox"
+                                          type="checkbox"
+                                          data-form-id="{{ task.id }}"
+                                          {% if task.enabled %}checked{% endif %}>
+                               </div>
+                           </form>
+                       </td>
+                   </tr>
+               {% endfor %}
+           {% else %}
+               <tr>
+                   <td colspan="7" class="text-center mt-5">
+                       {% trans "No tasks found." %}
+                   </td>
+               </tr>
+           {% endif %}
+            </tbody>
+        </table>
+    </div>
+    {% include "pretixcontrol/pagination.html" %}
+{% endblock %}

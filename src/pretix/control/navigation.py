@@ -520,6 +520,12 @@ def get_admin_navigation(request):
             'icon': 'group',
         },
         {
+            'label': _('Task management'),
+            'url': reverse('control:admin.task_management'),
+            'active': 'task_management' in url.url_name,
+            'icon': 'tasks',
+        },
+        {
             'label': _('Users'),
             'url': reverse('control:admin.users'),
             'active': False,
