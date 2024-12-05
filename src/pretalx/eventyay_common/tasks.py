@@ -1,5 +1,7 @@
+import importlib.util
 import logging
 from datetime import datetime
+from importlib import import_module
 
 from celery import shared_task
 from django.core.exceptions import ValidationError
@@ -138,6 +140,11 @@ def process_event_webhook(event_data):
                     locale=event_data.get("locale"),
                     date_from=datetime.fromisoformat(event_data.get("date_from")),
                     date_to=datetime.fromisoformat(event_data.get("date_to")),
+                    plugins=(
+                        get_video_plugin()
+                        if event_data.get("is_video_creation")
+                        else None
+                    ),
                 )
                 event.save()
         elif action == Action.UPDATE:
@@ -154,6 +161,11 @@ def process_event_webhook(event_data):
             event.content_locale_array = ",".join(event_data.get("locales"))
             event.timezone = event_data.get("timezone")
             event.locale = event_data.get("locale")
+            event.plugins = (
+                add_plugin(event, get_video_plugin())
+                if event_data.get("is_video_creation")
+                else event.plugins
+            )
             event.save()
             logger.info(f"Event for organiser {organiser.name} created successfully.")
 
@@ -166,3 +178,46 @@ def process_event_webhook(event_data):
         logger.error("Validation error:", e.message_dict)
     except Exception as e:
         logger.error("Error saving organiser:", e)
+
+
+def get_video_plugin():
+    """
+    Check if the video plugin is installed.
+    @return: If the video plugin is installed, return the plugin name, otherwise None.
+    """
+    video_plugin = get_installed_plugin("pretalx_venueless")
+    if video_plugin:
+        plugins = "pretalx_venueless"
+        return plugins
+    else:
+        logger.error("Video plugin not installed.")
+        return None
+
+
+def get_installed_plugin(plugin_name):
+    """
+    Check if a plugin is installed.
+    @param plugin_name: A string representing the name of the plugin to check.
+    @return: The installed plugin if it exists, otherwise None.
+    """
+    if importlib.util.find_spec(plugin_name) is not None:
+        installed_plugin = import_module(plugin_name)
+    else:
+        installed_plugin = None
+    return installed_plugin
+
+
+def add_plugin(event, plugin_name):
+    """
+    Add a plugin
+    @param event: The event instance to which the plugin should be added.
+    @param plugin_name: A string representing the name of the plugin to add.
+    @return: The updated list of plugins for the event.
+    """
+    if plugin_name is None:
+        return event.plugins
+    if not event.plugins:
+        return plugin_name
+    plugins = set(event.plugins.split(","))
+    plugins.add(plugin_name)
+    return ",".join(plugins)

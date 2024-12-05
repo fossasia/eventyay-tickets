@@ -25,8 +25,11 @@ def oauth2_login_view(request, *args, **kwargs):
         provider=settings.EVENTYAY_SSO_PROVIDER
     ).first()
     if not sso_provider:
-        messages.error(request, "SSO not configured yet, please contact the "
-                                "administrator or come back later.")
+        messages.error(
+            request,
+            "SSO not configured yet, please contact the "
+            "administrator or come back later.",
+        )
         return redirect(reverse("orga:login"))
     # Create an OAuth2 session using the client ID and redirect URI
     oauth2_session = OAuth2Session(
@@ -52,8 +55,11 @@ def oauth2_callback(request):
         provider=settings.EVENTYAY_SSO_PROVIDER
     ).first()
     if not sso_provider:
-        messages.error(request, "SSO not configured yet, please contact the "
-                                "administrator or come back later.")
+        messages.error(
+            request,
+            "SSO not configured yet, please contact the "
+            "administrator or come back later.",
+        )
         return redirect(reverse("orga:login"))
     oauth2_session = OAuth2Session(
         sso_provider.client_id,
