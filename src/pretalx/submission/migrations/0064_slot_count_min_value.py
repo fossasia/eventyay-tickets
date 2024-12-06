@@ -19,6 +19,7 @@ def fix_min_value(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("submission", "0063_submission_pending_state"),
+        ("schedule", "0001_initial"),
     ]
 
     operations = [
