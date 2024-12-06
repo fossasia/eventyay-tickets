@@ -234,6 +234,7 @@ class EventCreateView(SafeSessionWizardView):
                 "timezone": str(basics_data.get("timezone")),
                 "locale": basics_data.get("locale"),
                 "locales": foundation_data.get("locales"),
+                "is_video_creation": foundation_data.get("is_video_creation"),
             }
             send_event_webhook.delay(
                 user_id=self.request.user.id, event=event_dict, action="create"
@@ -268,6 +269,7 @@ class EventCreateView(SafeSessionWizardView):
                         "timezone": str(basics_data.get("timezone")),
                         "locale": event.settings.locale,
                         "locales": event.settings.locales,
+                        "is_video_creation": foundation_data.get("is_video_creation"),
                     }
                     send_event_webhook.delay(
                         user_id=self.request.user.id, event=event_dict, action="create"
@@ -408,6 +410,7 @@ class EventUpdate(
                         "timezone": str(event.settings.timezone),
                         "locale": event.settings.locale,
                         "locales": event.settings.locales,
+                        "is_video_creation": event.is_video_creation,
                     }
                     send_event_webhook.delay(
                         user_id=self.request.user.id, event=event_dict, action="update"

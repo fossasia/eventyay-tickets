@@ -283,7 +283,7 @@ def checkin_widget(sender, subevent=None, lazy=False, **kwargs):
 def welcome_wizard_widget(sender, **kwargs):
     template = get_template('pretixcontrol/event/dashboard_widget_welcome.html')
     ctx = {
-        'title': _('Welcome to pretix!')
+        'title': _('Welcome')
     }
     kwargs = {'event': sender.slug, 'organizer': sender.organizer.slug}
 

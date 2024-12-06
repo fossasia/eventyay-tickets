@@ -14,7 +14,6 @@ class BadgesApp(AppConfig):
 
     class PretixPluginMeta:
         name = _("Badges")
-        author = _("the pretix team")
         version = version
         category = "FEATURE"
         featured = True

@@ -98,6 +98,8 @@ dependencies = [
         'PyJWT~=2.8.0',
         'exhibitors @ git+https://github.com/fossasia/eventyay-tickets-exhibitors.git@master',
         'pyvat==1.3.18',
+        'django_celery_beat==2.7.0',
+        'cron-descriptor==1.4.5'
 ]
 
 [project.optional-dependencies]

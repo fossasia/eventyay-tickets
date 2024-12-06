@@ -11,7 +11,6 @@ class PaypalApp(AppConfig):
 
     class PretixPluginMeta:
         name = _("PayPal")
-        author = _("the pretix team")
         version = version
         category = 'PAYMENT'
         featured = True
