@@ -114,6 +114,7 @@ def send_event_webhook(self, user_id, event, action):
         "locales": event.get("locales"),
         "user_email": user.email,
         "action": action,
+        "is_video_creation": event.get("is_video_creation"),
     }
     headers = get_header_token(user_id)
 
@@ -166,6 +167,9 @@ def create_world(self, is_video_creation, event_data):
         "title": title,
         "timezone": event_timezone,
         "locale": locale,
+        "traits": {
+            'attendee': 'eventyay-video-event-{}'.format(event_slug),
+        }
     }
 
     headers = {"Authorization": "Bearer " + token}
