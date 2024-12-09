@@ -64,12 +64,12 @@ def process_data_images(html, allowed_mimes):
             if original_image_src.startswith("data:"):
                 ftype = original_image_src.split(";")[0][5:]
                 if ftype in allowed_mimes:
-                        with urlopen(original_image_src) as response:
-                            cfile = ContentFile(response.read())
-                            nonce = get_random_string(length=32)
-                            name = f"pub/pages/img/{nonce}.{allowed_mimes[ftype]}"
-                            stored_name = default_storage.save(name, cfile)
-                            stored_url = default_storage.url(stored_name)
-                            image.attrib["src"] = stored_url
+                    with urlopen(original_image_src) as response:
+                        cfile = ContentFile(response.read())
+                        nonce = get_random_string(length=32)
+                        name = f"pub/pages/img/{nonce}.{allowed_mimes[ftype]}"
+                        stored_name = default_storage.save(name, cfile)
+                        stored_url = default_storage.url(stored_name)
+                        image.attrib["src"] = stored_url
         processed_html += lxml.html.tostring(etree).decode()
     return processed_html
