@@ -36,7 +36,7 @@ class PageSettingsForm(forms.ModelForm):
 
     def clean_slug(self):
         slug = self.cleaned_data["slug"]
-        if Page.objects.filter(slug=slug).exists():
+        if Page.objects.filter(slug__iexact=slug).exists():
             raise forms.ValidationError(
                 _("You already have a page on that URL."),
                 code="duplicate_slug",
