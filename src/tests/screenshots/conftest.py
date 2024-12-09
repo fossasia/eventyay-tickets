@@ -2,6 +2,7 @@ import datetime as dt
 import random
 from urllib.parse import urlparse
 
+from django.db.models import F
 import pytest
 from django.conf import settings
 from django.core.management import call_command
@@ -15,9 +16,8 @@ SEED = random.randint(0, 100000)
 @pytest.fixture
 def chrome_options(chrome_options):
     chrome_options.add_argument("headless")
-    chrome_options.add_argument("window-size=1024x768")
+    chrome_options.add_argument("window-size=1600,1600")
     return chrome_options
-
 
 @pytest.fixture(autouse=True)
 def fix_settings(live_server):
@@ -32,6 +32,7 @@ def event():
     from pretalx.event.models import Event
     from pretalx.person.models import User
     from pretalx.submission.models import AnswerOption, Question, QuestionVariant
+    from pretalx.schedule.models import TalkSlot
 
     gs = GlobalSettings()
     gs.settings.update_check_result_warning = False
@@ -49,7 +50,7 @@ def event():
         event.date_to = dt.date.today() + dt.timedelta(days=1)
         event.feature_flags["export_html_on_release"] = False
         event.display_settings["header_pattern"] = "topo"
-        event.primary_color = "#4D64BE"
+        event.primary_color = "#3aa57c"
         event.save()
         assert event.submissions.count()
         assert event.slug == "democon"
@@ -74,6 +75,12 @@ def event():
         )
         event.cfp.deadline = now() + dt.timedelta(days=1, hours=8)
         event.cfp.save()
+        TalkSlot.objects.all().filter(room__event=event).update(
+            start=F("start") - dt.timedelta(days=5)
+        )
+        TalkSlot.objects.all().filter(room__event=event).update(
+            end=F("end") - dt.timedelta(days=5)
+        )
     call_command("collectstatic", "--noinput", "--clear")
     return event
 
@@ -111,7 +118,7 @@ def client(live_server, selenium, user):
 def logged_in_client(live_server, selenium, user):
     selenium.get(live_server.url + "/orga/login/")
     assert "Sign in" in selenium.title, selenium.title
-    selenium.implicitly_wait(10)
+    selenium.implicitly_wait(8)
 
     from selenium.webdriver.common.by import By
 

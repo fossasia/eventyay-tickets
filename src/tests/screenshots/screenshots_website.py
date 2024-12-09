@@ -14,6 +14,7 @@ def screenshot_agenda_public_schedule(live_server, client, event):
 
 @pytest.mark.django_db
 def screenshot_cfp_submission_info(live_server, client, event):
+    client.set_window_size(400, 100)
     with scope(event=event):
         client.get(live_server.url + f"/{event.slug}/submit/423mOn/info/")
     screenshot(client, "website/cfp_start.png")
@@ -28,10 +29,12 @@ def screenshot_cfp_submission_questions(live_server, client, event):
 
 @pytest.mark.django_db
 def screenshot_edit_cfp_settings(live_server, logged_in_client, event):
+    logged_in_client.set_window_size(1000, 1000)
     with scope(event=event):
         logged_in_client.get(
-            live_server.url + f"/orga/event/{event.slug}/cfp/text#information"
+            live_server.url + f"/orga/event/{event.slug}/cfp/text#tab-fields"
         )
+        logged_in_client.execute_script("window.scrollBy(0, 950)")
     screenshot(logged_in_client, "website/cfp_settings.png")
 
 
