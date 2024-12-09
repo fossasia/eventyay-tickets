@@ -381,9 +381,11 @@ class SubmissionsEditView(LoggedInEventPageMixin, SubmissionViewMixin, UpdateVie
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["event"] = self.request.event
-        kwargs["field_configuration"] = self.request.event.cfp_flow.config.get(
-            "info", {}
-        ).get("fields")
+        kwargs["field_configuration"] = (
+            self.request.event.cfp_flow.config.get("steps", {})
+            .get("info", {})
+            .get("fields")
+        )
         kwargs["readonly"] = not self.can_edit
         # At this stage, new speakers can be added via the dedicated form
         kwargs["remove_additional_speaker"] = True
