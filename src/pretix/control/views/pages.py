@@ -83,21 +83,19 @@ class PageUpdate(
             },
         )
 
+    def get_text_for_language(self, lng_code: str) -> str:
+        if not self.object.text or not isinstance(self.object.text.data, dict):
+            return ""
+        return self.object.text.data.get(lng_code, "")
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
         ctx["locales"] = []
         ctx["url"] = f'{settings.SITE_URL}/{settings.BASE_PATH}page/{self.object.slug}'
 
         for lng_code, lng_name in settings.LANGUAGES:
-            dataline = (
-                self.object.text.data[lng_code]
-                if self.object.text is not None
-                and (isinstance(self.object.text.data, dict))
-                and lng_code in self.object.text.data
-                else ""
-            )
             ctx["locales"].append((lng_code, lng_name))
-            ctx[f"text_{lng_code}"] = dataline
+            ctx[f"text_{lng_code}"] = self.get_text_for_language(lng_code)
         return ctx
 
     def form_valid(self, form):

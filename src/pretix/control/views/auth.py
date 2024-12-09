@@ -177,7 +177,7 @@ def register(request):
     else:
         form = RegistrationForm()
     ctx['form'] = form
-    ctx['require_confirmation'] = Page.objects.filter(require_confirmation=True)
+    ctx['confirmation_required'] = Page.objects.filter(confirmation_required=True)
     return render(request, 'pretixcontrol/auth/register.html', ctx)
 
 

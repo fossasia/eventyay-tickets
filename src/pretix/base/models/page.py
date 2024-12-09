@@ -10,16 +10,10 @@ class Page(LoggedModel):
     title = I18nCharField(
         verbose_name=_("Page title")
     )
-    slug = models.CharField(
+    slug = models.SlugField(
         max_length=150,
         db_index=True,
         verbose_name=_("URL form"),
-        validators=[
-            RegexValidator(
-                regex="^[a-zA-Z0-9.-]+$",
-                message=_("The slug may only contain letters, numbers, dots and dashes.")
-            ),
-        ],
         help_text=_(
             "This will be used to generate the URL of the page. Please only use latin letters, "
             "numbers, dots and dashes. You cannot change this afterwards."
@@ -37,7 +31,7 @@ class Page(LoggedModel):
         default=False,
         verbose_name=_("Show in website footer menu on all pages")
     )
-    require_confirmation = models.BooleanField(
+    confirmation_required = models.BooleanField(
         default=False,
         verbose_name=_(
             "Require the user to acknowledge this page before the sign up is created (e.g. for terms of service)."

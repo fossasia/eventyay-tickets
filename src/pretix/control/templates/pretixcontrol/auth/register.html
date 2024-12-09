@@ -10,12 +10,12 @@
         {% bootstrap_field form.email %}
         {% bootstrap_field form.password %}
         {% bootstrap_field form.password_repeat %}
-        {% if require_confirmation %}
+        {% if confirmation_required %}
             <div class="checkbox">
                 <label>
                     <input type="checkbox" class="checkbox" value="yes" required>
                     I have read and agree with the content of the following pages:
-                    {% for page in require_confirmation %}
+                    {% for page in confirmation_required %}
                         <a href="{% url 'page' slug=page.slug %}">{{ page.title|safe }}</a>{% if not forloop.last %}, {% else %}.{% endif %}
                     {% endfor %}
                 </label>
