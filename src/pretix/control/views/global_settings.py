@@ -2,27 +2,28 @@ import logging
 import secrets
 
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.db import IntegrityError
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django.views.generic import FormView, TemplateView, DeleteView
-from django.db import IntegrityError
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.views.generic import DeleteView, FormView, TemplateView
 
-from pretix.base.models import LogEntry, OrderPayment, OrderRefund
 from pretix.api.models import OAuthApplication
+from pretix.base.models import LogEntry, OrderPayment, OrderRefund
 from pretix.base.services.update_check import check_result_table, update_check
 from pretix.base.settings import GlobalSettingsObject
 from pretix.control.forms.global_settings import (
-    GlobalSettingsForm, UpdateSettingsForm, SSOConfigForm
+    GlobalSettingsForm, SSOConfigForm, UpdateSettingsForm,
 )
 from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, StaffMemberRequiredMixin,
 )
 
 logger = logging.getLogger(__name__)
+
 
 class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
     template_name = 'pretixcontrol/global_settings.html'
@@ -66,7 +67,7 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
         except ValidationError as e:
             logger.error("Error while creating OAuth2 application: %s", e)
             return {"error_message": f"Validation error: {e.message_dict}"}
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist as e:
             logger.error("Error while creating OAuth2 application: %s", e)
             return {"error_message": "The object you are trying to access does not exist."}
         except ValueError as e:
@@ -113,7 +114,7 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
             "success_message": "Successfully created OAuth2 Application",
             "client_id": application.client_id,
             "client_secret": application.client_secret
-            }
+        }
 
 
 class DeleteOAuthApplicationView(DeleteView):
