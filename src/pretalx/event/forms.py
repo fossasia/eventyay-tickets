@@ -14,6 +14,7 @@ from pretalx.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
     HtmlDateInput,
+    HtmlDateTimeInput,
     TextInputWithAddon,
 )
 from pretalx.common.text.phrases import phrases
@@ -242,11 +243,11 @@ class EventWizardTimelineForm(forms.ModelForm):
         help_text=_(
             "The default deadline for your Call for Papers. You can assign additional deadlines to individual session types, which will take precedence over this deadline."
         ),
+        widget=HtmlDateTimeInput,
     )
 
     def __init__(self, *args, user=None, locales=None, organiser=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["deadline"].widget.attrs["type"] = "datetime-local"
 
     def clean(self):
         data = super().clean()
