@@ -30,7 +30,7 @@ redis==5.2.1
 reportlab==4.2.*
 requests==2.32.*
 sentry-sdk==2.19.*
-tqdm==4.66.*
+tqdm==4.67.*
 websockets==14.*
 
 # deploy
