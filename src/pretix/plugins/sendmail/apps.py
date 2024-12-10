@@ -10,7 +10,6 @@ class SendMailApp(AppConfig):
 
     class PretixPluginMeta:
         name = _("Send out emails")
-        author = _("the pretix team")
         category = 'FEATURE'
         featured = True
         version = version

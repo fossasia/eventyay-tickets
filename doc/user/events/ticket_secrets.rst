@@ -53,7 +53,7 @@ The alternative approach that is included with pretix is to choose a signature-b
 These secrets include the most important information that is required for verifying their validity and use modern
 cryptography to make sure they cannot be forged.
 
-Currently, pretix ships with one such scheme ("pretix signature scheme 1") which encodes the product, the product
+Currently, pretix ships with one such scheme ("signature scheme 1") which encodes the product, the product
 variation, and the date (if inside an event series) into the ticket code and signs the code with a `EdDSA`_ signature.
 This allows to verify whether a ticket is allowed to enter without any database or connection to the server, but has
 a few important drawbacks:

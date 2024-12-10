@@ -10,7 +10,6 @@ class WebCheckinApp(AppConfig):
 
     class PretixPluginMeta:
         name = _("Web-based check-in")
-        author = _("the pretix team")
         version = version
         category = "FEATURE"
         featured = True
