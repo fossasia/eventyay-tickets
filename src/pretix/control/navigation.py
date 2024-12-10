@@ -520,12 +520,6 @@ def get_admin_navigation(request):
             'icon': 'group',
         },
         {
-            'label': _('Task management'),
-            'url': reverse('control:admin.task_management'),
-            'active': 'task_management' in url.url_name,
-            'icon': 'tasks',
-        },
-        {
             'label': _('Users'),
             'url': reverse('control:admin.users'),
             'active': False,
@@ -558,6 +552,11 @@ def get_admin_navigation(request):
                     'label': _('Update check'),
                     'url': reverse('control:admin.global.update'),
                     'active': (url.url_name == 'admin.global.update'),
+                },
+                {
+                    'label': _('Generate keys for SSO'),
+                    'url': reverse('control:admin.global.sso'),
+                    'active': (url.url_name == 'admin.global.sso'),
                 },
             ]
         },

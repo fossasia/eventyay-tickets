@@ -333,7 +333,6 @@ urlpatterns = [
         url(r'^$', admin.AdminDashboard.as_view(), name='admin.dashboard'),
         url(r'^organizers/$', admin.OrganizerList.as_view(), name='admin.organizers'),
         url(r'^events/$', admin.AdminEventList.as_view(), name='admin.events'),
-        url(r'^task_management', admin.TaskList.as_view(), name='admin.task_management'),
         url(r'^sudo/(?P<id>\d+)/$', user.EditStaffSession.as_view(), name='admin.user.sudo.edit'),
         url(r'^sudo/sessions/$', user.StaffSessionList.as_view(), name='admin.user.sudo.list'),
         url(r'^users/$', users.UserListView.as_view(), name='admin.users'),
@@ -347,7 +346,8 @@ urlpatterns = [
         url(r'^global/settings/$', global_settings.GlobalSettingsView.as_view(), name='admin.global.settings'),
         url(r'^global/update/$', global_settings.UpdateCheckView.as_view(), name='admin.global.update'),
         url(r'^global/message/$', global_settings.MessageView.as_view(), name='admin.global.message'),
-
+        url(r'^global/sso/$', global_settings.SSOView.as_view(), name='admin.global.sso'),
+        url(r'^global/sso/(?P<pk>\d+)/delete/$', global_settings.DeleteOAuthApplicationView.as_view(), name='admin.global.sso.delete'),
     ])),
     url(r'^event/(?P<organizer>[^/]+)/$', RedirectView.as_view(pattern_name='control:organizer'), name='event.organizerredirect'),
 ]
