@@ -85,6 +85,15 @@ table.table-sticky thead {
   box-shadow: 0 2px var(--color-border);
 }
 
+table .action-column {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  > * {
+    margin-left: 4px;
+  }
+}
+
 .accordion .card {
   h2 {
     margin-bottom: 0;
@@ -792,6 +801,7 @@ details.submission-state-dropdown {
   display: inline-block;
   align-self: baseline;
   width: 20px;
+  min-width: 20px;
   height: 20px;
   border: 2px solid var(--color-border);
   border-radius: var(--size-border-radius);
