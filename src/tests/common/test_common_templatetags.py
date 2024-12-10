@@ -43,22 +43,27 @@ def test_common_templatetag_xmlescape(input_, output):
 
 
 @pytest.mark.parametrize(
-    "text,richer_text",
+    "text,richer_text,noopener",
     (
-        ("foo.notatld", "foo.notatld"),
+        ("foo.notatld", "foo.notatld", False),
         (
             "foo.com",
-            '<a href="http://foo.com" rel="nofollow" target="_blank">foo.com</a>',
+            "//foo.com",
+            True,
         ),
-        ("foo@bar.com", '<a href="mailto:foo@bar.com" target="_blank">foo@bar.com</a>'),
+        ("foo@bar.com", "mailto:foo@bar.com", False),
         (
             "chaos.social",
-            '<a href="http://chaos.social" rel="nofollow" target="_blank">chaos.social</a>',
+            "//chaos.social",
+            True,
         ),
     ),
 )
-def test_common_templatetag_rich_text(text, richer_text):
-    assert rich_text(text) == f"<p>{richer_text}</p>"
+def test_common_templatetag_rich_text(text, richer_text, noopener):
+    result = rich_text(text)
+    assert richer_text in result
+    assert ('rel="noopener"' in result) is noopener
+    assert ('target="_blank"' in result) is noopener
 
 
 @pytest.mark.parametrize(
