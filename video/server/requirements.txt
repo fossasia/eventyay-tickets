@@ -23,7 +23,7 @@ Pillow==11.0.*
 pandas==2.2.*
 pdf2image==1.17.*
 pdfrw==0.4
-pyjwt==2.9.*
+pyjwt==2.10.*
 python-dateutil==2.9.*
 pytz
 redis==5.2.0
