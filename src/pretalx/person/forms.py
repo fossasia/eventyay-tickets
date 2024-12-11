@@ -353,8 +353,7 @@ class LoginInfoForm(forms.ModelForm):
         super().save()
         password = self.cleaned_data.get("password")
         if password:
-            self.user.set_password(password)
-            self.user.save()
+            self.user.change_password(password)
 
     class Meta:
         model = User
