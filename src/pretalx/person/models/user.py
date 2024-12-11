@@ -449,15 +449,49 @@ the pretalx robot"""
             )
 
         with override(self.locale):
-            mail = QueuedMail.objects.create(
+            QueuedMail(
                 subject=_("Password recovery"),
                 text=str(mail_text).format(**context),
                 locale=self.locale,
-            )
-            mail.to_users.add(self)
-            mail.send()
+                to=self.email,
+            ).send()
         self.log_action(
             action="pretalx.user.password.reset", person=user, orga=bool(user)
         )
 
     reset_password.alters_data = True
+
+    @transaction.atomic
+    def change_password(self, new_password):
+        from pretalx.mail.models import QueuedMail
+
+        self.set_password(new_password)
+        self.pw_reset_token = None
+        self.pw_reset_time = None
+        self.save()
+
+        context = {
+            "name": self.name or "",
+        }
+        mail_text = _(
+            """Hi {name},
+
+Your pretalx account password was just changed.
+
+If you did not cange your password, please contact the site administration immediately.
+
+All the best,
+the pretalx team"""
+        )
+
+        with override(self.locale):
+            QueuedMail(
+                subject=_("[pretalx] Password changed"),
+                text=str(mail_text).format(**context),
+                locale=self.locale,
+                to=self.email,
+            ).send()
+
+        self.log_action(action="pretalx.user.password.changed", person=self)
+
+    change_password.alters_data = True

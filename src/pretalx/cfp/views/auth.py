@@ -82,10 +82,7 @@ class RecoverView(FormView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        self.user.set_password(form.cleaned_data["password"])
-        self.user.pw_reset_token = None
-        self.user.pw_reset_time = None
-        self.user.save()
+        self.user.change_password(form.cleaned_data["password"])
         messages.success(self.request, phrases.cfp.auth_reset_success)
         return redirect(
             reverse("cfp:event.login", kwargs={"event": self.request.event.slug})

@@ -3,6 +3,7 @@
 Release Notes
 =============
 
+- :feature:`cfp` pretalx will now send an email after a user changes their password, notifying them of the change.
 - :feature:`orga,1302` Organisers can now customise the template used to inform speakers when they are added to a proposal by an organiser. There are two new templates – one for speakers with an existing account, and one for speakers without account who need to set their password.
 - :feature:`orga,1311` Organisers can now customise the “New proposal” notification email contents.
 - :bug:`orga:schedule,1900` The HTML export did not work and exported only 404 pages if the schedule was not public.
