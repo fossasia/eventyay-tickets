@@ -33,6 +33,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sed -i '/eventyay-stripe/d' pyproject.toml
+          sed -i '/eventyay-paypal/d' pyproject.toml
           pip3 install -e ".[dev]" psycopg2-binary
       - name: Run isort
         run: isort -c .
@@ -57,6 +58,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sed -i '/eventyay-stripe/d' pyproject.toml
+          sed -i '/eventyay-paypal/d' pyproject.toml
           pip3 install -e ".[dev]" psycopg2-binary
       - name: Run flake8
         run: flake8 .
