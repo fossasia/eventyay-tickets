@@ -1,4 +1,5 @@
 import os
+
 from pretix.testutils.settings import *  # NOQA
 
 

@@ -81,7 +81,7 @@ class BaseTicketSecretGenerator:
 
 
 class RandomTicketSecretGenerator(BaseTicketSecretGenerator):
-    verbose_name = _('Random (default, works with all pretix apps)')
+    verbose_name = _('Random (default, works with all apps in the ecosystem)')
     identifier = 'random'
     use_revocation_list = False
 
@@ -111,7 +111,7 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
     The resulting string is REVERSED, to avoid all secrets of same length beginning with the same 10
     characters, which would make it impossible to search for secrets manually.
     """
-    verbose_name = _('pretix signature scheme 1 (for very large events, does not work with pretixSCAN on iOS and '
+    verbose_name = _('signature scheme 1 (for very large events, does not work with pretixSCAN on iOS and '
                      'changes semantics of offline scanning – please refer to documentation or support for details)')
     identifier = 'pretix_sig1'
     use_revocation_list = True

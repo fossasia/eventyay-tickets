@@ -54,6 +54,8 @@ def _default_context(request):
             if request.user.is_staff and settings.PRETIX_ADMIN_AUDIT_COMMENTS else StaffSession.objects.none()
         )
 
+    ctx['talk_hostname'] = settings.TALK_HOSTNAME
+
     return ctx
 
 
@@ -61,7 +63,6 @@ def get_global_navigation(request):
     url = request.resolver_match
     if not url:
         return []
-    request.user.has_active_staff_session(request.session.session_key)
     nav = [
         {
             'label': _('Dashboard'),
@@ -70,7 +71,7 @@ def get_global_navigation(request):
             'icon': 'dashboard',
         },
         {
-            'label': _('My events'),
+            'label': _('My Events'),
             'url': reverse('eventyay_common:events'),
             'active': 'events' in url.url_name,
             'icon': 'calendar',
@@ -81,6 +82,13 @@ def get_global_navigation(request):
             'active': 'organizers' in url.url_name,
             'icon': 'group',
         },
+        {
+            'label': _('Account'),
+            'url': reverse('eventyay_common:account'),
+            'active': 'account' in url.url_name,
+            'icon': 'user',
+        }
+
     ]
 
     merge_in(nav, sorted(

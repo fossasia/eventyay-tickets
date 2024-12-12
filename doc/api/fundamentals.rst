@@ -27,7 +27,7 @@ supports the following authorization schemes:
 Permissions
 -----------
 
-The API follows pretix team based permissions model. Each organizer can have several teams
+The API follows dev team based permissions model. Each organizer can have several teams
 each with it's own set of permissions. Each team can have any number of API keys attached.
 
 To access a given endpoint the team the API key belongs to needs to have the corresponding

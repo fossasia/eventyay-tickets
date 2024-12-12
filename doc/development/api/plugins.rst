@@ -72,7 +72,7 @@ A working example would be:
 
         class PretixPluginMeta:
             name = _("PayPal")
-            author = _("the pretix team")
+            author = _("the development team")
             version = '1.0.0'
             category = 'PAYMENT
             visible = True
