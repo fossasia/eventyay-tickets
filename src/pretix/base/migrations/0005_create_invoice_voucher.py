@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("pretixbase", "0003_event_is_video_creation_and_more"),
+        ("pretixbase", "0004_create_billing_invoice"),
     ]
 
     operations = [
