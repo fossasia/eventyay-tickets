@@ -5089,12 +5089,12 @@ msgid "Not set"
 msgstr "Niet ingesteld"
 
 #: pretix/base/secrets.py:84
-msgid "Random (default, works with all pretix apps)"
+msgid "Random (default, works with all apps in the ecosystem)"
 msgstr "Willekeurig (standaard, werkt met alle pretix-apps)"
 
 #: pretix/base/secrets.py:114
 msgid ""
-"pretix signature scheme 1 (for very large events, does not work with "
+"signature schemearge events, does not work with "
 "pretixSCAN on iOS and changes semantics of offline scanning – please refer "
 "to documentation or support for details)"
 msgstr ""
@@ -11758,8 +11758,8 @@ msgstr "Navigatie schakelen"
 #: pretix/control/templates/pretixcontrol/base.html:136
 #: pretix/control/templates/pretixcontrol/base.html:140
 #: pretix/control/templates/pretixcontrol/base.html:141
-msgid "Go to shop"
-msgstr "Ga naar de winkel"
+msgid "View event"
+msgstr "Bekijk evenement"
 
 #: pretix/control/templates/pretixcontrol/base.html:119
 #: pretix/control/templates/pretixcontrol/base.html:147
@@ -12292,7 +12292,7 @@ msgstr "Andere functies"
 #| "%(url)s\n"
 #| "\n"
 #| "Best regards,\n"
-#| "Your pretix team\n"
+#| "Your development team\n"
 msgid ""
 "Hello,\n"
 "\n"
@@ -12333,7 +12333,7 @@ msgstr ""
 #| "\n"
 #| "Best regards,\n"
 #| "\n"
-#| "Your pretix team\n"
+#| "Your development team\n"
 msgid ""
 "Hello,\n"
 "\n"
@@ -12386,7 +12386,7 @@ msgstr ""
 #| "%(url)s\n"
 #| "\n"
 #| "Best regards,\n"
-#| "Your pretix team\n"
+#| "Your development team\n"
 msgid ""
 "Hello,\n"
 "\n"
@@ -19236,7 +19236,7 @@ msgstr "Badges"
 #: pretix/plugins/statistics/apps.py:13
 #: pretix/plugins/ticketoutputpdf/apps.py:14
 #: pretix/plugins/webcheckin/apps.py:13
-msgid "the pretix team"
+msgid "the development team"
 msgstr "het pretix-team"
 
 #: pretix/plugins/badges/apps.py:16
@@ -23951,7 +23951,7 @@ msgstr "Kosovo"
 #~ "zal verdwijnen wanneer je erop klikt."
 
 #~ msgid ""
-#~ "This translation is not maintained by the pretix team. We cannot vouch "
+#~ "This translation is not maintained by the development team. We cannot vouch "
 #~ "for its correctness and new or recently changed features might not be "
 #~ "translated and will show in English instead. You can help translating at "
 #~ "translate.eventyay.com."
@@ -24258,9 +24258,6 @@ msgstr "Kosovo"
 
 #~ msgid "General "
 #~ msgstr "Algemeen "
-
-#~ msgid "Go to Shop"
-#~ msgstr "Ga naar de winkel"
 
 #~ msgid "You haven't created any questions yet."
 #~ msgstr "Je hebt nog geen vragen aangemaakt."

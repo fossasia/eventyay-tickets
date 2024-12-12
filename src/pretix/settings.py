@@ -293,7 +293,6 @@ INSTALLED_APPS = [
     'bootstrap3',
     'djangoformsetjs',
     'pretix.plugins.banktransfer',
-    'pretix.plugins.paypal',
     'pretix.plugins.ticketoutputpdf',
     'pretix.plugins.sendmail',
     'pretix.plugins.statistics',
@@ -304,6 +303,7 @@ INSTALLED_APPS = [
     'pretix.plugins.manualpayment',
     'pretix.plugins.returnurl',
     'pretix.plugins.webcheckin',
+    'pretix.plugins.scheduledtasks',
     'django_markup',
     'django_otp',
     'django_otp.plugins.otp_totp',
@@ -314,6 +314,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'phonenumber_field',
     'pretix.eventyay_common',
+    'django_celery_beat'
 ]
 
 if db_backend == 'postgresql':
@@ -715,6 +716,8 @@ if config.has_option('sentry', 'dsn') and not any(c in sys.argv for c in ('shell
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_DEFAULT_QUEUE = 'default'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_TASK_QUEUES = (
     Queue('default', routing_key='default.#'),
     Queue('checkout', routing_key='checkout.#'),
@@ -734,6 +737,8 @@ CELERY_TASK_ROUTES = ([
     ('pretix.presale.style.*', {'queue': 'background'}),
     ('pretix.plugins.banktransfer.*', {'queue': 'background'}),
 ],)
+
+BILLING_REMINDER_SCHEDULE = [15, 29]  # Remind on the 15th and 28th day of the month
 
 BOOTSTRAP3 = {
     'success_css_class': '',

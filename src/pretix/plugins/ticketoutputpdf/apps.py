@@ -11,7 +11,6 @@ class TicketOutputPdfApp(AppConfig):
 
     class PretixPluginMeta:
         name = _("PDF ticket output")
-        author = _("the pretix team")
         version = version
         category = 'FORMAT'
         featured = True

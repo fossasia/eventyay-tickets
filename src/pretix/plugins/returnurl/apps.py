@@ -10,7 +10,6 @@ class ReturnURLApp(AppConfig):
 
     class PretixPluginMeta:
         name = _("Redirection from order page")
-        author = _("the pretix team")
         version = version
         category = 'API'
         description = _("This plugin allows to link to payments and redirect back afterwards. This is useful in "

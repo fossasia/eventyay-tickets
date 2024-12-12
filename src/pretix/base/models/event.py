@@ -36,7 +36,7 @@ from pretix.helpers.json import safe_string
 from pretix.helpers.thumb import get_thumbnail
 
 from ..settings import settings_hierarkey
-from .organizer import Organizer, Team
+from .organizer import Organizer, OrganizerBillingModel, Team
 
 
 class EventMixin:
@@ -672,7 +672,7 @@ class Event(EventMixin, LoggedModel):
             if gs.settings.email_vendor == "sendgrid":
                 return SendGridEmail(api_key=gs.settings.send_grid_api_key)
             else:
-                CustomSMTPBackend(
+                return CustomSMTPBackend(
                     host=gs.settings.smtp_host,
                     port=gs.settings.smtp_port,
                     username=gs.settings.smtp_username,
@@ -1132,6 +1132,24 @@ class Event(EventMixin, LoggedModel):
             ).exists()
         )
 
+    @property
+    def talk_schedule_url(self):
+        talk_host = settings.TALK_HOSTNAME
+        url = urljoin(talk_host, f"{self.slug}/schedule")
+        return url
+
+    @property
+    def talk_session_url(self):
+        talk_host = settings.TALK_HOSTNAME
+        url = urljoin(talk_host, f"{self.slug}/talk")
+        return url
+
+    @property
+    def talk_speaker_url(self):
+        talk_host = settings.TALK_HOSTNAME
+        url = urljoin(talk_host, f"{self.slug}/speaker")
+        return url
+
     @cached_property
     def live_issues(self):
         from pretix.base.signals import event_live_issues
@@ -1148,6 +1166,11 @@ class Event(EventMixin, LoggedModel):
         if not self.quotas.exists():
             issues.append(
                 _("You need to configure at least one quota to sell anything.")
+            )
+
+        if self.organizer.has_unpaid_invoice():
+            issues.append(
+                _("You have unpaid invoices, please pay them before going live.")
             )
 
         for mp in self.organizer.meta_properties.all():
@@ -1172,6 +1195,27 @@ class Event(EventMixin, LoggedModel):
                         ),
                     )
                 )
+
+        billing_obj = OrganizerBillingModel.objects.filter(organizer=self.organizer).first()
+
+        if not billing_obj or not billing_obj.stripe_payment_method_id:
+            issues.append(
+                (
+                    "<a {a_attr}>"
+                    + gettext('You need to fill the billing information.')
+                    + "</a>"
+                ).format(
+                    a_attr='href="%s#tab-0-1-open"'
+                           % (
+                               reverse(
+                                   "control:organizer.settings.billing",
+                                   kwargs={
+                                       "organizer": self.organizer.slug,
+                                   },
+                               ),
+                           ),
+                )
+            )
 
         responses = event_live_issues.send(self)
         for receiver, response in sorted(responses, key=lambda r: str(r[0])):

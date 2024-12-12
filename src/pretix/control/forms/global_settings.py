@@ -2,6 +2,7 @@ from collections import OrderedDict
 
 from django import forms
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from django.utils.translation import gettext_lazy as _
 from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
 
@@ -140,6 +141,25 @@ class GlobalSettingsForm(SettingsForm):
 
         self.fields['banner_message'].widget.attrs['rows'] = '2'
         self.fields['banner_message_detail'].widget.attrs['rows'] = '3'
+        self.fields = OrderedDict(list(self.fields.items()) + [
+            ('stripe_webhook_secret_key', SecretKeySettingsField(
+                label=_('Stripe Webhook: Secret key'),
+                required=False,
+            )),
+            (
+                "ticket_fee_percentage",
+                forms.DecimalField(
+                    label=_("Ticket fee percentage"),
+                    required=False,
+                    decimal_places=2,
+                    max_digits=10,
+                    help_text=_(
+                        "A percentage fee will be charged for each ticket sold."
+                    ),
+                    validators=[MinValueValidator(0)],
+                ),
+            )
+        ])
 
 
 class UpdateSettingsForm(SettingsForm):

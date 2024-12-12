@@ -3,7 +3,14 @@
 {% load bootstrap3 %}
 {% block title %}{% trans "Voucher tags" %}{% endblock %}
 {% block content %}
-    <h1>{% trans "Voucher tags" %}</h1>
+    <nav id="event-nav" class="header-nav">
+        <div class="navigation">
+            <div class="navigation-title">
+                <h1>{% trans "Voucher tags" %}</h1>
+            </div>
+            {% include "pretixcontrol/event/component_link.html" %}
+        </div>
+    </nav>
     <p>
         {% blocktrans trimmed %}
             If you add a "tag" to a voucher, you can here see statistics on their usage.

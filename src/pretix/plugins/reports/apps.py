@@ -11,7 +11,6 @@ class ReportsApp(AppConfig):
 
     class PretixPluginMeta:
         name = _("Report exporter")
-        author = _("the pretix team")
         version = version
         category = 'FORMAT'
         description = _("This plugin allows you to generate printable reports about your sales.")
