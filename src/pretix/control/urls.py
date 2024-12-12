@@ -3,7 +3,7 @@ from django.views.generic.base import RedirectView
 
 from pretix.control.views import (
     admin, auth, checkin, dashboards, event, geo, global_settings, item, main,
-    oauth, orderimport, orders, organizer, organizer_views, pdf, search,
+    oauth, orderimport, orders, organizer, organizer_views, pages, pdf, search,
     shredder, subevents, typeahead, user, users, vouchers, waitinglist,
 )
 from pretix.control.views.auth import CustomAuthorizationView
@@ -347,7 +347,10 @@ urlpatterns = [
         url(r'^global/settings/$', global_settings.GlobalSettingsView.as_view(), name='admin.global.settings'),
         url(r'^global/update/$', global_settings.UpdateCheckView.as_view(), name='admin.global.update'),
         url(r'^global/message/$', global_settings.MessageView.as_view(), name='admin.global.message'),
-
+        url(r'^pages/$', pages.PageList.as_view(), name="admin.pages"),
+        url(r'^pages/add$', pages.PageCreate.as_view(), name="admin.pages.add"),
+        url(r'^pages/(?P<id>\d+)/edit$', pages.PageUpdate.as_view(), name="admin.pages.edit"),
+        url(r'^pages/(?P<id>\d+)/delete$', pages.PageDelete.as_view(), name="admin.pages.delete"),
     ])),
     url(r'^event/(?P<organizer>[^/]+)/$', RedirectView.as_view(pattern_name='control:organizer'), name='event.organizerredirect'),
 ]

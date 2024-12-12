@@ -29,6 +29,7 @@ from pretix.base.forms.auth import (
     LoginForm, PasswordForgotForm, PasswordRecoverForm, RegistrationForm,
 )
 from pretix.base.models import TeamInvite, U2FDevice, User, WebAuthnDevice
+from pretix.base.models.page import Page
 from pretix.base.services.mail import SendMailException
 from pretix.helpers.cookies import set_cookie_without_samesite
 from pretix.helpers.jwt_generate import generate_sso_token
@@ -176,6 +177,7 @@ def register(request):
     else:
         form = RegistrationForm()
     ctx['form'] = form
+    ctx['confirmation_required'] = Page.objects.filter(confirmation_required=True)
     return render(request, 'pretixcontrol/auth/register.html', ctx)
 
 

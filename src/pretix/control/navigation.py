@@ -526,6 +526,12 @@ def get_admin_navigation(request):
             'icon': 'tasks',
         },
         {
+            'label': _('Pages'),
+            'url': reverse('control:admin.pages'),
+            'active': 'pages' in url.url_name,
+            'icon': "file-text",
+        },
+        {
             'label': _('Users'),
             'url': reverse('control:admin.users'),
             'active': False,

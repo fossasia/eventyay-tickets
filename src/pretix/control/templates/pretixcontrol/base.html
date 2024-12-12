@@ -187,6 +187,16 @@
                         </li>
                     {% endfor %}
 
+                    {% if show_link_in_header_for_all_pages %}
+                        {% for page in show_link_in_header_for_all_pages %}
+                                <li>
+                                    <a href='{% url "page" slug=page.slug %}' title='{{ page.title|safe }}'>
+                                        {{ page.title|safe }}
+                                    </a>
+                                </li>
+                        {% endfor %}
+                    {% endif %}
+
                     {% if request.user.is_staff and not staff_session %}
                         <li>
                             <form action="{% url 'control:user.sudo' %}?next={{ request.path|add:"?"|add:request.GET.urlencode|urlencode }}" method="post">
@@ -405,6 +415,17 @@
                         {% if development_warning %}
                             <span class="text-warning">&middot; {% trans "running in development mode" %}</span>
                         {% endif %}
+                        <ul class="list-inline text-center" style="margin-top: 20px">
+                            {% if show_link_in_footer_for_all_pages %}
+                                {% for page in show_link_in_footer_for_all_pages %}
+                                        <li>
+                                            <a href='{% url "page" slug=page.slug %}' title='{{ page.title|safe }}'>
+                                                {{ page.title|safe }}
+                                            </a>
+                                        </li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
                     </footer>
                 </div>
             </div>
