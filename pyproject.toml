@@ -99,7 +99,8 @@ dependencies = [
         'exhibitors @ git+https://github.com/fossasia/eventyay-tickets-exhibitors.git@master',
         'pyvat==1.3.18',
         'django_celery_beat==2.7.0',
-        'cron-descriptor==1.4.5'
+        'cron-descriptor==1.4.5',
+        'django-allauth[socialaccount]==65.3.0'
 ]
 
 [project.optional-dependencies]

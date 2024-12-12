@@ -117,7 +117,7 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
         }
 
 
-class DeleteOAuthApplicationView(DeleteView):
+class DeleteOAuthApplicationView(AdministratorPermissionRequiredMixin, DeleteView):
     model = OAuthApplication
     success_url = reverse_lazy('control:admin.global.sso')
 
