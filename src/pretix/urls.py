@@ -1,11 +1,12 @@
 from django.conf import settings
-from django.urls import include, re_path as url
+from django.urls import include, path, re_path as url
 from django.views.generic import RedirectView
 
 import pretix.control.urls
 import pretix.eventyay_common.urls
 import pretix.presale.urls
 from pretix.base.views import js_helpers
+from pretix.control.views import pages
 
 from .base.views import cachedfiles, csp, health, js_catalog, metrics, redirect
 
@@ -33,6 +34,10 @@ common_patterns = [
     url(r'^common/', include((pretix.eventyay_common.urls, 'common'))),
 ]
 
+page_patterns = [
+    path('page/<slug:slug>/', pages.ShowPageView.as_view(), name="page"),
+]
+
 debug_patterns = []
 if settings.DEBUG:
     try:
@@ -42,4 +47,4 @@ if settings.DEBUG:
     except ImportError:
         pass
 
-common_patterns = base_patterns + control_patterns + debug_patterns + common_patterns
+common_patterns = base_patterns + control_patterns + debug_patterns + common_patterns + page_patterns

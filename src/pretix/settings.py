@@ -294,7 +294,6 @@ INSTALLED_APPS = [
     'djangoformsetjs',
     'pretix.plugins.socialauth',
     'pretix.plugins.banktransfer',
-    'pretix.plugins.paypal',
     'pretix.plugins.ticketoutputpdf',
     'pretix.plugins.sendmail',
     'pretix.plugins.statistics',
