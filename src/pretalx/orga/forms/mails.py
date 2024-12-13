@@ -104,6 +104,13 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                         "https://pretalx.example.com/democon/invitation/123abc/",
                     )
                 )
+            elif role == MailTemplateRoles.NEW_SUBMISSION_INTERNAL:
+                valid_placeholders["orga_url"] = SimpleFunctionalMailTextPlaceholder(
+                    "orga_url",
+                    ["event", "submission"],
+                    None,
+                    "https://pretalx.example.com/orga/events/democon/submissions/124ABCD/",
+                )
 
         valid_placeholders.update(
             get_available_placeholders(event=self.event, kwargs=kwargs)
