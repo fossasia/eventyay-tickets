@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.core.exceptions import PermissionDenied
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect, Http404
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.module_loading import import_string
@@ -35,6 +35,11 @@ class LogoutView(View):
 
 class LoginView(GenericLoginView):
     template_name = "cfp/event/login.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.event.is_public:
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
 
     def get_error_url(self):
         return self.request.event.urls.base
