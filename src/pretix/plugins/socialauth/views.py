@@ -24,7 +24,7 @@ def oauth_return(request):
         return process_login_and_set_cookie(request, user, False)
     except AttributeError:
         messages.error(
-            request, _('Your changes have not been saved, see below for errors.')
+            request, _('Error while authorizing: no email address available.')
         )
         logger.error('Error while authorizing: user has no email address.')
         return redirect('control:auth.login')
