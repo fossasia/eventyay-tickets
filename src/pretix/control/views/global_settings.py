@@ -16,13 +16,10 @@ from pretix.base.models import LogEntry, OrderPayment, OrderRefund
 from pretix.base.services.update_check import check_result_table, update_check
 from pretix.base.settings import GlobalSettingsObject
 from pretix.control.forms.global_settings import (
-    GlobalSettingsForm,
-    SSOConfigForm,
-    UpdateSettingsForm,
+    GlobalSettingsForm, SSOConfigForm, UpdateSettingsForm,
 )
 from pretix.control.permissions import (
-    AdministratorPermissionRequiredMixin,
-    StaffMemberRequiredMixin,
+    AdministratorPermissionRequiredMixin, StaffMemberRequiredMixin,
 )
 
 logger = logging.getLogger(__name__)

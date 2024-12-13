@@ -1,26 +1,30 @@
+import logging
+
 from django.conf import settings
+from django.contrib import messages
+from django.shortcuts import redirect
 
 from pretix.base.models import User
 from pretix.control.views.auth import process_login_and_set_cookie
 
+logger = logging.getLogger(__name__)
+
 
 def oauth_return(request):
-    user = User.objects.filter(email=request.user.email).first()
-    if not user:
-        locale = (
-            request.LANGUAGE_CODE
-            if hasattr(request, 'LANGUAGE_CODE')
-            else settings.LANGUAGE_CODE
-        )
-        timezone = (
-            request.timezone if hasattr(request, 'timezone') else settings.TIME_ZONE
-        )
-        user = User.objects.create(
+    try:
+        user, _ = User.objects.get_or_create(
             email=request.user.email,
-            locale=locale,
-            timezone=timezone,
-            auth_backend='native',
-            password='',
+            defaults={
+                'locale': getattr(request, 'LANGUAGE_CODE', settings.LANGUAGE_CODE),
+                'timezone': getattr(request, 'timezone', settings.TIME_ZONE),
+                'auth_backend': 'native',
+                'password': '',
+            },
         )
-
-    return process_login_and_set_cookie(request, user, False)
+        return process_login_and_set_cookie(request, user, False)
+    except AttributeError:
+        messages.error(
+            request, _('Your changes have not been saved, see below for errors.')
+        )
+        logger.error('Error while authorizing: user has no email address.')
+        return redirect('control:auth.login')
