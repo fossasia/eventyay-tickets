@@ -16,10 +16,13 @@ from pretix.base.models import LogEntry, OrderPayment, OrderRefund
 from pretix.base.services.update_check import check_result_table, update_check
 from pretix.base.settings import GlobalSettingsObject
 from pretix.control.forms.global_settings import (
-    GlobalSettingsForm, SSOConfigForm, UpdateSettingsForm,
+    GlobalSettingsForm,
+    SSOConfigForm,
+    UpdateSettingsForm,
 )
 from pretix.control.permissions import (
-    AdministratorPermissionRequiredMixin, StaffMemberRequiredMixin,
+    AdministratorPermissionRequiredMixin,
+    StaffMemberRequiredMixin,
 )
 
 logger = logging.getLogger(__name__)
@@ -35,7 +38,9 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
+        messages.error(
+            self.request, _('Your changes have not been saved, see below for errors.')
+        )
         return super().form_invalid(form)
 
     def get_success_url(self):
@@ -61,59 +66,46 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
 
         try:
             result = self.create_oauth_application(url)
-        except IntegrityError as e:
-            logger.error("Error while creating OAuth2 application: %s", e)
-            return {"error_message": f"Database integrity error: {str(e)}"}
-        except ValidationError as e:
-            logger.error("Error while creating OAuth2 application: %s", e)
-            return {"error_message": f"Validation error: {e.message_dict}"}
-        except ObjectDoesNotExist as e:
-            logger.error("Error while creating OAuth2 application: %s", e)
-            return {"error_message": "The object you are trying to access does not exist."}
-        except ValueError as e:
-            logger.error("Error while creating OAuth2 application: %s", e)
-            return {"error_message": f"Value error: {str(e)}"}
-        except Exception as e:
-            logger.error("Error while creating OAuth2 application: %s", e)
-            return {"error_message": f"An unexpected error occurred: {str(e)}"}
+        except (IntegrityError, ValidationError, ObjectDoesNotExist, Exception) as e:
+            error_type = type(e).__name__
+            error_message = str(e)
+            logger.error(f"Error while creating OAuth2 application: {error_type} - {error_message}")
+            return self.render_to_response({"error_message": f"{error_type}: {error_message}"})
 
         return self.render_to_response(self.get_context_data(form=form, result=result))
 
     def form_invalid(self, form):
-        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
+        messages.error(
+            self.request, _('Your changes have not been saved, see below for errors.')
+        )
         return super().form_invalid(form)
 
     def get_success_url(self):
         return reverse('control:admin.global.sso')
 
     def create_oauth_application(self, redirect_uris):
-        # Check if the application already exists based on redirect_uri
-        if OAuthApplication.objects.filter(redirect_uris=redirect_uris).exists():
-            application = OAuthApplication.objects.filter(redirect_uris=redirect_uris).first()
-            return {
-                "success_message": "OAuth2 Application with this redirect URI already exists",
-                "client_id": application.client_id,
-                "client_secret": application.client_secret
-            }
-        else:
-            # Create the OAuth2 Application
-            application = OAuthApplication(
-                name="Talk SSO Client",
-                client_type=OAuthApplication.CLIENT_CONFIDENTIAL,
-                authorization_grant_type=OAuthApplication.GRANT_AUTHORIZATION_CODE,
-                redirect_uris=redirect_uris,
-                user=None,  # Set a specific user if you want this to be user-specific, else keep it None
-                client_id=secrets.token_urlsafe(32),
-                client_secret=secrets.token_urlsafe(64),
-                hash_client_secret=False,
-                skip_authorization=True,
-            )
-            application.save()
+        application, created = OAuthApplication.objects.get_or_create(
+            redirect_uris=redirect_uris,
+            defaults={
+                'name': "Talk SSO Client",
+                'client_type': OAuthApplication.CLIENT_CONFIDENTIAL,
+                'authorization_grant_type': OAuthApplication.GRANT_AUTHORIZATION_CODE,
+                'user': None,
+                'client_id': secrets.token_urlsafe(32),
+                'client_secret': secrets.token_urlsafe(64),
+                'hash_client_secret': False,
+                'skip_authorization': True,
+            },
+        )
 
         return {
-            "success_message": "Successfully created OAuth2 Application",
+            "success_message": (
+                "Successfully created OAuth2 Application"
+                if created
+                else "OAuth2 Application with this redirect URI already exists"
+            ),
             "client_id": application.client_id,
-            "client_secret": application.client_secret
+            "client_secret": application.client_secret,
         }
 
 
@@ -138,7 +130,9 @@ class UpdateCheckView(StaffMemberRequiredMixin, FormView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
+        messages.error(
+            self.request, _('Your changes have not been saved, see below for errors.')
+        )
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):
