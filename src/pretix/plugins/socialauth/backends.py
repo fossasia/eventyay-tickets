@@ -20,7 +20,7 @@ class MediaWikiBackend(BaseAuthBackend):
         query_params = {
             "next": build_absolute_uri("plugins:socialauth:social.oauth.return")
         }
-        
+
         parsed_url = urlparse(base_url)
         updated_url = parsed_url._replace(query=urlencode(query_params))
         return urlunparse(updated_url)
