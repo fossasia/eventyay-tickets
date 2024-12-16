@@ -66,7 +66,7 @@ dependencies = [
   "PyJWT~=2.8.0",
   'django-oauth-toolkit==2.4.*',
   'requests-oauthlib==2.*',
-  'psycopg2-binary==2.9.9',
+  'psycopg2-binary==2.9.10',
   'oauthlib==3.2.*',
 ]
 
