@@ -20,8 +20,10 @@ class MediaWikiBackend(BaseAuthBackend):
         query_params = {
             "next": build_absolute_uri("plugins:socialauth:social.oauth.return")
         }
+        
         parsed_url = urlparse(base_url)
-        return urlunparse(parsed_url._replace(query=urlencode(query_params)))
+        updated_url = parsed_url._replace(query=urlencode(query_params))
+        return urlunparse(updated_url)
 
 
 class GoogleBackend(BaseAuthBackend):
@@ -36,8 +38,10 @@ class GoogleBackend(BaseAuthBackend):
         query_params = {
             "next": build_absolute_uri("plugins:socialauth:social.oauth.return")
         }
+
         parsed_url = urlparse(base_url)
-        return urlunparse(parsed_url._replace(query=urlencode(query_params)))
+        updated_url = parsed_url._replace(query=urlencode(query_params))
+        return urlunparse(updated_url)
 
 
 class GithubBackend(BaseAuthBackend):
@@ -52,5 +56,7 @@ class GithubBackend(BaseAuthBackend):
         query_params = {
             "next": build_absolute_uri("plugins:socialauth:social.oauth.return")
         }
+
         parsed_url = urlparse(base_url)
-        return urlunparse(parsed_url._replace(query=urlencode(query_params)))
+        updated_url = parsed_url._replace(query=urlencode(query_params))
+        return urlunparse(updated_url)
