@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-10 16:16+0000\n"
+"POT-Creation-Date: 2024-12-16 12:26+0000\n"
 "PO-Revision-Date: 2024-11-24 04:58+0000\n"
 "Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
@@ -3771,7 +3771,7 @@ msgstr ""
 msgid "The list of questions that the user has not answered, as bullet points"
 msgstr "Seznam otázek, na které uživatel neodpověděl"
 
-#: pretalx/orga/forms/mails.py:138
+#: pretalx/orga/forms/mails.py:145
 msgid ""
 "Invalid email template! Please check that you don’t have stray { or } "
 "somewhere, and that there are no spaces inside the {} blocks."
@@ -3779,24 +3779,24 @@ msgstr ""
 "Šablona e-mailu není platná. Zkontrolujte prosím, jestli někde nemáte "
 "zbloudilé { or }, a že uvnitř bloků {} nejsou žádné mezery."
 
-#: pretalx/orga/forms/mails.py:145
+#: pretalx/orga/forms/mails.py:152
 msgid "Unknown placeholder!"
 msgstr "Neznámý zástupný symbol!"
 
-#: pretalx/orga/forms/mails.py:165
+#: pretalx/orga/forms/mails.py:172
 #, python-brace-format
 msgid "You have an empty link in your email, labeled “{text}”!"
 msgstr "Ve svém e-mailu máte prázdný odkaz označený jako „{text}“!"
 
-#: pretalx/orga/forms/mails.py:220
+#: pretalx/orga/forms/mails.py:227
 msgid "An email needs to have at least one recipient."
 msgstr "E-mail musí mít alespoň jednoho příjemce."
 
-#: pretalx/orga/forms/mails.py:255
+#: pretalx/orga/forms/mails.py:262
 msgid "Send immediately"
 msgstr "Odeslat hned"
 
-#: pretalx/orga/forms/mails.py:258
+#: pretalx/orga/forms/mails.py:265
 msgid ""
 "If you check this, the emails will be sent immediately, instead of being put "
 "in the outbox."
@@ -3804,19 +3804,19 @@ msgstr ""
 "Pokud toto vyberete, nebudou e-maily umístěné do fronty k odeslání, ale "
 "budou odeslané hned."
 
-#: pretalx/orga/forms/mails.py:275
+#: pretalx/orga/forms/mails.py:282
 msgid "Recipient groups"
 msgstr "Skupiny příjemců"
 
-#: pretalx/orga/forms/mails.py:292
+#: pretalx/orga/forms/mails.py:299
 msgid "Reviewers"
 msgstr "Kontrolující"
 
-#: pretalx/orga/forms/mails.py:296
+#: pretalx/orga/forms/mails.py:303
 msgid "Other teams"
 msgstr "Ostatní týmy"
 
-#: pretalx/orga/forms/mails.py:341 pretalx/orga/forms/mails.py:345
+#: pretalx/orga/forms/mails.py:348 pretalx/orga/forms/mails.py:352
 #: pretalx/orga/templates/orga/admin/user_detail.html:122
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:49
 #: pretalx/orga/templates/orga/cfp/track_view.html:51
@@ -3828,7 +3828,7 @@ msgstr "Ostatní týmy"
 msgid "Proposals"
 msgstr "Přihlášky"
 
-#: pretalx/orga/forms/mails.py:343
+#: pretalx/orga/forms/mails.py:350
 msgid ""
 "Select proposals that should receive the email regardless of the other "
 "filters."
@@ -3836,14 +3836,14 @@ msgstr ""
 "Vyberte přihlášky, jejichž odesilatelé mají obdržet e-mail bez ohledu na "
 "ostatní filtry."
 
-#: pretalx/orga/forms/mails.py:352
+#: pretalx/orga/forms/mails.py:359
 msgid ""
 "Select speakers that should receive the email regardless of the other "
 "filters."
 msgstr ""
 "Vyberte přednášející, kteří mají obdržet e-mail bez ohledu na ostatní filtry."
 
-#: pretalx/orga/forms/mails.py:379
+#: pretalx/orga/forms/mails.py:386
 msgid ""
 "If you provide only one language, that language will be used for all emails. "
 "If you provide multiple languages, the best fit for each speaker will be "
@@ -3853,7 +3853,7 @@ msgstr ""
 "uvedete více jazyků, bude pro každého přednášejícího bude použit ten "
 "nejvhodnější."
 
-#: pretalx/orga/forms/mails.py:518 pretalx/orga/templates/orga/base.html:263
+#: pretalx/orga/forms/mails.py:525 pretalx/orga/templates/orga/base.html:263
 #: pretalx/orga/templates/orga/cfp/track_view.html:7
 #: pretalx/orga/templates/orga/cfp/track_view.html:25
 #: pretalx/submission/forms/submission.py:265
@@ -7448,7 +7448,7 @@ msgstr "Vložené aktuální heslo není správné."
 msgid "Password (current)"
 msgstr "Heslo (aktuální)"
 
-#: pretalx/person/forms.py:395 pretalx/person/forms.py:431
+#: pretalx/person/forms.py:394 pretalx/person/forms.py:430
 msgid "Non-accepted submitters"
 msgstr "Nepřijatí odesilatelé přihlášek"
 
@@ -7552,6 +7552,24 @@ msgstr ""
 #: pretalx/person/models/user.py:453
 msgid "Password recovery"
 msgstr "Obnova hesla"
+
+#: pretalx/person/models/user.py:477
+#, python-brace-format
+msgid ""
+"Hi {name},\n"
+"\n"
+"Your pretalx account password was just changed.\n"
+"\n"
+"If you did not change your password, please contact the site administration "
+"immediately.\n"
+"\n"
+"All the best,\n"
+"the pretalx team"
+msgstr ""
+
+#: pretalx/person/models/user.py:489
+msgid "[pretalx] Password changed"
+msgstr ""
 
 #: pretalx/schedule/ascii.py:24
 msgid "No speakers"
