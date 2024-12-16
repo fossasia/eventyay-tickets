@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-10 16:16+0000\n"
+"POT-Creation-Date: 2024-12-16 12:26+0000\n"
 "PO-Revision-Date: 2024-12-16 12:18+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: none\n"
@@ -1929,7 +1929,8 @@ msgstr "Mật khẩu mới (nhập lại)"
 
 #: pretalx/common/text/phrases.py:93
 msgid "You entered two different passwords. Please enter the same one twice!"
-msgstr "Bạn đã nhập hai mật khẩu khác nhau. Vui lòng nhập cùng một cái hai lần!"
+msgstr ""
+"Bạn đã nhập hai mật khẩu khác nhau. Vui lòng nhập cùng một cái hai lần!"
 
 #: pretalx/common/text/phrases.py:95
 msgctxt "noun / heading"
@@ -2232,7 +2233,8 @@ msgstr "CSS tuỳ chỉnh cho hội thảo"
 msgid ""
 "Upload a custom CSS file if changing the primary colour is not sufficient "
 "for you."
-msgstr "Tải lên tệp CSS tùy chỉnh nếu việc thay đổi màu chính không đủ với bạn."
+msgstr ""
+"Tải lên tệp CSS tùy chỉnh nếu việc thay đổi màu chính không đủ với bạn."
 
 #: pretalx/event/models/event.py:229
 msgid "Logo"
@@ -3758,48 +3760,48 @@ msgstr ""
 msgid "The list of questions that the user has not answered, as bullet points"
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:138
+#: pretalx/orga/forms/mails.py:145
 msgid ""
 "Invalid email template! Please check that you don’t have stray { or } "
 "somewhere, and that there are no spaces inside the {} blocks."
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:145
+#: pretalx/orga/forms/mails.py:152
 msgid "Unknown placeholder!"
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:165
+#: pretalx/orga/forms/mails.py:172
 #, python-brace-format
 msgid "You have an empty link in your email, labeled “{text}”!"
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:220
+#: pretalx/orga/forms/mails.py:227
 msgid "An email needs to have at least one recipient."
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:255
+#: pretalx/orga/forms/mails.py:262
 msgid "Send immediately"
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:258
+#: pretalx/orga/forms/mails.py:265
 msgid ""
 "If you check this, the emails will be sent immediately, instead of being put "
 "in the outbox."
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:275
+#: pretalx/orga/forms/mails.py:282
 msgid "Recipient groups"
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:292
+#: pretalx/orga/forms/mails.py:299
 msgid "Reviewers"
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:296
+#: pretalx/orga/forms/mails.py:303
 msgid "Other teams"
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:341 pretalx/orga/forms/mails.py:345
+#: pretalx/orga/forms/mails.py:348 pretalx/orga/forms/mails.py:352
 #: pretalx/orga/templates/orga/admin/user_detail.html:122
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:49
 #: pretalx/orga/templates/orga/cfp/track_view.html:51
@@ -3811,26 +3813,26 @@ msgstr ""
 msgid "Proposals"
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:343
+#: pretalx/orga/forms/mails.py:350
 msgid ""
 "Select proposals that should receive the email regardless of the other "
 "filters."
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:352
+#: pretalx/orga/forms/mails.py:359
 msgid ""
 "Select speakers that should receive the email regardless of the other "
 "filters."
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:379
+#: pretalx/orga/forms/mails.py:386
 msgid ""
 "If you provide only one language, that language will be used for all emails. "
 "If you provide multiple languages, the best fit for each speaker will be "
 "used."
 msgstr ""
 
-#: pretalx/orga/forms/mails.py:518 pretalx/orga/templates/orga/base.html:263
+#: pretalx/orga/forms/mails.py:525 pretalx/orga/templates/orga/base.html:263
 #: pretalx/orga/templates/orga/cfp/track_view.html:7
 #: pretalx/orga/templates/orga/cfp/track_view.html:25
 #: pretalx/submission/forms/submission.py:265
@@ -3966,7 +3968,8 @@ msgstr "Điểm đánh giá trung bình (average), nếu đã có đánh giá"
 
 #: pretalx/orga/forms/schedule.py:161
 msgid "Resources provided by the speaker, either as links or as uploaded files"
-msgstr "Tài nguyên do diễn giả cung cấp, dưới dạng liên kết hoặc tệp đã tải lên"
+msgstr ""
+"Tài nguyên do diễn giả cung cấp, dưới dạng liên kết hoặc tệp đã tải lên"
 
 #: pretalx/orga/forms/speaker.py:16
 msgid "With accepted proposals"
@@ -4077,8 +4080,8 @@ msgid ""
 msgstr ""
 "Các bản dịch này không được nhóm pretalx duy trì. Chúng tôi không thể đảm "
 "bảo tính chính xác của chúng và các tính năng mới hoặc mới thay đổi gần đây "
-"có thể không được dịch và sẽ hiển thị bằng tiếng Anh. Bạn có thể <a href=\""
-"{url}\" target=\"_blank\">đóng góp vào các bản dịch</a>."
+"có thể không được dịch và sẽ hiển thị bằng tiếng Anh. Bạn có thể <a "
+"href=\"{url}\" target=\"_blank\">đóng góp vào các bản dịch</a>."
 
 #: pretalx/orga/phrases.py:7
 msgid "The event end cannot be before the start."
@@ -4093,8 +4096,8 @@ msgid ""
 "Choose how the frontpage header banner will be styled. Pattern source: <a "
 "href=\"http://www.heropatterns.com/\">heropatterns.com</a>, CC BY 4.0."
 msgstr ""
-"Chọn cách tạo kiểu cho biểu ngữ tiêu đề trang chủ. Nguồn mẫu: <a href=\"http"
-"://www.heropatterns.com/\">heropatterns.com</a>, CC BY 4.0."
+"Chọn cách tạo kiểu cho biểu ngữ tiêu đề trang chủ. Nguồn mẫu: <a "
+"href=\"http://www.heropatterns.com/\">heropatterns.com</a>, CC BY 4.0."
 
 #: pretalx/orga/phrases.py:13
 msgid "Schedule display format"
@@ -7135,7 +7138,7 @@ msgstr ""
 msgid "Password (current)"
 msgstr ""
 
-#: pretalx/person/forms.py:395 pretalx/person/forms.py:431
+#: pretalx/person/forms.py:394 pretalx/person/forms.py:430
 msgid "Non-accepted submitters"
 msgstr ""
 
@@ -7221,6 +7224,24 @@ msgstr ""
 
 #: pretalx/person/models/user.py:453
 msgid "Password recovery"
+msgstr ""
+
+#: pretalx/person/models/user.py:477
+#, python-brace-format
+msgid ""
+"Hi {name},\n"
+"\n"
+"Your pretalx account password was just changed.\n"
+"\n"
+"If you did not change your password, please contact the site administration "
+"immediately.\n"
+"\n"
+"All the best,\n"
+"the pretalx team"
+msgstr ""
+
+#: pretalx/person/models/user.py:489
+msgid "[pretalx] Password changed"
 msgstr ""
 
 #: pretalx/schedule/ascii.py:24
