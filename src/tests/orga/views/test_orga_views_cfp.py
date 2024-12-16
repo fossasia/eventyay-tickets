@@ -76,7 +76,6 @@ def test_edit_cfp_flow(orga_client, event):
     assert response.status_code == 200, response.content.decode()
 
 
-@pytest.mark.flaky(reruns=3)
 @pytest.mark.django_db
 def test_edit_cfp_flow_shows_in_frontend(orga_client, event):
     with scope(event=event):
