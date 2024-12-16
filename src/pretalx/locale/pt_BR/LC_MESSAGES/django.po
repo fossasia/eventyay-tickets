@@ -8,19 +8,19 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-10 16:16+0000\n"
-"PO-Revision-Date: 2021-09-22 18:56+0000\n"
-"Last-Translator: Alberto Leoncio <albertoleoncio@hotmail.com>\n"
+"PO-Revision-Date: 2024-12-12 23:54+0000\n"
+"Last-Translator: Jayme Klein <jaymerebula04@gmail.com>\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 5.6.2\n"
 
 #: pretalx/agenda/phrases.py:8
 msgid "Thank you for your feedback!"
-msgstr "Obrigado pelo seu feedback!"
+msgstr "Obrigado pelo seu comentário!"
 
 #: pretalx/agenda/phrases.py:9
 msgid "Thanks, we (and our speakers) appreciate your feedback!"
