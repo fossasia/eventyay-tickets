@@ -63,7 +63,7 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
             error_type = type(e).__name__
             error_message = str(e)
             logger.error('Error while creating OAuth2 application: %s - %s', error_type, error_message)
-            return self.render_to_response({"error_message": f"{error_type}: {error_message}"})
+            return self.render_to_response({'error_message': f'{error_type}: {error_message}'})
 
         return self.render_to_response(self.get_context_data(form=form, result=result))
 
