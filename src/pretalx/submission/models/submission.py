@@ -15,9 +15,9 @@ from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy as _n
+from django.utils.translation import override, pgettext_lazy
 from django_scopes import ScopedManager, scopes_disabled
 from rest_framework import serializers
-from django.utils.translation import override, pgettext_lazy
 
 from pretalx.common.exceptions import SubmissionError
 from pretalx.common.models.choices import Choices
