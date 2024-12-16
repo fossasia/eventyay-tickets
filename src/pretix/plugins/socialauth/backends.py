@@ -1,3 +1,5 @@
+from urllib.parse import urlencode, urlparse, urlunparse
+
 from allauth.socialaccount.adapter import get_adapter
 
 from pretix.base.auth import BaseAuthBackend
@@ -14,11 +16,12 @@ class MediaWikiBackend(BaseAuthBackend):
         return "Login with MediaWiki"
 
     def authentication_url(self, request):
-        return (
-            adapter.get_provider(request, 'mediawiki').get_login_url(request)
-            + "?next="
-            + build_absolute_uri("plugins:socialauth:mediawiki.oauth.return")
-        )
+        base_url = adapter.get_provider(request, 'mediawiki').get_login_url(request)
+        query_params = {
+            "next": build_absolute_uri("plugins:socialauth:social.oauth.return")
+        }
+        parsed_url = urlparse(base_url)
+        return urlunparse(parsed_url._replace(query=urlencode(query_params)))
 
 
 class GoogleBackend(BaseAuthBackend):
@@ -29,11 +32,12 @@ class GoogleBackend(BaseAuthBackend):
         return "Login with Google"
 
     def authentication_url(self, request):
-        return (
-            adapter.get_provider(request, 'google').get_login_url(request)
-            + "?next="
-            + build_absolute_uri("plugins:socialauth:mediawiki.oauth.return")
-        )
+        base_url = adapter.get_provider(request, 'google').get_login_url(request)
+        query_params = {
+            "next": build_absolute_uri("plugins:socialauth:social.oauth.return")
+        }
+        parsed_url = urlparse(base_url)
+        return urlunparse(parsed_url._replace(query=urlencode(query_params)))
 
 
 class GithubBackend(BaseAuthBackend):
@@ -44,8 +48,9 @@ class GithubBackend(BaseAuthBackend):
         return "Login with Github"
 
     def authentication_url(self, request):
-        return (
-            adapter.get_provider(request, 'github').get_login_url(request)
-            + "?next="
-            + build_absolute_uri("plugins:socialauth:mediawiki.oauth.return")
-        )
+        base_url = adapter.get_provider(request, 'github').get_login_url(request)
+        query_params = {
+            "next": build_absolute_uri("plugins:socialauth:social.oauth.return")
+        }
+        parsed_url = urlparse(base_url)
+        return urlunparse(parsed_url._replace(query=urlencode(query_params)))

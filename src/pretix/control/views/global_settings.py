@@ -54,19 +54,15 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
         context['oauth_applications'] = oauth_applications
         return context
 
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        return self.form_valid(form) if form.is_valid() else self.form_invalid(form)
-
     def form_valid(self, form):
         url = form.cleaned_data['redirect_url']
 
         try:
             result = self.create_oauth_application(url)
-        except (IntegrityError, ValidationError, ObjectDoesNotExist, Exception) as e:
+        except (IntegrityError, ValidationError, ObjectDoesNotExist) as e:
             error_type = type(e).__name__
             error_message = str(e)
-            logger.error(f"Error while creating OAuth2 application: {error_type} - {error_message}")
+            logger.error('Error while creating OAuth2 application: %s - %s', error_type, error_message)
             return self.render_to_response({"error_message": f"{error_type}: {error_message}"})
 
         return self.render_to_response(self.get_context_data(form=form, result=result))
