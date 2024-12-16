@@ -208,6 +208,7 @@ class SpeakerProfileForm(
             self.fields.pop("get_gravatar", None)
         elif "avatar" in self.fields:
             self.fields["avatar"].required = False
+            self.fields["avatar"].widget.is_required = False
         if self.is_bound and not self.is_valid() and "availabilities" in self.errors:
             # Replace self.data with a version that uses initial["availabilities"]
             # in order to have event and timezone data available
