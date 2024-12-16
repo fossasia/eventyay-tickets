@@ -25,6 +25,10 @@ SessionStore = import_string(f"{settings.SESSION_ENGINE}.SessionStore")
 class LogoutView(View):
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
         logout(request)
+        return self.get(request, *args, **kwargs)
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
+        logout(request)
         response = redirect(
             reverse("cfp:event.start", kwargs={"event": self.request.event.slug})
         )
