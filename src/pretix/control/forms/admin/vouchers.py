@@ -1,13 +1,12 @@
 from django import forms
-from django_scopes import scopes_disabled
 from django.utils.translation import gettext_lazy as _
+from django_scopes import scopes_disabled
 
 from pretix.base.forms import I18nModelForm
 from pretix.base.forms.widgets import SplitDateTimePickerWidget
 from pretix.base.models import Event, Organizer
 from pretix.base.models.vouchers import InvoiceVoucher
 from pretix.control.forms import SplitDateTimeField
-from pretix.helpers.models import modelcopy
 
 
 class InvoiceVoucherForm(I18nModelForm):
@@ -66,4 +65,3 @@ class InvoiceVoucherForm(I18nModelForm):
             self.save_m2m()
 
         return instance
-
