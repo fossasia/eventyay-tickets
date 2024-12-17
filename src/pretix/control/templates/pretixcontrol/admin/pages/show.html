@@ -1,0 +1,13 @@
+{% extends "pretixcontrol/admin/pages/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+
+{% block title %}{{ page.title }}{% endblock %}
+{% block content %}
+
+    <h2>{{ page.title }}</h2>
+    <div class="ql-content">
+        {{ content|safe }}
+    </div>
+
+{% endblock %}

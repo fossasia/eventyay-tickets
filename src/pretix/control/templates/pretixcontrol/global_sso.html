@@ -1,0 +1,68 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load rich_text %}
+
+
+{% block title %}{% trans "Generate keys for SSO" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "Generate keys for SSO" %}</h1>
+    {{ global_settings.banner_message_detail|rich_text }}
+    {% block inner %}
+        <form role="form" action="" method="post" class="form-horizontal" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% bootstrap_form_errors form %}
+            {% bootstrap_form form layout='control' %}
+            <div class="form-group submit-group">
+                <button type="submit" class="btn btn-primary btn-save">
+                    {% trans "Submit" %}
+                </button>
+            </div>
+        </form>
+    {% endblock %}
+
+    {% if result.error_message %}
+        <h2>Error:</h2>
+        <pre>{{ result.error_message }}</pre>
+    {% elif result.success_message %}
+        <h2>{{ result.success_message }}</h2>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Client ID:</label>
+                <input type="text" value="{{ result.client_id }}" disabled class="form-control" style="width: 300px;">
+            </div>
+            <div class="col-md-12">
+                <label>Client Secret:</label>
+                <input type="text" value="{{ result.client_secret }}" disabled class="form-control" style="width: 300px;">
+            </div>
+        </div>
+    {% endif %}
+
+    {% if oauth_applications %}
+    <h2>OAuth Applications</h2>
+    <ul>
+    {% for application in oauth_applications %}
+        <li class="list-group-item">
+            <h5>OAuth Application</h5>
+            <p><strong>URL:</strong> {{ application.redirect_uris }}</p>
+            <div class="row">
+                <div class="col-md-12">
+                    <label>Client ID:</label>
+                    <input type="text" value="{{ application.client_id }}" disabled class="form-control" style="width: 300px;">
+                </div>
+                <div class="col-md-12">
+                    <label>Client Secret:</label>
+                    <input type="text" value="{{ application.client_secret }}" disabled class="form-control" style="width: 300px;">
+                </div>
+            </div>
+            <br>
+            <form action="{% url 'control:admin.global.sso.delete' application.pk %}" method="post" class="text-right">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+
+{% endblock %}

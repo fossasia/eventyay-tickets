@@ -1,0 +1,11 @@
+.ql-snow .ql-editor h3 { font-size: 24px; }
+.ql-snow .ql-editor h4 { font-size: 18px; }
+.ql-snow .ql-editor h5 { font-size: 14px; }
+.ql-container {
+    font-size: 14px;
+}
+.ql-content img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+}

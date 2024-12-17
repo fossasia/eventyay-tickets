@@ -526,6 +526,12 @@ def get_admin_navigation(request):
             'icon': 'tasks',
         },
         {
+            'label': _('Pages'),
+            'url': reverse('control:admin.pages'),
+            'active': 'pages' in url.url_name,
+            'icon': "file-text",
+        },
+        {
             'label': _('Users'),
             'url': reverse('control:admin.users'),
             'active': False,
@@ -564,6 +570,11 @@ def get_admin_navigation(request):
                     'label': _('Update check'),
                     'url': reverse('control:admin.global.update'),
                     'active': (url.url_name == 'admin.global.update'),
+                },
+                {
+                    'label': _('Generate keys for SSO'),
+                    'url': reverse('control:admin.global.sso'),
+                    'active': (url.url_name == 'admin.global.sso'),
                 },
             ]
         },

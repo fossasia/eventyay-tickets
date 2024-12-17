@@ -292,6 +292,7 @@ INSTALLED_APPS = [
     'compressor',
     'bootstrap3',
     'djangoformsetjs',
+    'pretix.plugins.socialauth',
     'pretix.plugins.banktransfer',
     'pretix.plugins.ticketoutputpdf',
     'pretix.plugins.sendmail',
@@ -314,7 +315,13 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'phonenumber_field',
     'pretix.eventyay_common',
-    'django_celery_beat'
+    'django_celery_beat',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.mediawiki',
 ]
 
 if db_backend == 'postgresql':
@@ -389,12 +396,14 @@ MIDDLEWARE = [
     'pretix.base.middleware.SecurityMiddleware',
     'pretix.presale.middleware.EventMiddleware',
     'pretix.api.middleware.ApiScopeMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 # Configure the authentication backends
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'oauth2_provider.backends.OAuth2Backend',  # Required for OAuth2 authentication
+    'allauth.account.auth_backends.AuthenticationBackend'
 )
 
 
@@ -558,6 +567,7 @@ TEMPLATES = [
                 'pretix.control.context.contextprocessor',
                 'pretix.presale.context.contextprocessor',
                 'pretix.eventyay_common.context.contextprocessor',
+                'django.template.context_processors.request',
             ],
             'loaders': template_loaders
         },
@@ -799,3 +809,36 @@ if config.has_option('geoip', 'path'):
     HAS_GEOIP = True
     GEOIP_PATH = config.get('geoip', 'path')
     GEOIP_COUNTRY = config.get('geoip', 'filename_country', fallback='GeoLite2-Country.mmdb')
+
+# Django allauth settings for social login
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_ADAPTER = "pretix.plugins.socialauth.adapter.CustomSocialAccountAdapter"
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_PROVIDERS = {
+    "mediawiki": {
+        "APP": {
+            "client_id": config.get("social", "mediawiki_client_id", fallback=""),
+            "secret": config.get("social", "mediawiki_client_secret", fallback=""),
+        },
+    },
+    "google": {
+        "APP": {
+            "client_id": config.get("social", "google_client_id", fallback=""),
+            "secret": config.get("social", "google_client_secret", fallback=""),
+        },
+    },
+    "github": {
+        "APP": {
+            "client_id": config.get("social", "github_client_id", fallback=""),
+            "secret": config.get("social", "github_client_secret", fallback=""),
+        },
+    }
+}

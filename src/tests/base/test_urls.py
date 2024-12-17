@@ -21,11 +21,14 @@ class URLTestCase(TestCase):
         nameless = []
         patterns = self.get_patterns(conf)
         for u in patterns:
-            if self.has_patterns(u):
+            # Ignore social urls from django-allauth
+            # Since it does not support namespace
+            if 'social' in str(u):
+                continue
+            elif self.has_patterns(u):
                 nameless.extend(self.find_nameless_urls(u))
-            else:
-                if u.name is None:
-                    nameless.append(u)
+            elif u.name is None:
+                nameless.append(u)
         return nameless
 
     def get_patterns(self, conf):
