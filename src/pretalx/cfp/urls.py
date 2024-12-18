@@ -19,6 +19,11 @@ urlpatterns = [
                     auth.RecoverView.as_view(),
                     name="event.recover",
                 ),
+                path(
+                    "invite/<token>",
+                    auth.RecoverView.as_view(is_invite=True),
+                    name="event.new_recover",
+                ),
                 path("cfp", event.EventCfP.as_view(), name="event.start"),
                 path("submit/", wizard.SubmitStartView.as_view(), name="event.submit"),
                 path(

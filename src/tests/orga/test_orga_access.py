@@ -1,4 +1,5 @@
 import pytest
+from django.test import override_settings
 from django.urls import reverse
 
 
@@ -110,8 +111,8 @@ def test_user_can_see_correct_events(
 
 
 @pytest.mark.django_db
-def test_dev_settings_warning(orga_client, event, settings):
-    settings.DEBUG = True
+@override_settings(DEBUG=True)
+def test_dev_settings_warning(orga_client, event):
     response = orga_client.get(
         reverse("orga:event.dashboard", kwargs={"event": event.slug}), follow=True
     )
@@ -119,12 +120,12 @@ def test_dev_settings_warning(orga_client, event, settings):
 
 
 @pytest.mark.django_db
-def test_update_check_warning(orga_user, orga_client, event, settings):
+@override_settings(DEBUG=True)
+def test_update_check_warning(orga_user, orga_client, event):
     from pretalx.common.models.settings import GlobalSettings
 
     orga_user.is_administrator = True
     orga_user.save()
-    settings.DEBUG = True
     gs = GlobalSettings()
     gs.settings.update_check_result_warning = True
     response = orga_client.get(

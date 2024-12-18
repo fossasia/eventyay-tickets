@@ -82,7 +82,7 @@
                         {% if request.event|get_feature_flag:"use_tracks" %}
                             <td>
                                 {% for track in team.limit_tracks.all %}
-                                    <span class="badge badge-secondary">{{ track.name }}</span>
+                                    <span class="badge color-secondary">{{ track.name }}</span>
                                 {% empty %}
                                     -
                                 {% endfor %}

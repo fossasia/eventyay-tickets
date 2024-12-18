@@ -12,15 +12,23 @@ from django.core.management.commands.runserver import Command as Parent
 
 class Command(Parent):
     def handle(self, *args, **options):
-        if settings.VITE_DEV_MODE:
-            # Start the vite server in the background
-            from subprocess import Popen
-
-            # run "npm start" in the frontend directory
-            frontend_dir = (
-                Path(__file__).parent.parent.parent.parent / "frontend/schedule-editor"
+        if not settings.VITE_DEV_MODE:
+            self.stdout.write(
+                self.style.WARNING(
+                    "Executing normal runserver command. To run the frontend server, set VITE_DEV_MODE=True"
+                )
             )
-            vite_server = Popen(["npm", "start"], cwd=frontend_dir)
+            super().handle(*args, **options)
+            return
+
+        # Start the vite server in the background
+        from subprocess import Popen
+
+        # run "npm start" in the frontend directory
+        frontend_dir = (
+            Path(__file__).parent.parent.parent.parent / "frontend/schedule-editor"
+        )
+        vite_server = Popen(["npm", "start"], cwd=frontend_dir)
 
         try:
             super().handle(*args, **options)

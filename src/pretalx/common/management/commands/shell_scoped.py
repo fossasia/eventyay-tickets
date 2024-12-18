@@ -55,7 +55,7 @@ class Command(BaseCommand):  # pragma: no cover
             lookups[lookup[0]] = {lookup[1] if len(lookup) > 1 else "pk": value}
         models = {
             model_name.split(".")[-1]: model_class
-            for app_name, app_content in apps.all_models.items()
+            for _, app_content in apps.all_models.items()
             for (model_name, model_class) in app_content.items()
         }
         if not all(app_name in models for app_name in lookups):

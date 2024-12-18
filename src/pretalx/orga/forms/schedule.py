@@ -7,6 +7,7 @@ from pretalx.common.forms.mixins import I18nHelpText
 from pretalx.common.forms.renderers import InlineFormRenderer
 from pretalx.common.forms.widgets import EnhancedSelectMultiple
 from pretalx.common.text.phrases import phrases
+from pretalx.mail.models import MailTemplateRoles
 from pretalx.orga.forms.export import ExportForm
 from pretalx.schedule.models import Schedule, TalkSlot
 from pretalx.schedule.utils import guess_schedule_version
@@ -25,7 +26,7 @@ class ScheduleReleaseForm(I18nHelpText, I18nModelForm):
         self.event = event
         self.fields["version"].required = True
         self.fields["comment"].widget.attrs["rows"] = 4
-        url = self.event.update_template.urls.base
+        url = self.event.get_mail_template(MailTemplateRoles.NEW_SCHEDULE).urls.base
         self.fields["notify_speakers"].help_text = (
             f"<a href='{url}'>{_('Email template')}</a>"
         )
@@ -112,9 +113,35 @@ class ScheduleExportForm(ExportForm):
             label=TalkSlot._meta.get_field("start").verbose_name,
             help_text=TalkSlot._meta.get_field("start").help_text,
         )
+        self.fields["start_date"] = forms.BooleanField(
+            required=False,
+            label=TalkSlot._meta.get_field("start").verbose_name
+            + " ("
+            + _("date")
+            + ")",
+            help_text=TalkSlot._meta.get_field("start").help_text,
+        )
+        self.fields["start_time"] = forms.BooleanField(
+            required=False,
+            label=TalkSlot._meta.get_field("start").verbose_name
+            + " ("
+            + _("time")
+            + ")",
+            help_text=TalkSlot._meta.get_field("start").help_text,
+        )
         self.fields["end"] = forms.BooleanField(
             required=False,
             label=TalkSlot._meta.get_field("end").verbose_name,
+            help_text=TalkSlot._meta.get_field("end").help_text,
+        )
+        self.fields["end_date"] = forms.BooleanField(
+            required=False,
+            label=TalkSlot._meta.get_field("end").verbose_name + " (" + _("date") + ")",
+            help_text=TalkSlot._meta.get_field("end").help_text,
+        )
+        self.fields["end_time"] = forms.BooleanField(
+            required=False,
+            label=TalkSlot._meta.get_field("end").verbose_name + " (" + _("time") + ")",
             help_text=TalkSlot._meta.get_field("end").help_text,
         )
         self.fields["median_score"] = forms.BooleanField(
@@ -154,7 +181,11 @@ class ScheduleExportForm(ExportForm):
             "speaker_names",
             "room",
             "start",
+            "start_date",
+            "start_time",
             "end",
+            "end_date",
+            "end_time",
             "median_score",
             "mean_score",
             "resources",
@@ -186,15 +217,39 @@ class ScheduleExportForm(ExportForm):
         if slot and slot.room:
             return slot.room.name
 
-    def _get_start_value(self, obj):
+    def _get_start(self, obj):
         slot = obj.slot
         if slot and slot.start:
-            return slot.start.isoformat()
+            return slot.local_start
 
-    def _get_end_value(self, obj):
+    def _get_end(self, obj):
         slot = obj.slot
         if slot and slot.real_end:
-            return slot.local_end.isoformat()
+            return slot.local_end
+
+    def _get_start_date_value(self, obj):
+        start = self._get_start(obj)
+        return start.date().isoformat() if start else None
+
+    def _get_start_time_value(self, obj):
+        start = self._get_start(obj)
+        return start.time().isoformat() if start else None
+
+    def _get_end_date_value(self, obj):
+        end = self._get_end(obj)
+        return end.date().isoformat() if end else None
+
+    def _get_end_time_value(self, obj):
+        end = self._get_end(obj)
+        return end.time().isoformat() if end else None
+
+    def _get_start_value(self, obj):
+        start = self._get_start(obj)
+        return start.isoformat() if start else None
+
+    def _get_end_value(self, obj):
+        end = self._get_end(obj)
+        return end.isoformat() if end else None
 
     def _get_duration_value(self, obj):
         return obj.get_duration()

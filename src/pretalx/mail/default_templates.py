@@ -84,3 +84,78 @@ Please do not hesitate to contact us if you have any questions in turn!
 The {event_name} organisers"""
     )
 )
+
+NEW_SUBMISSION_SUBJECT = LazyI18nString.from_gettext(
+    _("New proposal: {proposal_title}")
+)
+NEW_SUBMISSION_TEXT = LazyI18nString.from_gettext(
+    _(
+        """Hi,
+
+you have received a new proposal for your event {event_name}:
+“{submission_title}” by {speakers}.
+You can see details at
+
+  {orga_url}
+
+All the best,
+your {event_name} CfP system.
+"""
+    )
+)
+
+SPEAKER_INVITE_SUBJECT = LazyI18nString.from_gettext(
+    _("You have been added to a proposal for {event_name}")
+)
+
+NEW_SPEAKER_INVITE_TEXT = LazyI18nString.from_gettext(
+    _(
+        """Hi!
+
+You have been added to a proposal of {event_name}, titled “{proposal_title}”.
+An account has been created for you – please follow this link to set your account password.
+
+{invitation_link}
+
+Afterwards, you can edit your user profile and see the state of your proposal.
+
+The {event} orga crew"""
+    )
+)
+EXISTING_SPEAKER_INVITE_TEXT = LazyI18nString.from_gettext(
+    _(
+        """Hi!
+
+You have been added to a proposal of {event_name}, titled “{proposal_title}”.
+Please follow this link to edit your user profile and see the state of your proposal:
+
+{proposal_url}
+
+The {event_name} organisers"""
+    )
+)
+
+
+def get_default_template(role):
+    from pretalx.mail.models import MailTemplateRoles
+
+    TEMPLATE_MAPPING = {
+        MailTemplateRoles.SUBMISSION_ACCEPT: (GENERIC_SUBJECT, ACCEPT_TEXT),
+        MailTemplateRoles.SUBMISSION_REJECT: (GENERIC_SUBJECT, REJECT_TEXT),
+        MailTemplateRoles.NEW_SUBMISSION: (GENERIC_SUBJECT, ACK_TEXT),
+        MailTemplateRoles.NEW_SUBMISSION_INTERNAL: (
+            NEW_SUBMISSION_SUBJECT,
+            NEW_SUBMISSION_TEXT,
+        ),
+        MailTemplateRoles.NEW_SCHEDULE: (UPDATE_SUBJECT, UPDATE_TEXT),
+        MailTemplateRoles.QUESTION_REMINDER: (QUESTION_SUBJECT, QUESTION_TEXT),
+        MailTemplateRoles.NEW_SPEAKER_INVITE: (
+            SPEAKER_INVITE_SUBJECT,
+            NEW_SPEAKER_INVITE_TEXT,
+        ),
+        MailTemplateRoles.EXISTING_SPEAKER_INVITE: (
+            SPEAKER_INVITE_SUBJECT,
+            EXISTING_SPEAKER_INVITE_TEXT,
+        ),
+    }
+    return TEMPLATE_MAPPING[role]

@@ -1,7 +1,5 @@
-import datetime as dt
 import json
 from collections import Counter
-from contextlib import suppress
 from operator import itemgetter
 
 from dateutil import rrule
@@ -14,12 +12,9 @@ from django.forms.models import BaseModelFormSet, inlineformset_factory
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.utils import feedgenerator
-from django.utils.crypto import get_random_string
 from django.utils.functional import cached_property
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import override
 from django.views.generic import FormView, ListView, TemplateView, UpdateView, View
 from django_context_decorator import context
 
@@ -28,7 +23,6 @@ from pretalx.common.exceptions import SubmissionError
 from pretalx.common.forms.fields import SizeFileInput
 from pretalx.common.models import ActivityLog
 from pretalx.common.text.phrases import phrases
-from pretalx.common.urls import build_absolute_uri
 from pretalx.common.views import CreateOrUpdateView
 from pretalx.common.views.mixins import (
     ActionConfirmMixin,
@@ -38,15 +32,15 @@ from pretalx.common.views.mixins import (
     PermissionRequired,
     Sortable,
 )
-from pretalx.mail.models import QueuedMail
+from pretalx.mail.models import MailTemplateRoles
 from pretalx.orga.forms.submission import (
-    AddCreateUserForm,
+    AddSpeakerForm,
+    AddSpeakerInlineForm,
     AnonymiseForm,
     SubmissionForm,
     SubmissionStateChangeForm,
 )
-from pretalx.person.forms import OrgaSpeakerForm
-from pretalx.person.models import SpeakerProfile, User
+from pretalx.person.models import User
 from pretalx.submission.forms import (
     QuestionsForm,
     ResourceForm,
@@ -60,58 +54,6 @@ from pretalx.submission.models import (
     SubmissionStates,
     Tag,
 )
-
-
-def create_user_as_orga(email, submission=None, name=None):
-    name = name or "-"
-    form = OrgaSpeakerForm({"name": name, "email": email})
-    form.is_valid()
-
-    user = User.objects.create_user(
-        password=get_random_string(32),
-        email=form.cleaned_data["email"].lower().strip(),
-        name=form.cleaned_data.get("name", "").strip(),
-        pw_reset_token=get_random_string(32),
-        pw_reset_time=now() + dt.timedelta(days=7),
-    )
-    SpeakerProfile.objects.get_or_create(user=user, event=submission.event)
-    with override(submission.content_locale):
-        invitation_link = build_absolute_uri(
-            "cfp:event.recover",
-            kwargs={"event": submission.event.slug, "token": user.pw_reset_token},
-        )
-        invitation_text = _(
-            """Hello,
-
-We are excited to inform you that you have been selected as a speaker for {event} with your proposal titled "{title}".
-To get started, an account has been created for you. Please follow the link below to set your account password:
-
-{invitation_link}
-
-Once you have set your password, you can log in to edit your user profile and track the status of your proposal.
-
-We look forward to your participation and contribution to {event}.
-
-Best regards,
-The {event} Organizing Team"""
-        ).format(
-            event=submission.event.name,
-            title=submission.title,
-            invitation_link=invitation_link,
-        )
-        mail = QueuedMail.objects.create(
-            event=submission.event,
-            reply_to=submission.event.email,
-            subject=str(
-                _("Welcome as a Speaker at {event}!").format(
-                    event=submission.event.name
-                )
-            ),
-            text=invitation_text,
-            locale=submission.content_locale,
-        )
-        mail.to_users.add(user)
-    return user
 
 
 class SubmissionViewMixin(PermissionRequired):
@@ -256,11 +198,15 @@ class SubmissionStateChange(SubmissionViewMixin, FormView):
             (
                 SubmissionStates.ACCEPTED,
                 SubmissionStates.REJECTED,
-            ): self.request.event.accept_template,
+            ): self.request.event.get_mail_template(
+                MailTemplateRoles.SUBMISSION_ACCEPT
+            ),
             (
                 SubmissionStates.REJECTED,
                 SubmissionStates.ACCEPTED,
-            ): self.request.event.reject_template,
+            ): self.request.event.get_mail_template(
+                MailTemplateRoles.SUBMISSION_REJECT
+            ),
         }
         if template := check_mail_template.get((current, self.object.state)):
             pending_emails = self.request.event.queued_mails.filter(
@@ -316,7 +262,7 @@ class SubmissionSpeakersDelete(SubmissionViewMixin, View):
 class SubmissionSpeakers(ReviewerSubmissionFilter, SubmissionViewMixin, FormView):
     template_name = "orga/submission/speakers.html"
     permission_required = "orga.view_speakers"
-    form_class = AddCreateUserForm
+    form_class = AddSpeakerInlineForm
 
     @context
     @cached_property
@@ -334,37 +280,23 @@ class SubmissionSpeakers(ReviewerSubmissionFilter, SubmissionViewMixin, FormView
         ]
 
     def form_valid(self, form):
-        email = form.cleaned_data.get("email")
-        created = False
-        speaker = None
-        submission = self.object
-        try:
-            speaker = User.objects.get(email__iexact=email.lower().strip())
-        except User.DoesNotExist:
-            with suppress(Exception):
-                speaker = create_user_as_orga(email, submission=submission)
-                created = True
-
-        if not speaker:
-            messages.error(self.request, _("Failed to create the new speaker."))
-            return self.form_invalid(form)
-
-        if submission in speaker.submissions.all():
-            messages.warning(
-                self.request, _("The speaker was already part of the proposal.")
+        if email := form.cleaned_data.get("email"):
+            speaker = self.object.add_speaker(
+                email=email,
+                name=form.cleaned_data.get("name"),
+                locale=form.cleaned_data.get("locale"),
+                user=self.request.user,
             )
-            return super().form_valid(form)
-
-        speaker.submissions.add(submission)
-        submission.log_action(
-            "pretalx.submission.speakers.add", person=self.request.user, orga=True
-        )
-        messages.success(self.request, _("The speaker has been added to the proposal."))
-        if not speaker.profiles.filter(event=self.request.event).exists():
-            SpeakerProfile.objects.create(user=speaker, event=self.request.event)
-        if created:
+            messages.success(
+                self.request, _("The speaker has been added to the proposal.")
+            )
             return redirect(speaker.event_profile(self.request.event).orga_urls.base)
-        return redirect(submission.orga_urls.speakers)
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["event"] = self.request.event
+        return kwargs
 
     def get_success_url(self):
         return self.object.orga_urls.speakers
@@ -419,6 +351,16 @@ class SubmissionContent(
     @context
     def formset(self):
         return self._formset
+
+    @context
+    @cached_property
+    def new_speaker_form(self):
+        if not self.get_object():
+            return AddSpeakerForm(
+                data=self.request.POST if self.request.method == "POST" else None,
+                event=self.request.event,
+                prefix="speaker",
+            )
 
     @cached_property
     def _questions_form(self):
@@ -517,30 +459,17 @@ class SubmissionContent(
         self._questions_form.save()
 
         if created:
-            email = form.cleaned_data["email"]
-            if email:
-                try:
-                    speaker = User.objects.get(email__iexact=email)  # TODO: send email!
-                    messages.success(
-                        self.request,
-                        _(
-                            "The proposal has been created; the speaker already had an account on this system."
-                        ),
-                    )
-                except User.DoesNotExist:
-                    speaker = create_user_as_orga(
-                        email=email,
-                        name=form.cleaned_data["speaker_name"],
-                        submission=form.instance,
-                    )
-                    messages.success(
-                        self.request,
-                        _(
-                            "The proposal has been created and the speaker has been invited to add an account!"
-                        ),
-                    )
-
-                form.instance.speakers.add(speaker)
+            if not self.new_speaker_form.is_valid():
+                if self.new_speaker_form.errors:
+                    messages.error(self.request, self.new_speaker_form.errors[0])
+                return self.form_invalid(form)
+            elif email := self.new_speaker_form.cleaned_data["email"]:
+                form.instance.add_speaker(
+                    email=email,
+                    name=self.new_speaker_form.cleaned_data["name"],
+                    locale=self.new_speaker_form.cleaned_data.get("locale"),
+                    user=self.request.user,
+                )
         else:
             formset_result = self.save_formset(form.instance)
             if not formset_result:

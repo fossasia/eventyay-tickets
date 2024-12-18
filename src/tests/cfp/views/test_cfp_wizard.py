@@ -212,7 +212,9 @@ class TestWizard:
     @pytest.mark.django_db
     def test_wizard_new_user(self, event, question, client):
         event.mail_settings["mail_on_new_submission"] = True
+        event.plugins = "tests"
         event.save()
+        event.settings.submission_state_change_called = ""
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first()
             submission_type.deadline = event.cfp.deadline
@@ -259,6 +261,9 @@ class TestWizard:
         submission = self.assert_submission(event, question=question)
         self.assert_user(submission, email="testuser@example.com")
         assert len(djmail.outbox) == 2  # user email plus orga email
+        assert (
+            submission.event.settings.submission_state_change_called == submission.code
+        )
 
     @pytest.mark.django_db
     def test_wizard_existing_user(
@@ -431,11 +436,9 @@ class TestWizard:
     ):
         with scope(event=event):
             submission_type = SubmissionType.objects.filter(event=event).first().pk
-
-            event.ack_template.text = (
-                str(event.ack_template.text) + "{name} and {nonexistent}"
-            )
-            event.ack_template.save()
+            ack_template = event.get_mail_template("submission.new")
+            ack_template.text = str(ack_template.text) + "{name} and {nonexistent}"
+            ack_template.save()
 
         client.force_login(user)
         response, current_url = self.perform_init_wizard(client, event=event)
@@ -532,9 +535,10 @@ class TestWizard:
         event.cfp.save()
         access_code.valid_until = now() - dt.timedelta(hours=1)
         access_code.save()
-        response, current_url = self.perform_init_wizard(
+        response, _ = self.perform_init_wizard(
             client, event=event, access_code=access_code, success=False
         )
+        assert response.status_code == 200
 
     @pytest.mark.django_db
     def test_wizard_track_access_code_and_question(

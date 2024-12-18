@@ -67,11 +67,11 @@ def validate_event_slug_permitted(value):
 
 
 def event_css_path(instance, filename):
-    return f"{instance.slug}/css/{path_with_hash(filename)}"
+    return path_with_hash(filename, base_path=f"{instance.slug}/css/")
 
 
 def event_logo_path(instance, filename):
-    return f"{instance.slug}/img/{path_with_hash(filename)}"
+    return path_with_hash(filename, base_path=f"{instance.slug}/img/")
 
 
 def default_feature_flags():
@@ -141,14 +141,6 @@ class Event(PretalxModel):
     :param content_locale_array: Contains the event’s active locales available
         for proposals as a comma separated string. Please use the
         ``content_locales`` property to interact with this information.
-    :param accept_template: Templates for emails sent when accepting a talk.
-    :param reject_template: Templates for emails sent when rejecting a talk.
-    :param ack_template: Templates for emails sent when acknowledging that
-        a submission was sent in.
-    :param update_template: Templates for emails sent when a talk scheduling
-        was modified.
-    :param question_template: Templates for emails sent when a speaker has not
-        yet answered a question, and organisers send out reminders.
     :param primary_color: Main event colour. Accepts hex values like
         ``#00ff00``.
     :param custom_css: Custom event CSS. Has to pass fairly restrictive
@@ -259,41 +251,6 @@ class Event(PretalxModel):
         choices=settings.LANGUAGES,
         verbose_name=_("Default language"),
     )
-    accept_template = models.ForeignKey(
-        to="mail.MailTemplate",
-        on_delete=models.CASCADE,
-        related_name="+",
-        null=True,
-        blank=True,
-    )
-    ack_template = models.ForeignKey(
-        to="mail.MailTemplate",
-        on_delete=models.CASCADE,
-        related_name="+",
-        null=True,
-        blank=True,
-    )
-    reject_template = models.ForeignKey(
-        to="mail.MailTemplate",
-        on_delete=models.CASCADE,
-        related_name="+",
-        null=True,
-        blank=True,
-    )
-    update_template = models.ForeignKey(
-        to="mail.MailTemplate",
-        on_delete=models.CASCADE,
-        related_name="+",
-        null=True,
-        blank=True,
-    )
-    question_template = models.ForeignKey(
-        to="mail.MailTemplate",
-        on_delete=models.CASCADE,
-        related_name="+",
-        null=True,
-        blank=True,
-    )
     landing_page_text = I18nTextField(
         verbose_name=_("Landing page text"),
         help_text=_(
@@ -316,10 +273,6 @@ class Event(PretalxModel):
     )
     plugins = models.TextField(null=True, blank=True, verbose_name=_("Plugins"))
 
-    template_names = [
-        f"{template}_template"
-        for template in ("accept", "ack", "reject", "update", "question")
-    ]
     HEADER_PATTERN_CHOICES = (
         ("", _("Plain")),
         ("pcb", _("Circuits")),
@@ -571,28 +524,22 @@ class Event(PretalxModel):
             sub_type = SubmissionType.objects.create(event=self, name="Talk")
         return sub_type
 
-    @cached_property
-    def fixed_templates(self) -> list:
-        return [
-            self.accept_template,
-            self.ack_template,
-            self.reject_template,
-            self.update_template,
-            self.question_template,
-        ]
+    def get_mail_template(self, role):
+        from pretalx.mail.default_templates import get_default_template
+        from pretalx.mail.models import MailTemplate
+
+        try:
+            return self.mail_templates.get(role=role)
+        except MailTemplate.DoesNotExist:
+            subject, text = get_default_template(role)
+            template, __ = MailTemplate.objects.get_or_create(
+                event=self, role=role, defaults={"subject": subject, "text": text}
+            )
+            return template
 
     def build_initial_data(self):
-        from pretalx.mail.default_templates import (
-            ACCEPT_TEXT,
-            ACK_TEXT,
-            GENERIC_SUBJECT,
-            QUESTION_SUBJECT,
-            QUESTION_TEXT,
-            REJECT_TEXT,
-            UPDATE_SUBJECT,
-            UPDATE_TEXT,
-        )
-        from pretalx.mail.models import MailTemplate
+        from pretalx.mail.models import MailTemplateRoles
+        from pretalx.schedule.models import Schedule
         from pretalx.submission.models import CfP
 
         if not hasattr(self, "cfp"):
@@ -601,25 +548,10 @@ class Event(PretalxModel):
             )
 
         if not self.schedules.filter(version__isnull=True).exists():
-            from pretalx.schedule.models import Schedule
-
             Schedule.objects.create(event=self)
 
-        self.accept_template = self.accept_template or MailTemplate.objects.create(
-            event=self, subject=GENERIC_SUBJECT, text=ACCEPT_TEXT
-        )
-        self.ack_template = self.ack_template or MailTemplate.objects.create(
-            event=self, subject=GENERIC_SUBJECT, text=ACK_TEXT
-        )
-        self.reject_template = self.reject_template or MailTemplate.objects.create(
-            event=self, subject=GENERIC_SUBJECT, text=REJECT_TEXT
-        )
-        self.update_template = self.update_template or MailTemplate.objects.create(
-            event=self, subject=UPDATE_SUBJECT, text=UPDATE_TEXT
-        )
-        self.question_template = self.question_template or MailTemplate.objects.create(
-            event=self, subject=QUESTION_SUBJECT, text=QUESTION_TEXT
-        )
+        for role, __ in MailTemplateRoles.choices:
+            self.get_mail_template(role)
 
         if not self.review_phases.all().exists():
             from pretalx.submission.models import ReviewPhase
@@ -669,14 +601,6 @@ class Event(PretalxModel):
 
     build_initial_data.alters_data = True
 
-    def _delete_mail_templates(self):
-        for template in self.template_names:
-            setattr(self, template, None)
-        self.save()
-        self.mail_templates.all().delete()
-
-    _delete_mail_templates.alters_data = True
-
     @scopes_disabled()
     def copy_data_from(self, other_event, skip_attributes=None):
         from pretalx.orga.signals import event_copy_data
@@ -705,25 +629,13 @@ class Event(PretalxModel):
             setattr(self, attribute, getattr(other_event, attribute))
         self.save()
 
-        self._delete_mail_templates()
-        self.submission_types.exclude(pk=self.cfp.default_type_id).delete()
-        copied_templates = []
-        for template in self.template_names:
-            new_template = getattr(other_event, template)
-            copied_templates.append(new_template.pk)
-            new_template.pk = None
-            new_template.event = self
-            new_template.save()
-            setattr(self, template, new_template)
-        # We copy non-default templates separately
-        for template in (
-            other_event.mail_templates.all()
-            .filter(is_auto_created=False)
-            .exclude(pk__in=copied_templates)
-        ):
+        self.mail_templates.all().delete()
+        for template in other_event.mail_templates.all().filter(is_auto_created=False):
             template.pk = None
             template.event = self
             template.save()
+
+        self.submission_types.exclude(pk=self.cfp.default_type_id).delete()
         submission_type_map = {}
         for submission_type in other_event.submission_types.all():
             submission_type_map[submission_type.pk] = submission_type
@@ -736,12 +648,14 @@ class Event(PretalxModel):
                 self.cfp.default_type = submission_type
                 self.cfp.save()
                 old_default.delete()
+
         track_map = {}
         for track in other_event.tracks.all():
             track_map[track.pk] = track
             track.pk = None
             track.event = self
             track.save()
+
         question_map = {}
         for question in other_event.questions.all():
             question_map[question.pk] = question
@@ -959,6 +873,16 @@ class Event(PretalxModel):
                 can_see_speaker_names=True,
             )
 
+    def reorder_review_phases(self):
+        """Reorder the review phases by start date."""
+        # first, sort phases so that the ones with no start date come first
+        phases = list(self.review_phases.all())
+        placeholder = dt.datetime(1900, 1, 1).astimezone(self.tz)
+        phases.sort(key=lambda x: (x.start or placeholder, x.end or placeholder))
+        for i, phase in enumerate(phases):
+            phase.position = i
+            phase.save(update_fields=["position"])
+
     def update_review_phase(self):
         """This method activates the next review phase if the current one is
         over.
@@ -971,6 +895,7 @@ class Event(PretalxModel):
         old_phase = self.active_review_phase
         if old_phase and old_phase.end and old_phase.end > _now:
             return old_phase
+        self.reorder_review_phases()
         old_position = old_phase.position if old_phase else -1
         future_phases = future_phases.filter(position__gt=old_position)
         next_phase = future_phases.order_by("position").first()
@@ -1128,6 +1053,7 @@ class Event(PretalxModel):
         )
         deletion_order = [
             (self.logged_actions(), False),
+            (self.mail_templates.all(), False),
             (self.queued_mails.all(), False),
             (self.cfp, False),
             (self.mail_templates.all(), False),
@@ -1149,7 +1075,6 @@ class Event(PretalxModel):
             (self, False),
         ]
 
-        self._delete_mail_templates()
         for entry, detail in deletion_order:
             if detail:
                 for obj in entry:

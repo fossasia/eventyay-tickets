@@ -2,6 +2,7 @@ import os
 import time
 
 from django.utils import translation
+from selenium.webdriver.common.by import By
 
 
 def screenshot(client, name, scroll=True):
@@ -23,5 +24,5 @@ def screenshot(client, name, scroll=True):
     )
     client.set_window_size(required_width, required_height)
     path = os.path.join("screens", name)
-    client.find_element_by_tag_name("body").screenshot(path)
+    client.find_element(By.TAG_NAME, "body").screenshot(path)
     client.set_window_size(original_size["width"], original_size["height"])

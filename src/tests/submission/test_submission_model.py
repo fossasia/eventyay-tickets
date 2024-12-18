@@ -19,7 +19,9 @@ from pretalx.submission.models.submission import submission_image_path
     ),
 )
 @pytest.mark.django_db
-def test_accept_success(submission, state):
+def test_accept_success(submission, state, mocker):
+    submission.event.plugins = "tests"
+    submission.event.save()
     with scope(event=submission.event):
         submission.state = state
         submission.save()
@@ -32,12 +34,17 @@ def test_accept_success(submission, state):
         )
         assert submission.logged_actions().count() == (count + 1)
         assert submission.event.wip_schedule.talks.count() == 1
+        assert getattr(submission, "_state_change_called", 0) == (
+            1 if state != SubmissionStates.ACCEPTED else 0
+        )
 
 
 @pytest.mark.parametrize("state", (SubmissionStates.WITHDRAWN,))
 @pytest.mark.parametrize("force", (True, False))
 @pytest.mark.django_db
 def test_accept_fail(submission, state, force):
+    submission.event.plugins = "tests"
+    submission.event.save()
     with scope(event=submission.event):
         submission.state = state
         submission.save()
@@ -50,6 +57,7 @@ def test_accept_fail(submission, state, force):
             assert submission.logged_actions().count() == (count + 1)
             assert submission.event.queued_mails.count() == 1
             assert submission.event.wip_schedule.talks.count() == 1
+            assert submission._state_change_called == 1
 
         else:
             with pytest.raises(SubmissionError):
@@ -57,6 +65,7 @@ def test_accept_fail(submission, state, force):
             assert submission.state == state
             assert submission.event.queued_mails.count() == 0
             assert submission.event.wip_schedule.talks.count() == 0
+            assert getattr(submission, "_state_change_called", 0) == 0
 
 
 @pytest.mark.parametrize(
@@ -64,6 +73,8 @@ def test_accept_fail(submission, state, force):
 )
 @pytest.mark.django_db
 def test_reject_success(submission, state):
+    submission.event.plugins = "tests"
+    submission.event.save()
     with scope(event=submission.event):
         submission.state = state
         submission.save()
@@ -75,6 +86,7 @@ def test_reject_success(submission, state):
         assert submission.logged_actions().count() == (count + 1)
         assert submission.event.queued_mails.count() == 1
         assert submission.event.wip_schedule.talks.count() == 0
+        assert submission._state_change_called == 1
 
 
 @pytest.mark.parametrize(
@@ -84,6 +96,8 @@ def test_reject_success(submission, state):
 @pytest.mark.parametrize("force", (True, False))
 @pytest.mark.django_db
 def test_reject_fail(submission, state, force):
+    submission.event.plugins = "tests"
+    submission.event.save()
     with scope(event=submission.event):
         submission.state = state
         submission.save()
@@ -96,6 +110,7 @@ def test_reject_fail(submission, state, force):
             assert submission.logged_actions().count() == (count + 1)
             assert submission.event.queued_mails.count() == 1
             assert submission.event.wip_schedule.talks.count() == 0
+            assert submission._state_change_called == 1
         else:
             with pytest.raises(SubmissionError):
                 submission.reject(force=force)
@@ -103,6 +118,7 @@ def test_reject_fail(submission, state, force):
             assert submission.logged_actions().count() == count
             assert submission.event.queued_mails.count() == 0
             assert submission.event.wip_schedule.talks.count() == 0
+            assert getattr(submission, "_state_change_called", 0) == 0
 
 
 @pytest.mark.parametrize(

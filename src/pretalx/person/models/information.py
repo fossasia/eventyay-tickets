@@ -10,7 +10,9 @@ from pretalx.common.urls import EventUrls
 
 
 def resource_path(instance, filename):
-    return f"{instance.event.slug}/speaker_information/{path_with_hash(filename)}"
+    return path_with_hash(
+        filename, base_path=f"{instance.event.slug}/speaker_information/"
+    )
 
 
 class SpeakerInformation(PretalxModel):

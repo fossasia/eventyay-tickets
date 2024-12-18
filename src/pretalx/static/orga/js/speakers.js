@@ -2,6 +2,7 @@ const initUserSearch = () => {
     const remoteURL = document.getElementById("vars").getAttribute("remoteUrl")
     let select = document.querySelector("#id_email")
     if (!select) select = document.querySelector("#id_invite-email")
+    if (!select) select = document.querySelector("#id_speaker-email")
     if (!select) return
 
     const choices = new Choices(select, {
@@ -50,13 +51,12 @@ const initUserSearch = () => {
         if (ev.detail.customProperties && ev.detail.customProperties.name) {
             let nameInput = document.querySelector("#id_name")
             if (!nameInput) nameInput = document.querySelector("#id_speaker")
-            if (!nameInput)
-                nameInput = document.querySelector("#id_speaker_name")
+            if (!nameInput) nameInput = document.querySelector("#id_speaker-name")
             if (!nameInput || nameInput.value.length) return
             nameInput.value = ev.detail.customProperties.name
         }
     })
-    select.parentElement
+    select.parentElement.parentElement
         .querySelector("input")
         .addEventListener("blur", (ev) => {
             unfinishedInput = ev.target.value

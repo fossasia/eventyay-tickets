@@ -1,3 +1,4 @@
+import copy
 import datetime as dt
 import json
 import statistics
@@ -14,7 +15,7 @@ from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext_lazy as _n
-from django.utils.translation import pgettext_lazy
+from django.utils.translation import override, pgettext_lazy
 from django_scopes import ScopedManager, scopes_disabled
 from rest_framework import serializers
 
@@ -25,7 +26,6 @@ from pretalx.common.text.path import path_with_hash
 from pretalx.common.text.phrases import phrases
 from pretalx.common.text.serialize import serialize_duration
 from pretalx.common.urls import EventUrls
-from pretalx.mail.models import MailTemplate, QueuedMail
 from pretalx.person.models import User
 from pretalx.submission.signals import submission_state_change
 
@@ -35,8 +35,8 @@ def generate_invite_code(length=32):
 
 
 def submission_image_path(instance, filename):
-    return (
-        f"{instance.event.slug}/submissions/{instance.code}/{path_with_hash(filename)}"
+    return path_with_hash(
+        filename, base_path=f"{instance.event.slug}/submissions/{instance.code}/"
     )
 
 
@@ -368,6 +368,17 @@ class Submission(GenerateCode, PretalxModel):
 
     update_duration.alters_data = True
 
+    def save(self, *args, **kwargs):
+        is_creating = not self.pk
+        super().save(*args, **kwargs)
+        if is_creating and not self.state == SubmissionStates.DRAFT:
+            submission_state_change.send_robust(
+                self.event,
+                submission=self,
+                old_state=None,
+                user=None,
+            )
+
     def update_review_scores(self):
         """Apply the submission's calculated review scores.
 
@@ -404,7 +415,10 @@ class Submission(GenerateCode, PretalxModel):
             self.save(update_fields=["state", "pending_state"])
             self.update_talk_slots()
             submission_state_change.send_robust(
-                self.event, submission=self, old_state=old_state, user=person
+                self.event,
+                submission=self,
+                old_state=old_state if old_state != SubmissionStates.DRAFT else None,
+                user=person,
             )
         else:
             source_states = (
@@ -483,23 +497,39 @@ class Submission(GenerateCode, PretalxModel):
     update_talk_slots.alters_data = True
 
     def send_initial_mails(self, person):
-        self.event.ack_template.to_mail(
+        from pretalx.mail.models import MailTemplateRoles
+
+        template = self.event.get_mail_template(MailTemplateRoles.NEW_SUBMISSION)
+        template_text = copy.deepcopy(template.text)
+        locale = self.get_email_locale(person.locale)
+        with override(locale):
+            if "{full_submission_content}" not in str(template.text):
+                template.text = (
+                    str(template.text)
+                    + "\n\n\n***********\n\n"
+                    + str(_("Full proposal content:\n\n") + "{full_submission_content}")
+                )
+        template.to_mail(
             user=person,
             event=self.event,
             context_kwargs={
                 "user": person,
                 "submission": self,
             },
+            context={
+                "full_submission_content": self.get_content_for_mail(),
+            },
             skip_queue=True,
             commit=True,  # Send immediately, but save a record
             locale=self.get_email_locale(person.locale),
-            full_submission_content=True,
         )
+        template.refresh_from_db()
+        if template.text != template_text:
+            template.text = template_text
+            template.save()
         if self.event.mail_settings["mail_on_new_submission"]:
-            MailTemplate(
-                event=self.event,
-                subject=str(_("New proposal")) + f": {self.title}",
-                text=self.event.settings.mail_text_new_submission,
+            self.event.get_mail_template(
+                MailTemplateRoles.NEW_SUBMISSION_INTERNAL
             ).to_mail(
                 user=self.event.email,
                 event=self.event,
@@ -631,10 +661,12 @@ class Submission(GenerateCode, PretalxModel):
         return str(dict(self.event.named_content_locales)[self.content_locale])
 
     def send_state_mail(self):
+        from pretalx.mail.models import MailTemplateRoles
+
         if self.state == SubmissionStates.ACCEPTED:
-            template = self.event.accept_template
+            template = self.event.get_mail_template(MailTemplateRoles.SUBMISSION_ACCEPT)
         elif self.state == SubmissionStates.REJECTED:
-            template = self.event.reject_template
+            template = self.event.get_mail_template(MailTemplateRoles.SUBMISSION_REJECT)
         else:
             return
 
@@ -922,7 +954,46 @@ class Submission(GenerateCode, PretalxModel):
             result += f"**{field_name}**: {field_content}\n\n"
         return result
 
+    def add_speaker(self, email, name=None, locale=None, user=None):
+        from pretalx.common.urls import build_absolute_uri
+        from pretalx.mail.models import MailTemplateRoles
+        from pretalx.person.models import SpeakerProfile, User
+        from pretalx.person.services import create_user
+
+        user_created = False
+        context = {}
+        try:
+            speaker = User.objects.get(email__iexact=email)
+            if not speaker.profiles.filter(event=self.event).exists():
+                SpeakerProfile.objects.create(user=speaker, event=self.event)
+        except User.DoesNotExist:
+            speaker = create_user(email=email, name=name, event=self.event)
+            user_created = True
+            context["invitation_link"] = build_absolute_uri(
+                "cfp:event.new_recover",
+                kwargs={"event": self.event.slug, "token": speaker.pw_reset_token},
+            )
+
+        self.speakers.add(speaker)
+        self.log_action("pretalx.submission.speakers.add", person=user, orga=True)
+        context["user"] = speaker
+        template = self.event.get_mail_template(
+            MailTemplateRoles.EXISTING_SPEAKER_INVITE
+            if not user_created
+            else MailTemplateRoles.NEW_SPEAKER_INVITE
+        )
+        template.to_mail(
+            user=speaker,
+            event=self.event,
+            context=context,
+            context_kwargs={"user": speaker, "submission": self, "event": self.event},
+            locale=locale or self.event.locale,
+        )
+        return speaker
+
     def send_invite(self, to, _from=None, subject=None, text=None):
+        from pretalx.mail.models import QueuedMail
+
         if not _from and (not subject or not text):
             raise Exception("Please enter a sender for this invitation.")
 

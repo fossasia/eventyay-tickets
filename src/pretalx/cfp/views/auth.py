@@ -4,13 +4,14 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.core.exceptions import PermissionDenied
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import Http404, HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.module_loading import import_string
 from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView, View
+from django_context_decorator import context
 
 from pretalx.cfp.forms.auth import RecoverForm
 from pretalx.cfp.views.event import EventPageMixin
@@ -22,8 +23,11 @@ SessionStore = import_string(f"{settings.SESSION_ENGINE}.SessionStore")
 
 
 class LogoutView(View):
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
         logout(request)
+        return self.get(request, *args, **kwargs)
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponseRedirect:
         response = redirect(
             reverse("cfp:event.start", kwargs={"event": self.request.event.slug})
         )
@@ -35,6 +39,11 @@ class LogoutView(View):
 
 class LoginView(GenericLoginView):
     template_name = "cfp/event/login.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.event.is_public:
+            raise Http404()
+        return super().dispatch(request, *args, **kwargs)
 
     def get_error_url(self):
         return self.request.event.urls.base
@@ -62,10 +71,15 @@ class ResetView(EventPageMixin, GenericResetView):
 class RecoverView(FormView):
     template_name = "cfp/event/recover.html"
     form_class = RecoverForm
+    is_invite = False
 
     def __init__(self, **kwargs):
         self.user = None
         super().__init__(**kwargs)
+
+    @context
+    def is_invite_template(self):
+        return self.is_invite
 
     def dispatch(self, request, *args, **kwargs):
         try:
@@ -82,10 +96,7 @@ class RecoverView(FormView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        self.user.set_password(form.cleaned_data["password"])
-        self.user.pw_reset_token = None
-        self.user.pw_reset_time = None
-        self.user.save()
+        self.user.change_password(form.cleaned_data["password"])
         messages.success(self.request, phrases.cfp.auth_reset_success)
         return redirect(
             reverse("cfp:event.login", kwargs={"event": self.request.event.slug})

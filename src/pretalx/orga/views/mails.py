@@ -22,11 +22,17 @@ from pretalx.common.views.mixins import (
     PermissionRequired,
     Sortable,
 )
-from pretalx.mail.models import MailTemplate, QueuedMail, get_prefixed_subject
+from pretalx.mail.models import (
+    MailTemplate,
+    MailTemplateRoles,
+    QueuedMail,
+    get_prefixed_subject,
+)
 from pretalx.orga.forms.mails import (
     DraftRemindersForm,
     MailDetailForm,
     MailTemplateForm,
+    QueuedMailFilterForm,
     WriteSessionMailForm,
     WriteTeamsMailForm,
 )
@@ -51,12 +57,32 @@ class OutboxList(
 
     def get_queryset(self):
         qs = (
-            self.request.event.queued_mails.prefetch_related("to_users")
+            self.request.event.queued_mails.prefetch_related(
+                "to_users", "submissions", "submissions__track"
+            )
             .filter(sent__isnull=True)
             .order_by("-id")
         )
         qs = self.filter_queryset(qs)
         return self.sort_queryset(qs)
+
+    @context
+    @cached_property
+    def show_tracks(self):
+        return self.request.event.get_feature_flag("use_tracks")
+
+    @context
+    @cached_property
+    def is_filtered(self):
+        return (
+            self.get_queryset().count()
+            != self.request.event.queued_mails.filter(sent__isnull=True).count()
+        )
+
+    def get_filter_form(self):
+        return QueuedMailFilterForm(
+            self.request.GET, event=self.request.event, sent=False
+        )
 
 
 class SentMail(
@@ -76,17 +102,29 @@ class SentMail(
     paginate_by = 25
     permission_required = "orga.view_mails"
 
+    def get_filter_form(self):
+        return QueuedMailFilterForm(
+            self.request.GET, event=self.request.event, sent=True
+        )
+
     def get_queryset(self):
         qs = (
-            self.request.event.queued_mails.prefetch_related("to_users")
+            self.request.event.queued_mails.prefetch_related(
+                "to_users", "submissions", "submissions__track"
+            )
             .filter(sent__isnull=False)
             .order_by("-sent")
         )
         qs = self.filter_queryset(qs)
         return self.sort_queryset(qs)
 
+    @context
+    @cached_property
+    def show_tracks(self):
+        return self.request.event.get_feature_flag("use_tracks")
 
-class OutboxSend(EventPermissionRequired, ActionConfirmMixin, TemplateView):
+
+class OutboxSend(ActionConfirmMixin, OutboxList):
     permission_required = "orga.send_mails"
     action_object_name = ""
     action_confirm_label = phrases.base.send
@@ -131,12 +169,12 @@ class OutboxSend(EventPermissionRequired, ActionConfirmMixin, TemplateView):
 
     @cached_property
     def queryset(self):
-        qs = self.request.event.queued_mails.filter(sent__isnull=True)
         pks = self.request.GET.get("pks") or ""
         if pks:
-            pks = pks.split(",")
-            qs = qs.filter(pk__in=pks)
-        return qs
+            return self.request.event.queued_mails.filter(sent__isnull=True).filter(
+                pk__in=pks.split(",")
+            )
+        return self.get_queryset()
 
     def post(self, request, *args, **kwargs):
         mails = self.queryset
@@ -214,12 +252,9 @@ class MailDelete(PermissionRequired, ActionConfirmMixin, TemplateView):
         return redirect(request.event.orga_urls.outbox)
 
 
-class OutboxPurge(PermissionRequired, ActionConfirmMixin, TemplateView):
+class OutboxPurge(ActionConfirmMixin, OutboxList):
     permission_required = "orga.purge_mails"
     action_object_name = ""
-
-    def get_permission_object(self):
-        return self.request.event
 
     @context
     def question(self):
@@ -236,7 +271,7 @@ class OutboxPurge(PermissionRequired, ActionConfirmMixin, TemplateView):
 
     @cached_property
     def queryset(self):
-        return self.request.event.queued_mails.filter(sent__isnull=True)
+        return self.get_queryset()
 
     def post(self, request, *args, **kwargs):
         qs = self.queryset
@@ -358,7 +393,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                     _("There are no recipients matching this selection."),
                 )
                 return self.get(self.request, *self.args, **self.kwargs)
-            from pretalx.common.templatetags.rich_text import rich_text
+            from pretalx.common.templatetags.rich_text import render_markdown_abslinks
 
             for locale in self.request.event.locales:
                 with language(locale):
@@ -380,7 +415,9 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                         self.request.event, subject.format_map(context_dict)
                     )
                     message = form.cleaned_data["text"].localize(locale)
-                    preview_text = rich_text(message.format_map(context_dict))
+                    preview_text = render_markdown_abslinks(
+                        message.format_map(context_dict)
+                    )
                     self.output[locale] = {
                         "subject": _("Subject: {subject}").format(
                             subject=preview_subject
@@ -465,69 +502,28 @@ class TemplateList(EventPermissionRequired, TemplateView):
 
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
-        result["templates"] = [
-            {
-                "title": _("Acknowledge Mail"),
-                "obj": self.request.event.ack_template,
-                "form": MailTemplateForm(
-                    instance=self.request.event.ack_template,
-                    read_only=True,
-                    event=self.request.event,
-                ),
-            },
-            {
-                "title": _("Accept Mail"),
-                "obj": self.request.event.accept_template,
-                "form": MailTemplateForm(
-                    instance=self.request.event.accept_template,
-                    read_only=True,
-                    event=self.request.event,
-                ),
-            },
-            {
-                "title": _("Reject Mail"),
-                "obj": self.request.event.reject_template,
-                "form": MailTemplateForm(
-                    instance=self.request.event.reject_template,
-                    read_only=True,
-                    event=self.request.event,
-                ),
-            },
-            {
-                "title": _("New schedule version"),
-                "obj": self.request.event.update_template,
-                "form": MailTemplateForm(
-                    instance=self.request.event.update_template,
-                    read_only=True,
-                    event=self.request.event,
-                ),
-            },
-            {
-                "title": _("Unanswered questions reminder"),
-                "obj": self.request.event.question_template,
-                "form": MailTemplateForm(
-                    instance=self.request.event.question_template,
-                    read_only=True,
-                    event=self.request.event,
-                ),
-            },
+        templates = [
+            self.request.event.get_mail_template(role)
+            for role, __ in MailTemplateRoles.choices
         ]
-        pks = [
-            template.pk if template else None
-            for template in self.request.event.fixed_templates
+        result["template_forms"] = [
+            MailTemplateForm(
+                instance=template,
+                read_only=True,
+                event=self.request.event,
+            )
+            for template in templates
         ]
-        result["templates"] += [
-            {
-                "title": str(template.subject),
-                "obj": template,
-                "form": MailTemplateForm(
-                    instance=template, read_only=True, event=self.request.event
-                ),
-                "custom": True,
-            }
-            for template in self.request.event.mail_templates.exclude(
-                pk__in=pks
-            ).exclude(is_auto_created=True)
+        templates = self.request.event.mail_templates.filter(
+            is_auto_created=False, role__isnull=True
+        )
+        result["template_forms"] += [
+            MailTemplateForm(
+                instance=template,
+                read_only=True,
+                event=self.request.event,
+            )
+            for template in templates.order_by("subject")
         ]
         return result
 

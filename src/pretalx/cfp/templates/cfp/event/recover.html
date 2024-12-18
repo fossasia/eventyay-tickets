@@ -21,8 +21,13 @@
     <form method="post">
         {% csrf_token %}
         <div class="col-md-8 labelless-password-input-form">
-            <h2>{{ phrases.base.password_reset_heading }}</h2>
-            <p>{{ phrases.base.password_reset_nearly_done }}</p>
+            {% if is_invite_template %}
+                <h2>{% translate "Set your password to access your profile and proposals" %}</h2>
+                <p>{{ phrases.base.password_reset_nearly_done }}</p>
+            {% else %}
+                <h2>{{ phrases.base.password_reset_heading }}</h2>
+                <p>{{ phrases.base.password_reset_nearly_done }}</p>
+            {% endif %}
             {{ form }}
             <button type="submit" class="btn btn-block btn-success">{{ phrases.base.save }}</button>
         </div>

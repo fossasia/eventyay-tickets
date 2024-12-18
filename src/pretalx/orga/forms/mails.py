@@ -5,6 +5,7 @@ from contextlib import suppress
 from bs4 import BeautifulSoup
 from django import forms
 from django.db import transaction
+from django.db.models import Count, Q
 from django.utils.functional import cached_property
 from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
@@ -12,15 +13,16 @@ from i18nfield.forms import I18nModelForm
 
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.forms.mixins import I18nHelpText, ReadOnlyFlag
-from pretalx.common.forms.renderers import TabularFormRenderer
-from pretalx.common.forms.widgets import EnhancedSelectMultiple
+from pretalx.common.forms.renderers import InlineFormRenderer, TabularFormRenderer
+from pretalx.common.forms.widgets import EnhancedSelectMultiple, SelectMultipleWithCount
 from pretalx.common.language import language
 from pretalx.common.text.phrases import phrases
 from pretalx.mail.context import get_available_placeholders
-from pretalx.mail.models import MailTemplate, QueuedMail
+from pretalx.mail.models import MailTemplate, MailTemplateRoles, QueuedMail
 from pretalx.mail.placeholders import SimpleFunctionalMailTextPlaceholder
 from pretalx.person.models import User
 from pretalx.submission.forms import SubmissionFilterForm
+from pretalx.submission.models import Track
 from pretalx.submission.models.submission import Submission, SubmissionStates
 
 
@@ -51,13 +53,31 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
         return used_placeholders - valid_placeholders
 
     def get_valid_placeholders(self, **kwargs):
-        kwargs = ["event", "submission", "user", "slot"]
+        kwargs = ["event", "user", "submission", "slot"]
         valid_placeholders = {}
 
-        if self.instance and self.instance.id:
-            if self.instance == self.event.update_template:
-                kwargs = ["event", "user"]
-            elif self.instance == self.event.question_template:
+        if self.instance and (role := self.instance.role):
+            kwarg_mapping = {
+                MailTemplateRoles.NEW_SUBMISSION: [
+                    "submission",
+                    "event",
+                    "user",
+                    "slot",
+                ],
+                MailTemplateRoles.NEW_SUBMISSION_INTERNAL: ["submission", "event"],
+                MailTemplateRoles.SUBMISSION_ACCEPT: ["submission", "event", "user"],
+                MailTemplateRoles.SUBMISSION_REJECT: ["submission", "event", "user"],
+                MailTemplateRoles.NEW_SPEAKER_INVITE: ["submission", "event", "user"],
+                MailTemplateRoles.EXISTING_SPEAKER_INVITE: [
+                    "submission",
+                    "event",
+                    "user",
+                ],
+                MailTemplateRoles.QUESTION_REMINDER: ["event", "user"],
+                MailTemplateRoles.NEW_SCHEDULE: ["event", "user"],
+            }
+            kwargs = kwarg_mapping.get(role, kwargs)
+            if self.instance.role == MailTemplateRoles.QUESTION_REMINDER:
                 valid_placeholders["questions"] = SimpleFunctionalMailTextPlaceholder(
                     "questions",
                     ["user"],
@@ -75,11 +95,22 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
                     is_visible=False,
                 )
                 kwargs = ["event", "user"]
-            elif self.instance in (
-                self.event.accept_template,
-                self.event.reject_template,
-            ):
-                kwargs.remove("slot")
+            elif role == MailTemplateRoles.NEW_SPEAKER_INVITE:
+                valid_placeholders["invitation_link"] = (
+                    SimpleFunctionalMailTextPlaceholder(
+                        "invitation_link",
+                        ["event", "user"],
+                        None,
+                        "https://pretalx.example.com/democon/invitation/123abc/",
+                    )
+                )
+            elif role == MailTemplateRoles.NEW_SUBMISSION_INTERNAL:
+                valid_placeholders["orga_url"] = SimpleFunctionalMailTextPlaceholder(
+                    "orga_url",
+                    ["event", "submission"],
+                    None,
+                    "https://pretalx.example.com/orga/events/democon/submissions/124ABCD/",
+                )
 
         valid_placeholders.update(
             get_available_placeholders(event=self.event, kwargs=kwargs)
@@ -120,12 +151,12 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             warnings = ", ".join("{" + warning + "}" for warning in warnings)
             raise forms.ValidationError(str(_("Unknown placeholder!")) + " " + warnings)
 
-        from pretalx.common.templatetags.rich_text import rich_text
+        from pretalx.common.templatetags.rich_text import render_markdown_abslinks
 
         for locale in self.event.locales:
             with language(locale):
                 message = text.localize(locale)
-                preview_text = rich_text(
+                preview_text = render_markdown_abslinks(
                     message.format_map(
                         {
                             key: escape(value.render_sample(self.event))
@@ -462,19 +493,63 @@ class WriteSessionMailForm(SubmissionFilterForm, WriteMailBaseForm):
                     commit=False,
                     allow_empty_address=True,
                 )
-                mails_by_user[context["user"]].append(mail)
+                mails_by_user[context["user"]].append((mail, context))
 
         result = []
         for user, user_mails in mails_by_user.items():
             # Deduplicate emails: we don't want speakers to receive the same
             # email twice, just because they have multiple submissions.
-            mail_dict = {mail.subject + mail.text: mail for mail in user_mails}
+            mail_dict = defaultdict(list)
+            for mail, context in user_mails:
+                mail_dict[mail.subject + mail.text].append((mail, context))
             # Now we can create the emails and add the speakers to them
-            for mail in mail_dict.values():
+            for mail_list in mail_dict.values():
+                mail = mail_list[0][0]
                 mail.save()
                 mail.to_users.add(user)
+                for __, context in mail_list:
+                    if submission := context.get("submission"):
+                        mail.submissions.add(submission)
                 result.append(mail)
         if self.cleaned_data.get("skip_queue"):
             for mail in result:
                 mail.send()
         return result
+
+
+class QueuedMailFilterForm(forms.Form):
+    track = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Track.objects.none(),
+        widget=SelectMultipleWithCount(
+            attrs={"title": _("Tracks")}, color_field="color"
+        ),
+    )
+
+    default_renderer = InlineFormRenderer
+
+    def __init__(self, *args, event=None, sent=None, **kwargs):
+        self.event = event
+        super().__init__(*args, **kwargs)
+
+        # Only show track filter if tracks are enabled
+        if not event.get_feature_flag("use_tracks"):
+            self.fields.pop("track")
+        else:
+            mail_filter = Q(submissions__mails__event=event)
+            if sent is not None:
+                mail_filter &= Q(submissions__mails__sent__isnull=not sent)
+
+            self.fields["track"].queryset = event.tracks.annotate(
+                count=Count(
+                    "submissions__mails",
+                    distinct=True,
+                    filter=mail_filter,
+                )
+            ).order_by("-count")
+
+    def filter_queryset(self, qs):
+        tracks = self.cleaned_data.get("track")
+        if tracks:
+            qs = qs.filter(submissions__track__in=tracks)
+        return qs.distinct()

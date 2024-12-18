@@ -85,6 +85,15 @@ table.table-sticky thead {
   box-shadow: 0 2px var(--color-border);
 }
 
+table .action-column {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  > * {
+    margin-left: 4px;
+  }
+}
+
 .accordion .card {
   h2 {
     margin-bottom: 0;
@@ -409,7 +418,7 @@ nav.navbar,
   height: 50px;
   color: var(--color-primary);
   background-color: var(--color-offwhite);
-  border-bottom: 4px var(--color-primary) solid;
+  border-bottom: 4px var(--color-primary-event, var(--color-primary)) solid;
   padding: 0.25rem;
   box-shadow:
     1px 1px 3px rgb(0 0 0 / 0.12),
@@ -441,6 +450,7 @@ nav.navbar,
     padding-left: 0;
     margin-bottom: 0;
     list-style: none;
+    align-items: center;
   }
   .nav-link {
     padding: 0.5rem;
@@ -453,11 +463,16 @@ nav.navbar,
     flex-basis: auto;
   }
 
-  a {
+  a,
+  button {
     color: var(--color-primary);
     &:hover {
       text-decoration: none;
+      color: var(--color-primary);
     }
+  }
+  button {
+    padding: 0.5rem;
   }
   form.mobile-navbar-view-form button {
     font-family: var(--font-family);
@@ -485,9 +500,6 @@ footer {
   background-color: var(--color-bg) !important;
 }
 
-.search-submit-group {
-  padding-bottom: 0;
-}
 .search-form {
   display: flex;
   flex-wrap: wrap;
@@ -543,6 +555,12 @@ footer {
     .form-control.is-valid {
       background-image: none;
     }
+  }
+}
+.submit-group form {
+  .form-group,
+  button {
+    margin-bottom: 0;
   }
 }
 
@@ -657,7 +675,7 @@ details.submission-state-dropdown {
   summary {
     color: var(--submission-color-primary);
     background-color: white;
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem;
     h4 {
       font-size: 0.875rem;
       margin-bottom: 0;
@@ -669,6 +687,7 @@ details.submission-state-dropdown {
     }
     .pending-indicator {
       padding-left: 2px;
+      white-space: nowrap;
     }
     &:hover {
       background-color: inherit;
@@ -694,60 +713,6 @@ details.submission-state-dropdown {
     font-weight: bold;
     font-size: 16px;
   }
-}
-
-.submission-state-deleted,
-.submission-state-withdrawn,
-.submission-state-canceled {
-  --submission-color-primary: var(--color-grey);
-  --submission-color-secondary: var(--color-grey);
-  --highlight-color: var(--color-grey);
-  --highlight-color-text: var(--color-grey);
-}
-.submission-state-dropdown.submission-state-pending-deleted,
-.submission-state-dropdown.submission-state-pending-withdrawn,
-.submission-state-dropdown.submission-state-pending-canceled {
-  --submission-color-secondary: var(--color-grey);
-}
-
-.submission-state-submitted {
-  --submission-color-primary: var(--color-info);
-  --submission-color-secondary: var(--color-info);
-  --highlight-color: var(--color-info);
-  --highlight-color-text: var(--color-info-dark);
-}
-.submission-state-dropdown.submission-state-pending-submitted {
-  --submission-color-secondary: var(--color-info);
-}
-
-.submission-state-accepted {
-  --submission-color-primary: var(--color-primary);
-  --submission-color-secondary: var(--color-primary);
-  --highlight-color: var(--color-success);
-  --highlight-color-text: var(--color-success-dark);
-}
-.submission-state-dropdown.submission-state-pending-accepted {
-  --submission-color-secondary: var(--color-primary);
-}
-
-.submission-state-confirmed {
-  --submission-color-primary: var(--color-primary-text);
-  --submission-color-secondary: var(--color-primary-text);
-  --highlight-color: var(--color-success);
-  --highlight-color-text: var(--color-success-dark);
-}
-.submission-state-dropdown.submission-state-pending-confirmed {
-  --submission-color-secondary: var(--color-primary-text);
-}
-
-.submission-state-rejected {
-  --submission-color-primary: var(--color-danger);
-  --submission-color-secondary: var(--color-danger);
-  --highlight-color: var(--color-danger);
-  --highlight-color-text: var(--color-danger);
-}
-.submission-state-dropdown.submission-state-pending-rejected {
-  --submission-color-secondary: var(--color-danger);
 }
 
 .cfp-option-table {
@@ -836,6 +801,7 @@ details.submission-state-dropdown {
   display: inline-block;
   align-self: baseline;
   width: 20px;
+  min-width: 20px;
   height: 20px;
   border: 2px solid var(--color-border);
   border-radius: var(--size-border-radius);
@@ -1284,8 +1250,6 @@ div.mail-preview {
 }
 
 .user-name-display {
-  display: inline-flex;
-  align-items: center;
   img {
     border-radius: 50%;
     height: 1rem;
@@ -1296,6 +1260,8 @@ div.mail-preview {
   a[data-lightbox] img,
   a[data-lightbox] img:hover {
     box-shadow: var(--shadow-lightest);
+    display: inline;
+    vertical-align: middle;
   }
 }
 .col-form-label .user-name-display {

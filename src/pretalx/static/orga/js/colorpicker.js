@@ -43,7 +43,6 @@ const updateContrast = (field, color) => {
         ".colorpicker-preview",
     ).style.backgroundColor = color.hex
     // We're getting RRGGBBAA, but we don't want the alpha channel
-    field.value = color.hex.slice(0, 7)
     const c = contrast([255, 255, 255], color.rgba.slice(0, 3))
     if (!field.parentNode.parentNode.querySelector(".contrast-state")) {
         const note = document.createElement("div")

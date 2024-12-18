@@ -180,6 +180,7 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
             result = draw_ascii_schedule(data, output_format=output_format)
         except StopIteration:
             result = draw_ascii_schedule(data, output_format="list")
+        result += "\n\n  📆 powered by pretalx"
         return HttpResponse(
             response_start + result, content_type="text/plain; charset=utf-8"
         )
@@ -226,7 +227,11 @@ class ScheduleView(EventPermissionRequired, ScheduleMixin, TemplateView):
 
     @context
     def exporters(self):
-        return get_schedule_exporters(self.request, public=True)
+        return [
+            exporter
+            for exporter in get_schedule_exporters(self.request)
+            if exporter.show_public
+        ]
 
     @context
     def my_exporters(self):

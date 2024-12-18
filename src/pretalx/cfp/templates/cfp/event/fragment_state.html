@@ -1,5 +1,6 @@
 {% load i18n %}
 
+{% if as_badge %}<span class="badge submission-state submission-state-{{ state }}">{% endif %}
 {% if state == "submitted" %}
     <i class="fa fa-inbox"></i> <span class="state-fragment">{{ phrases.submission.submitted }}</span>
 {% elif state == "review" %}
@@ -17,3 +18,4 @@
 {% elif state == "deleted" %}
     <i class="fa fa-times-circle"></i> <span class="state-fragment">{{ phrases.submission.deleted }}</span>
 {% endif %}
+{% if as_badge %}</span>{% endif %}

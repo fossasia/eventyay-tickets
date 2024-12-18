@@ -2,7 +2,6 @@ import datetime as dt
 import re
 import string
 import uuid
-from contextlib import suppress
 from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
 
@@ -19,10 +18,6 @@ from pretalx.common.text.serialize import serialize_duration
 from pretalx.common.urls import get_base_url
 
 INSTANCE_IDENTIFIER = None
-with suppress(Exception):
-    from pretalx.common.models.settings import GlobalSettings
-
-    INSTANCE_IDENTIFIER = GlobalSettings().get_instance_identifier()
 
 
 class TalkSlot(PretalxModel):

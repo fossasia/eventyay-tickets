@@ -350,7 +350,8 @@ class MyFrabJsonExporter(FrabJsonExporter):
 class ICalExporter(BaseExporter):
     identifier = "schedule.ics"
     verbose_name = _("iCal (full event)")
-    public = False
+    public = True
+    show_public = False
     show_qrcode = True
     favs_retrieve = False
     talk_ids = []

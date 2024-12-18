@@ -16,12 +16,15 @@ from pretalx.common.models.transaction import rolledback_transaction
 from pretalx.common.signals import register_data_exporters
 from pretalx.event.models import Event
 
+SERVER_NAME = settings.SITE_URL.split("://")[1]
+
 
 @contextlib.contextmanager
 def fake_admin(event):
     with rolledback_transaction():
         event.is_public = True
         event.custom_domain = None
+        event.feature_flags["show_schedule"] = True
         event.save()
         client = Client()
 
@@ -31,7 +34,12 @@ def fake_admin(event):
                 return get_mediastatic_content(url)
             except FileNotFoundError:
                 # … then fall back to asking the views.
-                response = client.get(url, is_html_export=True, HTTP_ACCEPT="text/html")
+                response = client.get(
+                    url,
+                    is_html_export=True,
+                    HTTP_ACCEPT="text/html",
+                    SERVER_NAME=SERVER_NAME,
+                )
                 return get_content(response)
 
         yield get
@@ -169,7 +177,8 @@ def export_event(event, destination):
         logging.info(f"Exporting {len(urls)} pages")
         for url in map(get_path, urls):
             content = dump_content(destination, url, get)
-            assets |= set(map(get_path, find_assets(content)))
+            if not url.startswith("/media/") and not url.startswith("/static/"):
+                assets |= set(map(get_path, find_assets(content)))
 
         css_assets = set()
 

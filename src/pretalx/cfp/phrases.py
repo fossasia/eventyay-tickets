@@ -7,7 +7,7 @@ class CfPPhrases(Phrases, app="cfp"):
     go_to_cfp = _("Go to CfP")
 
     auth_password_reset = _(
-        "If we know a user by this email address (who has not requested a password reset in the last 24 hours), we will send you an e-mail containing further instructions. If you don’t "
+        "If we know a user by this email address (who has not requested a password reset in the last 24 hours), we will send you an email containing further instructions. If you don’t "
         "see the email within the next minutes, check your spam inbox!"
     )
     auth_reset_fail = _(

@@ -63,21 +63,6 @@ hierarkey.add_default(
 )
 hierarkey.add_default(
     "mail_text_new_submission",
-    LazyI18nString.from_gettext(
-        gettext_noop(
-            """Hi,
-
-you have received a new proposal for your event {event_name}:
-“{submission_title}” by {speakers}.
-You can see details at
-
-  {orga_url}
-
-All the best,
-your {event_name} CfP system.
-"""
-        )
-    ),
     LazyI18nString,
 )
 hierarkey.add_default(

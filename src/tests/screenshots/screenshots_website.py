@@ -1,5 +1,6 @@
 import pytest
 from django_scopes import scope
+from selenium.webdriver.common.by import By
 
 from .utils import screenshot
 
@@ -13,6 +14,7 @@ def screenshot_agenda_public_schedule(live_server, client, event):
 
 @pytest.mark.django_db
 def screenshot_cfp_submission_info(live_server, client, event):
+    client.set_window_size(400, 100)
     with scope(event=event):
         client.get(live_server.url + f"/{event.slug}/submit/423mOn/info/")
     screenshot(client, "website/cfp_start.png")
@@ -27,10 +29,12 @@ def screenshot_cfp_submission_questions(live_server, client, event):
 
 @pytest.mark.django_db
 def screenshot_edit_cfp_settings(live_server, logged_in_client, event):
+    logged_in_client.set_window_size(1000, 1000)
     with scope(event=event):
         logged_in_client.get(
-            live_server.url + f"/orga/event/{event.slug}/cfp/text#information"
+            live_server.url + f"/orga/event/{event.slug}/cfp/text#tab-fields"
         )
+        logged_in_client.execute_script("window.scrollBy(0, 950)")
     screenshot(logged_in_client, "website/cfp_settings.png")
 
 
@@ -40,19 +44,8 @@ def screenshot_edit_question_settings(live_server, logged_in_client, event):
         logged_in_client.get(
             live_server.url + f"/orga/event/{event.slug}/cfp/questions/new"
         )
-        logged_in_client.find_element_by_css_selector("#id_variant").click()
+        logged_in_client.find_element(By.CSS_SELECTOR, "#id_variant").click()
     screenshot(logged_in_client, "website/question_settings.png")
-
-
-@pytest.mark.django_db
-def screenshot_edit_plugins(live_server, logged_in_client, user, event):
-    with scope(event=event):
-        user.is_administrator = True
-        user.save()
-        logged_in_client.get(
-            live_server.url + f"/orga/event/{event.slug}/settings/plugins"
-        )
-    screenshot(logged_in_client, "website/plugin_settings.png", scroll=False)
 
 
 @pytest.mark.django_db
@@ -75,30 +68,3 @@ def screenshot_review_submission(live_server, logged_in_client, event):
             )
         )
     screenshot(logged_in_client, "website/review_submission.png")
-
-
-@pytest.mark.django_db
-def screenshot_bare_schedule_editor(live_server, logged_in_client, event):
-    with scope(event=event):
-        logged_in_client.get(live_server.url + f"/orga/event/{event.slug}/schedule/")
-        logged_in_client.execute_script(
-            """
-    const selectors = [".alert"]
-    for (selector of selectors) {
-        var element = document.querySelector(selector);
-        if (element)
-            element.parentNode.removeChild(element);
-    }"""
-        )
-    screenshot(logged_in_client, "website/edit_schedule.png")
-
-
-@pytest.mark.django_db
-def screenshot_export_schedule_editor(live_server, logged_in_client, event):
-    with scope(event=event):
-        event.wip_schedule.freeze("v1")
-        logged_in_client.get(
-            live_server.url + f"/orga/event/{event.slug}/schedule/export"
-        )
-        logged_in_client.find_element_by_css_selector("#custom-tab").click()
-    screenshot(logged_in_client, "website/schedule_export.png")

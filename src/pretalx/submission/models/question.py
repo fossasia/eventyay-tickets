@@ -13,7 +13,9 @@ from pretalx.common.urls import EventUrls
 
 
 def answer_file_path(instance, filename):
-    return f"{instance.question.event.slug}/question_uploads/{path_with_hash(filename)}"
+    return path_with_hash(
+        filename, base_path=f"{instance.question.event.slug}/question_uploads/"
+    )
 
 
 class QuestionManager(models.Manager):

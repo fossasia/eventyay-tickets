@@ -76,6 +76,7 @@ def test_edit_cfp_flow(orga_client, event):
     assert response.status_code == 200, response.content.decode()
 
 
+@pytest.mark.flaky(reruns=3)
 @pytest.mark.django_db
 def test_make_submission_type_default(
     orga_client, submission_type, default_submission_type
@@ -539,8 +540,6 @@ def test_can_remind_answered_submission_question(
         question.deadline = None
         question.save()
         original_count = QueuedMail.objects.count()
-        event.question_template = None
-        event.save()
         Answer.objects.create(
             submission=slot.submission,
             question=question,

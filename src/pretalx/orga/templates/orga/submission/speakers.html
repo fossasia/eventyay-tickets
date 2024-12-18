@@ -13,22 +13,15 @@
     {% has_perm "submission.edit_speaker_list" request.user submission as can_edit_speakers %}
     {% has_perm "orga.send_mails" request.user request.event as can_send_mails %}
     {% if can_edit_speakers %}<div class="alert">
-        <form method="POST" class="form flex-row">
-            <label>
-                {% translate "Add a speaker – if the email address isn’t registered yet, an account will be created for them and an invitation sent." %}:<br>
-            </label>
+        <form method="POST" class="form d-flex w-100 flex-column">
             {% csrf_token %}
-            {% if form.errors.email %}
-                <div class="text-danger">{% for error in form.errors.email %}
-                    {{ error }}
-                    {% if not forloop.last %}<br>
-                    {% endif %}
-                {% endfor %}
-                </div>
-            {% endif %}
-            <div class="input-group">
-                <select multiple name="email" id="id_email" class="form-control" placeholder="{% translate "E-mail address" %}"> </select>
-                <button type="submit" class="btn btn-sm btn-success float-right"><i class="fa fa-plus"></i> {% translate "Add speaker" %}</button>
+            <div class="d-flex flex-row">
+                <div class="w-50 hide-optional mr-4">{{ form.email.as_field_group }}</div>
+                <div class="w-50">{{ form.name.as_field_group }}</div>
+            </div>
+            <div class="d-flex flex-row hide-optional">
+                <div class="w-50 hide-optional mr-4">{% if form.locale %}{{ form.locale.as_field_group }}{% endif %}</div>
+                <div class="w-50 mt-4"><button type="submit" class="btn btn-sm btn-success btn-block btn-lg mt-2"><i class="fa fa-plus"></i> {% translate "Add speaker" %}</button></div>
             </div>
         </form>
     </div>{% endif %}

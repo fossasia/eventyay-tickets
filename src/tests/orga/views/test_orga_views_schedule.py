@@ -445,6 +445,7 @@ def test_regenerate_speaker_notifications(orga_client, event, slot):
         mail = event.queued_mails.last()
         assert slot.submission.title in mail.text
         assert str(slot.room.name) in mail.text
+        assert mail.submissions.count() == 1
 
 
 @pytest.mark.django_db

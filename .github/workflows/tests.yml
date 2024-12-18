@@ -28,15 +28,21 @@ jobs:
       matrix:
         python-version: [ 3.11 ]
         database: [ sqlite, postgres ]
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: pretalx
+        options: >-
+          --health-cmd "pg_isready -U postgres -d pretalx"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v4
-      - uses: harmon758/postgresql-action@v1
-        with:
-          postgresql version: '14'
-          postgresql db: 'pretalx'
-          postgresql user: 'postgres'
-          postgresql password: 'postgres'
-        if: matrix.database == 'postgres'
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
@@ -49,11 +55,11 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install gettext
+          sudo apt install -y gettext
       - name: Install Python dependencies
-        run: python -m pip install -Ue ".[dev]"
+        run: python -m pip install uv && uv pip install --system -Ue ".[dev]"
       - name: Install Postgres dependencies
-        run: python -m pip install -Ue ".[postgres]"
+        run: python -m pip install uv && uv pip install --system -Ue ".[postgres]"
         if: matrix.database == 'postgres'
       - name: Install frontend dependencies
         run: npm ci
@@ -66,7 +72,15 @@ jobs:
         working-directory: ./src
       - name: Run tests
         working-directory: ./src
-        run: python -m pytest -nauto -p no:sugar --reruns 3 --cov-report=term-missing:skip-covered tests
+        run: |
+          # tee will gobble up our exit code without pipefail
+          set -o pipefail
+          python -m pytest \
+            -nauto -p no:sugar \
+            --junitxml=pytest.xml \
+            --reruns 3 \
+            --cov-report=term-missing:skip-covered \
+            tests | tee pytest-coverage.txt
         env:
           PRETALX_CONFIG_FILE: 'tests/ci_${{ matrix.database }}.cfg'
       - name: Show coverage as build info

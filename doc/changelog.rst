@@ -3,6 +3,26 @@
 Release Notes
 =============
 
+- :feature:`cfp` pretalx will now send an email after a user changes their password, notifying them of the change.
+- :feature:`orga,1302` Organisers can now customise the template used to inform speakers when they are added to a proposal by an organiser. There are two new templates – one for speakers with an existing account, and one for speakers without account who need to set their password.
+- :feature:`orga,1311` Organisers can now customise the “New proposal” notification email contents.
+- :bug:`orga:schedule,1900` The HTML export did not work and exported only 404 pages if the schedule was not public.
+- :feature:`schedule` When a room is empty during a day, pretalx will not show it anymore in the grid schedule (rather than only hiding rooms that are *never* used).
+- :feature:`orga` You can now send or discard only a filtered list of emails from the outbox.
+- :feature:`dev,1596` With the new ``queuedmail_pre_send`` signal, your plugin can modify a `QueuedMail` object before it is sent out. You can handle the sending entirely by setting the object’s `sent` attribute, or e.g. modify the email text before it is sent out by pretalx.
+- :feature:`orga` Outgoing mails now know which proposals or sessions they are about. This information can’t be added to existing mails, but will be included in all new mails, which will link to the proposals in question, and will help you find relevant emails by showing the linked proposals and their track colours (if any).
+- :feature:`orga:schedule` When exporting your sessions or submissions as CSV or JSON, you can now choose to export start and end times as separate date/time values instead of a single combined value.
+- :bug:`orga,1879` The template indicator (showing you which template an email was generated from) in the email lists were invisible.
+- :feature:`schedule` The schedule widget can now be used for a selected number of dates, which is very useful when some of your rooms are not in use on some days (like switching to a workshop-heavy programme on some conference days). For conferences like this, you could embed the schedule widget twice: Once for one set of days and once for the other set.
+- :bug:`schedule,1874` The calendar parts of the public schedule (day of week, month) were always in English, even if another language was selected.
+- :bug:`orga` Dragging and dropping questions and other elements to change their order was broken in Google Chrome.
+- :bug:`orga:schedule` The HTML export did not work and exported only 404 pages.
+- :bug:`cfp` The upload of files with very long file names would fail instead of showing an error message. pretalx will now truncate the filename instead.
+- :bug:`orga:schedule` When exporting all your sessions as CSV or JSON export, only the end time would be in the local timezone, but the start time would be in UTC – both timestamps included the full timezone, so if you went on to parse them with a program, this likely would not matter, but it was confusing regardless. The export now uses the event timezone, as intended.
+- :bug:`orga` When entering a HTML colour manually instead of using the colour picker, pretalx would expand a three-letter colour to a six-letter colour (e.g. #123 to #112233), which is technically correct, but also not helpful when you’re in the process of typing out a six-letter colour, so pretalx will now not expand these colours anymore.
+- :feature:`orga` In order to make it easier for organisers of multiple events to see which event they are currently editing, the green line in the top navigation bar is now of the current event’s colour instead.
+- :feature:`orga:review` Reviewers were shown the proposal state dropdown, even when they did not have the necessary permissions to change a proposal’s state. They are now shown a non-interactive badge instead, and the same badge is also used on the frontend-side for speakers.
+- :release:`2024.3.1 <2024-10-27>`
 - :bug:`schedule` The schedule would work only intermittently when used with a custom domain.
 - :bug:`cfp` The resource upload form always mentioned a hard-coded file upload limit (but would in reality allow files up to the size of the real file upload limit).
 - :bug:`schedule` Sessions with session image would not look good on some mobile devices.

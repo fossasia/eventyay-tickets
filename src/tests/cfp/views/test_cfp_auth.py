@@ -30,6 +30,12 @@ def test_cfp_logout(speaker_client, event, speaker):
         follow=True,
     )
     assert response.status_code == 200
+    assert speaker.get_display_name() in response.content.decode()
+    response = speaker_client.post(
+        event.urls.logout,
+        follow=True,
+    )
+    assert response.status_code == 200
     assert speaker.get_display_name() not in response.content.decode()
 
 

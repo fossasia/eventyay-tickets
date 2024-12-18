@@ -33,7 +33,7 @@ onReady(() => {
         .querySelectorAll('textarea[id^="id_text_"], input[id^="id_subject"]')
         .forEach((input) => {
             input.addEventListener("focus", () => {
-                lastFocusedInput = this
+                lastFocusedInput = input
             })
         })
 
@@ -44,7 +44,7 @@ onReady(() => {
                 return
             }
             if (lastFocusedInput) {
-                const placeholderValue = "{" + this.dataset.placeholder + "}"
+                const placeholderValue = "{" + placeholder.dataset.placeholder + "}"
                 const content = lastFocusedInput.value
                 let start = lastFocusedInput.selectionStart
                 let end = lastFocusedInput.selectionEnd

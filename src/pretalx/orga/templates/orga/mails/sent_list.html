@@ -23,6 +23,7 @@
                         <a href="{% querystring sort="-to" %}"><i class="fa fa-caret-up" title="{% translate "Sort (z-a)" %}"></i></a>
                     </th>
                     <th></th>
+                    <th></th>
                     <th class="numeric">
                         {% translate "Sent" %}
                         <a href="{% querystring sort="-sent" %}"><i class="fa fa-caret-down" title="{% translate "Sort (latest first)" %}"></i></a>
@@ -45,21 +46,24 @@
                             {% endfor %}
                             {% if mail.to %}{{ mail.to }}{% endif %}
                         </td>
-                        <td class="text-right">
+                        <td>
+                            {% for submission in mail.submissions.all %}
+                                <div class="d-flex align-items-center">
+                                    {% if show_tracks and submission.track %}
+                                        <div class="color-square" style="background-color: {{ submission.track.color }}" title="{{ submission.track.name }}">
+                                        </div>
+                                    {% endif %}
+                                    <a href="{{ submission.orga_urls.base }}">
+                                        {{ submission.title }}
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </td>
+                        <td class="text-right d-flex align-items-center">
                             {% if mail.attachments %}
-                                <i class="fa fa-paperclip" title="{% translate "Contains an attachment" %}"></i>
+                                <i class="fa fa-paperclip mr-2" title="{% translate "Contains an attachment" %}"></i>
                             {% endif %}
-                            {% if mail.template %}
-                                {% if mail.template == request.event.accept_template %}
-                                    <span class="badge badge-success">{% translate "Accept email" %}</span>
-                                {% elif mail.template == request.event.reject_template %}
-                                    <span class="badge badge-danger">{% translate "Reject email" %}</span>
-                                {% elif mail.template == request.event.update_template %}
-                                    <span class="badge badge-info">{% translate "Schedule update" %}</span>
-                                {% elif mail.template == request.event.question_template %}
-                                    <span class="badge badge-info">{% translate "Unanswered questions reminder" %}</span>
-                                {% endif %}
-                            {% endif %}
+                            {% include "orga/includes/mail_template_role.html" with template=mail.template %}
                         </td>
                         <td class="numeric">{{ mail.sent }}</td>
                     </tr>

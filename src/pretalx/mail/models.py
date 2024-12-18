@@ -13,7 +13,7 @@ from pretalx.common.exceptions import SendMailException
 from pretalx.common.models.mixins import PretalxModel
 from pretalx.common.urls import EventUrls
 from pretalx.mail.context import get_mail_context
-from pretalx.mail.signals import queuedmail_post_send
+from pretalx.mail.signals import queuedmail_post_send, queuedmail_pre_send
 
 
 def get_prefixed_subject(event, subject):
@@ -22,6 +22,23 @@ def get_prefixed_subject(event, subject):
     if not (prefix.startswith("[") and prefix.endswith("]")):
         prefix = f"[{prefix}]"
     return f"{prefix} {subject}"
+
+
+class MailTemplateRoles(models.TextChoices):
+    NEW_SUBMISSION = "submission.new", _("Acknowledge proposal submission")
+    NEW_SUBMISSION_INTERNAL = "submission.new.internal", _(
+        "New proposal (organiser notification)"
+    )
+    SUBMISSION_ACCEPT = "submission.state.accepted", _("Proposal accepted")
+    SUBMISSION_REJECT = "submission.state.rejected", _("Proposal rejected")
+    NEW_SPEAKER_INVITE = "speaker.invite", _(
+        "Add a speaker to a proposal (new account)"
+    )
+    EXISTING_SPEAKER_INVITE = "speaker.invite.existing", _(
+        "Add a speaker to a proposal (existing account)"
+    )
+    QUESTION_REMINDER = "question.reminder", _("Unanswered questions reminder")
+    NEW_SCHEDULE = "schedule.new", _("New schedule published")
 
 
 class MailTemplate(PretalxModel):
@@ -37,6 +54,12 @@ class MailTemplate(PretalxModel):
         to="event.Event",
         on_delete=models.PROTECT,
         related_name="mail_templates",
+    )
+    role = models.CharField(
+        choices=MailTemplateRoles.choices,
+        max_length=30,
+        null=True,
+        default=None,
     )
     subject = I18nCharField(
         max_length=200,
@@ -67,6 +90,9 @@ class MailTemplate(PretalxModel):
     # emails, and are never shown in a list of email templates or anywhere else.
     is_auto_created = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = (("event", "role"),)
+
     class urls(EventUrls):
         base = edit = "{self.event.orga_urls.mail_templates}{self.pk}/"
         delete = "{base}delete"
@@ -84,8 +110,8 @@ class MailTemplate(PretalxModel):
         context_kwargs: dict = None,
         skip_queue: bool = False,
         commit: bool = True,
-        full_submission_content: bool = False,
         allow_empty_address: bool = False,
+        submissions: list = None,
         attachments: list = False,
     ):
         """Creates a :class:`~pretalx.mail.models.QueuedMail` object from a
@@ -93,6 +119,9 @@ class MailTemplate(PretalxModel):
 
         :param user: Either a :class:`~pretalx.person.models.user.User` or an
             email address as a string.
+        :param submissions: A list of submissions to which this email belongs.
+            This is handled as an addition to any `submission` object present
+            in ``context_kwargs``.
         :param event: The event to which this email belongs. May be ``None``.
         :param locale: The locale will be set via the event and the recipient,
             but can be overridden with this parameter.
@@ -103,8 +132,6 @@ class MailTemplate(PretalxModel):
         :param skip_queue: Send directly. If combined with commit=False, this will
             remove any logging and traces.
         :param commit: Set ``False`` to return an unsaved object.
-        :param full_submission_content: Attach the complete submission with
-            all its fields to the email.
         """
         from pretalx.person.models import User
 
@@ -126,21 +153,17 @@ class MailTemplate(PretalxModel):
         if users and not commit:
             address = ",".join(user.email for user in users)
             users = None
+        event = event or self.event
 
         with override(locale):
             context_kwargs = context_kwargs or {}
-            context_kwargs["event"] = event or self.event
+            context_kwargs["event"] = event
             default_context = get_mail_context(**context_kwargs)
             default_context.update(context or {})
             context = default_context
             try:
                 subject = str(self.subject).format(**context)
                 text = str(self.text).format(**context)
-                if full_submission_content and "submission" in context_kwargs:
-                    text += "\n\n\n***********\n\n" + str(
-                        _("Full proposal content:\n\n")
-                    )
-                    text += context_kwargs["submission"].get_content_for_mail()
             except KeyError as e:
                 raise SendMailException(
                     f"Experienced KeyError when rendering email text: {str(e)}"
@@ -150,7 +173,7 @@ class MailTemplate(PretalxModel):
                 subject = subject[:198] + "…"
 
             mail = QueuedMail(
-                event=event or self.event,
+                event=event,
                 template=self,
                 to=address,
                 reply_to=self.reply_to,
@@ -162,6 +185,11 @@ class MailTemplate(PretalxModel):
             )
             if commit:
                 mail.save()
+                submissions = set(submissions or [])
+                if submission := context_kwargs.get("submission"):
+                    submissions.add(submission)
+                if submissions:
+                    mail.submissions.set(submissions)
                 if users:
                     mail.to_users.set(users)
             if skip_queue:
@@ -237,6 +265,10 @@ class QueuedMail(PretalxModel):
     sent = models.DateTimeField(null=True, blank=True, verbose_name=_("Sent at"))
     locale = models.CharField(max_length=32, null=True, blank=True)
     attachments = models.JSONField(default=None, null=True, blank=True)
+    submissions = models.ManyToManyField(
+        to="submission.Submission",
+        related_name="mails",
+    )
 
     class urls(EventUrls):
         base = edit = "{self.event.orga_urls.mail}{self.pk}/"
@@ -250,7 +282,7 @@ class QueuedMail(PretalxModel):
         return f"OutboxMail(to={self.to}, subject={self.subject}, sent={sent})"
 
     def make_html(self):
-        from pretalx.common.templatetags.rich_text import render_markdown
+        from pretalx.common.templatetags.rich_text import render_markdown_abslinks
 
         event = getattr(self, "event", None)
         sig = None
@@ -258,7 +290,7 @@ class QueuedMail(PretalxModel):
             sig = event.mail_settings["signature"]
             if sig.strip().startswith("-- "):
                 sig = sig.strip()[3:].strip()
-        body_md = render_markdown(self.text)
+        body_md = render_markdown_abslinks(self.text)
         html_context = {
             "body": body_md,
             "event": event,
@@ -301,14 +333,25 @@ class QueuedMail(PretalxModel):
             )
 
         has_event = getattr(self, "event", None)
-        text = self.make_text()
-        body_html = self.make_html()
-
-        from pretalx.common.mail import mail_send_task
 
         to = self.to.split(",") if self.to else []
         if self.id:
             to += [user.email for user in self.to_users.all()]
+            if has_event:
+                queuedmail_pre_send.send_robust(
+                    sender=self.event,
+                    mail=self,
+                )
+
+        if self.sent is not None:
+            # The pre_send signal must have handled the sending already,
+            # so there is nothing left for us to do.
+            return
+
+        from pretalx.common.mail import mail_send_task
+
+        text = self.make_text()
+        body_html = self.make_html()
         mail_send_task.apply_async(
             kwargs={
                 "to": to,
@@ -323,8 +366,8 @@ class QueuedMail(PretalxModel):
             },
             ignore_result=True,
         )
-
         self.sent = now()
+
         if self.pk:
             self.log_action(
                 "pretalx.mail.sent",

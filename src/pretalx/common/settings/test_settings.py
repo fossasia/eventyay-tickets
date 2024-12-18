@@ -77,7 +77,7 @@ class DisableMigrations:
         return None
 
 
-if not os.environ.get("TRAVIS", ""):
+if not os.environ.get("GITHUB_WORKFLOW", ""):
     MIGRATION_MODULES = DisableMigrations()
 
 

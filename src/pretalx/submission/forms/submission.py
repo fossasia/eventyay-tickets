@@ -308,6 +308,10 @@ class SubmissionFilterForm(forms.Form):
             }
         )
         sub_types = event.submission_types.all()
+        if limit_tracks and isinstance(limit_tracks, (list, tuple, set)):
+            limit_tracks = event.tracks.filter(
+                pk__in=[track.pk for track in limit_tracks]
+            )
         tracks = limit_tracks or event.tracks.all()
         languages = event.named_content_locales
         if len(sub_types) > 1:
@@ -328,7 +332,17 @@ class SubmissionFilterForm(forms.Form):
             self.fields.pop("submission_type", None)
         if len(tracks) > 1:
             self.fields["track"].queryset = tracks.annotate(
-                count=Count("submissions", distinct=True, filter=Q(event=event))
+                count=Count(
+                    "submissions",
+                    distinct=True,
+                    filter=Q(event=event)
+                    & ~Q(
+                        submissions__state__in=[
+                            SubmissionStates.DELETED,
+                            SubmissionStates.DRAFT,
+                        ]
+                    ),
+                )
             ).order_by("-count")
         else:
             self.fields.pop("track", None)
@@ -388,7 +402,7 @@ class SubmissionFilterForm(forms.Form):
                     question_id=question,
                     options__pk=option,
                 )
-            elif answer:
+            else:
                 answers = Answer.objects.filter(
                     submission_id=OuterRef("pk"),
                     question_id=question,
