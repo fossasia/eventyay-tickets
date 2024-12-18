@@ -31,6 +31,7 @@ from pretix.base.forms.auth import (
 from pretix.base.models import TeamInvite, U2FDevice, User, WebAuthnDevice
 from pretix.base.models.page import Page
 from pretix.base.services.mail import SendMailException
+from pretix.base.settings import GlobalSettingsObject
 from pretix.helpers.cookies import set_cookie_without_samesite
 from pretix.helpers.jwt_generate import generate_sso_token
 from pretix.multidomain.middlewares import get_cookie_domain
@@ -130,6 +131,9 @@ def login(request):
     ctx['can_reset'] = settings.PRETIX_PASSWORD_RESET
     ctx['backends'] = backends
     ctx['backend'] = backend
+
+    gs = GlobalSettingsObject()
+    ctx['login_providers'] = gs.settings.get('login_providers', as_type=dict)
     return render(request, 'pretixcontrol/auth/login.html', ctx)
 
 

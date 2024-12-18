@@ -45,6 +45,15 @@
                     </a>
                 {% endif %}
             {% endif %}
+            {% if login_providers %}
+                {% for provider, enable in login_providers.items %}
+                    {% if enable %}
+                        <a href='{% url "plugins:socialauth:social.oauth.login" provider %}' method="post" class="btn btn-primary btn-block">
+                            {% trans "Login with " %} {{ provider|capfirst }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         </div>
     </form>
 {% endblock %}

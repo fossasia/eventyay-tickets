@@ -349,6 +349,7 @@ urlpatterns = [
         url(r'^global/message/$', global_settings.MessageView.as_view(), name='admin.global.message'),
         url(r'^global/sso/$', global_settings.SSOView.as_view(), name='admin.global.sso'),
         url(r'^global/sso/(?P<pk>\d+)/delete/$', global_settings.DeleteOAuthApplicationView.as_view(), name='admin.global.sso.delete'),
+        url(r'^global/social_auth/$', global_settings.SocialLoginView.as_view(), name='admin.global.social.auth.settings'),
         url(r'^pages/$', pages.PageList.as_view(), name="admin.pages"),
         url(r'^pages/add$', pages.PageCreate.as_view(), name="admin.pages.add"),
         url(r'^pages/(?P<id>\d+)/edit$', pages.PageUpdate.as_view(), name="admin.pages.edit"),

@@ -570,8 +570,13 @@ def get_admin_navigation(request):
                     'url': reverse('control:admin.global.sso'),
                     'active': (url.url_name == 'admin.global.sso'),
                 },
+                {
+                    'label': _('Social login settings'),
+                    'url': reverse('control:admin.global.social.auth.settings'),
+                    'active': (url.url_name == 'admin.global.social.auth.settings'),
+                }
             ]
-        },
+        }
     ]
 
     merge_in(nav, sorted(
