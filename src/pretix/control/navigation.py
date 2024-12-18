@@ -550,6 +550,12 @@ def get_admin_navigation(request):
             ]
         },
         {
+            'label': _('Vouchers'),
+            'url': reverse('control:admin.vouchers'),
+            'active': 'vouchers' in url.url_name,
+            'icon': 'tags',
+        },
+        {
             'label': _('Global settings'),
             'url': reverse('control:admin.global.settings'),
             'active': False,

@@ -503,3 +503,83 @@ class Voucher(LoggedModel):
             ]
         ).aggregate(s=Sum(F('price_before_voucher') - F('price')))['s'] or Decimal('0.00')
         return ops
+
+
+class InvoiceVoucher(LoggedModel):
+    PRICE_MODES = (
+        ('none', _('No effect')),
+        ('set', _('Set product price to')),
+        ('subtract', _('Subtract from product price')),
+        ('percent', _('Reduce product price by (%)')),
+    )
+    code = models.CharField(
+        verbose_name=_("Voucher code"),
+        max_length=255, default=generate_code,
+        db_index=True,
+        validators=[MinLengthValidator(5)],
+        unique=True
+    )
+    max_usages = models.PositiveIntegerField(
+        verbose_name=_("Maximum usages"),
+        help_text=_("Number of times this voucher can be redeemed."),
+        default=1
+    )
+    redeemed = models.PositiveIntegerField(
+        verbose_name=_("Redeemed"),
+        default=0
+    )
+    budget = models.DecimalField(
+        verbose_name=_("Maximum discount budget"),
+        help_text=_("This is the maximum monetary amount that will be "
+                    "discounted using this voucher across all usages."),
+        decimal_places=2, max_digits=10,
+        null=True, blank=True
+    )
+    valid_until = models.DateTimeField(
+        blank=True, null=True, db_index=True,
+        verbose_name=_("Valid until")
+    )
+    price_mode = models.CharField(
+        verbose_name=_("Price mode"),
+        max_length=100,
+        choices=PRICE_MODES,
+        default='none'
+    )
+    value = models.DecimalField(
+        verbose_name=_("Voucher value"),
+        decimal_places=2, max_digits=10, null=True, blank=True,
+    )
+
+    limit_events = models.ManyToManyField(
+        'Event',
+        verbose_name=_("Limit to events"),
+        blank=True,
+        related_name='invoice_vouchers'
+    )
+
+    limit_organizer = models.ManyToManyField(
+        'Organizer',
+        verbose_name=_("Limit to Organizer"),
+        blank=True,
+        related_name='invoice_vouchers'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.CharField(max_length=50, default="system")
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.CharField(max_length=50, default="system")
+
+    class Meta:
+        verbose_name = _("Invoice Voucher")
+        verbose_name_plural = _("Invoice Vouchers")
+        ordering = ('code', )
+
+    def __str__(self):
+        return self.code
+
+    def is_active(self):
+        if self.redeemed >= self.max_usages:
+            return False
+        if self.valid_until and self.valid_until < now():
+            return False
+        return True

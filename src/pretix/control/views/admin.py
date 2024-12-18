@@ -3,15 +3,20 @@ from zoneinfo import ZoneInfo
 from cron_descriptor import Options, get_description
 from django.conf import settings
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.formats import date_format
 from django.utils.functional import cached_property
-from django.views.generic import ListView, TemplateView
+from django.utils.translation import gettext_lazy as _
+from django.views.generic import (
+    CreateView, DeleteView, ListView, TemplateView, UpdateView,
+)
 from django_celery_beat.models import PeriodicTask, PeriodicTasks
 
 from pretix.base.models import Organizer
+from pretix.base.models.vouchers import InvoiceVoucher
+from pretix.control.forms.admin.vouchers import InvoiceVoucherForm
 from pretix.control.forms.filter import OrganizerFilterForm, TaskFilterForm
 from pretix.control.permissions import AdministratorPermissionRequiredMixin
 from pretix.control.views import PaginationMixin
@@ -127,3 +132,113 @@ class TaskList(PaginationMixin, ListView):
             )
 
             return HttpResponseRedirect(reverse('control:admin.task_management'))
+
+
+class VoucherList(PaginationMixin, AdministratorPermissionRequiredMixin, ListView):
+    model = InvoiceVoucher
+    context_object_name = 'vouchers'
+    template_name = 'pretixcontrol/admin/vouchers/index.html'
+
+    def get_queryset(self):
+        qs = InvoiceVoucher.objects.all()
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        return ctx
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+
+class VoucherCreate(AdministratorPermissionRequiredMixin, CreateView):
+    model = InvoiceVoucher
+    template_name = 'pretixcontrol/admin/vouchers/detail.html'
+    context_object_name = 'voucher'
+
+    def get_form_class(self):
+        form_class = InvoiceVoucherForm
+        return form_class
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['currency'] = settings.DEFAULT_CURRENCY
+        return ctx
+
+    def get_success_url(self) -> str:
+        return reverse('control:admin.vouchers')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        return kwargs
+
+    def form_valid(self, form):
+        req = super().form_valid(form)
+        return req
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class VoucherUpdate(AdministratorPermissionRequiredMixin, UpdateView):
+    model = InvoiceVoucher
+    template_name = 'pretixcontrol/admin/vouchers/detail.html'
+    context_object_name = 'voucher'
+
+    def get_form_class(self):
+        form_class = InvoiceVoucherForm
+        return form_class
+
+    def get_object(self, queryset=None) -> InvoiceVoucherForm:
+        try:
+            return InvoiceVoucher.objects.get(
+                id=self.kwargs['voucher']
+            )
+        except InvoiceVoucher.DoesNotExist:
+            raise Http404(_("The requested voucher does not exist."))
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['currency'] = settings.DEFAULT_CURRENCY
+        return ctx
+
+    def form_valid(self, form):
+        messages.success(self.request, _('Your changes have been saved.'))
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse('control:admin.vouchers')
+
+
+class VoucherDelete(AdministratorPermissionRequiredMixin, DeleteView):
+    model = InvoiceVoucher
+    template_name = 'pretixcontrol/admin/vouchers/delete.html'
+    context_object_name = 'invoice_voucher'
+
+    def get_object(self, queryset=None) -> InvoiceVoucher:
+        try:
+            return InvoiceVoucher.objects.get(
+                id=self.kwargs['voucher']
+            )
+        except InvoiceVoucher.DoesNotExist:
+            raise Http404(_("The requested voucher does not exist."))
+
+    def get(self, request, *args, **kwargs):
+        if self.get_object().redeemed > 0:
+            messages.error(request, _('A voucher can not be deleted if it already has been redeemed.'))
+            return HttpResponseRedirect(self.get_success_url())
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+
+        if self.object.redeemed > 0:
+            messages.error(self.request, _('A voucher can not be deleted if it already has been redeemed.'))
+        else:
+            self.object.delete()
+            messages.success(self.request, _('The selected voucher has been deleted.'))
+        return HttpResponseRedirect(success_url)
+
+    def get_success_url(self) -> str:
+        return reverse('control:admin.vouchers')

@@ -1,0 +1,43 @@
+{% extends "pretixcontrol/admin/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block title %}{% trans "Voucher" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "Voucher" %}</h1>
+    {% if voucher.redeemed %}
+        <div class="alert alert-warning">
+            {% trans "This voucher already has been used. It is not recommended to modify it." %}
+        </div>
+    {% endif %}
+    <form action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        <div class="row">
+            <div class="col-xs-12 col-lg-10">
+                <fieldset>
+                    <legend>{% trans "Voucher details" %}</legend>
+                    {% bootstrap_field form.code layout="control" %}
+                    {% bootstrap_field form.max_usages layout="control" %}
+                    {% bootstrap_field form.valid_until layout="control" %}
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" >{% trans "Price effect" %}</label>
+                        <div class="col-md-5">
+                            {% bootstrap_field form.price_mode show_label=False form_group_class="" %}
+                        </div>
+                        <div class="col-md-4">
+                            {% bootstrap_field form.value show_label=False form_group_class="" %}
+                        </div>
+                    </div>
+                    {% bootstrap_field form.budget addon_after=currency layout="control" %}
+                    {% bootstrap_field form.event_effect layout="control" %}
+                    {% bootstrap_field form.organizer_effect layout="control" %}
+                </fieldset>
+            </div>
+        </div>
+        <div class="form-group submit-group">
+            <button type="submit" class="btn btn-primary btn-save">
+                {% trans "Save" %}
+            </button>
+        </div>
+    </form>
+{% endblock %}
