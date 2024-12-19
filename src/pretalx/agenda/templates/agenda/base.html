@@ -3,6 +3,7 @@
 {% load event_tags %}
 {% load i18n %}
 {% load rules %}
+{% load safelink %}
 
 {% block custom_header %}
     {% block alternate_link %}
@@ -33,6 +34,11 @@
     <a href="{{ request.event.urls.speakers }}" class="header-tab {% if "/speaker/" in request.path %} active{% endif %}">
         <i class="fa fa-group"></i> {{ phrases.schedule.speakers }}
     </a>
+    {% for link in header_links %}
+        <a href="{% safelink link.url %}" target="_blank" rel="noopener" class="header-tab">
+            <i class="fa fa-link"></i> {{ link.label }}
+        </a>
+    {% endfor %}
 {% endblock header_tabs %}
 
 {% block content %}

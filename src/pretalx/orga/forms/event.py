@@ -8,10 +8,11 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db.models import F, Q
+from django.forms import inlineformset_factory
 from django.utils.translation import gettext_lazy as _
 from django_scopes.forms import SafeModelMultipleChoiceField
 from i18nfield.fields import I18nFormField, I18nTextarea
-from i18nfield.forms import I18nFormMixin, I18nModelForm
+from i18nfield.forms import I18nFormMixin, I18nFormSetMixin, I18nModelForm
 
 from pretalx.common.forms.fields import ColorField, ImageField
 from pretalx.common.forms.mixins import (
@@ -20,6 +21,7 @@ from pretalx.common.forms.mixins import (
     JsonSubfieldMixin,
     ReadOnlyFlag,
 )
+from pretalx.common.forms.renderers import InlineFormRenderer
 from pretalx.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
@@ -29,7 +31,7 @@ from pretalx.common.forms.widgets import (
 )
 from pretalx.common.text.css import validate_css
 from pretalx.common.text.phrases import phrases
-from pretalx.event.models.event import Event
+from pretalx.event.models.event import Event, EventExtraLink
 from pretalx.orga.forms.widgets import HeaderSelect, MultipleLanguagesWidget
 from pretalx.schedule.models import Availability, TalkSlot
 from pretalx.submission.models import ReviewPhase, ReviewScore, ReviewScoreCategory
@@ -723,3 +725,57 @@ class ReviewScoreCategoryForm(I18nHelpText, I18nModelForm):
             "limit_tracks": SafeModelMultipleChoiceField,
         }
         widgets = {"limit_tracks": EnhancedSelectMultiple(color_field="color")}
+
+
+class EventExtraLinkForm(I18nModelForm):
+    default_renderer = InlineFormRenderer
+
+    class Meta:
+        model = EventExtraLink
+        fields = ["label", "url"]
+
+
+class BaseEventExtraLinkFormSet(I18nFormSetMixin, forms.BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        event = kwargs.pop("event", None)
+        if event:
+            kwargs["locales"] = event.locales
+        super().__init__(*args, **kwargs)
+
+    def get_queryset(self):
+        return super().get_queryset().filter(role=self.role)
+
+    def save_new(self, form, commit=True):
+        instance = super().save_new(form, commit=False)
+        instance.role = self.role
+        if commit:
+            instance.save()
+        return instance
+
+
+class BaseEventFooterLinkFormSet(BaseEventExtraLinkFormSet):
+    role = "footer"
+
+
+class BaseEventHeaderLinkFormSet(BaseEventExtraLinkFormSet):
+    role = "header"
+
+
+EventFooterLinkFormset = inlineformset_factory(
+    Event,
+    EventExtraLink,
+    EventExtraLinkForm,
+    formset=BaseEventFooterLinkFormSet,
+    can_order=False,
+    can_delete=True,
+    extra=0,
+)
+EventHeaderLinkFormset = inlineformset_factory(
+    Event,
+    EventExtraLink,
+    EventExtraLinkForm,
+    formset=BaseEventHeaderLinkFormSet,
+    can_order=False,
+    can_delete=True,
+    extra=0,
+)
