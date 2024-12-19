@@ -1,18 +1,18 @@
 {% load i18n %}
 <div class="panel-heading">
-    <h3 class="panel-title" style="padding-left: 20px;">
+    <h3 class="panel-title">
         {% trans "Event organizer" %}
     </h3>
 </div>
 <div class="panel-body timeline">
-    <div class="info-row" style="padding-left: 20px;">
-        {% trans "This event is organized by" %} <strong>{{ request.event.organizer }}</strong>
+    <div class="info-row">
+        {% trans "This event is organized by" %} <strong>{{ request.organizer }}</strong>
     </div>
-    <div class="info-row" style="padding-left: 20px;">
+    <div class="info-row">
         {% trans "Teams of the organizer are" %} 
-        <span style="display: inline-block; width: 10px;"></span>
-        {% for team in request.event.organizer.teams.all %}
-            <strong>{{ team.name }}</strong>
+        <span></span>
+        {% for name in organizer_teams %}
+            <strong>{{ name }}</strong>
             {% if not forloop.last %}, {% endif %}
         {% endfor %}
     </div>
