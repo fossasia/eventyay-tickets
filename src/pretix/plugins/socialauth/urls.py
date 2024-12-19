@@ -4,5 +4,6 @@ from . import views
 
 urlpatterns = [
     url(r'^oauth_login/(?P<provider>[a-zA-Z]+)/$', views.oauth_login, name='social.oauth.login'),
-    url(r'^oauth_return$', views.oauth_return, name='social.oauth.return')
+    url(r'^oauth_return$', views.oauth_return, name='social.oauth.return'),
+    url(r'^control/global/social_auth/$', views.SocialLoginView.as_view(), name='admin.global.social.auth.settings'),
 ]

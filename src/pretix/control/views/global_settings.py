@@ -158,37 +158,3 @@ class RefundDetailView(AdministratorPermissionRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         p = get_object_or_404(OrderRefund, pk=request.GET.get('pk'))
         return JsonResponse({'data': p.info_data})
-
-
-class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
-    template_name = 'pretixcontrol/social_auth_settings.html'
-    LOGIN_PROVIDERS = {'mediawiki': False, 'github': False, 'google': False}
-    VALID_STATES = {'enable', 'disable'}
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.gs = GlobalSettingsObject()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.gs.settings.get('login_providers', as_type=dict) is None:
-            self.gs.settings.set('login_providers', self.LOGIN_PROVIDERS)
-        context['login_providers'] = self.gs.settings.get('login_providers', as_type=dict)
-        return context
-
-    def post(self, request, *args, **kwargs):
-        login_providers = self.gs.settings.get('login_providers', as_type=dict)
-        for provider in self.LOGIN_PROVIDERS.keys():
-            value = request.POST.get(f'{provider}_login', '').lower()
-            if value not in self.VALID_STATES:
-                continue
-            elif value == "enable":
-                login_providers[provider] = True
-            elif value == "disable":
-                login_providers[provider] = False
-            self.gs.settings.set('login_providers', login_providers)
-            break
-        return redirect(self.get_success_url())
-
-    def get_success_url(self) -> str:
-        return reverse('control:admin.global.social.auth.settings')
