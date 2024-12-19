@@ -3,7 +3,7 @@
 Release Notes
 =============
 
-- :feature:`schedule` Organisers can now configure additional links to show in the top menu next to "Schedule", "Sessions", "Speakers", handy for links back to the conference website, livestreams, etc.
+- :feature:`schedule` Organisers can now configure additional links to show in the top menu next to "Schedule", "Sessions", "Speakers", handy for links back to the conference website, streams, etc.
 - :feature:`orga` Organisers can now configure footer links that will be shown on all schedule pages.
 - :feature:`cfp` pretalx will now send an email after a user changes their password, notifying them of the change.
 - :feature:`orga,1302` Organisers can now customise the template used to inform speakers when they are added to a proposal by an organiser. There are two new templates – one for speakers with an existing account, and one for speakers without account who need to set their password.
