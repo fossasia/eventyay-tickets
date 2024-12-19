@@ -6,13 +6,13 @@
 </div>
 <div class="panel-body timeline">
     <div class="info-row">
-        {% trans "This event is organized by" %} <strong>{{ request.organizer }}</strong>
+        {% trans "This event is organized by" %} <strong><a href="{% url 'control:organizer' request.organizer.slug %}">{{ request.organizer }}</a></strong>
     </div>
     <div class="info-row">
         {% trans "Teams of the organizer are" %} 
         <span></span>
-        {% for name in organizer_teams %}
-            <strong>{{ name }}</strong>
+        {% for id, name in organizer_teams %}
+            <strong><a href="{% url 'control:organizer.team' request.organizer.slug id %}">{{ name }}</a></strong>
             {% if not forloop.last %}, {% endif %}
         {% endfor %}
     </div>

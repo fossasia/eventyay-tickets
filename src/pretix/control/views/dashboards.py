@@ -389,7 +389,7 @@ def event_index(request, organizer, event):
     ]
     ctx['today'] = now().astimezone(request.event.timezone).date()
     ctx['nearly_now'] = now().astimezone(request.event.timezone) - timedelta(seconds=20)
-    ctx['organizer_teams'] = request.organizer.teams.values_list('name', flat=True)
+    ctx['organizer_teams'] = request.organizer.teams.values_list('id', 'name')
     resp = render(request, 'pretixcontrol/event/index.html', ctx)
     # resp['Content-Security-Policy'] = "style-src 'unsafe-inline'"
     return resp
