@@ -10,6 +10,33 @@ from django_scopes import scope
 from pretalx.event.models import Event
 
 
+def get_settings_form_data(event):
+    return {
+        "name_0": event.name,
+        "slug": event.slug,
+        "date_from": event.date_from,
+        "date_to": event.date_to,
+        "email": event.email or "",
+        "custom_domain": event.custom_domain or "",
+        "locale": event.locale,
+        "locales": ",".join(event.locales),
+        "content_locales": ",".join(event.content_locales),
+        "timezone": event.timezone,
+        "primary_color": event.primary_color or "",
+        "schedule": event.display_settings["schedule"],
+        "show_featured": event.feature_flags["show_featured"],
+        "use_feedback": event.feature_flags["use_feedback"],
+        "header-links-TOTAL_FORMS": 0,
+        "header-links-INITIAL_FORMS": 0,
+        "header-links-MIN_NUM_FORMS": 0,
+        "header-links-MAX_NUM_FORMS": 1000,
+        "footer-links-TOTAL_FORMS": 0,
+        "footer-links-INITIAL_FORMS": 0,
+        "footer-links-MIN_NUM_FORMS": 0,
+        "footer-links-MAX_NUM_FORMS": 1000,
+    }
+
+
 @pytest.mark.django_db
 def test_edit_mail_settings(orga_client, event, availability):
     assert event.mail_settings["mail_from"] != "foo@bar.com"
@@ -91,26 +118,9 @@ def test_test_mail_settings(orga_client, event, availability):
 def test_add_custom_css(event, orga_client, path, allowed):
     assert not event.custom_css
     with open(path) as custom_css:
-        response = orga_client.post(
-            event.orga_urls.edit_settings,
-            {
-                "name_0": event.name,
-                "slug": "csstest",
-                "locales": ",".join(event.locales),
-                "content_locales": ",".join(event.content_locales),
-                "locale": event.locale,
-                "date_from": event.date_from,
-                "date_to": event.date_to,
-                "timezone": event.timezone,
-                "email": event.email or "",
-                "primary_color": event.primary_color or "",
-                "custom_css": custom_css,
-                "schedule": event.display_settings["schedule"],
-                "show_featured": event.feature_flags["show_featured"],
-                "use_feedback": event.feature_flags["use_feedback"],
-            },
-            follow=True,
-        )
+        data = get_settings_form_data(event)
+        data["custom_css"] = custom_css
+        response = orga_client.post(event.orga_urls.edit_settings, data, follow=True)
     event.refresh_from_db()
     assert response.status_code == 200
     assert bool(event.custom_css) == allowed
@@ -128,26 +138,10 @@ def test_add_custom_css(event, orga_client, path, allowed):
 def test_add_custom_css_as_text(event, orga_client, path, allowed):
     assert not event.custom_css
     with open(path) as custom_css:
-        response = orga_client.post(
-            event.orga_urls.edit_settings,
-            {
-                "name_0": event.name,
-                "slug": "csstest",
-                "locales": ",".join(event.locales),
-                "content_locales": ",".join(event.content_locales),
-                "locale": event.locale,
-                "date_from": event.date_from,
-                "date_to": event.date_to,
-                "timezone": event.timezone,
-                "email": event.email or "",
-                "primary_color": event.primary_color or "",
-                "custom_css_text": custom_css.read(),
-                "schedule": event.display_settings["schedule"],
-                "show_featured": event.feature_flags["show_featured"],
-                "use_feedback": event.feature_flags["use_feedback"],
-            },
-            follow=True,
-        )
+        data = get_settings_form_data(event)
+        data["custom_css_text"] = custom_css.read()
+        data["slug"] = "csstest"
+        response = orga_client.post(event.orga_urls.edit_settings, data, follow=True)
     event.refresh_from_db()
     assert response.status_code == 200
     assert bool(event.custom_css) == allowed
@@ -165,25 +159,11 @@ def test_add_custom_css_as_text(event, orga_client, path, allowed):
 def test_add_custom_css_as_administrator(event, administrator_client, path):
     assert not event.custom_css
     with open(path) as custom_css:
+        data = get_settings_form_data(event)
+        data["custom_css"] = custom_css
+        data["slug"] = "csstest"
         response = administrator_client.post(
-            event.orga_urls.edit_settings,
-            {
-                "name_0": event.name,
-                "slug": "csstest",
-                "locales": ",".join(event.locales),
-                "content_locales": ",".join(event.content_locales),
-                "locale": event.locale,
-                "date_from": event.date_from,
-                "date_to": event.date_to,
-                "timezone": event.timezone,
-                "email": event.email,
-                "primary_color": event.primary_color or "",
-                "custom_css": custom_css,
-                "schedule": event.display_settings["schedule"],
-                "show_featured": event.feature_flags["show_featured"],
-                "use_feedback": event.feature_flags["use_feedback"],
-            },
-            follow=True,
+            event.orga_urls.edit_settings, data, follow=True
         )
     event.refresh_from_db()
     assert response.status_code == 200
@@ -197,26 +177,11 @@ def test_add_logo(event, orga_client):
     response = orga_client.get(event.urls.base, follow=True)
     assert '<img loading="lazy" "src="/media' not in response.content.decode()
     with open("../assets/icon.png", "rb") as logo:
-        response = orga_client.post(
-            event.orga_urls.edit_settings,
-            {
-                "name_0": event.name,
-                "slug": "logotest",
-                "locales": event.locales,
-                "content_locales": ",".join(event.content_locales),
-                "locale": event.locale,
-                "date_from": event.date_from,
-                "date_to": event.date_to,
-                "timezone": event.timezone,
-                "email": event.email,
-                "primary_color": "#00ff00",
-                "logo": logo,
-                "schedule": event.display_settings["schedule"],
-                "show_featured": event.feature_flags["show_featured"],
-                "use_feedback": event.feature_flags["use_feedback"],
-            },
-            follow=True,
-        )
+        data = get_settings_form_data(event)
+        data["logo"] = logo
+        data["slug"] = "logotest"
+        data["primary_color"] = "#00ff00"
+        response = orga_client.post(event.orga_urls.edit_settings, data, follow=True)
     event.refresh_from_db()
     assert event.primary_color == "#00ff00"
     assert response.status_code == 200
@@ -244,27 +209,9 @@ def test_change_custom_domain(event, orga_client, monkeypatch, domain, result):
     monkeypatch.setattr(socket, "gethostbyname", yessocket)
     domain = domain or settings.SITE_URL
     assert not event.custom_domain
-    response = orga_client.post(
-        event.orga_urls.edit_settings,
-        {
-            "name_0": event.name,
-            "slug": event.slug,
-            "locales": event.locales,
-            "content_locales": ",".join(event.content_locales),
-            "locale": event.locale,
-            "date_from": event.date_from,
-            "date_to": event.date_to,
-            "timezone": event.timezone,
-            "email": event.email,
-            "primary_color": "",
-            "logo": "",
-            "custom_domain": domain,
-            "schedule": event.display_settings["schedule"],
-            "show_featured": event.feature_flags["show_featured"],
-            "use_feedback": event.feature_flags["use_feedback"],
-        },
-        follow=True,
-    )
+    data = get_settings_form_data(event)
+    data["custom_domain"] = domain
+    response = orga_client.post(event.orga_urls.edit_settings, data, follow=True)
     event = Event.objects.get(pk=event.pk)
     assert response.status_code == 200
     assert event.custom_domain == result
@@ -281,26 +228,9 @@ def test_change_custom_domain_to_unavailable_domain(
 
     monkeypatch.setattr(socket, "gethostbyname", nosocket)
     assert not event.custom_domain
-    response = orga_client.post(
-        event.orga_urls.edit_settings,
-        {
-            "name_0": event.name,
-            "slug": event.slug,
-            "locales": event.locales,
-            "content_locales": ",".join(event.content_locales),
-            "locale": event.locale,
-            "date_from": event.date_from,
-            "date_to": event.date_to,
-            "timezone": event.timezone,
-            "email": event.email,
-            "primary_color": "",
-            "custom_domain": "https://example.org",
-            "schedule": event.display_settings["schedule"],
-            "show_featured": event.feature_flags["show_featured"],
-            "use_feedback": event.feature_flags["use_feedback"],
-        },
-        follow=True,
-    )
+    data = get_settings_form_data(event)
+    data["custom_domain"] = "https://example.org"
+    response = orga_client.post(event.orga_urls.edit_settings, data, follow=True)
     event = Event.objects.get(pk=event.pk)
     assert response.status_code == 200
     assert not event.custom_domain
@@ -310,25 +240,10 @@ def test_change_custom_domain_to_unavailable_domain(
 def test_event_end_before_start(event, orga_client):
     start = "2022-10-10"
     end = "2022-10-09"
-    response = orga_client.post(
-        event.orga_urls.edit_settings,
-        {
-            "name_0": event.name,
-            "slug": "csstest",
-            "locales": ",".join(event.locales),
-            "content_locales": ",".join(event.content_locales),
-            "locale": event.locale,
-            "date_from": start,
-            "date_to": end,
-            "timezone": event.timezone,
-            "email": event.email or "",
-            "primary_color": event.primary_color or "",
-            "schedule": event.display_settings["schedule"],
-            "show_featured": event.feature_flags["show_featured"],
-            "use_feedback": event.feature_flags["use_feedback"],
-        },
-        follow=True,
-    )
+    data = get_settings_form_data(event)
+    data["date_from"] = start
+    data["date_to"] = end
+    response = orga_client.post(event.orga_urls.edit_settings, data, follow=True)
     event.refresh_from_db()
     assert response.status_code == 200
     assert event.date_from.isoformat() != start
@@ -344,26 +259,11 @@ def test_event_change_date(event, orga_client, slot):
     old_slot_start = slot.start
     old_wip_slot_start = wip_slot.start
     delta = dt.timedelta(days=17)
+    data = get_settings_form_data(event)
+    data["date_from"] = (event.date_from + delta).isoformat()
+    data["date_to"] = (event.date_to + delta).isoformat()
 
-    response = orga_client.post(
-        event.orga_urls.edit_settings,
-        {
-            "name_0": event.name,
-            "slug": "csstest",
-            "locales": ",".join(event.locales),
-            "content_locales": ",".join(event.content_locales),
-            "locale": event.locale,
-            "date_from": (event.date_from + delta).isoformat(),
-            "date_to": (event.date_to + delta).isoformat(),
-            "timezone": event.timezone,
-            "email": event.email or "",
-            "primary_color": event.primary_color or "",
-            "schedule": event.display_settings["schedule"],
-            "show_featured": event.feature_flags["show_featured"],
-            "use_feedback": event.feature_flags["use_feedback"],
-        },
-        follow=True,
-    )
+    response = orga_client.post(event.orga_urls.edit_settings, data, follow=True)
     assert response.status_code == 200
     slot.refresh_from_db()
     wip_slot.refresh_from_db()
@@ -374,26 +274,9 @@ def test_event_change_date(event, orga_client, slot):
 @pytest.mark.django_db
 def test_event_change_timezone(event, orga_client, slot):
     old_slot_start = slot.start
-
-    response = orga_client.post(
-        event.orga_urls.edit_settings,
-        {
-            "name_0": event.name,
-            "slug": "csstest",
-            "locales": ",".join(event.locales),
-            "content_locales": ",".join(event.content_locales),
-            "locale": event.locale,
-            "date_from": event.date_from,
-            "date_to": event.date_to,
-            "timezone": "Europe/Moscow",
-            "email": event.email or "",
-            "primary_color": event.primary_color or "",
-            "schedule": event.display_settings["schedule"],
-            "show_featured": event.feature_flags["show_featured"],
-            "use_feedback": event.feature_flags["use_feedback"],
-        },
-        follow=True,
-    )
+    data = get_settings_form_data(event)
+    data["timezone"] = "Europe/Moscow"
+    response = orga_client.post(event.orga_urls.edit_settings, data, follow=True)
     assert response.status_code == 200
     slot.refresh_from_db()
     assert slot.start != old_slot_start
@@ -403,25 +286,11 @@ def test_event_change_timezone(event, orga_client, slot):
 def test_event_remove_relevant_locales(multilingual_event, orga_client):
     event = multilingual_event
     assert len(event.locales) == 2
-    response = orga_client.post(
-        event.orga_urls.edit_settings,
-        {
-            "name_0": event.name,
-            "slug": "csstest",
-            "locales": "en",
-            "content_locales": "en",
-            "locale": "de",
-            "date_from": event.date_from,
-            "date_to": event.date_to,
-            "timezone": event.timezone,
-            "email": event.email or "",
-            "primary_color": event.primary_color or "",
-            "schedule": event.display_settings["schedule"],
-            "show_featured": event.feature_flags["show_featured"],
-            "use_feedback": event.feature_flags["use_feedback"],
-        },
-        follow=True,
-    )
+    data = get_settings_form_data(event)
+    data["locales"] = "en"
+    data["content_locales"] = "en"
+    data["locale"] = "de"
+    response = orga_client.post(event.orga_urls.edit_settings, data, follow=True)
     event.refresh_from_db()
     assert response.status_code == 200
     assert len(event.locales) == 2

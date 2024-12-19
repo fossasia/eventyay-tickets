@@ -65,6 +65,20 @@ def system_information(request):
     event = getattr(request, "event", None)
 
     if not request.path.startswith("/orga/"):
+        context["footer_links"] = []
+        context["header_links"] = []
+
+        if event:
+            context["footer_links"] = [
+                {"label": link.label, "url": link.url}
+                for link in event.extra_links.all()
+                if link.role == "footer"
+            ]
+            context["header_links"] = [
+                {"label": link.label, "url": link.url}
+                for link in event.extra_links.all()
+                if link.role == "header"
+            ]
         for __, response in footer_link.send(event, request=request):
             if isinstance(response, list):
                 _footer += response
@@ -74,7 +88,7 @@ def system_information(request):
                     "Please return a list in your footer_link signal receiver, not a dictionary.",
                     DeprecationWarning,
                 )
-        context["footer_links"] = _footer
+        context["footer_links"] += _footer
 
         if event:
             for _receiver, response in html_head.send(event, request=request):

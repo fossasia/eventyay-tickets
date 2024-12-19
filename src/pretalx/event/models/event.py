@@ -13,13 +13,13 @@ from django.db import models, transaction
 from django.utils.functional import cached_property
 from django.utils.timezone import make_aware, now
 from django.utils.translation import gettext_lazy as _
-from django_scopes import scopes_disabled
+from django_scopes import ScopedManager, scopes_disabled
 from i18nfield.fields import I18nCharField, I18nTextField
 
 from pretalx.common.cache import ObjectRelatedCache
 from pretalx.common.language import LANGUAGE_NAMES
 from pretalx.common.models import TIMEZONE_CHOICES
-from pretalx.common.models.mixins import PretalxModel
+from pretalx.common.models.mixins import OrderedModel, PretalxModel
 from pretalx.common.models.settings import hierarkey
 from pretalx.common.plugins import get_all_plugins
 from pretalx.common.text.daterange import daterange
@@ -629,6 +629,11 @@ class Event(PretalxModel):
             setattr(self, attribute, getattr(other_event, attribute))
         self.save()
 
+        for extra_link in other_event.extra_links.all():
+            extra_link.pk = None
+            extra_link.event = self
+            extra_link.save()
+
         self.mail_templates.all().delete()
         for template in other_event.mail_templates.all().filter(is_auto_created=False):
             template.pk = None
@@ -1086,3 +1091,18 @@ class Event(PretalxModel):
                 entry.delete()
 
     shred.alters_data = True
+
+
+class EventExtraLink(OrderedModel, PretalxModel):
+    event = models.ForeignKey(
+        to="Event", on_delete=models.CASCADE, related_name="extra_links"
+    )
+    label = I18nCharField(max_length=200, verbose_name=_("Link text"))
+    url = models.URLField(verbose_name=_("Link URL"))
+    role = models.CharField(
+        max_length=6,
+        choices=(("footer", "Footer"), ("header", "Header")),
+        default="footer",
+    )
+
+    objects = ScopedManager(event="event")
