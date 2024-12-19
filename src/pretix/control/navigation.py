@@ -575,9 +575,9 @@ def get_admin_navigation(request):
                     'label': _('Generate keys for SSO'),
                     'url': reverse('control:admin.global.sso'),
                     'active': (url.url_name == 'admin.global.sso'),
-                }
+                },
             ]
-        }
+        },
     ]
 
     merge_in(nav, sorted(
