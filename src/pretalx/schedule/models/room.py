@@ -2,6 +2,7 @@ import uuid
 from functools import cached_property
 
 from django.db import models
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from i18nfield.fields import I18nCharField
 
@@ -79,3 +80,12 @@ class Room(OrderedModel, PretalxModel):
             return ""
 
         return uuid.uuid5(GlobalSettings().get_instance_identifier(), f"room:{self.pk}")
+
+    @property
+    def slug(self) -> str:
+        """The slug makes tracks more readable in URLs.
+
+        It consists of the ID, followed by a slugified (and, in lookups,
+        optional) form of the track name.
+        """
+        return f"{self.id}-{slugify(self.name)}"
