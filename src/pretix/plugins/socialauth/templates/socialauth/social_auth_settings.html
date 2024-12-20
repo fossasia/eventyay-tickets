@@ -31,7 +31,7 @@
                                 <strong>{% trans provider %}</strong>
                                 <p>{% trans "Login with " %}{{ provider|capfirst }}</p>
                             </td>
-                            <td class="text-right flip" width="20%">
+                            <td class="text-right flip">
                                 {% if enable %}
                                     <button class="btn btn-default btn-block" name="{{ provider }}_login" value="disable">
                                         {% trans "Disable" %}
