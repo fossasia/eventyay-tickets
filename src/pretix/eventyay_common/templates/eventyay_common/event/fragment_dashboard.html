@@ -1,0 +1,67 @@
+{% load i18n %}
+<div class="panel panel-default items">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {% trans "Your Dashboard" %}
+        </h3>
+    </div>
+    <div class="panel-body">
+        <p>
+            {% trans "Your event dashboard offers an overview of three seamlessly integrated components, each customizable to meet your needs: Tickets for sales and registration management, Talks and Speakers for organizing content and creating schedules, and Video for hosting engaging and interactive virtual events with live interpretation." %}
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    {% trans "Tickets" %}
+                </h3>
+            </div>
+            <div class="panel-body" style="display: flex; flex-direction: column; height: 100%;">
+                <p>
+                    {% trans "Your event dashboard offers an overview of three seamlessly integrated components, each customizable to meet your needs: Tickets for sales and registration management, Talks and Speakers for organizing content and creating schedules, and Video for hosting engaging and interactive virtual events with live interpretation." %}
+                </p>
+                <p>
+                    {% trans "Go to" %} <a href="{% url 'control:event.index' organizer=request.organizer.slug event=request.event.slug %}">{% trans "Tickets Dashboard" %}</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    {% trans "Talks and Speakers" %}
+                </h3>
+            </div>
+            <div class="panel-body" style="display: flex; flex-direction: column; height: 100%;">
+                <p>
+                    {% trans "Setup and configure content for your event, create calls for proposals and speakers and build a schedule. Manage the submission and review process, and select speakers." %}
+                </p>
+                <p>
+                    {% trans "Go to" %} <a href="{{ talk_edit_url }}">{% trans "Talks Dashboard" %}</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    {% trans "Video" %}
+                </h3>
+            </div>
+            <div class="panel-body" style="display: flex; flex-direction: column; height: 100%;">
+                <p>
+                    {% trans "Setup and configure live video streams, online workshops with live-audio interpretation and chats. Offer virtual exhibitor booths with rich content and social media integration." %}
+                </p>
+                <p>
+                    {% trans "Go to" %} <a href="{% url 'eventyay_common:event.create_access_to_video' organizer=request.organizer.slug event=request.event.slug %}">{% trans "Video Configuration" %}</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

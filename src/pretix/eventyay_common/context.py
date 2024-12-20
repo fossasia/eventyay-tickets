@@ -2,13 +2,15 @@ from importlib import import_module
 
 from django.conf import settings
 from django.db.models import Q
-from django.urls import Resolver404, get_script_prefix, resolve, reverse
+from django.urls import Resolver404, get_script_prefix, resolve
 from django.utils.translation import gettext_lazy as _
+from django_scopes import scope
 
 from pretix.base.models.auth import StaffSession
 from pretix.base.settings import GlobalSettingsObject
-from pretix.control.navigation import merge_in
-from pretix.control.signals import nav_global
+from ..multidomain.urlreverse import get_event_domain
+
+from pretix.eventyay_common.navigation import get_event_navigation, get_global_navigation
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
@@ -28,7 +30,7 @@ def _default_context(request):
     except Resolver404:
         return {}
 
-    if not request.path.startswith(get_script_prefix() + 'common'):
+    if not request.path.startswith(f'{get_script_prefix()}common'):
         return {}
     ctx = {
         'url_name': url.url_name,
@@ -37,7 +39,33 @@ def _default_context(request):
         'DEBUG': settings.DEBUG,
     }
     if getattr(request, 'event', None) and hasattr(request, 'organizer') and request.user.is_authenticated:
-        ctx['nav_items'] = get_global_navigation(request)
+        ctx['nav_items'] = get_event_navigation(request)
+        ctx['has_domain'] = get_event_domain(request.event, fallback=True) is not None
+        if not request.event.testmode:
+            with scope(organizer=request.organizer):
+                complain_testmode_orders = request.event.cache.get('complain_testmode_orders')
+                if complain_testmode_orders is None:
+                    complain_testmode_orders = request.event.orders.filter(testmode=True).exists()
+                    request.event.cache.set('complain_testmode_orders', complain_testmode_orders, 30)
+            ctx['complain_testmode_orders'] = complain_testmode_orders and request.user.has_event_permission(
+                request.organizer, request.event, 'can_view_orders', request=request
+            )
+        else:
+            ctx['complain_testmode_orders'] = False
+        if not request.event.live and ctx['has_domain']:
+            child_sess = request.session.get(f'child_session_{request.event.pk}')
+            s = SessionStore()
+            if not child_sess or not s.exists(child_sess):
+                s[f'pretix_event_access_{request.event.pk}'] = request.session.session_key
+                s.create()
+                ctx['new_session'] = s.session_key
+                request.session[f'child_session_{request.event.pk}'] = s.session_key
+            else:
+                ctx['new_session'] = child_sess
+            request.session['event_access'] = True
+        if request.GET.get('subevent', ''):
+            # Do not use .get() for lazy evaluation
+            ctx['selected_subevents'] = request.event.subevents.filter(pk=request.GET.get('subevent'))
 
     elif request.user.is_authenticated:
         ctx['nav_items'] = get_global_navigation(request)
@@ -57,42 +85,3 @@ def _default_context(request):
     ctx['talk_hostname'] = settings.TALK_HOSTNAME
 
     return ctx
-
-
-def get_global_navigation(request):
-    url = request.resolver_match
-    if not url:
-        return []
-    nav = [
-        {
-            'label': _('Dashboard'),
-            'url': reverse('eventyay_common:dashboard'),
-            'active': (url.url_name == 'dashboard'),
-            'icon': 'dashboard',
-        },
-        {
-            'label': _('My Events'),
-            'url': reverse('eventyay_common:events'),
-            'active': 'events' in url.url_name,
-            'icon': 'calendar',
-        },
-        {
-            'label': _('Organizers'),
-            'url': reverse('eventyay_common:organizers'),
-            'active': 'organizers' in url.url_name,
-            'icon': 'group',
-        },
-        {
-            'label': _('Account'),
-            'url': reverse('eventyay_common:account'),
-            'active': 'account' in url.url_name,
-            'icon': 'user',
-        }
-
-    ]
-
-    merge_in(nav, sorted(
-        sum((list(a[1]) for a in nav_global.send(request, request=request)), []),
-        key=lambda r: (1 if r.get('parent') else 0, r['label'])
-    ))
-    return nav
