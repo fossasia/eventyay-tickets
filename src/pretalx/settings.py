@@ -692,6 +692,9 @@ else:
 EVENTYAY_TICKET_BASE_PATH = config.get(
     "urls", "eventyay-ticket", fallback="https://app-test.eventyay.com/tickets"
 )
+EVENTYAY_VIDEO_BASE_PATH = config.get(
+    "urls", "eventyay-video", fallback="https://app-test.eventyay.com/video"
+)
 
 SITE_ID = 1
 # for now, customer must verified their email at eventyay-ticket, so this check not required

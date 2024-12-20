@@ -15,6 +15,10 @@ class AuthenticationFailedError(Exception):
     pass
 
 
+class VideoIntegrationError(Exception):
+    pass
+
+
 class PretalxExceptionReporter(ExceptionReporter):
     def get_traceback_text(self):  # pragma: no cover
         traceback_text = super().get_traceback_text()
