@@ -21182,3 +21182,6 @@ msgstr "Voleu crear un compte de %(event_name)s?"
 
 msgid "Already have a %(event_name)s account?"
 msgstr "Ja teniu un compte de %(event_name)s?"
+
+msgid "Login with %(provider_capitalized)s"
+msgstr "Přihlásit se přes %(provider_capitalized)s"

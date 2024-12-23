@@ -28,8 +28,10 @@
                         {% for provider, enable in login_providers.items %}
                         <tr class="{% if enable %}success{% else %}default{% endif %}">
                             <td>
-                                <strong>{% trans provider %}</strong>
-                                <p>{% trans "Login with " %}{{ provider|capfirst }}</p>
+                                {% with provider|capfirst as provider_capitalized %}
+                                    <strong>{% trans provider_capitalized %}</strong>
+                                    <p>{% blocktrans %}Login with {{ provider_capitalized }}{% endblocktrans %}</p>
+                                {% endwith %}
                             </td>
                             <td class="text-right flip">
                                 {% if enable %}

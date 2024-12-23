@@ -25664,3 +25664,6 @@ msgstr "Möchten Sie ein %(event_name)s Konto erstellen?"
 
 msgid "Already have a %(event_name)s account?"
 msgstr "Haben Sie bereits ein %(event_name)s Konto?"
+
+msgid "Login with %(provider_capitalized)s"
+msgstr "Mit %(provider_capitalized)s anmelden"

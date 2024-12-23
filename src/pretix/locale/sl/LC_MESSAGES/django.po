@@ -21940,3 +21940,6 @@ msgstr "ඔබට %(event_name)s ගිණුමක් සාදන්න අව
 
 msgid "Already have a %(event_name)s account?"
 msgstr "ඔබට දැනටමත් %(event_name)s ගිණුමක් තිබේද?"
+
+msgid "Login with %(provider_capitalized)s"
+msgstr "Prijavite se z %(provider_capitalized)s"

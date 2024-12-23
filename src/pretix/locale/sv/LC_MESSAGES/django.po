@@ -22082,3 +22082,6 @@ msgstr "Želite ustvariti račun %(event_name)s?"
 
 msgid "Already have a %(event_name)s account?"
 msgstr "Ali že imate račun %(event_name)s?"
+
+msgid "Login with %(provider_capitalized)s"
+msgstr "Logga in med %(provider_capitalized)s"

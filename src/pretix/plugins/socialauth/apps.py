@@ -16,8 +16,5 @@ class SocialAuthApp(AppConfig):
         description = _("This plugin allows you to login via social networks")
         visible = False
 
-    def ready(self):
-        from . import signals  # NOQA
-
 
 default_app_config = 'pretix.plugins.socialauth.SocialAuthApp'

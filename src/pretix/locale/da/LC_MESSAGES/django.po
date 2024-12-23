@@ -24711,3 +24711,6 @@ msgstr "Vil du oprette en %(event_name)s konto?"
 
 msgid "Already have a %(event_name)s account?"
 msgstr "Har du allerede en %(event_name)s konto?"
+
+msgid "Login with %(provider_capitalized)s"
+msgstr "Log ind med %(provider_capitalized)s"
