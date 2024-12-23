@@ -550,6 +550,12 @@ def get_admin_navigation(request):
             ]
         },
         {
+            'label': _('Vouchers'),
+            'url': reverse('control:admin.vouchers'),
+            'active': 'vouchers' in url.url_name,
+            'icon': 'tags',
+        },
+        {
             'label': _('Global settings'),
             'url': reverse('control:admin.global.settings'),
             'active': False,
@@ -564,6 +570,11 @@ def get_admin_navigation(request):
                     'label': _('Update check'),
                     'url': reverse('control:admin.global.update'),
                     'active': (url.url_name == 'admin.global.update'),
+                },
+                {
+                    'label': _('Generate keys for SSO'),
+                    'url': reverse('control:admin.global.sso'),
+                    'active': (url.url_name == 'admin.global.sso'),
                 },
             ]
         },
