@@ -3,14 +3,15 @@ from importlib import import_module
 from django.conf import settings
 from django.db.models import Q
 from django.urls import Resolver404, get_script_prefix, resolve
-from django.utils.translation import gettext_lazy as _
 from django_scopes import scope
 
 from pretix.base.models.auth import StaffSession
 from pretix.base.settings import GlobalSettingsObject
-from ..multidomain.urlreverse import get_event_domain
+from pretix.eventyay_common.navigation import (
+    get_event_navigation, get_global_navigation,
+)
 
-from pretix.eventyay_common.navigation import get_event_navigation, get_global_navigation
+from ..multidomain.urlreverse import get_event_domain
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 

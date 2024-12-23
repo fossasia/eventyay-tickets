@@ -1,13 +1,12 @@
 import contextlib
 from datetime import timedelta
 
-from django.http import JsonResponse
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
 
 from pretix.base.models import (
     Item, ItemCategory, Order, OrderRefund, Question, Quota, SubEvent, Voucher,
@@ -52,7 +51,7 @@ def event_index(request, organizer, event):
         i = request.GET.get("subevent", "")
         with contextlib.suppress(SubEvent.DoesNotExist):
             subevent = request.event.subevents.get(pk=i)
-    
+
     can_view_orders = request.user.has_event_permission(request.organizer, request.event, 'can_view_orders',
                                                         request=request)
     can_change_orders = request.user.has_event_permission(request.organizer, request.event, 'can_change_orders',

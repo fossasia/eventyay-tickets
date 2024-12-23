@@ -1,13 +1,9 @@
+from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.http import HttpRequest
-from pretix.control.navigation import merge_in
-from pretix.control.signals import nav_global
-from django.utils.translation import gettext_lazy as _
 
-from pretix.control.signals import (
-    nav_event, nav_global,
-)
+from pretix.control.navigation import merge_in
+from pretix.control.signals import nav_event, nav_global
 
 
 def get_global_navigation(request):
@@ -48,6 +44,7 @@ def get_global_navigation(request):
         key=lambda r: (1 if r.get('parent') else 0, r['label'])
     ))
     return nav
+
 
 def get_event_navigation(request: HttpRequest):
     url = request.resolver_match
