@@ -21185,3 +21185,6 @@ msgstr "Ja teniu un compte de %(event_name)s?"
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "Přihlásit se přes %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Přihlásit se přes e-mail"

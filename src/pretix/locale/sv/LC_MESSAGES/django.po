@@ -22085,3 +22085,6 @@ msgstr "Ali že imate račun %(event_name)s?"
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "Logga in med %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Logga in med e-post"

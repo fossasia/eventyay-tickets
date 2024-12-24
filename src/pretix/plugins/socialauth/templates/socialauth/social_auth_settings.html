@@ -25,22 +25,22 @@
                 <legend>{% trans "Social login providers" %}</legend>
                 <div class="table-responsive">
                     <table class="table">
-                        {% for provider, enable in login_providers.items %}
-                        <tr class="{% if enable %}success{% else %}default{% endif %}">
+                        {% for provider, enabled in login_providers.items %}
+                        <tr class="{% if enabled %}success{% else %}default{% endif %}">
                             <td>
                                 {% with provider|capfirst as provider_capitalized %}
                                     <strong>{% trans provider_capitalized %}</strong>
                                     <p>{% blocktrans %}Login with {{ provider_capitalized }}{% endblocktrans %}</p>
                                 {% endwith %}
                             </td>
-                            <td class="text-right flip">
-                                {% if enable %}
-                                    <button class="btn btn-default btn-block" name="{{ provider }}_login" value="disable">
-                                        {% trans "Disable" %}
+                            <td class="text-right flip" width="20%">
+                                {% if enabled %}
+                                    <button class="btn btn-default btn-block" name="{{ provider }}_login" value="disabled">
+                                        {% trans "Disabled" %}
                                     </button>
                                 {% else %}
-                                    <button class="btn btn-default btn-block" name="{{ provider }}_login" value="enable">
-                                        {% trans "Enable" %}
+                                    <button class="btn btn-default btn-block" name="{{ provider }}_login" value="enabled">
+                                        {% trans "Enabled" %}
                                     </button>
                                 {% endif %}
                             </td>

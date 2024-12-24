@@ -24106,3 +24106,6 @@ msgstr "Já tem uma conta %(event_name)s?"
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "Entrar com o %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Entrar com e-mail"

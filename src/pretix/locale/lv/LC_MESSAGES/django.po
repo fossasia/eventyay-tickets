@@ -22596,3 +22596,6 @@ msgstr "Vai jums jau ir %(event_name)s konts?"
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "Pieteikties ar %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Pieteikties ar e-pastu"

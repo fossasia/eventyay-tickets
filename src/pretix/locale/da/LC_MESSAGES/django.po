@@ -24714,3 +24714,6 @@ msgstr "Har du allerede en %(event_name)s konto?"
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "Log ind med %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Log ind med e-mail"

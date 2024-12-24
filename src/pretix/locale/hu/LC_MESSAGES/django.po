@@ -21264,3 +21264,6 @@ msgstr "Már van %(event_name)s fiókod?"
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "Bejelentkezés a %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Bejelentkezés e-maillel"

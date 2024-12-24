@@ -25667,3 +25667,6 @@ msgstr "Haben Sie bereits ein %(event_name)s Konto?"
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "Mit %(provider_capitalized)s anmelden"
+
+msgid "Login with email"
+msgstr "Mit E-Mail anmelden"

@@ -1,5 +1,5 @@
 import logging
-from enum import Enum
+from enum import StrEnum
 from urllib.parse import urlencode, urlparse, urlunparse
 
 from allauth.socialaccount.adapter import get_adapter
@@ -49,15 +49,14 @@ def oauth_return(request):
         return redirect('control:auth.login')
 
 
-class LoginState(Enum):
-    ENABLE = "enable"
-    DISABLE = "disable"
+class LoginState(StrEnum):
+    ENABLED = "enabled"
+    DISABLED = "disabled"
 
 
 class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
     template_name = 'socialauth/social_auth_settings.html'
     LOGIN_PROVIDERS = {'mediawiki': False, 'github': False, 'google': False}
-    VALID_STATES = {'enable', 'disable'}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -76,7 +75,7 @@ class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
             value = request.POST.get(f'{provider}_login', '').lower()
             if value not in [s.value for s in LoginState]:
                 continue
-            login_providers[provider] = value == LoginState.ENABLE.value
+            login_providers[provider] = value == LoginState.ENABLED
         self.gs.settings.set('login_providers', login_providers)
         return redirect(self.get_success_url())
 

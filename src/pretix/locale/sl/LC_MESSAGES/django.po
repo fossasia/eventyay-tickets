@@ -21943,3 +21943,6 @@ msgstr "ඔබට දැනටමත් %(event_name)s ගිණුමක් ත
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "Prijavite se z %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Prijavite se z e-pošto"

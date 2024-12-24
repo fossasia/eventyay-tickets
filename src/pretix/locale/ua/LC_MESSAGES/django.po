@@ -20840,3 +20840,6 @@ msgstr "Вже маєте обліковий запис %(event_name)s?"
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "Увійти за допомогою %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Увійти за допомогою електронної пошти"

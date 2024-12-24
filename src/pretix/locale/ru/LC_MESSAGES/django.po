@@ -22683,3 +22683,6 @@ msgstr "У вас уже есть аккаунт %(event_name)s?"
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "Войти с %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Войти с email"

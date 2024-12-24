@@ -24239,3 +24239,6 @@ msgstr "已经有一个%(event_name)s账户了吗?"
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "使用 %(provider_capitalized)s 登录"
+
+msgid "Login with email"
+msgstr "使用电子邮件登录"

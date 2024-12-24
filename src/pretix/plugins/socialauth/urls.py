@@ -1,9 +1,9 @@
-from django.urls import re_path as url
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    url(r'^oauth_login/(?P<provider>[a-zA-Z]+)/$', views.oauth_login, name='social.oauth.login'),
-    url(r'^oauth_return$', views.oauth_return, name='social.oauth.return'),
-    url(r'^control/global/social_auth/$', views.SocialLoginView.as_view(), name='admin.global.social.auth.settings'),
+    path('oauth_login/<str:provider>/', views.oauth_login, name='social.oauth.login'),
+    path('oauth_return/', views.oauth_return, name='social.oauth.return'),
+    path('control/global/social_auth/', views.SocialLoginView.as_view(), name='admin.global.social.auth.settings')
 ]

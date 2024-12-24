@@ -21345,3 +21345,6 @@ msgstr "Onko sinulla jo %(event_name)s-tili?"
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "Kirjaudu sisään %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Kirjaudu sisään sähköpostilla"

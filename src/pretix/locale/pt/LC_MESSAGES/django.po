@@ -21066,3 +21066,6 @@ msgstr "Já tem uma conta %(event_name)s?"
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "Iniciar sessão com %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Iniciar sessão com e-mail"

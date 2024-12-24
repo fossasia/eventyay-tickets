@@ -25770,3 +25770,6 @@ msgstr "Έχετε ήδη λογαριασμό %(event_name)s;"
 
 msgid "Login with %(provider_capitalized)s"
 msgstr "Συνδεθείτε με το %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Συνδεθείτε με το email"
