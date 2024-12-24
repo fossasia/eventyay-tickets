@@ -21,7 +21,7 @@ class IdempotencyMiddleware:
         if request.method in ('GET', 'HEAD', 'OPTIONS'):
             return self.get_response(request)
 
-        if not request.path.startswith('/api/'):
+        if not request.path_info.startswith('/api/'):
             return self.get_response(request)
 
         if not request.headers.get('X-Idempotency-Key'):
@@ -99,7 +99,7 @@ class ApiScopeMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest):
-        if not request.path.startswith('/api/'):
+        if not request.path_info.startswith('/api/'):
             return self.get_response(request)
 
         url = resolve(request.path_info)
