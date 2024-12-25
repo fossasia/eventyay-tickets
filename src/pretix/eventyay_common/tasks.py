@@ -16,6 +16,7 @@ from django.db import DatabaseError
 from django.db.models import Q
 from django_scopes import scopes_disabled
 from pretix_venueless.views import VenuelessSettingsForm
+from pretix.base.models.vouchers import InvoiceVoucher
 
 from pretix.helpers.stripe_utils import (
     confirm_payment_intent, process_auto_billing_charge_stripe,
@@ -344,6 +345,8 @@ def monthly_billing_collect(self):
         ticket_rate = gs.settings.get("ticket_fee_percentage") or 2.5
         organizers = Organizer.objects.all()
         for organizer in organizers:
+            organizer_billing = OrganizerBillingModel.objects.filter(organizer=organizer).first()
+            invoice_voucher = organizer_billing.invoice_voucher
             events = Event.objects.filter(organizer=organizer)
             for event in events:
                 logger.info("Collecting billing data for event: %s", event.name)
@@ -371,14 +374,21 @@ def monthly_billing_collect(self):
                 total_amount = calculate_total_amount_on_monthly(
                     event, last_month_date
                 )
-                tickets_fee = calculate_ticket_fee(total_amount, ticket_rate)
+                ticket_fee, discount_amount = calculate_ticket_fee(
+                    total_amount,
+                    ticket_rate, 
+                    invoice_voucher,
+                    event.name
+                )
+                
                 # Create a new billing invoice
                 billing_invoice = BillingInvoice(
                     organizer=organizer,
                     event=event,
                     amount=total_amount,
                     currency=event.currency,
-                    ticket_fee=tickets_fee,
+                    ticket_fee=ticket_fee,
+                    discount_amount=discount_amount,
                     monthly_bill=last_month_date,
                     reminder_schedule=settings.BILLING_REMINDER_SCHEDULE,
                     created_at=today,
@@ -520,14 +530,21 @@ def calculate_total_amount_on_monthly(event, last_month_date_start):
     return total_amount
 
 
-def calculate_ticket_fee(amount, rate):
+def calculate_ticket_fee(amount, rate, invoice_voucher: InvoiceVoucher = None) -> Tuple[Decimal, Decimal]:
     """
     Calculate the ticket fee based on the amount and rate
     @param amount: amount
     @param rate: rate in percentage
     @return: ticket fee
     """
-    return amount * (Decimal(rate) / 100)
+    ticket_fee = amount * (rate / 100)
+    discount_amount = Decimal(0)
+
+    if invoice_voucher and invoice_voucher.is_active():
+        new_tickets_fee = invoice_voucher.calculate_price(ticket_fee)
+        discount_amount = ticket_fee - new_tickets_fee
+    
+    return ticket_fee, discount_amount
 
 
 def get_next_reminder_datetime(reminder_schedule):

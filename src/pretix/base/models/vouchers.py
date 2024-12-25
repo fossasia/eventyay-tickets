@@ -583,3 +583,27 @@ class InvoiceVoucher(LoggedModel):
         if self.valid_until and self.valid_until < now():
             return False
         return True
+    
+    def calculate_price(self, original_price: Decimal, max_discount: Decimal=None) -> Decimal:
+        """
+        Returns how the price given in original_price would be modified if this
+        voucher is applied, i.e. replaced by a different price or reduced by a
+        certain percentage. If the voucher does not modify the price, the
+        original price will be returned.
+        """
+        if self.value is not None:
+            if self.price_mode == 'set':
+                p = self.value
+            elif self.price_mode == 'subtract':
+                p = max(original_price - self.value, Decimal('0.00'))
+            elif self.price_mode == 'percent':
+                p = round_decimal(original_price * (Decimal('100.00') - self.value) / Decimal('100.00'))
+            else:
+                p = original_price
+            places = settings.CURRENCY_PLACES.get(self.event.currency, 2)
+            if places < 2:
+                p = p.quantize(Decimal('1') / 10 ** places, ROUND_HALF_UP)
+            if max_discount is not None:
+                p = max(p, original_price - max_discount)
+            return p
+        return original_price

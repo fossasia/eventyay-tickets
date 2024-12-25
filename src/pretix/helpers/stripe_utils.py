@@ -34,12 +34,13 @@ def get_stripe_key(key_type: str) -> str:
     gs = GlobalSettingsObject()
 
     try:
-        prod_key = getattr(
-            gs.settings, "payment_stripe_connect_{}_key".format(key_type), None
-        )
-        test_key = getattr(
-            gs.settings, "payment_stripe_connect_test_{}_key".format(key_type), None
-        )
+        # prod_key = getattr(
+        #     gs.settings, "payment_stripe_connect_{}_key".format(key_type), None
+        # )
+        # test_key = getattr(
+        #     gs.settings, "payment_stripe_connect_test_{}_key".format(key_type), None
+        # )
+        print("Skip stripe connect for developing")
     except AttributeError as e:
         logger.error("Missing attribute for Stripe %s key: %s", key_type, str(e))
         raise ValidationError(
