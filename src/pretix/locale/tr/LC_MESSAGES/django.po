@@ -25938,3 +25938,9 @@ msgstr "%(event_name)s hesabı oluşturmak ister misiniz?"
 
 msgid "Already have a %(event_name)s account?"
 msgstr "Zaten bir %(event_name)s hesabınız var mı?"
+
+msgid "Login with %(provider_capitalized)s"
+msgstr "%(provider_capitalized)s ile giriş yap"
+
+msgid "Login with email"
+msgstr "E-posta ile giriş yap"
