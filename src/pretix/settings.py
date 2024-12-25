@@ -17,7 +17,6 @@ from .settings_helpers import build_db_tls_config, build_redis_tls_config
 
 from django.contrib.messages import constants as messages  # NOQA
 from django.utils.translation import gettext_lazy as _  # NOQA
-
 _config = configparser.RawConfigParser()
 if 'PRETIX_CONFIG_FILE' in os.environ:
     _config.read_file(open(os.environ.get('PRETIX_CONFIG_FILE'), encoding='utf-8'))
@@ -275,6 +274,7 @@ CSRF_COOKIE_NAME = 'pretix_csrftoken'
 SESSION_COOKIE_HTTPONLY = True
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -381,6 +381,7 @@ CORE_MODULES = {
 }
 
 MIDDLEWARE = [
+    'django.middleware.common.CommonMiddleware',
     'pretix.api.middleware.IdempotencyMiddleware',
     'pretix.multidomain.middlewares.MultiDomainMiddleware',
     'pretix.base.middleware.CustomCommonMiddleware',
@@ -398,6 +399,8 @@ MIDDLEWARE = [
     'pretix.api.middleware.ApiScopeMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
+
+# Configure CORS for testing
 
 # Configure the authentication backends
 AUTHENTICATION_BACKENDS = (
