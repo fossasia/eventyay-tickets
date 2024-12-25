@@ -3,7 +3,6 @@ from django.test import Client
 from rest_framework.authtoken.models import Token
 
 
-@pytest.mark.flaky(reruns=3)
 @pytest.mark.django_db
 def test_can_see_schedule_with_bearer_token(event, schedule, slot, orga_user):
     Token.objects.create(user=orga_user)
@@ -15,7 +14,6 @@ def test_can_see_schedule_with_bearer_token(event, schedule, slot, orga_user):
     assert slot.submission.title in response.content.decode()
 
 
-@pytest.mark.flaky(reruns=3)
 @pytest.mark.django_db
 def test_cannot_see_schedule_with_wrong_bearer_token(event, schedule, slot, orga_user):
     Token.objects.create(user=orga_user)

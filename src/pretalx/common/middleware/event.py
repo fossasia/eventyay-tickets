@@ -149,7 +149,9 @@ class EventPermissionMiddleware:
             with scopes_disabled():
                 try:
                     request.event = get_object_or_404(
-                        Event.objects.prefetch_related("schedules", "submissions"),
+                        Event.objects.prefetch_related(
+                            "schedules", "submissions", "extra_links"
+                        ),
                         slug__iexact=event_slug,
                     )
                 except ValueError:

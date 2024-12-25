@@ -494,7 +494,7 @@ the pretalx robot"""
 
 Your pretalx account password was just changed.
 
-If you did not cange your password, please contact the site administration immediately.
+If you did not change your password, please contact the site administration immediately.
 
 All the best,
 the pretalx team"""

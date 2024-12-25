@@ -1,4 +1,5 @@
 {% load compress %}
+{% load safelink %}
 {% load i18n %}
 {% load rules %}
 {% load static %}
@@ -177,7 +178,7 @@
                 {% endif %}
                 {% for footer in footer_links %}
                     ·
-                    <a href="{{ footer.link }}">{{ footer.label }}</a>
+                    <a href="{% safelink footer.url %}" target="_blank" rel="noopener">{{ footer.label }}</a>
                 {% endfor %}
             </footer>
         </div>

@@ -81,7 +81,10 @@
         },
         "end": {
           "type": "string",
-          "format": "date"
+          "$oneOf": [
+            { "format": "date" },
+            { "format": "date-time" }
+          ]
         },
         "daysCount": {
           "type": "integer"
@@ -113,8 +116,8 @@
             }
           }
         },
-        "keywords" :{
-          "type":"array",
+        "keywords": {
+          "type": "array",
           "items": {
             "type": "string"
           }
@@ -124,13 +127,17 @@
           "type": "string",
           "format": "uri"
         },
-        "tracks" :{
-          "type":"array",
+        "tracks": {
+          "type": "array",
           "items": {
             "type": "object",
             "properties": {
               "name": {
                 "type": "string"
+              },
+              "slug": {
+                "type": "string",
+                "pattern": "^[a-z0-9_-]+[a-z0-9]$"
               },
               "color": {
                 "type": "string",
@@ -194,13 +201,19 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "id": {
-          "type": "integer",
-          "minimum": 1
-        },
         "guid": {
           "type": "string",
           "format": "uuid"
+        },
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]+$"
+        },
+        "id": {
+          "type": "integer",
+          "minimum": 1,
+          "deprecated": true,
+          "$comment": "use guid instead"
         },
         "logo": {
           "type": ["string", "null"],
@@ -269,7 +282,7 @@
           "type":  ["boolean", "null"]
         },
         "do_not_stream": {
-          "type":  ["string", "null"]
+          "type":  ["boolean", "string", "null"]
         },
         "persons": {
           "type": "array",
@@ -279,8 +292,9 @@
         },
         "links": {
           "type": "array",
-          "items": {},
-          "$comment": "// TODO: string vs object"
+          "items": {
+            "$ref": "#/definitions/Reference"
+          }
         },
         "feedback_url": {
           "type": "string",
@@ -288,12 +302,14 @@
         },
         "attachments": {
           "type": "array",
-          "items": {},
-          "$comment": "// TODO: string vs object"
+          "items": {
+            "$ref": "#/definitions/Reference"
+          }
         },
         "answers": {
           "type": "array",
-          "items": {}
+          "items": {},
+          "$ref": "https://c3voc.de/schedule/submission#/definitions/Answers"
         }
       },
       "required": [
@@ -329,6 +345,21 @@
         "id": {
           "type": "integer",
           "description": "deprecated integer person id, use guid with uuid5(NS_URL, 'acct:user@domain.tld') instead"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          }
+        },
+        "public_name": {
+          "type": "string",
+          "deprecated": true,
+          "$comment": "use name instead"
         }
       },
       "oneOf": [
@@ -350,6 +381,27 @@
       },
       "required": ["public_name", "id"]
     },
+    "HubAssembly": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9_-]+[a-z0-9]$"
+        },
+        "guid": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "required": ["name", "guid", "slug"]
+    },
     "PretalxPerson": {
       "type": "object",
       "properties": {
@@ -366,7 +418,7 @@
           "description": "absolute URL, or relative to base_url"
         },
         "biography": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "answers": {
           "type": "array",
@@ -382,27 +434,94 @@
         "name": {
           "type": "string"
         },
+        "slug": {
+          "type": "string",
+          "pattern": "^[a-z0-9_-]+[a-z0-9]$"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["lecturehall", "stage", "workshop", "outside", "online", "project", "bbb", "hangar", "other"]
+        },
         "guid": {
           "type": "string",
           "format": "uuid"
         },
-        "description": {
+        "stream_id": {
           "type": ["string", "null"]
+        },
+        "description": {
+          "type": ["string", "null"],
+          "description": "might also be set as description_de, description_en etc."
         },
         "capacity": {
           "type": ["number", "null"]
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "features" :{
+          "$ref": "#/definitions/RoomFeatures"
+        },
+        "assembly": {
+          "$ref": "#/definitions/HubAssembly"
         }
       },
-      "required": ["name"]
+      "patternProperties": {
+        "description_.+": {
+          "type": ["string", "null"]
+        }
+      },
+      "required": ["name", "guid"]
     },
     "RoomName": {
       "type": "string"
+    },
+    "RoomFeatures": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "recording": {
+          "type": "string",
+          "enum": ["record_by_default", "not_recorded_by_default", "recording_forbidden", "recording_not_possible", "unknown"]
+        }
+      }
     },
     "Duration": {
       "title": "Duration (hh:mm)",
       "type": "string",
       "examples": ["00:30", "01:30"],
       "pattern": "^[0-9]+:[0-9]{2}$"
+    },
+    "Reference": {
+      "title": "Link or Attachment",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "slides",
+            "paper",
+            "web",
+            "blog",
+            "article",
+            "media",
+            "related",
+            "activitypub"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
+      ]
     }
   }
 }
