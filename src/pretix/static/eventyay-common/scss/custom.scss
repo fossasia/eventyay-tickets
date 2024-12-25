@@ -26,3 +26,42 @@
         }
     }
 }
+
+
+.custom {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+
+.dashboard .widget-container.no-padding {
+    padding: 0;
+    background: none;
+    border: 1px solid #e5e5e5;
+}
+
+.dashboard .widget-container.widget-small.no-padding.column {
+    padding: 0;
+    background: none;
+    border-color: #e5e5e5;
+    margin-right: 10px;
+}
+
+.dashboard .widget-container.widget-small.no-padding.last-column {
+    padding: 0;
+    background: none;
+    border-color: #e5e5e5;
+    margin-right: 0px;
+}
+
+@media (max-width: $screen-sm-max) {
+    .dashboard .widget-container.widget-small.no-padding.column {
+        width: 100%;
+        margin-right: 0px;
+    }
+}
+
+@media (max-width: $screen-xs-max) {
+    .dashboard .widget-container.widget-small.no-padding.column {
+        margin-right: 0px;
+    }
+}
