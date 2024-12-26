@@ -172,26 +172,26 @@ class BillingSettingsForm(forms.ModelForm):
         result = pyvat.is_vat_number_format_valid(vat_number, country_code)
         return result
     
-    def validate_voucher_code(self, voucher_code):
+    def clean_invoice_voucher(self):
+        voucher_code = self.cleaned_data['invoice_voucher']
         voucher_instance = InvoiceVoucher.objects.filter(code=voucher_code).first()
         if not voucher_instance:
-            return (False, "Voucher code not found!")
+            raise forms.ValidationError("Voucher code not found!")
         
         if not voucher_instance.is_active():
-            return (False, "Voucher code is not active!")
+            raise forms.ValidationError("Voucher code is not active!")
         
         if voucher_instance.limit_organizer.exists():
             limit_organizer = voucher_instance.limit_organizer.values_list("id", flat=True)
             if self.organzier.id not in limit_organizer:
-                return (False, "Voucher code is not valid for this organizer!")
+                raise forms.ValidationError("Voucher code is not valid for this organizer!")
             
-        return (True, "")
+        return voucher_instance
 
     def clean(self):
         cleaned_data = super().clean()
         country_code = cleaned_data.get("country")
         vat_number = cleaned_data.get("tax_id")
-        voucher_code = cleaned_data.get("invoice_voucher")
 
         if vat_number and country_code:
             country_name = get_country_name(country_code)
@@ -199,27 +199,17 @@ class BillingSettingsForm(forms.ModelForm):
             if not is_valid_vat_number:
                 self.add_error("tax_id", _("Invalid VAT number for {}".format(country_name)))
 
-        if voucher_code:
-            is_valid, reason = self.validate_voucher_code(voucher_code)
-            if not is_valid:
-                self.add_error("invoice_voucher", _("Invalid voucher code: {}".format(reason)))
-
     def save(self, commit=True):
-        def set_attribute():
+        def set_attribute(instance):
             for field in self.Meta.fields:
-                if field == "invoice_voucher":
-                    instance.invoice_voucher = InvoiceVoucher.objects.filter(
-                        code=self.cleaned_data[field]
-                    ).first()
-                else:
-                    setattr(instance, field, self.cleaned_data[field])
+                setattr(instance, field, self.cleaned_data[field])
 
         instance = OrganizerBillingModel.objects.filter(
             organizer_id=self.organizer.id
         ).first()
 
         if instance:
-            set_attribute()
+            set_attribute(instance)
             if commit:
                 update_customer_info(
                     instance.stripe_customer_id,
@@ -229,7 +219,7 @@ class BillingSettingsForm(forms.ModelForm):
                 instance.save()
         else:
             instance = OrganizerBillingModel(organizer_id=self.organizer.id)
-            set_attribute()
+            set_attribute(instance)
             if commit:
                 stripe_customer = create_stripe_customer(
                     email=self.cleaned_data.get("primary_contact_email"),

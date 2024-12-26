@@ -30,7 +30,8 @@ class BillingInvoice(LoggedModel):
     currency = models.CharField(max_length=3)
 
     ticket_fee = models.DecimalField(max_digits=10, decimal_places=2)
-    discount_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    final_ticket_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    voucher_discount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     payment_method = models.CharField(max_length=20, null=True, blank=True)
     paid_datetime = models.DateTimeField(null=True, blank=True)
     note = models.TextField(null=True, blank=True)
