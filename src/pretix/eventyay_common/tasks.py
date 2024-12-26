@@ -1,7 +1,7 @@
 import base64
 import importlib.util
 import logging
-from datetime import datetime, timezone as tz
+from datetime import date, datetime, timezone as tz
 from decimal import Decimal
 from importlib import import_module
 from typing import Optional, Tuple
@@ -17,8 +17,8 @@ from django.db import DatabaseError
 from django.db.models import Q
 from django_scopes import scopes_disabled
 from pretix_venueless.views import VenuelessSettingsForm
-from pretix.base.models.vouchers import InvoiceVoucher
 
+from pretix.base.models.vouchers import InvoiceVoucher
 from pretix.helpers.stripe_utils import (
     confirm_payment_intent, process_auto_billing_charge_stripe,
 )
@@ -29,6 +29,7 @@ from ..base.services.mail import mail_send_task
 from ..base.settings import GlobalSettingsObject
 from ..helpers.jwt_generate import generate_sso_token
 from .billing_invoice import generate_invoice_pdf
+from .schemas.billing import CollectBillingResponse
 
 logger = logging.getLogger(__name__)
 
@@ -324,11 +325,30 @@ def get_header_token(user_id):
     return headers
 
 
-def collect_billing_invoice(event, last_month_date, ticket_rate, invoice_voucher):
-    result = {
-        "status": False,
-        "voucher_discount": Decimal('0.00')
-    }
+def collect_billing_invoice(
+        event: Event, 
+        last_month_date: date, 
+        ticket_rate: Decimal, 
+        invoice_voucher: InvoiceVoucher
+    ) -> CollectBillingResponse:
+    """
+    Collect billing data for an event on a monthly basis. This function
+    checks if a billing invoice already exists for the given event and
+    month. If not, it checks if there were any paid orders in the last
+    month, and if there were, it calculates the total amount and ticket
+    fee for the last month and creates a new billing invoice.
+
+    @param event: The event for which to collect billing data.
+    @param last_month_date: The date of the last month for which to collect
+        billing data.
+    @param ticket_rate: The rate of the ticket fee as a decimal.
+    @param invoice_voucher: The voucher for which to calculate the ticket fee
+        discount.
+
+    @return: A CollectBillingResponse object containing a boolean value
+        indicating whether the billing invoice was created successfully and a
+        decimal value indicating the voucher discount.
+    """
 
     logger.info("Collecting billing data for event: %s", event.name)
     billing_invoice = BillingInvoice.objects.filter(
@@ -338,7 +358,7 @@ def collect_billing_invoice(event, last_month_date, ticket_rate, invoice_voucher
         logger.info(
             "Billing invoice already created for event: %s", event.name
         )
-        return result
+        return CollectBillingResponse(status=False)
     
     if event.orders.filter(
             status=Order.STATUS_PAID,
@@ -350,7 +370,7 @@ def collect_billing_invoice(event, last_month_date, ticket_rate, invoice_voucher
         logger.info(
             "No paid orders for event: %s in the last month", event.name
         )
-        return result
+        return CollectBillingResponse(status=False)
 
     total_amount = calculate_total_amount_on_monthly(
         event, last_month_date
@@ -382,9 +402,7 @@ def collect_billing_invoice(event, last_month_date, ticket_rate, invoice_voucher
     billing_invoice.save()
     logger.info("End - completed task to collect billing on a monthly basis.")
 
-    result["status"] = True
-    result["voucher_discount"] = voucher_discount
-    return result
+    return CollectBillingResponse(status=True, voucher_discount=voucher_discount)
 
 
 @shared_task(
@@ -414,14 +432,14 @@ def monthly_billing_collect(self):
             total_voucher_discount = Decimal('0.00')
 
             for event in organizer.events.all():
-                result = collect_billing_invoice(
+                collect_billing_response = collect_billing_invoice(
                     event,
                     last_month_date,
                     ticket_rate,
                     invoice_voucher
                 )
-                if result["status"]:
-                    total_voucher_discount += result["voucher_discount"]
+                if collect_billing_response.status:
+                    total_voucher_discount += collect_billing_response.voucher_discount
 
             if total_voucher_discount > 0:
                 # Invoice voucher is used, update redeemed count
@@ -575,8 +593,8 @@ def calculate_ticket_fee(
     @param invoice_voucher: the invoice voucher to be applied
     @return: a tuple containing the ticket fee before applying the voucher, the final ticket fee after applying the voucher, and the voucher discount
     """
-    def apply_voucher(ticket_fee, voucher_discount, invoice_voucher):
-        final_ticket_fee = invoice_voucher.calculate_price(ticket_fee)
+    def apply_voucher(ticket_fee: Decimal, voucher_discount: Decimal, invoice_voucher: InvoiceVoucher):
+        final_ticket_fee = invoice_voucher.calculate_price(original_price=ticket_fee, event=event)
         voucher_discount = ticket_fee - final_ticket_fee 
         return final_ticket_fee, voucher_discount
     

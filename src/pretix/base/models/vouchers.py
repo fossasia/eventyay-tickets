@@ -584,7 +584,7 @@ class InvoiceVoucher(LoggedModel):
             return False
         return True
     
-    def calculate_price(self, original_price: Decimal, max_discount: Decimal=None) -> Decimal:
+    def calculate_price(self, original_price: Decimal, max_discount: Decimal=None, event: Event=None) -> Decimal:
         """
         Returns how the price given in original_price would be modified if this
         voucher is applied, i.e. replaced by a different price or reduced by a
@@ -600,7 +600,7 @@ class InvoiceVoucher(LoggedModel):
                 p = round_decimal(original_price * (Decimal('100.00') - self.value) / Decimal('100.00'))
             else:
                 p = original_price
-            places = settings.CURRENCY_PLACES.get(self.event.currency, 2)
+            places = settings.CURRENCY_PLACES.get(event.currency, 2)
             if places < 2:
                 p = p.quantize(Decimal('1') / 10 ** places, ROUND_HALF_UP)
             if max_discount is not None:
