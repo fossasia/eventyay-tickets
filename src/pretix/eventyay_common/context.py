@@ -11,7 +11,9 @@ from pretix.eventyay_common.navigation import (
     get_event_navigation, get_global_navigation,
 )
 
+from ..helpers.plugin_enable import is_video_enabled
 from ..multidomain.urlreverse import get_event_domain
+from .views.event import EventCreatedFor
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
@@ -39,7 +41,28 @@ def _default_context(request):
         'django_settings': settings,
         'DEBUG': settings.DEBUG,
     }
+
+    if hasattr(request, 'event') and request.user.is_authenticated:
+        ctx["talk_edit_url"] = (
+            settings.TALK_HOSTNAME + "/orga/event/" + request.event.slug
+        )
+        ctx['is_video_enabled'] = is_video_enabled(request.event)
+        ctx["is_talk_event_created"] = False
+        if (
+            request.event.settings.create_for == EventCreatedFor.BOTH.value
+            or request.event.settings.talk_schedule_public is not None
+        ):
+            ctx["is_talk_event_created"] = True
+
     if getattr(request, 'event', None) and hasattr(request, 'organizer') and request.user.is_authenticated:
+        ctx['is_video_enabled'] = is_video_enabled(request.event)
+        ctx["is_talk_event_created"] = False
+        if (
+            request.event.settings.create_for == EventCreatedFor.BOTH.value
+            or request.event.settings.talk_schedule_public is not None
+        ):
+            ctx["is_talk_event_created"] = True
+
         ctx['nav_items'] = get_event_navigation(request)
         ctx['has_domain'] = get_event_domain(request.event, fallback=True) is not None
         if not request.event.testmode:
