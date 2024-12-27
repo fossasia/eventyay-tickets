@@ -352,7 +352,6 @@ urlpatterns = [
         url(r'^vouchers/(?P<voucher>\d+)/$', admin.VoucherUpdate.as_view(), name='admin.voucher'),
         url(r'^vouchers/(?P<voucher>\d+)/delete$', admin.VoucherDelete.as_view(),
             name='admin.voucher.delete'),
-
         url(r'^global/sso/$', global_settings.SSOView.as_view(), name='admin.global.sso'),
         url(r'^global/sso/(?P<pk>\d+)/delete/$', global_settings.DeleteOAuthApplicationView.as_view(), name='admin.global.sso.delete'),
         url(r'^pages/$', pages.PageList.as_view(), name="admin.pages"),
