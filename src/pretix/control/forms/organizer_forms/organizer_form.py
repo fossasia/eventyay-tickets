@@ -174,6 +174,9 @@ class BillingSettingsForm(forms.ModelForm):
     
     def clean_invoice_voucher(self):
         voucher_code = self.cleaned_data['invoice_voucher']
+        if not voucher_code:
+            return None
+        
         voucher_instance = InvoiceVoucher.objects.filter(code=voucher_code).first()
         if not voucher_instance:
             raise forms.ValidationError("Voucher code not found!")
