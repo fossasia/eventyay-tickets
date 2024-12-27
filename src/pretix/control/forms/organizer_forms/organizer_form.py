@@ -182,7 +182,7 @@ class BillingSettingsForm(forms.ModelForm):
             raise forms.ValidationError("Voucher code not found!")
 
         if not voucher_instance.is_active():
-            raise forms.ValidationError("Voucher code is not active!")
+            raise forms.ValidationError("The voucher code has either expired or reached its usage limit.")
 
         if voucher_instance.limit_organizer.exists():
             limit_organizer = voucher_instance.limit_organizer.values_list("id", flat=True)
