@@ -171,24 +171,24 @@ class BillingSettingsForm(forms.ModelForm):
             return True
         result = pyvat.is_vat_number_format_valid(vat_number, country_code)
         return result
-    
+
     def clean_invoice_voucher(self):
         voucher_code = self.cleaned_data['invoice_voucher']
         if not voucher_code:
             return None
-        
+
         voucher_instance = InvoiceVoucher.objects.filter(code=voucher_code).first()
         if not voucher_instance:
             raise forms.ValidationError("Voucher code not found!")
-        
+
         if not voucher_instance.is_active():
             raise forms.ValidationError("Voucher code is not active!")
-        
+
         if voucher_instance.limit_organizer.exists():
             limit_organizer = voucher_instance.limit_organizer.values_list("id", flat=True)
             if self.organizer.id not in limit_organizer:
                 raise forms.ValidationError("Voucher code is not valid for this organizer!")
-            
+
         return voucher_instance
 
     def clean(self):

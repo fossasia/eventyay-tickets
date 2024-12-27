@@ -326,11 +326,10 @@ def get_header_token(user_id):
 
 
 def collect_billing_invoice(
-        event: Event, 
-        last_month_date: date, 
-        ticket_rate: Decimal, 
-        invoice_voucher: InvoiceVoucher
-    ) -> CollectBillingResponse:
+        event: Event,
+        last_month_date: date,
+        ticket_rate: Decimal,
+        invoice_voucher: InvoiceVoucher) -> CollectBillingResponse:
     """
     Collect billing data for an event on a monthly basis. This function
     checks if a billing invoice already exists for the given event and
@@ -359,7 +358,7 @@ def collect_billing_invoice(
             "Billing invoice already created for event: %s", event.name
         )
         return CollectBillingResponse(status=False)
-    
+
     if event.orders.filter(
             status=Order.STATUS_PAID,
             datetime__range=[
@@ -377,11 +376,11 @@ def collect_billing_invoice(
     )
     ticket_fee, final_ticket_fee, voucher_discount = calculate_ticket_fee(
         total_amount,
-        ticket_rate, 
+        ticket_rate,
         event,
         invoice_voucher
     )
-    
+
     # Create a new billing invoice
     billing_invoice = BillingInvoice(
         organizer=event.organizer,
@@ -575,11 +574,10 @@ def calculate_total_amount_on_monthly(event: Event, last_month_date_start) -> De
 
 
 def calculate_ticket_fee(
-        amount: Decimal, 
-        rate: Decimal, 
-        event: Event, 
-        invoice_voucher: Optional[InvoiceVoucher] = None
-    ) -> Tuple[Decimal, Decimal, Decimal]:
+        amount: Decimal,
+        rate: Decimal,
+        event: Event,
+        invoice_voucher: Optional[InvoiceVoucher] = None) -> Tuple[Decimal, Decimal, Decimal]:
     """
     Calculate the ticket fee for an event based on the given rate and amount
 
@@ -595,9 +593,9 @@ def calculate_ticket_fee(
     """
     def apply_voucher(ticket_fee: Decimal, voucher_discount: Decimal, invoice_voucher: InvoiceVoucher):
         final_ticket_fee = invoice_voucher.calculate_price(original_price=ticket_fee, event=event)
-        voucher_discount = ticket_fee - final_ticket_fee 
+        voucher_discount = ticket_fee - final_ticket_fee
         return final_ticket_fee, voucher_discount
-    
+
     final_ticket_fee = ticket_fee = amount * (rate / 100)
     voucher_discount = Decimal('0.00')
 
@@ -608,7 +606,7 @@ def calculate_ticket_fee(
                 final_ticket_fee, voucher_discount = apply_voucher(ticket_fee, voucher_discount, invoice_voucher)
         else:
             final_ticket_fee, voucher_discount = apply_voucher(ticket_fee, voucher_discount, invoice_voucher)
-    
+
     return ticket_fee, final_ticket_fee, voucher_discount
 
 

@@ -583,7 +583,7 @@ class InvoiceVoucher(LoggedModel):
         if self.valid_until and self.valid_until < now():
             return False
         return True
-    
+
     def calculate_price(self, original_price: Decimal, max_discount: Decimal=None, event: Event=None) -> Decimal:
         """
         Returns how the price given in original_price would be modified if this
