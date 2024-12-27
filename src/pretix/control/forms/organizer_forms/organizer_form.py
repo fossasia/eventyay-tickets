@@ -183,7 +183,7 @@ class BillingSettingsForm(forms.ModelForm):
         
         if voucher_instance.limit_organizer.exists():
             limit_organizer = voucher_instance.limit_organizer.values_list("id", flat=True)
-            if self.organzier.id not in limit_organizer:
+            if self.organizer.id not in limit_organizer:
                 raise forms.ValidationError("Voucher code is not valid for this organizer!")
             
         return voucher_instance
