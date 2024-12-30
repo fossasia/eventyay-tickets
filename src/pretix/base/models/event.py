@@ -1198,24 +1198,27 @@ class Event(EventMixin, LoggedModel):
 
         billing_obj = OrganizerBillingModel.objects.filter(organizer=self.organizer).first()
 
-        if not billing_obj or not billing_obj.stripe_payment_method_id:
-            issues.append(
-                (
-                    "<a {a_attr}>"
-                    + gettext('You need to fill the billing information.')
-                    + "</a>"
-                ).format(
-                    a_attr='href="%s#tab-0-1-open"'
-                           % (
-                               reverse(
-                                   "control:organizer.settings.billing",
-                                   kwargs={
-                                       "organizer": self.organizer.slug,
-                                   },
-                               ),
-                           ),
+        gs = GlobalSettingsObject()
+        if gs.settings.get("billing_validation", True) is True:
+            if not billing_obj or not billing_obj.stripe_payment_method_id:
+                issues.append(
+                    (
+                        "<a {a_attr}>"
+                        + gettext('You need to fill the billing information.')
+                        + "</a>"
+                    ).format(
+                        a_attr='href="%s#tab-0-1-open"'
+                            % (
+                                reverse(
+                                    "control:organizer.settings.billing",
+                                    kwargs={
+                                        "organizer": self.organizer.slug,
+                                    },
+                                ),
+                            ),
+                    )
                 )
-            )
+            
 
         responses = event_live_issues.send(self)
         for receiver, response in sorted(responses, key=lambda r: str(r[0])):

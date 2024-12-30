@@ -1,6 +1,7 @@
 import logging
 import secrets
 
+from enum import StrEnum
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import IntegrityError
@@ -158,3 +159,40 @@ class RefundDetailView(AdministratorPermissionRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         p = get_object_or_404(OrderRefund, pk=request.GET.get('pk'))
         return JsonResponse({'data': p.info_data})
+
+
+class ToggleBillingValidationView(AdministratorPermissionRequiredMixin, TemplateView):
+    class ValidState(StrEnum):
+        DISABLED = 'disabled'
+        ENABLED = 'enabled'
+
+    template_name = 'pretixcontrol/toggle_billing_validation.html'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.gs = GlobalSettingsObject()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.gs.settings.get('billing_validation') is None:
+            self.gs.settings.set('billing_validation', True)
+        context['billing_validation'] = self.gs.settings.get('billing_validation')
+        return context
+
+    def post(self, request, *args, **kwargs):
+        value = request.POST.get('billing_validation', '').lower()
+
+        if value == self.ValidState.DISABLED:
+            billing_validation = False
+        elif value == self.ValidState.ENABLED:
+            billing_validation = True
+        else:
+            logger.error('Invalid value for billing validation: %s', value)
+            messages.error(request, _('Invalid value for billing validation!'))
+            return redirect(self.get_success_url())
+
+        self.gs.settings.set('billing_validation', billing_validation)
+        return redirect(self.get_success_url())
+
+    def get_success_url(self) -> str:
+        return reverse('control:admin.toggle.billing.validation')
