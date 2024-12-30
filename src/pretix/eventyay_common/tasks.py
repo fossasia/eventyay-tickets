@@ -383,6 +383,11 @@ def collect_billing_invoice(
 
     # Create a new billing invoice
     billing_invoice = BillingInvoice(
+        status=(
+            BillingInvoice.STATUS_PENDING
+            if final_ticket_fee > 0
+            else BillingInvoice.STATUS_PAID
+        ),
         organizer=event.organizer,
         event=event,
         amount=total_amount,
