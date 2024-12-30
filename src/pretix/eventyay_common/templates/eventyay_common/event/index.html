@@ -36,8 +36,8 @@
                 {% for action in actions %}
                     <li class="list-group-item logentry">
                         <p>
-                            <a href="{% url "control:event.requiredaction.discard" event=request.event.slug organizer=request.event.organizer.slug id=action.id %}"
-                               class="btn btn-default btn-xs pull-right flip">
+                            {% url "control:event.requiredaction.discard" event=request.event.slug organizer=request.event.organizer.slug id=action.id as discard_url %}
+                            <a href="{{ discard_url }}" class="btn btn-default btn-xs pull-right flip">
                                 {% trans "Hide message" %}
                             </a>
                             <small><span
