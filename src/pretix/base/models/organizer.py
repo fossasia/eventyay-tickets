@@ -464,6 +464,13 @@ class OrganizerBillingModel(models.Model):
         verbose_name=_("Tax ID"),
     )
 
+    invoice_voucher = models.ForeignKey(
+        "pretixbase.InvoiceVoucher",
+        on_delete=models.CASCADE,
+        related_name="billing",
+        null=True
+    )
+
     stripe_customer_id = models.CharField(
         max_length=255,
         verbose_name=_("Stripe Customer ID"),

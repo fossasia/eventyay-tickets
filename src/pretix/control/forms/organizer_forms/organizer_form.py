@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from pretix.base.forms import I18nModelForm
 from pretix.base.models.organizer import Organizer, OrganizerBillingModel
+from pretix.base.models.vouchers import InvoiceVoucher
 from pretix.helpers.countries import CachedCountries, get_country_name
 from pretix.helpers.stripe_utils import (
     create_stripe_customer, update_customer_info,
@@ -44,6 +45,7 @@ class BillingSettingsForm(forms.ModelForm):
             "country",
             "preferred_language",
             "tax_id",
+            "invoice_voucher"
         ]
 
     primary_contact_name = forms.CharField(
@@ -132,6 +134,14 @@ class BillingSettingsForm(forms.ModelForm):
         required=False,
     )
 
+    invoice_voucher = forms.CharField(
+        label=_("Invoice Voucher"),
+        help_text=_("If you have a voucher code, enter it here."),
+        max_length=255,
+        widget=forms.TextInput(attrs={"placeholder": ""}),
+        required=False,
+    )
+
     def __init__(self, *args, **kwargs):
         self.organizer = kwargs.pop("organizer", None)
         self.warning_message = None
@@ -162,6 +172,25 @@ class BillingSettingsForm(forms.ModelForm):
         result = pyvat.is_vat_number_format_valid(vat_number, country_code)
         return result
 
+    def clean_invoice_voucher(self):
+        voucher_code = self.cleaned_data['invoice_voucher']
+        if not voucher_code:
+            return None
+
+        voucher_instance = InvoiceVoucher.objects.filter(code=voucher_code).first()
+        if not voucher_instance:
+            raise forms.ValidationError("Voucher code not found!")
+
+        if not voucher_instance.is_active():
+            raise forms.ValidationError("The voucher code has either expired or reached its usage limit.")
+
+        if voucher_instance.limit_organizer.exists():
+            limit_organizer = voucher_instance.limit_organizer.values_list("id", flat=True)
+            if self.organizer.id not in limit_organizer:
+                raise forms.ValidationError("Voucher code is not valid for this organizer!")
+
+        return voucher_instance
+
     def clean(self):
         cleaned_data = super().clean()
         country_code = cleaned_data.get("country")
@@ -174,14 +203,16 @@ class BillingSettingsForm(forms.ModelForm):
                 self.add_error("tax_id", _("Invalid VAT number for {}".format(country_name)))
 
     def save(self, commit=True):
+        def set_attribute(instance):
+            for field in self.Meta.fields:
+                setattr(instance, field, self.cleaned_data[field])
+
         instance = OrganizerBillingModel.objects.filter(
             organizer_id=self.organizer.id
         ).first()
 
         if instance:
-            for field in self.Meta.fields:
-                setattr(instance, field, self.cleaned_data[field])
-
+            set_attribute(instance)
             if commit:
                 update_customer_info(
                     instance.stripe_customer_id,
@@ -191,9 +222,7 @@ class BillingSettingsForm(forms.ModelForm):
                 instance.save()
         else:
             instance = OrganizerBillingModel(organizer_id=self.organizer.id)
-            for field in self.Meta.fields:
-                setattr(instance, field, self.cleaned_data[field])
-
+            set_attribute(instance)
             if commit:
                 stripe_customer = create_stripe_customer(
                     email=self.cleaned_data.get("primary_contact_email"),

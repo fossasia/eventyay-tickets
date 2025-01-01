@@ -164,6 +164,7 @@ def generate_invoice_pdf(billing_invoice, organizer_billing_info):
             Paragraph("#", row_header_style),
             Paragraph("DESCRIPTION", row_header_style),
             Paragraph("PRICE", row_header_style),
+            Paragraph("DISCOUNT", row_header_style),
             Paragraph("QUANTITY", row_header_style),
             Paragraph("AMOUNT", row_header_style),
         ],
@@ -171,8 +172,9 @@ def generate_invoice_pdf(billing_invoice, organizer_billing_info):
             "1",
             "Ticket fee for " + f"{billing_invoice.monthly_bill.strftime('%B %Y')}",
             f"{billing_invoice.ticket_fee} {billing_invoice.currency}",
+            f"{billing_invoice.voucher_discount} {billing_invoice.currency}",
             "1",
-            f"{billing_invoice.ticket_fee} {billing_invoice.currency}",
+            f"{billing_invoice.final_ticket_fee} {billing_invoice.currency}",
         ],
     ]
     item_table = Table(
@@ -195,12 +197,12 @@ def generate_invoice_pdf(billing_invoice, organizer_billing_info):
 
     # Footer Totals Section
     totals_data = [
-        ["SUBTOTAL", f"{billing_invoice.ticket_fee}"],
+        ["SUBTOTAL", f"{billing_invoice.final_ticket_fee}"],
         ["TAX", "0"],
         [
             Paragraph("<b>GRAND TOTAL</b>", bold_style),
             Paragraph(
-                f"<b>{billing_invoice.ticket_fee} {billing_invoice.currency}</b>",
+                f"<b>{billing_invoice.final_ticket_fee} {billing_invoice.currency}</b>",
                 bold_style,
             ),
         ],
