@@ -825,23 +825,3 @@ SOCIALACCOUNT_ADAPTER = "pretix.plugins.socialauth.adapter.CustomSocialAccountAd
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
-SOCIALACCOUNT_PROVIDERS = {
-    "mediawiki": {
-        "APP": {
-            "client_id": config.get("social", "mediawiki_client_id", fallback=""),
-            "secret": config.get("social", "mediawiki_client_secret", fallback=""),
-        },
-    },
-    "google": {
-        "APP": {
-            "client_id": config.get("social", "google_client_id", fallback=""),
-            "secret": config.get("social", "google_client_secret", fallback=""),
-        },
-    },
-    "github": {
-        "APP": {
-            "client_id": config.get("social", "github_client_id", fallback=""),
-            "secret": config.get("social", "github_client_secret", fallback=""),
-        },
-    }
-}
