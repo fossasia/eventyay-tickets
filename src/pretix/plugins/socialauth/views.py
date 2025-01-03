@@ -94,32 +94,37 @@ class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         login_providers = self.gs.settings.get('login_providers', as_type=dict)
-        credential_state = request.POST.get('save_credentials', '').lower()
+        setting_state = request.POST.get('save_credentials', '').lower()
 
         for provider in LoginProviders.model_fields.keys():
-            if credential_state == self.SettingState.CREDENTIALS:
-                client_id_value = request.POST.get(f'{provider}_client_id', '')
-                secret_value = request.POST.get(f'{provider}_secret', '')
-
-                if client_id_value and secret_value:
-                    login_providers[provider]['client_id'] = client_id_value
-                    login_providers[provider]['secret'] = secret_value
-
-                    SocialApp.objects.update_or_create(
-                        provider=provider,
-                        defaults={
-                            'client_id': client_id_value,
-                            'secret': secret_value,
-                        }
-                    )
-                continue
-
-            setting_state = request.POST.get(f'{provider}_login', '').lower()
-            if setting_state in [s.value for s in self.SettingState]:
-                login_providers[provider]['state'] = setting_state == self.SettingState.ENABLED
+            if setting_state == self.SettingState.CREDENTIALS:
+                self.update_credentials(request, provider, login_providers)
+            else:
+                self.update_provider_state(request, provider, login_providers)
 
         self.gs.settings.set('login_providers', login_providers)
         return redirect(self.get_success_url())
+
+    def update_credentials(self, request, provider, login_providers):
+        client_id_value = request.POST.get(f'{provider}_client_id', '')
+        secret_value = request.POST.get(f'{provider}_secret', '')
+
+        if client_id_value and secret_value:
+            login_providers[provider]['client_id'] = client_id_value
+            login_providers[provider]['secret'] = secret_value
+
+            SocialApp.objects.update_or_create(
+                provider=provider,
+                defaults={
+                    'client_id': client_id_value,
+                    'secret': secret_value,
+                }
+            )
+
+    def update_provider_state(self, request, provider, login_providers):
+        setting_state = request.POST.get(f'{provider}_login', '').lower()
+        if setting_state in [s.value for s in self.SettingState]:
+            login_providers[provider]['state'] = setting_state == self.SettingState.ENABLED
 
     def get_success_url(self) -> str:
         return reverse('plugins:socialauth:admin.global.social.auth.settings')

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class ProviderConfig(BaseModel):
@@ -11,3 +11,6 @@ class LoginProviders(BaseModel):
     mediawiki: ProviderConfig = Field(default_factory=ProviderConfig)
     github: ProviderConfig = Field(default_factory=ProviderConfig)
     google: ProviderConfig = Field(default_factory=ProviderConfig)
+
+    class Config:
+        extra = "forbid"
