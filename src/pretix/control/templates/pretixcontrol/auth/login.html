@@ -49,12 +49,12 @@
             </div>
         </div>
         <div class="form-group buttons">
-            <button type="button" class="btn btn-primary btn-block" data-toggle="collapse" data-target="#login-form">
+            <button type="button" id="toggle-login" class="btn btn-primary btn-block" data-toggle="collapse" data-target="#login-form">
                 {% trans "Login with Email" %}
             </button>
             {% if login_providers %}
-                {% for provider, enable in login_providers.items %}
-                    {% if enable %}
+                {% for provider, settings in login_providers.items %}
+                    {% if settings.state %}
                         <a href='{% url "plugins:socialauth:social.oauth.login" provider %}' data-method="post" class="btn btn-primary btn-block">
                             {% with provider|capfirst as provider_capitalized %}
                                 {% blocktrans %}Login with {{ provider_capitalized }}{% endblocktrans %}
