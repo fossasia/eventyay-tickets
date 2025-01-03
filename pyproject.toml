@@ -103,6 +103,7 @@ dependencies = [
         'django_celery_beat==2.7.0',
         'cron-descriptor==1.4.5',
         'django-allauth[socialaccount]==65.3.0',
+        'eventyay-stripe @ git+https://github.com/fossasia/eventyay-tickets-stripe.git@master',
         'pydantic==2.10.4'
 ]
 
