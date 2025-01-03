@@ -51,7 +51,7 @@ Registration Steps
 
    - Example: `http://localhost:8000/accounts/mediawiki/login/callback/`
    
-3. Carefully read and follow the instructions on the registration page
+3. Carefully read and follow the instructions on the registration page. Tick option: access private information.
 
 4. The registered application will return:
 
