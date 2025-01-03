@@ -1,6 +1,6 @@
 import logging
 from enum import StrEnum
-from urllib.parse import urlencode, urlparse, urlunparse, urljoin
+from urllib.parse import urlencode, urljoin, urlparse, urlunparse
 
 from allauth.socialaccount.adapter import get_adapter
 from allauth.socialaccount.models import SocialApp
