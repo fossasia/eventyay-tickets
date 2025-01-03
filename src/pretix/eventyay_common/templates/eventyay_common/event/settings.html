@@ -50,9 +50,73 @@
                 {% bootstrap_field form.date_to layout="control" %}
                 {% bootstrap_field form.currency layout="control" %}
                 {% bootstrap_field form.sales_channels layout="control" %}
-                <div>
-                    <label class="col-md-3 control-label">{% trans "Create video for this event" %}</label>
-                    {% bootstrap_field form.is_video_creation %}
+                <div class="form-group">
+                    <label for="{{ form.is_video_creation.id_for_label }}" class="control-label col-md-3">
+                        {% trans "Create video platform" %}
+                    </label>
+                    <div class="col-md-9">
+                        <div class="checkbox" style="display: inline-block;">
+                            <label style="display: inline;">
+                                {{ form.is_video_creation }}
+                                <span> Create video platform for event</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="setting-part">
+                    <div class="form-group setting-form">
+                        <label class="col-md-3 control-label">{% trans "Setting for Tickets system" %}</label>
+                        <div class="col-md-9 col-value">
+                            <label class="enabled">
+                                {% trans "Enabled" %}
+                            </label>
+                            <a href='{% url "control:event.index" organizer=request.organizer.slug event=request.event.slug %}'
+                            class="btn btn-sm btn-default" title='{% trans "Dashboard" %}'
+                            data-toggle="tooltip">
+                                <span class="fa fa-dashboard"></span>
+                            </a>
+                            <a href='{% url "control:event.settings" organizer=request.organizer.slug event=request.event.slug %}'
+                            class="btn btn-sm btn-default" title='{% trans "Setting" %}'
+                            data-toggle="tooltip">
+                                <span class="fa fa-edit"></span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="form-group setting-form">
+                        <label class="col-md-3 control-label">{% trans "Setting for Talk system" %}</label>
+                        <div class="col-md-9 col-value">
+                            {% if is_talk_event_created %}
+                                <label class="enabled">{% trans "Enabled" %}</label>
+                                <a href='{{ talk_edit_url }}'
+                                    class="btn btn-sm btn-default" title='{% trans "Dashboard" %}'
+                                    data-toggle="tooltip">
+                                    <span class="fa fa-dashboard"></span>
+                                </a>
+                                <a href='{{ talk_edit_url }}'
+                                    class="btn btn-sm btn-default" title='{% trans "Settings" %}'
+                                    data-toggle="tooltip">
+                                    <span class="fa fa-edit"></span>
+                                </a>
+                            {% else %}
+                                <label class="disabled">{% trans "Disabled" %}</label>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group custom-form">
+                        <label class="col-md-3 control-label">{% trans "Setting for Video system" %}</label>
+                        <div class="col-md-9 col-value">
+                            {% if is_video_enabled %}
+                                <label class="enabled">{% trans "Enabled" %}</label>
+                                <a href='{% url "eventyay_common:event.create_access_to_video" organizer=request.organizer.slug event=request.event.slug %}'
+                                        class="btn btn-sm btn-default" title='{% trans "Video Configuration" %}'
+                                        data-toggle="tooltip">
+                                    <span class="fa fa-edit"></span>
+                                </a>
+                            {% else %}
+                                <label class="disabled">{% trans "Disabled" %}</label>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </fieldset>
             <fieldset>
@@ -62,24 +126,6 @@
                 {% bootstrap_field sform.timezone layout="control" %}
             </fieldset>
         </div>
-        <fieldset>
-            <h4>{% trans "Setting for Tickets system" %}
-                <a href='{% url "control:event.settings" organizer=request.organizer.slug event=request.event.slug %}'
-                        class="btn btn-sm btn-default" title='{% trans "Edit" %}'
-                        data-toggle="tooltip">
-                    <span class="fa fa-edit"></span>
-                </a>
-            </h4>
-        </fieldset>
-        <fieldset>
-            <h4>{% trans "Setting for Talk system" %}
-                <a href='{{ talk_edit_url }}'
-                        class="btn btn-sm btn-default" title='{% trans "Edit" %}'
-                        data-toggle="tooltip">
-                    <span class="fa fa-edit"></span>
-                </a>
-            </h4>
-        </fieldset>
         <div class="form-group submit-group">
             <button type="submit" class="btn btn-primary btn-save">
                 {% trans "Save" %}

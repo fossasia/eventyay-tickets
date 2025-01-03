@@ -1,0 +1,44 @@
+.col-value {
+    padding-left: 0px;
+    vertical-align: bottom;
+}
+
+.enabled {
+    color: green;
+    text-align: left;
+    font-weight: 500;
+    min-height: 20px;
+    width: 60px;
+    vertical-align: bottom;
+    margin-bottom: 0px;
+    padding-top: 7px;
+    padding-left: 20px;
+    margin-right: 20px;
+}
+
+.disabled {
+    text-align: left;
+    color: red;
+    font-weight: 500;
+    min-height: 20px;
+    padding-left: 0px;
+    width: 60px;
+    margin-bottom: 0px;
+    padding-top: 7px;
+    padding-left: 20px;
+    margin-right: 20px;
+}
+
+.setting-part {
+    margin-bottom: 1%;
+}
+
+.custom-form {
+    padding-left: 1px;
+}
+
+@media only screen and (max-width: 992px) {
+    .col-value {
+        padding-left: 5%;
+    }
+}
