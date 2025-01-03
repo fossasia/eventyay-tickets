@@ -1,6 +1,6 @@
 import logging
 from enum import StrEnum
-from urllib.parse import urlencode, urlparse, urlunparse
+from urllib.parse import urlencode, urljoin, urlparse, urlunparse
 
 from allauth.socialaccount.adapter import get_adapter
 from allauth.socialaccount.models import SocialApp
@@ -90,6 +90,7 @@ class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['login_providers'] = self.gs.settings.get('login_providers', as_type=dict)
+        context['tickets_domain'] = urljoin(settings.SITE_URL, settings.BASE_PATH)
         return context
 
     def post(self, request, *args, **kwargs):
