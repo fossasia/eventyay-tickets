@@ -41,6 +41,7 @@ Important Notes
 
 Registration Steps
 ~~~~~~~~~~~~~~~~~~~
+
 1. Register your OAuth application at: 
    https://meta.wikimedia.org/wiki/Special:OAuthConsumerRegistration/propose
 
