@@ -30,7 +30,7 @@ Instructions:
 
 III. MediaWiki OAuth Application
 ---------------------------------
-To enable MediaWiki social login for your Pretix instance, you need to register an OAuth application with MediaWiki.
+To enable MediaWiki social login for your Eventyay instance, you need to register an OAuth application with MediaWiki.
 
 Important Notes
 ~~~~~~~~~~~~~~~~
@@ -59,8 +59,8 @@ Registration Steps
 
    - One consumer secret
 
-5. Add the consumer key and consumer secret to your Pretix admin settings
+5. Add the consumer key and consumer secret to your Eventyay admin settings
 
 After Approval
 ~~~~~~~~~~~~~~~
-Once approved, other users can log in to your Pretix instance using their MediaWiki account.
+Once approved, other users can log in to your Eventyay instance using their MediaWiki account.

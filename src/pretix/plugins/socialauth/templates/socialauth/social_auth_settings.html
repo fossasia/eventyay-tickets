@@ -49,13 +49,17 @@
                             <tr>
                                 <td colspan="2">
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">{% trans "Client ID" %}</label>
+                                        <label class="col-sm-3 control-label">
+                                            {% trans "Client ID (Consumer token)" %}
+                                        </label>
                                         <div class="col-sm-9">
                                             <input type="text" class="form-control" name="{{ provider }}_client_id" value="{{ settings.client_id }}">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label">{% trans "Secret" %}</label>
+                                        <label class="col-sm-3 control-label">
+                                            {% trans "Secret (Consumer secret)" %}
+                                        </label>
                                         <div class="col-sm-9">
                                             <input type="password" class="form-control" name="{{ provider }}_secret" value="{{ settings.secret }}">
                                         </div>
