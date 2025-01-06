@@ -26,7 +26,10 @@ class PretalxExceptionReporter(ExceptionReporter):
         location = ""
         frame = self.get_traceback_data().get("lastframe")
         if frame:
-            location = f"{frame.get('filename')}:{frame.get('lineno')}"
+            if frame.get("filename"):
+                location = f"{frame.get('filename')}:{frame.get('lineno')}"
+            else:
+                location = f"{dict(frame)}"
 
         if self.request.user.is_anonymous:
             user = "an anonymous user"
