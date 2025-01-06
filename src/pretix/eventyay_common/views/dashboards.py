@@ -152,56 +152,17 @@ def widgets_for_event_qs(request, qs, user, nmax, lazy=False):
                 <a href="#" data-toggle="modal" data-target="#alert-modal" class="component">
                     {_('Video')}
                 </a>
-                <div class="modal fade" id="alert-modal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header bg-danger">
-                                <h3 class="modal-title text-center text-danger">{_('Alert')}</h3>
-                            </div>
-                            <div class="modal-body">
-                                <div class="text-center">
-                                     <p>
-                                        You need to enable this component first.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{_('Close')}</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             """
         if (
             event.settings.create_for == EventCreatedFor.BOTH.value
             or event.settings.talk_schedule_public is not None
         ):
-            talk_url = f'{settings.TALK_HOSTNAME}orga/event/{event.slug}'
-            talk_button = f"""<a href="{talk_url}" class="middle-component">{_('Talk')}</a>"""
+            talk_button = f"""<a href="{event.talk_dashboard_url}" class="middle-component">{_('Talk')}</a>"""
         else:
             talk_button = f"""
                 <a href="#" data-toggle="modal" data-target="#alert-modal" class="middle-component">
                     {_('Talk')}
                 </a>
-                <div class="modal fade" id="alert-modal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header bg-danger">
-                                <h3 class="modal-title text-center text-danger">{_('Alert')}</h3>
-                            </div>
-                            <div class="modal-body">
-                                <div class="text-center">
-                                    <p>
-                                        You need to enable this component first.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{_('Close')}</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             """
 
         widgets.append({
@@ -257,17 +218,6 @@ def widgets_for_event_qs(request, qs, user, nmax, lazy=False):
             'priority': 100,
             'container_class': 'widget-container widget-container-event',
         })
-        """
-            {% if not e.live %}
-                <span class="label label-danger">{% trans "Shop disabled" %}</span>
-            {% elif e.presale_has_ended %}
-                <span class="label label-warning">{% trans "Presale over" %}</span>
-            {% elif not e.presale_is_running %}
-                <span class="label label-warning">{% trans "Presale not started" %}</span>
-            {% else %}
-                <span class="label label-success">{% trans "On sale" %}</span>
-            {% endif %}
-        """
     return widgets
 
 

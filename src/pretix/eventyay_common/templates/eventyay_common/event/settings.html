@@ -24,7 +24,7 @@
                     <i class="fa fa-ticket"></i> {% trans "Tickets" %}
                 </a>
                 {% if is_talk_event_created %}
-                <a href="{{ talk_edit_url }}" class="header-nav btn btn-outline-success">
+                <a href="{{ request.event.talk_dashboard_url }}" class="header-nav btn btn-outline-success">
                     <i class="fa fa-group"></i> {% trans "Talk" %}
                 </a>
                 {% endif %}
@@ -87,12 +87,12 @@
                         <div class="col-md-9 col-value">
                             {% if is_talk_event_created %}
                                 <label class="enabled">{% trans "Enabled" %}</label>
-                                <a href='{{ talk_edit_url }}'
+                                <a href='{{ request.event.talk_dashboard_url }}'
                                     class="btn btn-sm btn-default" title='{% trans "Dashboard" %}'
                                     data-toggle="tooltip">
                                     <span class="fa fa-dashboard"></span>
                                 </a>
-                                <a href='{{ talk_edit_url }}'
+                                <a href='{{ request.event.talk_settings_url }}'
                                     class="btn btn-sm btn-default" title='{% trans "Settings" %}'
                                     data-toggle="tooltip">
                                     <span class="fa fa-edit"></span>
