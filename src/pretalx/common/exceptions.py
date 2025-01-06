@@ -29,7 +29,14 @@ class PretalxExceptionReporter(ExceptionReporter):
             if frame.get("filename"):
                 location = f"{frame.get('filename')}:{frame.get('lineno')}"
             else:
-                location = f"{dict(frame)}"
+                location = f"an unknown location. Here is what we know:\n"
+                location += f"  - exc_type: {self.exc_type}\n"
+                location += f"  - exc_value: {self.exc_value}\n"
+                location += f"  - tb: {self.tb}\n"
+                location += f"  - frame: {frame}\n"
+                location += f"    filename: {frame.get('filename')}\n"
+                location += f"    lineno: {frame.get('lineno')}\n"
+                location += f"  - frames: {self.get_traceback_frames()}\n"
 
         if self.request.user.is_anonymous:
             user = "an anonymous user"
