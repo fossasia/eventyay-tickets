@@ -49,7 +49,7 @@
                 {% endfor %}
             </ul>
             <div class="panel-footer">
-                <a href="{% url "control:event.requiredactions" event=request.event.slug organizer=request.event.organizer.slug %}">
+                <a href='{% url "control:event.requiredactions" event=request.event.slug organizer=request.event.organizer.slug %}'>
                     {% trans "Show more" %}
                 </a>
             </div>

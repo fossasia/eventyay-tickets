@@ -40,7 +40,7 @@
             </p>
             {% if is_talk_event_created %}
                 <p>
-                    {% trans "Go to" %} <a href="{{ talk_edit_url }}">{% trans "Talks Dashboard" %}</a>
+                    {% trans "Go to" %} <a href="{{ request.event.talk_dashboard_url }}">{% trans "Talks Dashboard" %}</a>
                 </p>
             {% else %}
                 <p>
@@ -71,19 +71,14 @@
         </div>
     </div>
     <div class="modal fade" id="alert-modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h3 class="modal-title text-center text-danger">{% trans "Alert" %}</h3>
-                </div>
-                <div class="modal-body">
-                    <div class="text-center">
+                <div class="modal-body text-center">
+                    <br>
                         <p>
                             You need to enable this component first.
                         </p>
-                    </div>
-                </div>
-                <div class="modal-footer">
+                    <br>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
                 </div>
             </div>

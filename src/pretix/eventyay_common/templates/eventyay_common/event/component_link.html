@@ -8,7 +8,7 @@
             <i class="fa fa-ticket"></i> {% trans "Tickets" %}
         </a>
         {% if is_talk_event_created %}
-        <a href="{{ talk_edit_url }}" class="header-nav btn btn-outline-success">
+        <a href="{{ request.event.talk_dashboard_url }}" class="header-nav btn btn-outline-success">
             <i class="fa fa-group"></i> {% trans "Talk" %}
         </a>
         {% endif %}
