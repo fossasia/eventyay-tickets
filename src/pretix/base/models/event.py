@@ -1136,12 +1136,12 @@ class Event(EventMixin, LoggedModel):
 
     @property
     def talk_schedule_url(self):
-        url = url = urljoin(TALK_HOSTNAME, f"{self.slug}/schedule")
+        url = urljoin(TALK_HOSTNAME, f"{self.slug}/schedule")
         return url
 
     @property
     def talk_session_url(self):
-        url = url = urljoin(TALK_HOSTNAME, f"{self.slug}/talk")
+        url = urljoin(TALK_HOSTNAME, f"{self.slug}/talk")
         return url
 
     @property
@@ -1157,6 +1157,7 @@ class Event(EventMixin, LoggedModel):
     @property
     def talk_settings_url(self):
         url = urljoin(TALK_HOSTNAME, f"/orga/event/{self.slug}/settings")
+        return url
 
     @cached_property
     def live_issues(self):
