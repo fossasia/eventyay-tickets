@@ -31,6 +31,7 @@ from venueless.core.models import Channel, User
 from venueless.core.services.world import notify_schedule_change, notify_world_change
 
 from ..core.models import Room, World
+from .task import configure_video_settings_for_talks
 from .utils import get_protocol
 
 logger = logging.getLogger(__name__)
@@ -149,6 +150,18 @@ class CreateWorldView(APIView):
 
             title = titles.get(locale) or titles.get("en") or title_default
 
+            attendee_trait_grants = request.data.get("traits", {}).get("attendee", "")
+            if not isinstance(attendee_trait_grants, str):
+                raise ValidationError("Attendee traits must be a string")
+
+            trait_grants = {
+                "admin": ["admin"],
+                "attendee": (
+                    [attendee_trait_grants] if attendee_trait_grants else ["attendee"]
+                ),
+                "scheduleuser": ["schedule-update"],
+            }
+
             # if world already exists, update it, otherwise create a new world
             world_id = request.data.get("id")
             domain_path = "{}{}/{}".format(
@@ -165,6 +178,7 @@ class CreateWorldView(APIView):
                     world.domain = domain_path
                     world.locale = request.data.get("locale") or "en"
                     world.timezone = request.data.get("timezone") or "UTC"
+                    world.trait_grants = trait_grants
                     world.save()
                 else:
                     world = World.objects.create(
@@ -174,8 +188,11 @@ class CreateWorldView(APIView):
                         locale=request.data.get("locale") or "en",
                         timezone=request.data.get("timezone") or "UTC",
                         config=config,
+                        trait_grants=trait_grants,
                     )
-
+                configure_video_settings_for_talks.delay(
+                    world_id, days=30, number=1, traits=["schedule-update"], long=True
+                )
                 site_url = settings.SITE_URL
                 protocol = get_protocol(site_url)
                 world.domain = "{}://{}".format(protocol, domain_path)
