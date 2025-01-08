@@ -9,6 +9,11 @@
         <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/auth.scss" %}"/>
         <link rel="stylesheet" type="text/x-scss" href="{% static "pretixcontrol/scss/main.scss" %}" />
     {% endcompress %}
+    {% compress js %}
+        <script type="text/javascript" src="{% static "jquery/js/jquery-3.7.1.min.js" %}"></script>
+        <script type="text/javascript" src="{% static "bootstrap/js/bootstrap.js" %}"></script>
+        <script type="text/javascript" src="{% static "pretixcontrol/js/ui/collapse_state.js" %}"></script>
+    {% endcompress %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {% if development_warning or debug_warning %}

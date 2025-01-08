@@ -17,7 +17,6 @@ from .settings_helpers import build_db_tls_config, build_redis_tls_config
 
 from django.contrib.messages import constants as messages  # NOQA
 from django.utils.translation import gettext_lazy as _  # NOQA
-
 _config = configparser.RawConfigParser()
 if 'PRETIX_CONFIG_FILE' in os.environ:
     _config.read_file(open(os.environ.get('PRETIX_CONFIG_FILE'), encoding='utf-8'))
@@ -275,6 +274,7 @@ CSRF_COOKIE_NAME = 'pretix_csrftoken'
 SESSION_COOKIE_HTTPONLY = True
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -381,6 +381,7 @@ CORE_MODULES = {
 }
 
 MIDDLEWARE = [
+    'django.middleware.common.CommonMiddleware',
     'pretix.api.middleware.IdempotencyMiddleware',
     'pretix.multidomain.middlewares.MultiDomainMiddleware',
     'pretix.base.middleware.CustomCommonMiddleware',
@@ -398,6 +399,8 @@ MIDDLEWARE = [
     'pretix.api.middleware.ApiScopeMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
+
+# Configure CORS for testing
 
 # Configure the authentication backends
 AUTHENTICATION_BACKENDS = (
@@ -701,8 +704,18 @@ if config.has_option('sentry', 'dsn') and not any(c in sys.argv for c in ('shell
     from sentry_sdk.integrations.logging import (
         LoggingIntegration, ignore_logger,
     )
+    from sentry_sdk.scrubber import DEFAULT_DENYLIST, EventScrubber
 
     from .sentry import PretixSentryIntegration, setup_custom_filters
+
+    SENTRY_TOKEN = config.get('sentry', 'traces_sample_token', fallback='')
+    denylist = DEFAULT_DENYLIST + ['access_token', 'sentry_dsn']
+
+    def traces_sampler(context):
+        qs = context.get('wsgi_environ', {}).get('QUERY_STRING', '')
+        if SENTRY_TOKEN and SENTRY_TOKEN in qs:
+            return 1.0
+        return config.getfloat('sentry', 'traces_sample_rate', fallback=0.0)
 
     SENTRY_ENABLED = True
     sentry_sdk.init(
@@ -718,6 +731,9 @@ if config.has_option('sentry', 'dsn') and not any(c in sys.argv for c in ('shell
         environment=SITE_URL,
         release=__version__,
         send_default_pii=False,
+        traces_sampler=traces_sampler,
+        event_scrubber=EventScrubber(denylist=denylist, recursive=True),
+        propagate_traces=False
     )
     ignore_logger('pretix.base.tasks')
     ignore_logger('django.security.DisallowedHost')
@@ -822,23 +838,3 @@ SOCIALACCOUNT_ADAPTER = "pretix.plugins.socialauth.adapter.CustomSocialAccountAd
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
-SOCIALACCOUNT_PROVIDERS = {
-    "mediawiki": {
-        "APP": {
-            "client_id": config.get("social", "mediawiki_client_id", fallback=""),
-            "secret": config.get("social", "mediawiki_client_secret", fallback=""),
-        },
-    },
-    "google": {
-        "APP": {
-            "client_id": config.get("social", "google_client_id", fallback=""),
-            "secret": config.get("social", "google_client_secret", fallback=""),
-        },
-    },
-    "github": {
-        "APP": {
-            "client_id": config.get("social", "github_client_id", fallback=""),
-            "secret": config.get("social", "github_client_secret", fallback=""),
-        },
-    }
-}

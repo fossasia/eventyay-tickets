@@ -24699,3 +24699,9 @@ msgstr "Wil je een %(event_name)s account aanmaken?"
 
 msgid "Already have a %(event_name)s account?"
 msgstr "Heb je al een %(event_name)s account?"
+
+msgid "Login with %(provider_capitalized)s"
+msgstr "Inloggen met %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Inloggen met e-mail"

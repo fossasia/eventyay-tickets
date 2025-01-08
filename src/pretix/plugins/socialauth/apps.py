@@ -14,6 +14,7 @@ class SocialAuthApp(AppConfig):
         version = version
         featured = True
         description = _("This plugin allows you to login via social networks")
+        visible = False
 
 
-default_app_config = 'pretix.plugins.socialauth.PaypalApp'
+default_app_config = 'pretix.plugins.socialauth.SocialAuthApp'

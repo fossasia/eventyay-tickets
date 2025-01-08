@@ -1,0 +1,88 @@
+{% load i18n %}
+<div class="setup-container">
+    <legend>{% trans "Social Login Setup" %}</legend>
+    <h4>{% trans "To enable social login for providers, you first need to create an OAuth application on the provider's website." %}</h4>
+    <p>
+        {% trans "Note: When running tests on the server, the tickets component URL is typically" %} <code>https://app-test.eventyay.com/tickets/</code>.
+    </p>
+    <p>
+        {% trans "Therefore, the complete callback URL should be" %} <code>https://app-test.eventyay.com/tickets/accounts/{provider}/login/callback/</code>.
+    </p>
+    <p>
+        {% trans "If you are running on localhost, the callback URL is" %} 
+        <code>http://localhost:8000/accounts/{provider}/login/callback/</code>.
+    </p>
+
+    <section>
+        <h4><strong>{% trans "I. Google OAuth Application" %}</strong></h4>
+        <p>
+            {% trans "Create an OAuth application on" %} <a href="https://console.developers.google.com/">Google Developer Console</a>
+        </p>
+        <p>{% trans "Instructions:" %}</p>
+        <ul>
+            <li>{% trans "Follow the setup guide:" %} 
+                <a href="https://medium.com/@tony.infisical/guide-to-using-oauth-2-0-to-access-google-apis-dead94d6866d">Guide to using OAuth 2.0 to access Google APIs</a>
+            </li>
+            <li>{% trans "Set the callback URL to:" %} 
+                {% with callback_url=tickets_domain|add:"/accounts/google/login/callback/" %}
+                    <code>{{ callback_url }}</code>
+                {% endwith %}
+            </li>
+            <li>{% trans "Add the client ID and client secret to admin settings" %}</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4><strong>{% trans "II. GitHub OAuth Application" %}</strong></h4>
+        <p>
+            {% trans "Create an OAuth application on" %} <a href="https://github.com/settings/applications/new">GitHub Applications</a>
+        </p>
+        <p>{% trans "Instructions:" %}</p>
+        <ul>
+            <li>{% trans "Set the callback URL to:" %} 
+                {% with callback_url=tickets_domain|add:"/accounts/github/login/callback/" %}
+                    <code>{{ callback_url }}</code>
+                {% endwith %}
+            </li>
+            <li>{% trans "Add the client ID and client secret to admin settings" %}</li>
+        </ul>
+    </section>
+
+    <section>
+        <h4><strong>{% trans "III. MediaWiki OAuth Application" %}</strong></h4>
+        <p>
+            {% trans "To enable MediaWiki social login for your Eventyay instance, you need to register an OAuth application with MediaWiki." %}
+        </p>
+
+        <strong>{% trans "Important Notes" %}</strong>
+        <ul>
+            <li>{% trans "The OAuth application must be approved by a MediaWiki administrator" %}</li>
+            <li>{% trans "Until approved, only the application owner can log in" %}</li>
+        </ul>
+
+        <strong>{% trans "Registration Steps" %}</strong>
+        <ol>
+            <li>{% trans "Register your OAuth application at:" %} 
+                <a href="https://meta.wikimedia.org/wiki/Special:OAuthConsumerRegistration/propose">MediaWiki OAuth Consumer Registration</a>
+            </li>
+            <li>{% trans "Set the callback URL to:" %} 
+                {% with callback_url=tickets_domain|add:"/accounts/mediawiki/login/callback/" %}
+                    <code>{{ callback_url }}</code>
+                {% endwith %}
+            </li>
+            <li>{% trans "Carefully read and follow the instructions on the registration page. Tick option: access private information." %}</li>
+            <li>{% trans "The registered application will return:" %}
+                <ul>
+                    <li>{% trans "One consumer token (client id)" %}</li>
+                    <li>{% trans "One consumer secret" %}</li>
+                </ul>
+            </li>
+            <li>{% trans "Add the consumer key and consumer secret to your Eventyay admin settings" %}</li>
+        </ol>
+
+        <strong>{% trans "After Approval" %}</strong>
+        <p>
+            {% trans "Once approved, other users can log in to your Eventyay instance using their MediaWiki account." %}
+        </p>
+    </section>
+</div>

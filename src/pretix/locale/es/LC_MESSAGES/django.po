@@ -25978,3 +25978,9 @@ msgstr "¿Quieres crear una cuenta de %(event_name)s?"
 
 msgid "Already have a %(event_name)s account?"
 msgstr "¿Ya tienes una cuenta de %(event_name)s?"
+
+msgid "Login with %(provider_capitalized)s"
+msgstr "Iniciar sesión con %(provider_capitalized)s"
+
+msgid "Login with email"
+msgstr "Iniciar sesión con correo electrónico"
