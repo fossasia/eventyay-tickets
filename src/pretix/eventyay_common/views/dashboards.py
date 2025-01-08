@@ -1,8 +1,17 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Tuple
 
 import pytz
+from pytz.tzinfo import DstTzInfo
 from django.db.models import (
-    Count, Exists, IntegerField, Max, Min, OuterRef, Q, QuerySet, Subquery,
+    Count,
+    Exists,
+    IntegerField,
+    Max,
+    Min,
+    OuterRef,
+    Q,
+    QuerySet,
+    Subquery,
 )
 from django.db.models.functions import Coalesce, Greatest
 from django.http import HttpRequest, HttpResponse, JsonResponse
@@ -13,79 +22,12 @@ from django.utils.html import escape
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
-from pretix.base.models import Order, RequiredAction
+from pretix.base.models import Order, RequiredAction, Event
 from pretix.control.signals import user_dashboard_widgets
 from pretix.helpers.daterange import daterange
 from pretix.helpers.plugin_enable import is_video_enabled
 
 from .event import EventCreatedFor
-
-
-def eventyay_common_dashboard(request: HttpRequest) -> HttpResponse:
-    widgets = []
-    for r, result in user_dashboard_widgets.send(request, user=request.user):
-        widgets.extend(result)
-    ctx = {
-        "widgets": rearrange(widgets),
-        "can_create_event": request.user.teams.filter(can_create_events=True).exists(),
-        "upcoming": widgets_for_event_qs(
-            request,
-            annotated_event_query(request, lazy=True)
-            .filter(
-                Q(has_subevents=False)
-                & Q(
-                    Q(Q(date_to__isnull=True) & Q(date_from__gte=now()))
-                    | Q(Q(date_to__isnull=False) & Q(date_to__gte=now()))
-                )
-            )
-            .order_by("date_from", "order_to", "pk"),
-            7,
-            lazy=True,
-        ),
-        "past": widgets_for_event_qs(
-            request,
-            annotated_event_query(request, lazy=True)
-            .filter(
-                Q(has_subevents=False)
-                & Q(
-                    Q(Q(date_to__isnull=True) & Q(date_from__lt=now()))
-                    | Q(Q(date_to__isnull=False) & Q(date_to__lt=now()))
-                )
-            )
-            .order_by("-order_to", "pk"),
-            8,
-            lazy=True,
-        ),
-        "series": widgets_for_event_qs(
-            request,
-            annotated_event_query(request, lazy=True)
-            .filter(has_subevents=True)
-            .order_by("-order_to", "pk"),
-            8,
-            lazy=True,
-        ),
-    }
-
-    return render(request, "eventyay_common/dashboard/dashboard.html", ctx)
-
-
-def rearrange(widgets: list):
-    """
-    Sort widget boxes according to priority.
-    """
-    mapping = {
-        "small": 1,
-        "big": 2,
-        "full": 3,
-    }
-
-    def sort_key(element):
-        return (
-            element.get("priority", 1),
-            mapping.get(element.get("display_size", "small"), 1),
-        )
-
-    return sorted(widgets, key=sort_key, reverse=True)
 
 
 class EventWidgetGenerator:
@@ -94,17 +36,11 @@ class EventWidgetGenerator:
     """
 
     @staticmethod
-    def get_event_query(qs: QuerySet, nmax: int, lazy: bool = False) -> QuerySet:
+    def get_event_query(
+        qs: QuerySet[Event], nmax: int, lazy: bool = False
+    ) -> QuerySet[Event]:
         """
         Prepare event queryset with optimized loading.
-
-        Args:
-            qs: Original queryset
-            nmax: Maximum number of events
-            lazy: Enable lazy loading
-
-        Returns:
-            Processed queryset
         """
         if lazy:
             return qs[:nmax]
@@ -114,16 +50,9 @@ class EventWidgetGenerator:
         ).select_related("organizer")[:nmax]
 
     @staticmethod
-    def format_event_daterange(event, tz) -> Optional[str]:
+    def format_event_daterange(event: Event, tz: DstTzInfo) -> str:
         """
         Generate a formatted date range for an event.
-
-        Args:
-            event: Event object
-            tz: Timezone
-
-        Returns:
-            Formatted date range or None
         """
         if event.has_subevents:
             return (
@@ -143,17 +72,9 @@ class EventWidgetGenerator:
         return date_format(event.date_from.astimezone(tz), "DATE_FORMAT")
 
     @staticmethod
-    def format_event_times(event, tz, request: HttpRequest) -> str:
+    def format_event_times(event: Event, tz: DstTzInfo, request: HttpRequest) -> str:
         """
         Generate a formatted time string for an event.
-
-        Args:
-            event: Event object
-            tz: Timezone
-            request: HTTP request
-
-        Returns:
-            Formatted time string
         """
         if event.has_subevents:
             return _("Event series")
@@ -180,8 +101,10 @@ class EventWidgetGenerator:
         return formatted_times
 
     @staticmethod
-    def generate_video_button(event) -> str:
-        """Generate a video button based on event configuration."""
+    def generate_video_button(event: Event) -> str:
+        """
+        Generate a video button based on event configuration.
+        """
         if is_video_enabled(event):
             url = reverse(
                 "eventyay_common:event.create_access_to_video",
@@ -195,8 +118,10 @@ class EventWidgetGenerator:
         """
 
     @staticmethod
-    def generate_talk_button(event) -> str:
-        """Generate a talk button based on event settings."""
+    def generate_talk_button(event: Event) -> str:
+        """
+        Generate a talk button based on event settings.
+        """
         if (
             event.settings.create_for == EventCreatedFor.BOTH.value
             or event.settings.talk_schedule_public is not None
@@ -210,18 +135,10 @@ class EventWidgetGenerator:
 
     @classmethod
     def generate_widget(
-        cls, event, request: HttpRequest, lazy: bool = False
+        cls, event: Event, request: HttpRequest, lazy: bool = False
     ) -> Dict[str, Any]:
         """
         Generate a complete widget for an event.
-
-        Args:
-            event: Event object
-            request: HTTP request
-            lazy: Enable lazy loading
-
-        Returns:
-            Widget dictionary
         """
         widget_content = ""
         if not lazy:
@@ -272,7 +189,7 @@ class EventWidgetGenerator:
 
 
 def widgets_for_event_qs(
-    request: HttpRequest, qs: QuerySet, nmax: int, lazy: bool = False
+    request: HttpRequest, qs: QuerySet[Event], nmax: int, lazy: bool = False
 ) -> List[Dict[str, Any]]:
     """
     Generate event widgets for dashboard display.
@@ -284,7 +201,7 @@ def widgets_for_event_qs(
     ]
 
 
-def annotated_event_query(request: HttpRequest, lazy: bool = False) -> QuerySet:
+def annotated_event_query(request: HttpRequest, lazy: bool = False) -> QuerySet[Event]:
     active_orders = (
         Order.objects.filter(
             event=OuterRef("pk"), status__in=[Order.STATUS_PENDING, Order.STATUS_PAID]
@@ -311,6 +228,73 @@ def annotated_event_query(request: HttpRequest, lazy: bool = False) -> QuerySet:
         order_to=Coalesce("max_fromto", "max_to", "max_from", "date_to", "date_from"),
     )
     return qs
+
+
+def rearrange(widgets: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """
+    Sort widget boxes according to priority.
+    """
+    mapping = {
+        "small": 1,
+        "big": 2,
+        "full": 3,
+    }
+
+    def sort_key(element: Dict[str, Any]) -> Tuple[int, int]:
+        return (
+            element.get("priority", 1),
+            mapping.get(element.get("display_size", "small"), 1),
+        )
+
+    return sorted(widgets, key=sort_key, reverse=True)
+
+
+def eventyay_common_dashboard(request: HttpRequest) -> HttpResponse:
+    widgets = []
+    for r, result in user_dashboard_widgets.send(request, user=request.user):
+        widgets.extend(result)
+    ctx = {
+        "widgets": rearrange(widgets),
+        "can_create_event": request.user.teams.filter(can_create_events=True).exists(),
+        "upcoming": widgets_for_event_qs(
+            request,
+            annotated_event_query(request, lazy=True)
+            .filter(
+                Q(has_subevents=False)
+                & Q(
+                    Q(Q(date_to__isnull=True) & Q(date_from__gte=now()))
+                    | Q(Q(date_to__isnull=False) & Q(date_to__gte=now()))
+                )
+            )
+            .order_by("date_from", "order_to", "pk"),
+            7,
+            lazy=True,
+        ),
+        "past": widgets_for_event_qs(
+            request,
+            annotated_event_query(request, lazy=True)
+            .filter(
+                Q(has_subevents=False)
+                & Q(
+                    Q(Q(date_to__isnull=True) & Q(date_from__lt=now()))
+                    | Q(Q(date_to__isnull=False) & Q(date_to__lt=now()))
+                )
+            )
+            .order_by("-order_to", "pk"),
+            8,
+            lazy=True,
+        ),
+        "series": widgets_for_event_qs(
+            request,
+            annotated_event_query(request, lazy=True)
+            .filter(has_subevents=True)
+            .order_by("-order_to", "pk"),
+            8,
+            lazy=True,
+        ),
+    }
+
+    return render(request, "eventyay_common/dashboard/dashboard.html", ctx)
 
 
 def user_index_widgets_lazy(request: HttpRequest) -> JsonResponse:
