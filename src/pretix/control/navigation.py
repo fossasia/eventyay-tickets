@@ -395,21 +395,22 @@ def get_organizer_navigation(request):
                     }),
                     'active': url.url_name == 'organizer.edit',
                 },
-                {
-                    'label': _('Event metadata'),
-                    'url': reverse('control:organizer.properties', kwargs={
-                        'organizer': request.organizer.slug
-                    }),
-                    'active': url.url_name.startswith('organizer.propert'),
-                },
-                {
-                    'label': _('Webhooks'),
-                    'url': reverse('control:organizer.webhooks', kwargs={
-                        'organizer': request.organizer.slug
-                    }),
-                    'active': 'organizer.webhook' in url.url_name,
-                    'icon': 'bolt',
-                },
+                # Temporary disabled
+                # {
+                #     'label': _('Event metadata'),
+                #     'url': reverse('control:organizer.properties', kwargs={
+                #         'organizer': request.organizer.slug
+                #     }),
+                #     'active': url.url_name.startswith('organizer.propert'),
+                # },
+                # {
+                #     'label': _('Webhooks'),
+                #     'url': reverse('control:organizer.webhooks', kwargs={
+                #         'organizer': request.organizer.slug
+                #     }),
+                #     'active': 'organizer.webhook' in url.url_name,
+                #     'icon': 'bolt',
+                # },
                 {
                     "label": _("Billing settings"),
                     "url": reverse(
@@ -430,15 +431,15 @@ def get_organizer_navigation(request):
             'icon': 'group',
         })
 
-    if 'can_manage_gift_cards' in request.orgapermset:
-        nav.append({
-            'label': _('Gift cards'),
-            'url': reverse('control:organizer.giftcards', kwargs={
-                'organizer': request.organizer.slug
-            }),
-            'active': 'organizer.giftcard' in url.url_name,
-            'icon': 'credit-card',
-        })
+    # if 'can_manage_gift_cards' in request.orgapermset:
+    #     nav.append({
+    #         'label': _('Gift cards'),
+    #         'url': reverse('control:organizer.giftcards', kwargs={
+    #             'organizer': request.organizer.slug
+    #         }),
+    #         'active': 'organizer.giftcard' in url.url_name,
+    #         'icon': 'credit-card',
+    #     })
     if 'can_change_organizer_settings' in request.orgapermset:
         nav.append({
             'label': _('Devices'),

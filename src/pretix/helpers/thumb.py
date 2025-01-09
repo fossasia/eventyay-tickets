@@ -4,7 +4,7 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 from PIL import Image, ImageOps
-from PIL.Image import LANCZOS
+from PIL.Image import Resampling
 
 from pretix.helpers.models import Thumbnail
 
@@ -60,7 +60,7 @@ def create_thumbnail(sourcename, size):
     image = ImageOps.exif_transpose(image)
 
     scale, crop = get_sizes(size, image.size)
-    image = image.resize(scale, resample=LANCZOS)
+    image = image.resize(scale, resample=Resampling.LANCZOS)
     if crop:
         image = image.crop(crop)
 

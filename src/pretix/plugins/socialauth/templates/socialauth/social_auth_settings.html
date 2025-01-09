@@ -25,30 +25,60 @@
                 <legend>{% trans "Social login providers" %}</legend>
                 <div class="table-responsive">
                     <table class="table">
-                        {% for provider, enabled in login_providers.items %}
-                        <tr class="{% if enabled %}success{% else %}default{% endif %}">
-                            <td>
-                                {% with provider|capfirst as provider_capitalized %}
-                                    <strong>{% trans provider_capitalized %}</strong>
-                                    <p>{% blocktrans %}Login with {{ provider_capitalized }}{% endblocktrans %}</p>
-                                {% endwith %}
-                            </td>
-                            <td class="text-right flip" width="20%">
-                                {% if enabled %}
-                                    <button class="btn btn-default btn-block" name="{{ provider }}_login" value="disabled">
-                                        {% trans "Disabled" %}
-                                    </button>
-                                {% else %}
-                                    <button class="btn btn-default btn-block" name="{{ provider }}_login" value="enabled">
-                                        {% trans "Enabled" %}
-                                    </button>
-                                {% endif %}
-                            </td>
-                        </tr>
+                        {% for provider, settings in login_providers.items %}
+                            <tr class="{% if settings.state %}success{% else %}default{% endif %}">
+                                <td>
+                                    {% with provider|capfirst as provider_capitalized %}
+                                        <strong>{% trans provider_capitalized %}</strong>
+                                        <p>{% blocktrans %}Login with {{ provider_capitalized }}{% endblocktrans %}</p>
+                                    {% endwith %}
+                                </td>
+                                <td class="text-right flip" width="20%">
+                                    {% if settings.state %}
+                                        <button class="btn btn-default btn-block" name="{{ provider }}_login" value="disabled">
+                                            {% trans "Disable" %}
+                                        </button>
+                                    {% else %}
+                                        <button class="btn btn-default btn-block" name="{{ provider }}_login" value="enabled">
+                                            {% trans "Enable" %}
+                                        </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% if settings.state %}
+                            <tr>
+                                <td colspan="2">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            {% trans "Client ID (Consumer token)" %}
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" name="{{ provider }}_client_id" value="{{ settings.client_id }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            {% trans "Secret (Consumer secret)" %}
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <input type="password" class="form-control" name="{{ provider }}_secret" value="{{ settings.secret }}">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endif %}
                         {% endfor %}
                     </table>
                 </div>
             </fieldset>
+            <fieldset>
+                {% include "socialauth/social_setup.html" %}
+            </fieldset>
+        </div>
+        <div class="form-group submit-group">
+            <button type="submit" class="btn btn-primary btn-save" name="save_credentials" value="credentials">
+                {% trans "Save" %}
+            </button>
         </div>
     </form>
 {% endblock %}

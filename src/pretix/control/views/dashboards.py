@@ -321,7 +321,6 @@ def event_index(request, organizer, event):
                                                                   'can_change_event_settings', request=request)
     can_view_vouchers = request.user.has_event_permission(request.organizer, request.event, 'can_view_vouchers',
                                                           request=request)
-
     widgets = []
     if can_view_orders:
         for r, result in event_dashboard_widgets.send(sender=request.event, subevent=subevent, lazy=True):
@@ -390,6 +389,7 @@ def event_index(request, organizer, event):
     ]
     ctx['today'] = now().astimezone(request.event.timezone).date()
     ctx['nearly_now'] = now().astimezone(request.event.timezone) - timedelta(seconds=20)
+    ctx['organizer_teams'] = request.organizer.teams.values_list('id', 'name')
     resp = render(request, 'pretixcontrol/event/index.html', ctx)
     # resp['Content-Security-Policy'] = "style-src 'unsafe-inline'"
     return resp
