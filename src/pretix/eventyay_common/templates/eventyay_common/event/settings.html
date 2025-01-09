@@ -50,26 +50,14 @@
                 {% bootstrap_field form.date_to layout="control" %}
                 {% bootstrap_field form.currency layout="control" %}
                 {% bootstrap_field form.sales_channels layout="control" %}
-                <div class="form-group">
-                    <label for="{{ form.is_video_creation.id_for_label }}" class="control-label col-md-3">
-                        {% trans "Create video platform" %}
-                    </label>
-                    <div class="col-md-9">
-                        <div class="checkbox">
-                            <label>
-                                {{ form.is_video_creation }}
-                                <span> Create video platform for event</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
                 <div class="setting-part">
                     <div class="form-group setting-form">
                         <label class="col-md-3 control-label">{% trans "Tickets system" %}</label>
                         <div class="col-md-9 col-value">
-                            <label class="enabled">
+                            <button type="button" class="btn btn-sm btn-default enabled" data-toggle="modal"
+                                    data-target="#alert-modal-disabled">
                                 {% trans "Enabled" %}
-                            </label>
+                            </button>
                             <a href='{% url "control:event.index" organizer=request.organizer.slug event=request.event.slug %}'
                             class="btn btn-sm btn-default" title='{% trans "Dashboard" %}'
                             data-toggle="tooltip">
@@ -86,7 +74,10 @@
                         <label class="col-md-3 control-label">{% trans "Talk system" %}</label>
                         <div class="col-md-9 col-value">
                             {% if is_talk_event_created %}
-                                <label class="enabled">{% trans "Enabled" %}</label>
+                                <button type="button" class="btn btn-sm btn-default enabled" data-toggle="modal"
+                                        data-target="#alert-modal-disabled">
+                                    {% trans "Enabled" %}
+                                </button>
                                 <a href='{{ request.event.talk_dashboard_url }}'
                                     class="btn btn-sm btn-default" title='{% trans "Dashboard" %}'
                                     data-toggle="tooltip">
@@ -98,7 +89,10 @@
                                     <span class="fa fa-edit"></span>
                                 </a>
                             {% else %}
-                                <label class="disabled">{% trans "Disabled" %}</label>
+                                <button type="button" class="btn btn-sm btn-default disabled" data-toggle="modal"
+                                        data-target="#alert-modal-enable-talk">
+                                    {% trans "Disabled" %}
+                                </button>
                             {% endif %}
                         </div>
                     </div>
@@ -106,14 +100,20 @@
                         <label class="col-md-3 control-label">{% trans "Video system" %}</label>
                         <div class="col-md-9 col-value">
                             {% if is_video_enabled %}
-                                <label class="enabled">{% trans "Enabled" %}</label>
+                                <button type="button" class="btn btn-sm btn-default enabled" data-toggle="modal"
+                                        data-target="#alert-modal-disabled">
+                                    {% trans "Enabled" %}
+                                </button>
                                 <a href='{% url "eventyay_common:event.create_access_to_video" organizer=request.organizer.slug event=request.event.slug %}'
                                         class="btn btn-sm btn-default" title='{% trans "Video Configuration" %}'
                                         data-toggle="tooltip">
                                     <span class="fa fa-edit"></span>
                                 </a>
                             {% else %}
-                                <label class="disabled">{% trans "Disabled" %}</label>
+                                <button type="button" class="btn btn-sm btn-default disabled" data-toggle="modal"
+                                        data-target="#alert-modal-enable-video">
+                                    {% trans "Disabled" %}
+                                </button>
                             {% endif %}
                         </div>
                     </div>
@@ -131,5 +131,66 @@
                 {% trans "Save" %}
             </button>
         </div>
+
+        <div class="modal fade" id="alert-modal-enable-talk" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <br>
+                            <p>
+                                Do you want to enable the feature?
+                            </p>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-6 text-right">
+                                <button class="btn btn-primary" name="enable_talk_system" value="enable">{% trans "Yes" %}</button>
+                            </div>
+                            <div class="col-xs-6 text-left">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="modal fade" id="alert-modal-enable-video" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <br>
+                            <p>
+                                Do you want to enable the feature?
+                            </p>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-6 text-right">
+                                <button class="btn btn-primary" name="enable_video_system" value="enable">{% trans "Yes" %}</button>
+                            </div>
+                            <div class="col-xs-6 text-left">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="modal fade" id="alert-modal-disabled" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body text-center">
+                        <br>
+                            <p>
+                                The feature cannot be disabled, but if you do not publish it, it will not show up publicly.
+                            </p>
+                        <br>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Ok" %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </form>
+
 {% endblock %}

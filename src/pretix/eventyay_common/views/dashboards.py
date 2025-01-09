@@ -1,17 +1,8 @@
 from typing import Any, Dict, List, Tuple
 
 import pytz
-from pytz.tzinfo import DstTzInfo
 from django.db.models import (
-    Count,
-    Exists,
-    IntegerField,
-    Max,
-    Min,
-    OuterRef,
-    Q,
-    QuerySet,
-    Subquery,
+    Count, Exists, IntegerField, Max, Min, OuterRef, Q, QuerySet, Subquery,
 )
 from django.db.models.functions import Coalesce, Greatest
 from django.http import HttpRequest, HttpResponse, JsonResponse
@@ -21,13 +12,14 @@ from django.utils.formats import date_format
 from django.utils.html import escape
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from pytz.tzinfo import DstTzInfo
 
-from pretix.base.models import Order, RequiredAction, Event
+from pretix.base.models import Event, Order, RequiredAction
 from pretix.control.signals import user_dashboard_widgets
 from pretix.helpers.daterange import daterange
 from pretix.helpers.plugin_enable import is_video_enabled
 
-from .event import EventCreatedFor
+from ..utils import EventCreatedFor
 
 
 class EventWidgetGenerator:

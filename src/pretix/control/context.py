@@ -15,7 +15,7 @@ from pretix.control.navigation import (
     get_organizer_navigation,
 )
 
-from ..eventyay_common.views.event import EventCreatedFor
+from ..eventyay_common.utils import EventCreatedFor
 from ..helpers.i18n import (
     get_javascript_format, get_javascript_output_format, get_moment_locale,
 )

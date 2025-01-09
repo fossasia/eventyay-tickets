@@ -369,10 +369,6 @@ class EventMetaValueForm(forms.ModelForm):
 
 
 class EventUpdateForm(I18nModelForm):
-    is_video_creation = forms.BooleanField(
-        required=False,
-    )
-
     def __init__(self, *args, **kwargs):
         self.change_slug = kwargs.pop("change_slug", False)
         self.domain = kwargs.pop("domain", False)
@@ -411,9 +407,6 @@ class EventUpdateForm(I18nModelForm):
             ),
             widget=forms.CheckboxSelectMultiple,
         )
-        self.is_video_creation = self.initial.get("is_video_creation")
-        if self.is_video_creation:
-            self.fields["is_video_creation"].disabled = True
 
     def clean_domain(self):
         d = self.cleaned_data["domain"]
@@ -484,7 +477,6 @@ class EventUpdateForm(I18nModelForm):
             "geo_lat",
             "geo_lon",
             "sales_channels",
-            "is_video_creation",
         ]
         field_classes = {
             "date_from": SplitDateTimeField,
