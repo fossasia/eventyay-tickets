@@ -218,7 +218,7 @@ class SendEventTask(Task):
         Returns:
             Any: Result from parent class on_success method
         """
-        event = kwargs.get("event", {}).get("slug")
+        event = kwargs.get("event", {}).get("slug", "")
         try:
             event = Event.objects.get(slug=event)
             event.settings.set("create_for", EventCreatedFor.BOTH.value)
