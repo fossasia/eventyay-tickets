@@ -10,8 +10,7 @@ from django_scopes import scope
 from pretix.base.models.auth import StaffSession
 from pretix.base.settings import GlobalSettingsObject
 from pretix.eventyay_common.navigation import (
-    get_event_navigation,
-    get_global_navigation,
+    get_event_navigation, get_global_navigation,
 )
 
 from ..helpers.plugin_enable import is_video_enabled
