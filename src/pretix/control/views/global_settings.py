@@ -1,7 +1,7 @@
 import logging
 import secrets
-
 from enum import StrEnum
+
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import IntegrityError

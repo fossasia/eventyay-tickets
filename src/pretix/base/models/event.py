@@ -1204,21 +1204,20 @@ class Event(EventMixin, LoggedModel):
                 issues.append(
                     (
                         "<a {a_attr}>"
-                        + gettext('You need to fill the billing information.')
+                        + gettext("You need to fill the billing information.")
                         + "</a>"
                     ).format(
                         a_attr='href="%s#tab-0-1-open"'
-                            % (
-                                reverse(
-                                    "control:organizer.settings.billing",
-                                    kwargs={
-                                        "organizer": self.organizer.slug,
-                                    },
-                                ),
+                        % (
+                            reverse(
+                                "control:organizer.settings.billing",
+                                kwargs={
+                                    "organizer": self.organizer.slug,
+                                },
                             ),
+                        ),
                     )
                 )
-            
 
         responses = event_live_issues.send(self)
         for receiver, response in sorted(responses, key=lambda r: str(r[0])):
