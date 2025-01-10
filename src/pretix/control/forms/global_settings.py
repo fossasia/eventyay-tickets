@@ -142,10 +142,53 @@ class GlobalSettingsForm(SettingsForm):
         self.fields['banner_message'].widget.attrs['rows'] = '2'
         self.fields['banner_message_detail'].widget.attrs['rows'] = '3'
         self.fields = OrderedDict(list(self.fields.items()) + [
-            ('stripe_webhook_secret_key', SecretKeySettingsField(
-                label=_('Stripe Webhook: Signing secret'),
-                required=False,
-            )),
+            (
+                'payment_stripe_connect_secret_key',
+                SecretKeySettingsField(
+                    label=_('Stripe Connect: Secret key'),
+                    required=False,
+                    validators=(
+                        StripeKeyValidator(['sk_live_', 'rk_live_']),
+                    ),
+                )
+            ),
+            (
+                'payment_stripe_connect_publishable_key',
+                forms.CharField(
+                    label=_('Stripe Connect: Publishable key'),
+                    required=False,
+                    validators=(
+                        StripeKeyValidator('pk_live_'),
+                    ),
+                )
+            ),
+            (
+                'payment_stripe_connect_test_secret_key',
+                SecretKeySettingsField(
+                    label=_('Stripe Connect: Secret key (test)'),
+                    required=False,
+                    validators=(
+                        StripeKeyValidator(['sk_test_', 'rk_test_']),
+                    ),
+                )
+            ),
+            (
+                'payment_stripe_connect_test_publishable_key', 
+                forms.CharField(
+                    label=_('Stripe Connect: Publishable key (test)'),
+                    required=False,
+                    validators=(
+                        StripeKeyValidator('pk_test_'),
+                    ),
+                )
+            ),
+            (
+                'stripe_webhook_secret_key',
+                SecretKeySettingsField(
+                    label=_('Stripe Webhook: Secret key'),
+                    required=False,
+                )
+            ),
             (
                 "ticket_fee_percentage",
                 forms.DecimalField(
@@ -195,3 +238,24 @@ class SSOConfigForm(SettingsForm):
     def __init__(self, *args, **kwargs):
         self.obj = GlobalSettingsObject()
         super().__init__(*args, obj=self.obj, **kwargs)
+
+
+class StripeKeyValidator:
+    def __init__(self, prefix):
+        assert len(prefix) > 0
+        if isinstance(prefix, list):
+            self._prefixes = prefix
+        else:
+            self._prefixes = [prefix]
+            assert isinstance(prefix, str)
+
+    def __call__(self, value):
+        if not any(value.startswith(p) for p in self._prefixes):
+            raise forms.ValidationError(
+                _('The provided key "%(value)s" does not look valid. It should start with "%(prefix)s".'),
+                code='invalid-stripe-key',
+                params={
+                    'value': value,
+                    'prefix': self._prefixes[0],
+                },
+            )
