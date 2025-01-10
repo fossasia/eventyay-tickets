@@ -4,7 +4,7 @@
         {% trans "Event organizer" %}
     </h3>
 </div>
-<div class="panel-body timeline">
+<div class="panel-body timeline overide-panel-body">
     <div class="info-row">
         {% trans "This event is organized by" %} <strong><a href="{% url 'control:organizer' request.organizer.slug %}">{{ request.organizer }}</a></strong>
     </div>

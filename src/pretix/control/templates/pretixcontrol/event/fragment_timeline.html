@@ -4,7 +4,7 @@
         {% trans "Your timeline" %}
     </h3>
 </div>
-<div class="panel-body timeline">
+<div class="panel-body timeline overide-panel-body">
     {% regroup timeline by date as tl_list %}
     {% for day in tl_list %}
         <div class="row {% if day.grouper < today %}text-muted{% endif %}">

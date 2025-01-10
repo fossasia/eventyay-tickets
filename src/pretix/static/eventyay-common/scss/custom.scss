@@ -58,6 +58,10 @@
     min-height: 80%;
 }
 
+.overide-panel-body {
+    display: inline-block;
+}
+
 .panel-body p:first-child {
     grid-row: 1;
     margin-bottom: 1%;
