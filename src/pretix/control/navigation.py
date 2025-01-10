@@ -584,7 +584,7 @@ def get_admin_navigation(request):
                 {
                     'label': _('Billing Validation'),
                     'url': reverse('control:admin.toggle.billing.validation'),
-                    'active': (url.url_name == 'control:admin.toggle.billing.validation'),
+                    'active': (url.url_name == 'admin.toggle.billing.validation'),
                 },
             ]
         },
