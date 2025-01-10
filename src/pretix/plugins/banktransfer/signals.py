@@ -51,37 +51,41 @@ def control_nav_import(sender, request=None, **kwargs):
 
 @receiver(nav_organizer, dispatch_uid="payment_banktransfer_organav")
 def control_nav_orga_import(sender, request=None, **kwargs):
-    url = resolve(request.path_info)
-    if not request.user.has_organizer_permission(request.organizer, 'can_change_orders', request=request):
-        return []
-    if not request.organizer.events.filter(plugins__icontains='pretix.plugins.banktransfer'):
-        return []
-    return [
-        {
-            'label': _("Bank transfer"),
-            'url': reverse('plugins:banktransfer:import', kwargs={
-                'organizer': request.organizer.slug,
-            }),
-            'icon': 'university',
-            'children': [
-                {
-                    'label': _('Import bank data'),
-                    'url': reverse('plugins:banktransfer:import', kwargs={
-                        'organizer': request.organizer.slug,
-                    }),
-                    'active': (url.namespace == 'plugins:banktransfer' and url.url_name == 'import'),
-                    'icon': 'upload',
-                },
-                {
-                    'label': _('Export refunds'),
-                    'url': reverse('plugins:banktransfer:refunds.list', kwargs={
-                        'organizer': request.organizer.slug,
-                    }),
-                    'active': (url.namespace == 'plugins:banktransfer' and url.url_name.startswith("refunds")),
-                },
-            ]
-        }
-    ]
+    """
+    Temporary disabled
+    """
+    return []
+    # url = resolve(request.path_info)
+    # if not request.user.has_organizer_permission(request.organizer, 'can_change_orders', request=request):
+    #     return []
+    # if not request.organizer.events.filter(plugins__icontains='pretix.plugins.banktransfer'):
+    #     return []
+    # return [
+    #     {
+    #         'label': _("Bank transfer"),
+    #         'url': reverse('plugins:banktransfer:import', kwargs={
+    #             'organizer': request.organizer.slug,
+    #         }),
+    #         'icon': 'university',
+    #         'children': [
+    #             {
+    #                 'label': _('Import bank data'),
+    #                 'url': reverse('plugins:banktransfer:import', kwargs={
+    #                     'organizer': request.organizer.slug,
+    #                 }),
+    #                 'active': (url.namespace == 'plugins:banktransfer' and url.url_name == 'import'),
+    #                 'icon': 'upload',
+    #             },
+    #             {
+    #                 'label': _('Export refunds'),
+    #                 'url': reverse('plugins:banktransfer:refunds.list', kwargs={
+    #                     'organizer': request.organizer.slug,
+    #                 }),
+    #                 'active': (url.namespace == 'plugins:banktransfer' and url.url_name.startswith("refunds")),
+    #             },
+    #         ]
+    #     }
+    # ]
 
 
 @receiver(html_head, dispatch_uid="banktransfer_html_head")
