@@ -41,9 +41,11 @@ def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
     ]
 
     # Merge plugin-provided navigation items
-    plugin_nav_items = sum(
-        (list(a[1]) for a in nav_global.send(request, request=request)), []
-    )
+    plugin_responses = nav_global.send(request, request=request)
+    plugin_nav_items = []
+    for receiver, response in plugin_responses:
+        if response:
+            plugin_nav_items.extend(response)
 
     # Sort navigation items, prioritizing non-parent items and alphabetically
     sorted_plugin_items = sorted(
@@ -89,9 +91,11 @@ def get_event_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
     ]
 
     # Merge plugin-provided navigation items
-    plugin_nav_items = sum(
-        (list(a[1]) for a in nav_event.send(request.event, request=request)), []
-    )
+    plugin_responses = nav_event.send(request.event, request=request)
+    plugin_nav_items = []
+    for receiver, response in plugin_responses:
+        if response:
+            plugin_nav_items.extend(response)
 
     # Sort navigation items, prioritizing non-parent items and alphabetically
     sorted_plugin_items = sorted(
