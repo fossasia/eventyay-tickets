@@ -25,5 +25,15 @@ class Migration(migrations.Migration):
             model_name='organizerbillingmodel',
             name='invoice_voucher',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='billing', to='pretixbase.invoicevoucher'),
+        ),
+        migrations.AddField(
+            model_name='billinginvoice',
+            name='voucher_price_mode',
+            field=models.CharField(max_length=20, null=True),
+        ),
+        migrations.AddField(
+            model_name='billinginvoice',
+            name='voucher_value',
+            field=models.DecimalField(decimal_places=2, default=0, max_digits=10),
         )
     ]

@@ -329,7 +329,7 @@ def collect_billing_invoice(
         event: Event,
         last_month_date: date,
         ticket_rate: Decimal,
-        invoice_voucher: InvoiceVoucher) -> CollectBillingResponse:
+        invoice_voucher: Optional[InvoiceVoucher]) -> CollectBillingResponse:
     """
     Collect billing data for an event on a monthly basis. This function
     checks if a billing invoice already exists for the given event and
@@ -395,6 +395,8 @@ def collect_billing_invoice(
         ticket_fee=ticket_fee,
         final_ticket_fee=final_ticket_fee,
         voucher_discount=voucher_discount,
+        voucher_price_mode=invoice_voucher.price_mode if invoice_voucher else None,
+        voucher_value=invoice_voucher.value if invoice_voucher else 0,
         monthly_bill=last_month_date,
         reminder_schedule=settings.BILLING_REMINDER_SCHEDULE,
         created_by=settings.PRETIX_EMAIL_NONE_VALUE,
@@ -607,9 +609,11 @@ def calculate_ticket_fee(
     if invoice_voucher and invoice_voucher.is_active():
         # If this voucher is limited for a specific events
         if invoice_voucher.limit_events.exists():
+            # Filter the voucher to the specific event
             if invoice_voucher.limit_events.filter(id=event.id).exists():
                 final_ticket_fee, voucher_discount = apply_voucher(ticket_fee, voucher_discount, invoice_voucher)
         else:
+            # Apply the voucher anyway
             final_ticket_fee, voucher_discount = apply_voucher(ticket_fee, voucher_discount, invoice_voucher)
 
     return ticket_fee, final_ticket_fee, voucher_discount
