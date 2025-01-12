@@ -1,6 +1,5 @@
 import logging
 import secrets
-from enum import StrEnum
 
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
@@ -22,6 +21,7 @@ from pretix.control.forms.global_settings import (
 from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, StaffMemberRequiredMixin,
 )
+from pretix.helpers.enums import ValidStates
 
 logger = logging.getLogger(__name__)
 
@@ -162,10 +162,6 @@ class RefundDetailView(AdministratorPermissionRequiredMixin, View):
 
 
 class ToggleBillingValidationView(AdministratorPermissionRequiredMixin, TemplateView):
-    class ValidState(StrEnum):
-        DISABLED = 'disabled'
-        ENABLED = 'enabled'
-
     template_name = 'pretixcontrol/toggle_billing_validation.html'
 
     def __init__(self, *args, **kwargs):
@@ -182,9 +178,9 @@ class ToggleBillingValidationView(AdministratorPermissionRequiredMixin, Template
     def post(self, request, *args, **kwargs):
         value = request.POST.get('billing_validation', '').lower()
 
-        if value == self.ValidState.DISABLED:
+        if value == ValidStates.DISABLED:
             billing_validation = False
-        elif value == self.ValidState.ENABLED:
+        elif value == ValidStates.ENABLED:
             billing_validation = True
         else:
             logger.error('Invalid value for billing validation: %s', value)

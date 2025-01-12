@@ -20,6 +20,7 @@ from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.utils.formats import date_format
 from django.utils.functional import cached_property
+from django.utils.html import format_html
 from django.utils.timezone import make_aware, now
 from django.utils.translation import gettext, gettext_lazy as _
 from django_scopes import ScopedManager, scopes_disabled
@@ -1196,28 +1197,20 @@ class Event(EventMixin, LoggedModel):
                     )
                 )
 
-        billing_obj = OrganizerBillingModel.objects.filter(organizer=self.organizer).first()
-
         gs = GlobalSettingsObject()
         if gs.settings.get("billing_validation", True) is True:
+            billing_obj = OrganizerBillingModel.objects.filter(organizer=self.organizer).first()
             if not billing_obj or not billing_obj.stripe_payment_method_id:
-                issues.append(
-                    (
-                        "<a {a_attr}>"
-                        + gettext("You need to fill the billing information.")
-                        + "</a>"
-                    ).format(
-                        a_attr='href="%s#tab-0-1-open"'
-                        % (
-                            reverse(
-                                "control:organizer.settings.billing",
-                                kwargs={
-                                    "organizer": self.organizer.slug,
-                                },
-                            ),
-                        ),
-                    )
+                url = reverse(
+                    "control:organizer.settings.billing",
+                    kwargs={"organizer": self.organizer.slug}
                 )
+                issue = format_html(
+                    '<a href="{}#tab-0-1-open">{}</a>',
+                    url,
+                    gettext("You need to fill the billing information.")
+                )
+                issues.append(issue)
 
         responses = event_live_issues.send(self)
         for receiver, response in sorted(responses, key=lambda r: str(r[0])):
