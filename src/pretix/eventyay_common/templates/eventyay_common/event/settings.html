@@ -25,7 +25,7 @@
                 </a>
                 {% if is_talk_event_created %}
                 <a href="{{ request.event.talk_dashboard_url }}" class="header-nav btn btn-outline-success">
-                    <i class="fa fa-group"></i> {% trans "Talk" %}
+                    <i class="fa fa-group"></i> {% trans "Talks" %}
                 </a>
                 {% endif %}
                 {% if is_video_enabled %}
@@ -71,7 +71,7 @@
                         </div>
                     </div>
                     <div class="form-group setting-form">
-                        <label class="col-md-3 control-label">{% trans "Talk system" %}</label>
+                        <label class="col-md-3 control-label">{% trans "Talks system" %}</label>
                         <div class="col-md-9 col-value">
                             {% if is_talk_event_created %}
                                 <button type="button" class="btn btn-sm btn-default enabled-btn" data-toggle="modal"
@@ -131,65 +131,69 @@
                 {% trans "Save" %}
             </button>
         </div>
+    
+        <div class="modal popup-modal" id="alert-modal-enable-talk" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="modal-card">
+                            <div class="modal-card-icon">
+                                <i class="fa fa-cog big-rotating-icon"></i>
+                            </div>
+                            <div class="modal-card-content">
+                                <h3>{% trans "Component not enabled!" %}</h3>
+                                <p>{% trans "Do you want to enable the feature?" %}</p>
+                                <div class="button-group">
+                                    <button class="btn btn-primary" name="enable_talk_system" value="enable">{% trans "Yes" %}</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <div class="modal fade" id="alert-modal-enable-talk" tabindex="-1" role="dialog">
+        <div class="modal popup-modal" id="alert-modal-enable-video" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-body text-center">
-                        <br>
-                            <p>
-                                Do you want to enable the feature?
-                            </p>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-6 text-right">
-                                <button class="btn btn-primary" name="enable_talk_system" value="enable">{% trans "Yes" %}</button>
+                    <div class="modal-body">
+                        <div class="modal-card">
+                            <div class="modal-card-icon">
+                                <i class="fa fa-cog big-rotating-icon"></i>
                             </div>
-                            <div class="col-xs-6 text-left">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+                            <div class="modal-card-content">
+                                <h3>{% trans "Component not enabled!" %}</h3>
+                                <p>{% trans "Do you want to enable the feature?" %}</p>
+                                <div class="button-group">
+                                    <button class="btn btn-primary" name="enable_video_system" value="enable">{% trans "Yes" %}</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    
-        <div class="modal fade" id="alert-modal-enable-video" tabindex="-1" role="dialog">
+
+        <div class="modal popup-modal" id="alert-modal-disabled" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-body text-center">
-                        <br>
-                            <p>
-                                Do you want to enable the feature?
-                            </p>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-6 text-right">
-                                <button class="btn btn-primary" name="enable_video_system" value="enable">{% trans "Yes" %}</button>
+                    <div class="modal-body">
+                        <div class="modal-card">
+                            <div class="modal-card-icon">
+                                <i class="fa fa-cog big-rotating-icon"></i>
                             </div>
-                            <div class="col-xs-6 text-left">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Cancel" %}</button>
+                            <div class="modal-card-content">
+                                <h3>{% trans "Component is enabled!" %}</h3>
+                                <p>{% trans "The feature cannot be disabled, but if you do not publish it, it will not show up publicly." %}</p>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Ok" %}</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    
-        <div class="modal fade" id="alert-modal-disabled" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-body text-center">
-                        <br>
-                            <p>
-                                The feature cannot be disabled, but if you do not publish it, it will not show up publicly.
-                            </p>
-                        <br>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Ok" %}</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </div>       
         
     </form>
 

@@ -118,10 +118,10 @@ class EventWidgetGenerator:
             event.settings.create_for == EventCreatedFor.BOTH.value
             or event.settings.talk_schedule_public is not None
         ):
-            return f'<a href="{event.talk_dashboard_url}" class="middle-component">{_("Talk")}</a>'
+            return f'<a href="{event.talk_dashboard_url}" class="middle-component">{_("Talks")}</a>'
         return f"""
             <a href="#" data-toggle="modal" data-target="#alert-modal" class="middle-component">
-                {_("Talk")}
+                {_("Talks")}
             </a>
         """
 
@@ -146,7 +146,7 @@ class EventWidgetGenerator:
                 <div class="times">{times}</div>
             </a>
             <div class="bottomrow">
-                <a href="{ticket_url}" class="component">Ticket</a>
+                <a href="{ticket_url}" class="component">Tickets</a>
                 {talk_button}
                 {video_button}
             </div>

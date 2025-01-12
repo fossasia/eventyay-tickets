@@ -108,16 +108,21 @@
             {% endfor %}
         </div>
     {% endif %}
-    <div class="modal fade" id="alert-modal" tabindex="-1" role="dialog">
+
+    <div class="modal popup-modal" id="alert-modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-body text-center">
-                    <br>
-                        <p>
-                            You need to enable this component first.
-                        </p>
-                    <br>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+                <div class="modal-body">
+                    <div class="modal-card">
+                        <div class="modal-card-icon">
+                            <i class="fa fa-cog big-rotating-icon"></i>
+                        </div>
+                        <div class="modal-card-content">
+                            <h3>{% trans "Component not enabled!" %}</h3>
+                            <p>{% trans "You need to enable this component first" %}</p>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Ok" %}</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
