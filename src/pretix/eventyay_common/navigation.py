@@ -4,6 +4,7 @@ from django.http import HttpRequest
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from pretix.base.models import Event
 from pretix.control.navigation import merge_in
 from pretix.control.signals import nav_event, nav_global
 
@@ -58,7 +59,7 @@ def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
     return nav
 
 
-def get_event_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
+def get_event_navigation(request: HttpRequest, event: Event) -> List[Dict[str, Any]]:
     """Generate navigation items for an event."""
     url = request.resolver_match
     if not url:
@@ -69,8 +70,8 @@ def get_event_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
             "url": reverse(
                 "eventyay_common:event.index",
                 kwargs={
-                    "event": request.event.slug,
-                    "organizer": request.event.organizer.slug,
+                    "event": event.slug,
+                    "organizer": event.organizer.slug,
                 },
             ),
             "active": (url.url_name == "event.index"),
@@ -81,8 +82,8 @@ def get_event_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
             "url": reverse(
                 "eventyay_common:event.update",
                 kwargs={
-                    "event": request.event.slug,
-                    "organizer": request.event.organizer.slug,
+                    "event": event.slug,
+                    "organizer": event.organizer.slug,
                 },
             ),
             "active": (url.url_name == "event.update"),
@@ -91,7 +92,7 @@ def get_event_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
     ]
 
     # Merge plugin-provided navigation items
-    plugin_responses = nav_event.send(request.event, request=request)
+    plugin_responses = nav_event.send(event, request=request)
     plugin_nav_items = []
     for receiver, response in plugin_responses:
         if response:

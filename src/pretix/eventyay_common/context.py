@@ -79,7 +79,7 @@ def _default_context(request: HttpRequest):
     if not organizer:
         return ctx
 
-    ctx["nav_items"] = get_event_navigation(request)
+    ctx["nav_items"] = get_event_navigation(request, event)
     ctx["has_domain"] = get_event_domain(event, fallback=True) is not None
     if not event.testmode:
         with scope(organizer=organizer):
