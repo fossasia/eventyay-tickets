@@ -122,8 +122,6 @@ def test_schedule_frab_xml_export_control_char(
 def test_schedule_frab_json_export(
     slot,
     break_slot,
-    answered_choice_question,
-    personal_answer,
     client,
     django_assert_max_num_queries,
     orga_user,
@@ -154,18 +152,17 @@ def test_schedule_frab_json_export(
 
     assert slot.submission.title in regular_content
     assert slot.submission.title in orga_content
-    assert personal_answer.answer in orga_content
-    assert personal_answer.answer not in regular_content
 
     regular_content = json.loads(regular_content)
     orga_content = json.loads(orga_content)
     assert regular_content["schedule"]
     assert orga_content["schedule"]
 
-    assert regular_content != orga_content
+    assert regular_content == orga_content
 
-    # from jsonschema import validate
-    # validate(instance=regular_content, schema=schedule_schema_json)
+    from jsonschema import validate
+
+    validate(instance=regular_content, schema=schedule_schema_json)
     # validate(instance=orga_content, schema=schedule_schema_json)
 
 
