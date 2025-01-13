@@ -28,7 +28,7 @@ from ..base.models.organizer import OrganizerBillingModel
 from ..base.services.mail import mail_send_task
 from ..base.settings import GlobalSettingsObject
 from ..helpers.jwt_generate import generate_sso_token
-from .billing_invoice import generate_invoice_pdf
+from .billing_invoice import InvoicePDFGenerator
 from .schemas.billing import CollectBillingResponse
 
 logger = logging.getLogger(__name__)
@@ -350,30 +350,24 @@ def collect_billing_invoice(
     """
 
     logger.info("Collecting billing data for event: %s", event.name)
-    billing_invoice = BillingInvoice.objects.filter(
-        event=event, monthly_bill=last_month_date, organizer=event.organizer
-    )
-    if billing_invoice:
-        logger.info(
-            "Billing invoice already created for event: %s", event.name
-        )
+
+    if BillingInvoice.objects.filter(
+        event=event,
+        monthly_bill=last_month_date,
+        organizer=event.organizer
+    ).exists():
+        logger.info("Billing invoice already exists for event: %s", event.name)
         return CollectBillingResponse(status=False)
 
-    if event.orders.filter(
+    month_end = (last_month_date + relativedelta(months=1, day=1)) - relativedelta(days=1)
+    if not event.orders.filter(
             status=Order.STATUS_PAID,
-            datetime__range=[
-                last_month_date,
-                (last_month_date + relativedelta(months=1, day=1)) - relativedelta(days=1),
-            ],
-    ).count() == 0:
-        logger.info(
-            "No paid orders for event: %s in the last month", event.name
-        )
+            datetime__range=[last_month_date, month_end]
+    ).exists():
+        logger.info("No paid orders for event: %s in the last month", event.name)
         return CollectBillingResponse(status=False)
 
-    total_amount = calculate_total_amount_on_monthly(
-        event, last_month_date
-    )
+    total_amount = calculate_total_amount_on_monthly(event, last_month_date)
     ticket_fee, final_ticket_fee, voucher_discount = calculate_ticket_fee(
         total_amount,
         ticket_rate,
@@ -421,14 +415,18 @@ def monthly_billing_collect(self):
     schedule on 1st day of the month and collect billing for the previous month
     @param self: task instance
     """
-    try:
+    def _get_billing_period() -> date:
+        """
+        Get the current billing period details
+        """
         today = datetime.today()
         first_day_of_current_month = today.replace(day=1)
-        logger.info(
-            "Start - running task to collect billing on: %s", first_day_of_current_month
-        )
-        # Get the last month by subtracting one month from today
         last_month_date = (first_day_of_current_month - relativedelta(months=1)).date()
+        return last_month_date
+
+    try:
+        last_month_date = _get_billing_period()
+
         gs = GlobalSettingsObject()
         ticket_rate = Decimal(str(gs.settings.get("ticket_fee_percentage") or 2.5))
 
@@ -598,23 +596,31 @@ def calculate_ticket_fee(
     @param invoice_voucher: the invoice voucher to be applied
     @return: a tuple containing the ticket fee before applying the voucher, the final ticket fee after applying the voucher, and the voucher discount
     """
-    def apply_voucher(ticket_fee: Decimal, voucher_discount: Decimal, invoice_voucher: InvoiceVoucher):
+    def _apply_voucher(
+            ticket_fee: Decimal,
+            voucher_discount: Decimal,
+            invoice_voucher: InvoiceVoucher) -> Tuple[Decimal, Decimal]:
         final_ticket_fee = invoice_voucher.calculate_price(original_price=ticket_fee, event=event)
         voucher_discount = ticket_fee - final_ticket_fee
         return final_ticket_fee, voucher_discount
 
-    final_ticket_fee = ticket_fee = amount * (rate / 100)
+    def _is_voucher_valid_for_event(invoice_voucher: InvoiceVoucher, event: Event) -> bool:
+        if not invoice_voucher or not invoice_voucher.is_active():
+            return False
+
+        # If voucher is not limited to specific events, it's valid for all
+        if not invoice_voucher.limit_events.exists():
+            return True
+
+        # Check if event is in the limited events list
+        return invoice_voucher.limit_events.filter(id=event.id).exists()
+
+    ticket_fee = amount * (rate / 100)
+    final_ticket_fee = ticket_fee
     voucher_discount = Decimal('0.00')
 
-    if invoice_voucher and invoice_voucher.is_active():
-        # If this voucher is limited for a specific events
-        if invoice_voucher.limit_events.exists():
-            # Filter the voucher to the specific event
-            if invoice_voucher.limit_events.filter(id=event.id).exists():
-                final_ticket_fee, voucher_discount = apply_voucher(ticket_fee, voucher_discount, invoice_voucher)
-        else:
-            # Apply the voucher anyway
-            final_ticket_fee, voucher_discount = apply_voucher(ticket_fee, voucher_discount, invoice_voucher)
+    if _is_voucher_valid_for_event(invoice_voucher, event):
+        final_ticket_fee, voucher_discount = _apply_voucher(ticket_fee, voucher_discount, invoice_voucher)
 
     return ticket_fee, final_ticket_fee, voucher_discount
 
@@ -801,7 +807,8 @@ def check_billing_status_for_warning(self):
 def billing_invoice_send_email(subject, content, invoice, organizer_billing):
     organizer_billing_contact = [organizer_billing.primary_contact_email]
     # generate invoice pdf
-    pdf_buffer = generate_invoice_pdf(invoice, organizer_billing)
+    generator = InvoicePDFGenerator(billing_invoice=invoice, organizer_billing_info=organizer_billing)
+    pdf_buffer = generator.generate()
     # Send email to organizer
     pdf_content = pdf_buffer.getvalue()
     pdf_base64 = base64.b64encode(pdf_content).decode("utf-8")

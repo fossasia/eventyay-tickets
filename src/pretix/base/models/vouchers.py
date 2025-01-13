@@ -506,11 +506,16 @@ class Voucher(LoggedModel):
 
 
 class InvoiceVoucher(LoggedModel):
+    PRICE_MODE_NONE = 'none'
+    PRICE_MODE_SET = 'set'
+    PRICE_MODE_SUBTRACT = 'subtract'
+    PRICE_MODE_PERCENT = 'percent'
+
     PRICE_MODES = (
-        ('none', _('No effect')),
-        ('set', _('Set product price to')),
-        ('subtract', _('Subtract from product price')),
-        ('percent', _('Reduce product price by (%)')),
+        (PRICE_MODE_NONE, _('No effect')),
+        (PRICE_MODE_SET, _('Set product price to')),
+        (PRICE_MODE_SUBTRACT, _('Subtract from product price')),
+        (PRICE_MODE_PERCENT, _('Reduce product price by (%)')),
     )
     code = models.CharField(
         verbose_name=_("Voucher code"),
