@@ -26,7 +26,7 @@ from pretalx.common.image import create_thumbnail
 from pretalx.common.models import TIMEZONE_CHOICES
 from pretalx.common.models.mixins import FileCleanupMixin, GenerateCode
 from pretalx.common.text.path import path_with_hash
-from pretalx.common.urls import build_absolute_uri
+from pretalx.common.urls import EventUrls, build_absolute_uri
 
 
 def avatar_path(instance, filename):
@@ -460,6 +460,9 @@ the pretalx robot"""
         )
 
     reset_password.alters_data = True
+
+    class orga_urls(EventUrls):
+        admin = "/orga/admin/users/{self.code}/"
 
     @transaction.atomic
     def change_password(self, new_password):
