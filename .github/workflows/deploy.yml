@@ -21,7 +21,9 @@ jobs:
         run: sudo apt update && sudo apt install libffi-dev libssl-dev libxml2-dev libxslt1-dev libenchant1c2a gettext libfreetype-dev libjpeg-dev
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install "Jinja2<3.1" "sphinx==5.0.*"
         working-directory: doc
       
       - name: Build documentation
