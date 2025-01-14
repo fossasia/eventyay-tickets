@@ -3,7 +3,7 @@ name: Deploy Sphinx Documentation to GitHub Pages
 on:
   push:
     branches:
-      - main  # Adjust this to your default branch
+      - master  # Adjust this to your default branch
 
 jobs:
   deploy:
