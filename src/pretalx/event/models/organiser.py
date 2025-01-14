@@ -218,6 +218,14 @@ class Team(PretalxModel):
         }
 
     @cached_property
+    def permission_set_display(self) -> set:
+        """The same as :meth:`permission_set`, but with human-readable names."""
+        return {
+            getattr(self._meta.get_field(attr), "verbose_name", None) or attr
+            for attr in self.permission_set
+        }
+
+    @cached_property
     def events(self):
         if self.all_events:
             return self.organiser.events.all()

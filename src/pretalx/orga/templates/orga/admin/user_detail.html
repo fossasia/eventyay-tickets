@@ -106,7 +106,13 @@
               {% endif %}
             </td>
 
-            <td>{{ team.permission_set }}</td>
+            <td>
+              <ul>
+                {% for permission in team.permission_set_display %}
+                  <li>{{ permission }}</li>
+                {% endfor %}
+              </ul>
+            </td>
           </tr>
         {% empty %}
           <tr>
