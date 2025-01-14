@@ -18,7 +18,10 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r doc/requirements.txt
+        run: |
+          sudo apt install -y libenchant1c2a gettext libfreetype-dev libjpeg-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev
+          pip install -r doc/requirements.txt
+
 
       - name: Build documentation
         run: make html
