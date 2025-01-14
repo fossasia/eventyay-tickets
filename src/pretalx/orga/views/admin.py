@@ -148,6 +148,14 @@ class AdminUserDetail(PermissionRequired, DetailView):
     def get_success_url(self):
         return reverse("orga:admin.user.list")
 
+    @context
+    def tablist(self):
+        return {
+            "teams": _("Teams"),
+            "submissions": _("Proposals"),
+            "actions": _("Last actions"),
+        }
+
     def get_context_data(self, **kwargs):
         result = super().get_context_data(**kwargs)
         result["teams"] = self.object.teams.all().prefetch_related(
