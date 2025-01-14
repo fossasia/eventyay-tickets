@@ -154,4 +154,11 @@
     </table>
   </div>
 
+  <hr>
+
+  <h4>{% translate "Last actions" %}</h4>
+
+  <div class="dashboard-history">
+    {% include "common/logs.html" with entries=last_actions hide_user=True show_event=True %}
+  </div>
 {% endblock content %}

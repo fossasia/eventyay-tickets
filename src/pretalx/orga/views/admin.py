@@ -154,6 +154,7 @@ class AdminUserDetail(PermissionRequired, DetailView):
             "organiser", "limit_events", "organiser__events"
         )
         result["submissions"] = self.object.submissions.all()
+        result["last_actions"] = self.object.own_actions()[:10]
         return result
 
 
