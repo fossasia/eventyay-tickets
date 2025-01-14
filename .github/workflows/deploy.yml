@@ -18,7 +18,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install system packages
-        run: sudo apt update && sudo apt install enchant
+        run: sudo apt update && sudo apt install libffi-dev libssl-dev libxml2-dev libxslt1-dev libenchant1c2a gettext libfreetype-dev libjpeg-dev
 
       - name: Install dependencies
         run: pip install -r requirements.txt
