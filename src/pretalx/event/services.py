@@ -30,7 +30,6 @@ def task_periodic_event_services(event_slug):
 
     _now = now()
     with scope(event=event):
-        event.update_review_phase()
         if not event.settings.sent_mail_event_created and (
             dt.timedelta(0)
             <= (_now - event.log_entries.last().timestamp)
@@ -105,3 +104,4 @@ def periodic_event_services(sender, **kwargs):
                 task_periodic_schedule_export.apply_async(
                     args=(event.slug,), ignore_result=True
                 )
+            event.update_review_phase()

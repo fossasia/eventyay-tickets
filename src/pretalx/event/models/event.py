@@ -901,12 +901,7 @@ class Event(PretalxModel):
         future_phases = future_phases.filter(position__gt=old_position)
         next_phase = future_phases.order_by("position").first()
         if not next_phase or not next_phase.start or next_phase.start > _now:
-            # The next phase is not ready yet, but the old one is over.
-            # Deactivate the old one and return None.
-            if old_phase and old_phase.is_active:
-                old_phase.is_active = False
-                old_phase.save()
-            return None
+            return old_phase
         next_phase.activate()
         return next_phase
 
