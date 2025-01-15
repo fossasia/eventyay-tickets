@@ -51,12 +51,29 @@ class OAuthLoginView(View):
         This function will set 'oauth2_params' in session for oauth2_callback
         """
         next_url = request.GET.get("next", "")
-        if next_url:
-            parsed = urlparse(next_url)
-            params = parse_qs(parsed.query)
-            request.session["oauth2_params"] = {
-                k: v[0] for k, v in params.items()
-            }
+        if not next_url:
+            return
+
+        parsed = urlparse(next_url)
+
+        # Only allow relative URLs
+        if parsed.netloc:
+            return
+
+        allowed_params = {
+            "client_id",
+            "redirect_uri",
+            "state",
+            "scope",
+            "response_type"
+        }
+        params = parse_qs(parsed.query)
+        sanitized_params = {
+            k: v[0].strip()
+            for k, v in params.items() if k in allowed_params
+        }
+
+        request.session["oauth2_params"] = sanitized_params
 
 
 class OAuthReturnView(View):
