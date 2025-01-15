@@ -43,7 +43,9 @@
                             </a>
                             <h3 class="panel-title">
                                 {% with 'ticketoutput_'|add:provider.identifier|add:'__enabled' as field_name %}
-                                    {% bootstrap_field provider.form|getitem:field_name layout='inline' label=provider.verbose_name %}
+									{% if field_name in provider.form.fields %}
+                                    	{% bootstrap_field provider.form|getitem:field_name layout='inline' label=provider.verbose_name %}
+									{% endif %}
                                 {% endwith %}
                             </h3>
                             <div class="clear"></div>
