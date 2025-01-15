@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-16 12:26+0000\n"
-"PO-Revision-Date: 2024-11-24 04:58+0000\n"
+"PO-Revision-Date: 2024-12-21 11:35+0000\n"
 "Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
 "Language: cs\n"
@@ -289,9 +289,9 @@ msgid ""
 "gives us a way to contact you, it also gives you the possibility to edit "
 "your proposal or to view its current state."
 msgstr ""
-"Pro předložení návrhu potřebujete účet na této stránce. Díky tomu vás nejen "
-"budeme moci kontaktovat, ale také budete mít možnost váš návrh upravit nebo "
-"si prohlédnout jeho aktuální stav."
+"Pro vyplnění přihlášky potřebujete účet na této stránce. Díky tomu vás nejen "
+"budeme moci kontaktovat, ale také budete mít možnost vaši přihlášku upravit "
+"nebo si prohlédnout její aktuální stav."
 
 #: pretalx/cfp/flow.py:541
 msgid "Profile"
@@ -320,7 +320,7 @@ msgid ""
 "instructions. If you don’t see the email within the next minutes, check your "
 "spam inbox!"
 msgstr ""
-"Pokud máme v databázi uživatele s touto emailovou adresou (který nežádal o "
+"Pokud máme v databázi uživatele s touto e-mailovou adresou (který nežádal o "
 "obnovení hesla v posledních 24 hodinách), pošleme vám e-mail s dalšími "
 "instrukcemi. Pokud vám e-mail nedorazí během několika minut, zkontrolujte "
 "složky s nevyžádanou poštou a spamem."
@@ -505,7 +505,7 @@ msgid ""
 "any more."
 msgstr ""
 "Bohužel tuto pozvánku nyní nemůžete přijmout. Je možné, že platnost pozvánka "
-"vypršela, nebo už návrh nelze upravovat."
+"vypršela, nebo už přihlášky nelze upravovat."
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:20
 msgid "Please contact the conference organizers for more information."
@@ -2884,10 +2884,9 @@ msgstr ""
 "Organizátoři {event_name}"
 
 #: pretalx/mail/default_templates.py:89
-#, fuzzy, python-brace-format
-#| msgid "New proposal: {title}"
+#, python-brace-format
 msgid "New proposal: {proposal_title}"
-msgstr "Nový návrh: {title}"
+msgstr "Nová přihláška: {proposal_title}"
 
 #: pretalx/mail/default_templates.py:93
 #, python-brace-format
@@ -2915,28 +2914,12 @@ msgstr ""
 "váš CfP systém pro {event_name}.\n"
 
 #: pretalx/mail/default_templates.py:108
-#, fuzzy, python-brace-format
-#| msgid "You have been added to a proposal for {event}"
+#, python-brace-format
 msgid "You have been added to a proposal for {event_name}"
-msgstr "Byli jste přidání do přihlášky na událost {event}"
+msgstr "Byli jste přidání do přihlášky na událost {event_name}"
 
 #: pretalx/mail/default_templates.py:113
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "Hi!\n"
-#| "\n"
-#| "You have been set as the speaker of a proposal to the Call for "
-#| "Participation\n"
-#| "of {event}, titled “{title}”. An account has been created for you – "
-#| "please follow\n"
-#| "this link to set your account password.\n"
-#| "\n"
-#| "{invitation_link}\n"
-#| "\n"
-#| "Afterwards, you can edit your user profile and see the state of your "
-#| "proposal.\n"
-#| "\n"
-#| "The {event} orga crew"
+#, python-brace-format
 msgid ""
 "Hi!\n"
 "\n"
@@ -2954,9 +2937,10 @@ msgid ""
 msgstr ""
 "Zdravíme.\n"
 "\n"
-"Byli jste přidáni jako přednášející u přihlášky s názvem „{title}“\n"
-"na události {event}. Vytvořili jsme proto pro vás účet – navštivte prosím\n"
-"tento odkaz pro nastavení hesla.\n"
+"Byli jste přidáni do přihlášky na událost {event_name} s názvem "
+"„{proposal_title}“.\n"
+"Vytvořili jsme proto pro vás účet – navštivte prosím tento odkaz pro "
+"nastavení hesla.\n"
 "\n"
 "{invitation_link}\n"
 "\n"
@@ -2966,22 +2950,7 @@ msgstr ""
 "Organizátoři {event}"
 
 #: pretalx/mail/default_templates.py:127
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "Hi!\n"
-#| "\n"
-#| "You have been set as the speaker of a proposal to the Call for "
-#| "Participation\n"
-#| "of {event}, titled “{title}”. An account has been created for you – "
-#| "please follow\n"
-#| "this link to set your account password.\n"
-#| "\n"
-#| "{invitation_link}\n"
-#| "\n"
-#| "Afterwards, you can edit your user profile and see the state of your "
-#| "proposal.\n"
-#| "\n"
-#| "The {event} orga crew"
+#, python-brace-format
 msgid ""
 "Hi!\n"
 "\n"
@@ -2996,16 +2965,14 @@ msgid ""
 msgstr ""
 "Zdravíme.\n"
 "\n"
-"Byli jste přidáni jako přednášející u přihlášky s názvem „{title}“\n"
-"na události {event}. Vytvořili jsme proto pro vás účet – navštivte prosím\n"
-"tento odkaz pro nastavení hesla.\n"
+"Byli jste přidáni do přihlášky na událost {event_name} s názvem "
+"„{proposal_title}“.\n"
+"Navštivte prosím tento odkaz pro úpravu uživatelského profilu a zobrazení "
+"stavu přihlášky:\n"
 "\n"
-"{invitation_link}\n"
+"{proposal_url}\n"
 "\n"
-"Po nastavení hesla si bude moci upravit uživatelský profil a zobrazit stav "
-"své přihlášky.\n"
-"\n"
-"Organizátoři {event}"
+"Organizátoři {event_name}"
 
 #: pretalx/mail/models.py:28
 #, fuzzy
@@ -4094,22 +4061,17 @@ msgid "Community translations"
 msgstr "Neoficiální překlad"
 
 #: pretalx/orga/forms/widgets.py:41
-#, fuzzy, python-brace-format
-#| msgid ""
-#| "This translation is not maintained by the pretalx team. We cannot vouch "
-#| "for its correctness and new or recently changed features might not be "
-#| "translated and will show in English instead. You can help translating at "
-#| "github.com/pretalx/pretalx."
+#, python-brace-format
 msgid ""
 "These translations are not maintained by the pretalx team. We cannot vouch "
 "for their correctness, and new or recently changed features might not be "
 "translated and will show in English instead. You can <a href=\"{url}\" "
 "target=\"_blank\">contribute to the translations</a>."
 msgstr ""
-"Tento překlad není udržován týmem pretalxu. Nedokážeme zaručit jeho "
+"Tyto překlady nejsou udržovány týmem pretalxu. Nedokážeme zaručit jejich "
 "správnost a některé nové nebo změněné funkce nemusí být přeloženy a mohou se "
-"zobrazovat v angličtině. S překladem můžete pomoci na github.com/pretalx/"
-"pretalx."
+"zobrazovat v angličtině. S doplněním nebo úpravou těchto překladů nám <a "
+"href=\"{url}\" target=\"_blank\">můžete pomoci i vy</a>."
 
 #: pretalx/orga/phrases.py:7
 msgid "The event end cannot be before the start."
@@ -5716,9 +5678,9 @@ msgstr "Kontroly"
 #, python-format
 msgid "Or review the missing proposal here."
 msgid_plural "Or review the missing %(count)s proposals one-by-one."
-msgstr[0] "Nebo zkontrolujte zbývající návrhy zde."
-msgstr[1] "Nebo zkontrolujte zbývající %(count)s návrhy jednotlivě."
-msgstr[2] "Nebo zkontrolujte zbývajících %(count)s návrhů jednotlivě."
+msgstr[0] "Nebo zkontrolujte zbývající přihlášku zde."
+msgstr[1] "Nebo zkontrolujte zbývající %(count)s přihlášky jednotlivě."
+msgstr[2] "Nebo zkontrolujte zbývajících %(count)s přihlášek jednotlivě."
 
 #: pretalx/orga/templates/orga/review/bulk.html:35
 #: pretalx/orga/templates/orga/review/dashboard.html:40
@@ -5750,7 +5712,7 @@ msgstr "Klepněte sem a začněte!"
 #: pretalx/orga/templates/orga/review/dashboard.html:38
 #: pretalx/orga/templates/orga/submission/review.html:216
 msgid "Or review all proposals at once."
-msgstr "Nebo zkontrolujte všechny návrhy najednou."
+msgstr "Nebo zkontrolujte všechny přihlášky najednou."
 
 #: pretalx/orga/templates/orga/review/dashboard.html:43
 msgid "Reviews are currently closed."
@@ -7580,10 +7542,8 @@ msgid "iCal (full event)"
 msgstr ""
 
 #: pretalx/schedule/exporters.py:333
-#, fuzzy
-#| msgid "Welcome to our list of featured sessions!"
 msgid "iCal (your starred sessions)"
-msgstr "Vítejte v přehledu vybraných přednášek!"
+msgstr "iCal (oblíbené přednášky)"
 
 #: pretalx/schedule/forms.py:21
 msgid ""
