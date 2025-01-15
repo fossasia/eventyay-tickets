@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
@@ -18,7 +18,9 @@ jobs:
           python-version: '3.11'
 
       - name: Install system packages
-        run: sudo apt update && sudo apt install libffi-dev libssl-dev libxml2-dev libxslt1-dev libenchant1c2a gettext libfreetype-dev libjpeg-dev
+        run: |
+          sudo add-apt-repository universe multiverse
+          sudo apt update && sudo apt install libffi-dev libssl-dev libxml2-dev libxslt1-dev libenchant1c2a gettext libfreetype-dev libjpeg-dev
 
       - name: Install dependencies
         run: |
