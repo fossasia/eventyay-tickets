@@ -1,3 +1,4 @@
+import datetime as dt
 import urllib
 from contextlib import suppress
 
@@ -84,10 +85,15 @@ class GenericResetView(FormView):
 
     def form_valid(self, form):
         user = form.cleaned_data["user"]
+        last_pw_reset = now() - user.pw_reset_time
+        one_day_ago = last_pw_reset - dt.timedelta(hours=24)
 
+        # We block password resets if the user has reset their password already in the
+        # past 24 hours.
+        # We permit the reset if the password reset time is in the future, as this can
+        # only be due to the way we handle speaker invitations at the moment.
         if not user or (
-            user.pw_reset_time
-            and (now() - user.pw_reset_time).total_seconds() < 3600 * 24
+            user.pw_reset_time and (one_day_ago < user.pw_reset_time < now())
         ):
             messages.success(self.request, phrases.cfp.auth_password_reset)
             return redirect(self.get_success_url())
