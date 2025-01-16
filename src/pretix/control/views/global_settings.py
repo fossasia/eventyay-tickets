@@ -21,7 +21,7 @@ from pretix.control.forms.global_settings import (
 from pretix.control.permissions import (
     AdministratorPermissionRequiredMixin, StaffMemberRequiredMixin,
 )
-from pretix.helpers.enums import ValidStates
+from pretix.common.enums import ValidStates
 
 logger = logging.getLogger(__name__)
 
