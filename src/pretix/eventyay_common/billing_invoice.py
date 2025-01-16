@@ -292,7 +292,7 @@ class InvoicePDFGenerator:
         """Create the totals section."""
         totals_data = [
             [
-                "Original Price",
+                "Original Price:",
                 f"{self.billing_invoice.currency} {self.billing_invoice.ticket_fee:.2f}",
             ],
             [
