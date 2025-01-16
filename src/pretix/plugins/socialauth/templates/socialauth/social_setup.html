@@ -24,9 +24,7 @@
                 <a href="https://medium.com/@tony.infisical/guide-to-using-oauth-2-0-to-access-google-apis-dead94d6866d">Guide to using OAuth 2.0 to access Google APIs</a>
             </li>
             <li>{% trans "Set the callback URL to:" %} 
-                {% with callback_url=tickets_domain|add:"/accounts/google/login/callback/" %}
-                    <code>{{ callback_url }}</code>
-                {% endwith %}
+                <code>{{ "https://app.eventyay.com/tickets/accounts/google/login/callback/" }}</code>
             </li>
             <li>{% trans "Add the client ID and client secret to admin settings" %}</li>
         </ul>
@@ -40,9 +38,7 @@
         <p>{% trans "Instructions:" %}</p>
         <ul>
             <li>{% trans "Set the callback URL to:" %} 
-                {% with callback_url=tickets_domain|add:"/accounts/github/login/callback/" %}
-                    <code>{{ callback_url }}</code>
-                {% endwith %}
+                <code>{{ "https://app.eventyay.com/tickets/accounts/github/login/callback/" }}</code>
             </li>
             <li>{% trans "Add the client ID and client secret to admin settings" %}</li>
         </ul>
@@ -65,6 +61,7 @@
             <li>{% trans "Register your OAuth application at:" %} 
                 <a href="https://meta.wikimedia.org/wiki/Special:OAuthConsumerRegistration/propose">MediaWiki OAuth Consumer Registration</a>
             </li>
+            <li>{% trans 'Click "Propose new OAuth 2.0 client"' %}</li>
             <li>
                 {% trans "On the form enter" %}
                 <ol type="a">
@@ -72,9 +69,7 @@
                     <li>{% trans "an description description" %}</li>
                     <li>
                         {% trans 'Set Oauth "callback" URL to:' %}
-                        {% with callback_url=tickets_domain|add:"/accounts/mediawiki/login/callback/" %}
-                            <code>{{ callback_url }}</code>
-                        {% endwith %}
+                        <code>{{ "https://app.eventyay.com/tickets/accounts/mediawiki/login/callback/" }}</code>
                     </li>
                     <li>{% trans "Contact Email address" %}</li>
                     <li>{% trans 'Tick "Client is confidential"' %}</li>
