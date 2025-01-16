@@ -165,15 +165,17 @@
             {% if can_view_other_reviews or form.instance.pk %}
                 <div class="table-responsive-sm">
                     <table class="table review-table table-hover table-flip table-sticky">
-                        <tr>
-                            <th>{% translate "Score" %}</th>
-                            {% if score_categories|length > 1 %}
-                                {% for cat in score_categories %}<th>{{ cat.name }}</th>{% endfor %}
-                            {% endif %}
-                            {% for field in qform %}<th>{{ field.label }}</th>{% endfor %}
-                            <th>{% translate "Review" %}</th>
-                            <th></th>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th>{% translate "Score" %}</th>
+                                {% if score_categories|length > 1 %}
+                                    {% for cat in score_categories %}<th>{{ cat.name }}</th>{% endfor %}
+                                {% endif %}
+                                {% for field in qform %}<th>{{ field.label }}</th>{% endfor %}
+                                <th>{% translate "Review" %}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
                         <tbody>
                             {% if form.instance.pk and review_display %}
 
