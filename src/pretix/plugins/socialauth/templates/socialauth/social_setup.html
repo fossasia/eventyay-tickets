@@ -65,19 +65,33 @@
             <li>{% trans "Register your OAuth application at:" %} 
                 <a href="https://meta.wikimedia.org/wiki/Special:OAuthConsumerRegistration/propose">MediaWiki OAuth Consumer Registration</a>
             </li>
-            <li>{% trans "Set the callback URL to:" %} 
-                {% with callback_url=tickets_domain|add:"/accounts/mediawiki/login/callback/" %}
-                    <code>{{ callback_url }}</code>
-                {% endwith %}
+            <li>
+                {% trans "On the form enter" %}
+                <ol type="a">
+                    <li>{% trans "an application name" %}</li>
+                    <li>{% trans "an description description" %}</li>
+                    <li>
+                        {% trans 'Set Oauth "callback" URL to:' %}
+                        {% with callback_url=tickets_domain|add:"/accounts/mediawiki/login/callback/" %}
+                            <code>{{ callback_url }}</code>
+                        {% endwith %}
+                    </li>
+                    <li>{% trans "Contact Email address" %}</li>
+                    <li>{% trans 'Tick "Client is confidential"' %}</li>
+                    <li>{% trans 'Tick "Authorization code"' %}</li>
+                    <li>{% trans 'Tick "Refresh token"' %}</li>
+                    <li>{% trans 'Choose "Request authorization for specific permissions."' %}</li>
+                    <li>{% trans 'In the section "Applicable grants" select "Basic Rights" and "Access private information"' %}</li>
+                    <li>{% trans "Finally tick the box to accept the terms and submit." %}</li>
+                </ol>
             </li>
-            <li>{% trans "Carefully read and follow the instructions on the registration page. Tick option: access private information." %}</li>
-            <li>{% trans "The registered application will return:" %}
+            <li>{% trans "On the next page copy the registered application will return the OAuth access information:" %}
                 <ul>
-                    <li>{% trans "One consumer token (client id)" %}</li>
-                    <li>{% trans "One consumer secret" %}</li>
+                    <li>{% trans "Client application key" %}</li>
+                    <li>{% trans "Client application secret" %}</li>
                 </ul>
             </li>
-            <li>{% trans "Add the consumer key and consumer secret to your Eventyay admin settings" %}</li>
+            <li>{% trans "Add the client application key and client application secret to your Eventyay social auth settings" %}</li>
         </ol>
 
         <strong>{% trans "After Approval" %}</strong>
