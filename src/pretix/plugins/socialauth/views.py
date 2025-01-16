@@ -57,7 +57,7 @@ class OAuthLoginView(View):
         parsed = urlparse(next_url)
 
         # Only allow relative URLs
-        if parsed.netloc:
+        if parsed.netloc or parsed.scheme:
             return
 
         allowed_params = {
