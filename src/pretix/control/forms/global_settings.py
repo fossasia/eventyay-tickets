@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from typing import List, Union
 
 from django import forms
 from django.conf import settings
@@ -173,7 +174,7 @@ class GlobalSettingsForm(SettingsForm):
                 )
             ),
             (
-                'payment_stripe_connect_test_publishable_key', 
+                'payment_stripe_connect_test_publishable_key',
                 forms.CharField(
                     label=_('Stripe Connect: Publishable key (test)'),
                     required=False,
@@ -241,21 +242,43 @@ class SSOConfigForm(SettingsForm):
 
 
 class StripeKeyValidator:
-    def __init__(self, prefix):
-        assert len(prefix) > 0
-        if isinstance(prefix, list):
-            self._prefixes = prefix
-        else:
-            self._prefixes = [prefix]
-            assert isinstance(prefix, str)
+    """
+    Validates that a given Stripe key starts with the expected prefix(es).
 
-    def __call__(self, value):
-        if not any(value.startswith(p) for p in self._prefixes):
+    This validator ensures that Stripe API keys conform to the expected format
+    by checking their prefixes. It supports both single prefix validation and
+    multiple prefix validation.
+    """
+    def __init__(self, prefix: Union[str, List[str]]) -> None:
+        if not prefix:
+            raise ValueError("Prefix cannot be empty")
+
+        if isinstance(prefix, list):
+            if not all(isinstance(p, str) and p for p in prefix):
+                raise ValueError("All prefixes must be non-empty strings")
+            self._prefixes = prefix
+        elif isinstance(prefix, str):
+            if not prefix.strip():
+                raise ValueError("Prefix cannot be whitespace")
+            self._prefixes = [prefix]
+
+    def __call__(self, value: str) -> None:
+        if not value:
             raise forms.ValidationError(
-                _('The provided key "%(value)s" does not look valid. It should start with "%(prefix)s".'),
+                _("The Stripe key cannot be empty."),
+                code='invalid-stripe-key'
+            )
+
+        if not any(value.startswith(p) for p in self._prefixes):
+            if len(self._prefixes) == 1:
+                message = _('The provided key "%(value)s" does not look valid. It should start with "%(prefix)s".')
+                params = {'value': value, 'prefix': self._prefixes[0]}
+            else:
+                message = _('The provided key "%(value)s" does not look valid. It should start with one of: %(prefixes)s')
+                params = {'value': value, 'prefixes': ', '.join(f'"{p}"' for p in self._prefixes)}
+
+            raise forms.ValidationError(
+                message,
                 code='invalid-stripe-key',
-                params={
-                    'value': value,
-                    'prefix': self._prefixes[0],
-                },
+                params=params
             )
