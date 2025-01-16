@@ -271,10 +271,10 @@ class StripeKeyValidator:
 
         if not any(value.startswith(p) for p in self._prefixes):
             if len(self._prefixes) == 1:
-                message = _('The provided key "%(value)s" does not look valid. It should start with "%(prefix)s".')
+                message = _('The provided key does not look valid. It should start with "%(prefix)s".')
                 params = {'value': value, 'prefix': self._prefixes[0]}
             else:
-                message = _('The provided key "%(value)s" does not look valid. It should start with one of: %(prefixes)s')
+                message = _('The provided key does not look valid. It should start with one of: %(prefixes)s')
                 params = {'value': value, 'prefixes': ', '.join(f'"{p}"' for p in self._prefixes)}
 
             raise forms.ValidationError(
