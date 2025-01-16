@@ -1266,6 +1266,9 @@ div.mail-preview {
     display: inline;
     vertical-align: middle;
   }
+  a:hover {
+    text-decoration: none;
+  }
 }
 .col-form-label .user-name-display {
   margin-left: auto;
