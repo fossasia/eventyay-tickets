@@ -13,9 +13,8 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from pretix.base.models import (
-    BillingInvoice, InvoiceVoucher, OrganizerBillingModel,
-)
+from pretix.base.models import BillingInvoice, OrganizerBillingModel
+from pretix.base.models.vouchers import PriceModeChoices
 
 
 class InvoicePDFGenerator:
@@ -223,11 +222,11 @@ class InvoicePDFGenerator:
 
     def _format_voucher_info(self) -> str:
         """Format the voucher information based on price mode."""
-        if self.billing_invoice.voucher_price_mode == InvoiceVoucher.PRICE_MODE_SET:
+        if self.billing_invoice.voucher_price_mode == PriceModeChoices.SET:
             return f"Set to {self.billing_invoice.currency} {self.billing_invoice.voucher_value:.2f}"
-        elif self.billing_invoice.voucher_price_mode == InvoiceVoucher.PRICE_MODE_SUBTRACT:
+        elif self.billing_invoice.voucher_price_mode == PriceModeChoices.SUBTRACT:
             return f"Subtract {self.billing_invoice.currency} {self.billing_invoice.voucher_value:.2f}"
-        elif self.billing_invoice.voucher_price_mode == InvoiceVoucher.PRICE_MODE_PERCENT:
+        elif self.billing_invoice.voucher_price_mode == PriceModeChoices.PERCENT:
             return f"{self.billing_invoice.voucher_value:.0f}% off"
         return ""
 
@@ -279,7 +278,7 @@ class InvoicePDFGenerator:
 
         if (
             self.billing_invoice.voucher_price_mode
-            and self.billing_invoice.voucher_price_mode != InvoiceVoucher.PRICE_MODE_NONE
+            and self.billing_invoice.voucher_price_mode != PriceModeChoices.NONE
         ):
             voucher_text = f"Applied Voucher: {self._format_voucher_info()}"
             elements.extend(

@@ -1,7 +1,7 @@
 import base64
 import importlib.util
 import logging
-from datetime import date, datetime, timezone as tz
+from datetime import datetime, timezone as tz
 from decimal import Decimal
 from importlib import import_module
 from typing import Optional, Tuple
@@ -327,7 +327,7 @@ def get_header_token(user_id):
 
 def collect_billing_invoice(
         event: Event,
-        last_month_date: date,
+        last_month_date: datetime,
         ticket_rate: Decimal,
         invoice_voucher: Optional[InvoiceVoucher]) -> CollectBillingResponse:
     """
@@ -415,13 +415,13 @@ def monthly_billing_collect(self):
     schedule on 1st day of the month and collect billing for the previous month
     @param self: task instance
     """
-    def _get_billing_period() -> date:
+    def _get_billing_period() -> datetime:
         """
         Get the current billing period details
         """
-        today = datetime.today()
-        first_day_of_current_month = today.replace(day=1)
-        last_month_date = (first_day_of_current_month - relativedelta(months=1)).date()
+        today = datetime.now(tz.utc)
+        first_day_of_current_month = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        last_month_date = first_day_of_current_month - relativedelta(months=1)
         return last_month_date
 
     try:

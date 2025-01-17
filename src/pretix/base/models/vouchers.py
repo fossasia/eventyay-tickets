@@ -16,6 +16,7 @@ from pretix.base.models import Seat, SeatCategoryMapping
 
 from ..decimal import round_decimal
 from .base import LoggedModel
+from .choices import PriceModeChoices
 from .event import Event, SubEvent
 from .items import Item, ItemVariation, Quota
 from .orders import Order, OrderPosition
@@ -81,12 +82,6 @@ class Voucher(LoggedModel):
     * You need to either select a quota or an item
     * If you select an item that has variations but do not select a variation, you cannot set block_quota
     """
-    PRICE_MODES = (
-        ('none', _('No effect')),
-        ('set', _('Set product price to')),
-        ('subtract', _('Subtract from product price')),
-        ('percent', _('Reduce product price by (%)')),
-    )
 
     event = models.ForeignKey(
         Event,
@@ -144,8 +139,8 @@ class Voucher(LoggedModel):
     price_mode = models.CharField(
         verbose_name=_("Price mode"),
         max_length=100,
-        choices=PRICE_MODES,
-        default='none'
+        choices=PriceModeChoices.choices,
+        default=PriceModeChoices.NONE
     )
     value = models.DecimalField(
         verbose_name=_("Voucher value"),
@@ -506,17 +501,6 @@ class Voucher(LoggedModel):
 
 
 class InvoiceVoucher(LoggedModel):
-    PRICE_MODE_NONE = 'none'
-    PRICE_MODE_SET = 'set'
-    PRICE_MODE_SUBTRACT = 'subtract'
-    PRICE_MODE_PERCENT = 'percent'
-
-    PRICE_MODES = (
-        (PRICE_MODE_NONE, _('No effect')),
-        (PRICE_MODE_SET, _('Set product price to')),
-        (PRICE_MODE_SUBTRACT, _('Subtract from product price')),
-        (PRICE_MODE_PERCENT, _('Reduce product price by (%)')),
-    )
     code = models.CharField(
         verbose_name=_("Voucher code"),
         max_length=255, default=generate_code,
@@ -547,8 +531,8 @@ class InvoiceVoucher(LoggedModel):
     price_mode = models.CharField(
         verbose_name=_("Price mode"),
         max_length=100,
-        choices=PRICE_MODES,
-        default='none'
+        choices=PriceModeChoices.choices,
+        default=PriceModeChoices.NONE
     )
     value = models.DecimalField(
         verbose_name=_("Voucher value"),
