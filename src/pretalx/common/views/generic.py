@@ -85,8 +85,7 @@ class GenericResetView(FormView):
 
     def form_valid(self, form):
         user = form.cleaned_data["user"]
-        last_pw_reset = now() - user.pw_reset_time
-        one_day_ago = last_pw_reset - dt.timedelta(hours=24)
+        one_day_ago = now() - dt.timedelta(hours=24)
 
         # We block password resets if the user has reset their password already in the
         # past 24 hours.
