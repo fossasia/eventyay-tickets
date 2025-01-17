@@ -1151,12 +1151,12 @@ class Event(EventMixin, LoggedModel):
 
     @property
     def talk_dashboard_url(self):
-        url = urljoin(TALK_HOSTNAME, f"/orga/event/{self.slug}")
+        url = urljoin(TALK_HOSTNAME, f"orga/event/{self.slug}")
         return url
 
     @property
     def talk_settings_url(self):
-        url = urljoin(TALK_HOSTNAME, f"/orga/event/{self.slug}/settings")
+        url = urljoin(TALK_HOSTNAME, f"orga/event/{self.slug}/settings")
         return url
 
     @cached_property

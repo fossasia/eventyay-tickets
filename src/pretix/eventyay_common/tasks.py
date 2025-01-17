@@ -163,7 +163,7 @@ def create_world(self, is_video_creation: bool, event_data: dict) -> Optional[di
     def _create_world(payload: dict, headers: dict) -> Optional[dict]:
         try:
             response = requests.post(
-                urljoin(settings.VIDEO_SERVER_HOSTNAME, "/api/v1/create-world/"),
+                urljoin(settings.VIDEO_SERVER_HOSTNAME, "api/v1/create-world/"),
                 json=payload,
                 headers=headers,
             )
