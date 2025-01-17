@@ -83,7 +83,7 @@ def send_team_webhook(self, user_id, team):
     try:
         # Send the POST request with the payload and the headers
         response = requests.post(
-            urljoin(settings.TALK_HOSTNAME, "/webhook/team/"),
+            urljoin(settings.TALK_HOSTNAME, "webhook/team/"),
             json=payload,
             headers=headers
         )
@@ -123,7 +123,7 @@ def send_event_webhook(self, user_id: int, event: dict, action: str) -> Optional
     try:
         # Send the POST request with the payload and the headers
         response = requests.post(
-            urljoin(settings.TALK_HOSTNAME, "/webhook/event/"),
+            urljoin(settings.TALK_HOSTNAME, "webhook/event/"),
             json=payload,
             headers=headers
         )
