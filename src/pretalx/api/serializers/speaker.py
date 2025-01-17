@@ -48,7 +48,8 @@ class SpeakerSerializer(ModelSerializer):
 
     @staticmethod
     def get_avatar(obj):
-        return obj.user.get_avatar_url(event=obj.event)
+        if obj.event.cfp.request_avatar:
+            return obj.user.get_avatar_url(event=obj.event)
 
     @staticmethod
     def get_submissions(obj):
