@@ -9,16 +9,18 @@ If you want to install pretix on a server for actual usage, go to the :ref:`admi
 
 Obtain a copy of the source code
 --------------------------------
-You can just clone our git repository::
+You can just clone our git repository:
 
-    git clone https://github.com/pretix/pretix.git
-    cd pretix/
+.. code-block:: console
+
+  $ git clone https://github.com/fossasia/eventyay-tickets.git
+  $ cd eventyay-tickets/
 
 External Dependencies
 ---------------------
 Your should install the following on your system:
 
-* Python 3.5 or newer
+* Python 3.11 or newer
 * ``pip`` for Python 3 (Debian package: ``python3-pip``)
 * ``python-dev`` for Python 3 (Debian package: ``python3-dev``)
 * On Debian/Ubuntu: ``python-venv`` for Python 3 (Debian package: ``python3-venv``)
@@ -35,48 +37,66 @@ Your should install the following on your system:
 Your local python environment
 -----------------------------
 
-Please execute ``python -V`` or ``python3 -V`` to make sure you have Python 3.4
+Install `uv`_ the Python package manager.
+
+Please execute ``python -V`` or ``python3 -V`` to make sure you have Python 3.11
 (or newer) installed. Also make sure you have pip for Python 3 installed, you can
-execute ``pip3 -V`` to check. Then use Python's internal tools to create a virtual
-environment and activate it for your current session::
+execute ``pip3 -V`` to check.
 
-    python3 -m venv env
-    source env/bin/activate
+Use `uv` to create a virtual environment for our project and install all dependencies:
 
-You should now see a ``(env)`` prepended to your shell prompt. You have to do this
-in every shell you use to work with pretix (or configure your shell to do so
-automatically). If you are working on Ubuntu or Debian, we strongly recommend upgrading
-your pip and setuptools installation inside the virtual environment, otherwise some of
-the dependencies might fail::
+.. code-block:: console
 
-    pip3 install -U pip setuptools
+  $ uv sync --all-groups --no-install-project
+
+Activate your virtual environment (`uv` creates virtual environment in _.venv_ directory):
+
+.. code-block:: console
+
+  $ source .venv/bin/activate
+
+`uv` automatically creates virtual environment in _.venv_ directory.
+If you want to create virtual environment outside the project directory, you can do so with
+a different tool and tell `uv` to repspect the activated virtual environment by setting the
+`UV_PROJECT_ENVIRONMENT` environment variable.
+
+For Bash and Zsh:
+
+.. code-block:: console
+
+  $ export UV_PROJECT_ENVIRONMENT=$VIRTUAL_ENV
+
+For Fish:
+
+.. code-block:: console
+
+  $ set -x UV_PROJECT_ENVIRONMENT $VIRTUAL_ENV
 
 Working with the code
 ---------------------
-The first thing you need are all the main application's dependencies::
 
-    pip3 install -e ".[dev]"
+You need to copy the SCSS files from the source folder to the STATIC_ROOT directory:
 
-Next, you need to copy the SCSS files from the source folder to the STATIC_ROOT directory::
+.. code-block:: console
 
-    cd src/
-    python manage.py collectstatic --noinput
+  $ cd src/
+  $ python manage.py collectstatic --no-input
 
 Then, create the local database::
 
-    python manage.py migrate
+  python manage.py migrate
 
 A first user with username ``admin@localhost`` and password ``admin`` will be automatically
 created.
 
 You will also need to install a few JavaScript dependencies::
 
-    make npminstall
+  make npminstall
 
 If you want to see pretix in a different language than English, you have to compile our language
 files::
 
-    make localecompile
+  make localecompile
 
 Run the development server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -101,36 +121,28 @@ Before you check in your code into git, always run static checkers and linters. 
 your pull request will not be merged into pretix. If you have trouble figuring out *why* they fail, create your
 pull request nevertheless and ask us for help, we are happy to assist you.
 
-Execute the following commands to check for code style errors::
+Execute the following commands to check for code style errors
 
-    flake8 .
-    isort -c .
-    python manage.py check
+.. code-block:: console
 
-Execute the following command to run pretix' test suite (might take a couple of minutes)::
+  $ ruff check .
+  $ python manage.py check
 
-    py.test
+Execute the following command to run pretix' test suite (might take a couple of minutes):
+
+.. code-block:: console
+
+  $ pytest
 
 .. note:: If you have multiple CPU cores and want to speed up the test suite, you can install the python
           package ``pytest-xdist`` using ``pip3 install pytest-xdist`` and then run ``py.test -n NUM`` with
           ``NUM`` being the number of threads you want to use.
 
-It is a good idea to put this command into your git hook ``.git/hooks/pre-commit``,
-for example, to check for any errors in any staged files when committing::
+It is a good idea to install a Git pre-commit hook that runs these checks before you commit. You can do this:
 
-    #!/bin/bash
-    cd $GIT_DIR/../src
-    export GIT_WORK_TREE=../
-    export GIT_DIR=../.git
-    source ../env/bin/activate  # Adjust to however you activate your virtual environment
-    for file in $(git diff --cached --name-only | grep -E '\.py$' | grep -Ev "migrations|mt940\.py|pretix/settings\.py|make_testdata\.py|testutils/settings\.py|tests/settings\.py|pretix/base/models/__init__\.py|.*_pb2\.py")
-    do
-      echo $file
-      git show ":$file" | flake8 - --stdin-display-name="$file" || exit 1 # we only want to lint the staged changes, not any un-staged changes
-      git show ":$file" | isort -c - | grep ERROR && exit 1 || true
-    done
+.. code-block:: console
 
-
+  $ pre-commit install
 
 This keeps you from accidentally creating commits violating the style guide.
 
@@ -167,12 +179,8 @@ optimized binary ``*.mo`` counterparts::
 
 Working with the documentation
 ------------------------------
-First, you should install the requirements necessary for building the documentation.
-Make sure you have your virtual python environment activated (see above). Then, install the
-packages by executing::
 
-    cd doc/
-    pip3 install -r requirements.txt
+First, you should install the requirements necessary for building the documentation.
 
 To build the documentation, run the following command from the ``doc/`` directory::
 
@@ -187,5 +195,5 @@ with the documentation a lot, you might find it useful to use sphinx-autobuild::
 Then, go to http://localhost:8081 for a version of the documentation that automatically re-builds
 whenever you change a source file.
 
-.. _Django's documentation: https://docs.djangoproject.com/en/1.11/ref/django-admin/#runserver
-.. _pretixdroid: https://github.com/pretix/pretixdroid
+.. _Django's documentation: https://docs.djangoproject.com/en/5.1/ref/django-admin/#runserver
+.. _uv: https://docs.astral.sh/uv/

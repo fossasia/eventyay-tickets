@@ -1,11 +1,12 @@
 import configparser
+import importlib.util
 import logging
 import os
 import sys
+import importlib.metadata
 from urllib.parse import urlparse
 
 import django.conf.locale
-import importlib_metadata
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
 from kombu import Queue
@@ -328,14 +329,11 @@ if db_backend == 'postgresql':
     # ALlow plugins to use django.contrib.postgres
     INSTALLED_APPS.insert(0, 'django.contrib.postgres')
 
-try:
-    import django_extensions  # noqa
+if importlib.util.find_spec('django_extensions'):
     INSTALLED_APPS.append('django_extensions')
-except ImportError:
-    pass
 
 PLUGINS = []
-entry_points = importlib_metadata.entry_points()
+entry_points = importlib.metadata.entry_points()
 
 for entry_point in entry_points.select(group='pretix.plugin'):
     if entry_point.module not in PRETIX_PLUGINS_EXCLUDE:

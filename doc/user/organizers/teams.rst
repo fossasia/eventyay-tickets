@@ -7,13 +7,13 @@ We don't expect you to work on your events all by yourself and therefore, eventy
 team members to access your eventyay organizer account. To manage teams, click on the "Teams" link on your organizer
 settings page (see above how to find it). This shows you a list of teams that should contain at least one team already:
 
-.. thumbnail:: ../../screens/organizer/team_list.png
+.. image:: ../../screens/organizer/team_list.png
    :align: center
    :class: screenshot
 
 If you click on a team name, you get to a page that shows you the current members of the team:
 
-.. thumbnail:: ../../screens/organizer/team_detail.png
+.. image:: ../../screens/organizer/team_detail.png
    :align: center
    :class: screenshot
 
@@ -64,6 +64,6 @@ Permissions separate into two areas:
    * Can change vouchers – This permission allows to create and modify vouchers in all their details. It only works
      properly if the same users also have the "Can view vouchers" permission.
 
-.. thumbnail:: ../../screens/organizer/team_edit.png
+.. image:: ../../screens/organizer/team_edit.png
    :align: center
    :class: screenshot

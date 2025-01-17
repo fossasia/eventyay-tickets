@@ -13,20 +13,20 @@ You can find out all organizer accounts you have access to by going to your glob
 in the top-left corner) and then select "Organizers" from the navigation bar on the left side. Then, choose one of the
 organizer accounts presented, if there are multiple of them:
 
-.. thumbnail:: ../../screens/organizer/list.png
+.. image:: ../../screens/organizer/list.png
    :align: center
    :class: screenshot
 
 This overview shows you all event that belong to the organizer and you have access to:
 
-.. thumbnail:: ../../screens/organizer/event_list.png
+.. image:: ../../screens/organizer/event_list.png
    :align: center
    :class: screenshot
 
 With the "Edit" button at the top, next to the organizer account name, you can modify properties of the organizer
 account such as its name and display settings for the public profile page of the organizer account:
 
-.. thumbnail:: ../../screens/organizer/edit.png
+.. image:: ../../screens/organizer/edit.png
    :align: center
    :class: screenshot
 

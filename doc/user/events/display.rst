@@ -3,7 +3,7 @@ Display settings
 
 The settings at "Settings" → "Display" allow you to customize the appearance of your ticket shop.
 
-.. thumbnail:: ../../screens/event/settings_display.png
+.. image:: ../../screens/event/settings_display.png
    :align: center
    :class: screenshot
 

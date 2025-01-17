@@ -56,13 +56,13 @@ dates and allows you to create, edit, clone and delete them.
 If "Dates" is missing from the navigation menu, you have insufficient permission or your event has not been set up as
 an event series and you need to create a new event.
 
-.. thumbnail:: ../../screens/event/subevent_list.png
+.. image:: ../../screens/event/subevent_list.png
    :align: center
    :class: screenshot
 
 If you click on one of them or create a new one, you will see the following form:
 
-.. thumbnail:: ../../screens/event/subevent_create.png
+.. image:: ../../screens/event/subevent_create.png
    :align: center
    :class: screenshot
 
