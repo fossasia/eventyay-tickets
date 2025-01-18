@@ -16,6 +16,7 @@ from pretix.base.models import Seat, SeatCategoryMapping
 
 from ..decimal import round_decimal
 from .base import LoggedModel
+from .choices import PriceModeChoices
 from .event import Event, SubEvent
 from .items import Item, ItemVariation, Quota
 from .orders import Order, OrderPosition
@@ -81,12 +82,6 @@ class Voucher(LoggedModel):
     * You need to either select a quota or an item
     * If you select an item that has variations but do not select a variation, you cannot set block_quota
     """
-    PRICE_MODES = (
-        ('none', _('No effect')),
-        ('set', _('Set product price to')),
-        ('subtract', _('Subtract from product price')),
-        ('percent', _('Reduce product price by (%)')),
-    )
 
     event = models.ForeignKey(
         Event,
@@ -144,8 +139,8 @@ class Voucher(LoggedModel):
     price_mode = models.CharField(
         verbose_name=_("Price mode"),
         max_length=100,
-        choices=PRICE_MODES,
-        default='none'
+        choices=PriceModeChoices.choices,
+        default=PriceModeChoices.NONE
     )
     value = models.DecimalField(
         verbose_name=_("Voucher value"),
@@ -506,12 +501,6 @@ class Voucher(LoggedModel):
 
 
 class InvoiceVoucher(LoggedModel):
-    PRICE_MODES = (
-        ('none', _('No effect')),
-        ('set', _('Set product price to')),
-        ('subtract', _('Subtract from product price')),
-        ('percent', _('Reduce product price by (%)')),
-    )
     code = models.CharField(
         verbose_name=_("Voucher code"),
         max_length=255, default=generate_code,
@@ -542,8 +531,8 @@ class InvoiceVoucher(LoggedModel):
     price_mode = models.CharField(
         verbose_name=_("Price mode"),
         max_length=100,
-        choices=PRICE_MODES,
-        default='none'
+        choices=PriceModeChoices.choices,
+        default=PriceModeChoices.NONE
     )
     value = models.DecimalField(
         verbose_name=_("Voucher value"),
@@ -583,3 +572,27 @@ class InvoiceVoucher(LoggedModel):
         if self.valid_until and self.valid_until < now():
             return False
         return True
+
+    def calculate_price(self, original_price: Decimal, max_discount: Decimal=None, event: Event=None) -> Decimal:
+        """
+        Returns how the price given in original_price would be modified if this
+        voucher is applied, i.e. replaced by a different price or reduced by a
+        certain percentage. If the voucher does not modify the price, the
+        original price will be returned.
+        """
+        if self.value is not None:
+            if self.price_mode == 'set':
+                p = self.value
+            elif self.price_mode == 'subtract':
+                p = max(original_price - self.value, Decimal('0.00'))
+            elif self.price_mode == 'percent':
+                p = round_decimal(original_price * (Decimal('100.00') - self.value) / Decimal('100.00'))
+            else:
+                p = original_price
+            places = settings.CURRENCY_PLACES.get(event.currency, 2)
+            if places < 2:
+                p = p.quantize(Decimal('1') / 10 ** places, ROUND_HALF_UP)
+            if max_discount is not None:
+                p = max(p, original_price - max_discount)
+            return p
+        return original_price
