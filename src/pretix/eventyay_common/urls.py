@@ -7,7 +7,8 @@ from pretix.eventyay_common.views import (
 app_name = 'eventyay_common'
 
 urlpatterns = [
-    url(r'^$', dashboards.organiser_dashboard, name='dashboard'),
+    url(r'^$', dashboards.eventyay_common_dashboard, name='dashboard'),
+    url(r'^widgets.json/$', dashboards.user_index_widgets_lazy, name='dashboard.widgets'),
     url(r'^organizers/$', organizer.OrganizerList.as_view(), name='organizers'),
     url(r'^organizers/add$', organizer.OrganizerCreate.as_view(), name='organizers.add'),
     url(r'^organizer/(?P<organizer>[^/]+)/update$', organizer.OrganizerUpdate.as_view(), name='organizer.update'),

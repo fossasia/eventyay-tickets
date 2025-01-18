@@ -1,6 +1,6 @@
 import datetime as dt
 from datetime import datetime, timezone as tz
-from enum import Enum
+from enum import StrEnum
 
 import jwt
 from django.conf import settings
@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import F, Max, Min, Prefetch
 from django.db.models.functions import Coalesce, Greatest
-from django.http import HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -32,19 +32,11 @@ from pretix.control.views import PaginationMixin, UpdateView
 from pretix.control.views.event import DecoupleMixin, EventSettingsViewMixin
 from pretix.control.views.item import MetaDataEditorMixin
 from pretix.eventyay_common.forms.event import EventCommonSettingsForm
-from pretix.eventyay_common.tasks import (
-    add_plugin, create_world, send_event_webhook,
-)
+from pretix.eventyay_common.tasks import create_world, send_event_webhook
 from pretix.eventyay_common.utils import (
-    check_create_permission, encode_email, generate_token,
+    EventCreatedFor, check_create_permission, encode_email, generate_token,
 )
 from pretix.helpers.plugin_enable import is_video_enabled
-
-
-class EventCreatedFor(Enum):
-    BOTH = "all"
-    TICKET = "tickets"
-    TALK = "talk"
 
 
 class EventList(PaginationMixin, ListView):
@@ -169,7 +161,7 @@ class EventCreateView(SafeSessionWizardView):
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form, **kwargs)
-        context["create_for"] = self.storage.extra_data.get("create_for", EventCreatedFor.BOTH.value)
+        context["create_for"] = self.storage.extra_data.get("create_for", EventCreatedFor.BOTH)
         context["has_organizer"] = self.request.user.teams.filter(
             can_create_events=True
         ).exists()
@@ -217,7 +209,7 @@ class EventCreateView(SafeSessionWizardView):
 
         self.request.organizer = foundation_data["organizer"]
 
-        if create_for == EventCreatedFor.TALK.value:
+        if create_for == EventCreatedFor.TALK:
             event_dict = {
                 "organiser_slug": (
                     foundation_data.get("organizer").slug
@@ -258,7 +250,7 @@ class EventCreateView(SafeSessionWizardView):
                 event.settings.set("timezone", basics_data["timezone"])
                 event.settings.set("locale", basics_data["locale"])
                 event.settings.set("locales", foundation_data["locales"])
-                if create_for == EventCreatedFor.BOTH.value:
+                if create_for == EventCreatedFor.BOTH:
                     event_dict = {
                         "organiser_slug": event.organizer.slug,
                         "name": event.name.data,
@@ -304,6 +296,9 @@ class EventUpdate(
     template_name = "eventyay_common/event/settings.html"
     permission = "can_change_event_settings"
 
+    class ValidComponentAction(StrEnum):
+        ENABLE = "enable"
+
     @cached_property
     def object(self) -> Event:
         return self.request.event
@@ -323,58 +318,24 @@ class EventUpdate(
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
         context["sform"] = self.sform
-        talk_host = settings.TALK_HOSTNAME
-        context["talk_edit_url"] = (
-            talk_host + "/orga/event/" + self.object.slug
-        )
         context['is_video_enabled'] = is_video_enabled(self.object)
         context["is_talk_event_created"] = False
         if (
-            self.object.settings.create_for == EventCreatedFor.BOTH.value
+            self.object.settings.create_for == EventCreatedFor.BOTH
             or self.object.settings.talk_schedule_public is not None
         ):
             # Ignore case Event is created only for Talk as it not enable yet.
             context["is_talk_event_created"] = True
         return context
 
-    def handle_video_creation(self, form):
-        has_permission = check_create_permission(self.request)
-        is_video_creation = form.cleaned_data.get("is_video_creation", False)
-
-        if is_video_creation and not has_permission:
-            messages.error(self.request, _("You do not have permission to create videos."))
-            return None
-
-        form.instance.is_video_creation = is_video_creation and has_permission
-
-        if form.instance.is_video_creation:
-            form.event.plugins = add_plugin(form.event, "pretix_venueless")
-            event_data = {
-                "id": form.cleaned_data.get("slug"),
-                "title": form.cleaned_data.get("name").data,
-                "timezone": self.sform.cleaned_data.get("timezone"),
-                "locale": self.sform.cleaned_data.get("locale"),
-                "has_permission": has_permission,
-                "token": generate_token(self.request)
-            }
-            create_world.delay(
-                is_video_creation=True,
-                event_data=event_data
-            )
-        messages.success(self.request, _("Your changes have been saved."))
-        return form
-
     @transaction.atomic
     def form_valid(self, form):
-        processed_form = self.handle_video_creation(form)
-        if processed_form is None:
-            return HttpResponseRedirect(self.request.path)
         self._save_decoupled(self.sform)
         self.sform.save()
 
         tickets.invalidate_cache.apply_async(kwargs={"event": self.request.event.pk})
 
-        return super().form_valid(processed_form)
+        return super().form_valid(form)
 
     def get_success_url(self) -> str:
         return reverse(
@@ -391,7 +352,68 @@ class EventUpdate(
             kwargs["domain"] = True
         return kwargs
 
+    def enable_talk_system(self, request: HttpRequest) -> bool:
+        """
+        Enable talk system for this event if it has not been created yet.
+        """
+        action = request.POST.get("enable_talk_system", "").lower()
+        if action != self.ValidComponentAction.ENABLE:
+            return False
+
+        if not check_create_permission(self.request):
+            messages.error(self.request, _("You do not have permission to perform this action."))
+            return False
+
+        send_event_webhook.delay(
+            user_id=self.request.user.id,
+            event={
+                "organiser_slug": self.request.event.organizer.slug,
+                "name": self.request.event.name.data,
+                "slug": self.request.event.slug,
+                "date_from": str(self.request.event.date_from),
+                "date_to": str(self.request.event.date_to),
+                "timezone": str(self.request.event.settings.timezone),
+                "locale": self.request.event.settings.locale,
+                "locales": self.request.event.settings.locales,
+                "is_video_creation": self.request.event.is_video_creation,
+            },
+            action="create",
+        )
+
+        return True
+
+    def enable_video_system(self, request: HttpRequest) -> bool:
+        """
+        Enable video system for this event if it has not been created yet.
+        """
+        action = request.POST.get("enable_video_system", "").lower()
+        if action != self.ValidComponentAction.ENABLE:
+            return False
+
+        if not check_create_permission(self.request):
+            messages.error(self.request, _("You do not have permission to perform this action."))
+            return False
+
+        create_world.delay(
+            is_video_creation=True,
+            event_data={
+                "id": self.request.event.slug,
+                "title": self.request.event.name.data,
+                "timezone": self.request.event.settings.timezone,
+                "locale": self.request.event.settings.locale,
+                "has_permission": True,
+                "token": generate_token(self.request)
+            }
+        )
+        return True
+
     def post(self, request, *args, **kwargs):
+        if self.enable_talk_system(request):
+            return redirect(self.get_success_url())
+
+        if self.enable_video_system(request):
+            return redirect(self.get_success_url())
+
         form = self.get_form()
         if form.changed_data or self.sform.changed_data:
             form.instance.sales_channels = ["web"]
@@ -400,7 +422,7 @@ class EventUpdate(
                 event = form.instance
                 event.date_from = self.reset_timezone(zone, event.date_from)
                 event.date_to = self.reset_timezone(zone, event.date_to)
-                if event.settings.create_for and event.settings.create_for == EventCreatedFor.BOTH.value:
+                if event.settings.create_for and event.settings.create_for == EventCreatedFor.BOTH:
                     event_dict = {
                         "organiser_slug": event.organizer.slug,
                         "name": event.name.data,
@@ -410,7 +432,7 @@ class EventUpdate(
                         "timezone": str(event.settings.timezone),
                         "locale": event.settings.locale,
                         "locales": event.settings.locales,
-                        "is_video_creation": event.is_video_creation,
+                        "is_video_creation": request.event.is_video_creation,
                     }
                     send_event_webhook.delay(
                         user_id=self.request.user.id, event=event_dict, action="update"

@@ -38,6 +38,8 @@ from pretix.helpers.thumb import get_thumbnail
 from ..settings import settings_hierarkey
 from .organizer import Organizer, OrganizerBillingModel, Team
 
+TALK_HOSTNAME = settings.TALK_HOSTNAME
+
 
 class EventMixin:
 
@@ -1134,20 +1136,27 @@ class Event(EventMixin, LoggedModel):
 
     @property
     def talk_schedule_url(self):
-        talk_host = settings.TALK_HOSTNAME
-        url = urljoin(talk_host, f"{self.slug}/schedule")
+        url = urljoin(TALK_HOSTNAME, f"{self.slug}/schedule")
         return url
 
     @property
     def talk_session_url(self):
-        talk_host = settings.TALK_HOSTNAME
-        url = urljoin(talk_host, f"{self.slug}/talk")
+        url = urljoin(TALK_HOSTNAME, f"{self.slug}/talk")
         return url
 
     @property
     def talk_speaker_url(self):
-        talk_host = settings.TALK_HOSTNAME
-        url = urljoin(talk_host, f"{self.slug}/speaker")
+        url = urljoin(TALK_HOSTNAME, f"{self.slug}/speaker")
+        return url
+
+    @property
+    def talk_dashboard_url(self):
+        url = urljoin(TALK_HOSTNAME, f"orga/event/{self.slug}")
+        return url
+
+    @property
+    def talk_settings_url(self):
+        url = urljoin(TALK_HOSTNAME, f"orga/event/{self.slug}/settings")
         return url
 
     @cached_property

@@ -1,10 +1,9 @@
 import base64
-import importlib.util
 import logging
 from datetime import datetime, timezone as tz
 from decimal import Decimal
-from importlib import import_module
 from typing import Optional, Tuple
+from urllib.parse import urljoin
 
 import pytz
 import requests
@@ -16,7 +15,6 @@ from django.core.exceptions import ValidationError
 from django.db import DatabaseError
 from django.db.models import Q
 from django_scopes import scopes_disabled
-from pretix_venueless.views import VenuelessSettingsForm
 
 from pretix.base.models.vouchers import InvoiceVoucher
 from pretix.helpers.stripe_utils import (
@@ -28,6 +26,7 @@ from ..base.models.organizer import OrganizerBillingModel
 from ..base.services.mail import mail_send_task
 from ..base.settings import GlobalSettingsObject
 from ..helpers.jwt_generate import generate_sso_token
+from .base_tasks import CreateWorldTask, SendEventTask
 from .billing_invoice import InvoicePDFGenerator
 from .schemas.billing import CollectBillingResponse
 
@@ -86,7 +85,9 @@ def send_team_webhook(self, user_id, team):
     try:
         # Send the POST request with the payload and the headers
         response = requests.post(
-            settings.TALK_HOSTNAME + "/webhook/team/", json=payload, headers=headers
+            urljoin(settings.TALK_HOSTNAME, "webhook/team/"),
+            json=payload,
+            headers=headers
         )
         response.raise_for_status()  # Raise exception for bad status codes
     except requests.RequestException as e:
@@ -100,9 +101,9 @@ def send_team_webhook(self, user_id, team):
 
 
 @shared_task(
-    bind=True, max_retries=5, default_retry_delay=60
+    bind=True, max_retries=5, default_retry_delay=60, base=SendEventTask
 )  # Retries up to 5 times with a 60-second delay
-def send_event_webhook(self, user_id, event, action):
+def send_event_webhook(self, user_id: int, event: dict, action: str) -> Optional[dict]:
     # Define the payload to send to the webhook
     user_model = get_user_model()
     user = user_model.objects.get(id=user_id)
@@ -124,9 +125,12 @@ def send_event_webhook(self, user_id, event, action):
     try:
         # Send the POST request with the payload and the headers
         response = requests.post(
-            settings.TALK_HOSTNAME + "/webhook/event/", json=payload, headers=headers
+            urljoin(settings.TALK_HOSTNAME, "webhook/event/"),
+            json=payload,
+            headers=headers
         )
         response.raise_for_status()  # Raise exception for bad status codes
+        return response.json()
     except requests.RequestException as e:
         # Log any errors that occur
         logger.error("Error sending webhook to talk component: %s", e)
@@ -138,9 +142,9 @@ def send_event_webhook(self, user_id, event, action):
 
 
 @shared_task(
-    bind=True, max_retries=5, default_retry_delay=60
+    bind=True, max_retries=5, default_retry_delay=60, base=CreateWorldTask
 )  # Retries up to 5 times with a 60-second delay
-def create_world(self, is_video_creation, event_data):
+def create_world(self, is_video_creation: bool, event_data: dict) -> Optional[dict]:
     """
     Create a video system for the specified event.
 
@@ -158,156 +162,59 @@ def create_world(self, is_video_creation, event_data):
     - The user must have the necessary permission.
     - The user must choose to create a video.
     """
-    event_slug = event_data.get("id")
-    title = event_data.get("title")
-    event_timezone = event_data.get("timezone")
-    locale = event_data.get("locale")
-    token = event_data.get("token")
-    has_permission = event_data.get("has_permission")
+    def _create_world(payload: dict, headers: dict) -> Optional[dict]:
+        try:
+            response = requests.post(
+                urljoin(settings.VIDEO_SERVER_HOSTNAME, "api/v1/create-world/"),
+                json=payload,
+                headers=headers,
+            )
+            response.raise_for_status()
+            return response.json()
+        except (
+            requests.exceptions.JSONDecodeError,
+            requests.exceptions.ConnectionError,
+            requests.exceptions.Timeout,
+            requests.exceptions.RequestException,
+        ) as e:
+            error_type = type(e).__name__
+            logger.error("%s during video world creation: %s", error_type, e)
+            raise
 
+    has_permission = event_data.get("has_permission", False)
+    if not (is_video_creation and has_permission):
+        logger.info(
+            "Skipping video world creation - Video enabled: %s, Has permission: %s",
+            is_video_creation,
+            has_permission,
+        )
+        return None
+
+    event_slug = event_data.get("id", "")
     payload = {
         "id": event_slug,
-        "title": title,
-        "timezone": event_timezone,
-        "locale": locale,
+        "title": event_data.get("title", ""),
+        "timezone": event_data.get("timezone", ""),
+        "locale": event_data.get("locale", ""),
         "traits": {
             'attendee': 'eventyay-video-event-{}'.format(event_slug),
         }
     }
 
-    headers = {"Authorization": "Bearer " + token}
-
-    if is_video_creation and has_permission:
+    try:
+        return _create_world(
+            payload=payload,
+            headers={"Authorization": "Bearer " + event_data.get("token", "")}
+        )
+    except requests.RequestException as e:
         try:
-            response = requests.post(
-                "{}/api/v1/create-world/".format(settings.VIDEO_SERVER_HOSTNAME),
-                json=payload,
-                headers=headers,
+            self.retry(exc=e)
+        except self.MaxRetriesExceededError:
+            logger.error(
+                "Max retries exceeded for video world creation. Event: %s, Error: %s",
+                event_slug,
+                e,
             )
-            setup_video_plugin(response.json())
-        except requests.exceptions.ConnectionError as e:
-            logger.error("Connection error: %s", str(e))
-            self.retry(exc=e)
-        except requests.exceptions.Timeout as e:
-            logger.error("Request timed out: %s", str(e))
-            self.retry(exc=e)
-        except requests.exceptions.RequestException as e:
-            logger.error("Request failed: %s", str(e))
-            self.retry(exc=e)
-        except ValueError as e:
-            logger.error("Value error: %s", str(e))
-
-
-def extract_jwt_config(world_data):
-    """
-    Extract the JWT configuration from the world data.
-    @param world_data: A dictionary containing the world data.
-    @return: A dictionary containing the JWT configuration.
-    """
-    config = world_data.get('config', {})
-    jwt_secrets = config.get('JWT_secrets', [])
-    jwt_config = jwt_secrets[0] if jwt_secrets else {}
-    return {
-        'secret': jwt_config.get('secret'),
-        'issuer': jwt_config.get('issuer'),
-        'audience': jwt_config.get('audience')
-    }
-
-
-def setup_video_plugin(world_data):
-    """
-     Setup the video plugin for the event.
-     @param world_data: A dictionary containing the world data.
-     if the plugin is installed, add the plugin to the event and save the video settings information.
-     """
-    jwt_config = extract_jwt_config(world_data)
-    video_plugin = get_installed_plugin('pretix_venueless')
-    event_id = world_data.get("id")
-    if video_plugin:
-        attach_plugin_to_event('pretix_venueless', event_id)
-        video_settings = {
-            'venueless_url': world_data.get('domain', ""),
-            'venueless_secret': jwt_config.get('secret', ""),
-            'venueless_issuer': jwt_config.get('issuer', ""),
-            'venueless_audience': jwt_config.get('audience', ""),
-            'venueless_all_items': True,
-            'venueless_items': [],
-            'venueless_questions': [],
-        }
-        save_video_settings_information(event_id, video_settings)
-    else:
-        logger.error("Video integration configuration failed - Plugin not installed")
-        raise ValueError("Failed to configure video integration")
-
-
-def save_video_settings_information(event_id, video_settings):
-    """
-    Save the video settings information to the event.
-    @param event_id: A string representing the unique identifier for the event.
-    @param video_settings:  A dictionary containing the video settings information.
-    @return: The video configuration form.
-    """
-    try:
-        with scopes_disabled():
-            event_instance = Event.objects.get(slug=event_id)
-            video_config_form = VenuelessSettingsForm(
-                data=video_settings,
-                obj=event_instance
-            )
-            if video_config_form.is_valid():
-                video_config_form.save()
-            else:
-                logger.error("Video integration configuration failed - Validation errors: %s", video_config_form.errors)
-                raise ValueError("Failed to validate video integration settings")
-            return video_config_form
-    except Event.DoesNotExist:
-        logger.error("Event does not exist: %s", event_id)
-        raise ValueError("Event does not exist")
-
-
-def get_installed_plugin(plugin_name):
-    """
-    Check if a plugin is installed.
-    @param plugin_name: A string representing the name of the plugin to check.
-    @return: The installed plugin if it exists, otherwise None.
-    """
-    if importlib.util.find_spec(plugin_name) is not None:
-        installed_plugin = import_module(plugin_name)
-    else:
-        installed_plugin = None
-    return installed_plugin
-
-
-def attach_plugin_to_event(plugin_name, event_slug):
-    """
-    Attach a plugin to an event.
-    @param plugin_name: A string representing the name of the plugin to add.
-    @param event_slug: A string representing the slug of the event to which the plugin should be added.
-    @return: The event instance with the added plugin.
-    """
-    try:
-        with scopes_disabled():
-            event = Event.objects.get(slug=event_slug)
-            event.plugins = add_plugin(event, plugin_name)
-            event.save()
-            return event
-    except Event.DoesNotExist:
-        logger.error("Event does not exist: %s", event_slug)
-        raise ValueError("Event does not exist")
-
-
-def add_plugin(event, plugin_name):
-    """
-    Add a plugin
-    @param event: The event instance to which the plugin should be added.
-    @param plugin_name: A string representing the name of the plugin to add.
-    @return: The updated list of plugins for the event.
-    """
-    if not event.plugins:
-        return plugin_name
-    plugins = set(event.plugins.split(','))
-    plugins.add(plugin_name)
-    return ','.join(plugins)
 
 
 def get_header_token(user_id):
