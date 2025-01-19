@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Settings storage &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Implementation and Utilities" href="index.html"/>
+        <link rel="next" title="Background tasks" href="background.html"/>
+        <link rel="prev" title="Internationalization" href="i18n.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Implementation and Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="models.html">Data model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="urlconfig.html">Working with URLs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="i18n.html">Internationalization</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Settings storage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#forms">Forms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#defaults-in-plugins">Defaults in plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="background.html">Background tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">Sending Email</a></li>
+<li class="toctree-l3"><a class="reference internal" href="permissions.html">Permissions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html">Logging and notifications</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index.html">Plugin development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Implementation and Utilities</a> &raquo;</li>
+        
+      <li>Settings storage</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/implementation/settings.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="settings-storage">
+<h1>Settings storage<a class="headerlink" href="#settings-storage" title="Permalink to this heading">¶</a></h1>
+<p>pretix is highly configurable and therefore needs to store a lot of per-event and per-organizer settings.
+For this purpose, we use <a class="reference external" href="https://github.com/raphaelm/django-hierarkey">django-hierarkey</a> which started out as part of pretix and then got refactored into
+its own library. It has a comprehensive <a class="reference external" href="https://django-hierarkey.readthedocs.io/en/latest/">documentation</a> which you should read if you work with settings in pretix.</p>
+<p>The settings are stored in the database and accessed through a <code class="docutils literal notranslate"><span class="pre">HierarkeyProxy</span></code> instance. You can obtain
+such an instance from any event or organizer model instance by just accessing <code class="docutils literal notranslate"><span class="pre">event.settings</span></code> or
+<code class="docutils literal notranslate"><span class="pre">organizer.settings</span></code>, respectively.</p>
+<p>Any setting consists of a key and a value. By default, all settings are strings, but the settings system
+includes serializers for serializing the following types:</p>
+<ul class="simple">
+<li><p>Built-in types: <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">decimal.Decimal</span></code>, <code class="docutils literal notranslate"><span class="pre">dict</span></code>, <code class="docutils literal notranslate"><span class="pre">list</span></code>, <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">datetime.date</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime.datetime</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime.time</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LazyI18nString</span></code></p></li>
+<li><p>References to Django <code class="docutils literal notranslate"><span class="pre">File</span></code> objects that are already stored in a storage backend</p></li>
+<li><p>References to model instances</p></li>
+</ul>
+<p>In code, we recommend to always use the <code class="docutils literal notranslate"><span class="pre">.get()</span></code> method on the settings object to access a value, but for
+convenience in templates you can also access settings values at <code class="docutils literal notranslate"><span class="pre">settings[name]</span></code> and <code class="docutils literal notranslate"><span class="pre">settings.name</span></code>.
+See the hierarkey <a class="reference external" href="https://django-hierarkey.readthedocs.io/en/latest/">documentation</a> for more information.</p>
+<p>To avoid naming conflicts, plugins are requested to prefix all settings they use with the name of the plugin
+or something unique, e.g. <code class="docutils literal notranslate"><span class="pre">payment_paypal_api_key</span></code>. To reduce redundant typing of this prefix, we provide
+another helper class:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pretix.base.settings.SettingsSandbox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pretix.base.settings.</span></span><span class="sig-name descname"><span class="pre">SettingsSandbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typestr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.settings.SettingsSandbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transparently proxied access to event settings, handling your prefixes for you.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>typestr</strong> – The first part of the eventyay, e.g. <code class="docutils literal notranslate"><span class="pre">plugin</span></code></p></li>
+<li><p><strong>key</strong> – The prefix, e.g. the name of your plugin</p></li>
+<li><p><strong>obj</strong> – The event or organizer that should be queried</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>When implementing e.g. a payment or export provider, you do not event need to create this sandbox yourself,
+you will just be passed a sandbox object with a prefix generated from your provider name.</p>
+<section id="forms">
+<h2>Forms<a class="headerlink" href="#forms" title="Permalink to this heading">¶</a></h2>
+<p>Hierarkey also provides a base class for forms that allow the modification of settings. pretix contains a
+subclass that also adds support for internationalized fields:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pretix.base.forms.SettingsForm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pretix.base.forms.</span></span><span class="sig-name descname"><span class="pre">SettingsForm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.forms.SettingsForm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>You can simply use it like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">EventSettingsForm</span><span class="p">(</span><span class="n">SettingsForm</span><span class="p">):</span>
+    <span class="n">show_date_to</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span>
+        <span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Show event end date&quot;</span><span class="p">),</span>
+        <span class="n">help_text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;If disabled, only event&#39;s start date will be displayed to the public.&quot;</span><span class="p">),</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+    <span class="n">payment_term_days</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span>
+        <span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Payment term in days&#39;</span><span class="p">),</span>
+        <span class="n">help_text</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;The number of days after placing an order the user has to pay to &quot;</span>
+                    <span class="s2">&quot;preserve his reservation.&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="defaults-in-plugins">
+<h2>Defaults in plugins<a class="headerlink" href="#defaults-in-plugins" title="Permalink to this heading">¶</a></h2>
+<p>Plugins can add custom hardcoded defaults in the following way:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pretix.base.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings_hierarkey</span>
+
+<span class="n">settings_hierarkey</span><span class="o">.</span><span class="n">add_default</span><span class="p">(</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Make sure that you include this code in a module that is imported at app loading time.</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="background.html" class="btn btn-neutral float-right" title="Background tasks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="i18n.html" class="btn btn-neutral" title="Internationalization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

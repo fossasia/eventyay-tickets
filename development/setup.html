@@ -1,0 +1,454 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Development setup &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="up" title="Developer documentation" href="index.html"/>
+        <link rel="next" title="Contributing to pretix" href="contribution/index.html"/>
+        <link rel="prev" title="Concepts and Terminology" href="concepts.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Development setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#obtain-a-copy-of-the-source-code">Obtain a copy of the source code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#external-dependencies">External Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#your-local-python-environment">Your local python environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#working-with-the-code">Working with the code</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#run-the-development-server">Run the development server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#code-checks-and-unit-tests">Code checks and unit tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#working-with-mails">Working with mails</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#working-with-translations">Working with translations</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#working-with-the-documentation">Working with the documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="implementation/index.html">Implementation and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/index.html">Plugin development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Developer documentation</a> &raquo;</li>
+        
+      <li>Development setup</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/development/setup.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="development-setup">
+<span id="devsetup"></span><h1>Development setup<a class="headerlink" href="#development-setup" title="Permalink to this heading">¶</a></h1>
+<p>This tutorial helps you to get started hacking with pretix on your own computer. You need this to
+be able to contribute to pretix, but it might also be helpful if you want to write your own plugins.
+If you want to install pretix on a server for actual usage, go to the <a class="reference internal" href="../admin/index.html#admindocs"><span class="std std-ref">Administrator documentation</span></a> instead.</p>
+<section id="obtain-a-copy-of-the-source-code">
+<h2>Obtain a copy of the source code<a class="headerlink" href="#obtain-a-copy-of-the-source-code" title="Permalink to this heading">¶</a></h2>
+<p>You can just clone our git repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">pretix</span><span class="o">/</span><span class="n">pretix</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">pretix</span><span class="o">/</span>
+</pre></div>
+</div>
+</section>
+<section id="external-dependencies">
+<h2>External Dependencies<a class="headerlink" href="#external-dependencies" title="Permalink to this heading">¶</a></h2>
+<p>Your should install the following on your system:</p>
+<ul class="simple">
+<li><p>Python 3.5 or newer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pip</span></code> for Python 3 (Debian package: <code class="docutils literal notranslate"><span class="pre">python3-pip</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">python-dev</span></code> for Python 3 (Debian package: <code class="docutils literal notranslate"><span class="pre">python3-dev</span></code>)</p></li>
+<li><p>On Debian/Ubuntu: <code class="docutils literal notranslate"><span class="pre">python-venv</span></code> for Python 3 (Debian package: <code class="docutils literal notranslate"><span class="pre">python3-venv</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libffi</span></code> (Debian package: <code class="docutils literal notranslate"><span class="pre">libffi-dev</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libssl</span></code> (Debian package: <code class="docutils literal notranslate"><span class="pre">libssl-dev</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libxml2</span></code> (Debian package <code class="docutils literal notranslate"><span class="pre">libxml2-dev</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libxslt</span></code> (Debian package <code class="docutils literal notranslate"><span class="pre">libxslt1-dev</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">libenchant1c2a</span></code> (Debian package <code class="docutils literal notranslate"><span class="pre">libenchant1c2a</span></code> or <code class="docutils literal notranslate"><span class="pre">libenchant2-2</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">msgfmt</span></code> (Debian package <code class="docutils literal notranslate"><span class="pre">gettext</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freetype</span></code> (Debian package <code class="docutils literal notranslate"><span class="pre">libfreetype-dev</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">git</span></code></p></li>
+<li><p>for pillow: <code class="docutils literal notranslate"><span class="pre">libjpeg</span></code> (Debian Package <code class="docutils literal notranslate"><span class="pre">libjpeg-dev</span></code>)</p></li>
+</ul>
+</section>
+<section id="your-local-python-environment">
+<h2>Your local python environment<a class="headerlink" href="#your-local-python-environment" title="Permalink to this heading">¶</a></h2>
+<p>Please execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-V</span></code> or <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">-V</span></code> to make sure you have Python 3.4
+(or newer) installed. Also make sure you have pip for Python 3 installed, you can
+execute <code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">-V</span></code> to check. Then use Python’s internal tools to create a virtual
+environment and activate it for your current session:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="n">env</span>
+<span class="n">source</span> <span class="n">env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>You should now see a <code class="docutils literal notranslate"><span class="pre">(env)</span></code> prepended to your shell prompt. You have to do this
+in every shell you use to work with pretix (or configure your shell to do so
+automatically). If you are working on Ubuntu or Debian, we strongly recommend upgrading
+your pip and setuptools installation inside the virtual environment, otherwise some of
+the dependencies might fail:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">pip</span> <span class="n">setuptools</span>
+</pre></div>
+</div>
+</section>
+<section id="working-with-the-code">
+<h2>Working with the code<a class="headerlink" href="#working-with-the-code" title="Permalink to this heading">¶</a></h2>
+<p>The first thing you need are all the main application’s dependencies:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="s2">&quot;.[dev]&quot;</span>
+</pre></div>
+</div>
+<p>Next, you need to copy the SCSS files from the source folder to the STATIC_ROOT directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">src</span><span class="o">/</span>
+<span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">collectstatic</span> <span class="o">--</span><span class="n">noinput</span>
+</pre></div>
+</div>
+<p>Then, create the local database:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">migrate</span>
+</pre></div>
+</div>
+<p>A first user with username <code class="docutils literal notranslate"><span class="pre">admin&#64;localhost</span></code> and password <code class="docutils literal notranslate"><span class="pre">admin</span></code> will be automatically
+created.</p>
+<p>You will also need to install a few JavaScript dependencies:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">npminstall</span>
+</pre></div>
+</div>
+<p>If you want to see pretix in a different language than English, you have to compile our language
+files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">localecompile</span>
+</pre></div>
+</div>
+<section id="run-the-development-server">
+<h3>Run the development server<a class="headerlink" href="#run-the-development-server" title="Permalink to this heading">¶</a></h3>
+<p>To run the local development webserver, execute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">runserver</span>
+</pre></div>
+</div>
+<p>and head to <a class="reference external" href="http://localhost:8000/">http://localhost:8000/</a></p>
+<p>As we did not implement an overall front page yet, you need to go directly to
+<a class="reference external" href="http://localhost:8000/control/">http://localhost:8000/control/</a> for the admin view.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you want the development server to listen on a different interface or
+port (for example because you develop on <a class="reference external" href="https://github.com/pretix/pretixdroid">pretixdroid</a>), you can check
+<a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/django-admin/#runserver">Django’s documentation</a> for more options.</p>
+</div>
+</section>
+<section id="code-checks-and-unit-tests">
+<span id="checksandtests"></span><h3>Code checks and unit tests<a class="headerlink" href="#code-checks-and-unit-tests" title="Permalink to this heading">¶</a></h3>
+<p>Before you check in your code into git, always run static checkers and linters. If any of these commands fail,
+your pull request will not be merged into pretix. If you have trouble figuring out <em>why</em> they fail, create your
+pull request nevertheless and ask us for help, we are happy to assist you.</p>
+<p>Execute the following commands to check for code style errors:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">flake8</span> <span class="o">.</span>
+<span class="n">isort</span> <span class="o">-</span><span class="n">c</span> <span class="o">.</span>
+<span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">check</span>
+</pre></div>
+</div>
+<p>Execute the following command to run pretix’ test suite (might take a couple of minutes):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">py</span><span class="o">.</span><span class="n">test</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you have multiple CPU cores and want to speed up the test suite, you can install the python
+package <code class="docutils literal notranslate"><span class="pre">pytest-xdist</span></code> using <code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">install</span> <span class="pre">pytest-xdist</span></code> and then run <code class="docutils literal notranslate"><span class="pre">py.test</span> <span class="pre">-n</span> <span class="pre">NUM</span></code> with
+<code class="docutils literal notranslate"><span class="pre">NUM</span></code> being the number of threads you want to use.</p>
+</div>
+<p>It is a good idea to put this command into your git hook <code class="docutils literal notranslate"><span class="pre">.git/hooks/pre-commit</span></code>,
+for example, to check for any errors in any staged files when committing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#!/bin/bash
+cd $GIT_DIR/../src
+export GIT_WORK_TREE=../
+export GIT_DIR=../.git
+source ../env/bin/activate  # Adjust to however you activate your virtual environment
+for file in $(git diff --cached --name-only | grep -E &#39;\.py$&#39; | grep -Ev &quot;migrations|mt940\.py|pretix/settings\.py|make_testdata\.py|testutils/settings\.py|tests/settings\.py|pretix/base/models/__init__\.py|.*_pb2\.py&quot;)
+do
+  echo $file
+  git show &quot;:$file&quot; | flake8 - --stdin-display-name=&quot;$file&quot; || exit 1 # we only want to lint the staged changes, not any un-staged changes
+  git show &quot;:$file&quot; | isort -c - | grep ERROR &amp;&amp; exit 1 || true
+done
+</pre></div>
+</div>
+<p>This keeps you from accidentally creating commits violating the style guide.</p>
+</section>
+<section id="working-with-mails">
+<h3>Working with mails<a class="headerlink" href="#working-with-mails" title="Permalink to this heading">¶</a></h3>
+<p>If you want to test anything regarding emails in your development setup, we recommend
+starting Python’s debugging SMTP server in a separate shell and configuring pretix to use it.
+Every email will then be printed to the debugging SMTP server’s stdout.</p>
+<p>Add this to your <code class="docutils literal notranslate"><span class="pre">src/pretix.cfg</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">mail</span><span class="p">]</span>
+<span class="n">port</span> <span class="o">=</span> <span class="mi">1025</span>
+</pre></div>
+</div>
+<p>Then execute <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">smtpd</span> <span class="pre">-n</span> <span class="pre">-c</span> <span class="pre">DebuggingServer</span> <span class="pre">localhost:1025</span></code>.</p>
+</section>
+<section id="working-with-translations">
+<h3>Working with translations<a class="headerlink" href="#working-with-translations" title="Permalink to this heading">¶</a></h3>
+<p>If you want to translate new strings that are not yet known to the translation system,
+you can use the following command to scan the source code for strings to be translated
+and update the <code class="docutils literal notranslate"><span class="pre">*.po</span></code> files accordingly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">localegen</span>
+</pre></div>
+</div>
+<p>However, most of the time you don’t need to care about this. Just create your pull request
+with functionality and English strings only, and we’ll push the new translation strings
+to our translation platform after the merge.</p>
+<p>To actually see pretix in your language, you have to compile the <code class="docutils literal notranslate"><span class="pre">*.po</span></code> files to their
+optimized binary <code class="docutils literal notranslate"><span class="pre">*.mo</span></code> counterparts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">localecompile</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="working-with-the-documentation">
+<h2>Working with the documentation<a class="headerlink" href="#working-with-the-documentation" title="Permalink to this heading">¶</a></h2>
+<p>First, you should install the requirements necessary for building the documentation.
+Make sure you have your virtual python environment activated (see above). Then, install the
+packages by executing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">doc</span><span class="o">/</span>
+<span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>To build the documentation, run the following command from the <code class="docutils literal notranslate"><span class="pre">doc/</span></code> directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">make</span> <span class="n">html</span>
+</pre></div>
+</div>
+<p>You will now find the generated documentation in the <code class="docutils literal notranslate"><span class="pre">doc/_build/html/</span></code> subdirectory. If you work
+with the documentation a lot, you might find it useful to use sphinx-autobuild:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">autobuild</span>
+<span class="n">sphinx</span><span class="o">-</span><span class="n">autobuild</span> <span class="o">.</span> <span class="n">_build</span><span class="o">/</span><span class="n">html</span> <span class="o">-</span><span class="n">p</span> <span class="mi">8081</span>
+</pre></div>
+</div>
+<p>Then, go to <a class="reference external" href="http://localhost:8081">http://localhost:8081</a> for a version of the documentation that automatically re-builds
+whenever you change a source file.</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="contribution/index.html" class="btn btn-neutral float-right" title="Contributing to pretix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="concepts.html" class="btn btn-neutral" title="Concepts and Terminology" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

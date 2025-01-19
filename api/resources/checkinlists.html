@@ -1,0 +1,1099 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Check-in lists &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Resources and endpoints" href="index.html"/>
+        <link rel="next" title="Waiting list entries" href="waitinglist.html"/>
+        <link rel="prev" title="Vouchers" href="vouchers.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">REST API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../fundamentals.html">Basic concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../auth.html">Authentication</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Resources and endpoints</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="organizers.html">Organizers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subevents.html">Event series dates / Sub-events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="taxrules.html">Tax rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="categories.html">Item categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="items.html">Items</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_variations.html">Item variations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_bundles.html">Item bundles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_add-ons.html">Item add-ons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="questions.html">Questions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="question_options.html">Question options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quotas.html">Quotas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orders.html">Orders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="invoices.html">Invoices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vouchers.html">Vouchers</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Check-in lists</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#resource-description">Resource description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#endpoints">Endpoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#order-position-endpoints">Order position endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="waitinglist.html">Waiting list entries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="giftcards.html">Gift cards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="carts.html">Cart positions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webhooks.html">Webhooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seatingplans.html">Seating plans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporters.html">Data exporters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="billing_invoices.html">pretix Hosted billing invoices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="billing_var.html">pretix Hosted reseller API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ratelimit.html">Rate limiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../webhooks.html">Webhooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/index.html">API Usage Guides</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">REST API</a> &raquo;</li>
+        
+          <li><a href="index.html">Resources and endpoints</a> &raquo;</li>
+        
+      <li>Check-in lists</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api/resources/checkinlists.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="check-in-lists">
+<h1>Check-in lists<a class="headerlink" href="#check-in-lists" title="Permalink to this heading">¶</a></h1>
+<section id="resource-description">
+<h2>Resource description<a class="headerlink" href="#resource-description" title="Permalink to this heading">¶</a></h2>
+<p>You can create check-in lists that you can use e.g. at the entrance of your event to track who is coming and if they
+actually bought a ticket.</p>
+<p>You can create multiple check-in lists to separate multiple parts of your event, for example if you have separate
+entries for multiple ticket types. Different check-in lists are completely independent: If a ticket shows up on two
+lists, it is valid once on every list. This might be useful if you run a festival with festival passes that allow
+access to every or multiple performances as well as tickets only valid for single performances.</p>
+<p>The check-in list resource contains the following public fields:</p>
+<table class="rest-resource-table docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>id</p></td>
+<td><p>integer</p></td>
+<td><p>Internal ID of the check-in list</p></td>
+</tr>
+<tr class="row-odd"><td><p>name</p></td>
+<td><p>string</p></td>
+<td><p>The internal name of the check-in list</p></td>
+</tr>
+<tr class="row-even"><td><p>all_products</p></td>
+<td><p>boolean</p></td>
+<td><p>If <code class="docutils literal notranslate"><span class="pre">true</span></code>, the check-in lists contains tickets of all products in this event. The <code class="docutils literal notranslate"><span class="pre">limit_products</span></code> field is ignored in this case.</p></td>
+</tr>
+<tr class="row-odd"><td><p>limit_products</p></td>
+<td><p>list of integers</p></td>
+<td><p>List of item IDs to include in this list.</p></td>
+</tr>
+<tr class="row-even"><td><p>subevent</p></td>
+<td><p>integer</p></td>
+<td><p>ID of the date inside an event series this list belongs to (or <code class="docutils literal notranslate"><span class="pre">null</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p>position_count</p></td>
+<td><p>integer</p></td>
+<td><p>Number of tickets that match this list (read-only).</p></td>
+</tr>
+<tr class="row-even"><td><p>checkin_count</p></td>
+<td><p>integer</p></td>
+<td><p>Number of check-ins performed on this list (read-only).</p></td>
+</tr>
+<tr class="row-odd"><td><p>include_pending</p></td>
+<td><p>boolean</p></td>
+<td><p>If <code class="docutils literal notranslate"><span class="pre">true</span></code>, the check-in list also contains tickets from orders in pending state.</p></td>
+</tr>
+<tr class="row-even"><td><p>auto_checkin_sales_channels</p></td>
+<td><p>list of strings</p></td>
+<td><p>All items on the check-in list will be automatically marked as checked-in when purchased through any of the listed sales channels.</p></td>
+</tr>
+<tr class="row-odd"><td><p>allow_multiple_entries</p></td>
+<td><p>boolean</p></td>
+<td><p>If <code class="docutils literal notranslate"><span class="pre">true</span></code>, subsequent scans of a ticket on this list should not show a warning but instead be stored as an additional check-in.</p></td>
+</tr>
+<tr class="row-even"><td><p>allow_entry_after_exit</p></td>
+<td><p>boolean</p></td>
+<td><p>If <code class="docutils literal notranslate"><span class="pre">true</span></code>, subsequent scans of a ticket on this list are valid if the last scan of the ticket was an exit scan.</p></td>
+</tr>
+<tr class="row-odd"><td><p>rules</p></td>
+<td><p>object</p></td>
+<td><p>Custom check-in logic. The contents of this field are currently not considered a stable API and modifications through the API are highly discouraged.</p></td>
+</tr>
+<tr class="row-even"><td><p>exit_all_at</p></td>
+<td><p>datetime</p></td>
+<td><p>Automatically check out (i.e. perform an exit scan) at this point in time. After this happened, this property will automatically be set exactly one day into the future. Note that this field is considered “internal configuration” and if you pull the list with <code class="docutils literal notranslate"><span class="pre">If-Modified-Since</span></code>, the daily change in this field will not trigger a response.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 3.9: </span>The <code class="docutils literal notranslate"><span class="pre">subevent</span></code> attribute may now be <code class="docutils literal notranslate"><span class="pre">null</span></code> inside event series. The <code class="docutils literal notranslate"><span class="pre">allow_multiple_entries</span></code>,
+<code class="docutils literal notranslate"><span class="pre">allow_entry_after_exit</span></code>, and <code class="docutils literal notranslate"><span class="pre">rules</span></code> attributes have been added.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 3.11: </span>The <code class="docutils literal notranslate"><span class="pre">subevent_match</span></code> and <code class="docutils literal notranslate"><span class="pre">exclude</span></code> query parameters have been added.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 3.12: </span>The <code class="docutils literal notranslate"><span class="pre">exit_all_at</span></code> attribute has been added.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 3.17: </span>The <code class="docutils literal notranslate"><span class="pre">ends_after</span></code> and <code class="docutils literal notranslate"><span class="pre">expand</span></code> query parameters have been added.</p>
+</div>
+</section>
+<section id="endpoints">
+<h2>Endpoints<a class="headerlink" href="#endpoints" title="Permalink to this heading">¶</a></h2>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-events-(event)-checkinlists-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/checkinlists/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-events-(event)-checkinlists-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all check-in lists within a given event.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/checkinlists/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;next&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;previous&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;results&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Default list&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;checkin_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;position_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;all_products&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;limit_products&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">      </span><span class="nt">&quot;include_pending&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;subevent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;allow_multiple_entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;allow_entry_after_exit&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;exit_all_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;rules&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">      </span><span class="nt">&quot;auto_checkin_sales_channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;pretixpos&quot;</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Query Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>page</strong> (<em>integer</em>) – The page number in case of a multi-page result set, default is 1</p></li>
+<li><p><strong>subevent</strong> (<em>integer</em>) – Only return check-in lists of the sub-event with the given ID</p></li>
+<li><p><strong>subevent_match</strong> (<em>integer</em>) – Only return check-in lists that are valid for the sub-event with the given ID (i.e. also lists valid for all subevents)</p></li>
+<li><p><strong>ends_after</strong> (<em>string</em>) – Exclude all check-in lists attached to a sub-event that is already in the past at the given time.</p></li>
+<li><p><strong>expand</strong> (<em>string</em>) – Expand a field into a full object. Currently only <code class="docutils literal notranslate"><span class="pre">subevent</span></code> is supported. Can be passed multiple times.</p></li>
+<li><p><strong>exclude</strong> (<em>string</em>) – Exclude a field from the output, e.g. <code class="docutils literal notranslate"><span class="pre">checkin_count</span></code>. Can be used as a performance optimization. Can be passed multiple times.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-events-(event)-checkinlists-(id)-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/checkinlists/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-events-(event)-checkinlists-(id)-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns information on one check-in list, identified by its ID.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/checkinlists/1/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Default list&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;checkin_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;position_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">456</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;all_products&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;limit_products&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span>
+<span class="w">  </span><span class="nt">&quot;include_pending&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;subevent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;allow_multiple_entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;allow_entry_after_exit&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;exit_all_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;rules&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="nt">&quot;auto_checkin_sales_channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;pretixpos&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+<li><p><strong>id</strong> – The <code class="docutils literal notranslate"><span class="pre">id</span></code> field of the check-in list to fetch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-events-(event)-checkinlists-(id)-status-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/checkinlists/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/status/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-events-(event)-checkinlists-(id)-status-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns detailed status information on a check-in list, identified by its ID.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/checkinlists/1/status/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;checkin_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">17</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;position_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;inside_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Demo Conference&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;items&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;T-Shirt&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;checkin_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;admission&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;position_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;variations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Red&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;checkin_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;position_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Blue&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;checkin_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;position_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ticket&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;checkin_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;admission&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;position_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;variations&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+<li><p><strong>id</strong> – The <code class="docutils literal notranslate"><span class="pre">id</span></code> field of the check-in list to fetch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-v1-organizers-(organizer)-events-(event)-checkinlists-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/checkinlists/</span></span><a class="headerlink" href="#post--api-v1-organizers-(organizer)-events-(event)-checkinlists-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new check-in list.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/checkinlists/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VIP entry&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;all_products&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;limit_products&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;subevent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;allow_multiple_entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;allow_entry_after_exit&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;auto_checkin_sales_channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;pretixpos&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VIP entry&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;checkin_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;position_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;all_products&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;limit_products&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;include_pending&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;subevent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;allow_multiple_entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;allow_entry_after_exit&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;auto_checkin_sales_channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;pretixpos&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer of the event/item to create a list for</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to create a list for</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – The list could not be created due to invalid submitted data.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to create this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http patch">
+<dt class="sig sig-object http" id="patch--api-v1-organizers-(organizer)-events-(event)-checkinlists-(id)-">
+<span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/checkinlists/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#patch--api-v1-organizers-(organizer)-events-(event)-checkinlists-(id)-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update a check-in list. You can also use <code class="docutils literal notranslate"><span class="pre">PUT</span></code> instead of <code class="docutils literal notranslate"><span class="pre">PATCH</span></code>. With <code class="docutils literal notranslate"><span class="pre">PUT</span></code>, you have to provide all fields of
+the resource, other fields will be reset to default. With <code class="docutils literal notranslate"><span class="pre">PATCH</span></code>, you only need to provide the fields that you
+want to change.</p>
+<p>You can change all fields of the resource except the <code class="docutils literal notranslate"><span class="pre">id</span></code> field and the <code class="docutils literal notranslate"><span class="pre">checkin_count</span></code> and <code class="docutils literal notranslate"><span class="pre">position_count</span></code>
+fields.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PATCH</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/checkinlists/1/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+<span class="na">Content-Length</span><span class="o">:</span> <span class="l">94</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Backstage&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Backstage&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;checkin_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">23</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;position_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;all_products&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;limit_products&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;include_pending&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;subevent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;allow_multiple_entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;allow_entry_after_exit&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;auto_checkin_sales_channels&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;pretixpos&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to modify</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to modify</p></li>
+<li><p><strong>id</strong> – The <code class="docutils literal notranslate"><span class="pre">id</span></code> field of the list to modify</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – The list could not be modified due to invalid submitted data</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to change this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http delete">
+<dt class="sig sig-object http" id="delete--api-v1-organizers-(organizer)-events-(event)-checkinlist-(id)-">
+<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/checkinlist/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#delete--api-v1-organizers-(organizer)-events-(event)-checkinlist-(id)-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a check-in list. Note that this also deletes the information on all check-ins performed via this list.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/checkinlist/1/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">No Content</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to modify</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to modify</p></li>
+<li><p><strong>id</strong> – The <code class="docutils literal notranslate"><span class="pre">id</span></code> field of the check-in list to delete</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to delete this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="order-position-endpoints">
+<h2>Order position endpoints<a class="headerlink" href="#order-position-endpoints" title="Permalink to this heading">¶</a></h2>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-events-(event)-checkinlists-(list)-positions-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/checkinlists/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">list</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/positions/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-events-(event)-checkinlists-(list)-positions-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all order positions within a given event. The result is the same as
+the <a class="reference internal" href="orders.html#order-position-resource"><span class="std std-ref">Order position resource</span></a>, with the following differences:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">checkins</span></code> value will only include check-ins for the selected list.</p></li>
+<li><p>An additional boolean property <code class="docutils literal notranslate"><span class="pre">require_attention</span></code> will inform you whether either the order or the item
+have the <code class="docutils literal notranslate"><span class="pre">checkin_attention</span></code> flag set.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">attendee_name</span></code> is empty, it will automatically fall back to values from a parent product or from invoice
+addresses.</p></li>
+</ul>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/checkinlists/1/positions/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;next&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;previous&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;results&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">23442</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;order&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ABC12&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;positionid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;item&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1345</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;variation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;23.00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;attendee_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Peter&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;attendee_name_parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;full_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Peter&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;attendee_email&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;voucher&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;tax_rate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;tax_rule&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;tax_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;z3fsn8jyufm5kpk768q69gkbyr5f4h6w&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;addon_to&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;subevent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;pseudonymization_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MQLJvANO3B&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;seat&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;checkins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;list&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;datetime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2017-12-25T12:45:23Z&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;auto_checked_in&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;answers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;question&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;answer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Foo&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;downloads&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;output&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pdf&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://eventyay.com/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Query Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>page</strong> (<em>integer</em>) – The page number in case of a multi-page result set, default is 1</p></li>
+<li><p><strong>ignore_status</strong> (<em>string</em>) – If set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, results will be returned regardless of the state of
+the order they belong to and you will need to do your own filtering by order status.</p></li>
+<li><p><strong>ordering</strong> (<em>string</em>) – Manually set the ordering of results. Valid fields to be used are <code class="docutils literal notranslate"><span class="pre">order__code</span></code>,
+<code class="docutils literal notranslate"><span class="pre">order__datetime</span></code>, <code class="docutils literal notranslate"><span class="pre">positionid</span></code>, <code class="docutils literal notranslate"><span class="pre">attendee_name</span></code>, <code class="docutils literal notranslate"><span class="pre">last_checked_in</span></code> and <code class="docutils literal notranslate"><span class="pre">order__email</span></code>. Default:
+<code class="docutils literal notranslate"><span class="pre">attendee_name,positionid</span></code></p></li>
+<li><p><strong>order</strong> (<em>string</em>) – Only return positions of the order with the given order code</p></li>
+<li><p><strong>search</strong> (<em>string</em>) – Fuzzy search matching the attendee name, order code, invoice address name as well as to the beginning of the secret.</p></li>
+<li><p><strong>expand</strong> (<em>string</em>) – Expand a field into a full object. Currently only <code class="docutils literal notranslate"><span class="pre">subevent</span></code>, <code class="docutils literal notranslate"><span class="pre">item</span></code>, and <code class="docutils literal notranslate"><span class="pre">variation</span></code> are supported. Can be passed multiple times.</p></li>
+<li><p><strong>item</strong> (<em>integer</em>) – Only return positions with the purchased item matching the given ID.</p></li>
+<li><p><strong>item__in</strong> (<em>integer</em>) – Only return positions with the purchased item matching one of the given comma-separated IDs.</p></li>
+<li><p><strong>variation</strong> (<em>integer</em>) – Only return positions with the purchased item variation matching the given ID.</p></li>
+<li><p><strong>variation__in</strong> (<em>integer</em>) – Only return positions with one of the purchased item variation matching the given
+comma-separated IDs.</p></li>
+<li><p><strong>attendee_name</strong> (<em>string</em>) – Only return positions with the given value in the attendee_name field. Also, add-on
+products positions are shown if they refer to an attendee with the given name.</p></li>
+<li><p><strong>secret</strong> (<em>string</em>) – Only return positions with the given ticket secret.</p></li>
+<li><p><strong>order__status</strong> (<em>string</em>) – Only return positions with the given order status.</p></li>
+<li><p><strong>order__status__in</strong> (<em>string</em>) – Only return positions with one the given comma-separated order status.</p></li>
+<li><p><strong>has_checkin</strong> (<em>boolean</em>) – If set to <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code>, only return positions that have or have not been
+checked in already.</p></li>
+<li><p><strong>subevent</strong> (<em>integer</em>) – Only return positions of the sub-event with the given ID</p></li>
+<li><p><strong>subevent__in</strong> (<em>integer</em>) – Only return positions of one of the sub-events with the given comma-separated IDs</p></li>
+<li><p><strong>addon_to</strong> (<em>integer</em>) – Only return positions that are add-ons to the position with the given ID.</p></li>
+<li><p><strong>addon_to__in</strong> (<em>integer</em>) – Only return positions that are add-ons to one of the positions with the given
+comma-separated IDs.</p></li>
+<li><p><strong>voucher</strong> (<em>string</em>) – Only return positions with a specific voucher.</p></li>
+<li><p><strong>voucher__code</strong> (<em>string</em>) – Only return positions with a specific voucher code.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+<li><p><strong>list</strong> – The ID of the check-in list to look for</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – The requested check-in list does not exist.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-events-(event)-checkinlists-(list)-positions-(id)-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/checkinlists/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">list</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/positions/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-events-(event)-checkinlists-(list)-positions-(id)-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns information on one order position, identified by its internal ID.
+The result is the same as the <a class="reference internal" href="orders.html#order-position-resource"><span class="std std-ref">Order position resource</span></a>, with the following differences:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">checkins</span></code> value will only include check-ins for the selected list.</p></li>
+<li><p>An additional boolean property <code class="docutils literal notranslate"><span class="pre">require_attention</span></code> will inform you whether either the order or the item
+have the <code class="docutils literal notranslate"><span class="pre">checkin_attention</span></code> flag set.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">attendee_name</span></code> is empty, it will automatically fall back to values from a parent product or from invoice
+addresses.</p></li>
+</ul>
+<p><strong>Instead of an ID, you can also use the ``secret`` field as the lookup parameter.</strong></p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/checkinlists/1/positions/23442/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">23442</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;order&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ABC12&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;positionid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;item&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1345</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;variation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;23.00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;attendee_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Peter&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;attendee_name_parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;full_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Peter&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;attendee_email&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;voucher&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;tax_rate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;tax_rule&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;tax_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;z3fsn8jyufm5kpk768q69gkbyr5f4h6w&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;addon_to&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;subevent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pseudonymization_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MQLJvANO3B&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;seat&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;checkins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;list&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;datetime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2017-12-25T12:45:23Z&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;auto_checked_in&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;answers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;question&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;answer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Foo&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;downloads&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;output&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pdf&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://eventyay.com/api/v1/organizers/bigevents/events/sampleconf/orderpositions/23442/download/pdf/&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+<li><p><strong>list</strong> – The ID of the check-in list to look for</p></li>
+<li><p><strong>id</strong> – The <code class="docutils literal notranslate"><span class="pre">id</span></code> field of the order position to fetch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – The requested order position or check-in list does not exist.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-v1-organizers-(organizer)-events-(event)-checkinlists-(list)-positions-(id)-redeem-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/checkinlists/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">list</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/positions/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/redeem/</span></span><a class="headerlink" href="#post--api-v1-organizers-(organizer)-events-(event)-checkinlists-(list)-positions-(id)-redeem-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to redeem an order position, identified by its internal ID, i.e. checks the attendee in. This endpoint
+accepts a number of optional requests in the body.</p>
+<p><strong>Instead of an ID, you can also use the ``secret`` field as the lookup parameter.</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Request JSON Object<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>questions_supported</strong> (<em>boolean</em>) – When this parameter is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, handling of questions is supported. If
+you do not implement question handling in your user interface, you <strong>must</strong>
+set this to <code class="docutils literal notranslate"><span class="pre">false</span></code>. In that case, questions will just be ignored. Defaults
+to <code class="docutils literal notranslate"><span class="pre">true</span></code>.</p></li>
+<li><p><strong>canceled_supported</strong> (<em>boolean</em>) – When this parameter is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>, the response code <code class="docutils literal notranslate"><span class="pre">canceled</span></code> may be
+returned. Otherwise, canceled orders will return <code class="docutils literal notranslate"><span class="pre">unpaid</span></code>.</p></li>
+<li><p><strong>datetime</strong> (<em>datetime</em>) – Specifies the datetime of the check-in. If not supplied, the current time will be used.</p></li>
+<li><p><strong>force</strong> (<em>boolean</em>) – Specifies that the check-in should succeed regardless of previous check-ins or required
+questions that have not been filled. Defaults to <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p></li>
+<li><p><strong>type</strong> (<em>string</em>) – Send <code class="docutils literal notranslate"><span class="pre">&quot;exit&quot;</span></code> for an exit and <code class="docutils literal notranslate"><span class="pre">&quot;entry&quot;</span></code> (default) for an entry.</p></li>
+<li><p><strong>ignore_unpaid</strong> (<em>boolean</em>) – Specifies that the check-in should succeed even if the order is in pending state.
+Defaults to <code class="docutils literal notranslate"><span class="pre">false</span></code> and only works when <code class="docutils literal notranslate"><span class="pre">include_pending</span></code> is set on the check-in
+list.</p></li>
+<li><p><strong>nonce</strong> (<em>string</em>) – You can set this parameter to a unique random value to identify this check-in. If you’re sending
+this request twice with the same nonce, the second request will also succeed but will always
+create only one check-in object even when the previous request was successful as well. This
+allows for a certain level of idempotency and enables you to re-try after a connection failure.</p></li>
+<li><p><strong>answers</strong> (<em>object</em>) – If questions are supported/required, you may/must supply a mapping of question IDs to their
+respective answers. The answers should always be strings. In case of (multiple-)choice-type
+answers, the string should contain the (comma-separated) IDs of the selected options.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/checkinlists/1/positions/234/redeem/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+
+{
+  &quot;force&quot;: false,
+  &quot;ignore_unpaid&quot;: false,
+  &quot;nonce&quot;: &quot;Pvrk50vUzQd0DhdpNRL4I4OcXsvg70uA&quot;,
+  &quot;datetime&quot;: null,
+  &quot;questions_supported&quot;: true,
+  &quot;canceled_supported&quot;: true,
+  &quot;answers&quot;: {
+    &quot;4&quot;: &quot;XS&quot;
+  }
+}
+</pre></div>
+</div>
+<p><strong>Example successful response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span>HTTP/1.1 201 Created
+Vary: Accept
+Content-Type: application/json
+
+{
+  &quot;status&quot;: &quot;ok&quot;,
+  &quot;position&quot;: {
+    …
+  }
+}
+</pre></div>
+</div>
+<p><strong>Example response with required questions</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">400</span> <span class="ne">Bad Request</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/json</span>
+
+{
+  &quot;status&quot;: &quot;incomplete&quot;,
+  &quot;position&quot;: {
+    …
+  },
+  &quot;questions&quot;: [
+    {
+      &quot;id&quot;: 1,
+      &quot;question&quot;: {&quot;en&quot;: &quot;T-Shirt size&quot;},
+      &quot;type&quot;: &quot;C&quot;,
+      &quot;required&quot;: false,
+      &quot;items&quot;: [1, 2],
+      &quot;position&quot;: 1,
+      &quot;identifier&quot;: &quot;WY3TP9SL&quot;,
+      &quot;ask_during_checkin&quot;: true,
+      &quot;options&quot;: [
+        {
+          &quot;id&quot;: 1,
+          &quot;identifier&quot;: &quot;LVETRWVU&quot;,
+          &quot;position&quot;: 0,
+          &quot;answer&quot;: {&quot;en&quot;: &quot;S&quot;}
+        },
+        {
+          &quot;id&quot;: 2,
+          &quot;identifier&quot;: &quot;DFEMJWMJ&quot;,
+          &quot;position&quot;: 1,
+          &quot;answer&quot;: {&quot;en&quot;: &quot;M&quot;}
+        },
+        {
+          &quot;id&quot;: 3,
+          &quot;identifier&quot;: &quot;W9AH7RDE&quot;,
+          &quot;position&quot;: 2,
+          &quot;answer&quot;: {&quot;en&quot;: &quot;L&quot;}
+        }
+      ]
+    }
+  ]
+}
+</pre></div>
+</div>
+<p><strong>Example error response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/json</span>
+
+{
+  &quot;status&quot;: &quot;error&quot;,
+  &quot;reason&quot;: &quot;unpaid&quot;,
+  &quot;position&quot;: {
+    …
+  }
+}
+</pre></div>
+</div>
+<p>Possible error reasons:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unpaid</span></code> - Ticket is not paid for</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">canceled</span></code> – Ticket is canceled or expired. This reason is only sent when your request sets
+<code class="docutils literal notranslate"><span class="pre">canceled_supported</span></code> to <code class="docutils literal notranslate"><span class="pre">true</span></code>, otherwise these orders return <code class="docutils literal notranslate"><span class="pre">unpaid</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">already_redeemed</span></code> - Ticket already has been redeemed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">product</span></code> - Tickets with this product may not be scanned at this device</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rules</span></code> - Check-in prevented by a user-defined rule</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+<li><p><strong>list</strong> – The ID of the check-in list to look for</p></li>
+<li><p><strong>id</strong> – The <code class="docutils literal notranslate"><span class="pre">id</span></code> field of the order position to fetch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – Invalid or incomplete request, see above</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – The requested order position or check-in list does not exist.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="waitinglist.html" class="btn btn-neutral float-right" title="Waiting list entries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="vouchers.html" class="btn btn-neutral" title="Vouchers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

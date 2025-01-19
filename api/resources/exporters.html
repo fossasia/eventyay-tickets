@@ -1,0 +1,531 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Data exporters &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Resources and endpoints" href="index.html"/>
+        <link rel="next" title="pretix Hosted billing invoices" href="billing_invoices.html"/>
+        <link rel="prev" title="Seating plans" href="seatingplans.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">REST API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../fundamentals.html">Basic concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../auth.html">Authentication</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Resources and endpoints</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="organizers.html">Organizers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subevents.html">Event series dates / Sub-events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="taxrules.html">Tax rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="categories.html">Item categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="items.html">Items</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_variations.html">Item variations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_bundles.html">Item bundles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_add-ons.html">Item add-ons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="questions.html">Questions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="question_options.html">Question options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quotas.html">Quotas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orders.html">Orders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="invoices.html">Invoices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vouchers.html">Vouchers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkinlists.html">Check-in lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="waitinglist.html">Waiting list entries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="giftcards.html">Gift cards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="carts.html">Cart positions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webhooks.html">Webhooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seatingplans.html">Seating plans</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Data exporters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#listing-available-exporters">Listing available exporters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-an-export">Running an export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#downloading-the-result">Downloading the result</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="billing_invoices.html">pretix Hosted billing invoices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="billing_var.html">pretix Hosted reseller API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ratelimit.html">Rate limiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../webhooks.html">Webhooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/index.html">API Usage Guides</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">REST API</a> &raquo;</li>
+        
+          <li><a href="index.html">Resources and endpoints</a> &raquo;</li>
+        
+      <li>Data exporters</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api/resources/exporters.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="data-exporters">
+<h1>Data exporters<a class="headerlink" href="#data-exporters" title="Permalink to this heading">¶</a></h1>
+<p>pretix and it’s plugins include a number of data exporters that allow you to bulk download various data from pretix in
+different formats. This page shows you how to use these exporters through the API.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 3.13: </span>This feature has been added to the API.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>While we consider the methods listed on this page to be a stable API, the availability and specific input field
+requirements of individual exporters is <strong>not considered a stable API</strong>. Specific exporters and their input parameters
+may change at any time without warning.</p>
+</div>
+<section id="listing-available-exporters">
+<h2>Listing available exporters<a class="headerlink" href="#listing-available-exporters" title="Permalink to this heading">¶</a></h2>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-events-(event)-exporters-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/exporters/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-events-(event)-exporters-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all exporters available for a given event. You will receive a list of export methods as well as their
+supported input fields. Note that the exact type and validation requirements of the input fields are not given in the
+response, and you might need to look into the pretix web interface to figure out the exact input required.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/exporters/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;next&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;previous&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;results&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;orderlist&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;verbose_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Order data&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;input_parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;_format&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;xlsx&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;orders:default&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;orders:excel&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;orders:semicolon&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;positions:default&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;positions:excel&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;positions:semicolon&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;fees:default&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;fees:excel&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;fees:semicolon&quot;</span>
+<span class="w">          </span><span class="p">]</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paid_only&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Query Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>page</strong> (<em>integer</em>) – The page number in case of a multi-page result set, default is 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-exporters-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/exporters/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-exporters-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all cross-event exporters available for a given organizer. You will receive a list of export methods as well as their
+supported input fields. Note that the exact type and validation requirements of the input fields are not given in the
+response, and you might need to look into the pretix web interface to figure out the exact input required.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/exporters/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;next&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;previous&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;results&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;identifier&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;orderlist&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;verbose_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Order data&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;input_parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;events&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;_format&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;choices&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;xlsx&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;orders:default&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;orders:excel&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;orders:semicolon&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;positions:default&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;positions:excel&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;positions:semicolon&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;fees:default&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;fees:excel&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;fees:semicolon&quot;</span>
+<span class="w">          </span><span class="p">]</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;paid_only&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;required&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Query Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>page</strong> (<em>integer</em>) – The page number in case of a multi-page result set, default is 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="running-an-export">
+<h2>Running an export<a class="headerlink" href="#running-an-export" title="Permalink to this heading">¶</a></h2>
+<p>Since exports often include large data sets, they might take longer than the duration of an HTTP request. Therefore,
+creating an export is a two-step process. First you need to start an export task with one of the following to API
+endpoints:</p>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-v1-organizers-(organizer)-events-(event)-exporters-(identifier)-run-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/exporters/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">identifier</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/run/</span></span><a class="headerlink" href="#post--api-v1-organizers-(organizer)-events-(event)-exporters-(identifier)-run-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts an export task. If your input parameters validate correctly, a <code class="docutils literal notranslate"><span class="pre">202</span> <span class="pre">Accepted</span></code> status code is returned.
+The body points you to the download URL of the result.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/exporters/orderlist/run/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;_format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xlsx&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;download&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://eventyay.com/api/v1/organizers/bigevents/events/sampleconf/orderlist/download/29891ede-196f-4942-9e26-d055a36e98b8/3f279f13-c198-4137-b49b-9b360ce9fcce/&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+<li><p><strong>identifier</strong> – The <code class="docutils literal notranslate"><span class="pre">identifier</span></code> field of the exporter to run</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.3">202 Accepted</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – Invalid input options</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-v1-organizers-(organizer)-exporters-(identifier)-run-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/exporters/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">identifier</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/run/</span></span><a class="headerlink" href="#post--api-v1-organizers-(organizer)-exporters-(identifier)-run-" title="Permalink to this definition">¶</a></dt>
+<dd><p>The endpoint for organizer-level exports works just like event-level exports (see above).</p>
+</dd></dl>
+
+</section>
+<section id="downloading-the-result">
+<h2>Downloading the result<a class="headerlink" href="#downloading-the-result" title="Permalink to this heading">¶</a></h2>
+<p>When starting an export, you receive a <code class="docutils literal notranslate"><span class="pre">url</span></code> for downloading the result. Running a <code class="docutils literal notranslate"><span class="pre">GET</span></code> request on that result will
+yield one of the following status codes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span> <span class="pre">OK</span></code> – The export succeeded. The body will be your resulting file. Might be large!</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">409</span> <span class="pre">Conflict</span></code> – Your export is still running. The body will be JSON with the structure <code class="docutils literal notranslate"><span class="pre">{&quot;status&quot;:</span> <span class="pre">&quot;running&quot;,</span> <span class="pre">&quot;percentage&quot;:</span> <span class="pre">40}</span></code>. <code class="docutils literal notranslate"><span class="pre">percentage</span></code> can be <code class="docutils literal notranslate"><span class="pre">null</span></code> if it is not known and <code class="docutils literal notranslate"><span class="pre">status</span></code> can be <code class="docutils literal notranslate"><span class="pre">waiting</span></code> before the task is actually being processed. Please retry, but wait at least one second before you do.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">410</span> <span class="pre">Gone</span></code> – Running the export has failed permanently. The body will be JSON with the structure <code class="docutils literal notranslate"><span class="pre">{&quot;status&quot;:</span> <span class="pre">&quot;failed&quot;,</span> <span class="pre">&quot;message&quot;:</span> <span class="pre">&quot;Error</span> <span class="pre">message&quot;}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">404</span> <span class="pre">Not</span> <span class="pre">Found</span></code> – The export does not exist / is expired.</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Running exports puts a lot of stress on the system, we kindly ask you not to run more than two exports at the same time.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="billing_invoices.html" class="btn btn-neutral float-right" title="pretix Hosted billing invoices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="seatingplans.html" class="btn btn-neutral" title="Seating plans" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

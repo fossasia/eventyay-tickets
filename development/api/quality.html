@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Plugin quality checklist &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Plugin development" href="index.html"/>
+        <link rel="next" title="Directory structure" href="../structure.html"/>
+        <link rel="prev" title="General APIs" href="general.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../implementation/index.html">Implementation and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Plugin development</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Creating a plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporter.html">Writing an exporter plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ticketoutput.html">Writing a ticket output plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment.html">Writing a payment provider plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment_2.0.html">Porting a payment provider from pretix 1.x to pretix 2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">Writing an HTML e-mail renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="placeholder.html">Writing an e-mail placeholder plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="invoice.html">Writing an invoice renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shredder.html">Writing a data shredder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="import.html">Extending the order import process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customview.html">Creating custom views</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auth.html">Pluggable authentication backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="general.html">General APIs</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Plugin quality checklist</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#a-meta">A. Meta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b-isolation">B. Isolation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c-security">C. Security</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#d-privacy">D. Privacy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#e-internationalization">E. Internationalization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#f-functionality">F. Functionality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#g-code-quality">G. Code quality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#h-specific-to-eventyay-com">H. Specific to eventyay.com</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Plugin development</a> &raquo;</li>
+        
+      <li>Plugin quality checklist</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/api/quality.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="plugin-quality-checklist">
+<span id="pluginquality"></span><h1>Plugin quality checklist<a class="headerlink" href="#plugin-quality-checklist" title="Permalink to this heading">¶</a></h1>
+<p>If you want to write a high-quality pretix plugin, this is a list of things you should check before
+you publish it. This is also a list of things that we check, if we consider installing an externally
+developed plugin on our hosted infrastructure.</p>
+<section id="a-meta">
+<h2>A. Meta<a class="headerlink" href="#a-meta" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>The plugin is clearly licensed under an appropriate license.</p></li>
+<li><p>The plugin has an unambiguous name, description, and author metadata.</p></li>
+<li><p>The plugin has a clear versioning scheme and the latest version of the plugin is kept compatible to the latest
+stable version of pretix.</p></li>
+<li><p>The plugin is properly packaged using standard Python packaging tools.</p></li>
+<li><p>The plugin correctly declares its external dependencies.</p></li>
+<li><p>A contact address is provided in case of security issues.</p></li>
+</ol>
+</section>
+<section id="b-isolation">
+<h2>B. Isolation<a class="headerlink" href="#b-isolation" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>If any signal receivers use the <a class="reference external" href="https://docs.djangoproject.com/en/2.0/topics/signals/#django.dispatch.Signal.connect">dispatch_uid</a> feature, the UIDs are prefixed by the plugin’s name and do not
+clash with other plugins.</p></li>
+<li><p>If any templates or static files are shipped, they are located in subdirectories with the name of the plugin and do
+not clash with other plugins or core files.</p></li>
+<li><p>Any keys stored to the settings store are prefixed with the plugin’s name and do not clash with other plugins or
+core.</p></li>
+<li><p>Any keys stored to the user session are prefixed with the plugin’s name and do not clash with other plugins or
+core.</p></li>
+<li><p>Any registered URLs are unlikely to clash with other plugins or future core URLs.</p></li>
+</ol>
+</section>
+<section id="c-security">
+<h2>C. Security<a class="headerlink" href="#c-security" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>All important actions are logged to the <a class="reference internal" href="../implementation/logging.html#logging"><span class="std std-ref">shared log storage</span></a> and a signal receiver is registered to
+provide a human-readable representation of the log entry.</p></li>
+<li><p>All views require appropriate permissions and use the <code class="docutils literal notranslate"><span class="pre">event_urls</span></code> mechanism if appropriate.
+<a class="reference internal" href="customview.html#customview"><span class="std std-ref">Read more</span></a></p></li>
+<li><p>Any session data for customers is stored in the cart session system if appropriate.</p></li>
+<li><p>If the plugin is a payment provider:</p></li>
+</ol>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>No credit card numbers may be stored within pretix.</p></li>
+<li><p>A notification/webhook system is implemented to notify pretix of any refunds.</p></li>
+<li><p>If such a webhook system is implemented, contents of incoming webhooks are either verified using a cryptographic
+signature or are not being trusted and all data is fetched from an API instead.</p></li>
+</ol>
+</div></blockquote>
+</section>
+<section id="d-privacy">
+<h2>D. Privacy<a class="headerlink" href="#d-privacy" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>No personal data is stored that is not required for the plugin’s functionality.</p></li>
+<li><p>For any personal data that is saved to the database, an appropriate <a class="reference internal" href="shredder.html#shredder"><span class="std std-ref">data shredder</span></a> is provided
+that offers the data for download and then removes it from the database (including log entries).</p></li>
+</ol>
+</section>
+<section id="e-internationalization">
+<h2>E. Internationalization<a class="headerlink" href="#e-internationalization" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>All user-facing strings in templates, Python code, and templates are wrapped in <a class="reference external" href="https://docs.djangoproject.com/en/2.0/topics/i18n/translation/">gettext calls</a>.</p></li>
+<li><p>No languages, time zones, date formats, or time formats are hardcoded.</p></li>
+<li><p>Installing the plugin automatically compiles <code class="docutils literal notranslate"><span class="pre">.po</span></code> files to <code class="docutils literal notranslate"><span class="pre">.mo</span></code> files. This is fulfilled automatically if
+you use the <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> file form our plugin cookiecutter.</p></li>
+</ol>
+</section>
+<section id="f-functionality">
+<h2>F. Functionality<a class="headerlink" href="#f-functionality" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic">
+<li><p>If the plugin adds any database models or relationships from the settings storage to database models, it registers
+a receiver to the <a class="reference internal" href="general.html#pretix.base.signals.event_copy_data" title="pretix.base.signals.event_copy_data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pretix.base.signals.event_copy_data</span></code></a> or <a class="reference internal" href="general.html#pretix.base.signals.item_copy_data" title="pretix.base.signals.item_copy_data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pretix.base.signals.item_copy_data</span></code></a>
+signals.</p></li>
+<li><p>If the plugin is a payment provider:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>A webhook-like system is implemented if payment confirmations are not sent instantly.</p></li>
+<li><p>Refunds are implemented, if possible.</p></li>
+<li><p>In case of overpayment or external refunds, a “required action” is created to notify the event organizer.</p></li>
+</ol>
+</div></blockquote>
+</li>
+<li><p>If the plugin adds steps to the checkout process, it has been tested in combination with the pretix widget.</p></li>
+</ol>
+</section>
+<section id="g-code-quality">
+<h2>G. Code quality<a class="headerlink" href="#g-code-quality" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://www.google.de/search?q=isort&amp;oq=isort&amp;aqs=chrome..69i57j0j69i59j69i60l2j69i59.599j0j4&amp;sourceid=chrome&amp;ie=UTF-8">isort</a> and <a class="reference external" href="http://flake8.pycqa.org/en/latest/">flake8</a> are used to ensure consistent code styling.</p></li>
+<li><p>Unit tests are provided for important pieces of business logic.</p></li>
+<li><p>Functional tests are provided for important interface parts.</p></li>
+<li><p>Tests are provided to check that permission checks are working.</p></li>
+<li><p>Continuous Integration is set up to check that tests are passing and styling is consistent.</p></li>
+</ol>
+</section>
+<section id="h-specific-to-eventyay-com">
+<h2>H. Specific to eventyay.com<a class="headerlink" href="#h-specific-to-eventyay-com" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>eventyay.com integrates the data stored by this plugin with its data report features.</p></li>
+<li><p>eventyay.com integrates this plugin in its generated privacy statements, if necessary.</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../structure.html" class="btn btn-neutral float-right" title="Directory structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="general.html" class="btn btn-neutral" title="General APIs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

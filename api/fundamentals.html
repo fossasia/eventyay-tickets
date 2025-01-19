@@ -1,0 +1,543 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Basic concepts &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="up" title="REST API" href="index.html"/>
+        <link rel="next" title="Authentication" href="auth.html"/>
+        <link rel="prev" title="REST API" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">REST API</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Basic concepts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#authentication">Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#permissions">Permissions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compatibility">Compatibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pagination">Pagination</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conditional-fetching">Conditional fetching</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#object-level-conditional-fetching">Object-level conditional fetching</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-level-conditional-fetching">List-level conditional fetching</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#errors">Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-types">Data types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#query-parameters">Query parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#idempotency">Idempotency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-upload">File upload</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="auth.html">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources and endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ratelimit.html">Rate limiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webhooks.html">Webhooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/index.html">API Usage Guides</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">REST API</a> &raquo;</li>
+        
+      <li>Basic concepts</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/fundamentals.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="basic-concepts">
+<h1>Basic concepts<a class="headerlink" href="#basic-concepts" title="Permalink to this heading">¶</a></h1>
+<p>This page describes basic concepts and definition that you need to know to interact
+with pretix’ REST API, such as authentication, pagination and similar definitions.</p>
+<section id="authentication">
+<span id="rest-auth"></span><h2>Authentication<a class="headerlink" href="#authentication" title="Permalink to this heading">¶</a></h2>
+<p>To access the API, you need to present valid authentication credentials. pretix currently
+supports the following authorization schemes:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="tokenauth.html#rest-tokenauth"><span class="std std-ref">Token-based authentication</span></a>: This is the simplest way and recommended for server-side applications
+that interact with pretix without user interaction.</p></li>
+<li><p><a class="reference internal" href="oauth.html#rest-oauth"><span class="std std-ref">OAuth authentication / “Connect with eventyay-ticket”</span></a>: This is the recommended way to use if you write a third-party application
+that users can connect with their pretix account. It provides the best user experience, but
+requires user interaction and slightly more implementation effort.</p></li>
+<li><p><a class="reference internal" href="deviceauth.html#rest-deviceauth"><span class="std std-ref">Device authentication</span></a>: This is the recommended way if you build apps or hardware devices that can
+connect to pretix, e.g. for processing check-ins or to sell tickets offline. It provides a way
+to uniquely identify devices and allows for a quick configuration flow inside your software.</p></li>
+<li><p>Authentication using browser sessions: This is used by the pretix web interface and it is <em>not</em>
+officially supported for use by third-party applications. It might change or be removed at any
+time without prior notice. If you use it, you need to comply with Django’s <a class="reference external" href="https://docs.djangoproject.com/en/1.11/ref/csrf/#ajax">CSRF policies</a>.</p></li>
+</ul>
+</section>
+<section id="permissions">
+<h2>Permissions<a class="headerlink" href="#permissions" title="Permalink to this heading">¶</a></h2>
+<p>The API follows dev team based permissions model. Each organizer can have several teams
+each with it’s own set of permissions. Each team can have any number of API keys attached.</p>
+<p>To access a given endpoint the team the API key belongs to needs to have the corresponding
+permission for the organizer/event being accessed.</p>
+<p>Possible permissions are:</p>
+<ul class="simple">
+<li><p>Can create events</p></li>
+<li><p>Can change event settings</p></li>
+<li><p>Can change product settings</p></li>
+<li><p>Can view orders</p></li>
+<li><p>Can change orders</p></li>
+<li><p>Can view vouchers</p></li>
+<li><p>Can change vouchers</p></li>
+</ul>
+</section>
+<section id="compatibility">
+<h2>Compatibility<a class="headerlink" href="#compatibility" title="Permalink to this heading">¶</a></h2>
+<p>We currently see pretix’ API as a beta-stage feature. We therefore do not give any guarantees
+for compatibility between feature releases of pretix (such as 1.5 and 1.6). However, as always,
+we try not to break things when we don’t need to. Any backwards-incompatible changes will be
+prominently noted in the release notes.</p>
+<p>We treat the following types of changes as <em>backwards-compatible</em> so we ask you to make sure
+that your clients can deal with them properly:</p>
+<ul class="simple">
+<li><p>Support of new API endpoints</p></li>
+<li><p>Support of new HTTP methods for a given API endpoint</p></li>
+<li><p>Support of new query parameters for a given API endpoint</p></li>
+<li><p>New fields contained in API responses</p></li>
+</ul>
+<p>We treat the following types of changes as <em>backwards-incompatible</em>:</p>
+<ul class="simple">
+<li><p>Type changes of fields in API responses</p></li>
+<li><p>New required input fields for an API endpoint</p></li>
+<li><p>New required type for input fields of an API endpoint</p></li>
+<li><p>Removal of endpoints, API methods or fields</p></li>
+</ul>
+</section>
+<section id="pagination">
+<h2>Pagination<a class="headerlink" href="#pagination" title="Permalink to this heading">¶</a></h2>
+<p>Most lists of objects returned by pretix’ API will be paginated. The response will take
+the form of:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span>{
+    &quot;count&quot;: 117,
+    &quot;next&quot;: &quot;https://eventyay.com/api/v1/organizers/?page=2&quot;,
+    &quot;previous&quot;: null,
+    &quot;results&quot;: […],
+}
+</pre></div>
+</div>
+<p>As you can see, the response contains the total number of results in the field <code class="docutils literal notranslate"><span class="pre">count</span></code>.
+The fields <code class="docutils literal notranslate"><span class="pre">next</span></code> and <code class="docutils literal notranslate"><span class="pre">previous</span></code> contain links to the next and previous page of results,
+respectively, or <code class="docutils literal notranslate"><span class="pre">null</span></code> if there is no such page. You can use those URLs to retrieve the
+respective page.</p>
+<p>The field <code class="docutils literal notranslate"><span class="pre">results</span></code> contains a list of objects representing the first results. For most
+objects, every page contains 50 results.</p>
+</section>
+<section id="conditional-fetching">
+<h2>Conditional fetching<a class="headerlink" href="#conditional-fetching" title="Permalink to this heading">¶</a></h2>
+<p>If you pull object lists from pretix’ APIs regularly, we ask you to implement conditional fetching
+to avoid unnecessary data traffic. This is not supported on all resources and we currently implement
+two different mechanisms for different resources, which is necessary because we can only obtain best
+efficiency for resources that do not support deletion operations.</p>
+<section id="object-level-conditional-fetching">
+<h3>Object-level conditional fetching<a class="headerlink" href="#object-level-conditional-fetching" title="Permalink to this heading">¶</a></h3>
+<p>The <a class="reference internal" href="resources/orders.html#rest-orders"><span class="std std-ref">Orders</span></a> resource list contains an HTTP header called <code class="docutils literal notranslate"><span class="pre">X-Page-Generated</span></code> containing the
+current time on the server in ISO 8601 format. On your next request, you can pass this header
+(as is, without any modifications necessary) as the <code class="docutils literal notranslate"><span class="pre">modified_since</span></code> query parameter and you will receive
+a list containing only objects that have changed in the time since your last request.</p>
+</section>
+<section id="list-level-conditional-fetching">
+<h3>List-level conditional fetching<a class="headerlink" href="#list-level-conditional-fetching" title="Permalink to this heading">¶</a></h3>
+<p>If modification checks are not possible with this granularity, you can instead check for the full list.
+In this case, the list of objects may contain a regular HTTP header <code class="docutils literal notranslate"><span class="pre">Last-Modified</span></code> with the date of the
+last modification to any item of that resource. You can then pass this date back in your next request in the
+<code class="docutils literal notranslate"><span class="pre">If-Modified-Since</span></code> header. If the any object has changed in the meantime, you will receive back a full list
+(if something it missing, this means the object has been deleted). If nothing happened, we’ll send back a
+<code class="docutils literal notranslate"><span class="pre">304</span> <span class="pre">Not</span> <span class="pre">Modified</span></code> return code.</p>
+<p>This is currently implemented on the following resources:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="resources/categories.html#rest-categories"><span class="std std-ref">Item categories</span></a></p></li>
+<li><p><a class="reference internal" href="resources/items.html#rest-items"><span class="std std-ref">Items</span></a></p></li>
+<li><p><a class="reference internal" href="resources/questions.html#rest-questions"><span class="std std-ref">Questions</span></a></p></li>
+<li><p><a class="reference internal" href="resources/quotas.html#rest-quotas"><span class="std std-ref">Quotas</span></a></p></li>
+<li><p><a class="reference internal" href="resources/subevents.html#rest-subevents"><span class="std std-ref">Event series dates / Sub-events</span></a></p></li>
+<li><p><a class="reference internal" href="resources/taxrules.html#rest-taxrules"><span class="std std-ref">Tax rules</span></a></p></li>
+</ul>
+</section>
+</section>
+<section id="errors">
+<h2>Errors<a class="headerlink" href="#errors" title="Permalink to this heading">¶</a></h2>
+<p>Error responses (of type 400-499) are returned in one of the following forms, depending on
+the type of error. General errors look like:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">405</span> <span class="ne">Method Not Allowed</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+<span class="na">Content-Length</span><span class="o">:</span> <span class="l">42</span>
+
+<span class="p">{</span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Method &#39;DELETE&#39; not allowed.&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Field specific input errors include the name of the offending fields as keys in the response:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">400</span> <span class="ne">Bad Request</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+<span class="na">Content-Length</span><span class="o">:</span> <span class="l">94</span>
+
+<span class="p">{</span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;A valid integer is required.&quot;</span><span class="p">],</span><span class="w"> </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;This field may not be blank.&quot;</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p>If you see errors of type <code class="docutils literal notranslate"><span class="pre">429</span> <span class="pre">Too</span> <span class="pre">Many</span> <span class="pre">Requests</span></code>, you should read our documentation on <a class="reference internal" href="ratelimit.html#rest-ratelimit"><span class="std std-ref">Rate limiting</span></a>.</p>
+</section>
+<section id="data-types">
+<h2>Data types<a class="headerlink" href="#data-types" title="Permalink to this heading">¶</a></h2>
+<p>All structured API responses are returned in JSON format using standard JSON data types such
+as integers, floating point numbers, strings, lists, objects and booleans. Most fields can
+be <code class="docutils literal notranslate"><span class="pre">null</span></code> as well.</p>
+<p>The following table shows some data types that have no native JSON representation and how
+we serialize them to JSON.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Internal pretix type</p></th>
+<th class="head"><p>JSON representation</p></th>
+<th class="head"><p>Examples</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Datetime</p></td>
+<td><p>String in ISO 8601 format
+with timezone (normally UTC)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;2017-12-27T10:00:00Z&quot;</span></code>
+<code class="docutils literal notranslate"><span class="pre">&quot;2017-12-27T10:00:00.596934Z&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;2017-12-27T10:00:00+02:00&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Date</p></td>
+<td><p>String in ISO 8601 format</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">2017-12-27</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Multi-lingual string</p></td>
+<td><p>Object of strings</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{&quot;en&quot;:</span> <span class="pre">&quot;red&quot;,</span> <span class="pre">&quot;de&quot;:</span> <span class="pre">&quot;rot&quot;,</span> <span class="pre">&quot;de_Informal&quot;:</span> <span class="pre">&quot;rot&quot;}</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Money</p></td>
+<td><p>String with decimal number</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;23.42&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Currency</p></td>
+<td><p>String with ISO 4217 code</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;EUR&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;USD&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Relative datetime</p></td>
+<td><p><em>either</em> String in ISO 8601
+format <em>or</em> specification of
+a relative datetime,
+constructed from a number of
+days before the base point,
+a time of day, and the base
+point.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;2017-12-27T10:00:00.596934Z&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;RELDATE/3/12:00:00/presale_start/&quot;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Relative date</p></td>
+<td><p><em>either</em> String in ISO 8601
+format <em>or</em> specification of
+a relative date,
+constructed from a number of
+days before the base point
+and the base point.</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;2017-12-27&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;RELDATE/3/-/presale_start/&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>File</p></td>
+<td><p>URL in responses, <code class="docutils literal notranslate"><span class="pre">file:</span></code>
+specifiers in requests
+(see below).</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;https://…&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;file:…&quot;</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<section id="query-parameters">
+<h3>Query parameters<a class="headerlink" href="#query-parameters" title="Permalink to this heading">¶</a></h3>
+<p>Most list endpoints allow a filtering of the results using query parameters. In this case, booleans should be passed
+as the string values <code class="docutils literal notranslate"><span class="pre">true</span></code> and <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">ordering</span></code> parameter is documented for a resource, you can use it to sort the result set by one of the allowed
+fields. Prepend a <code class="docutils literal notranslate"><span class="pre">-</span></code> to the field name to reverse the sort order.</p>
+</section>
+</section>
+<section id="idempotency">
+<h2>Idempotency<a class="headerlink" href="#idempotency" title="Permalink to this heading">¶</a></h2>
+<p>Our API supports an idempotency mechanism to make sure you can safely retry operations without accidentally performing
+them twice. This is useful if an API call experiences interruptions in transit, e.g. due to a network failure, and you
+do not know if it completed successfully.</p>
+<p>To perform an idempotent request, add a <code class="docutils literal notranslate"><span class="pre">X-Idempotency-Key</span></code> header with a random string value (we recommend a version
+4 UUID) to your request. If we see a second request with the same <code class="docutils literal notranslate"><span class="pre">X-Idempotency-Key</span></code> and the same <code class="docutils literal notranslate"><span class="pre">Authorization</span></code>
+and <code class="docutils literal notranslate"><span class="pre">Cookie</span></code> headers, we will not perform the action for a second time but return the exact same response instead.</p>
+<p>Please note that this also goes for most error responses. For example, if we returned you a <code class="docutils literal notranslate"><span class="pre">403</span> <span class="pre">Permission</span> <span class="pre">Denied</span></code>
+error and you retry with the same <code class="docutils literal notranslate"><span class="pre">X-Idempotency-Key</span></code>, you will get the same error again, even if you were granted
+permission in the meantime! This includes internal server errors on our side that might have been fixed in the meantime.</p>
+<p>There are only three exceptions to the rule:</p>
+<ul class="simple">
+<li><p>Responses with status code <code class="docutils literal notranslate"><span class="pre">409</span> <span class="pre">Conflict</span></code> are not cached. If you send the request again, it will be executed as a
+new request, since these responses are intended to be retried.</p></li>
+<li><p>Rate-limited responses with status code <code class="docutils literal notranslate"><span class="pre">429</span> <span class="pre">Too</span> <span class="pre">Many</span> <span class="pre">Requests</span></code> are not cached and you can safely retry them.</p></li>
+<li><p>Responses with status code <code class="docutils literal notranslate"><span class="pre">503</span> <span class="pre">Service</span> <span class="pre">Unavailable</span></code> are not cached and you can safely retry them.</p></li>
+</ul>
+<p>If you send a request with an <code class="docutils literal notranslate"><span class="pre">X-Idempotency-Key</span></code> header that we have seen before but that has not yet received a
+response, you will receive a response with status code <code class="docutils literal notranslate"><span class="pre">409</span> <span class="pre">Conflict</span></code> and are asked to retry after five seconds.</p>
+<p>We store idempotency keys for 24 hours, so you should never retry a request after a longer time period.</p>
+<p>All <code class="docutils literal notranslate"><span class="pre">POST</span></code>, <code class="docutils literal notranslate"><span class="pre">PUT</span></code>, <code class="docutils literal notranslate"><span class="pre">PATCH</span></code>, or <code class="docutils literal notranslate"><span class="pre">DELETE</span></code> api calls support idempotency keys. Adding an idempotency key to a
+<code class="docutils literal notranslate"><span class="pre">GET</span></code>, <code class="docutils literal notranslate"><span class="pre">HEAD</span></code>, or <code class="docutils literal notranslate"><span class="pre">OPTIONS</span></code> request has no effect.</p>
+</section>
+<section id="file-upload">
+<h2>File upload<a class="headerlink" href="#file-upload" title="Permalink to this heading">¶</a></h2>
+<p>In some places, the API supports working with files, for example when setting the picture of a product. In this case,
+you will first need to make a separate request to our file upload endpoint:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/upload</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Authorization</span><span class="o">:</span> <span class="l">Token e1l6gq2ye72thbwkacj7jbri7a7tvxe614ojv8ybureain92ocub46t5gab5966k</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">image/png</span>
+<span class="na">Content-Disposition</span><span class="o">:</span> <span class="l">attachment; filename=&quot;logo.png&quot;</span>
+<span class="na">Content-Length</span><span class="o">:</span> <span class="l">1234</span>
+
+&lt;raw file content&gt;
+</pre></div>
+</div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">Content-Type</span></code> and <code class="docutils literal notranslate"><span class="pre">Content-Disposition</span></code> headers are required. If the upload was successful, you will
+receive a JSON response with the ID of the file:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;file:1cd99455-1ebd-4cda-b1a2-7a7d2a969ad1&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You can then use this file ID in the request you want to use it in. File IDs are currently valid for 24 hours and can only
+be used using the same authorization method and user that was used to upload them.</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PATCH</span> <span class="nn">/api/v1/organizers/test/events/test/items/3/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;picture&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;file:1cd99455-1ebd-4cda-b1a2-7a7d2a969ad1&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="auth.html" class="btn btn-neutral float-right" title="Authentication" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="REST API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

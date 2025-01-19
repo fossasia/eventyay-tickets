@@ -1,0 +1,457 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Scaling guide &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="up" title="Administrator documentation" href="index.html"/>
+        <link rel="next" title="Additional database indices" href="indexes.html"/>
+        <link rel="prev" title="Backups and Monitoring" href="maintainance.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Administrator documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation/index.html">Installation guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">Configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maintainance.html">Backups and Monitoring</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Scaling guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scaling-reasons">Scaling reasons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#components">Components</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#web-server">Web server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pretix-web">pretix-web</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pretix-worker">pretix-worker</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#media-files">Media files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sql-database">SQL database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#redis">redis</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-limitations">The limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="indexes.html">Additional database indices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Administrator documentation</a> &raquo;</li>
+        
+      <li>Scaling guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/admin/scaling.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="scaling-guide">
+<span id="scaling"></span><h1>Scaling guide<a class="headerlink" href="#scaling-guide" title="Permalink to this heading">¶</a></h1>
+<p>Our <a class="reference internal" href="installation/index.html#installation"><span class="std std-ref">installation guide</span></a> only covers “small-scale” setups, by which we mostly mean
+setups that run on a <strong>single (virtual) machine</strong> and do not encounter large traffic peaks.</p>
+<p>We do not offer an installation guide for larger-scale setups of pretix, mostly because we believe that
+there is no one-size-fits-all solution for this and the desired setup highly depends on your use case,
+the platform you run pretix on, and your technical capabilities. We do not recommend trying set up pretix
+in a multi-server environment if you do not already have experience with managing server clusters.</p>
+<p>This document is intended to give you a general idea on what issues you will encounter when you scale up
+and what you should think of.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you require more help on this, we’re happy to help. Our pretix Enterprise support team has built
+and helped building, scaling and load-testing pretix installations at any scale and we’re looking
+forward to work with you on fine-tuning your system. If you intend to sell <strong>more than a thousand
+tickets in a very short amount of time</strong>, we highly recommend reaching out and at least talking this
+through. Just get in touch at <a class="reference external" href="mailto:sales&#37;&#52;&#48;eventyay&#46;com">sales<span>&#64;</span>eventyay<span>&#46;</span>com</a>!</p>
+</div>
+<section id="scaling-reasons">
+<h2>Scaling reasons<a class="headerlink" href="#scaling-reasons" title="Permalink to this heading">¶</a></h2>
+<p>There’s mainly two reasons to scale up a pretix installation beyond a single server:</p>
+<ul class="simple">
+<li><p><strong>Availability:</strong> Distributing pretix over multiple servers can allow you to survive failure of one or more single machines, leading to a higher uptime and reliability of your system.</p></li>
+<li><p><strong>Traffic and throughput:</strong> Distributing pretix over multiple servers can allow you to process more web requests and ticket sales at the same time.</p></li>
+</ul>
+<p>You are very unlikely to require scaling for other reasons, such as having too much data in your database.</p>
+</section>
+<section id="components">
+<h2>Components<a class="headerlink" href="#components" title="Permalink to this heading">¶</a></h2>
+<p>A pretix installation usually consists of the following components which run performance-relevant processes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pretix-web</span></code> is the Django-based web application that serves all user interaction.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pretix-worker</span></code> is a Celery-based application that processes tasks that should be run asynchronously outside of the web application process.</p></li>
+<li><p>A <strong>SQL database</strong> keeps all the important data and processes the actual transactions. We recommend using PostgreSQL, but MySQL/MariaDB works as well.</p></li>
+<li><p>A <strong>web server</strong> that terminates TLS and HTTP connections and forwards them to <code class="docutils literal notranslate"><span class="pre">pretix-web</span></code>. In some cases, e.g. when serving static files, the web servers might return a response directly. We recommend using <code class="docutils literal notranslate"><span class="pre">nginx</span></code>.</p></li>
+<li><p>A <strong>redis</strong> server responsible for the communication between <code class="docutils literal notranslate"><span class="pre">pretix-web</span></code> and <code class="docutils literal notranslate"><span class="pre">pretix-worker</span></code>, as well as for caching.</p></li>
+<li><p>A directory of <strong>media files</strong> such as user-uploaded files or generated files (tickets, invoices, …) that are created and used by <code class="docutils literal notranslate"><span class="pre">pretix-web</span></code>, <code class="docutils literal notranslate"><span class="pre">pretix-worker</span></code> and the web server.</p></li>
+</ul>
+<p>In the following, we will discuss the scaling behavior of every component individually. In general, you can run all of the components
+on the same server, but you can just as well distribute every component to its own server, or even use multiple servers for some single
+components.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When setting up your system, don’t forget about security. In a multi-server environment,
+you need to take special care to ensure that no unauthorized access to your database
+is possible through the network and that it’s not easy to wiretap your connections. We
+recommend a rigorous use of firewalls and encryption on all communications. You can
+ensure this either on an application level (such as using the TLS support in your
+database) or on a network level with a VPN solution.</p>
+</div>
+<section id="web-server">
+<h3>Web server<a class="headerlink" href="#web-server" title="Permalink to this heading">¶</a></h3>
+<p>Your web server is at the very front of your installation. It will need to absorb all of the traffic, and it should be able to
+at least show a decent error message, even when everything else fails. Luckily, web servers are really fast these days, so this
+can be achieved without too much work.</p>
+<p>We recommend reading up on tuning your web server for high concurrency. For nginx, this means thinking about the number of worker
+processes and the number of connections each worker process accepts. Double-check that TLS session caching works, because TLS
+handshakes can get really expensive.</p>
+<p>During a traffic peak, your web server will be able to make us of more CPU resources, while memory usage will stay comparatively low,
+so if you invest in more hardware here, invest in more and faster CPU cores.</p>
+<p>Make sure that pretix’ static files (such as CSS and JavaScript assets) as well as user-uploaded media files (event logos, etc)
+are served directly by your web server and your web server caches them in-memory (nginx does it by default) and sets useful
+headers for client-side caching. As an additional performance improvement, you can turn of access logging for these types of files.
+If you want, you can even farm out serving static files to a different web server entirely and <a class="reference internal" href="config.html#config-urls"><span class="std std-ref">configure pretix to reference
+them from a different URL</span></a>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you expect <em>really high traffic</em> for your very popular event, you might want to do some rate limiting on this layer, or,
+if you want to ensure a fair and robust first-come-first-served experience and prefer letting users wait over showing them
+errors, consider a queuing solution. We’re happy to provide you with such systems, just get in touch at <a class="reference external" href="mailto:sales&#37;&#52;&#48;eventyay&#46;com">sales<span>&#64;</span>eventyay<span>&#46;</span>com</a>.</p>
+</div>
+</section>
+<section id="pretix-web">
+<h3>pretix-web<a class="headerlink" href="#pretix-web" title="Permalink to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">pretix-web</span></code> process does not carry any internal state can be easily started on as many machines as you like, and you can
+use the load balancing features of your frontend web server to redirect to all of them.</p>
+<p>You can adjust the number of processes in the <code class="docutils literal notranslate"><span class="pre">gunicorn</span></code> command line, and we recommend choosing roughly two times the number
+of CPU cores available. Under load, the memory consumption of <code class="docutils literal notranslate"><span class="pre">pretix-web</span></code> will stay comparatively constant, while the CPU usage
+will increase a lot. Therefore, if you can add more or faster CPU cores, you will be able to serve more users.</p>
+</section>
+<section id="pretix-worker">
+<h3>pretix-worker<a class="headerlink" href="#pretix-worker" title="Permalink to this heading">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">pretix-worker</span></code> process performs all operations that are not directly executed in the request-response-cycle of <code class="docutils literal notranslate"><span class="pre">pretix-web</span></code>.
+Just like <code class="docutils literal notranslate"><span class="pre">pretix-web</span></code> you can easily start up as many instances as you want on different machines to share the work. As long as they
+all talk to the same redis server, they will all receive tasks from <code class="docutils literal notranslate"><span class="pre">pretix-web</span></code>, work on them and post their result back.
+You can configure the number of threads that run tasks in parallel through the <code class="docutils literal notranslate"><span class="pre">--concurrency</span></code> command line option of <code class="docutils literal notranslate"><span class="pre">celery</span></code>.</p>
+<p>Just like <code class="docutils literal notranslate"><span class="pre">pretix-web</span></code>, this process is mostly heavy on CPU, disk IO and network IO, although memory peaks can occur e.g. during the
+generation of large PDF files, so we recommend having some reserves here.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pretix-worker</span></code> performs a variety of tasks which are of different importance.
+Some of them are mission-critical and need to be run quickly even during high load (such as
+creating a cart or an order), others are irrelevant and can easily run later (such as
+distributing tickets on the waiting list). You can fine-tune the capacity you assign to each
+of these tasks by running <code class="docutils literal notranslate"><span class="pre">pretix-worker</span></code> processes that only work on a specific <strong>queue</strong>.
+For example, you could have three servers dedicated only to process order creations and one
+server dedicated only to sending emails. This allows you to set priorities and also protects
+you from e.g. a slow email server lowering your ticket throughput.</p>
+<p>You can do so by specifying one or more queues on the <code class="docutils literal notranslate"><span class="pre">celery</span></code> command line of this process, such as <code class="docutils literal notranslate"><span class="pre">celery</span> <span class="pre">-A</span> <span class="pre">pretix.celery_app</span> <span class="pre">worker</span> <span class="pre">-Q</span> <span class="pre">notifications,mail</span></code>. Currently,
+the following queues exist:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">checkout</span></code> – This queue handles everything related to carts and orders and thereby everything required to process a sale. This includes adding and deleting items from carts as well as creating and canceling orders.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mail</span></code> – This queue handles sending of outgoing emails.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">notifications</span></code> – This queue handles the processing of any outgoing notifications, such as email notifications to admin users (except for the actual sending) or API notifications to registered webhooks.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">background</span></code> – This queue handles tasks that are expected to take long or have no human waiting for their result immediately, such as refreshing caches, re-generating CSS files, assigning tickets on the waiting list or parsing bank data files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">default</span></code> – This queue handles everything else with “medium” or unassigned priority, most prominently the generation of files for tickets, invoices, badges, admin exports, etc.</p></li>
+</ul>
+</section>
+<section id="media-files">
+<h3>Media files<a class="headerlink" href="#media-files" title="Permalink to this heading">¶</a></h3>
+<p>Both <code class="docutils literal notranslate"><span class="pre">pretix-web</span></code>, <code class="docutils literal notranslate"><span class="pre">pretix-worker</span></code> and in some cases your webserver need to work with
+media files. Media files are all files generated <em>at runtime</em> by the software. This can
+include files uploaded by the event organizers, such as the event logo, files uploaded by
+ticket buyers (if you use such features) or files generated by the software, such as
+ticket files, invoice PDFs, data exports or customized CSS files.</p>
+<p>Those files are by default stored to the <code class="docutils literal notranslate"><span class="pre">media/</span></code> sub-folder of the data directory given
+in the <code class="docutils literal notranslate"><span class="pre">pretix.cfg</span></code> configuration file. Inside that <code class="docutils literal notranslate"><span class="pre">media/</span></code> folder, you will find a
+<code class="docutils literal notranslate"><span class="pre">pub/</span></code> folder containing the subset of files that should be publicly accessible through
+the web server. Everything else only needs to be accessible by <code class="docutils literal notranslate"><span class="pre">pretix-web</span></code> and
+<code class="docutils literal notranslate"><span class="pre">pretix-worker</span></code> themselves.</p>
+<p>If you distribute <code class="docutils literal notranslate"><span class="pre">pretix-web</span></code> or <code class="docutils literal notranslate"><span class="pre">pretix-worker</span></code> across more than one machine, you
+<strong>must</strong> make sure that they all have access to a shared storage to read and write these
+files, otherwise you <strong>will</strong> run into errors with the user interface.</p>
+<p>The easiest solution for this is probably to store them on a NFS server that you mount
+on each of the other servers.</p>
+<p>Since we use Django’s file storage mechanism internally, you can in theory also use a object-storage solution like Amazon S3, Ceph, or Minio to store these files, although we currently do not expose this through pretix’ configuration file and this would require you to ship your own variant of <code class="docutils literal notranslate"><span class="pre">pretix/settings.py</span></code> and reference it through the <code class="docutils literal notranslate"><span class="pre">DJANGO_SETTINGS_MODULE</span></code> environment variable.</p>
+<p>At eventyay.com, we use a custom-built <a class="reference external" href="https://behind.pretix.eu/2018/03/20/high-available-cdn/">object storage cluster</a>.</p>
+</section>
+<section id="sql-database">
+<h3>SQL database<a class="headerlink" href="#sql-database" title="Permalink to this heading">¶</a></h3>
+<p>One of the most critical parts of the whole setup is the SQL database – and certainly the
+hardest to scale. Tuning relational databases is an art form, and while there’s lots of
+material on it on the internet, there’s not a single recipe that you can apply to every case.</p>
+<p>As a general rule of thumb, the more resources you can give your databases, the better.
+Most databases will happily use all CPU cores available, but only use memory up to an amount
+you configure, so make sure to set this memory usage as high as you can afford. Having more
+memory available allows your database to make more use of caching, which is usually good.</p>
+<p>Scaling your database to multiple machines needs to be treated with great caution. It’s a
+good to have a replica of your database for availability reasons. In case your primary
+database server fails, you can easily switch over to the replica and continue working.</p>
+<p>However, using database replicas for performance gains is much more complicated. When using
+replicated database systems, you are always trading in consistency or availability to get
+additional performance and the consequences of this can be subtle and it is important
+that you have a deep understanding of the semantics of your replication mechanism.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Using an off-the-shelf database proxy solution that redirects read queries to your
+replicas and write queries to your primary database <strong>will lead to very nasty bugs.</strong></p>
+<p>As an example, if you buy a ticket, pretix first needs to calculate how many tickets
+are left to sell. If this calculation is done on a database replica that lags behind
+even for fractions of a second, the decision to allow selling the ticket will be made
+on out-of-data data and you can end up with more tickets sold than configured. Similarly,
+you could imagine situations leading to double payments etc.</p>
+</div>
+<p>If you do have a replica, you <em>can</em> tell pretix about it <a class="reference internal" href="config.html#config-replica"><span class="std std-ref">in your configuration</span></a>.
+This way, pretix can offload complex read-only queries to the replica when it is safe to do so.
+As of pretix 2.7, this is mainly used for search queries in the backend and for rendering the
+product list and event lists in the frontend, but we plan on expanding this in the future.</p>
+<p>Therefore, for now our clear recommendation is: Try to scale your database vertically and put
+it on the most powerful machine you have available.</p>
+</section>
+<section id="redis">
+<h3>redis<a class="headerlink" href="#redis" title="Permalink to this heading">¶</a></h3>
+<p>While redis is a very important part that glues together some of the components, it isn’t used
+heavily and can usually handle a fairly large pretix installation easily on a single modern
+CPU core.
+Having some memory available is good in case of e.g. lots of tasks queuing up during a traffic peak, but we wouldn’t expect ever needing more than a gigabyte of it.</p>
+<p>Feel free to set up a redis cluster for availability – but you won’t need it for performance in a long time.</p>
+</section>
+</section>
+<section id="the-limitations">
+<h2>The limitations<a class="headerlink" href="#the-limitations" title="Permalink to this heading">¶</a></h2>
+<p>Up to a certain point, pretix scales really well. However, there are a few things that we consider
+even more important than scalability, and those are correctness and reliability. We want you to be
+able to trust that pretix will not sell more tickets than you intended or run into similar error
+cases.</p>
+<p>Combined with pretix’ flexibility and complexity, especially around vouchers and quotas, this creates
+some hard issues. In many cases, we need to fall back to event-global locking for some actions which
+are likely to run with high concurrency and cause harm.</p>
+<p>For every event, only one of these locking actions can be run at the same time. Examples for this are
+adding products limited by a quota to a cart, adding items to a cart using a voucher or placing an order
+consisting of cart positions that don’t have a valid reservation for much longer. In these cases, it is
+currently not realistically possible to exceed selling <strong>approx. 500 orders per minute per event</strong>, even
+if you add more hardware.
+If you have an unlimited number of tickets, we can apply fewer locking and we’ve reached <strong>approx.
+1500 orders per minute per event</strong> in benchmarks, although even more should be possible.</p>
+<p>We’re working to reduce the number of cases in which this is relevant and thereby improve the possible
+throughput. If you want to use pretix for an event with 10,000+ tickets that are likely to be sold out
+within minutes, please get in touch to discuss possible solutions. We’ll work something out for you!</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="indexes.html" class="btn btn-neutral float-right" title="Additional database indices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="maintainance.html" class="btn btn-neutral" title="Backups and Monitoring" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

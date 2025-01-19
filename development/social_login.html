@@ -1,0 +1,293 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Social Login Setup &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Social Login Setup</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/development/social_login.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="social-login-setup">
+<h1>Social Login Setup<a class="headerlink" href="#social-login-setup" title="Permalink to this heading">¶</a></h1>
+<p>To enable social login for providers, you first need to create an OAuth application on the provider’s website.</p>
+</section>
+<section id="i-google-oauth-application">
+<h1>I. Google OAuth Application<a class="headerlink" href="#i-google-oauth-application" title="Permalink to this heading">¶</a></h1>
+<p>Create an OAuth application on <a class="reference external" href="https://console.developers.google.com/">https://console.developers.google.com/</a></p>
+<p>Instructions:</p>
+<ul class="simple">
+<li><p>Follow the setup guide: <a class="reference external" href="https://medium.com/&#64;tony.infisical/guide-to-using-oauth-2-0-to-access-google-apis-dead94d6866d">https://medium.com/&#64;tony.infisical/guide-to-using-oauth-2-0-to-access-google-apis-dead94d6866d</a></p></li>
+<li><p>Set the callback URL to: <cite>{domain}/accounts/google/login/callback/</cite></p></li>
+<li><p>Add the client ID and client secret to admin settings</p></li>
+</ul>
+</section>
+<section id="ii-github-oauth-application">
+<h1>II. Github OAuth Application<a class="headerlink" href="#ii-github-oauth-application" title="Permalink to this heading">¶</a></h1>
+<p>Create an OAuth application on <a class="reference external" href="https://github.com/settings/applications/new">https://github.com/settings/applications/new</a></p>
+<p>Instructions:</p>
+<ul class="simple">
+<li><p>Set the callback URL to: <cite>{domain}/accounts/github/login/callback/</cite></p></li>
+<li><p>Add the client ID and client secret to admin settings</p></li>
+</ul>
+</section>
+<section id="iii-mediawiki-oauth-application">
+<h1>III. MediaWiki OAuth Application<a class="headerlink" href="#iii-mediawiki-oauth-application" title="Permalink to this heading">¶</a></h1>
+<p>To enable MediaWiki social login for your Eventyay instance, you need to register an OAuth application with MediaWiki.</p>
+<section id="important-notes">
+<h2>Important Notes<a class="headerlink" href="#important-notes" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>The OAuth application must be approved by a MediaWiki administrator</p></li>
+<li><p>Until approved, only the application owner can log in</p></li>
+</ul>
+</section>
+<section id="registration-steps">
+<h2>Registration Steps<a class="headerlink" href="#registration-steps" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Register your OAuth application at:
+<a class="reference external" href="https://meta.wikimedia.org/wiki/Special:OAuthConsumerRegistration/propose">https://meta.wikimedia.org/wiki/Special:OAuthConsumerRegistration/propose</a></p></li>
+<li><p>Callback URL Configuration</p>
+<ul class="simple">
+<li><p>Set the OAuth “callback” URL to: <cite>{domain}/accounts/mediawiki/login/callback/</cite></p></li>
+<li><p>Example: <cite>http://localhost:8000/accounts/mediawiki/login/callback/</cite></p></li>
+</ul>
+</li>
+<li><p>Carefully read and follow the instructions on the registration page. Tick option: access private information.</p></li>
+<li><p>The registered application will return:</p>
+<ul class="simple">
+<li><p>One consumer key</p></li>
+<li><p>One consumer secret</p></li>
+</ul>
+</li>
+<li><p>Add the consumer key and consumer secret to your Eventyay admin settings</p></li>
+</ol>
+</section>
+<section id="after-approval">
+<h2>After Approval<a class="headerlink" href="#after-approval" title="Permalink to this heading">¶</a></h2>
+<p>Once approved, other users can log in to your Eventyay instance using their MediaWiki account.</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,328 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Additional database indices &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="up" title="Administrator documentation" href="index.html"/>
+        <link rel="next" title="REST API" href="../api/index.html"/>
+        <link rel="prev" title="Scaling guide" href="scaling.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Administrator documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation/index.html">Installation guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">Configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maintainance.html">Backups and Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scaling.html">Scaling guide</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Additional database indices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Administrator documentation</a> &raquo;</li>
+        
+      <li>Additional database indices</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/admin/indexes.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="additional-database-indices">
+<h1>Additional database indices<a class="headerlink" href="#additional-database-indices" title="Permalink to this heading">¶</a></h1>
+<p>If you have a large pretix database, some features such as search for orders or events might turn pretty slow.
+For PostgreSQL, we have compiled a list of additional database indexes that you can add to speed things up.
+Just like any index, they in turn make write operations insignificantly slower and cause the database to use
+more disk space.</p>
+<p>The indexes aren’t automatically created by pretix since Django does not allow us to do so only on PostgreSQL
+(and they won’t work on other databases). Also, they’re really not necessary if you’re not having tens of
+thousands of records in your database.</p>
+<p>However, this also means they won’t automatically adapt if some of the referred fields change in future updates of pretix
+and you might need to re-check this page and change them manually.</p>
+<p>Here is the currently recommended set of commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CREATE</span> <span class="n">EXTENSION</span> <span class="n">pg_trgm</span><span class="p">;</span>
+
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_event_slug</span>
+    <span class="n">ON</span> <span class="n">pretixbase_event</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;slug&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_event_name</span>
+    <span class="n">ON</span> <span class="n">pretixbase_event</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_order_code</span>
+    <span class="n">ON</span> <span class="n">pretixbase_order</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_voucher_code</span>
+    <span class="n">ON</span> <span class="n">pretixbase_voucher</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_invoice_nu1</span>
+    <span class="n">ON</span> <span class="s2">&quot;pretixbase_invoice&quot;</span> <span class="p">(</span><span class="n">UPPER</span><span class="p">(</span><span class="s2">&quot;invoice_no&quot;</span><span class="p">));</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_invoice_nu2</span>
+    <span class="n">ON</span> <span class="s2">&quot;pretixbase_invoice&quot;</span> <span class="p">(</span><span class="n">UPPER</span><span class="p">(</span><span class="s2">&quot;full_invoice_no&quot;</span><span class="p">));</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_organizer_name</span>
+    <span class="n">ON</span> <span class="n">pretixbase_organizer</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_organizer_slug</span>
+    <span class="n">ON</span> <span class="n">pretixbase_organizer</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;slug&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_order_email</span>
+    <span class="n">ON</span> <span class="n">pretixbase_order</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_order_comment</span>
+    <span class="n">ON</span> <span class="n">pretixbase_order</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;comment&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_orderpos_name</span>
+    <span class="n">ON</span> <span class="n">pretixbase_orderposition</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;attendee_name_cached&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_orderpos_scret</span>
+    <span class="n">ON</span> <span class="n">pretixbase_orderposition</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;secret&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_orderpos_email</span>
+    <span class="n">ON</span> <span class="n">pretixbase_orderposition</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;attendee_email&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_ia_name</span>
+    <span class="n">ON</span> <span class="n">pretixbase_invoiceaddress</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;name_cached&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_ia_company</span>
+    <span class="n">ON</span> <span class="n">pretixbase_invoiceaddress</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;company&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_orderpos_email_upper</span>
+    <span class="n">ON</span> <span class="n">public</span><span class="o">.</span><span class="n">pretixbase_orderposition</span> <span class="p">(</span><span class="n">upper</span><span class="p">((</span><span class="n">attendee_email</span><span class="p">)::</span><span class="n">text</span><span class="p">));</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_voucher_code_upper</span>
+    <span class="n">ON</span> <span class="n">public</span><span class="o">.</span><span class="n">pretixbase_voucher</span> <span class="p">(</span><span class="n">upper</span><span class="p">((</span><span class="n">code</span><span class="p">)::</span><span class="n">text</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>Also, if you use our <code class="docutils literal notranslate"><span class="pre">pretix-shipping</span></code> plugin:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_sa_name</span>
+    <span class="n">ON</span> <span class="n">pretix_shipping_shippingaddress</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+<span class="n">CREATE</span> <span class="n">INDEX</span> <span class="n">CONCURRENTLY</span> <span class="n">pretix_addidx_sa_company</span>
+    <span class="n">ON</span> <span class="n">pretix_shipping_shippingaddress</span>
+    <span class="n">USING</span> <span class="n">gin</span> <span class="p">(</span><span class="n">upper</span><span class="p">(</span><span class="s2">&quot;company&quot;</span><span class="p">)</span> <span class="n">gin_trgm_ops</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../api/index.html" class="btn btn-neutral float-right" title="REST API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="scaling.html" class="btn btn-neutral" title="Scaling guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

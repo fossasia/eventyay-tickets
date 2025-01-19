@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>NGINX and URL Path Configuration for Eventyay-Tickets &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>NGINX and URL Path Configuration for Eventyay-Tickets</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/deployment/nginx_and_url_path_config.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="nginx-and-url-path-configuration-for-eventyay-tickets">
+<h1>NGINX and URL Path Configuration for Eventyay-Tickets<a class="headerlink" href="#nginx-and-url-path-configuration-for-eventyay-tickets" title="Permalink to this heading">¶</a></h1>
+<p>This document outlines the NGINX and URL path setup for the <code class="docutils literal notranslate"><span class="pre">eventyay-tickets</span></code> project hosted at <cite>https://github.com/fossasia/eventyay-tickets</cite>. This Django project utilizes <code class="docutils literal notranslate"><span class="pre">FORCE_SCRIPT_NAME</span></code> to configure a base path, allowing the application to run on a specified sub-path within the domain.</p>
+<section id="project-setup-in-django">
+<h2>Project Setup in Django<a class="headerlink" href="#project-setup-in-django" title="Permalink to this heading">¶</a></h2>
+<p>In <code class="docutils literal notranslate"><span class="pre">eventyay-tickets</span></code>, the following settings are used to configure the base path for the application:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Django Settings</span>
+<span class="n">BASE_PATH</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pretix&#39;</span><span class="p">,</span> <span class="s1">&#39;base_path&#39;</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="s1">&#39;/tickets&#39;</span><span class="p">)</span>
+<span class="n">FORCE_SCRIPT_NAME</span> <span class="o">=</span> <span class="n">BASE_PATH</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>BASE_PATH</strong>: Retrieved from the <code class="docutils literal notranslate"><span class="pre">pretix.cfg</span></code> configuration file, which allows flexible configuration of the base URL path. By default, this is set to <code class="docutils literal notranslate"><span class="pre">'/tickets'</span></code>.</p></li>
+<li><p><strong>FORCE_SCRIPT_NAME</strong>: Uses the value from <code class="docutils literal notranslate"><span class="pre">BASE_PATH</span></code>, setting <code class="docutils literal notranslate"><span class="pre">/tickets</span></code> as the base path for URL routing within Django.</p></li>
+</ul>
+<p>This means that all URLs within Django are prefixed with <code class="docutils literal notranslate"><span class="pre">/tickets</span></code>, allowing users to access <code class="docutils literal notranslate"><span class="pre">eventyay-tickets</span></code> via URLs like <code class="docutils literal notranslate"><span class="pre">domain.com/tickets/</span></code>.</p>
+</section>
+<section id="nginx-configuration">
+<h2>NGINX Configuration<a class="headerlink" href="#nginx-configuration" title="Permalink to this heading">¶</a></h2>
+<p>The following NGINX configuration serves the <code class="docutils literal notranslate"><span class="pre">eventyay-tickets</span></code> application along with other services such as <code class="docutils literal notranslate"><span class="pre">talk</span></code> and <code class="docutils literal notranslate"><span class="pre">video</span></code>. The configuration is hosted on server.</p>
+</section>
+<section id="key-sections-of-nginx-configuration">
+<h2>Key Sections of NGINX Configuration<a class="headerlink" href="#key-sections-of-nginx-configuration" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic">
+<li><p><strong>Server Block for HTTPS</strong>:
+This block listens on port <code class="docutils literal notranslate"><span class="pre">443</span></code> for HTTPS traffic.
+SSL certificates are configured here using Let’s Encrypt for secure communication.</p>
+<div class="highlight-nginx notranslate"><div class="highlight"><pre><span></span><span class="k">server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">your-domain</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">443</span><span class="w"> </span><span class="s">ssl</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kn">ssl_certificate</span><span class="w"> </span><span class="s">/etc/../fullchain.pem</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">ssl_certificate_key</span><span class="w"> </span><span class="s">/etc/../privkey.pem</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">include</span><span class="w"> </span><span class="s">/etc/../options-ssl-nginx.conf</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">ssl_dhparam</span><span class="w"> </span><span class="s">/etc/../ssl-dhparams.pem</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>URL Path Configurations</strong>:</p>
+<ul>
+<li><p><strong>Root Location</strong>:
+- Proxies requests from <code class="docutils literal notranslate"><span class="pre">https://your-domain/</span></code> to the backend on <code class="docutils literal notranslate"><span class="pre">localhost:8455/common/</span></code>.</p></li>
+<li><p><strong>/tickets</strong>:
+- This location is for the <code class="docutils literal notranslate"><span class="pre">eventyay-tickets</span></code> application.
+- Requests to <code class="docutils literal notranslate"><span class="pre">https://your-domain/tickets/</span></code> are proxied to <code class="docutils literal notranslate"><span class="pre">localhost:8455/</span></code>.</p>
+<div class="highlight-nginx notranslate"><div class="highlight"><pre><span></span><span class="k">location</span><span class="w"> </span><span class="s">/tickets/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kn">proxy_pass</span><span class="w"> </span><span class="s">http://localhost:8455/</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">X-Forwarded-For</span><span class="w"> </span><span class="nv">$proxy_add_x_forwarded_for</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">X-Forwarded-Proto</span><span class="w"> </span><span class="nv">$scheme</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">Host</span><span class="w"> </span><span class="nv">$host</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>/talk</strong> and <strong>/video</strong>:
+- These locations handle other components (<code class="docutils literal notranslate"><span class="pre">talk</span></code> and <code class="docutils literal notranslate"><span class="pre">video</span></code>) by proxying requests to their respective backend services on different ports.</p></li>
+</ul>
+</li>
+<li><p><strong>Custom Redirects</strong>:
+- <strong>/video/admin</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Redirects requests from <code class="docutils literal notranslate"><span class="pre">/video/admin/</span></code> to the <code class="docutils literal notranslate"><span class="pre">control</span></code> panel at <code class="docutils literal notranslate"><span class="pre">https://your-domain:8443/control</span></code>.</p></li>
+</ul>
+<div class="highlight-nginx notranslate"><div class="highlight"><pre><span></span><span class="k">location</span><span class="w"> </span><span class="s">/video/admin/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kn">return</span><span class="w"> </span><span class="mi">301</span><span class="w"> </span><span class="s">https://your-domain:8443/control</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ul>
+<li><p><strong>/talk/static</strong> and <strong>/media</strong>:
+- Routes static files for the <code class="docutils literal notranslate"><span class="pre">talk</span></code> component, setting up paths for <code class="docutils literal notranslate"><span class="pre">/talk/media/</span></code> and <code class="docutils literal notranslate"><span class="pre">/media/</span></code> to point to Docker volumes where media files are stored.</p>
+<div class="highlight-nginx notranslate"><div class="highlight"><pre><span></span><span class="k">location</span><span class="w"> </span><span class="s">/talk/media/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kn">rewrite</span><span class="w"> </span><span class="s">^/talk/media/(.*)</span>$<span class="w"> </span><span class="s">/media/</span><span class="nv">$1</span><span class="w"> </span><span class="s">break</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">root</span><span class="w"> </span><span class="s">/var/lib/docker/volumes/pretalx_pretalx-data/_data</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>HTTP to HTTPS Redirection</strong>:
+- Redirects all HTTP requests on port <code class="docutils literal notranslate"><span class="pre">80</span></code> to HTTPS, ensuring secure communication.</p>
+<div class="highlight-nginx notranslate"><div class="highlight"><pre><span></span><span class="k">server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">80</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">your-domain</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">if</span><span class="w"> </span><span class="s">(</span><span class="nv">$host</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s">your-domain)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kn">return</span><span class="w"> </span><span class="mi">301</span><span class="w"> </span><span class="s">https://</span><span class="nv">$host$request_uri</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kn">return</span><span class="w"> </span><span class="mi">404</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Secondary HTTPS Server Block on Port 8443</strong>:
+- A separate server block listens on port <code class="docutils literal notranslate"><span class="pre">8443</span></code> for HTTPS traffic and proxies requests to the backend service running on port <code class="docutils literal notranslate"><span class="pre">8375</span></code>.</p>
+<div class="highlight-nginx notranslate"><div class="highlight"><pre><span></span><span class="k">server</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kn">listen</span><span class="w"> </span><span class="mi">8443</span><span class="w"> </span><span class="s">ssl</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">server_name</span><span class="w"> </span><span class="s">your-domain</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kn">ssl_certificate</span><span class="w"> </span><span class="s">/etc/../fullchain.pem</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">ssl_certificate_key</span><span class="w"> </span><span class="s">/etc/../privkey.pem</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">include</span><span class="w"> </span><span class="s">/etc/../options-ssl-nginx.conf</span><span class="p">;</span>
+<span class="w">    </span><span class="kn">ssl_dhparam</span><span class="w"> </span><span class="s">/etc/../ssl-dhparams.pem</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kn">location</span><span class="w"> </span><span class="s">/</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kn">proxy_pass</span><span class="w"> </span><span class="s">http://localhost:8375/</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_http_version</span><span class="w"> </span><span class="mi">1</span><span class="s">.1</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">Upgrade</span><span class="w"> </span><span class="nv">$http_upgrade</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">Connection</span><span class="w"> </span><span class="s">&quot;upgrade&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">X-Forwarded-For</span><span class="w"> </span><span class="nv">$proxy_add_x_forwarded_for</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">X-Forwarded-Proto</span><span class="w"> </span><span class="s">https</span><span class="p">;</span>
+<span class="w">        </span><span class="kn">proxy_set_header</span><span class="w"> </span><span class="s">Host</span><span class="w"> </span><span class="nv">$http_host</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="accessing-eventyay-tickets">
+<h2>Accessing eventyay-tickets<a class="headerlink" href="#accessing-eventyay-tickets" title="Permalink to this heading">¶</a></h2>
+<p>With this setup:</p>
+<ul class="simple">
+<li><p>The URL for accessing the <code class="docutils literal notranslate"><span class="pre">eventyay-tickets</span></code> application control panel is <code class="docutils literal notranslate"><span class="pre">https://your-domain/tickets/control</span></code>.</p></li>
+<li><p>NGINX routes requests to the correct backend ports based on path prefixes, ensuring that each application (tickets, talk, video) is isolated within its respective path.</p></li>
+</ul>
+</section>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this heading">¶</a></h2>
+<p>This configuration leverages <code class="docutils literal notranslate"><span class="pre">FORCE_SCRIPT_NAME</span></code> in Django to set <code class="docutils literal notranslate"><span class="pre">/tickets</span></code> as the base path, while NGINX routes requests to various services based on URL path prefixes. This setup provides a secure and organized way to access different components on the same domain.</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

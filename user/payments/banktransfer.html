@@ -1,0 +1,310 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Bank transfer &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Payment settings" href="index.html"/>
+        <link rel="next" title="Configuring plugins" href="../events/plugins.html"/>
+        <link rel="prev" title="Stripe" href="stripe.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/create.html">Creating an event</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../events/settings.html">Configuring an event</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../events/subevents.html">Event series</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Payment settings</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="settings.html">General settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="overview.html">Payment method overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fees.html">Payment method fees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="paypal.html">PayPal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stripe.html">Stripe</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Bank transfer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../events/plugins.html">Configuring plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/display.html">Display settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/tickets.html">Ticket settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/email.html">E-mail settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/taxes.html">Configuring taxes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/invoicing.html">Invoice settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../events/structureguide.html">Product structure guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/widget.html">Embeddable Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../markdown.html">Markdown Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="../events/settings.html">Configuring an event</a> &raquo;</li>
+        
+          <li><a href="index.html">Payment settings</a> &raquo;</li>
+        
+      <li>Bank transfer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user/payments/banktransfer.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="bank-transfer">
+<span id="banktransfer"></span><h1>Bank transfer<a class="headerlink" href="#bank-transfer" title="Permalink to this heading">¶</a></h1>
+<p>To accept payments with bank transfer, you only need to fill out one important field in pretix’ settings: In “Bank
+account details” you should specify everything one needs to know to transfer money to you, e.g. your IBAN and BIC,
+the name of your bank and for international transfers, preferably also your address and the bank’s address.</p>
+<p>pretix will automatically tell the user to include the order code in the payment reference so incoming transfers can
+automatically be matched to payments.</p>
+<section id="importing-payment-data">
+<h2>Importing payment data<a class="headerlink" href="#importing-payment-data" title="Permalink to this heading">¶</a></h2>
+<p>The easiest way to import payment data is to download a CSV file from your online banking. Most banks provide a CSV
+export of some sort. You can go to “Import bank data” in pretix to upload a new file:</p>
+<img alt="../../_images/bank1.png" class="screenshot" src="../../_images/bank1.png" />
+<p>If you upload a file for the first time, pretix will not know what information is contained in which column as every
+bank builds completely different CSV files. Therefore, pretix will ask you for that information. It will show you the
+data of the file you imported and ask you to define the column’s meanings. You can select one column that contains
+the payment date and one that contains the paid amount. You can select multiple columns that contain information
+about the payer or the payment reference. All other columns will be ignored.</p>
+<p>Once you continue, pretix will try to match the payments to the respective orders automatically. It will tell you how
+many orders could be processed correctly and how many could not. You can then go back to the upload page to see all
+transfers from your bank statement that are not yet matched to an order. Using the input field and the buttons on the
+left of each transaction, you can manually enter an order code to match it to or just discard it from the list, e.g.
+if the transaction is not related to the event at all.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If you aren’t afraid of getting a bit more technical and your bank supports the HBCI/FinTS protocol (as most
+German banks do), you can use <a class="reference external" href="https://github.com/pretix/pretix-banktool">pretix-banktool</a> to fully automate this process.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../events/plugins.html" class="btn btn-neutral float-right" title="Configuring plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="stripe.html" class="btn btn-neutral" title="Stripe" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

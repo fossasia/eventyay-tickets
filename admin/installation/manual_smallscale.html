@@ -1,0 +1,576 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Small-scale manual deployment &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Installation guide" href="index.html"/>
+        <link rel="next" title="Installing a development version" href="dev_version.html"/>
+        <link rel="prev" title="Small-scale deployment with Docker" href="docker_smallscale.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Administrator documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Installation guide</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="general.html">General remarks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docker_smallscale.html">Small-scale deployment with Docker</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Small-scale manual deployment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unix-user">Unix user</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#database">Database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#package-dependencies">Package dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#config-file">Config file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-pretix-from-pypi">Install pretix from PyPI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#start-pretix-as-a-service">Start pretix as a service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cronjob">Cronjob</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ssl">SSL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#next-steps">Next steps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates">Updates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-a-plugin">Install a plugin</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="dev_version.html">Installing a development version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise.html">Installing pretix Enterprise plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../config.html">Configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../maintainance.html">Backups and Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../scaling.html">Scaling guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../indexes.html">Additional database indices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Administrator documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Installation guide</a> &raquo;</li>
+        
+      <li>Small-scale manual deployment</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/admin/installation/manual_smallscale.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="small-scale-manual-deployment">
+<h1>Small-scale manual deployment<a class="headerlink" href="#small-scale-manual-deployment" title="Permalink to this heading">¶</a></h1>
+<p>This guide describes the installation of a small-scale installation of pretix from source. By small-scale, we mean
+that everything is being run on one host and you don’t expect thousands of participants trying to get a ticket within
+a few minutes. In this setup, you will have to perform a number of manual steps. If you prefer using a container
+solution with many things readily set-up, look at <a class="reference internal" href="docker_smallscale.html#dockersmallscale"><span class="std std-ref">Small-scale deployment with Docker</span></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Even though we try to make it straightforward to run pretix, it still requires some Linux experience to
+get it right. If you’re not feeling comfortable managing a Linux server, check out our hosting and service
+offers at <a class="reference external" href="https://eventyay.com/">eventyay.com</a>.</p>
+</div>
+<p>We tested this guide on the Linux distribution <strong>Debian 10.0</strong> but it should work very similar on other
+modern distributions, especially on all systemd-based ones.</p>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading">¶</a></h2>
+<p>Please set up the following systems beforehand, we’ll not explain them here in detail (but see these links for external
+installation guides):</p>
+<ul class="simple">
+<li><p>A SMTP server to send out mails, e.g. <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-16-04">Postfix</a> on your machine or some third-party server you have credentials for</p></li>
+<li><p>A HTTP reverse proxy, e.g. <a class="reference external" href="https://botleg.com/stories/https-with-lets-encrypt-and-nginx/">nginx</a> or Apache to allow HTTPS connections</p></li>
+<li><p>A <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-20-04">PostgreSQL</a> 11+, <a class="reference external" href="https://dev.mysql.com/doc/refman/5.7/en/linux-installation-apt-repo.html">MySQL</a> 5.7+, or MariaDB 10.2.7+ database server</p></li>
+<li><p>A <a class="reference external" href="https://blog.programster.org/debian-8-install-redis-server/">redis</a> server</p></li>
+<li><p>A <cite>nodejs_</cite> installation</p></li>
+</ul>
+<p>We also recommend that you use a firewall, although this is not a pretix-specific recommendation. If you’re new to
+Linux and firewalls, we recommend that you start with <a class="reference external" href="https://en.wikipedia.org/wiki/Uncomplicated_Firewall">ufw</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Please, do not run pretix without HTTPS encryption. You’ll handle user data and thanks to <a class="reference external" href="https://letsencrypt.org/">Let’s Encrypt</a>
+SSL certificates can be obtained for free these days. We also <em>do not</em> provide support for HTTP-only
+installations except for evaluation purposes.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>We recommend <strong>PostgreSQL</strong>. If you go for MySQL, make sure you run <strong>MySQL 5.7 or newer</strong> or
+<strong>MariaDB 10.2.7 or newer</strong>.</p>
+</div>
+</section>
+<section id="unix-user">
+<h2>Unix user<a class="headerlink" href="#unix-user" title="Permalink to this heading">¶</a></h2>
+<p>As we do not want to run pretix as root, we first create a new unprivileged user:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># adduser pretix --disabled-password --home /var/pretix
+</pre></div>
+</div>
+<p>In this guide, all code lines prepended with a <code class="docutils literal notranslate"><span class="pre">#</span></code> symbol are commands that you need to execute on your server as
+<code class="docutils literal notranslate"><span class="pre">root</span></code> user (e.g. using <code class="docutils literal notranslate"><span class="pre">sudo</span></code>); all lines prepended with a <code class="docutils literal notranslate"><span class="pre">$</span></code> symbol should be run by the unprivileged user.</p>
+</section>
+<section id="database">
+<h2>Database<a class="headerlink" href="#database" title="Permalink to this heading">¶</a></h2>
+<p>Having the database server installed, we still need a database and a database user. We can create these with any kind
+of database managing tool or directly on our database’s shell. For PostgreSQL, we would do:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># sudo -u postgres createuser pretix
+# sudo -u postgres createdb -O pretix pretix
+</pre></div>
+</div>
+<p>When using MySQL, make sure you set the character set of the database to <code class="docutils literal notranslate"><span class="pre">utf8mb4</span></code>, e.g. like this:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mysql &gt; CREATE DATABASE pretix DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;
+</pre></div>
+</div>
+</section>
+<section id="package-dependencies">
+<h2>Package dependencies<a class="headerlink" href="#package-dependencies" title="Permalink to this heading">¶</a></h2>
+<p>To build and run pretix, you will need the following debian packages:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># apt-get install git build-essential python-dev python3-venv python3 python3-pip \
+                  python3-dev libxml2-dev libxslt1-dev libffi-dev zlib1g-dev libssl-dev \
+                  gettext libpq-dev libmariadbclient-dev libjpeg-dev libopenjp2-7-dev
+</pre></div>
+</div>
+</section>
+<section id="config-file">
+<h2>Config file<a class="headerlink" href="#config-file" title="Permalink to this heading">¶</a></h2>
+<p>We now create a config directory and config file for pretix:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># mkdir /etc/pretix
+# touch /etc/pretix/pretix.cfg
+# chown -R pretix:pretix /etc/pretix/
+# chmod 0600 /etc/pretix/pretix.cfg
+</pre></div>
+</div>
+<p>Fill the configuration file <code class="docutils literal notranslate"><span class="pre">/etc/pretix/pretix.cfg</span></code> with the following content (adjusted to your environment):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[pretix]
+instance_name=My pretix installation
+url=https://pretix.mydomain.com
+currency=EUR
+datadir=/var/pretix/data
+trust_x_forwarded_for=on
+trust_x_forwarded_proto=on
+
+[database]
+; For MySQL, replace with &quot;mysql&quot;
+backend=postgresql
+name=pretix
+user=pretix
+; For MySQL, enter the user password. For PostgreSQL on the same host,
+; we don&#39;t need one because we can use peer authentification if our
+; PostgreSQL user matches our unix user.
+password=
+; For MySQL, use local socket, e.g. /var/run/mysqld/mysqld.sock
+; For a remote host, supply an IP address
+; For local postgres authentication, you can leave it empty
+host=
+
+[mail]
+; See config file documentation for more options
+from=tickets@yourdomain.com
+host=127.0.0.1
+
+[redis]
+location=redis://127.0.0.1/0
+sessions=true
+
+[celery]
+backend=redis://127.0.0.1/1
+broker=redis://127.0.0.1/2
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../config.html#mail-settings"><span class="std std-ref">email configuration</span></a> to learn more about configuring mail features.</p>
+</section>
+<section id="install-pretix-from-pypi">
+<h2>Install pretix from PyPI<a class="headerlink" href="#install-pretix-from-pypi" title="Permalink to this heading">¶</a></h2>
+<p>Now we will install pretix itself. The following steps are to be executed as the <code class="docutils literal notranslate"><span class="pre">pretix</span></code> user. Before we
+actually install pretix, we will create a virtual environment to isolate the python packages from your global
+python installation:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ python3 -m venv /var/pretix/venv
+$ source /var/pretix/venv/bin/activate
+(venv)$ pip3 install -U pip setuptools wheel
+</pre></div>
+</div>
+<p>We now install pretix, its direct dependencies and gunicorn. Replace <code class="docutils literal notranslate"><span class="pre">postgres</span></code> with <code class="docutils literal notranslate"><span class="pre">mysql</span></code> in the following
+command if you’re running MySQL:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(venv)$ pip3 install &quot;pretix[postgres]&quot; gunicorn
+</pre></div>
+</div>
+<p>Note that you need Python 3.11 or newer. You can find out your Python version using <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-V</span></code>.</p>
+<p>We also need to create a data directory:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(venv)$ mkdir -p /var/pretix/data/media
+</pre></div>
+</div>
+<p>Finally, we compile static files and translation data and create the database structure:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(venv)$ python -m pretix migrate
+(venv)$ python -m pretix rebuild
+</pre></div>
+</div>
+</section>
+<section id="start-pretix-as-a-service">
+<h2>Start pretix as a service<a class="headerlink" href="#start-pretix-as-a-service" title="Permalink to this heading">¶</a></h2>
+<p>We recommend starting pretix using systemd to make sure it runs correctly after a reboot. Create a file
+named <code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/pretix-web.service</span></code> with the following content:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[Unit]
+Description=pretix web service
+After=network.target
+
+[Service]
+User=pretix
+Group=pretix
+Environment=&quot;VIRTUAL_ENV=/var/pretix/venv&quot;
+Environment=&quot;PATH=/var/pretix/venv/bin:/usr/local/bin:/usr/bin:/bin&quot;
+ExecStart=/var/pretix/venv/bin/gunicorn pretix.wsgi \
+                      --name pretix --workers 5 \
+                      --max-requests 1200  --max-requests-jitter 50 \
+                      --log-level=info --bind=127.0.0.1:8345
+WorkingDirectory=/var/pretix
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+</pre></div>
+</div>
+<p>For background tasks we need a second service <code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/pretix-worker.service</span></code> with the following content:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[Unit]
+Description=pretix background worker
+After=network.target
+
+[Service]
+User=pretix
+Group=pretix
+Environment=&quot;VIRTUAL_ENV=/var/pretix/venv&quot;
+Environment=&quot;PATH=/var/pretix/venv/bin:/usr/local/bin:/usr/bin:/bin&quot;
+ExecStart=/var/pretix/venv/bin/celery -A pretix.celery_app worker -l info
+WorkingDirectory=/var/pretix
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+</pre></div>
+</div>
+<p>You can now run the following commands to enable and start the services:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># systemctl daemon-reload
+# systemctl enable pretix-web pretix-worker
+# systemctl start pretix-web pretix-worker
+</pre></div>
+</div>
+</section>
+<section id="cronjob">
+<h2>Cronjob<a class="headerlink" href="#cronjob" title="Permalink to this heading">¶</a></h2>
+<p>You need to set up a cronjob that runs the management command <code class="docutils literal notranslate"><span class="pre">runperiodic</span></code>. The exact interval is not important
+but should be something between every minute and every hour. You could for example configure cron like this:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>15,45 * * * * export PATH=/var/pretix/venv/bin:$PATH &amp;&amp; cd /var/pretix &amp;&amp; python -m pretix runperiodic
+</pre></div>
+</div>
+<p>The cronjob should run as the <code class="docutils literal notranslate"><span class="pre">pretix</span></code> user (<code class="docutils literal notranslate"><span class="pre">crontab</span> <span class="pre">-e</span> <span class="pre">-u</span> <span class="pre">pretix</span></code>).</p>
+</section>
+<section id="ssl">
+<h2>SSL<a class="headerlink" href="#ssl" title="Permalink to this heading">¶</a></h2>
+<p>The following snippet is an example on how to configure a nginx proxy for pretix:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>server {
+    listen 80 default_server;
+    listen [::]:80 ipv6only=on default_server;
+    server_name pretix.mydomain.com;
+}
+server {
+    listen 443 default_server;
+    listen [::]:443 ipv6only=on default_server;
+    server_name pretix.mydomain.com;
+
+    ssl on;
+    ssl_certificate /path/to/cert.chain.pem;
+    ssl_certificate_key /path/to/key.pem;
+
+    add_header Referrer-Policy same-origin;
+    add_header X-Content-Type-Options nosniff;
+
+    location / {
+        proxy_pass http://localhost:8345/;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header Host $http_host;
+    }
+
+    location /media/ {
+        alias /var/pretix/data/media/;
+        expires 7d;
+        access_log off;
+    }
+
+    location ^~ /media/cachedfiles {
+        deny all;
+        return 404;
+    }
+    location ^~ /media/invoices {
+        deny all;
+        return 404;
+    }
+
+    location /static/ {
+        alias /var/pretix/venv/lib/python3.5/site-packages/pretix/static.dist/;
+        access_log off;
+        expires 365d;
+        add_header Cache-Control &quot;public&quot;;
+    }
+}
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Remember to replace the <code class="docutils literal notranslate"><span class="pre">python3.5</span></code> in the <code class="docutils literal notranslate"><span class="pre">/static/</span></code> path in the config
+above with your python version.</p>
+</div>
+<p>We recommend reading about setting <a class="reference external" href="https://mozilla.github.io/server-side-tls/ssl-config-generator/">strong encryption settings</a> for your web server.</p>
+</section>
+<section id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this heading">¶</a></h2>
+<p>Yay, you are done! You should now be able to reach pretix at <a class="reference external" href="https://pretix.yourdomain.com/control/">https://pretix.yourdomain.com/control/</a> and log in as
+<em>admin&#64;localhost</em> with a password of <em>admin</em>. Don’t forget to change that password! Create an organizer first, then
+create an event and start selling tickets!</p>
+<p>You should probably read <a class="reference internal" href="../maintainance.html#maintainance"><span class="std std-ref">Backups and Monitoring</span></a> next.</p>
+</section>
+<section id="updates">
+<h2>Updates<a class="headerlink" href="#updates" title="Permalink to this heading">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>While we try hard not to break things, <strong>please perform a backup before every upgrade</strong>.</p>
+</div>
+<p>To upgrade to a new pretix release, pull the latest code changes and run the following commands (again, replace
+<code class="docutils literal notranslate"><span class="pre">postgres</span></code> with <code class="docutils literal notranslate"><span class="pre">mysql</span></code> if necessary):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ source /var/pretix/venv/bin/activate
+(venv)$ pip3 install -U pretix[postgres] gunicorn
+(venv)$ python -m pretix migrate
+(venv)$ python -m pretix rebuild
+(venv)$ python -m pretix updatestyles
+# systemctl restart pretix-web pretix-worker
+</pre></div>
+</div>
+</section>
+<section id="install-a-plugin">
+<span id="manual-plugininstall"></span><h2>Install a plugin<a class="headerlink" href="#install-a-plugin" title="Permalink to this heading">¶</a></h2>
+<p>To install a plugin, just use <code class="docutils literal notranslate"><span class="pre">pip</span></code>! Depending on the plugin, you should probably apply database migrations and
+rebuild the static files afterwards. Replace <code class="docutils literal notranslate"><span class="pre">pretix-passbook</span></code> with the plugin of your choice in the following
+example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ source /var/pretix/venv/bin/activate
+(venv)$ pip3 install pretix-passbook
+(venv)$ python -m pretix migrate
+(venv)$ python -m pretix rebuild
+# systemctl restart pretix-web pretix-worker
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dev_version.html" class="btn btn-neutral float-right" title="Installing a development version" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="docker_smallscale.html" class="btn btn-neutral" title="Small-scale deployment with Docker" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

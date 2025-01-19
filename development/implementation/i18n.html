@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Internationalization &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Implementation and Utilities" href="index.html"/>
+        <link rel="next" title="Settings storage" href="settings.html"/>
+        <link rel="prev" title="Working with URLs" href="urlconfig.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Implementation and Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="models.html">Data model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="urlconfig.html">Working with URLs</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Internationalization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#forms">Forms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#useful-utilities">Useful utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="settings.html">Settings storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="background.html">Background tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">Sending Email</a></li>
+<li class="toctree-l3"><a class="reference internal" href="permissions.html">Permissions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html">Logging and notifications</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index.html">Plugin development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Implementation and Utilities</a> &raquo;</li>
+        
+      <li>Internationalization</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/implementation/i18n.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="internationalization">
+<h1>Internationalization<a class="headerlink" href="#internationalization" title="Permalink to this heading">¶</a></h1>
+<p>One of pretix’s major selling points is its multi-language capability. We make heavy use of Django’s
+<a class="reference external" href="https://docs.djangoproject.com/en/1.9/topics/i18n/translation/">translation features</a> that are built upon <a class="reference external" href="https://www.gnu.org/software/gettext/">GNU gettext</a>. However, Django does not provide a standard
+way to translate <em>user-generated content</em>. In our case, we need to translate strings like product names
+or event descriptions, so we need event organizers to be able to fill in all fields in multiple languages.</p>
+<p>For this purpose, we use <code class="docutils literal notranslate"><span class="pre">django-i18nfield</span></code> which started out as part of pretix and then got refactored into
+its own library. It has comprehensive documentation on how to work with its <a class="reference external" href="https://django-i18nfield.readthedocs.io/en/latest/strings.html">strings</a>, <a class="reference external" href="https://django-i18nfield.readthedocs.io/en/latest/quickstart.html">database fields</a> and
+<a class="reference external" href="https://django-i18nfield.readthedocs.io/en/latest/forms.html">forms</a>.</p>
+<section id="forms">
+<h2>Forms<a class="headerlink" href="#forms" title="Permalink to this heading">¶</a></h2>
+<p>For backwards-compatibility with older parts of pretix’ code base and older plugins, <code class="docutils literal notranslate"><span class="pre">pretix.base.forms</span></code> still
+contains a number of forms that are equivalent in name and usage to their counterparts in <code class="docutils literal notranslate"><span class="pre">i18nfield.forms</span></code> with
+the difference that they take an <code class="docutils literal notranslate"><span class="pre">event</span></code> keyword argument and then set the <code class="docutils literal notranslate"><span class="pre">locales</span></code> argument based on
+<code class="docutils literal notranslate"><span class="pre">event.settings.get('locales')</span></code>.</p>
+</section>
+<section id="useful-utilities">
+<h2>Useful utilities<a class="headerlink" href="#useful-utilities" title="Permalink to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">i18n</span></code> module contains a few more useful utilities, starting with simple lazy-evaluation wrappers for formatted
+numbers and dates, <code class="docutils literal notranslate"><span class="pre">LazyDate</span></code> and <code class="docutils literal notranslate"><span class="pre">LazyNumber</span></code>. There also is a <code class="docutils literal notranslate"><span class="pre">LazyLocaleException</span></code> base class that provides
+exceptions with gettext-localized exception messages.</p>
+<p>Last, but definitely not least, we have the <code class="docutils literal notranslate"><span class="pre">language</span></code> context manager (<code class="docutils literal notranslate"><span class="pre">pretix.base.i18n.language</span></code>) that allows
+you to execute a piece of code with a different locale:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">language</span><span class="p">(</span><span class="s1">&#39;de&#39;</span><span class="p">):</span>
+    <span class="n">render_mail_template</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This is very useful e.g. when sending an email to a user that has a different language than the user performing the
+action that causes the mail to be sent.</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="settings.html" class="btn btn-neutral float-right" title="Settings storage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="urlconfig.html" class="btn btn-neutral" title="Working with URLs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

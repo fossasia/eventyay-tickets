@@ -1,0 +1,609 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Configuration file &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="up" title="Administrator documentation" href="index.html"/>
+        <link rel="next" title="Backups and Monitoring" href="maintainance.html"/>
+        <link rel="prev" title="Installing pretix Enterprise plugins" href="installation/enterprise.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Administrator documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="installation/index.html">Installation guide</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Configuration file</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pretix-settings">pretix settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#locale-settings">Locale settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#database-settings">Database settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#database-replica-settings">Database replica settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#urls">URLs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#email">Email</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#django-settings">Django settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#metrics">Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#memcached">Memcached</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#redis">Redis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#translations">Translations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#celery-task-queue">Celery task queue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sentry">Sentry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#caching">Caching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#secret-length">Secret length</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#external-tools">External tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="maintainance.html">Backups and Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scaling.html">Scaling guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="indexes.html">Additional database indices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Administrator documentation</a> &raquo;</li>
+        
+      <li>Configuration file</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/admin/config.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="configuration-file">
+<span id="config"></span><h1>Configuration file<a class="headerlink" href="#configuration-file" title="Permalink to this heading">¶</a></h1>
+<p>Pretix reads its configuration from a configuration file. It tries to find this file
+at the following locations. It will try to read the file from the specified paths in
+the following order. The file that is found <em>last</em> will override the settings from
+the files found before.</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PRETIX_CONFIG_FILE</span></code> environment variable</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/pretix/pretix.cfg</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">~/.pretix.cfg</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pretix.cfg</span></code> in the current working directory</p></li>
+</ol>
+<p>The file is expected to be in the INI format as specified in the <a class="reference external" href="https://docs.python.org/3/library/configparser.html?highlight=configparser#supported-ini-file-structure">Python documentation</a>.</p>
+<p>The config file may contain the following sections (all settings are optional and have
+default values). We suggest that you start from the examples given in one of the
+installation tutorials.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The configuration file is the recommended way to configure pretix. However, you can
+also set them through environment variables. In this case, the syntax is
+<code class="docutils literal notranslate"><span class="pre">PRETIX_SECTION_CONFIG</span></code>. For example, to configure the setting <code class="docutils literal notranslate"><span class="pre">password_reset</span></code>
+from the <code class="docutils literal notranslate"><span class="pre">[pretix]</span></code> section, set <code class="docutils literal notranslate"><span class="pre">PRETIX_PRETIX_PASSWORD_RESET=off</span></code> in your
+environment.</p>
+</div>
+<section id="pretix-settings">
+<h2>pretix settings<a class="headerlink" href="#pretix-settings" title="Permalink to this heading">¶</a></h2>
+<p>Example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[pretix]</span>
+<span class="na">instance_name</span><span class="o">=</span><span class="s">eventyay</span>
+<span class="na">url</span><span class="o">=</span><span class="s">http://localhost</span>
+<span class="na">currency</span><span class="o">=</span><span class="s">EUR</span>
+<span class="na">datadir</span><span class="o">=</span><span class="s">/data</span>
+<span class="na">plugins_default</span><span class="o">=</span><span class="s">pretix.plugins.sendmail,pretix.plugins.statistics</span>
+<span class="na">cookie_domain</span><span class="o">=</span><span class="s">.eventyay</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">instance_name</span></code></dt><dd><p>The name of this installation. Default: <code class="docutils literal notranslate"><span class="pre">eventyay</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">url</span></code></dt><dd><p>The installation’s full URL, without a trailing slash.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">currency</span></code></dt><dd><p>The default currency as a three-letter code. Defaults to <code class="docutils literal notranslate"><span class="pre">EUR</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">datadir</span></code></dt><dd><p>The local path to a data directory that will be used for storing user uploads and similar
+data. Defaults to the value of the environment variable <code class="docutils literal notranslate"><span class="pre">DATA_DIR</span></code> or <code class="docutils literal notranslate"><span class="pre">data</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">plugins_default</span></code></dt><dd><p>A comma-separated list of plugins that are enabled by default for all new events.
+Defaults to <code class="docutils literal notranslate"><span class="pre">pretix.plugins.sendmail,pretix.plugins.statistics</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">plugins_exclude</span></code></dt><dd><p>A comma-separated list of plugins that are not available even though they are installed.
+Defaults to an empty string.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">auth_backends</span></code></dt><dd><p>A comma-separated list of available auth backends. Defaults to <code class="docutils literal notranslate"><span class="pre">pretix.base.auth.NativeAuthBackend</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">cookie_domain</span></code></dt><dd><p>The cookie domain to be set. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">registration</span></code></dt><dd><p>Enables or disables the registration of new admin users. Defaults to <code class="docutils literal notranslate"><span class="pre">on</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">password_reset</span></code></dt><dd><p>Enables or disables password reset. Defaults to <code class="docutils literal notranslate"><span class="pre">on</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">long_sessions</span></code></dt><dd><p>Enables or disables the “keep me logged in” button. Defaults to <code class="docutils literal notranslate"><span class="pre">on</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ecb_rates</span></code></dt><dd><p>By default, pretix periodically downloads a XML file from the European Central Bank to retrieve exchange rates
+that are used to print tax amounts in the customer currency on invoices for some currencies. Set to <code class="docutils literal notranslate"><span class="pre">off</span></code> to
+disable this feature. Defaults to <code class="docutils literal notranslate"><span class="pre">on</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">audit_comments</span></code></dt><dd><p>Enables or disables nagging staff users for leaving comments on their sessions for auditability.
+Defaults to <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">obligatory_2fa</span></code></dt><dd><p>Enables or disables obligatory usage of Two-Factor Authentication for users of the pretix backend.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">trust_x_forwarded_for</span></code></dt><dd><p>Specifies whether the <code class="docutils literal notranslate"><span class="pre">X-Forwarded-For</span></code> header can be trusted. Only set to <code class="docutils literal notranslate"><span class="pre">on</span></code> if you have a reverse
+proxy that actively removes and re-adds the header to make sure the correct client IP is the first value.
+Defaults to <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">trust_x_forwarded_proto</span></code></dt><dd><p>Specifies whether the <code class="docutils literal notranslate"><span class="pre">X-Forwarded-Proto</span></code> header can be trusted. Only set to <code class="docutils literal notranslate"><span class="pre">on</span></code> if you have a reverse
+proxy that actively removes and re-adds the header to make sure the correct value is set.
+Defaults to <code class="docutils literal notranslate"><span class="pre">off</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">csp_log</span></code></dt><dd><p>Log violations of the Content Security Policy (CSP). Defaults to <code class="docutils literal notranslate"><span class="pre">on</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">csp_additional_header</span></code></dt><dd><p>Specifies a CSP header that will be <strong>merged</strong> with pretix’s default header. For example, if you set this
+to <code class="docutils literal notranslate"><span class="pre">script-src</span> <span class="pre">https://mycdn.com</span></code>, pretix will add <code class="docutils literal notranslate"><span class="pre">https://mycdn.com</span></code> as an <strong>additional</strong> allowed source
+to all CSP headers. Empty by default.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">loglevel</span></code></dt><dd><p>Set console and file log level (<code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>, <code class="docutils literal notranslate"><span class="pre">INFO</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code> or <code class="docutils literal notranslate"><span class="pre">CRITICAL</span></code>). Defaults to <code class="docutils literal notranslate"><span class="pre">INFO</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="locale-settings">
+<h2>Locale settings<a class="headerlink" href="#locale-settings" title="Permalink to this heading">¶</a></h2>
+<p>Example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[locale]</span>
+<span class="na">default</span><span class="o">=</span><span class="s">de</span>
+<span class="na">timezone</span><span class="o">=</span><span class="s">Europe/Berlin</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">default</span></code></dt><dd><p>The system’s default locale. Default: <code class="docutils literal notranslate"><span class="pre">en</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">timezone</span></code></dt><dd><p>The system’s default timezone as a <code class="docutils literal notranslate"><span class="pre">pytz</span></code> name. Default: <code class="docutils literal notranslate"><span class="pre">UTC</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="database-settings">
+<h2>Database settings<a class="headerlink" href="#database-settings" title="Permalink to this heading">¶</a></h2>
+<p>Example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[database]</span>
+<span class="na">backend</span><span class="o">=</span><span class="s">postgresql</span>
+<span class="na">name</span><span class="o">=</span><span class="s">pretix</span>
+<span class="na">user</span><span class="o">=</span><span class="s">pretix</span>
+<span class="na">password</span><span class="o">=</span><span class="s">abcd</span>
+<span class="na">host</span><span class="o">=</span><span class="s">localhost</span>
+<span class="na">port</span><span class="o">=</span><span class="s">3306</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">backend</span></code></dt><dd><p>One of <code class="docutils literal notranslate"><span class="pre">sqlite3</span></code> and <code class="docutils literal notranslate"><span class="pre">postgresql</span></code>.
+Default: <code class="docutils literal notranslate"><span class="pre">sqlite3</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">name</span></code></dt><dd><p>The database’s name. Default: <code class="docutils literal notranslate"><span class="pre">db.sqlite3</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">user</span></code>, <code class="docutils literal notranslate"><span class="pre">password</span></code>, <code class="docutils literal notranslate"><span class="pre">host</span></code>, <code class="docutils literal notranslate"><span class="pre">port</span></code></dt><dd><p>Connection details for the database connection. Empty by default.</p>
+</dd>
+</dl>
+</section>
+<section id="database-replica-settings">
+<span id="config-replica"></span><h2>Database replica settings<a class="headerlink" href="#database-replica-settings" title="Permalink to this heading">¶</a></h2>
+<p>If you use a replicated database setup, pretix expects that the default database connection always points to the primary database node.
+Routing read queries to a replica on database layer is <strong>strongly</strong> discouraged since this can lead to inaccurate such as more tickets
+being sold than are actually available.</p>
+<p>However, pretix can still make use of a database replica to keep some expensive queries with that can tolerate some latency from your
+primary database, such as backend search queries. The <code class="docutils literal notranslate"><span class="pre">replica</span></code> configuration section can have the same settings as the <code class="docutils literal notranslate"><span class="pre">database</span></code>
+section (except for the <code class="docutils literal notranslate"><span class="pre">backend</span></code> setting) and will default back to the <code class="docutils literal notranslate"><span class="pre">database</span></code> settings for all values that are not given. This
+way, you just need to specify the settings that are different for the replica.</p>
+<p>Example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[replica]</span>
+<span class="na">host</span><span class="o">=</span><span class="s">192.168.0.2</span>
+</pre></div>
+</div>
+</section>
+<section id="urls">
+<span id="config-urls"></span><h2>URLs<a class="headerlink" href="#urls" title="Permalink to this heading">¶</a></h2>
+<p>Example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[urls]</span>
+<span class="na">media</span><span class="o">=</span><span class="s">/media/</span>
+<span class="na">static</span><span class="o">=</span><span class="s">/media/</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">media</span></code></dt><dd><p>The URL to be used to serve user-uploaded content. You should not need to modify
+this. Default: <code class="docutils literal notranslate"><span class="pre">/media/</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">static</span></code></dt><dd><p>The URL to be used to serve static files. You should not need to modify
+this. Default: <code class="docutils literal notranslate"><span class="pre">/static/</span></code></p>
+</dd>
+</dl>
+</section>
+<section id="email">
+<span id="mail-settings"></span><h2>Email<a class="headerlink" href="#email" title="Permalink to this heading">¶</a></h2>
+<p>Example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[mail]</span>
+<span class="na">from</span><span class="o">=</span><span class="s">hello@localhost</span>
+<span class="na">host</span><span class="o">=</span><span class="s">127.0.0.71</span>
+<span class="na">user</span><span class="o">=</span><span class="s">pretix</span>
+<span class="na">password</span><span class="o">=</span><span class="s">foobar</span>
+<span class="na">port</span><span class="o">=</span><span class="s">1025</span>
+<span class="na">tls</span><span class="o">=</span><span class="s">on</span>
+<span class="na">ssl</span><span class="o">=</span><span class="s">off</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">host</span></code>, <code class="docutils literal notranslate"><span class="pre">port</span></code></dt><dd><p>The SMTP Host to connect to. Defaults to <code class="docutils literal notranslate"><span class="pre">localhost</span></code> and <code class="docutils literal notranslate"><span class="pre">25</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">user</span></code>, <code class="docutils literal notranslate"><span class="pre">password</span></code></dt><dd><p>The SMTP user data to use for the connection. Empty by default.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">from</span></code></dt><dd><p>The email address to set as <code class="docutils literal notranslate"><span class="pre">From</span></code> header in outgoing emails by the system.
+Default: <code class="docutils literal notranslate"><span class="pre">pretix&#64;localhost</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">tls</span></code>, <code class="docutils literal notranslate"><span class="pre">ssl</span></code></dt><dd><p>Use STARTTLS or SSL for the SMTP connection. Off by default.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">admins</span></code></dt><dd><p>Comma-separated list of email addresses that should receive a report about every error code 500 thrown by pretix.</p>
+</dd>
+</dl>
+</section>
+<section id="django-settings">
+<span id="id1"></span><h2>Django settings<a class="headerlink" href="#django-settings" title="Permalink to this heading">¶</a></h2>
+<p>Example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[django]</span>
+<span class="na">secret</span><span class="o">=</span><span class="s">j1kjps5a5&amp;4ilpn912s7a1!e2h!duz^i3&amp;idu@_907s$wrz@x-</span>
+<span class="na">debug</span><span class="o">=</span><span class="s">off</span>
+</pre></div>
+</div>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">secret</span></code></dt><dd><p>The secret to be used by Django for signing and verification purposes. If this
+setting is not provided, pretix will generate a random secret on the first start
+and will store it in the filesystem for later usage.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">debug</span></code></dt><dd><p>Whether or not to run in debug mode. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Never set this to <code class="docutils literal notranslate"><span class="pre">True</span></code> in production!</p>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">profile</span></code></dt><dd><p>Enable code profiling for a random subset of requests. Disabled by default, see
+<a class="reference internal" href="maintainance.html#perf-monitoring"><span class="std std-ref">Performance monitoring</span></a> for details.</p>
+</dd>
+</dl>
+</section>
+<section id="metrics">
+<span id="metrics-settings"></span><h2>Metrics<a class="headerlink" href="#metrics" title="Permalink to this heading">¶</a></h2>
+<p>If you want to fetch internally collected prometheus-style metrics you need to configure the credentials for the
+metrics endpoint and enable it:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[metrics]</span>
+<span class="na">enabled</span><span class="o">=</span><span class="s">true</span>
+<span class="na">user</span><span class="o">=</span><span class="s">your_user</span>
+<span class="na">passphrase</span><span class="o">=</span><span class="s">mysupersecretpassphrase</span>
+</pre></div>
+</div>
+<p>Currently, metrics-collection requires a redis server to be available.</p>
+</section>
+<section id="memcached">
+<h2>Memcached<a class="headerlink" href="#memcached" title="Permalink to this heading">¶</a></h2>
+<p>You can use an existing memcached server as pretix’s caching backend:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[memcached]</span>
+<span class="na">location</span><span class="o">=</span><span class="s">127.0.0.1:11211</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">location</span></code></dt><dd><p>The location of memcached, either a host:port combination or a socket file.</p>
+</dd>
+</dl>
+<p>If no memcached is configured, pretix will use Django’s built-in local-memory caching method.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you use memcached and you deploy pretix across multiple servers, you should use <em>one</em>
+shared memcached instance, not multiple ones, because cache invalidations would not be
+propagated otherwise.</p>
+</div>
+</section>
+<section id="redis">
+<h2>Redis<a class="headerlink" href="#redis" title="Permalink to this heading">¶</a></h2>
+<p>If a redis server is configured, pretix can use it for locking, caching and session storage
+to speed up various operations:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[redis]</span>
+<span class="na">location</span><span class="o">=</span><span class="s">redis://127.0.0.1:6379/1</span>
+<span class="na">sessions</span><span class="o">=</span><span class="s">false</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">location</span></code></dt><dd><p>The location of redis, as a URL of the form <code class="docutils literal notranslate"><span class="pre">redis://[:password]&#64;localhost:6379/0</span></code>
+or <code class="docutils literal notranslate"><span class="pre">unix://[:password]&#64;/path/to/socket.sock?db=0</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">session</span></code></dt><dd><p>When this is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, redis will be used as the session storage.</p>
+</dd>
+</dl>
+<p>If redis is not configured, pretix will store sessions and locks in the database. If memcached
+is configured, memcached will be used for caching instead of redis.</p>
+</section>
+<section id="translations">
+<h2>Translations<a class="headerlink" href="#translations" title="Permalink to this heading">¶</a></h2>
+<p>pretix comes with a number of translations. Some of them are marked as “incubating”, which means
+they can usually only be selected in development mode. If you want to use them nevertheless, you
+can activate them like this:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[languages]</span>
+<span class="na">allow_incubating</span><span class="o">=</span><span class="s">pt-br,da</span>
+</pre></div>
+</div>
+<p>You can also tell pretix about additional paths where it will search for translations:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[languages]</span>
+<span class="na">path</span><span class="o">=</span><span class="s">/path/to/my/translations</span>
+</pre></div>
+</div>
+<p>For a given language (e.g. <code class="docutils literal notranslate"><span class="pre">pt-br</span></code>), pretix will then look in the
+specific sub-folder, e.g. <code class="docutils literal notranslate"><span class="pre">/path/to/my/translations/pt_BR/LC_MESSAGES/django.po</span></code>.</p>
+</section>
+<section id="celery-task-queue">
+<h2>Celery task queue<a class="headerlink" href="#celery-task-queue" title="Permalink to this heading">¶</a></h2>
+<p>For processing long-running tasks asynchronously, pretix requires the celery task queue.
+For communication between the web server and the task workers in both direction, a messaging
+queue and a result backend is needed. You can use a redis database for both directions, or
+an AMQP server (e.g. RabbitMQ) as a broker and redis or your database as a result backend:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[celery]</span>
+<span class="na">broker</span><span class="o">=</span><span class="s">amqp://guest:guest@localhost:5672//</span>
+<span class="na">backend</span><span class="o">=</span><span class="s">redis://localhost/0</span>
+</pre></div>
+</div>
+<p>RabbitMQ might be the better choice if you have a complex, multi-server, high-performance setup,
+but as you already should have a redis instance ready for session and lock storage, we recommend
+redis for convenience. See the <a class="reference external" href="http://docs.celeryproject.org/en/latest/userguide/configuration.html">Celery documentation</a> for more details.</p>
+</section>
+<section id="sentry">
+<h2>Sentry<a class="headerlink" href="#sentry" title="Permalink to this heading">¶</a></h2>
+<p>pretix has native support for sentry, a tool that you can use to track errors in the
+application. If you want to use sentry, you need to set a DSN in the configuration file:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[sentry]</span>
+<span class="na">dsn</span><span class="o">=</span><span class="s">https://&lt;key&gt;:&lt;secret&gt;@sentry.io/&lt;project&gt;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">dsn</span></code></dt><dd><p>You will be given this value by your sentry installation.</p>
+</dd>
+</dl>
+</section>
+<section id="caching">
+<h2>Caching<a class="headerlink" href="#caching" title="Permalink to this heading">¶</a></h2>
+<p>You can adjust some caching settings to control how much storage pretix uses:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[cache]</span>
+<span class="na">tickets</span><span class="o">=</span><span class="s">48</span><span class="w">  </span><span class="c1">; Number of hours tickets (PDF, passbook, …) are cached</span>
+</pre></div>
+</div>
+</section>
+<section id="secret-length">
+<h2>Secret length<a class="headerlink" href="#secret-length" title="Permalink to this heading">¶</a></h2>
+<p>If you are really paranoid, you can increase the length of random strings pretix uses in
+various places like order codes, secrets in the ticket QR codes, etc. Example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[entropy]</span>
+<span class="c1">; Order code needs to be &lt; 16 characters, default is 5</span>
+<span class="na">order_code</span><span class="o">=</span><span class="s">5</span>
+<span class="c1">; Ticket secret needs to be &lt; 64 characters, default is 32</span>
+<span class="na">ticket_secret</span><span class="o">=</span><span class="s">32</span>
+<span class="c1">; Voucher code needs to be &lt; 255 characters, default is 16</span>
+<span class="na">voucher_code</span><span class="o">=</span><span class="s">16</span>
+</pre></div>
+</div>
+</section>
+<section id="external-tools">
+<h2>External tools<a class="headerlink" href="#external-tools" title="Permalink to this heading">¶</a></h2>
+<p>pretix can make use of some external tools if they are installed. Currently, they are all optional. Example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[tools]</span>
+<span class="na">pdftk</span><span class="o">=</span><span class="s">/usr/bin/pdftk</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="maintainance.html" class="btn btn-neutral float-right" title="Backups and Monitoring" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation/enterprise.html" class="btn btn-neutral" title="Installing pretix Enterprise plugins" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

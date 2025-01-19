@@ -1,0 +1,445 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Extending the order import process &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Plugin development" href="index.html"/>
+        <link rel="next" title="Creating custom views" href="customview.html"/>
+        <link rel="prev" title="Writing a data shredder" href="shredder.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../implementation/index.html">Implementation and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Plugin development</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Creating a plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporter.html">Writing an exporter plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ticketoutput.html">Writing a ticket output plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment.html">Writing a payment provider plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment_2.0.html">Porting a payment provider from pretix 1.x to pretix 2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">Writing an HTML e-mail renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="placeholder.html">Writing an e-mail placeholder plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="invoice.html">Writing an invoice renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shredder.html">Writing a data shredder</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Extending the order import process</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#import-process">Import process</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#column-registration">Column registration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-column-class-api">The column class API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="customview.html">Creating custom views</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auth.html">Pluggable authentication backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="general.html">General APIs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quality.html">Plugin quality checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Plugin development</a> &raquo;</li>
+        
+      <li>Extending the order import process</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/api/import.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="extending-the-order-import-process">
+<span id="importcol"></span><h1>Extending the order import process<a class="headerlink" href="#extending-the-order-import-process" title="Permalink to this heading">¶</a></h1>
+<p>It’s possible through the backend to import orders into pretix, for example from a legacy ticketing system. If your
+plugins defines additional data structures around orders, it might be useful to make it possible to import them as well.</p>
+<section id="import-process">
+<h2>Import process<a class="headerlink" href="#import-process" title="Permalink to this heading">¶</a></h2>
+<p>Here’s a short description of pretix’ import process to show you where the system will need to interact with your plugin.
+You can find more detailed descriptions of the attributes and methods further below.</p>
+<ol class="arabic simple">
+<li><p>The user uploads a CSV file. The system tries to parse the CSV file and understand its column headers.</p></li>
+<li><p>A preview of the file is shown to the user and the user is asked to assign the various different input parameters to
+columns of the file or static values. For example, the user either needs to manually select a product or specify a
+column that contains a product. For this purpose, a select field is rendered for every possible input column,
+allowing the user to choose between a default/empty value (defined by your <code class="docutils literal notranslate"><span class="pre">default_value</span></code>/<code class="docutils literal notranslate"><span class="pre">default_label</span></code>)
+attributes, the columns of the uploaded file, or a static value (defined by your <code class="docutils literal notranslate"><span class="pre">static_choices</span></code> method).</p></li>
+<li><p>The user submits its assignment and the system uses the <code class="docutils literal notranslate"><span class="pre">resolve</span></code> method of all columns to get the raw value for
+all columns.</p></li>
+<li><p>The system uses the <code class="docutils literal notranslate"><span class="pre">clean</span></code> method of all columns to verify that all input fields are valid and transformed to the
+correct data type.</p></li>
+<li><p>The system prepares internal model objects (<code class="docutils literal notranslate"><span class="pre">Order</span></code> etc) and uses the <code class="docutils literal notranslate"><span class="pre">assign</span></code> method of all columns to assign
+these objects with actual values.</p></li>
+<li><p>The system saves all of these model objects to the database in a database transaction. Plugins can create additional
+objects in this stage through their <code class="docutils literal notranslate"><span class="pre">save</span></code> method.</p></li>
+</ol>
+</section>
+<section id="column-registration">
+<h2>Column registration<a class="headerlink" href="#column-registration" title="Permalink to this heading">¶</a></h2>
+<p>The import API does not make a lot of usage from signals, however, it
+does use a signal to get a list of all available import columns. Your plugin
+should listen for this signal and return the subclass of <code class="docutils literal notranslate"><span class="pre">pretix.base.orderimport.ImportColumn</span></code>
+that we’ll provide in this plugin:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">django.dispatch</span><span class="w"> </span><span class="kn">import</span> <span class="n">receiver</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">pretix.base.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">order_import_columns</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="nd">@receiver</span><span class="p">(</span><span class="n">order_import_columns</span><span class="p">,</span> <span class="n">dispatch_uid</span><span class="o">=</span><span class="s2">&quot;custom_columns&quot;</span><span class="p">)</span>
+<span class="linenos"> 7</span><span class="k">def</span><span class="w"> </span><span class="nf">register_column</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos"> 8</span>    <span class="k">return</span> <span class="p">[</span>
+<span class="linenos"> 9</span>        <span class="n">EmailColumn</span><span class="p">(</span><span class="n">sender</span><span class="p">),</span>
+<span class="linenos">10</span>    <span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="the-column-class-api">
+<h2>The column class API<a class="headerlink" href="#the-column-class-api" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pretix.base.orderimport.ImportColumn">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pretix.base.orderimport.</span></span><span class="sig-name descname"><span class="pre">ImportColumn</span></span><a class="headerlink" href="#pretix.base.orderimport.ImportColumn" title="Permalink to this definition">¶</a></dt>
+<dd><p>The central object of each import extension is the subclass of <code class="docutils literal notranslate"><span class="pre">ImportColumn</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.orderimport.ImportColumn.ImportColumn.event">
+<span class="sig-prename descclassname"><span class="pre">ImportColumn.</span></span><span class="sig-name descname"><span class="pre">event</span></span><a class="headerlink" href="#pretix.base.orderimport.ImportColumn.ImportColumn.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default constructor sets this property to the event we are currently
+working for.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.identifier">
+<span class="sig-prename descclassname"><span class="pre">ImportColumn.</span></span><span class="sig-name descname"><span class="pre">identifier</span></span><a class="headerlink" href="#pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.identifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unique, internal name of the column.</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.verbose_name">
+<span class="sig-prename descclassname"><span class="pre">ImportColumn.</span></span><span class="sig-name descname"><span class="pre">verbose_name</span></span><a class="headerlink" href="#pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.verbose_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Human-readable description of the column</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.default_value">
+<span class="sig-prename descclassname"><span class="pre">ImportColumn.</span></span><span class="sig-name descname"><span class="pre">default_value</span></span><a class="headerlink" href="#pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.default_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal default value for the assignment of this column. Defaults to <code class="docutils literal notranslate"><span class="pre">empty</span></code>. Return <code class="docutils literal notranslate"><span class="pre">None</span></code> to disable this
+option.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.default_label">
+<span class="sig-prename descclassname"><span class="pre">ImportColumn.</span></span><span class="sig-name descname"><span class="pre">default_label</span></span><a class="headerlink" href="#pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.default_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Human-readable description of the default assignment of this column, defaults to “Keep empty”.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.initial">
+<span class="sig-prename descclassname"><span class="pre">ImportColumn.</span></span><span class="sig-name descname"><span class="pre">initial</span></span><a class="headerlink" href="#pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.initial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial value for the form component</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.static_choices">
+<span class="sig-prename descclassname"><span class="pre">ImportColumn.</span></span><span class="sig-name descname"><span class="pre">static_choices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.static_choices" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will be called when rendering the form component and allows you to return a list of values that can be
+selected by the user statically during import.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of 2-tuples of strings</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.resolve">
+<span class="sig-prename descclassname"><span class="pre">ImportColumn.</span></span><span class="sig-name descname"><span class="pre">resolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.resolve" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method will be called to get the raw value for this field, usually by either using a static value or
+inspecting the CSV file for the assigned header. You usually do not need to implement this on your own,
+the default should be fine.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.clean">
+<span class="sig-prename descclassname"><span class="pre">ImportColumn.</span></span><span class="sig-name descname"><span class="pre">clean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">previous_values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows you to validate the raw input value for your column. Raise <code class="docutils literal notranslate"><span class="pre">ValidationError</span></code> if the value is invalid.
+You do not need to include the column or row name or value in the error message as it will automatically be
+included.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> – Contains the raw value of your column as returned by <code class="docutils literal notranslate"><span class="pre">resolve</span></code>. This can usually be <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+e.g. if the column is empty or does not exist in this row.</p></li>
+<li><p><strong>previous_values</strong> – Dictionary containing the validated values of all columns that have already been validated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.assign">
+<span class="sig-prename descclassname"><span class="pre">ImportColumn.</span></span><span class="sig-name descname"><span class="pre">assign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invoice_address</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.assign" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will be called to perform the actual import. You are supposed to set attributes on the <code class="docutils literal notranslate"><span class="pre">order</span></code>, <code class="docutils literal notranslate"><span class="pre">position</span></code>,
+or <code class="docutils literal notranslate"><span class="pre">invoice_address</span></code> objects based on the input <code class="docutils literal notranslate"><span class="pre">value</span></code>. This is called <em>before</em> the actual database
+transaction, so these three objects do not yet have a primary key. If you want to create related objects, you
+need to place them into some sort of internal queue and persist them when <code class="docutils literal notranslate"><span class="pre">save</span></code> is called.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.save">
+<span class="sig-prename descclassname"><span class="pre">ImportColumn.</span></span><span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.orderimport.pretix.base.orderimport.ImportColumn.ImportColumn.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>This will be called to perform the actual import. This is called inside the actual database transaction and the
+input object <code class="docutils literal notranslate"><span class="pre">order</span></code> has already been saved to the database.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h2>
+<p>For example, the import column responsible for assigning email addresses looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">class</span><span class="w"> </span><span class="nc">EmailColumn</span><span class="p">(</span><span class="n">ImportColumn</span><span class="p">):</span>
+<span class="linenos"> 2</span>    <span class="n">identifier</span> <span class="o">=</span> <span class="s1">&#39;email&#39;</span>
+<span class="linenos"> 3</span>    <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;E-mail address&#39;</span><span class="p">)</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span>    <span class="k">def</span><span class="w"> </span><span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">previous_values</span><span class="p">):</span>
+<span class="linenos"> 6</span>        <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+<span class="linenos"> 7</span>            <span class="n">EmailValidator</span><span class="p">()(</span><span class="n">value</span><span class="p">)</span>
+<span class="linenos"> 8</span>        <span class="k">return</span> <span class="n">value</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>    <span class="k">def</span><span class="w"> </span><span class="nf">assign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">invoice_address</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos">11</span>        <span class="n">order</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="n">value</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="customview.html" class="btn btn-neutral float-right" title="Creating custom views" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="shredder.html" class="btn btn-neutral" title="Writing a data shredder" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

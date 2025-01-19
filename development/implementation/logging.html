@@ -1,0 +1,511 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Logging and notifications &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Implementation and Utilities" href="index.html"/>
+        <link rel="next" title="Translating pretix" href="../translation/index.html"/>
+        <link rel="prev" title="Permissions" href="permissions.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Implementation and Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="models.html">Data model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="urlconfig.html">Working with URLs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="i18n.html">Internationalization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="settings.html">Settings storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="background.html">Background tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">Sending Email</a></li>
+<li class="toctree-l3"><a class="reference internal" href="permissions.html">Permissions</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Logging and notifications</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#logging-changes">Logging changes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sending-notifications">Sending notifications</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#logging-technical-information">Logging technical information</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index.html">Plugin development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Implementation and Utilities</a> &raquo;</li>
+        
+      <li>Logging and notifications</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/implementation/logging.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="logging-and-notifications">
+<h1>Logging and notifications<a class="headerlink" href="#logging-and-notifications" title="Permalink to this heading">¶</a></h1>
+<p>As pretix is handling monetary transactions, we are very careful to make it possible to review all changes
+in the system that lead to the current state.</p>
+<section id="logging-changes">
+<span id="logging"></span><h2>Logging changes<a class="headerlink" href="#logging-changes" title="Permalink to this heading">¶</a></h2>
+<p>We log data changes to the database in a format that makes it possible to display those logs to a human, if
+required. pretix stores all those logs centrally in a model called <a class="reference internal" href="models.html#pretix.base.models.LogEntry" title="pretix.base.models.LogEntry"><code class="xref py py-class docutils literal notranslate"><span class="pre">pretix.base.models.LogEntry</span></code></a>.
+We recommend all relevant models to inherit from <code class="docutils literal notranslate"><span class="pre">LoggedModel</span></code> as it simplifies creating new log entries:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pretix.base.models.LoggedModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pretix.base.models.</span></span><span class="sig-name descname"><span class="pre">LoggedModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.models.LoggedModel" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.models.LoggedModel.all_logentries">
+<span class="sig-name descname"><span class="pre">all_logentries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.models.LoggedModel.all_logentries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all log entries that are attached to this object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A QuerySet of LogEntry objects</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.models.LoggedModel.log_action">
+<span class="sig-name descname"><span class="pre">log_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.models.LoggedModel.log_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a LogEntry object that is related to this object.
+See the LogEntry documentation for details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>action</strong> – The namespaced action code</p></li>
+<li><p><strong>data</strong> – Any JSON-serializable object</p></li>
+<li><p><strong>user</strong> – The user performing the action (optional)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p>To actually log an action, you can just call the <code class="docutils literal notranslate"><span class="pre">log_action</span></code> method on your object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">order</span><span class="o">.</span><span class="n">log_action</span><span class="p">(</span><span class="s1">&#39;pretix.event.order.canceled&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{})</span>
+</pre></div>
+</div>
+<p>The positional <code class="docutils literal notranslate"><span class="pre">action</span></code> argument should represent the type of action and should be globally unique, we
+recommend to prefix it with your package name, e.g. <code class="docutils literal notranslate"><span class="pre">paypal.payment.rejected</span></code>. The <code class="docutils literal notranslate"><span class="pre">user</span></code> argument is
+optional and may contain the user who performed the action. The optional <code class="docutils literal notranslate"><span class="pre">data</span></code> argument can contain
+additional information about this action.</p>
+<section id="logging-form-actions">
+<h3>Logging form actions<a class="headerlink" href="#logging-form-actions" title="Permalink to this heading">¶</a></h3>
+<p>A very common use case is to log the changes to a model that have been done in a <code class="docutils literal notranslate"><span class="pre">ModelForm</span></code>. In this case,
+we generally use a custom <code class="docutils literal notranslate"><span class="pre">form_valid</span></code> method on our <code class="docutils literal notranslate"><span class="pre">FormView</span></code> that looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@transaction</span><span class="o">.</span><span class="n">atomic</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">has_changed</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">log_action</span><span class="p">(</span><span class="s1">&#39;pretix.event.changed&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">form</span><span class="o">.</span><span class="n">changed_data</span>
+        <span class="p">})</span>
+    <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Your changes have been saved.&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It gets a little bit more complicated if your form allows file uploads:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@transaction</span><span class="o">.</span><span class="n">atomic</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">has_changed</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">log_action</span><span class="p">(</span>
+            <span class="s1">&#39;pretix.event.changed&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+                <span class="n">k</span><span class="p">:</span> <span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">File</span><span class="p">)</span>
+                    <span class="k">else</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">form</span><span class="o">.</span><span class="n">changed_data</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Your changes have been saved.&#39;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="displaying-logs">
+<h3>Displaying logs<a class="headerlink" href="#displaying-logs" title="Permalink to this heading">¶</a></h3>
+<p>If you want to display the logs of a particular object to a user in the backend, you can use the
+following ready-to-include template:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">include</span> <span class="s2">&quot;pretixcontrol/includes/logs.html&quot;</span> <span class="k">with</span> <span class="n">obj</span><span class="o">=</span><span class="n">order</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>We now need a way to translate the action codes like <code class="docutils literal notranslate"><span class="pre">pretix.event.changed</span></code> into human-readable
+strings. The <a class="reference internal" href="../api/general.html#pretix.base.signals.logentry_display" title="pretix.base.signals.logentry_display"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pretix.base.signals.logentry_display</span></code></a> signals allows you to do so. A simple
+implementation could look like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">django.utils.translation</span><span class="w"> </span><span class="kn">import</span> <span class="n">gettext</span> <span class="k">as</span> <span class="n">_</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pretix.base.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">logentry_display</span>
+
+<span class="nd">@receiver</span><span class="p">(</span><span class="n">signal</span><span class="o">=</span><span class="n">logentry_display</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pretixcontrol_logentry_display</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">logentry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">plains</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;pretix.event.order.paid&#39;</span><span class="p">:</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;The order has been marked as paid.&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;pretix.event.order.refunded&#39;</span><span class="p">:</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;The order has been refunded.&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;pretix.event.order.canceled&#39;</span><span class="p">:</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;The order has been canceled.&#39;</span><span class="p">),</span>
+        <span class="o">...</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">logentry</span><span class="o">.</span><span class="n">action_type</span> <span class="ow">in</span> <span class="n">plains</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">plains</span><span class="p">[</span><span class="n">logentry</span><span class="o">.</span><span class="n">action_type</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="sending-notifications">
+<h2>Sending notifications<a class="headerlink" href="#sending-notifications" title="Permalink to this heading">¶</a></h2>
+<p>If you think that the logged information might be important or urgent enough to send out a notification to interested
+organizers. In this case, you should listen for the <a class="reference internal" href="../api/general.html#pretix.base.signals.register_notification_types" title="pretix.base.signals.register_notification_types"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pretix.base.signals.register_notification_types</span></code></a> signal
+to register a notification type:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@receiver</span><span class="p">(</span><span class="n">register_notification_types</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">register_my_notification_types</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">MyNotificationType</span><span class="p">(</span><span class="n">sender</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>Note that this event is different than other events send out by pretix: <code class="docutils literal notranslate"><span class="pre">sender</span></code> may be an event or <code class="docutils literal notranslate"><span class="pre">None</span></code>. The
+latter case is required to let the user define global notification preferences for all events.</p>
+<p>You also need to implement a custom class that specifies how notifications should be handled for your notification type.
+You should subclass the base <code class="docutils literal notranslate"><span class="pre">NotificationType</span></code> class and implement all its members:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pretix.base.notifications.NotificationType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pretix.base.notifications.</span></span><span class="sig-name descname"><span class="pre">NotificationType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#pretix.base.models.Event" title="pretix.base.models.event.Event"><span class="pre">Event</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.notifications.NotificationType" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py property">
+<dt class="sig sig-object py" id="pretix.base.notifications.NotificationType.action_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">action_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pretix.base.notifications.NotificationType.action_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The action_type string that this notification handles, for example
+<code class="docutils literal notranslate"><span class="pre">&quot;pretix.event.order.paid&quot;</span></code>. Only one notification type should be registered
+per action type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.notifications.NotificationType.build_notification">
+<span class="sig-name descname"><span class="pre">build_notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logentry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#pretix.base.models.LogEntry" title="pretix.base.models.log.LogEntry"><span class="pre">LogEntry</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pretix.base.notifications.Notification" title="pretix.base.notifications.Notification"><span class="pre">Notification</span></a></span></span><a class="headerlink" href="#pretix.base.notifications.NotificationType.build_notification" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the main function that you should override. It is supposed to turn a log entry
+object into a notification object that can then be rendered e.g. into an email.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pretix.base.notifications.NotificationType.required_permission">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">required_permission</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pretix.base.notifications.NotificationType.required_permission" title="Permalink to this definition">¶</a></dt>
+<dd><p>The permission a user needs to hold for the related event to receive this
+notification.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pretix.base.notifications.NotificationType.verbose_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">verbose_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pretix.base.notifications.NotificationType.verbose_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A human-readable name of this notification type.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p>A simple implementation could look like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyNotificationType</span><span class="p">(</span><span class="n">NotificationType</span><span class="p">):</span>
+    <span class="n">required_permission</span> <span class="o">=</span> <span class="s2">&quot;can_view_orders&quot;</span>
+    <span class="n">action_type</span> <span class="o">=</span> <span class="s2">&quot;pretix.event.order.paid&quot;</span>
+    <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Order has been paid&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_notification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logentry</span><span class="p">:</span> <span class="n">LogEntry</span><span class="p">):</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">logentry</span><span class="o">.</span><span class="n">content_object</span>
+
+        <span class="n">order_url</span> <span class="o">=</span> <span class="n">build_absolute_uri</span><span class="p">(</span>
+            <span class="s1">&#39;control:event.order&#39;</span><span class="p">,</span>
+            <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+                <span class="s1">&#39;organizer&#39;</span><span class="p">:</span> <span class="n">logentry</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">organizer</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span>
+                <span class="s1">&#39;event&#39;</span><span class="p">:</span> <span class="n">logentry</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span>
+                <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">order</span><span class="o">.</span><span class="n">code</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="n">Notification</span><span class="p">(</span>
+            <span class="n">event</span><span class="o">=</span><span class="n">logentry</span><span class="o">.</span><span class="n">event</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Order </span><span class="si">{code}</span><span class="s1"> has been marked as paid&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">order</span><span class="o">.</span><span class="n">code</span><span class="p">),</span>
+            <span class="n">url</span><span class="o">=</span><span class="n">order_url</span>
+        <span class="p">)</span>
+        <span class="n">n</span><span class="o">.</span><span class="n">add_attribute</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Order code&#39;</span><span class="p">),</span> <span class="n">order</span><span class="o">.</span><span class="n">code</span><span class="p">)</span>
+        <span class="n">n</span><span class="o">.</span><span class="n">add_action</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;View order details&#39;</span><span class="p">),</span> <span class="n">order_url</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">n</span>
+</pre></div>
+</div>
+<p>As you can see, the relevant code is in the <code class="docutils literal notranslate"><span class="pre">build_notification</span></code> method that is supposed to create a <code class="docutils literal notranslate"><span class="pre">Notification</span></code>
+method that has a title, description, URL, attributes, and actions. The full definition of <code class="docutils literal notranslate"><span class="pre">Notification</span></code> is the
+following:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pretix.base.notifications.Notification">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pretix.base.notifications.</span></span><span class="sig-name descname"><span class="pre">Notification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="models.html#pretix.base.models.Event" title="pretix.base.models.event.Event"><span class="pre">Event</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.notifications.Notification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a notification that is sent/shown to a user. A notification consists of:</p>
+<ul class="simple">
+<li><p>one <code class="docutils literal notranslate"><span class="pre">event</span></code> reference</p></li>
+<li><p>one <code class="docutils literal notranslate"><span class="pre">title</span></code> text that is shown e.g. in the email subject or in a headline</p></li>
+<li><p>optionally one <code class="docutils literal notranslate"><span class="pre">detail</span></code> text that may or may not be shown depending on the notification method</p></li>
+<li><p>optionally one <code class="docutils literal notranslate"><span class="pre">url</span></code> that should be absolute and point to the context of an notification (e.g. an order)</p></li>
+<li><p>optionally a number of attributes consisting of a title and a value that can be used to add additional details
+to the notification (e.g. “Customer: ABC”)</p></li>
+<li><p>optionally a number of actions that may or may not be shown as buttons depending on the notification method,
+each consisting of a button label and an absolute URL to point to.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.notifications.Notification.add_action">
+<span class="sig-name descname"><span class="pre">add_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.notifications.Notification.add_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an action to the notification, defined by a label and an url. An example could be a label of “View order”
+and an url linking to the order detail page.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.notifications.Notification.add_attribute">
+<span class="sig-name descname"><span class="pre">add_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.notifications.Notification.add_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an attribute to the notification, defined by a title and a value. An example could be a title of
+“Date” and a value of “2017-12-14”.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="logging-technical-information">
+<h2>Logging technical information<a class="headerlink" href="#logging-technical-information" title="Permalink to this heading">¶</a></h2>
+<p>If you just want to log technical information to a log file on disk that does not need to be parsed
+and displayed later, you can just use Python’s <code class="docutils literal notranslate"><span class="pre">logging</span></code> module:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Startup complete.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is also very useful to provide debugging information when an exception occurs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+   <span class="n">foo</span><span class="p">()</span>
+<span class="k">except</span><span class="p">:</span>
+   <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Error when calling foo()&#39;</span><span class="p">)</span>  <span class="c1"># Traceback will automatically be appended</span>
+   <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;An error occured.&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../translation/index.html" class="btn btn-neutral float-right" title="Translating pretix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="permissions.html" class="btn btn-neutral" title="Permissions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

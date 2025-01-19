@@ -1,0 +1,285 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Coding style and quality &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Contributing to pretix" href="index.html"/>
+        <link rel="next" title="Code of Conduct" href="codeofconduct.html"/>
+        <link rel="prev" title="General remarks" href="general.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Contributing to pretix</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="general.html">General remarks</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Coding style and quality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeofconduct.html">Code of Conduct</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../implementation/index.html">Implementation and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index.html">Plugin development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Contributing to pretix</a> &raquo;</li>
+        
+      <li>Coding style and quality</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/contribution/style.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="coding-style-and-quality">
+<h1>Coding style and quality<a class="headerlink" href="#coding-style-and-quality" title="Permalink to this heading">¶</a></h1>
+<ul class="simple">
+<li><p>Basically, we want all python code to follow the <a class="reference external" href="https://legacy.python.org/dev/peps/pep-0008/">PEP 8</a> standard. There are a few exceptions where
+we see things differently or just aren’t that strict. The <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> file in the project’s source
+folder contains definitions that allow <a class="reference external" href="https://pypi.python.org/pypi/flake8">flake8</a> to check for violations automatically. See <a class="reference internal" href="../setup.html#checksandtests"><span class="std std-ref">Code checks and unit tests</span></a>
+for more information. Use four spaces for indentation.</p></li>
+<li><p>We sort our imports by a certain schema, but you don’t have to do this by hand. Again, <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> contains
+some definitions that allow the command <code class="docutils literal notranslate"><span class="pre">isort</span> <span class="pre">&lt;directory&gt;</span></code> to automatically sort the imports in your source
+files.</p></li>
+<li><p>For templates and models, please take a look at the <a class="reference external" href="https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/">Django Coding Style</a>. We like Django’s <a class="reference external" href="https://docs.djangoproject.com/en/1.11/topics/class-based-views/">class-based views</a> and
+kindly ask you to use them where appropriate.</p></li>
+<li><p>Please remember to always mark all strings ever displayed to any user for <a class="reference external" href="https://docs.djangoproject.com/en/1.11/topics/i18n/translation/">translation</a>.</p></li>
+<li><p>We expect all new code to come with proper tests. When writing new tests, please write them using <a class="reference external" href="https://docs.pytest.org/en/latest/assert.html">pytest-style</a>
+test functions and raw <code class="docutils literal notranslate"><span class="pre">assert</span></code> statements. Use <a class="reference external" href="https://docs.pytest.org/en/latest/fixture.html">fixtures</a> to prevent repetitive code. Some old parts of pretix’
+test suite are in the style of Python’s unit test module. If you extend those files, you might continue in this style,
+but please use <code class="docutils literal notranslate"><span class="pre">pytest</span></code> style for any new test files.</p></li>
+<li><p>Please keep the first line of your commit messages short. When referencing an issue, please phrase it like
+<code class="docutils literal notranslate"><span class="pre">Fix</span> <span class="pre">#123</span> <span class="pre">--</span> <span class="pre">Problems</span> <span class="pre">with</span> <span class="pre">order</span> <span class="pre">creation</span></code> or <code class="docutils literal notranslate"><span class="pre">Refs</span> <span class="pre">#123</span> <span class="pre">--</span> <span class="pre">Fix</span> <span class="pre">this</span> <span class="pre">part</span> <span class="pre">of</span> <span class="pre">that</span> <span class="pre">bug</span></code>.</p></li>
+</ul>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="codeofconduct.html" class="btn btn-neutral float-right" title="Code of Conduct" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="general.html" class="btn btn-neutral" title="General remarks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

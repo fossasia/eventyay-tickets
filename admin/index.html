@@ -1,0 +1,300 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Administrator documentation &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="next" title="Installation guide" href="installation/index.html"/>
+        <link rel="prev" title="Glossary" href="../user/glossary.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Administrator documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation/index.html">Installation guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">Configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maintainance.html">Backups and Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scaling.html">Scaling guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="indexes.html">Additional database indices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Administrator documentation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/admin/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="administrator-documentation">
+<span id="admindocs"></span><h1>Administrator documentation<a class="headerlink" href="#administrator-documentation" title="Permalink to this heading">¶</a></h1>
+<p>This documentation is for everyone who wants to install pretix on a server.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation/index.html">Installation guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation/general.html">General remarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/docker_smallscale.html">Small-scale deployment with Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/manual_smallscale.html">Small-scale manual deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/dev_version.html">Installing a development version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/enterprise.html">Installing pretix Enterprise plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration file</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="config.html#pretix-settings">pretix settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#locale-settings">Locale settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#database-settings">Database settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#database-replica-settings">Database replica settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#urls">URLs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#email">Email</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#django-settings">Django settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#metrics">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#memcached">Memcached</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#redis">Redis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#translations">Translations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#celery-task-queue">Celery task queue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#sentry">Sentry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#caching">Caching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#secret-length">Secret length</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#external-tools">External tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="maintainance.html">Backups and Monitoring</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="maintainance.html#backups">Backups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maintainance.html#uptime-monitoring">Uptime monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maintainance.html#performance-monitoring">Performance monitoring</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scaling.html">Scaling guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scaling.html#scaling-reasons">Scaling reasons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scaling.html#components">Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scaling.html#the-limitations">The limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="indexes.html">Additional database indices</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="installation/index.html" class="btn btn-neutral float-right" title="Installation guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../user/glossary.html" class="btn btn-neutral" title="Glossary" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

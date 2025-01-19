@@ -1,0 +1,438 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Device authentication &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="up" title="Authentication" href="auth.html"/>
+        <link rel="next" title="Resources and endpoints" href="resources/index.html"/>
+        <link rel="prev" title="OAuth authentication / “Connect with eventyay-ticket”" href="oauth.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">REST API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html">Basic concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="auth.html">Authentication</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tokenauth.html">Token-based authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="oauth.html">OAuth authentication / “Connect with eventyay-ticket”</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Device authentication</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#initializing-a-new-device">Initializing a new device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#performing-api-requests">Performing API requests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updating-the-software-version">Updating the software version</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-new-api-key">Creating a new API key</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#removing-a-device">Removing a device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#permissions-security-profiles">Permissions &amp; security profiles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Removing a device</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#event-selection">Event selection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources and endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ratelimit.html">Rate limiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webhooks.html">Webhooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/index.html">API Usage Guides</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">REST API</a> &raquo;</li>
+        
+          <li><a href="auth.html">Authentication</a> &raquo;</li>
+        
+      <li>Device authentication</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/deviceauth.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="device-authentication">
+<span id="rest-deviceauth"></span><h1>Device authentication<a class="headerlink" href="#device-authentication" title="Permalink to this heading">¶</a></h1>
+<section id="initializing-a-new-device">
+<h2>Initializing a new device<a class="headerlink" href="#initializing-a-new-device" title="Permalink to this heading">¶</a></h2>
+<p>Users can create new devices in the “Device” section of their organizer settings. When creating
+a new device, users can specify a list of events the device is allowed to access. After a new
+device is created, users will be presented initialization instructions, consisting of an URL
+and an initialization token. They will also be shown as a QR code with the following contents:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;handshake_version&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://eventyay.com&quot;</span><span class="p">,</span> <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;kpp4jn8g2ynzonp6&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Your application should be able to scan a QR code of this type, or allow to enter the URL and the
+initialization token manually. The handshake version is not used for manual initialization. When a
+QR code is scanned with a higher handshake version than you support, you should reject the request
+and prompt the user to update the client application.</p>
+<p>After your application received the token, you need to call the initialization endpoint to obtain
+a proper API token. At this point, you need to identify the name and version of your application,
+as well as the type of underlying hardware. Example:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/device/initialize</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;kpp4jn8g2ynzonp6&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;hardware_brand&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Samsung&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;hardware_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Galaxy S&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;software_brand&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pretixdroid&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;software_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.0.0&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Every initialization token can only be used once. On success, you will receive a response containing
+information on your device as well as your API token:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;organizer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;foo&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;device_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;unique_serial&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HHZ9LW9JWP390VFZ&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;api_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1kcsh572fonm3hawalrncam4l1gktr2rzx25a22l8g9hx108o9oi0rztpcvwnfnd&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bar&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;gate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;South entrance&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Please make sure that you store this <code class="docutils literal notranslate"><span class="pre">api_token</span></code> value. We also recommend storing your device ID, your assigned
+<code class="docutils literal notranslate"><span class="pre">unique_serial</span></code>, and the <code class="docutils literal notranslate"><span class="pre">organizer</span></code> you have access to, but that’s up to you. <code class="docutils literal notranslate"><span class="pre">gate</span></code> might be <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p>
+<p>In case of an error, the response will look like this:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">400</span> <span class="ne">Bad Request</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span><span class="nt">&quot;token&quot;</span><span class="p">:[</span><span class="s2">&quot;This initialization token has already been used.&quot;</span><span class="p">]}</span>
+</pre></div>
+</div>
+</section>
+<section id="performing-api-requests">
+<h2>Performing API requests<a class="headerlink" href="#performing-api-requests" title="Permalink to this heading">¶</a></h2>
+<p>You need to include the API token with every request to pretix’ API in the <code class="docutils literal notranslate"><span class="pre">Authorization</span></code> header
+like the following:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="hll"><span class="na">Authorization</span><span class="o">:</span> <span class="l">Device 1kcsh572fonm3hawalrncam4l1gktr2rzx25a22l8g9hx108o9oi0rztpcvwnfnd</span>
+</span></pre></div>
+</div>
+</section>
+<section id="updating-the-software-version">
+<h2>Updating the software version<a class="headerlink" href="#updating-the-software-version" title="Permalink to this heading">¶</a></h2>
+<p>If your application is updated, we ask you to tell the server about the new version in use. You can do this at the
+following endpoint:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/device/update</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+<span class="na">Authorization</span><span class="o">:</span> <span class="l">Device 1kcsh572fonm3hawalrncam4l1gktr2rzx25a22l8g9hx108o9oi0rztpcvwnfnd</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hardware_brand&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Samsung&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;hardware_model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Galaxy S&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;software_brand&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pretixdroid&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;software_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.1.0&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You will receive a response equivalent to the response of your initialization request.</p>
+</section>
+<section id="creating-a-new-api-key">
+<h2>Creating a new API key<a class="headerlink" href="#creating-a-new-api-key" title="Permalink to this heading">¶</a></h2>
+<p>If you think your API key might have leaked or just want to be extra cautious, the API allows you to create a new key.
+The old API key will be invalid immediately. A request for a new key looks like this:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/device/roll</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Authorization</span><span class="o">:</span> <span class="l">Device 1kcsh572fonm3hawalrncam4l1gktr2rzx25a22l8g9hx108o9oi0rztpcvwnfnd</span>
+</pre></div>
+</div>
+<p>The response will look like the response to the initialization request.</p>
+</section>
+<section id="removing-a-device">
+<h2>Removing a device<a class="headerlink" href="#removing-a-device" title="Permalink to this heading">¶</a></h2>
+<p>If you want implement a way to to deprovision a device in your software, you can call the <code class="docutils literal notranslate"><span class="pre">revoke</span></code> endpoint to
+invalidate your API key. There is no way to reverse this operation.</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/device/revoke</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Authorization</span><span class="o">:</span> <span class="l">Device 1kcsh572fonm3hawalrncam4l1gktr2rzx25a22l8g9hx108o9oi0rztpcvwnfnd</span>
+</pre></div>
+</div>
+<p>This can also be done by the user through the web interface.</p>
+</section>
+<section id="permissions-security-profiles">
+<h2>Permissions &amp; security profiles<a class="headerlink" href="#permissions-security-profiles" title="Permalink to this heading">¶</a></h2>
+<p>Device authentication is currently hardcoded to grant the following permissions:</p>
+<ul class="simple">
+<li><p>View event meta data and products etc.</p></li>
+<li><p>View orders</p></li>
+<li><p>Change orders</p></li>
+<li><p>Manage gift cards</p></li>
+</ul>
+<p>Devices cannot change events or products and cannot access vouchers.</p>
+<p>Additionally, when creating a device through the user interface or API, a user can specify a “security profile” for
+the device. These include an allow list of specific API calls that may be made by the device. pretix ships with security
+policies for official pretix apps like pretixSCAN and pretixPOS.</p>
+</section>
+<section id="id1">
+<h2>Removing a device<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
+<p>If you want implement a way to to deprovision a device in your software, you can call the <code class="docutils literal notranslate"><span class="pre">revoke</span></code> endpoint to
+invalidate your API key. There is no way to reverse this operation.</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/device/revoke</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Authorization</span><span class="o">:</span> <span class="l">Device 1kcsh572fonm3hawalrncam4l1gktr2rzx25a22l8g9hx108o9oi0rztpcvwnfnd</span>
+</pre></div>
+</div>
+<p>This can also be done by the user through the web interface.</p>
+</section>
+<section id="event-selection">
+<h2>Event selection<a class="headerlink" href="#event-selection" title="Permalink to this heading">¶</a></h2>
+<p>In most cases, your application should allow the user to select the event and check-in list they work with manually
+from a list. However, in some cases it is required to automatically configure the device for the correct event, for
+example in a kiosk-like situation where nobody is operating the device. In this case, the app can query the server
+for a suggestion which event should be used. You can also submit the configuration that is currently in use via
+query parameters:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/device/eventselection?current_event=democon&amp;current_subevent=42&amp;current_checkinlist=542</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Authorization</span><span class="o">:</span> <span class="l">Device 1kcsh572fonm3hawalrncam4l1gktr2rzx25a22l8g9hx108o9oi0rztpcvwnfnd</span>
+</pre></div>
+</div>
+<p>You can get three response codes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">304</span></code> The server things you already selected a good event</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">404</span></code> The server has not found a suggestion for you</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> The server suggests a new event (body see below)</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;democon&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;subevent&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">23</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;checkinlist&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="resources/index.html" class="btn btn-neutral float-right" title="Resources and endpoints" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="oauth.html" class="btn btn-neutral" title="OAuth authentication / “Connect with eventyay-ticket”" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

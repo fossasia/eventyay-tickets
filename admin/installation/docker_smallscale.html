@@ -1,0 +1,569 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Small-scale deployment with Docker &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Installation guide" href="index.html"/>
+        <link rel="next" title="Small-scale manual deployment" href="manual_smallscale.html"/>
+        <link rel="prev" title="General remarks" href="general.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Administrator documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Installation guide</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="general.html">General remarks</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Small-scale deployment with Docker</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#on-this-guide">On this guide</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data-files">Data files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#database">Database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#redis">Redis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#config-file">Config file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#docker-image-and-service">Docker image and service</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cronjob">Cronjob</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ssl">SSL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#next-steps">Next steps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updates">Updates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-a-plugin">Install a plugin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scaling-up">Scaling up</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="manual_smallscale.html">Small-scale manual deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev_version.html">Installing a development version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise.html">Installing pretix Enterprise plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../config.html">Configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../maintainance.html">Backups and Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../scaling.html">Scaling guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../indexes.html">Additional database indices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Administrator documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Installation guide</a> &raquo;</li>
+        
+      <li>Small-scale deployment with Docker</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/admin/installation/docker_smallscale.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="small-scale-deployment-with-docker">
+<span id="dockersmallscale"></span><h1>Small-scale deployment with Docker<a class="headerlink" href="#small-scale-deployment-with-docker" title="Permalink to this heading">¶</a></h1>
+<p>This guide describes the installation of a small-scale installation of pretix using docker. By small-scale, we mean
+that everything is being run on one host and you don’t expect thousands of participants trying to get a ticket within
+a few minutes. In this setup, as many parts of pretix as possible are hidden away in one single docker container.
+This has some trade-offs in terms of performance and isolation but allows a rather easy installation.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Even though we try to make it straightforward to run pretix, it still requires some Linux experience to
+get it right. If you’re not feeling comfortable managing a Linux server, check out our hosting and service
+offers at <a class="reference external" href="https://eventyay.com/">eventyay.com</a>.</p>
+</div>
+<p>We tested this guide on the Linux distribution <strong>Debian 8.0</strong> but it should work very similar on other
+modern distributions, especially on all systemd-based ones.</p>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading">¶</a></h2>
+<p>Please set up the following systems beforehand, we’ll not explain them here (but see these links for external
+installation guides):</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.docker.com/engine/installation/linux/debian/">Docker</a></p></li>
+<li><p>A SMTP server to send out mails, e.g. <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-postfix-as-a-send-only-smtp-server-on-ubuntu-16-04">Postfix</a> on your machine or some third-party server you have credentials for</p></li>
+<li><p>A HTTP reverse proxy, e.g. <a class="reference external" href="https://botleg.com/stories/https-with-lets-encrypt-and-nginx/">nginx</a> or Apache to allow HTTPS connections</p></li>
+<li><p>A <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-20-04">PostgreSQL</a> 9.5+, <a class="reference external" href="https://dev.mysql.com/doc/refman/5.7/en/linux-installation-apt-repo.html">MySQL</a> 5.7+, or MariaDB 10.2.7+ database server</p></li>
+<li><p>A <a class="reference external" href="https://blog.programster.org/debian-8-install-redis-server/">redis</a> server</p></li>
+</ul>
+<p>We also recommend that you use a firewall, although this is not a pretix-specific recommendation. If you’re new to
+Linux and firewalls, we recommend that you start with <a class="reference external" href="https://en.wikipedia.org/wiki/Uncomplicated_Firewall">ufw</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Please, do not run pretix without HTTPS encryption. You’ll handle user data and thanks to <a class="reference external" href="https://letsencrypt.org/">Let’s Encrypt</a>
+SSL certificates can be obtained for free these days. We also <em>do not</em> provide support for HTTP-only
+installations except for evaluation purposes.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>We recommend <strong>PostgreSQL</strong>. If you go for MySQL, make sure you run <strong>MySQL 5.7 or newer</strong> or
+<strong>MariaDB 10.2.7 or newer</strong>.</p>
+</div>
+</section>
+<section id="on-this-guide">
+<h2>On this guide<a class="headerlink" href="#on-this-guide" title="Permalink to this heading">¶</a></h2>
+<p>All code lines prepended with a <code class="docutils literal notranslate"><span class="pre">#</span></code> symbol are commands that you need to execute on your server as <code class="docutils literal notranslate"><span class="pre">root</span></code> user;
+all lines prepended with a <code class="docutils literal notranslate"><span class="pre">$</span></code> symbol can also be run by an unprivileged user.</p>
+</section>
+<section id="data-files">
+<h2>Data files<a class="headerlink" href="#data-files" title="Permalink to this heading">¶</a></h2>
+<p>First of all, you need to create a directory on your server that pretix can use to store data files and make that
+directory writable to the user that runs pretix inside the docker container:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># mkdir /var/pretix-data
+# chown -R 15371:15371 /var/pretix-data
+</pre></div>
+</div>
+</section>
+<section id="database">
+<h2>Database<a class="headerlink" href="#database" title="Permalink to this heading">¶</a></h2>
+<p>Next, we need a database and a database user. We can create these with any kind of database managing tool or directly on
+our database’s shell. For PostgreSQL, we would do:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># sudo -u postgres createuser -P pretix
+# sudo -u postgres createdb -O pretix pretix
+</pre></div>
+</div>
+<p>Make sure that your database listens on the network. If PostgreSQL on the same same host as docker, but not inside a docker container, we recommend that you just listen on the Docker interface by changing the following line in <code class="docutils literal notranslate"><span class="pre">/etc/postgresql/&lt;version&gt;/main/postgresql.conf</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>listen_addresses = &#39;localhost,172.17.0.1&#39;
+</pre></div>
+</div>
+<p>You also need to add a new line to <code class="docutils literal notranslate"><span class="pre">/etc/postgresql/&lt;version&gt;/main/pg_hba.conf</span></code> to allow network connections to this user and database:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>host    pretix          pretix          172.17.0.1/16           md5
+</pre></div>
+</div>
+<p>Restart PostgreSQL after you changed these files:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># systemctl restart postgresql
+</pre></div>
+</div>
+<p>If you have a firewall running, you should also make sure that port 5432 is reachable from the <code class="docutils literal notranslate"><span class="pre">172.17.0.1/16</span></code> subnet.</p>
+<p>For MySQL, you can either also use network-based connections or mount the <code class="docutils literal notranslate"><span class="pre">/var/run/mysqld/mysqld.sock</span></code> socket into the docker container.
+When using MySQL, make sure you set the character set of the database to <code class="docutils literal notranslate"><span class="pre">utf8mb4</span></code>, e.g. like this:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>mysql &gt; CREATE DATABASE pretix DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;
+</pre></div>
+</div>
+</section>
+<section id="redis">
+<h2>Redis<a class="headerlink" href="#redis" title="Permalink to this heading">¶</a></h2>
+<p>For caching and messaging in small-scale setups, pretix recommends using redis. In this small-scale setup we assume a
+redis instance to be running on the same host. To avoid the hassle with network configurations and firewalls, we
+recommend connecting to redis via a unix socket. To enable redis on unix sockets, add the following to your
+<code class="docutils literal notranslate"><span class="pre">/etc/redis/redis.conf</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>unixsocket /var/run/redis/redis.sock
+unixsocketperm 777
+</pre></div>
+</div>
+<p>Now restart redis-server:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># systemctl restart redis-server
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Setting the socket permissions to 777 is a possible security problem. If you have untrusted users on your
+system or have high security requirements, please don’t do this and let redis listen to a TCP socket
+instead. We recommend the socket approach because the TCP socket in combination with docker’s networking
+can easily become an even worse security hole when configured slightly wrong. Read more about security
+on the <a class="reference external" href="https://redis.io/topics/security">redis website</a>.</p>
+<p>Another possible solution is to run <a class="reference external" href="https://hub.docker.com/r/_/redis/">redis in docker</a> and link the containers using docker’s networking
+features.</p>
+</div>
+</section>
+<section id="config-file">
+<h2>Config file<a class="headerlink" href="#config-file" title="Permalink to this heading">¶</a></h2>
+<p>We now create a config directory and config file for pretix:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># mkdir /etc/pretix
+# touch /etc/pretix/pretix.cfg
+# chown -R 15371:15371 /etc/pretix/
+# chmod 0700 /etc/pretix/pretix.cfg
+</pre></div>
+</div>
+<p>Fill the configuration file <code class="docutils literal notranslate"><span class="pre">/etc/pretix/pretix.cfg</span></code> with the following content (adjusted to your environment):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[pretix]
+instance_name=My pretix installation
+url=https://pretix.mydomain.com
+currency=EUR
+; DO NOT change the following value, it has to be set to the location of the
+; directory *inside* the docker container
+datadir=/data
+trust_x_forwarded_for=on
+trust_x_forwarded_proto=on
+
+[database]
+; Replace postgresql with mysql for MySQL
+backend=postgresql
+name=pretix
+user=pretix
+; Replace with the password you chose above
+password=*********
+; In most docker setups, 172.17.0.1 is the address of the docker host. Adjust
+; this to wherever your database is running, e.g. the name of a linked container
+; or of a mounted MySQL socket.
+host=172.17.0.1
+
+[mail]
+; See config file documentation for more options
+from=tickets@yourdomain.com
+; This is the default IP address of your docker host in docker&#39;s virtual
+; network. Make sure postfix listens on this address.
+host=172.17.0.1
+
+[redis]
+location=unix:///var/run/redis/redis.sock?db=0
+; Remove the following line if you are unsure about your redis&#39; security
+; to reduce impact if redis gets compromised.
+sessions=true
+
+[celery]
+backend=redis+socket:///var/run/redis/redis.sock?virtual_host=1
+broker=redis+socket:///var/run/redis/redis.sock?virtual_host=2
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../config.html#mail-settings"><span class="std std-ref">email configuration</span></a> to learn more about configuring mail features.</p>
+</section>
+<section id="docker-image-and-service">
+<h2>Docker image and service<a class="headerlink" href="#docker-image-and-service" title="Permalink to this heading">¶</a></h2>
+<p>First of all, download the latest stable pretix image by running:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ docker pull pretix/standalone:stable
+</pre></div>
+</div>
+<p>We recommend starting the docker container using systemd to make sure it runs correctly after a reboot. Create a file
+named <code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/pretix.service</span></code> with the following content:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[Unit]
+Description=pretix
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill %n
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStart=/usr/bin/docker run --name %n -p 8345:80 \
+    -v /var/pretix-data:/data \
+    -v /etc/pretix:/etc/pretix \
+    -v /var/run/redis:/var/run/redis \
+    --sysctl net.core.somaxconn=4096 \
+    pretix/standalone:stable all
+ExecStop=/usr/bin/docker stop %n
+
+[Install]
+WantedBy=multi-user.target
+</pre></div>
+</div>
+<p>When using MySQL and socket mounting, you’ll need the additional flag <code class="docutils literal notranslate"><span class="pre">-v</span> <span class="pre">/var/run/mysqld:/var/run/mysqld</span></code> in the command.</p>
+<p>You can now run the following commands
+to enable and start the service:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># systemctl daemon-reload
+# systemctl enable pretix
+# systemctl start pretix
+</pre></div>
+</div>
+</section>
+<section id="cronjob">
+<h2>Cronjob<a class="headerlink" href="#cronjob" title="Permalink to this heading">¶</a></h2>
+<p>You need to set up a cronjob that runs the management command <code class="docutils literal notranslate"><span class="pre">runperiodic</span></code>. The exact interval is not important
+but should be something between every minute and every hour. You could for example configure cron like this:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>15,45 * * * * /usr/bin/docker exec pretix.service pretix cron
+</pre></div>
+</div>
+<p>The cronjob may run as any user that can use the docker daemon.</p>
+</section>
+<section id="ssl">
+<h2>SSL<a class="headerlink" href="#ssl" title="Permalink to this heading">¶</a></h2>
+<p>The following snippet is an example on how to configure a nginx proxy for pretix:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>server {
+    listen 80 default_server;
+    listen [::]:80 ipv6only=on default_server;
+    server_name pretix.mydomain.com;
+}
+server {
+    listen 443 default_server;
+    listen [::]:443 ipv6only=on default_server;
+    server_name pretix.mydomain.com;
+
+    ssl on;
+    ssl_certificate /path/to/cert.chain.pem;
+    ssl_certificate_key /path/to/key.pem;
+
+    location / {
+        proxy_pass http://localhost:8345/;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header Host $http_host;
+    }
+}
+</pre></div>
+</div>
+<p>We recommend reading about setting <a class="reference external" href="https://mozilla.github.io/server-side-tls/ssl-config-generator/">strong encryption settings</a> for your web server.</p>
+</section>
+<section id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Permalink to this heading">¶</a></h2>
+<p>Yay, you are done! You should now be able to reach pretix at <a class="reference external" href="https://pretix.yourdomain.com/control/">https://pretix.yourdomain.com/control/</a> and log in as
+<em>admin&#64;localhost</em> with a password of <em>admin</em>. Don’t forget to change that password! Create an organizer first, then
+create an event and start selling tickets!</p>
+<p>You should probably read <a class="reference internal" href="../maintainance.html#maintainance"><span class="std std-ref">Backups and Monitoring</span></a> next.</p>
+</section>
+<section id="updates">
+<h2>Updates<a class="headerlink" href="#updates" title="Permalink to this heading">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>While we try hard not to break things, <strong>please perform a backup before every upgrade</strong>.</p>
+</div>
+<p>Updates are fairly simple, but require at least a short downtime:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># docker pull pretix/standalone:stable
+# systemctl restart pretix.service
+# docker exec -it pretix.service pretix upgrade
+</pre></div>
+</div>
+<p>Restarting the service can take a few seconds, especially if the update requires changes to the database.
+Replace <code class="docutils literal notranslate"><span class="pre">stable</span></code> above with a specific version number like <code class="docutils literal notranslate"><span class="pre">1.0</span></code> or with <code class="docutils literal notranslate"><span class="pre">latest</span></code> for the development
+version, if you want to.</p>
+</section>
+<section id="install-a-plugin">
+<span id="docker-plugininstall"></span><h2>Install a plugin<a class="headerlink" href="#install-a-plugin" title="Permalink to this heading">¶</a></h2>
+<p>To install a plugin, you need to build your own docker image. To do so, create a new directory and place a file
+named <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code> in it. The Dockerfile could look like this (replace <code class="docutils literal notranslate"><span class="pre">pretix-passbook</span></code> with the plugins of your
+choice):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>FROM pretix/standalone:stable
+USER root
+RUN pip3 install pretix-passbook
+USER pretixuser
+RUN cd /pretix/src &amp;&amp; make production
+</pre></div>
+</div>
+<p>Then, go to that directory and build the image:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ docker build . -t mypretix
+</pre></div>
+</div>
+<p>You can now use that image <code class="docutils literal notranslate"><span class="pre">mypretix</span></code> instead of <code class="docutils literal notranslate"><span class="pre">pretix/standalone</span></code> in your service file (see above). Be sure
+to re-build your custom image after you pulled <code class="docutils literal notranslate"><span class="pre">pretix/standalone</span></code> if you want to perform an update.</p>
+</section>
+<section id="scaling-up">
+<h2>Scaling up<a class="headerlink" href="#scaling-up" title="Permalink to this heading">¶</a></h2>
+<p>If you need to scale to multiple machines, please first read our <a class="reference internal" href="../scaling.html#scaling"><span class="std std-ref">scaling guide</span></a>.</p>
+<p>If you run the official docker container on multiple machines, it is recommended to set the environment
+variable <code class="docutils literal notranslate"><span class="pre">AUTOMIGRATE=skip</span></code> on all containers and run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">exec</span> <span class="pre">-it</span> <span class="pre">pretix.service</span> <span class="pre">pretix</span> <span class="pre">migrate</span></code>
+on one machine after each upgrade manually, otherwise multiple containers might try to upgrade the
+database schema at the same time.</p>
+<p>To run only the <code class="docutils literal notranslate"><span class="pre">pretix-web</span></code> component of pretix as well as a nginx server serving static files, you
+can invoke the container with <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span> <span class="pre">…</span> <span class="pre">pretix/standalone:stable</span> <span class="pre">web</span></code> (instead of <code class="docutils literal notranslate"><span class="pre">all</span></code>). You
+can adjust the number of <code class="docutils literal notranslate"><span class="pre">gunicorn</span></code> processes with the <code class="docutils literal notranslate"><span class="pre">NUM_WORKERS</span></code> environment variable (defaults to
+two times the number of CPUs detected).</p>
+<p>To run only <code class="docutils literal notranslate"><span class="pre">pretix-worker</span></code>, you can run <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span> <span class="pre">…</span> <span class="pre">pretix/standalone:stable</span> <span class="pre">taskworker</span></code>. You can
+also pass arguments to limit the worker to specific queues or to change the number of concurrent task
+workers, e.g. <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span> <span class="pre">…</span> <span class="pre">taskworker</span> <span class="pre">-Q</span> <span class="pre">notifications</span> <span class="pre">--concurrency</span> <span class="pre">32</span></code>.</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="manual_smallscale.html" class="btn btn-neutral float-right" title="Small-scale manual deployment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="general.html" class="btn btn-neutral" title="General remarks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Writing an HTML e-mail renderer plugin &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Plugin development" href="index.html"/>
+        <link rel="next" title="Writing an e-mail placeholder plugin" href="placeholder.html"/>
+        <link rel="prev" title="Porting a payment provider from pretix 1.x to pretix 2.x" href="payment_2.0.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../implementation/index.html">Implementation and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Plugin development</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Creating a plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporter.html">Writing an exporter plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ticketoutput.html">Writing a ticket output plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment.html">Writing a payment provider plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment_2.0.html">Porting a payment provider from pretix 1.x to pretix 2.x</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Writing an HTML e-mail renderer plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#output-registration">Output registration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-renderer-class">The renderer class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#helper-class-for-template-base-renderers">Helper class for template-base renderers</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="placeholder.html">Writing an e-mail placeholder plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="invoice.html">Writing an invoice renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shredder.html">Writing a data shredder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="import.html">Extending the order import process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customview.html">Creating custom views</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auth.html">Pluggable authentication backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="general.html">General APIs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quality.html">Plugin quality checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Plugin development</a> &raquo;</li>
+        
+      <li>Writing an HTML e-mail renderer plugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/api/email.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="writing-an-html-e-mail-renderer-plugin">
+<h1>Writing an HTML e-mail renderer plugin<a class="headerlink" href="#writing-an-html-e-mail-renderer-plugin" title="Permalink to this heading">¶</a></h1>
+<p>An email renderer class controls how the HTML part of e-mails sent by pretix is built.
+The creation of such a plugin is very similar to creating an export output.</p>
+<p>Please read <a class="reference internal" href="plugins.html#pluginsetup"><span class="std std-ref">Creating a plugin</span></a> first, if you haven’t already.</p>
+<section id="output-registration">
+<h2>Output registration<a class="headerlink" href="#output-registration" title="Permalink to this heading">¶</a></h2>
+<p>The email HTML renderer API does not make a lot of usage from signals, however, it
+does use a signal to get a list of all available email renderers. Your plugin
+should listen for this signal and return the subclass of <code class="docutils literal notranslate"><span class="pre">pretix.base.email.BaseHTMLMailRenderer</span></code>
+that we’ll provide in this plugin:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">django.dispatch</span><span class="w"> </span><span class="kn">import</span> <span class="n">receiver</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="kn">from</span><span class="w"> </span><span class="nn">pretix.base.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_html_mail_renderers</span>
+<span class="linenos">4</span>
+<span class="linenos">5</span>
+<span class="linenos">6</span><span class="nd">@receiver</span><span class="p">(</span><span class="n">register_html_mail_renderers</span><span class="p">,</span> <span class="n">dispatch_uid</span><span class="o">=</span><span class="s2">&quot;renderer_custom&quot;</span><span class="p">)</span>
+<span class="linenos">7</span><span class="k">def</span><span class="w"> </span><span class="nf">register_mail_renderers</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos">8</span>    <span class="kn">from</span><span class="w"> </span><span class="nn">.email</span><span class="w"> </span><span class="kn">import</span> <span class="n">MyMailRenderer</span>
+<span class="linenos">9</span>    <span class="k">return</span> <span class="n">MyMailRenderer</span>
+</pre></div>
+</div>
+</section>
+<section id="the-renderer-class">
+<h2>The renderer class<a class="headerlink" href="#the-renderer-class" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pretix.base.email.BaseHTMLMailRenderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pretix.base.email.</span></span><span class="sig-name descname"><span class="pre">BaseHTMLMailRenderer</span></span><a class="headerlink" href="#pretix.base.email.BaseHTMLMailRenderer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The central object of each email renderer is the subclass of <code class="docutils literal notranslate"><span class="pre">BaseHTMLMailRenderer</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.email.BaseHTMLMailRenderer.BaseHTMLMailRenderer.event">
+<span class="sig-prename descclassname"><span class="pre">BaseHTMLMailRenderer.</span></span><span class="sig-name descname"><span class="pre">event</span></span><a class="headerlink" href="#pretix.base.email.BaseHTMLMailRenderer.BaseHTMLMailRenderer.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default constructor sets this property to the event we are currently
+working for.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.email.pretix.base.email.BaseHTMLMailRenderer.BaseHTMLMailRenderer.identifier">
+<span class="sig-prename descclassname"><span class="pre">BaseHTMLMailRenderer.</span></span><span class="sig-name descname"><span class="pre">identifier</span></span><a class="headerlink" href="#pretix.base.email.pretix.base.email.BaseHTMLMailRenderer.BaseHTMLMailRenderer.identifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>A short and unique identifier for this renderer.
+This should only contain lowercase letters and in most cases will be the same as your package name or prefixed
+with your package name.</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.email.pretix.base.email.BaseHTMLMailRenderer.BaseHTMLMailRenderer.verbose_name">
+<span class="sig-prename descclassname"><span class="pre">BaseHTMLMailRenderer.</span></span><span class="sig-name descname"><span class="pre">verbose_name</span></span><a class="headerlink" href="#pretix.base.email.pretix.base.email.BaseHTMLMailRenderer.BaseHTMLMailRenderer.verbose_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A human-readable name for this renderer. This should be short but self-explanatory.</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.email.pretix.base.email.BaseHTMLMailRenderer.BaseHTMLMailRenderer.thumbnail_filename">
+<span class="sig-prename descclassname"><span class="pre">BaseHTMLMailRenderer.</span></span><span class="sig-name descname"><span class="pre">thumbnail_filename</span></span><a class="headerlink" href="#pretix.base.email.pretix.base.email.BaseHTMLMailRenderer.BaseHTMLMailRenderer.thumbnail_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>A file name discoverable in the static file storage that contains a preview of your renderer. This should
+be with aspect resolution 4:3.</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.email.pretix.base.email.BaseHTMLMailRenderer.BaseHTMLMailRenderer.is_available">
+<span class="sig-prename descclassname"><span class="pre">BaseHTMLMailRenderer.</span></span><span class="sig-name descname"><span class="pre">is_available</span></span><a class="headerlink" href="#pretix.base.email.pretix.base.email.BaseHTMLMailRenderer.BaseHTMLMailRenderer.is_available" title="Permalink to this definition">¶</a></dt>
+<dd><p>This renderer will only be available if this returns <code class="docutils literal notranslate"><span class="pre">True</span></code>. You can use this to limit this renderer
+to certain events. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.email.pretix.base.email.BaseHTMLMailRenderer.BaseHTMLMailRenderer.render">
+<span class="sig-prename descclassname"><span class="pre">BaseHTMLMailRenderer.</span></span><span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plain_body</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plain_signature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subject</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.email.pretix.base.email.BaseHTMLMailRenderer.BaseHTMLMailRenderer.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should generate the HTML part of the email.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plain_body</strong> – The body of the email in plain text.</p></li>
+<li><p><strong>plain_signature</strong> – The signature with event organizer contact details in plain text.</p></li>
+<li><p><strong>subject</strong> – The email subject.</p></li>
+<li><p><strong>order</strong> – The order if this email is connected to one, otherwise <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>position</strong> – The order position if this email is connected to one, otherwise <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An HTML string</p>
+</dd>
+</dl>
+<p>This is an abstract method, you <strong>must</strong> implement this!</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="helper-class-for-template-base-renderers">
+<h2>Helper class for template-base renderers<a class="headerlink" href="#helper-class-for-template-base-renderers" title="Permalink to this heading">¶</a></h2>
+<p>The email renderer that ships with pretix is based on Django templates to generate HTML.
+In case you also want to render emails based on a template, we provided a ready-made base
+class <code class="docutils literal notranslate"><span class="pre">TemplateBasedMailRenderer</span></code> that you can re-use to perform the following steps:</p>
+<ul class="simple">
+<li><p>Convert the body text and the signature to HTML using our markdown renderer</p></li>
+<li><p>Render the template</p></li>
+<li><p>Call <a class="reference external" href="https://pypi.org/project/inlinestyler/">inlinestyler</a> to convert all <code class="docutils literal notranslate"><span class="pre">&lt;style&gt;</span></code> style sheets to inline <code class="docutils literal notranslate"><span class="pre">style=&quot;&quot;</span></code>
+attributes for better compatibility</p></li>
+</ul>
+<p>To use it, you just need to implement some variables:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">class</span><span class="w"> </span><span class="nc">ClassicMailRenderer</span><span class="p">(</span><span class="n">TemplateBasedMailRenderer</span><span class="p">):</span>
+<span class="linenos">2</span>    <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;pretix default&#39;</span><span class="p">)</span>
+<span class="linenos">3</span>    <span class="n">identifier</span> <span class="o">=</span> <span class="s1">&#39;classic&#39;</span>
+<span class="linenos">4</span>    <span class="n">thumbnail_filename</span> <span class="o">=</span> <span class="s1">&#39;pretixbase/email/thumb.png&#39;</span>
+<span class="linenos">5</span>    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;pretixbase/email/plainwrapper.html&#39;</span>
+</pre></div>
+</div>
+<p>The template is passed the following context variables:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">site</span></code></dt><dd><p>Name of the eventyay tickets installation (<code class="docutils literal notranslate"><span class="pre">settings.INSTANCE_NAME</span></code>)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">site_url</span></code></dt><dd><p>Root URL of the eventyay tickets installation (<code class="docutils literal notranslate"><span class="pre">settings.SITE_URL</span></code>)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">body</span></code></dt><dd><p>The body as markdown (render with <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">body|safe</span> <span class="pre">}}</span></code>)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">subject</span></code></dt><dd><p>The email subject</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">color</span></code></dt><dd><p>The primary color of the event</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">event</span></code></dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">Event</span></code> object</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">signature</span></code> (optional, only if configured)</dt><dd><p>The signature with event organizer contact details as markdown (render with <code class="docutils literal notranslate"><span class="pre">{{</span> <span class="pre">signature|safe</span> <span class="pre">}}</span></code>)</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">order</span></code> (optional, only if applicable)</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">Order</span></code> object</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">position</span></code> (optional, only if applicable)</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">OrderPosition</span></code> object</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="placeholder.html" class="btn btn-neutral float-right" title="Writing an e-mail placeholder plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="payment_2.0.html" class="btn btn-neutral" title="Porting a payment provider from pretix 1.x to pretix 2.x" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,393 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Writing a data shredder &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Plugin development" href="index.html"/>
+        <link rel="next" title="Extending the order import process" href="import.html"/>
+        <link rel="prev" title="Writing an invoice renderer plugin" href="invoice.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../implementation/index.html">Implementation and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Plugin development</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Creating a plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporter.html">Writing an exporter plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ticketoutput.html">Writing a ticket output plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment.html">Writing a payment provider plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment_2.0.html">Porting a payment provider from pretix 1.x to pretix 2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">Writing an HTML e-mail renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="placeholder.html">Writing an e-mail placeholder plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="invoice.html">Writing an invoice renderer plugin</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Writing a data shredder</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#shredder-registration">Shredder registration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-shredder-class">The shredder class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="import.html">Extending the order import process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customview.html">Creating custom views</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auth.html">Pluggable authentication backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="general.html">General APIs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quality.html">Plugin quality checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Plugin development</a> &raquo;</li>
+        
+      <li>Writing a data shredder</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/api/shredder.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="writing-a-data-shredder">
+<span id="shredder"></span><h1>Writing a data shredder<a class="headerlink" href="#writing-a-data-shredder" title="Permalink to this heading">¶</a></h1>
+<p>If your plugin adds the ability to store personal data within pretix, you should also implement a “data shredder”
+to anonymize or pseudonymize the data later.</p>
+<section id="shredder-registration">
+<h2>Shredder registration<a class="headerlink" href="#shredder-registration" title="Permalink to this heading">¶</a></h2>
+<p>The data shredder API does not make a lot of usage from signals, however, it
+does use a signal to get a list of all available data shredders. Your plugin
+should listen for this signal and return the subclass of <code class="docutils literal notranslate"><span class="pre">pretix.base.shredder.BaseDataShredder</span></code>
+that we’ll provide in this plugin:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">django.dispatch</span><span class="w"> </span><span class="kn">import</span> <span class="n">receiver</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">pretix.base.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_data_shredders</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="nd">@receiver</span><span class="p">(</span><span class="n">register_data_shredders</span><span class="p">,</span> <span class="n">dispatch_uid</span><span class="o">=</span><span class="s2">&quot;custom_data_shredders&quot;</span><span class="p">)</span>
+<span class="linenos"> 7</span><span class="k">def</span><span class="w"> </span><span class="nf">register_shredder</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos"> 8</span>    <span class="k">return</span> <span class="p">[</span>
+<span class="linenos"> 9</span>        <span class="n">PluginDataShredder</span><span class="p">,</span>
+<span class="linenos">10</span>    <span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="the-shredder-class">
+<h2>The shredder class<a class="headerlink" href="#the-shredder-class" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pretix.base.shredder.BaseDataShredder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pretix.base.shredder.</span></span><span class="sig-name descname"><span class="pre">BaseDataShredder</span></span><a class="headerlink" href="#pretix.base.shredder.BaseDataShredder" title="Permalink to this definition">¶</a></dt>
+<dd><p>The central object of each data shredder is the subclass of <code class="docutils literal notranslate"><span class="pre">BaseDataShredder</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.shredder.BaseDataShredder.BaseDataShredder.event">
+<span class="sig-prename descclassname"><span class="pre">BaseDataShredder.</span></span><span class="sig-name descname"><span class="pre">event</span></span><a class="headerlink" href="#pretix.base.shredder.BaseDataShredder.BaseDataShredder.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default constructor sets this property to the event we are currently
+working for.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.shredder.pretix.base.shredder.BaseDataShredder.BaseDataShredder.identifier">
+<span class="sig-prename descclassname"><span class="pre">BaseDataShredder.</span></span><span class="sig-name descname"><span class="pre">identifier</span></span><a class="headerlink" href="#pretix.base.shredder.pretix.base.shredder.BaseDataShredder.BaseDataShredder.identifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>A short and unique identifier for this shredder.
+This should only contain lowercase letters and in most
+cases will be the same as your package name.</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.shredder.pretix.base.shredder.BaseDataShredder.BaseDataShredder.verbose_name">
+<span class="sig-prename descclassname"><span class="pre">BaseDataShredder.</span></span><span class="sig-name descname"><span class="pre">verbose_name</span></span><a class="headerlink" href="#pretix.base.shredder.pretix.base.shredder.BaseDataShredder.BaseDataShredder.verbose_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A human-readable name for what this shredder removes. This should be short but self-explanatory.
+Good examples include ‘E-Mail addresses’ or ‘Invoices’.</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.shredder.pretix.base.shredder.BaseDataShredder.BaseDataShredder.description">
+<span class="sig-prename descclassname"><span class="pre">BaseDataShredder.</span></span><span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#pretix.base.shredder.pretix.base.shredder.BaseDataShredder.BaseDataShredder.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>A more detailed description of what this shredder does. Can contain HTML.</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.shredder.pretix.base.shredder.BaseDataShredder.BaseDataShredder.generate_files">
+<span class="sig-prename descclassname"><span class="pre">BaseDataShredder.</span></span><span class="sig-name descname"><span class="pre">generate_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pretix.base.shredder.pretix.base.shredder.BaseDataShredder.BaseDataShredder.generate_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called to export the data that is about to be shred and return a list of tuples consisting of a
+filename, a file type and file content.</p>
+<p>You can also implement this as a generator and <code class="docutils literal notranslate"><span class="pre">yield</span></code> those tuples instead of returning a list of them.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.shredder.pretix.base.shredder.BaseDataShredder.BaseDataShredder.shred_data">
+<span class="sig-prename descclassname"><span class="pre">BaseDataShredder.</span></span><span class="sig-name descname"><span class="pre">shred_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.shredder.pretix.base.shredder.BaseDataShredder.BaseDataShredder.shred_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called to actually remove the data from the system. You should remove any database objects
+here.</p>
+<p>You should never delete <code class="docutils literal notranslate"><span class="pre">LogEntry</span></code> objects, but you might modify them to remove personal data. In this
+case, set the <code class="docutils literal notranslate"><span class="pre">LogEntry.shredded</span></code> attribute to <code class="docutils literal notranslate"><span class="pre">True</span></code> to show that this is no longer original log data.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h2>
+<p>For example, the core data shredder responsible for removing invoice address information including their history
+looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">class</span><span class="w"> </span><span class="nc">InvoiceAddressShredder</span><span class="p">(</span><span class="n">BaseDataShredder</span><span class="p">):</span>
+<span class="linenos"> 2</span>    <span class="n">verbose_name</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Invoice addresses&#39;</span><span class="p">)</span>
+<span class="linenos"> 3</span>    <span class="n">identifier</span> <span class="o">=</span> <span class="s1">&#39;invoice_addresses&#39;</span>
+<span class="linenos"> 4</span>    <span class="n">description</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;This will remove all invoice addresses from orders, &#39;</span>
+<span class="linenos"> 5</span>                    <span class="s1">&#39;as well as logged changes to them.&#39;</span><span class="p">)</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="linenos"> 8</span>        <span class="k">yield</span> <span class="s1">&#39;invoice-addresses.json&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span>
+<span class="linenos"> 9</span>            <span class="n">ia</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">code</span><span class="p">:</span> <span class="n">InvoiceAddressSerializer</span><span class="p">(</span><span class="n">ia</span><span class="p">)</span><span class="o">.</span><span class="n">data</span>
+<span class="linenos">10</span>            <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="n">InvoiceAddress</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">order__event</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
+<span class="linenos">11</span>        <span class="p">},</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span>    <span class="nd">@transaction</span><span class="o">.</span><span class="n">atomic</span>
+<span class="linenos">14</span>    <span class="k">def</span><span class="w"> </span><span class="nf">shred_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos">15</span>        <span class="n">InvoiceAddress</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">order__event</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span>        <span class="k">for</span> <span class="n">le</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">logentry_set</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">action_type</span><span class="o">=</span><span class="s2">&quot;pretix.event.order.modified&quot;</span><span class="p">):</span>
+<span class="linenos">18</span>            <span class="n">d</span> <span class="o">=</span> <span class="n">le</span><span class="o">.</span><span class="n">parsed_data</span>
+<span class="linenos">19</span>            <span class="k">if</span> <span class="s1">&#39;invoice_data&#39;</span> <span class="ow">in</span> <span class="n">d</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;invoice_data&#39;</span><span class="p">],</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="linenos">20</span>                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;invoice_data&#39;</span><span class="p">]:</span>
+<span class="linenos">21</span>                    <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;invoice_data&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">]:</span>
+<span class="linenos">22</span>                        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;invoice_data&#39;</span><span class="p">][</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;█&#39;</span>
+<span class="linenos">23</span>                <span class="n">le</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="linenos">24</span>                <span class="n">le</span><span class="o">.</span><span class="n">shredded</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="linenos">25</span>                <span class="n">le</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">update_fields</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;shredded&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="import.html" class="btn btn-neutral float-right" title="Extending the order import process" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="invoice.html" class="btn btn-neutral" title="Writing an invoice renderer plugin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

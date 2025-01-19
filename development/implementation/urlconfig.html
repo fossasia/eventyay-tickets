@@ -1,0 +1,371 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Working with URLs &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Implementation and Utilities" href="index.html"/>
+        <link rel="next" title="Internationalization" href="i18n.html"/>
+        <link rel="prev" title="Data model" href="models.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Implementation and Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="models.html">Data model</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Working with URLs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#url-routing">URL routing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#url-reversal">URL reversal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implementation-details">Implementation details</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="i18n.html">Internationalization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="settings.html">Settings storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="background.html">Background tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">Sending Email</a></li>
+<li class="toctree-l3"><a class="reference internal" href="permissions.html">Permissions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html">Logging and notifications</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index.html">Plugin development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Implementation and Utilities</a> &raquo;</li>
+        
+      <li>Working with URLs</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/implementation/urlconfig.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="working-with-urls">
+<span id="urlconf"></span><h1>Working with URLs<a class="headerlink" href="#working-with-urls" title="Permalink to this heading">¶</a></h1>
+<p>As soon as you write a plugin that provides a new view to the user (or if you want to
+contribute to pretix itself), you need to understand how URLs work in pretix as it differs
+slightly from the standard Django system.</p>
+<p>The reason for the complicated URL handling is that pretix supports custom subdomains for
+single organizers. In this example we will use an event organizer with the slug <code class="docutils literal notranslate"><span class="pre">bigorg</span></code>
+that manages an awesome conference with the slug <code class="docutils literal notranslate"><span class="pre">awesomecon</span></code>. If pretix is installed
+on eventyay.com, this event is available by default at <code class="docutils literal notranslate"><span class="pre">https://eventyay.com/bigorg/awesomecon/</span></code>
+and the admin panel is available at <code class="docutils literal notranslate"><span class="pre">https://eventyay.com/control/event/bigorg/awesomecon/</span></code>.</p>
+<p>If the organizer now configures a custom domain like <code class="docutils literal notranslate"><span class="pre">tickets.bigorg.com</span></code>, his event will
+from now on be available on <code class="docutils literal notranslate"><span class="pre">https://tickets.bigorg.com/awesomecon/</span></code>. The former URL at
+<code class="docutils literal notranslate"><span class="pre">eventyay.com</span></code> will redirect there. However, the admin panel will still only be available
+on <code class="docutils literal notranslate"><span class="pre">eventyay.com</span></code> for convenience and security reasons.</p>
+<section id="url-routing">
+<h2>URL routing<a class="headerlink" href="#url-routing" title="Permalink to this heading">¶</a></h2>
+<p>The hard part about implementing this URL routing in Django is that
+<code class="docutils literal notranslate"><span class="pre">https://eventyay.com/bigorg/awesomecon/</span></code> contains two parameters of nearly arbitrary content
+and <code class="docutils literal notranslate"><span class="pre">https://tickets.bigorg.com/awesomecon/</span></code> contains only one. The only robust way to do
+this is by having <em>separate</em> URL configuration for those two cases. In pretix, we call the
+former our <code class="docutils literal notranslate"><span class="pre">maindomain</span></code> config and the latter our <code class="docutils literal notranslate"><span class="pre">subdomain</span></code> config. For pretix’s core
+modules we do some magic to avoid duplicate configuration, but for a fairly simple plugin with
+only a handful of routes, we recommend just configuring the two URL sets separately.</p>
+<p>The file <code class="docutils literal notranslate"><span class="pre">urls.py</span></code> inside your plugin package will be loaded and scanned for URL configuration
+automatically and should be provided by any plugin that provides any view.</p>
+<p>A very basic example that provides one view in the admin panel and one view in the frontend
+could look like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">django.conf.urls</span><span class="w"> </span><span class="kn">import</span> <span class="n">url</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">views</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^control/event/(?P&lt;organizer&gt;[^/]+)/(?P&lt;event&gt;[^/]+)/mypluginname/&#39;</span><span class="p">,</span>
+        <span class="n">views</span><span class="o">.</span><span class="n">AdminView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;backend&#39;</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">event_patterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^mypluginname/&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">FrontendView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;frontend&#39;</span><span class="p">),</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As you can see, the view in the frontend is not included in the standard Django <code class="docutils literal notranslate"><span class="pre">urlpatterns</span></code>
+setting but in a separate list with the name <code class="docutils literal notranslate"><span class="pre">event_patterns</span></code>. This will automatically prepend
+the appropriate parameters to the regex (e.g. the event or the event and the organizer, depending
+on the called domain).</p>
+</div>
+<p>If you only provide URLs in the admin area, you do not need to provide a <code class="docutils literal notranslate"><span class="pre">event_patterns</span></code> attribute.</p>
+</section>
+<section id="url-reversal">
+<h2>URL reversal<a class="headerlink" href="#url-reversal" title="Permalink to this heading">¶</a></h2>
+<p>pretix uses Django’s URL namespacing feature. The URLs of pretix’s core are available in the <code class="docutils literal notranslate"><span class="pre">control</span></code>
+and <code class="docutils literal notranslate"><span class="pre">presale</span></code> namespaces, there are only very few URLs in the root namespace. Your plugin’s URLs will
+be available in the <code class="docutils literal notranslate"><span class="pre">plugins:&lt;applabel&gt;</span></code> namespace, e.g. the form of the email sending plugin is
+available as <code class="docutils literal notranslate"><span class="pre">plugins:sendmail:send</span></code>.</p>
+<p>Generating a URL for the frontend is a complicated task, because you need to know whether the event’s
+organizer uses a custom URL or not and then generate the URL with a different domain and different
+arguments based on this information. pretix provides some helpers to make this easier. The first helper
+is a python method that emulates a behavior similar to <code class="docutils literal notranslate"><span class="pre">reverse</span></code>:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="pretix.multidomain.urlreverse.eventreverse">
+<span class="sig-prename descclassname"><span class="pre">pretix.multidomain.urlreverse.</span></span><span class="sig-name descname"><span class="pre">eventreverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.multidomain.urlreverse.eventreverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Works similar to <code class="docutils literal notranslate"><span class="pre">django.core.urlresolvers.reverse</span></code> but takes into account that some
+organizers or events might have their own (sub)domain instead of a subpath.</p>
+<p>Non-keyword arguments are not supported as we want do discourage using them for better
+readability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> – An <code class="docutils literal notranslate"><span class="pre">Event</span></code> or <code class="docutils literal notranslate"><span class="pre">Organizer</span></code> object</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the URL route</p></li>
+<li><p><strong>kwargs</strong> – A dictionary of additional keyword arguments that should be used. You do not
+need to provide the organizer or event slug here, it will be added automatically as
+needed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An absolute URL (including scheme and host) as a string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>In addition, there is a template tag that works similar to <code class="docutils literal notranslate"><span class="pre">url</span></code> but takes an event or organizer object
+as its first argument and can be used like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">load</span> <span class="n">eventurl</span> <span class="o">%</span><span class="p">}</span>
+<span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{</span><span class="si">% e</span><span class="s2">venturl request.event &quot;</span><span class="n">presale</span><span class="p">:</span><span class="n">event</span><span class="o">.</span><span class="n">checkout</span><span class="s2">&quot; step=&quot;</span><span class="n">payment</span><span class="s2">&quot; %}&quot;</span><span class="o">&gt;</span><span class="n">Pay</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="implementation-details">
+<h2>Implementation details<a class="headerlink" href="#implementation-details" title="Permalink to this heading">¶</a></h2>
+<p>There are some other caveats when using a design like this, e.g. you have to care about cookie domains
+and referrer verification yourself. If you want to see how we built this, look into the <code class="docutils literal notranslate"><span class="pre">pretix/multidomain/</span></code>
+sub-tree.</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="i18n.html" class="btn btn-neutral float-right" title="Internationalization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="models.html" class="btn btn-neutral" title="Data model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

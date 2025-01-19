@@ -1,0 +1,296 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Directory structure &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="up" title="Developer documentation" href="index.html"/>
+        <link rel="next" title="Plugin documentation" href="../plugins/index.html"/>
+        <link rel="prev" title="Plugin quality checklist" href="api/quality.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="implementation/index.html">Implementation and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/index.html">Plugin development</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Developer documentation</a> &raquo;</li>
+        
+      <li>Directory structure</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/development/structure.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="directory-structure">
+<h1>Directory structure<a class="headerlink" href="#directory-structure" title="Permalink to this heading">¶</a></h1>
+<p>All the source code lives in <code class="docutils literal notranslate"><span class="pre">src/</span></code>, which has several subdirectories.</p>
+<dl>
+<dt>pretix/</dt><dd><p>This directory contains nearly all source code that belongs to pretix.</p>
+<dl class="simple">
+<dt>base/</dt><dd><p>This is the Django app containing all the models and methods which are
+essential to all of pretix’s features.</p>
+</dd>
+<dt>control/</dt><dd><p>This is the Django app containing the front end for organizers.</p>
+</dd>
+<dt>presale/</dt><dd><p>This is the Django app containing the front end for users buying tickets.</p>
+</dd>
+<dt>api/</dt><dd><p>This is the Django app containing all views and serializers for pretix’
+<a class="reference internal" href="../api/index.html#rest-api"><span class="std std-ref">REST API</span></a>.</p>
+</dd>
+<dt>helpers/</dt><dd><p>Helpers contain a very few modules providing workarounds for low-level flaws in
+Django or installed 3rd-party packages.</p>
+</dd>
+<dt>locale/</dt><dd><p>Contains translation file for pretix</p>
+</dd>
+<dt>multidomain/</dt><dd><p>Additional code implementing our customized <a class="reference internal" href="implementation/urlconfig.html#urlconf"><span class="std std-ref">URL handling</span></a>.</p>
+</dd>
+<dt>static/</dt><dd><p>Contains all static files (CSS/SASS, JavaScript, images) of pretix’ core
+We use libsass as a preprocessor for CSS. Our own sass code is built in the same
+step as Bootstrap and FontAwesome, so their mixins etc. are fully available.</p>
+</dd>
+<dt>testutils/</dt><dd><p>Contains helper methods that are useful to write the test suite for pretix or test
+suites for pretix plugins.</p>
+</dd>
+</dl>
+</dd>
+<dt>tests/</dt><dd><p>This is the root directory for all test codes. It includes subdirectories <code class="docutils literal notranslate"><span class="pre">api</span></code>, <code class="docutils literal notranslate"><span class="pre">base</span></code>,
+<code class="docutils literal notranslate"><span class="pre">control</span></code>, <code class="docutils literal notranslate"><span class="pre">presale</span></code>, <code class="docutils literal notranslate"><span class="pre">helpers`,</span> <span class="pre">``multidomain</span></code> and <code class="docutils literal notranslate"><span class="pre">plugins</span></code> to mirror the structure
+of the pretix source code as well as <code class="docutils literal notranslate"><span class="pre">testdummy</span></code>, which is a pretix plugin used during
+testing.</p>
+</dd>
+</dl>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../plugins/index.html" class="btn btn-neutral float-right" title="Plugin documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="api/quality.html" class="btn btn-neutral" title="Plugin quality checklist" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Single Sign-On (SSO) Implementation with JWT and OAuth2 &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Single Sign-On (SSO) Implementation with JWT and OAuth2</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/development/sso_with_talk.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="single-sign-on-sso-implementation-with-jwt-and-oauth2">
+<h1>Single Sign-On (SSO) Implementation with JWT and OAuth2<a class="headerlink" href="#single-sign-on-sso-implementation-with-jwt-and-oauth2" title="Permalink to this heading">¶</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
+<p>This document provides a step-by-step guide to implementing Single Sign-On (SSO) between the <cite>ticket</cite> and <cite>talk</cite> applications using JWT tokens and Django OAuth Toolkit. The configuration involves customizing the OAuth2 <cite>AuthorizationView</cite>, handling login processes to set JWT cookies, and ensuring a seamless SSO experience across applications.</p>
+</section>
+<section id="pre-requisites">
+<h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Django &gt;= 3.11</p></li>
+<li><p>Django OAuth Toolkit</p></li>
+<li><p>PyJWT</p></li>
+<li><p>HTTPS configuration for secure cookie handling</p></li>
+</ul>
+</section>
+<section id="step-1-customize-authorization-view">
+<h2>Step 1: Customize Authorization View<a class="headerlink" href="#step-1-customize-authorization-view" title="Permalink to this heading">¶</a></h2>
+<p>To bypass the OAuth2 consent screen for trusted applications and automatically set a JWT cookie upon successful authorization, we override the <cite>AuthorizationView</cite>.</p>
+<p>src/pretix/control/views/auth.py</p>
+</section>
+<section id="step-2-update-url-configuration">
+<h2>Step 2: Update URL Configuration<a class="headerlink" href="#step-2-update-url-configuration" title="Permalink to this heading">¶</a></h2>
+<p>Update the URL configuration to use the <cite>CustomAuthorizationView</cite>:</p>
+<p>src/pretix/control/urls.py</p>
+</section>
+<section id="step-3-modify-login-view-to-set-jwt-cookie">
+<h2>Step 3: Modify Login View to Set JWT Cookie<a class="headerlink" href="#step-3-modify-login-view-to-set-jwt-cookie" title="Permalink to this heading">¶</a></h2>
+<p>In the <cite>ticket</cite> application, modify the <cite>login</cite> view to set a JWT cookie after successful authentication.</p>
+<p>Update <cite>login</cite> view in <cite>src/pretix/control/views/auth.py</cite>:</p>
+</section>
+<section id="step-4-security-and-configuration">
+<h2>Step 4: Security and Configuration<a class="headerlink" href="#step-4-security-and-configuration" title="Permalink to this heading">¶</a></h2>
+<p>Ensure that all configurations are secure and appropriate for your environment:</p>
+<ul class="simple">
+<li><p>Use <cite>SECRET_KEY</cite> in <cite>settings.py</cite> for JWT signing.</p></li>
+</ul>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this heading">¶</a></h2>
+<p>By following these steps, you can implement SSO using JWT and Django OAuth Toolkit between the <cite>ticket</cite> and <cite>talk</cite> applications. This configuration allows for seamless user authentication while maintaining a secure environment. Ensure to review and follow security best practices to protect user data and session integrity.</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

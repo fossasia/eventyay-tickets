@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Developer documentation &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="next" title="Concepts and Terminology" href="concepts.html"/>
+        <link rel="prev" title="Creating an external checkout process" href="../api/guides/custom_checkout.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="implementation/index.html">Implementation and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/index.html">Plugin development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Developer documentation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/development/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="developer-documentation">
+<h1>Developer documentation<a class="headerlink" href="#developer-documentation" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">Concepts and Terminology</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="concepts.html#the-components">The components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts.html#users-and-events">Users and events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts.html#items-and-variations">Items and variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts.html#quotas">Quotas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts.html#vouchers">Vouchers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts.html#orders">Orders</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Development setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#obtain-a-copy-of-the-source-code">Obtain a copy of the source code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#external-dependencies">External Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#your-local-python-environment">Your local python environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#working-with-the-code">Working with the code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#working-with-the-documentation">Working with the documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contribution/index.html">Contributing to pretix</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contribution/general.html">General remarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribution/style.html">Coding style and quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribution/codeofconduct.html">Code of Conduct</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="implementation/index.html">Implementation and Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="implementation/models.html">Data model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="implementation/urlconfig.html">Working with URLs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="implementation/i18n.html">Internationalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="implementation/settings.html">Settings storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="implementation/background.html">Background tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="implementation/email.html">Sending Email</a></li>
+<li class="toctree-l2"><a class="reference internal" href="implementation/permissions.html">Permissions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="implementation/logging.html">Logging and notifications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="translation/index.html">Translating pretix</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="translation/index.html#official-and-inofficial-languages">Official and inofficial languages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="translation/index.html#using-our-translation-platform">Using our translation platform</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">Plugin development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/plugins.html">Creating a plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/exporter.html">Writing an exporter plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ticketoutput.html">Writing a ticket output plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/payment.html">Writing a payment provider plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/payment_2.0.html">Porting a payment provider from pretix 1.x to pretix 2.x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/email.html">Writing an HTML e-mail renderer plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/placeholder.html">Writing an e-mail placeholder plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/invoice.html">Writing an invoice renderer plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/shredder.html">Writing a data shredder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/import.html">Extending the order import process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/customview.html">Creating custom views</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/auth.html">Pluggable authentication backends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/general.html">General APIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/quality.html">Plugin quality checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Directory structure</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="concepts.html" class="btn btn-neutral float-right" title="Concepts and Terminology" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../api/guides/custom_checkout.html" class="btn btn-neutral" title="Creating an external checkout process" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
