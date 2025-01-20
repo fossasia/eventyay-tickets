@@ -127,6 +127,12 @@
     a.status-danger {
       background: $brand-danger;
     }
+    a.component {
+      background: $brand-primary;
+    }
+    a.middle-component {
+      background: #3A9CE3;
+    }
   }
   .daterange, .times {
     display: block;

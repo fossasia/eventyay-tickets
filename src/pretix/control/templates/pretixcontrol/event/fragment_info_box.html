@@ -1,19 +1,21 @@
 {% load i18n %}
-<div class="panel-heading">
-    <h3 class="panel-title">
-        {% trans "Event organizer" %}
-    </h3>
-</div>
-<div class="panel-body timeline overide-panel-body">
-    <div class="info-row">
-        {% trans "This event is organized by" %} <strong><a href="{% url 'control:organizer' request.organizer.slug %}">{{ request.organizer }}</a></strong>
+<div class="panel panel-default items widget-container widget-small no-padding last-column">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {% trans "Event organizer" %}
+        </h3>
     </div>
-    <div class="info-row">
-        {% trans "Teams of the organizer are" %} 
-        <span></span>
-        {% for id, name in organizer_teams %}
-            <strong><a href="{% url 'control:organizer.team' request.organizer.slug id %}">{{ name }}</a></strong>
-            {% if not forloop.last %}, {% endif %}
-        {% endfor %}
+    <div class="panel-body timeline overide-panel-body">
+        <div class="info-row">
+            {% trans "This event is organized by" %} <strong><a href="{% url 'control:organizer' request.organizer.slug %}">{{ request.organizer }}</a></strong>
+        </div>
+        <div class="info-row">
+            {% trans "Teams of the organizer are" %} 
+            <span></span>
+            {% for id, name in organizer_teams %}
+                <strong><a href="{% url 'control:organizer.team' request.organizer.slug id %}">{{ name }}</a></strong>
+                {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </div>
     </div>
 </div>

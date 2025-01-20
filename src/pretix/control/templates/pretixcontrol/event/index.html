@@ -110,13 +110,9 @@
     {% endif %}
     <div class="dashboard custom">
         {% if not request.event.has_subevents or subevent %}
-            <div class="panel panel-default items widget-container widget-small no-padding column"">
-                {% include "pretixcontrol/event/fragment_timeline.html" %}
-            </div>
+            {% include "pretixcontrol/event/fragment_timeline.html" %}
         {% endif %}
-        <div class="panel panel-default items widget-container widget-small no-padding last-column"">
-            {% include "pretixcontrol/event/fragment_info_box.html" %}
-        </div>
+        {% include "pretixcontrol/event/fragment_info_box.html" %}
     </div>
     <div class="dashboard">
         {% for w in widgets %}

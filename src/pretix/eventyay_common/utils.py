@@ -1,6 +1,7 @@
 import hashlib
 import logging
 from datetime import datetime, timedelta, timezone
+from enum import StrEnum
 from typing import Optional
 
 import jwt
@@ -10,6 +11,12 @@ from django.http import HttpRequest
 from pretix.base.models import SubEvent
 
 logger = logging.getLogger(__name__)
+
+
+class EventCreatedFor(StrEnum):
+    BOTH = "all"
+    TICKET = "tickets"
+    TALK = "talk"
 
 
 def generate_token(request):
