@@ -347,6 +347,7 @@ urlpatterns = [
         url(r'^global/settings/$', global_settings.GlobalSettingsView.as_view(), name='admin.global.settings'),
         url(r'^global/update/$', global_settings.UpdateCheckView.as_view(), name='admin.global.update'),
         url(r'^global/message/$', global_settings.MessageView.as_view(), name='admin.global.message'),
+        url(r'^global/billing_validation/$', global_settings.ToggleBillingValidationView.as_view(), name="admin.toggle.billing.validation"),
         url(r'^vouchers/$', admin.VoucherList.as_view(), name='admin.vouchers'),
         url(r'^vouchers/add$', admin.VoucherCreate.as_view(), name='admin.vouchers.add'),
         url(r'^vouchers/(?P<voucher>\d+)/$', admin.VoucherUpdate.as_view(), name='admin.voucher'),
