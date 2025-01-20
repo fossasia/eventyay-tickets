@@ -54,7 +54,7 @@ fi
 # for in-docker development, we want logging to be debug, and
 # gunicorn to reload when source files have changed.
 if [ "$1" == "devel" ]; then
-    python3 -m pretix updatestyles
+    make production
     export GUNICORN_LOGLEVEL=debug
     export GUNICORN_RELOAD=true
     exec sudo -E /usr/bin/supervisord -n -c /etc/supervisord.all.conf
