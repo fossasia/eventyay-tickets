@@ -20,6 +20,7 @@ from pretix.control.views.auth import process_login_and_set_cookie
 from pretix.helpers.urls import build_absolute_uri
 
 from .schemas.login_providers import LoginProviders
+from .schemas.oauth2_params import OAuth2Params
 
 logger = logging.getLogger(__name__)
 adapter = get_adapter()
@@ -61,20 +62,18 @@ class OAuthLoginView(View):
         if parsed.netloc or parsed.scheme:
             return
 
-        allowed_params = {
-            "client_id",
-            "redirect_uri",
-            "state",
-            "scope",
-            "response_type"
-        }
         params = parse_qs(parsed.query)
         sanitized_params = {
             k: v[0].strip()
-            for k, v in params.items() if k in allowed_params
+            for k, v in params.items()
+            if k in OAuth2Params.model_fields.keys()
         }
 
-        request.session["oauth2_params"] = sanitized_params
+        try:
+            oauth2_params = OAuth2Params.model_validate(sanitized_params)
+            request.session["oauth2_params"] = oauth2_params.model_dump()
+        except ValidationError as e:
+            logger.error("Error while validating OAuth2 parameters: %s", e)
 
 
 class OAuthReturnView(View):
@@ -83,10 +82,9 @@ class OAuthReturnView(View):
             user = self.get_or_create_user(request)
             response = process_login_and_set_cookie(request, user, False)
             oauth2_params = request.session.pop("oauth2_params", {})
-            if oauth2_params:
-                get_params = self.prepare_oauth2_params(oauth2_params)
+            if oauth2_params and self.validate_oauth2_params(oauth2_params):
                 auth_url = reverse("control:oauth2_provider.authorize")
-                return redirect(f"{auth_url}?{get_params.urlencode()}")
+                return redirect(f"{auth_url}?{urlencode(oauth2_params)}")
 
             return response
         except AttributeError as e:
@@ -112,20 +110,17 @@ class OAuthReturnView(View):
         )[0]
 
     @staticmethod
-    def prepare_oauth2_params(oauth2_params: dict) -> dict:
+    def validate_oauth2_params(oauth2_params: dict) -> bool:
         """
-        Prepare OAuth2 parameters to be passed to the OAuth2 authorization view.
+        Validate OAuth2 parameters to be passed to the OAuth2 authorization view.
         """
-        get_params = {}
-        base_params = {
-            "response_type": oauth2_params.get("response_type", "code"),
-            "client_id": oauth2_params.get("client_id"),
-            "redirect_uri": oauth2_params.get("redirect_uri"),
-            "scope": oauth2_params.get("scope", "profile"),
-            "state": oauth2_params.get("state"),
-        }
-        get_params.update(base_params)
-        return get_params
+        try:
+            OAuth2Params.model_validate(oauth2_params)
+            return True
+        except ValidationError as e:
+            logger.error("Error while validating OAuth2 parameters: %s", e)
+
+        return False
 
 
 class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
