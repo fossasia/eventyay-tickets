@@ -281,7 +281,10 @@ class EventCreateView(SafeSessionWizardView):
             is_video_creation=foundation_data.get("is_video_creation"), event_data=event_data
         )
 
-        return redirect(reverse("eventyay_common:events") + "?congratulations=1")
+        return redirect(reverse("eventyay_common:event.index", kwargs={
+            'event': event.slug,
+            'organizer': event.organizer.slug
+        }))
 
 
 class EventUpdate(

@@ -1,0 +1,92 @@
+{% load i18n %}
+<div class="dashboard custom">
+    <div class="panel panel-default items widget-container widget-full no-padding">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {% trans "Your Dashboard" %}
+            </h3>
+        </div>
+        <div class="panel-body">
+            <p>
+                {% trans "Your event dashboard offers an overview of three seamlessly integrated components, each customizable to meet your needs: Tickets for sales and registration management, Talks and Speakers for organizing content and creating schedules, and Video for hosting engaging and interactive virtual events with live interpretation." %}
+            </p>
+        </div>
+    </div>
+
+    <div class="panel panel-default widget-container widget-small no-padding column">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {% trans "Tickets" %}
+            </h3>
+        </div>
+        <div class="panel-body">
+            <p>
+                {% trans "Set up and configure ticketing for your event and sell add-ons such as premium access or Swag. Manage attendees and exhibitors, design custom badges, and streamline your event marketing by sending targeted emails." %}
+            </p>
+            <p>
+                {% trans "Go to" %} <a href="{% url 'control:event.index' organizer=request.organizer.slug event=request.event.slug %}">{% trans "Tickets Dashboard" %}</a>
+            </p>
+        </div>
+    </div>
+    <div class="panel panel-default widget-container widget-small no-padding column">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {% trans "Talks and Speakers" %}
+            </h3>
+        </div>
+        <div class="panel-body">
+            <p>
+                {% trans "Setup and configure content for your event, create calls for proposals and speakers and build a schedule. Manage the submission and review process, and select speakers." %}
+            </p>
+            {% if is_talk_event_created %}
+                <p>
+                    {% trans "Go to" %} <a href="{{ request.event.talk_dashboard_url }}">{% trans "Talks Dashboard" %}</a>
+                </p>
+            {% else %}
+                <p>
+                    {% trans "Go to" %} <a href="#" data-toggle="modal" data-target="#alert-modal">{% trans "Talks Dashboard" %}</a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="panel panel-default widget-container widget-small no-padding last-column">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {% trans "Video" %}
+            </h3>
+        </div>
+        <div class="panel-body">
+            <p>
+                {% trans "Setup and configure live video streams, online workshops with live-audio interpretation and chats. Offer virtual exhibitor booths with rich content and social media integration." %}
+            </p>
+            {% if is_video_enabled %}
+                <p>
+                    {% trans "Go to" %} <a href="{% url 'eventyay_common:event.create_access_to_video' organizer=request.organizer.slug event=request.event.slug %}">{% trans "Video Configuration" %}</a>
+                </p>
+            {% else %}
+                <p>
+                    {% trans "Go to" %} <a href="#" data-toggle="modal" data-target="#alert-modal">{% trans "Video Configuration" %}</a>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="modal popup-modal" id="alert-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="modal-card">
+                        <div class="modal-card-icon">
+                            <i class="fa fa-cog big-rotating-icon"></i>
+                        </div>
+                        <div class="modal-card-content">
+                            <h3>{% trans "Component not enabled!" %}</h3>
+                            <p>{% trans "You need to enable this component first" %}</p>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Ok" %}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

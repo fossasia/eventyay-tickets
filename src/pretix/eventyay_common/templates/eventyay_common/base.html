@@ -144,6 +144,43 @@
                 </ul>
                 <div class="navbar-default sidebar" role="navigation">
                     <div class="sidebar-nav navbar-nav-collapse navbar-collapse">
+                        <div class="dropdown context-selector">
+                            {% block nav_top_header %}
+                                {% if request.event %}
+                                    <a href="#" class="dropdown-toggle">
+                                        <span class="fa-stack fa-lg">
+                                          <i class="fa fa-circle fa-stack-2x"></i>
+                                          <i class="fa fa-calendar fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                        <div class="context-indicator">
+                                            <span class="context-name">{{ request.event }}</span>
+                                            <span class="context-meta">{{ request.event.get_date_range_display }}</span>
+                                        </div>
+                                    </a>
+                                {% elif request.organizer %}
+                                    <a href="#" class="dropdown-toggle">
+                                        <span class="fa-stack fa-lg">
+                                          <i class="fa fa-circle fa-stack-2x"></i>
+                                          <i class="fa fa-group fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                        <div class="context-indicator">
+                                            <span class="context-name">{{ request.organizer }}</span>
+                                            <span class="context-meta">{% trans "Organizer account" %}</span>
+                                        </div>
+                                    </a>
+                                {% else %}
+                                <a href="#" class="dropdown-toggle">
+                                    <span class="fa-stack fa-lg">
+                                      <i class="fa fa-circle fa-stack-2x"></i>
+                                      <i class="fa fa-user fa-stack-1x fa-inverse"></i>
+                                    </span>
+                                    <div class="context-indicator">
+                                        <span class="context-name">{{ request.user }}</span>
+                                    </div>
+                                </a>
+                                {% endif %}
+                            {% endblock %}
+                        </div>
                         <ul class="nav" id="side-menu">
                             {% block nav %}
                                 {% for nav in nav_items %}
