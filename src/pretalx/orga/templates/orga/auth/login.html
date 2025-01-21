@@ -3,5 +3,5 @@
 {% load static %}
 {% block title %}{% translate "Sign in" %}{% endblock title %}
 {% block content %}
-    {% include "common/auth.html" with hide_register=True %}
+    {% include "common/auth.html" with hide_register=True next_url=request.get_full_path %}
 {% endblock content %}
