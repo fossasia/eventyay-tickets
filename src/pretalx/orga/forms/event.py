@@ -21,7 +21,7 @@ from pretalx.common.forms.mixins import (
     JsonSubfieldMixin,
     ReadOnlyFlag,
 )
-from pretalx.common.forms.renderers import InlineFormRenderer
+from pretalx.common.forms.renderers import InlineFormLabelRenderer
 from pretalx.common.forms.widgets import (
     EnhancedSelect,
     EnhancedSelectMultiple,
@@ -728,7 +728,7 @@ class ReviewScoreCategoryForm(I18nHelpText, I18nModelForm):
 
 
 class EventExtraLinkForm(I18nModelForm):
-    default_renderer = InlineFormRenderer
+    default_renderer = InlineFormLabelRenderer
 
     class Meta:
         model = EventExtraLink
