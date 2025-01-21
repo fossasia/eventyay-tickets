@@ -64,7 +64,7 @@ class OAuthLoginView(View):
 
         params = parse_qs(parsed.query)
         sanitized_params = {
-            k: v[0].strip()
+            k: v[0]
             for k, v in params.items()
             if k in OAuth2Params.model_fields.keys()
         }
@@ -73,7 +73,7 @@ class OAuthLoginView(View):
             oauth2_params = OAuth2Params.model_validate(sanitized_params)
             request.session["oauth2_params"] = oauth2_params.model_dump()
         except ValidationError as e:
-            logger.error("Error while validating OAuth2 parameters: %s", e)
+            logger.warning("Ignore invalid OAuth2 parameters: %s.", e)
 
 
 class OAuthReturnView(View):
@@ -82,9 +82,14 @@ class OAuthReturnView(View):
             user = self.get_or_create_user(request)
             response = process_login_and_set_cookie(request, user, False)
             oauth2_params = request.session.pop("oauth2_params", {})
-            if oauth2_params and self.validate_oauth2_params(oauth2_params):
-                auth_url = reverse("control:oauth2_provider.authorize")
-                return redirect(f"{auth_url}?{urlencode(oauth2_params)}")
+            if oauth2_params:
+                try:
+                    oauth2_params = OAuth2Params.model_validate(oauth2_params)
+                    query_string = urlencode(oauth2_params.model_dump())
+                    auth_url = reverse("control:oauth2_provider.authorize")
+                    return redirect(f"{auth_url}?{query_string}")
+                except ValidationError as e:
+                    logger.warning("Ignore invalid OAuth2 parameters: %s.", e)
 
             return response
         except AttributeError as e:
@@ -108,19 +113,6 @@ class OAuthReturnView(View):
                 "password": "",
             },
         )[0]
-
-    @staticmethod
-    def validate_oauth2_params(oauth2_params: dict) -> bool:
-        """
-        Validate OAuth2 parameters to be passed to the OAuth2 authorization view.
-        """
-        try:
-            OAuth2Params.model_validate(oauth2_params)
-            return True
-        except ValidationError as e:
-            logger.error("Error while validating OAuth2 parameters: %s", e)
-
-        return False
 
 
 class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
