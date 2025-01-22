@@ -80,7 +80,7 @@
             {% for e in events %}
                 <tr>
                     <td class="event-name-col">
-                        <strong><a href='{% url "eventyay_common:event.update" organizer=e.organizer.slug event=e.slug %}'>{{ e.name }}</a></strong>
+                        <strong><a href='{% url "eventyay_common:event.index" organizer=e.organizer.slug event=e.slug %}'>{{ e.name }}</a></strong>
                     </td>
                     <td>{{ e.slug }}</td>
                     <td>{{ e.organizer }}</td>
