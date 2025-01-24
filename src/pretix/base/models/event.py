@@ -20,6 +20,7 @@ from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.utils.formats import date_format
 from django.utils.functional import cached_property
+from django.utils.html import format_html
 from django.utils.timezone import make_aware, now
 from django.utils.translation import gettext, gettext_lazy as _
 from django_scopes import ScopedManager, scopes_disabled
@@ -37,6 +38,8 @@ from pretix.helpers.thumb import get_thumbnail
 
 from ..settings import settings_hierarkey
 from .organizer import Organizer, OrganizerBillingModel, Team
+
+TALK_HOSTNAME = settings.TALK_HOSTNAME
 
 
 class EventMixin:
@@ -1134,20 +1137,27 @@ class Event(EventMixin, LoggedModel):
 
     @property
     def talk_schedule_url(self):
-        talk_host = settings.TALK_HOSTNAME
-        url = urljoin(talk_host, f"{self.slug}/schedule")
+        url = urljoin(TALK_HOSTNAME, f"{self.slug}/schedule")
         return url
 
     @property
     def talk_session_url(self):
-        talk_host = settings.TALK_HOSTNAME
-        url = urljoin(talk_host, f"{self.slug}/talk")
+        url = urljoin(TALK_HOSTNAME, f"{self.slug}/talk")
         return url
 
     @property
     def talk_speaker_url(self):
-        talk_host = settings.TALK_HOSTNAME
-        url = urljoin(talk_host, f"{self.slug}/speaker")
+        url = urljoin(TALK_HOSTNAME, f"{self.slug}/speaker")
+        return url
+
+    @property
+    def talk_dashboard_url(self):
+        url = urljoin(TALK_HOSTNAME, f"orga/event/{self.slug}")
+        return url
+
+    @property
+    def talk_settings_url(self):
+        url = urljoin(TALK_HOSTNAME, f"orga/event/{self.slug}/settings")
         return url
 
     @cached_property
@@ -1196,26 +1206,20 @@ class Event(EventMixin, LoggedModel):
                     )
                 )
 
-        billing_obj = OrganizerBillingModel.objects.filter(organizer=self.organizer).first()
-
-        if not billing_obj or not billing_obj.stripe_payment_method_id:
-            issues.append(
-                (
-                    "<a {a_attr}>"
-                    + gettext('You need to fill the billing information.')
-                    + "</a>"
-                ).format(
-                    a_attr='href="%s#tab-0-1-open"'
-                           % (
-                               reverse(
-                                   "control:organizer.settings.billing",
-                                   kwargs={
-                                       "organizer": self.organizer.slug,
-                                   },
-                               ),
-                           ),
+        gs = GlobalSettingsObject()
+        if gs.settings.get("billing_validation", True) is True:
+            billing_obj = OrganizerBillingModel.objects.filter(organizer=self.organizer).first()
+            if not billing_obj or not billing_obj.stripe_payment_method_id:
+                url = reverse(
+                    "control:organizer.settings.billing",
+                    kwargs={"organizer": self.organizer.slug}
                 )
-            )
+                issue = format_html(
+                    '<a href="{}#tab-0-1-open">{}</a>',
+                    url,
+                    gettext("You need to fill the billing information.")
+                )
+                issues.append(issue)
 
         responses = event_live_issues.send(self)
         for receiver, response in sorted(responses, key=lambda r: str(r[0])):

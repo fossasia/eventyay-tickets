@@ -1,3 +1,5 @@
+@import "../../fontawesome/scss/font-awesome.scss";
+
 #event-nav {
     .header-nav {
         border-color: darken($btn-primary-bg, 10%) !important;
@@ -27,11 +29,10 @@
     }
 }
 
-
 .custom {
     margin-left: 0px;
     margin-right: 0px;
-  }
+}
 
 .dashboard .widget-container.no-padding {
     padding: 0;
@@ -53,14 +54,121 @@
     margin-right: 0px;
 }
 
-@media (max-width: $screen-sm-max) {
+.panel-body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 80%;
+}
+
+.overide-panel-body {
+    display: inline-block;
+}
+
+.panel-body p:first-child {
+    grid-row: 1;
+    margin-bottom: 1%;
+}
+
+.popup-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, .7);
+    z-index: 900000;
+    padding: 10px;
+
+    .modal-dialog {
+        margin-top: 50px;
+    }
+
+    .modal-content {
+        background: transparent;
+        box-shadow: none;
+        border: none;
+    }
+
+    .modal-body {
+        padding: 0;
+    }
+
+    .modal-card {
+        margin: 50px auto 0;
+        width: 90%;
+        max-width: 600px;
+        background: white;
+        border-radius: $border-radius-large;
+        box-shadow: 0 7px 14px 0 rgba(78, 50, 92, 0.1), 0 3px 6px 0 rgba(0,0,0,.07);
+        padding: 40px;
+        min-height: 160px;
+
+        .modal-card-icon {
+            float: left;
+            width: 150px;
+            text-align: center;
+
+            .big-rotating-icon {
+                font-size: 120px;
+                margin: 0;
+                color: $brand-primary;
+                -webkit-animation: fa-spin 8s infinite linear;
+                animation: fa-spin 8s infinite linear;
+            }
+        }
+
+        .modal-card-content {
+            margin-left: 160px;
+            text-align: center;
+
+            h3 {
+                margin-top: 0;
+            }
+
+            p {
+                margin: 15px 0;
+            }
+
+            .button-group {
+                margin-top: 30px;
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+
+                .btn {
+                    min-width: 100px;
+                }
+            }
+
+            // For single button modals
+            .btn:not(.button-group .btn) {
+                margin-top: 30px;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    }
+}
+
+@media (min-width: $screen-md-min){
+    .panel-body {
+        min-height: 90%;
+    }
+}
+
+@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
     .dashboard .widget-container.widget-small.no-padding.column {
         width: 100%;
         margin-right: 0px;
     }
+
+    .panel-body {
+        min-height: 85%;
+    }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (min-width: $screen-xs-min) and (max-width: $screen-xs-max) {
     .dashboard .widget-container.widget-small.no-padding.column {
         margin-right: 0px;
     }
