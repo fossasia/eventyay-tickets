@@ -1,0 +1,47 @@
+.col-value {
+    padding-left: 0px;
+    vertical-align: bottom;
+}
+
+.enabled-btn {
+    color: green;
+    min-width: 70px;
+    margin-left: 15px;
+    text-align: center;
+    padding: 5px 10px;
+    font-weight: 400;
+    border-radius: 3px;
+}
+
+.disabled-btn {
+    color: red;
+    min-width: 70px;
+    margin-left: 15px;
+    text-align: center;
+    padding: 5px 10px;
+    font-weight: 400;
+    border-radius: 3px;
+}
+
+
+.setting-part {
+    margin-bottom: 1%;
+}
+
+.custom-form {
+    padding-left: 1px;
+}
+
+@media only screen and (max-width: 992px) {
+    .col-value {
+        padding-left: 4%;
+    }
+
+    .enabled {
+        margin-left: 0;
+    }
+
+    .disabled {
+        margin-left: 0;
+    }
+}

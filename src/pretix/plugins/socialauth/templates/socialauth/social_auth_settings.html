@@ -50,7 +50,11 @@
                                 <td colspan="2">
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">
-                                            {% trans "Client ID (Consumer token)" %}
+                                            {% if provider == "mediawiki" %}
+                                                {% trans "Client Application Key" %}
+                                            {% else %}
+                                                {% trans "Client ID" %}
+                                            {% endif %}
                                         </label>
                                         <div class="col-sm-9">
                                             <input type="text" class="form-control" name="{{ provider }}_client_id" value="{{ settings.client_id }}">
@@ -58,7 +62,11 @@
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-3 control-label">
-                                            {% trans "Secret (Consumer secret)" %}
+                                            {% if provider == "mediawiki" %}
+                                                {% trans "Client Application Secret" %}
+                                            {% else %}
+                                                {% trans "Secret" %}
+                                            {% endif %}
                                         </label>
                                         <div class="col-sm-9">
                                             <input type="password" class="form-control" name="{{ provider }}_secret" value="{{ settings.secret }}">
