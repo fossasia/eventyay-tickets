@@ -1,4 +1,4 @@
-pretix Webinar
+eventyay Webinar
 ==============
 
 Fetch host URLs
