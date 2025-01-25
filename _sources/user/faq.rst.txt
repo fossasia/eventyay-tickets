@@ -51,17 +51,17 @@ needs to create a new order with a different payment method. A payment deadline 
 the ticket if it is paid for within a certain time frame. If you give a two-week guarantee to some of your customers,
 why not to others?
 
-There are some other issues with it as well. pretix allows customers to switch payment methods as long as their payment
+There are some other issues with it as well. eventyay allows customers to switch payment methods as long as their payment
 has not been started or if it has failed. For example, a customer who selected bank transfer can later switch to credit
 card if they haven't sent the money yet, or a customer with a failed credit card payment can switch to a different
 method without creating a new order. If payment deadlines were dependent on the payment method, switching back and
 forth could either allow someone to extend their deadline forever, or render someones order invalid by moving the date
 back in the past.
 
-Why does pretix not support any 1D (linear) bar codes?
+Why does eventyay not support any 1D (linear) bar codes?
 ------------------------------------------------------
 
-We often get asked, why pretix depends on QR codes instead of more traditional 1D bar codes. More often than not, people
+We often get asked, why eventyay depends on QR codes instead of more traditional 1D bar codes. More often than not, people
 tend to already own linear (laser) bar code scanners.
 
 The truth is: we have deliberately chosen not to support 1D bar codes - and that for multiple reasons.
@@ -99,7 +99,7 @@ The truth is: we have deliberately chosen not to support 1D bar codes - and that
     reason why most companies that use bar code scanners use CCD bar code scanners - even if they are only/mostly
     scanning linear bar codes.
 
-You can see that we're not not putting 1D bar codes into pretix to annoy you - it really is about practicability in the
+You can see that we're not not putting 1D bar codes into eventyay to annoy you - it really is about practicability in the
 end.
 
 However: Most professional bar code scanners allow for the scan-engine to be swapped out for a 2D-engine. It certainly

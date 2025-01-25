@@ -214,10 +214,10 @@
             
   <section id="product-structure-guide">
 <h1>Product structure guide<a class="headerlink" href="#product-structure-guide" title="Permalink to this heading">¶</a></h1>
-<p>Between products, categories, variations, add-ons, bundles, and quotas, pretix provides a wide range of features that allow you to set up your event in the way you want it.
+<p>Between products, categories, variations, add-ons, bundles, and quotas, eventyay provides a wide range of features that allow you to set up your event in the way you want it.
 However, it is easy to get lost in the process or to get started with building your event right.
 Often times, there are multiple ways to do something that come with different advantages and disadvantages.
-This guide will walk you through a number of typical examples of pretix event structures and will explain how to set them up – feel free to just skip ahead to a section relevant for you.</p>
+This guide will walk you through a number of typical examples of eventyay event structures and will explain how to set them up – feel free to just skip ahead to a section relevant for you.</p>
 <section id="terminology">
 <h2>Terminology<a class="headerlink" href="#terminology" title="Permalink to this heading">¶</a></h2>
 <dl class="simple">
@@ -409,11 +409,11 @@ workshop 2</p></td>
 <p>All of these products should be part of the same category. In your base product (e.g. your conference ticket), you
 can then create an add-on product configuration allowing users to add products from this category.</p>
 <p>If you edit these products, you will be able to enter the “Start date” and “End date” of the talk or workshop close
-to the bottom of the page. If you fill in these values, pretix will automatically ensure no overlapping talks are
+to the bottom of the page. If you fill in these values, eventyay will automatically ensure no overlapping talks are
 booked.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This option is currently only available on pretix Hosted. If you are interested in using it with pretix Enterprise,
+<p>This option is currently only available on eventyay Hosted. If you are interested in using it with eventyay Enterprise,
 please contact <a class="reference external" href="mailto:sales&#37;&#52;&#48;eventyay&#46;com">sales<span>&#64;</span>eventyay<span>&#46;</span>com</a>.</p>
 </div>
 </section>
@@ -426,7 +426,7 @@ please contact <a class="reference external" href="mailto:sales&#37;&#52;&#48;ev
 <li><p>Any two days: € 17</p></li>
 <li><p>All three days:  € 25</p></li>
 </ul>
-<p>In this case, there are multiple different ways you could set this up with pretix.</p>
+<p>In this case, there are multiple different ways you could set this up with eventyay.</p>
 <section id="option-a-combination-products">
 <h3>Option A: Combination products<a class="headerlink" href="#option-a-combination-products" title="Permalink to this heading">¶</a></h3>
 <p>With this option, you just set up all the different combinations someone could by as a separate product. In this case, you would need 7 products:</p>
@@ -492,7 +492,7 @@ please contact <a class="reference external" href="mailto:sales&#37;&#52;&#48;ev
 </section>
 <section id="use-case-group-discounts">
 <h2>Use case: Group discounts<a class="headerlink" href="#use-case-group-discounts" title="Permalink to this heading">¶</a></h2>
-<p>Often times, you want to give discounts for whole groups attending your event. pretix can’t automatically discount based on volume, but there’s still some ways you can set up group tickets.</p>
+<p>Often times, you want to give discounts for whole groups attending your event. eventyay can’t automatically discount based on volume, but there’s still some ways you can set up group tickets.</p>
 <section id="flexible-group-sizes">
 <h3>Flexible group sizes<a class="headerlink" href="#flexible-group-sizes" title="Permalink to this heading">¶</a></h3>
 <p>If you want to give out discounted tickets to groups starting at a given size, but still billed per person, you can do so by creating a special <strong>Group ticket</strong> at the per-person price and set the <strong>Minimum amount per order</strong> option of the ticket to the minimal group size.</p>
@@ -507,7 +507,7 @@ please contact <a class="reference external" href="mailto:sales&#37;&#52;&#48;ev
 </section>
 <section id="use-case-restricted-audience">
 <h2>Use case: Restricted audience<a class="headerlink" href="#use-case-restricted-audience" title="Permalink to this heading">¶</a></h2>
-<p>Not all events are for everyone. Sometimes, there is a good reason to restrict access to your event or parts of your event only to a specific, invited group. There’s two ways to implement this with pretix:</p>
+<p>Not all events are for everyone. Sometimes, there is a good reason to restrict access to your event or parts of your event only to a specific, invited group. There’s two ways to implement this with eventyay:</p>
 <section id="option-a-required-voucher-codes">
 <h3>Option A: Required voucher codes<a class="headerlink" href="#option-a-required-voucher-codes" title="Permalink to this heading">¶</a></h3>
 <p>If you check the option “<strong>This product can only be bought using a voucher</strong>” of one or multiple products, only people holding an applicable voucher code will be able to buy the product.</p>
@@ -534,7 +534,7 @@ please contact <a class="reference external" href="mailto:sales&#37;&#52;&#48;ev
 </div></blockquote>
 </li>
 </ul>
-<p>You can implement this in pretix using product bundles. In order to do so, you should create the following two products:</p>
+<p>You can implement this in eventyay using product bundles. In order to do so, you should create the following two products:</p>
 <ul class="simple">
 <li><p>Conference ticket at € 450 with a 7% tax rule</p></li>
 <li><p>Conference food at € 150 with a 19% tax rule and the option “<strong>Only sell this product as part of a bundle</strong>” set</p></li>

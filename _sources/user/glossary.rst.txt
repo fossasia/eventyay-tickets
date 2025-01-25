@@ -1,10 +1,10 @@
 Glossary
 ========
 
-This page gives definitions of domain-specific terms that we use a lot inside pretix and that might be used slightly
+This page gives definitions of domain-specific terms that we use a lot inside eventyay and that might be used slightly
 differently elsewhere, as well as their official translations to other languages. In some cases, things have a different
-name internally, which is noted with a |:wrench:| symbol. If you only use pretix, you'll never see these, but if you're
-going to develop around pretix, for example connect to pretix through our API, you need to know these as well.
+name internally, which is noted with a |:wrench:| symbol. If you only use eventyay, you'll never see these, but if you're
+going to develop around eventyay, for example connect to eventyay through our API, you need to know these as well.
 
 
 
@@ -18,22 +18,22 @@ going to develop around pretix, for example connect to pretix through our API, y
      - Definition
    * - | |:gb:| **Organizer**
        | |:de:| Veranstalter
-     - An organizer represents the entity using pretix, usually the company or institution running one or multiple events.
+     - An organizer represents the entity using eventyay, usually the company or institution running one or multiple events.
        In terms of navigation in the system, organizers are the "middle layer" between the system itself and the specific
        events.
-       Multiple organizers on the same pretix system are fully separated from each other with very few exceptions.
+       Multiple organizers on the same eventyay system are fully separated from each other with very few exceptions.
    * - | |:gb:| **Event**
        | |:de:| Veranstaltung
-     - An event is the central entity in pretix that you and your customers interact with all the time. An event
+     - An event is the central entity in eventyay that you and your customers interact with all the time. An event
        represents one **shop** in which things like tickets can be bought. Since the introduction of event series (see
        below), this might include multiple events in the real world.
 
        Every purchase needs to be connected to an event, and most things are completely separate between different
-       events, i.e. most actions and configurations in pretix are done per-event.
+       events, i.e. most actions and configurations in eventyay are done per-event.
    * - | |:gb:| **Event series**
        | |:de:| Veranstaltungsreihe
      - An event series is one of two types of events. Unlike a non-series event, an event series groups together
-       multiple real-world events into one pretix shop. Examples are time-slot-based booking for a museum, a band on
+       multiple real-world events into one eventyay shop. Examples are time-slot-based booking for a museum, a band on
        tour, a theater group playing the same play multiple times, etc.
    * - | |:gb:| **Date**
        | |:de:| Termin
@@ -133,7 +133,7 @@ going to develop around pretix, for example connect to pretix through our API, y
    * - | |:gb:| **Plugin**
        | |:de:| Erweiterung
      - A plugin is an optional software module that contains additional functionality and can be turned on and off per
-       event. If you host pretix on your own server, most plugins need to be installed separately.
+       event. If you host eventyay on your own server, most plugins need to be installed separately.
    * - | |:gb:| **Tax rule**
        | |:de:| Steuer-Regel
      - A tax rule defines how sales taxes are calculated for a product, possibly depending on type and country of the
@@ -151,18 +151,18 @@ going to develop around pretix, for example connect to pretix through our API, y
      - A badge refers to the file used as a name tag for an attendee of your event.
    * - | |:gb:| **User**
        | |:de:| Benutzer
-     - A user is anyone who can sign into the backend interface of pretix.
+     - A user is anyone who can sign into the backend interface of eventyay.
    * - | |:gb:| **Team**
        | |:de:| Team
      - A :ref:`team <user-teams>` is a collection of users who are granted some level of access to a set of events.
    * - | |:gb:| **Device**
        | |:de:| Gerät
-     - A device is something that talks to pretix but does not run on a server. Usually a device refers to an
-       installation of pretixSCAN, pretixPOS or some compatible third-party app on one of your computing devices.
+     - A device is something that talks to eventyay but does not run on a server. Usually a device refers to an
+       installation of eventyaySCAN, eventyayPOS or some compatible third-party app on one of your computing devices.
    * - | |:gb:| **Gate**
        | |:de:| Station
      - A gate is a location at your event where people are being scanned, e.g. an entry or exit door. You can configure
-       gates in pretix to group multiple devices together that are used in the same location, mostly for statistical
+       gates in eventyay to group multiple devices together that are used in the same location, mostly for statistical
        purposes.
    * - | |:gb:| **Widget**
        | |:de:| Widget
@@ -170,12 +170,12 @@ going to develop around pretix, for example connect to pretix through our API, y
        into a third-party web page.
    * - | |:gb:| **Sales channel**
        | |:de:| Verkaufskanal
-     - A sales channel refers to the type in which a purchase arrived in the system, e.g. through pretix' web shop itself,
+     - A sales channel refers to the type in which a purchase arrived in the system, e.g. through eventyay' web shop itself,
        or through other channels like box office or reseller sales.
    * - | |:gb:| **Box office**
        | |:de:| Abendkasse
      - Box office purchases refer to all purchases made in-person from the organizer directly, through a point of sale
-       system like pretixPOS.
+       system like eventyayPOS.
    * - | |:gb:| **Reseller**
        | |:de:| Vorverkaufsstelle
      - Resellers are third-party entities offering in-person sales of events to customers.

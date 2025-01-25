@@ -4,7 +4,7 @@ Creating an event
 =================
 
 After you have created an organizer account, the next step is to create your event. An event is the basic object in
-pretix that everything is organized around. One event corresponds to one ticket shop with all its products, quotas,
+eventyay that everything is organized around. One event corresponds to one ticket shop with all its products, quotas,
 orders and settings.
 
 To create an event, you can click the "Create a new event" tile on your dashboard or the button above the list of

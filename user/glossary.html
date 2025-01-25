@@ -181,10 +181,10 @@
             
   <section id="glossary">
 <h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this heading">¶</a></h1>
-<p>This page gives definitions of domain-specific terms that we use a lot inside pretix and that might be used slightly
+<p>This page gives definitions of domain-specific terms that we use a lot inside eventyay and that might be used slightly
 differently elsewhere, as well as their official translations to other languages. In some cases, things have a different
-name internally, which is noted with a 🔧 symbol. If you only use pretix, you’ll never see these, but if you’re
-going to develop around pretix, for example connect to pretix through our API, you need to know these as well.</p>
+name internally, which is noted with a 🔧 symbol. If you only use eventyay, you’ll never see these, but if you’re
+going to develop around eventyay, for example connect to eventyay through our API, you need to know these as well.</p>
 <table class="rest-resource-table docutils align-default" id="id1">
 <caption><span class="caption-text">Glossary</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
 <colgroup>
@@ -202,21 +202,21 @@ going to develop around pretix, for example connect to pretix through our API, y
 <div class="line">🇩🇪 Veranstalter</div>
 </div>
 </td>
-<td><p>An organizer represents the entity using pretix, usually the company or institution running one or multiple events.
+<td><p>An organizer represents the entity using eventyay, usually the company or institution running one or multiple events.
 In terms of navigation in the system, organizers are the “middle layer” between the system itself and the specific
 events.
-Multiple organizers on the same pretix system are fully separated from each other with very few exceptions.</p></td>
+Multiple organizers on the same eventyay system are fully separated from each other with very few exceptions.</p></td>
 </tr>
 <tr class="row-odd"><td><div class="line-block">
 <div class="line">🇬🇧 <strong>Event</strong></div>
 <div class="line">🇩🇪 Veranstaltung</div>
 </div>
 </td>
-<td><p>An event is the central entity in pretix that you and your customers interact with all the time. An event
+<td><p>An event is the central entity in eventyay that you and your customers interact with all the time. An event
 represents one <strong>shop</strong> in which things like tickets can be bought. Since the introduction of event series (see
 below), this might include multiple events in the real world.</p>
 <p>Every purchase needs to be connected to an event, and most things are completely separate between different
-events, i.e. most actions and configurations in pretix are done per-event.</p>
+events, i.e. most actions and configurations in eventyay are done per-event.</p>
 </td>
 </tr>
 <tr class="row-even"><td><div class="line-block">
@@ -225,7 +225,7 @@ events, i.e. most actions and configurations in pretix are done per-event.</p>
 </div>
 </td>
 <td><p>An event series is one of two types of events. Unlike a non-series event, an event series groups together
-multiple real-world events into one pretix shop. Examples are time-slot-based booking for a museum, a band on
+multiple real-world events into one eventyay shop. Examples are time-slot-based booking for a museum, a band on
 tour, a theater group playing the same play multiple times, etc.</p></td>
 </tr>
 <tr class="row-odd"><td><div class="line-block">
@@ -409,7 +409,7 @@ are therefore often used to represent <em>parts</em> of an event, either time-wi
 </div>
 </td>
 <td><p>A plugin is an optional software module that contains additional functionality and can be turned on and off per
-event. If you host pretix on your own server, most plugins need to be installed separately.</p></td>
+event. If you host eventyay on your own server, most plugins need to be installed separately.</p></td>
 </tr>
 <tr class="row-even"><td><div class="line-block">
 <div class="line">🇬🇧 <strong>Tax rule</strong></div>
@@ -447,7 +447,7 @@ especially in case of admission products.</p></td>
 <div class="line">🇩🇪 Benutzer</div>
 </div>
 </td>
-<td><p>A user is anyone who can sign into the backend interface of pretix.</p></td>
+<td><p>A user is anyone who can sign into the backend interface of eventyay.</p></td>
 </tr>
 <tr class="row-odd"><td><div class="line-block">
 <div class="line">🇬🇧 <strong>Team</strong></div>
@@ -461,8 +461,8 @@ especially in case of admission products.</p></td>
 <div class="line">🇩🇪 Gerät</div>
 </div>
 </td>
-<td><p>A device is something that talks to pretix but does not run on a server. Usually a device refers to an
-installation of pretixSCAN, pretixPOS or some compatible third-party app on one of your computing devices.</p></td>
+<td><p>A device is something that talks to eventyay but does not run on a server. Usually a device refers to an
+installation of eventyaySCAN, eventyayPOS or some compatible third-party app on one of your computing devices.</p></td>
 </tr>
 <tr class="row-odd"><td><div class="line-block">
 <div class="line">🇬🇧 <strong>Gate</strong></div>
@@ -470,7 +470,7 @@ installation of pretixSCAN, pretixPOS or some compatible third-party app on one 
 </div>
 </td>
 <td><p>A gate is a location at your event where people are being scanned, e.g. an entry or exit door. You can configure
-gates in pretix to group multiple devices together that are used in the same location, mostly for statistical
+gates in eventyay to group multiple devices together that are used in the same location, mostly for statistical
 purposes.</p></td>
 </tr>
 <tr class="row-even"><td><div class="line-block">
@@ -486,7 +486,7 @@ into a third-party web page.</p></td>
 <div class="line">🇩🇪 Verkaufskanal</div>
 </div>
 </td>
-<td><p>A sales channel refers to the type in which a purchase arrived in the system, e.g. through pretix’ web shop itself,
+<td><p>A sales channel refers to the type in which a purchase arrived in the system, e.g. through eventyay’ web shop itself,
 or through other channels like box office or reseller sales.</p></td>
 </tr>
 <tr class="row-even"><td><div class="line-block">
@@ -495,7 +495,7 @@ or through other channels like box office or reseller sales.</p></td>
 </div>
 </td>
 <td><p>Box office purchases refer to all purchases made in-person from the organizer directly, through a point of sale
-system like pretixPOS.</p></td>
+system like eventyayPOS.</p></td>
 </tr>
 <tr class="row-odd"><td><div class="line-block">
 <div class="line">🇬🇧 <strong>Reseller</strong></div>

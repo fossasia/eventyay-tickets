@@ -6,7 +6,7 @@ Configuring taxes
 In most countries, you will be required to pay some form of sales tax for your event tickets. If you don't know about
 the exact rules, you should consult a professional tax consultant right now.
 
-To implement those taxes in pretix, you can create one or multiple "tax rules". A tax rule specifies when and at what
+To implement those taxes in eventyay, you can create one or multiple "tax rules". A tax rule specifies when and at what
 rate should be calculated on a product price. Taxes will then be correctly displayed in the product list, order
 details and on invoices.
 
@@ -59,7 +59,7 @@ If the buyer is a VAT-paying business in their country, you charge them only the
 taxes and state that the buyer is responsible for paying the correct taxes themselves.
 
 .. warning:: We firmly believe that reverse charge rules are **not applicable** for most events handled
-             with pretix and therefore **strongly recommend not to enable this feature** if you do not have
+             with eventyay and therefore **strongly recommend not to enable this feature** if you do not have
              a specific reason to do so. The reasoning behind this is that according to article 52 of the
              `VAT directive`_ (page 17), the place of supply is always the location of your event and
              therefore the tax rate of the event country always has to be paid regardless of the location

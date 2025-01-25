@@ -30,7 +30,7 @@ Download date
   downloaded immediately after the payment for an order has been received.
 
 Below these settings, the detail settings for the various ticket file formats are offered. They differ from format to
-format and only share the common "Enable" setting that can be used to turn them on. By default, pretix ships with
+format and only share the common "Enable" setting that can be used to turn them on. By default, eventyay ships with
 a PDF output plugin that you can configure through a visual design editor.
 
 **Advanced topics:**

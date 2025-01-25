@@ -205,17 +205,17 @@
 <span id="id1"></span><h1>PayPal<a class="headerlink" href="#paypal" title="Permalink to this heading">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If you use pretix Hosted, you do not longer need to go through this tedious process! You can
+<p>If you use eventyay Hosted, you do not longer need to go through this tedious process! You can
 just open the PayPal settings in the payment section of your event, click “Connect to PayPal”
 and log in to your PayPal account. The following guide is only required for self-hosted
-versions of pretix.</p>
+versions of eventyay.</p>
 </div>
-<p>To integrate PayPal with pretix, you first need to have an active PayPal merchant account. If you do not already have a
+<p>To integrate PayPal with eventyay, you first need to have an active PayPal merchant account. If you do not already have a
 PayPal account, you can create one on <a class="reference external" href="https://www.paypal.com/webapps/mpp/account-selection">paypal.com</a>.
-If you look into pretix’ settings, you are required to fill in two keys:</p>
+If you look into eventyay’ settings, you are required to fill in two keys:</p>
 <img alt="../../_images/paypal_pretix.png" class="screenshot" src="../../_images/paypal_pretix.png" />
 <p>Unfortunately, it is not straightforward how to get those keys from PayPal’s website. In order to do so, you
-need to go to <a class="reference external" href="https://developer.paypal.com/">developer.paypal.com</a> to link the account to your pretix event.</p>
+need to go to <a class="reference external" href="https://developer.paypal.com/">developer.paypal.com</a> to link the account to your eventyay event.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Unfortunately, PayPal tries to confuse you by having multiple APIs with different keys. You really need to
@@ -231,13 +231,13 @@ go to <a class="reference external" href="https://developer.paypal.com">https://
 <img alt="../../_images/paypal5.png" class="screenshot" src="../../_images/paypal5.png" />
 <p>On the next page, before you do anything else, switch the mode on the right to “Live” to get the correct keys.
 Then, copy the “Client ID” and the “Secret” and enter them into the appropriate fields in the payment settings in
-pretix.</p>
+eventyay.</p>
 <img alt="../../_images/paypal6.png" class="screenshot" src="../../_images/paypal6.png" />
-<p>Finally, we need to create a webhook. The webhook tells PayPal to notify pretix e.g. if a payment gets cancelled so
-pretix can cancel the ticket as well. If you have multiple events connected to your PayPal account, you need multiple
+<p>Finally, we need to create a webhook. The webhook tells PayPal to notify eventyay e.g. if a payment gets cancelled so
+eventyay can cancel the ticket as well. If you have multiple events connected to your PayPal account, you need multiple
 webhooks. To create one, scroll a bit down and click “Add Webhook”.</p>
 <img alt="../../_images/paypal7.png" class="screenshot" src="../../_images/paypal7.png" />
-<p>Then, enter the webhook URL that you find on the pretix settings page. If you use pretix Hosted, this is always <code class="docutils literal notranslate"><span class="pre">https://eventyay.com/_paypal/webhook/</span></code>.
+<p>Then, enter the webhook URL that you find on the eventyay settings page. If you use eventyay Hosted, this is always <code class="docutils literal notranslate"><span class="pre">https://eventyay.com/_paypal/webhook/</span></code>.
 Tick the box “All events” and save.</p>
 <img alt="../../_images/paypal8.png" class="screenshot" src="../../_images/paypal8.png" />
 <p>That’s it, you are ready to go!</p>

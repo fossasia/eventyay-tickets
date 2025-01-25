@@ -3,8 +3,8 @@
 Teams
 =====
 
-We don't expect you to work on your events all by yourself and therefore, pretix comes with ways to invite your fellow
-team members to access your pretix organizer account. To manage teams, click on the "Teams" link on your organizer
+We don't expect you to work on your events all by yourself and therefore, eventyay comes with ways to invite your fellow
+team members to access your eventyay organizer account. To manage teams, click on the "Teams" link on your organizer
 settings page (see above how to find it). This shows you a list of teams that should contain at least one team already:
 
 .. thumbnail:: ../../screens/organizer/team_list.png
@@ -17,9 +17,9 @@ If you click on a team name, you get to a page that shows you the current member
    :align: center
    :class: screenshot
 
-You see that there is a list of pretix user accounts (i.e. email addresses), who are part of the team. To add a user to
+You see that there is a list of eventyay user accounts (i.e. email addresses), who are part of the team. To add a user to
 the team, just enter their email address in the text box next to the "Add" button. If the user already has an account
-in the pretix system they will instantly get access to the team. Otherwise, they will be sent an email with an invitation
+in the eventyay system they will instantly get access to the team. Otherwise, they will be sent an email with an invitation
 link that can be used to create an account. This account will then instantly have access to the team. Users can be part
 of as many teams as you want.
 

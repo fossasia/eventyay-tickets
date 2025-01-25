@@ -3,9 +3,9 @@
 Use case: Time slots
 ====================
 
-A more advanced use case of pretix is using pretix for time-slot-based access to an area with a limited visitor
+A more advanced use case of eventyay is using eventyay for time-slot-based access to an area with a limited visitor
 capacity, such as a museum or other attraction. This guide will show you the quickest way to set up such an event
-with pretix.
+with eventyay.
 
 First of all, when creating your event, you need to select that your event represents an "event series":
 
@@ -14,7 +14,7 @@ First of all, when creating your event, you need to select that your event repre
    :align: center
    :class: screenshot
 
-You can click :ref:`here <subevents>` for a more general description of event series with pretix, but everything you
+You can click :ref:`here <subevents>` for a more general description of event series with eventyay, but everything you
 need to know is in this chapter as well.
 
 General event setup

@@ -220,11 +220,11 @@ selling to consumers only or to business customers as well. Depending on your co
 legislation might already be in place or become relevant from January 2018 the latest. This is not
 legal advice. If in doubt, consult a lawyer or refrain from charging payment fees.</p>
 </div>
-<p>If you go for the first option (as you should in the EU), you can just leave the payment fee fields in pretix’ settings
+<p>If you go for the first option (as you should in the EU), you can just leave the payment fee fields in eventyay’ settings
 empty.</p>
-<p>If you go for the second option, you can configure pretix to charge the payment method fees to your user. You can
+<p>If you go for the second option, you can configure eventyay to charge the payment method fees to your user. You can
 define both an absolute fee as well as a percental fee based on the order total. If you do so, there are two
-different ways in which pretix can calculate the fee. Normally, it is fine to just go with the default setting, but
+different ways in which eventyay can calculate the fee. Normally, it is fine to just go with the default setting, but
 in case you are interested, here are all the details:</p>
 <section id="payment-fee-calculation">
 <h2>Payment fee calculation<a class="headerlink" href="#payment-fee-calculation" title="Permalink to this heading">¶</a></h2>
@@ -239,7 +239,7 @@ same 5 %, such that for a ticket with a list price of 100 € you will get your 
 <tr class="row-odd"><td><p>Ticket price</p></td>
 <td><p>100.00 €</p></td>
 </tr>
-<tr class="row-even"><td><p>pretix calculates the fee as 5 % of 100 €</p></td>
+<tr class="row-even"><td><p>eventyay calculates the fee as 5 % of 100 €</p></td>
 <td><p>+5.00 €</p></td>
 </tr>
 <tr class="row-odd"><td><p>Subtotal that will be paid by the customer</p></td>
@@ -262,8 +262,8 @@ same 5 %, such that for a ticket with a list price of 100 € you will get your 
 <tr class="row-odd"><td><p>Ticket price</p></td>
 <td><p>100.00 €</p></td>
 </tr>
-<tr class="row-even"><td><p>pretix calculates the fee as 100/(100 - 5) % of 100 €</p></td>
-<td><p>+5.26 €</p></td>
+<tr class="row-even"><td><p>eventyay calculates the fee as 100/(100 - 5) % of 100</p></td>
+<td><p>€       +5.26 €</p></td>
 </tr>
 <tr class="row-odd"><td><p>Subtotal that will be paid by the customer</p></td>
 <td><p>105.26 €</p></td>
@@ -276,7 +276,7 @@ same 5 %, such that for a ticket with a list price of 100 € you will get your 
 </tr>
 </tbody>
 </table>
-<p>Due to the various rounding steps performed by pretix and by the payment provider, the end total on
+<p>Due to the various rounding steps performed by eventyay and by the payment provider, the end total on
 your bank account might still vary by one cent.</p>
 </div></blockquote>
 </section>

@@ -1,7 +1,7 @@
 E-mail settings
 ===============
 
-The settings at "Settings" → "E-mail" allow you to customize the emails that pretix sends to the participants of your
+The settings at "Settings" → "E-mail" allow you to customize the emails that eventyay sends to the participants of your
 event.
 
 .. thumbnail:: ../../screens/event/settings_email.png
@@ -48,7 +48,7 @@ Sales Channels for Checkout Emails
 E-mail design
 -------------
 
-In this part, you can choose and preview the layout of your emails. More layouts can be added by pretix plugins.
+In this part, you can choose and preview the layout of your emails. More layouts can be added by eventyay plugins.
 
 E-mail content
 --------------
@@ -139,7 +139,7 @@ Order canceled
 
 
 Order custom mail
-    You can use pretix' admin interface to directly send an e-mail with a custom text to the customer of a specific
+    You can use eventyay' admin interface to directly send an e-mail with a custom text to the customer of a specific
     order. In this case, this will be the default text and might save you time by not having to re-type all of it every
     time.
 
@@ -168,7 +168,7 @@ SMTP settings
 -------------
 
 If you want to send your e-mails via your own e-mail address, we strongly recommend to use SMTP for this purpose.
-SMTP is a protocol that is used by e-mail clients to communicate with e-mail servers. Using SMTP, pretix can talk to
+SMTP is a protocol that is used by e-mail clients to communicate with e-mail servers. Using SMTP, eventyay can talk to
 your e-mail service provider the same way that e.g. the e-mail app on your phone can.
 
 Your e-mail provider will most likely have a document that tells you the settings for the various fields to fill in
@@ -184,7 +184,7 @@ Spam issues
 If you use an email address of your own domain as a sender address and do not use a custom SMTP server, it is very
 likely that at least some of your emails will go to the spam folders of their recipients. We **strongly recommend**
 to use your organization's SMTP server in this case, making your email really come from your organization. If you don't
-want that or cannot do that, you should add the pretix application server to your SPF record.
+want that or cannot do that, you should add the eventyay application server to your SPF record.
 
 If you are using our hosted service at eventyay.com, you can add the following to your SPF record::
 
@@ -195,7 +195,7 @@ A complete record could look like this::
    v=spf1 a mx include:_spf.eventyay.com ~all
 
 Make sure to read up on the `SPF specification`_. If you want to authenticate your emails with DKIM, set up a DNS TXT
-record for the subdomain ``pretix._domainkey`` with the following contents::
+record for the subdomain ``eventyay._domainkey`` with the following contents::
 
    v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDXrDk6lwOWX00e2MbiiJac6huI+gnzLf9N4G1FnBv3PXq8fz3i2q1szH72OF5mAlKm3zXO4cl/uxx+lfidS1ERbX6Bn9BRstBTQUKWC4JFj8Yk9+fwT7LWehDURazLdTzfsIjJFudLLvxtOKSaOCtMhbPX05DIhziaqVCBqgz/NQIDAQAB
 

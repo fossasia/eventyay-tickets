@@ -1,10 +1,10 @@
 Product structure guide
 =======================
 
-Between products, categories, variations, add-ons, bundles, and quotas, pretix provides a wide range of features that allow you to set up your event in the way you want it.
+Between products, categories, variations, add-ons, bundles, and quotas, eventyay provides a wide range of features that allow you to set up your event in the way you want it.
 However, it is easy to get lost in the process or to get started with building your event right.
 Often times, there are multiple ways to do something that come with different advantages and disadvantages.
-This guide will walk you through a number of typical examples of pretix event structures and will explain how to set them up – feel free to just skip ahead to a section relevant for you.
+This guide will walk you through a number of typical examples of eventyay event structures and will explain how to set them up – feel free to just skip ahead to a section relevant for you.
 
 Terminology
 -----------
@@ -194,12 +194,12 @@ All of these products should be part of the same category. In your base product 
 can then create an add-on product configuration allowing users to add products from this category.
 
 If you edit these products, you will be able to enter the "Start date" and "End date" of the talk or workshop close
-to the bottom of the page. If you fill in these values, pretix will automatically ensure no overlapping talks are
+to the bottom of the page. If you fill in these values, eventyay will automatically ensure no overlapping talks are
 booked.
 
 .. note::
 
-    This option is currently only available on pretix Hosted. If you are interested in using it with pretix Enterprise,
+    This option is currently only available on eventyay Hosted. If you are interested in using it with eventyay Enterprise,
     please contact sales@eventyay.com.
 
 
@@ -212,7 +212,7 @@ Imagine you run a trade show that opens on three consecutive days and you want t
 * Any two days: € 17
 * All three days:  € 25
 
-In this case, there are multiple different ways you could set this up with pretix.
+In this case, there are multiple different ways you could set this up with eventyay.
 
 Option A: Combination products
 """"""""""""""""""""""""""""""
@@ -285,7 +285,7 @@ This approach makes your order data more complicated, since e.g. someone who buy
 Use case: Group discounts
 -------------------------
 
-Often times, you want to give discounts for whole groups attending your event. pretix can't automatically discount based on volume, but there's still some ways you can set up group tickets.
+Often times, you want to give discounts for whole groups attending your event. eventyay can't automatically discount based on volume, but there's still some ways you can set up group tickets.
 
 Flexible group sizes
 """"""""""""""""""""
@@ -306,7 +306,7 @@ This way, the purchase of a table will automatically create eight tickets, leadi
 Use case: Restricted audience
 -----------------------------
 
-Not all events are for everyone. Sometimes, there is a good reason to restrict access to your event or parts of your event only to a specific, invited group. There's two ways to implement this with pretix:
+Not all events are for everyone. Sometimes, there is a good reason to restrict access to your event or parts of your event only to a specific, invited group. There's two ways to implement this with eventyay:
 
 Option A: Required voucher codes
 """"""""""""""""""""""""""""""""
@@ -336,7 +336,7 @@ Let's say you are a charitable organization in Germany and are allowed to charge
     * incl. € 19.63 VAT at 7%
     * incl. € 23.95 VAT at 19%
 
-You can implement this in pretix using product bundles. In order to do so, you should create the following two products:
+You can implement this in eventyay using product bundles. In order to do so, you should create the following two products:
 
 * Conference ticket at € 450 with a 7% tax rule
 * Conference food at € 150 with a 19% tax rule and the option "**Only sell this product as part of a bundle**" set

@@ -192,12 +192,12 @@
             
   <section id="using-a-custom-domain">
 <span id="custom-domain"></span><h1>Using a custom domain<a class="headerlink" href="#using-a-custom-domain" title="Permalink to this heading">¶</a></h1>
-<p>By default, event shops built with pretix are accessible at <code class="docutils literal notranslate"><span class="pre">https://&lt;domain&gt;/&lt;organizer&gt;/&lt;event&gt;/</span></code>, where
+<p>By default, event shops built with eventyay are accessible at <code class="docutils literal notranslate"><span class="pre">https://&lt;domain&gt;/&lt;organizer&gt;/&lt;event&gt;/</span></code>, where
 <code class="docutils literal notranslate"><span class="pre">&lt;domain&gt;</span></code> is <code class="docutils literal notranslate"><span class="pre">eventyay.com</span></code> if you are using our hosted service and <code class="docutils literal notranslate"><span class="pre">&lt;organizer&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;event&gt;</span></code> are the short
 form versions of your organizer account name and event name, respectively.</p>
 <p>However, you are also able to use a custom domain for your ticket shops! If you work for “Awesome Party Corporation”
 and your website is <code class="docutils literal notranslate"><span class="pre">awesomepartycorp.com</span></code>, you might want to sell your tickets at <code class="docutils literal notranslate"><span class="pre">tickets.awesomepartycorp.com</span></code>
-and with pretix, you can do this. On this page, you find out the necessary steps to take.</p>
+and with eventyay, you can do this. On this page, you find out the necessary steps to take.</p>
 <section id="with-the-eventyay-com-hosted-service">
 <h2>With the eventyay.com hosted service<a class="headerlink" href="#with-the-eventyay-com-hosted-service" title="Permalink to this heading">¶</a></h2>
 <p>Go to “Organizers” in the backend and select your organizer account. Then, go to “Settings” and “Custom Domain”.</p>
@@ -206,11 +206,11 @@ and with pretix, you can do this. On this page, you find out the necessary steps
 interface. Unfortunately, we can’t tell you exactly how that is named and how it looks, since it is different for every
 domain provider.</p>
 <p>Use this interface to add a new subdomain record, e.g. <code class="docutils literal notranslate"><span class="pre">tickets</span></code> of the type <code class="docutils literal notranslate"><span class="pre">CNAME</span></code> (might also be called “alias”).
-The value of the record should be the one shown on the “Custom Domain” page in pretix’ backend.</p>
+The value of the record should be the one shown on the “Custom Domain” page in eventyay’ backend.</p>
 <p>Submit your changes and wait a bit, it can regularly take up to three hours for DNS changes to propagate to the caches
 of all DNS servers. You can try checking by accessing your new subdomain, <code class="docutils literal notranslate"><span class="pre">http://tickets.awesomepartycorp.com</span></code>.
 If DNS was changed successfully, you should see a SSL certificate error. If you ignore the error and access the page
-anyways, you should get a pretix-themed error page with the headline “Unknown domain”.</p>
+anyways, you should get a eventyay-themed error page with the headline “Unknown domain”.</p>
 <p>Now, tell us about your domain on the “Custom Domain” page to get started.</p>
 </section>
 <section id="with-a-custom-pretix-installation">
@@ -220,7 +220,7 @@ First of all, configure your webserver or reverse proxy to pass requests to the 
 Then, go to the organizer account in pretix and click the “Edit” button. Enter the new domain in the “Custom Domain”
 field, then you’re done!</p>
 <a class="screenshot"
-               data-lightbox="group-58d4b5f0-0889-4cff-8067-2b1099a9a6d0"
+               data-lightbox="group-25dc64f8-33e1-4900-9eee-4a9bd56b13d8"
                href="../../_images/edit_sysadmin1.png"
                title=""
                data-title=""

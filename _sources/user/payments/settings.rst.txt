@@ -60,6 +60,6 @@ Available until
   arrive in time.
 
 Text on invoices
-  If you are using pretix' invoicing feature, this is a text that will be printed on every invoice for an order that
+  If you are using eventyay' invoicing feature, this is a text that will be printed on every invoice for an order that
   uses this payment method. You could use this to tell the accounting department of the invoice receiver that the payment
   has already been received online or that it should be performed via bank transfer.

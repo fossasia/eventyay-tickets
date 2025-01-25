@@ -101,7 +101,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#how-do-i-delete-an-event">How do I delete an event?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#why-doesn-t-my-product-show-up-in-the-ticket-shop">Why doesn’t my product show up in the ticket shop?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#can-i-have-different-payment-deadlines-for-different-payment-methods">Can I have different payment deadlines for different payment methods?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#why-does-pretix-not-support-any-1d-linear-bar-codes">Why does pretix not support any 1D (linear) bar codes?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#why-does-eventyay-not-support-any-1d-linear-bar-codes">Why does eventyay not support any 1D (linear) bar codes?</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="markdown.html">Markdown Guide</a></li>
@@ -233,16 +233,16 @@ the bank locked the card or refused the payment. The customer now needs to worry
 needs to create a new order with a different payment method. A payment deadline is a guarantee to your customer to hold
 the ticket if it is paid for within a certain time frame. If you give a two-week guarantee to some of your customers,
 why not to others?</p>
-<p>There are some other issues with it as well. pretix allows customers to switch payment methods as long as their payment
+<p>There are some other issues with it as well. eventyay allows customers to switch payment methods as long as their payment
 has not been started or if it has failed. For example, a customer who selected bank transfer can later switch to credit
 card if they haven’t sent the money yet, or a customer with a failed credit card payment can switch to a different
 method without creating a new order. If payment deadlines were dependent on the payment method, switching back and
 forth could either allow someone to extend their deadline forever, or render someones order invalid by moving the date
 back in the past.</p>
 </section>
-<section id="why-does-pretix-not-support-any-1d-linear-bar-codes">
-<h2>Why does pretix not support any 1D (linear) bar codes?<a class="headerlink" href="#why-does-pretix-not-support-any-1d-linear-bar-codes" title="Permalink to this heading">¶</a></h2>
-<p>We often get asked, why pretix depends on QR codes instead of more traditional 1D bar codes. More often than not, people
+<section id="why-does-eventyay-not-support-any-1d-linear-bar-codes">
+<h2>Why does eventyay not support any 1D (linear) bar codes?<a class="headerlink" href="#why-does-eventyay-not-support-any-1d-linear-bar-codes" title="Permalink to this heading">¶</a></h2>
+<p>We often get asked, why eventyay depends on QR codes instead of more traditional 1D bar codes. More often than not, people
 tend to already own linear (laser) bar code scanners.</p>
 <p>The truth is: we have deliberately chosen not to support 1D bar codes - and that for multiple reasons.</p>
 <ol class="arabic">
@@ -289,7 +289,7 @@ scanning linear bar codes.</p>
 </dl>
 </li>
 </ol>
-<p>You can see that we’re not not putting 1D bar codes into pretix to annoy you - it really is about practicability in the
+<p>You can see that we’re not not putting 1D bar codes into eventyay to annoy you - it really is about practicability in the
 end.</p>
 <p>However: Most professional bar code scanners allow for the scan-engine to be swapped out for a 2D-engine. It certainly
 won’t be cheap - but depending on the manufacturer it might still be more affordable than replacing the scanners.</p>
