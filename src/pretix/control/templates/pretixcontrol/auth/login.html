@@ -55,7 +55,8 @@
             {% if login_providers %}
                 {% for provider, settings in login_providers.items %}
                     {% if settings.state %}
-                        <a href='{% url "plugins:socialauth:social.oauth.login" provider %}' data-method="post" class="btn btn-primary btn-block">
+                        <a href='{% url "plugins:socialauth:social.oauth.login" provider %}{% append_next request.GET.next %}' 
+                           data-method="post" class="btn btn-primary btn-block">
                             {% with provider|capfirst as provider_capitalized %}
                                 {% blocktrans %}Login with {{ provider_capitalized }}{% endblocktrans %}
                             {% endwith %}
