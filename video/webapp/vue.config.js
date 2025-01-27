@@ -12,12 +12,13 @@ module.exports = {
 	devServer: {
 		host: '0.0.0.0',
 		port: 8880,
-		public: 'app-test.eventyay.com',
+		public: 'wikimedia.eventyay.com',
 		allowedHosts: [
 			'.localhost',
 			'.eventyay.com',
 			'app-test.eventyay.com',
-			'app.eventyay.com'
+			'app.eventyay.com',
+			'wikimedia.eventyay.com'
 		],
 	},
 	pwa: {
