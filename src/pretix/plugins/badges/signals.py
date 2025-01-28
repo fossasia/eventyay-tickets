@@ -14,7 +14,7 @@ from pretix.base.signals import (
     register_data_exporters, register_ticket_outputs,
 )
 from pretix.control.signals import (
-    item_forms, nav_event, order_info, order_position_buttons,
+    item_forms, nav_global, order_info, order_position_buttons,
 )
 from pretix.plugins.badges.forms import BadgeItemForm
 from pretix.plugins.badges.models import BadgeItem, BadgeLayout
@@ -26,7 +26,7 @@ def register_badge_output(sender: Event, **kwargs):
     return BadgeOutputProvider
 
 
-@receiver(nav_event, dispatch_uid="badges_nav")
+@receiver(nav_global, dispatch_uid="badges_nav")
 def control_nav_import(sender, request=None, **kwargs):
     url = resolve(request.path_info)
     p = (
