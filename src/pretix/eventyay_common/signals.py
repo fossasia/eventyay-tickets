@@ -1,5 +1,3 @@
-from django.dispatch import Signal
-
 from pretix.base.signals import EventPluginSignal
 
 nav_event_common = EventPluginSignal()
