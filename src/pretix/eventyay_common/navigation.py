@@ -6,8 +6,8 @@ from django.utils.translation import gettext_lazy as _
 
 from pretix.base.models import Event
 from pretix.control.navigation import merge_in
-from pretix.control.signals import nav_event, nav_global
-
+from pretix.control.signals import nav_global
+from pretix.eventyay_common.signals import nav_event_common
 
 def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
     """Generate navigation items for global."""
@@ -92,7 +92,7 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[Dict[str, A
     ]
 
     # Merge plugin-provided navigation items
-    plugin_responses = nav_event.send(event, request=request)
+    plugin_responses = nav_event_common.send(event, request=request)
     plugin_nav_items = []
     for receiver, response in plugin_responses:
         if response:
