@@ -9,6 +9,7 @@ from pretix.control.navigation import merge_in
 from pretix.control.signals import nav_global
 from pretix.eventyay_common.signals import nav_event_common
 
+
 def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
     """Generate navigation items for global."""
     url = request.resolver_match
