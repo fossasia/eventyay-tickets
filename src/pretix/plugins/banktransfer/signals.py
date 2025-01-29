@@ -4,7 +4,7 @@ from django.urls import resolve, reverse
 from django.utils.translation import gettext_lazy as _
 
 from pretix.base.signals import register_payment_providers
-from pretix.control.signals import html_head, nav_global, nav_organizer
+from pretix.control.signals import html_head, nav_event, nav_organizer
 
 from .payment import BankTransfer
 
@@ -14,7 +14,7 @@ def register_payment_provider(sender, **kwargs):
     return BankTransfer
 
 
-@receiver(nav_global, dispatch_uid="payment_banktransfer_nav")
+@receiver(nav_event, dispatch_uid="payment_banktransfer_nav")
 def control_nav_import(sender, request=None, **kwargs):
     url = resolve(request.path_info)
     if not request.user.has_event_permission(request.organizer, request.event, 'can_change_orders', request=request):

@@ -3,10 +3,10 @@ from django.urls import resolve, reverse
 from django.utils.translation import gettext_lazy as _
 
 from pretix.base.signals import logentry_display
-from pretix.control.signals import nav_global
+from pretix.control.signals import nav_event
 
 
-@receiver(nav_global, dispatch_uid="sendmail_nav")
+@receiver(nav_event, dispatch_uid="sendmail_nav")
 def control_nav_import(sender, request=None, **kwargs):
     url = resolve(request.path_info)
     if not request.user.has_event_permission(request.organizer, request.event, 'can_change_orders', request=request):
