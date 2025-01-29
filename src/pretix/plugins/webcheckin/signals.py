@@ -3,10 +3,10 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
-from pretix.control.signals import nav_event
+from pretix.eventyay_common.signals import nav_event_common
 
 
-@receiver(nav_event, dispatch_uid='webcheckin_nav_event')
+@receiver(nav_event_common, dispatch_uid='webcheckin_nav_event')
 def navbar_entry(sender, request, **kwargs):
     url = request.resolver_match
     if not request.user.has_event_permission(request.organizer, request.event, ('can_change_orders', 'can_checkin_orders'), request=request):
