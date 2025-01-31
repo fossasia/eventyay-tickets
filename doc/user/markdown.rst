@@ -71,7 +71,7 @@ This will yield:
 
     Check this on `Wikipedia`_
 
-All links created with pretix Markdown syntax will open in a new tab.
+All links created with eventyay Markdown syntax will open in a new tab.
 
 Lists
 """""
@@ -121,7 +121,7 @@ and so on. For example:
     ##### Headline 5
     ###### Headline 6
 
-We do not recommend using headlines of the first level, as pretix will already set the name of your event as a level-1
+We do not recommend using headlines of the first level, as eventyay will already set the name of your event as a level-1
 headline of the page and HTML pages should have only one headline on the first level.
 
 You can also use

@@ -2,9 +2,13 @@ import hashlib
 import logging
 from datetime import datetime, timedelta, timezone
 from enum import StrEnum
+from typing import Optional
 
 import jwt
 from django.conf import settings
+from django.http import HttpRequest
+
+from pretix.base.models import SubEvent
 
 logger = logging.getLogger(__name__)
 
@@ -65,3 +69,20 @@ def check_create_permission(request):
     if is_create_permission or is_active_staff_session:
         return True
     return False
+
+
+def get_subevent(request: HttpRequest) -> Optional[SubEvent]:
+    """
+    Retrieve a specific subevent based on request parameters.
+    """
+    subevent_id = request.GET.get("subevent", "").strip()
+    if subevent_id and request.event.has_subevents:
+        try:
+            pk = int(subevent_id)
+            return request.event.subevents.get(pk=pk)
+        except SubEvent.DoesNotExist:
+            pass
+        except ValueError as e:
+            logger.error("Error parsing subevent ID: %s", e)
+
+    return None

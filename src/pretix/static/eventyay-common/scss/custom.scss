@@ -1,3 +1,5 @@
+@import "../../fontawesome/scss/font-awesome.scss";
+
 #event-nav {
     .header-nav {
         border-color: darken($btn-primary-bg, 10%) !important;
@@ -27,11 +29,10 @@
     }
 }
 
-
 .custom {
     margin-left: 0px;
     margin-right: 0px;
-  }
+}
 
 .dashboard .widget-container.no-padding {
     padding: 0;
@@ -51,6 +52,21 @@
     background: none;
     border-color: #e5e5e5;
     margin-right: 0px;
+}
+
+.panel-body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 80%;
+}
+
+.overide-panel-body {
+    display: inline-block;
+}
+
+.panel-body p:first-child {
+    grid-row: 1;
+    margin-bottom: 1%;
 }
 
 .popup-modal {
@@ -135,14 +151,24 @@
     }
 }
 
-@media (max-width: $screen-sm-max) {
+@media (min-width: $screen-md-min){
+    .panel-body {
+        min-height: 90%;
+    }
+}
+
+@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
     .dashboard .widget-container.widget-small.no-padding.column {
         width: 100%;
         margin-right: 0px;
     }
+
+    .panel-body {
+        min-height: 85%;
+    }
 }
 
-@media (max-width: $screen-xs-max) {
+@media (min-width: $screen-xs-min) and (max-width: $screen-xs-max) {
     .dashboard .widget-container.widget-small.no-padding.column {
         margin-right: 0px;
     }
