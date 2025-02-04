@@ -33,7 +33,7 @@ jobs:
       - name: Install Dependencies
         run: uv sync --only-group doc
       - name: Spellcheck docs
-        run: make spelling
+        run: uv run make spelling
         working-directory: ./doc
       - name: Check no errors
         run: '[ ! -s _build/spelling/output.txt ]'
