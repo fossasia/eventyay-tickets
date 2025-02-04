@@ -55,7 +55,7 @@ jobs:
         run: uv run make all compress
       - name: Run tests
         working-directory: ./src
-        run: PRETIX_CONFIG_FILE=tests/travis_${{ matrix.database }}.cfg pytest -n 3 -p no:sugar --cov=./ --cov-report=xml --reruns 3 tests --maxfail=100
+        run: PRETIX_CONFIG_FILE=tests/travis_${{ matrix.database }}.cfg uv run pytest -n 3 -p no:sugar --cov=./ --cov-report=xml --reruns 3 tests --maxfail=100
       - name: Upload coverage
         uses: codecov/codecov-action@v1
         with:
