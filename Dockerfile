@@ -1,3 +1,5 @@
+# Note: This file is not working and is not used yet.
+
 FROM python:3.11-bookworm
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
@@ -47,9 +49,10 @@ ENV GITHUB_TOKEN=$GITHUB_TOKEN
 # copy from the cache instead of linking since it's a mounted volume.
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PROJECT_ENVIRONMENT=/usr/local
 
+COPY pyproject.toml /pretix/pyproject.toml
+COPY uv.lock /pretix/uv.lock
+
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-install-project --all-extras --no-dev
 
 COPY deployment/docker/pretix.bash /usr/local/bin/pretix
@@ -58,8 +61,6 @@ COPY deployment/docker/supervisord.all.conf /etc/supervisord.all.conf
 COPY deployment/docker/supervisord.web.conf /etc/supervisord.web.conf
 COPY deployment/docker/nginx.conf /etc/nginx/nginx.conf
 COPY deployment/docker/production_settings.py /pretix/src/production_settings.py
-COPY pyproject.toml /pretix/pyproject.toml
-COPY uv.lock /pretix/uv.lock
 COPY src /pretix/src
 
 # RUN pip3 install -U \

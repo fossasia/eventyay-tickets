@@ -18,7 +18,7 @@ You can just clone our git repository:
 
 External Dependencies
 ---------------------
-Your should install the following on your system:
+You should install the following on your system:
 
 * Python 3.11 or newer
 * ``pip`` for Python 3 (Debian package: ``python3-pip``)

@@ -35,6 +35,6 @@ jobs:
       - name: Spellcheck docs
         run: make spelling
         working-directory: ./doc
-      - name:
+      - name: Check no errors
         run: '[ ! -s _build/spelling/output.txt ]'
         working-directory: ./doc
