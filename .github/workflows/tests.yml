@@ -27,9 +27,7 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: pretix
         ports:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
