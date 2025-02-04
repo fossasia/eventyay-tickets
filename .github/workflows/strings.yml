@@ -51,7 +51,6 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
-      - name: Install Dependencies
       - name: Install Python dependencies
         run: uv sync --all-extras --group test
       - name: Spellcheck translations
