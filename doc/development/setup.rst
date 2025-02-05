@@ -57,7 +57,7 @@ Activate your virtual environment (`uv` creates virtual environment in _.venv_ d
 
 `uv` automatically creates virtual environment in _.venv_ directory.
 If you want to create virtual environment outside the project directory, you can do so with
-a different tool and tell `uv` to repspect the activated virtual environment by setting the
+a different tool and tell `uv` to respect the activated virtual environment by setting the
 `UV_PROJECT_ENVIRONMENT` environment variable.
 
 For Bash and Zsh:
