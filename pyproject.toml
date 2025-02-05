@@ -109,7 +109,7 @@ dependencies = [
 memcached = ['pylibmc']
 
 [dependency-groups]
-lint = ['djlint>=1.36.4', 'ruff>=0.9.1']
+lint = ['djlint>=1.36.4', 'ruff>=0.9.4']
 test = [
   'pytest-mock>=3.10.0',
   'pytest>=7.3.2',
@@ -201,6 +201,8 @@ dummy-variable-rgx = '^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$'
 # This file uses star import (`import *`) which is not recommended.
 'src/tests/settings.py' = ['F403', 'F405']
 'src/pretix/testutils/settings.py' = ['F403', 'F405']
+# These files are index of models, we can ignore "imported but unused".
+'src/**/models/__init__.py' = ['F401']
 
 [tool.ruff.format]
 quote-style = 'single'
