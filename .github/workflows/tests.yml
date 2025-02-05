@@ -54,7 +54,9 @@ jobs:
         run: make npminstall
       - name: Compile
         working-directory: ./src
-        run: uv run make all compress
+        run: |
+          source .venv/bin/activate
+          make all compress
       - name: Run tests
         working-directory: ./src
         run: PRETIX_CONFIG_FILE=tests/travis_${{ matrix.database }}.cfg uv run pytest -n 3 -p no:sugar --cov=./ --cov-report=xml tests --maxfail=100

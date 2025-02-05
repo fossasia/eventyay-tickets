@@ -39,7 +39,9 @@ jobs:
         run: uv sync --only-group doc
 
       - name: Spellcheck docs
-        run: uv run make spelling
+        run: |
+          source .venv/bin/activate
+          make spelling
         working-directory: ./doc
 
       - name: Check no errors
