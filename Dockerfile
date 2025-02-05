@@ -1,4 +1,11 @@
+# Note: This file is not working and is not used yet.
+
 FROM python:3.11-bookworm
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# The project will stay in this directory
+WORKDIR /pretix
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -35,10 +42,18 @@ RUN apt-get update && \
     mkdir /static && \
     mkdir /etc/supervisord
 
-ENV LC_ALL=C.UTF-8 \
-    DJANGO_SETTINGS_MODULE=production_settings
+ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 ARG GITHUB_TOKEN
 ENV GITHUB_TOKEN=$GITHUB_TOKEN
+# Settings for uv: enable bytecode compilation;
+# copy from the cache instead of linking since it's a mounted volume.
+ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PROJECT_ENVIRONMENT=/usr/local
+
+COPY pyproject.toml /pretix/pyproject.toml
+COPY uv.lock /pretix/uv.lock
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-install-project --all-extras --no-dev
 
 COPY deployment/docker/pretix.bash /usr/local/bin/pretix
 COPY deployment/docker/supervisord /etc/supervisord
@@ -46,30 +61,28 @@ COPY deployment/docker/supervisord.all.conf /etc/supervisord.all.conf
 COPY deployment/docker/supervisord.web.conf /etc/supervisord.web.conf
 COPY deployment/docker/nginx.conf /etc/nginx/nginx.conf
 COPY deployment/docker/production_settings.py /pretix/src/production_settings.py
-COPY pyproject.toml /pretix/pyproject.toml
 COPY src /pretix/src
 
-ENV DJANGO_SETTINGS_MODULE=
-RUN pip3 install -U \
-        pip \
-        setuptools \
-        toml \
-        wheel && \
-    cd /pretix && \
-    python src/set_github_token.py && \
-    PRETIX_DOCKER_BUILD=TRUE pip3 install \
-        -e ".[memcached]" \
-        gunicorn django-extensions ipython && \
-    rm -rf ~/.cache/pip
+# RUN pip3 install -U \
+#         pip \
+#         setuptools \
+#         toml \
+#         wheel && \
+#     cd /pretix && \
+#     PRETIX_DOCKER_BUILD=TRUE pip3 install \
+#         -e ".[memcached]" \
+#         gunicorn django-extensions ipython && \
+#     rm -rf ~/.cache/pip
+
 ENV DJANGO_SETTINGS_MODULE=production_settings
 
 RUN chmod +x /usr/local/bin/pretix && \
     rm /etc/nginx/sites-enabled/default && \
     cd /pretix/src && \
     rm -f pretix.cfg && \
-	mkdir -p data && \
+    mkdir -p data && \
     chown -R pretixuser:pretixuser /pretix /data data && \
-	sudo -u pretixuser make production
+    sudo -u pretixuser make production
 
 USER pretixuser
 VOLUME ["/etc/pretix", "/data"]

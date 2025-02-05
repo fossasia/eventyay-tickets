@@ -4,7 +4,7 @@ E-mail settings
 The settings at "Settings" → "E-mail" allow you to customize the emails that eventyay sends to the participants of your
 event.
 
-.. thumbnail:: ../../screens/event/settings_email.png
+.. image:: ../../screens/event/settings_email.png
    :align: center
    :class: screenshot
 

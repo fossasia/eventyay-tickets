@@ -27,6 +27,7 @@ from .organizer import (
     Organizer, Organizer_SettingsStore, OrganizerBillingModel, Team,
     TeamAPIToken, TeamInvite,
 )
+from .page import Page
 from .seating import Seat, SeatCategoryMapping, SeatingPlan
 from .tax import TaxRule
 from .vouchers import InvoiceVoucher, Voucher

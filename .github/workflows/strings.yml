@@ -17,46 +17,42 @@ jobs:
     runs-on: ubuntu-latest
     name: Check gettext syntax
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python 3.11
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v5
         with:
           python-version: 3.11
-      - uses: actions/cache@v1
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
       - name: Install system packages
         run: sudo apt update && sudo apt install gettext
-      - name: Install Dependencies
-        run: pip3 install -e ".[dev]"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install Python dependencies
+        run: uv sync --all-extras
       - name: Compile messages
-        run: python manage.py compilemessages
+        run: uv run python manage.py compilemessages
         working-directory: ./src
       - name: Compile jsi18n
-        run: python manage.py compilejsi18n
+        run: uv run python manage.py compilejsi18n
         working-directory: ./src
   spelling:
     runs-on: ubuntu-latest
     name: Spellcheck
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python 3.11
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v5
         with:
           python-version: 3.11
-      - uses: actions/cache@v1
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
       - name: Install system packages
-        run: sudo apt update && sudo apt install enchant hunspell hunspell-de-de aspell-en aspell-de
-      - name: Install Dependencies
-        run: pip3 install -e ".[dev]"
+        run: sudo apt-get update && sudo apt-get install enchant-2 hunspell hunspell-de-de aspell-en aspell-de
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install Python dependencies
+        run: uv sync --all-extras --group test
       - name: Spellcheck translations
-        run: potypo
+        run: uv run potypo
         working-directory: ./src

@@ -5,7 +5,7 @@ Plugins are optional parts of eventyay that can be installed to extend the avail
 on or off completely for every event. For your event, a number of plugins might be active already, but you can unlock
 even more functionality by going to "Settings" → "Plugins" and enable more of them, if you need.
 
-.. thumbnail:: ../../screens/event/settings_plugins.png
+.. image:: ../../screens/event/settings_plugins.png
    :align: center
    :class: screenshot
 

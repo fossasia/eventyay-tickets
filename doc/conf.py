@@ -13,12 +13,13 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-from docutils.parsers.rst.directives.admonitions import BaseAdmonition
-from sphinx.util import compat
-compat.make_admonition = BaseAdmonition  # See https://github.com/spinus/sphinxcontrib-images/issues/41
+# from docutils.parsers.rst.directives.admonitions import BaseAdmonition
+# from sphinx.util import compat
+# compat.make_admonition = BaseAdmonition  # See https://github.com/spinus/sphinxcontrib-images/issues/41
 
 import sys
 import os
+import importlib.util
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -32,11 +33,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pretix.testutils.settings")
 django.setup()
 
 
-try:
-    import enchant
-    HAS_PYENCHANT = True
-except:
-    HAS_PYENCHANT = False
+HAS_PYENCHANT = importlib.util.find_spec('enchant') is not None
 
 # -- General configuration ------------------------------------------------
 
@@ -51,7 +48,6 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.coverage',
     'sphinxcontrib.httpdomain',
-    'sphinxcontrib.images',
     'sphinxemoji.sphinxemoji',
 ]
 if HAS_PYENCHANT:
@@ -214,8 +210,9 @@ html_show_sourcelink = True
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'pretixdoc'
 
-html_theme = 'pretix_theme'
-html_theme_path = [os.path.abspath('_themes')]
+# Disable because not compatible with new Sphinx.
+# html_theme = 'pretix_theme'
+# html_theme_path = [os.path.abspath('_themes')]
 
 
 # -- Options for LaTeX output ---------------------------------------------

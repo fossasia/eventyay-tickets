@@ -14,7 +14,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     name: Tests
     strategy:
       matrix:
@@ -23,44 +23,41 @@ jobs:
         exclude:
           - database: sqlite
             python-version: 3.11
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v4
-      - uses: harmon758/postgresql-action@v1
-        with:
-          postgresql version: '15'
-          postgresql db: 'pretix'
-          postgresql user: 'postgres'
-          postgresql password: 'postgres'
-        if: matrix.database == 'postgres'
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
       - name: Install system dependencies
         run: sudo apt update && sudo apt install gettext
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
       - name: Install Python dependencies
-        run: |
-          sed -i '/eventyay-stripe/d' pyproject.toml
-          sed -i '/eventyay-paypal/d' pyproject.toml
-          pip3 install --ignore-requires-python -e ".[dev]" psycopg2-binary
+        run: uv sync --all-extras --group test
       - name: Run checks
-        run: python manage.py check
+        run: uv run python manage.py check
         working-directory: ./src
       - name: Install JS dependencies
         working-directory: ./src
         run: make npminstall
       - name: Compile
         working-directory: ./src
-        run: make all compress
+        run: uv run make all compress
       - name: Run tests
         working-directory: ./src
-        run: PRETIX_CONFIG_FILE=tests/travis_${{ matrix.database }}.cfg py.test -n 3 -p no:sugar --cov=./ --cov-report=xml --reruns 3 tests --maxfail=100
+        run: PRETIX_CONFIG_FILE=tests/travis_${{ matrix.database }}.cfg uv run pytest -n 3 -p no:sugar --cov=./ --cov-report=xml tests --maxfail=100
       - name: Upload coverage
         uses: codecov/codecov-action@v1
         with:
