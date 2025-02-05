@@ -40,7 +40,7 @@ jobs:
 
       - name: Spellcheck docs
         run: |
-          source .venv/bin/activate
+          source ${GITHUB_WORKSPACE}/.venv/bin/activate
           make spelling
         working-directory: ./doc
 
