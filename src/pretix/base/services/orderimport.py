@@ -9,7 +9,12 @@ from django.utils.translation import gettext as _
 
 from pretix.base.i18n import LazyLocaleException, language
 from pretix.base.models import (
-    CachedFile, Event, InvoiceAddress, Order, OrderPayment, OrderPosition,
+    CachedFile,
+    Event,
+    InvoiceAddress,
+    Order,
+    OrderPayment,
+    OrderPosition,
     User,
 )
 from pretix.base.orderimport import get_all_columns
@@ -35,6 +40,7 @@ def parse_csv(file, length=None):
     data = file.read(length)
     try:
         import chardet
+
         charset = chardet.detect(data)['encoding']
     except ImportError:
         charset = file.charset
@@ -44,7 +50,7 @@ def parse_csv(file, length=None):
         data = data.replace('\r', '\n')
 
     try:
-        dialect = csv.Sniffer().sniff(data.split("\n")[0], delimiters=";,.#:")
+        dialect = csv.Sniffer().sniff(data.split('\n')[0], delimiters=';,.#:')
     except csv.Error:
         return None
 
@@ -81,8 +87,7 @@ def import_orders(event: Event, fileid: str, settings: dict, locale: str, user) 
                     values[c.identifier] = c.clean(val, values)
                 except ValidationError as e:
                     raise DataImportError(
-                        _(
-                            'Error while importing value "{value}" for column "{column}" in line "{line}": {message}').format(
+                        _('Error while importing value "{value}" for column "{column}" in line "{line}": {message}').format(
                             value=val if val is not None else '', column=c.verbose_name, line=i + 1, message=e.message
                         )
                     )
@@ -113,9 +118,7 @@ def import_orders(event: Event, fileid: str, settings: dict, locale: str, user) 
                     c.assign(record.get(c.identifier), order, position, order._address)
 
             except ImportError as e:
-                raise ImportError(
-                    _('Invalid data in row {row}: {message}').format(row=i, message=str(e))
-                )
+                raise ImportError(_('Invalid data in row {row}: {message}').format(row=i, message=str(e)))
 
         # quota check?
         with event.lock():
@@ -132,19 +135,13 @@ def import_orders(event: Event, fileid: str, settings: dict, locale: str, user) 
                             provider='free',
                             info='{}',
                             payment_date=now(),
-                            state=OrderPayment.PAYMENT_STATE_CONFIRMED
+                            state=OrderPayment.PAYMENT_STATE_CONFIRMED,
                         )
                     elif settings['status'] == 'paid':
                         o.status = Order.STATUS_PAID
                         o.save()
                         OrderPayment.objects.create(
-                            local_id=1,
-                            order=o,
-                            amount=o.total,
-                            provider='manual',
-                            info='{}',
-                            payment_date=now(),
-                            state=OrderPayment.PAYMENT_STATE_CONFIRMED
+                            local_id=1, order=o, amount=o.total, provider='manual', info='{}', payment_date=now(), state=OrderPayment.PAYMENT_STATE_CONFIRMED
                         )
                     else:
                         o.status = Order.STATUS_PENDING
@@ -156,11 +153,7 @@ def import_orders(event: Event, fileid: str, settings: dict, locale: str, user) 
                     o._address.save()
                     for c in cols:
                         c.save(o)
-                    o.log_action(
-                        'pretix.event.order.placed',
-                        user=user,
-                        data={'source': 'import'}
-                    )
+                    o.log_action('pretix.event.order.placed', user=user, data={'source': 'import'})
 
             for o in orders:
                 with language(o.locale, event.settings.region):
@@ -168,10 +161,14 @@ def import_orders(event: Event, fileid: str, settings: dict, locale: str, user) 
                     if o.status == Order.STATUS_PAID:
                         order_paid.send(event, order=o)
 
-                    gen_invoice = invoice_qualified(o) and (
-                        (event.settings.get('invoice_generate') == 'True') or
-                        (event.settings.get('invoice_generate') == 'paid' and o.status == Order.STATUS_PAID)
-                    ) and not o.invoices.last()
+                    gen_invoice = (
+                        invoice_qualified(o)
+                        and (
+                            (event.settings.get('invoice_generate') == 'True')
+                            or (event.settings.get('invoice_generate') == 'paid' and o.status == Order.STATUS_PAID)
+                        )
+                        and not o.invoices.last()
+                    )
                     if gen_invoice:
                         generate_invoice(o, trigger_pdf=True)
     cf.delete()

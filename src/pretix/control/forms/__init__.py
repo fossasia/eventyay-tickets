@@ -48,8 +48,7 @@ class TolerantFormsetModelForm(I18nModelForm):
                 initial_prefixed_name = self.add_initial_prefix(name)
                 hidden_widget = field.hidden_widget()
                 try:
-                    initial_value = field.to_python(hidden_widget.value_from_datadict(
-                        self.data, self.files, initial_prefixed_name))
+                    initial_value = field.to_python(hidden_widget.value_from_datadict(self.data, self.files, initial_prefixed_name))
                 except forms.ValidationError:
                     # Always assume data has changed if validation fails.
                     self._changed_data.append(name)
@@ -66,10 +65,7 @@ def selector(values, prop):
     # list of their primary keys, ordered by the primary keys of the
     # properties they belong to EXCEPT the value for the property prop2.
     # We'll see later why we need this.
-    return [
-        v.id for v in sorted(values, key=lambda v: v.prop.id)
-        if v.prop.id != prop.id
-    ]
+    return [v.id for v in sorted(values, key=lambda v: v.prop.id) if v.prop.id != prop.id]
 
 
 class ClearableBasenameFileInput(forms.ClearableFileInput):
@@ -129,6 +125,7 @@ class CachedFileInput(forms.ClearableFileInput):
 
     def value_from_datadict(self, data, files, name):
         from ...base.models import CachedFile
+
         v = super().value_from_datadict(data, files, name)
         if v is None and data.get(name + '-cachedfile'):  # An explicit "[x] clear" would be False, not None
             return CachedFile.objects.filter(id=data[name + '-cachedfile']).first()
@@ -136,6 +133,7 @@ class CachedFileInput(forms.ClearableFileInput):
 
     def get_context(self, name, value, attrs):
         from ...base.models import CachedFile
+
         if isinstance(value, CachedFile):
             value = self.FakeFile(value)
 
@@ -147,25 +145,22 @@ class CachedFileInput(forms.ClearableFileInput):
 
 
 class SizeFileField(forms.FileField):
-
     def __init__(self, *args, **kwargs):
-        self.max_size = kwargs.pop("max_size", None)
+        self.max_size = kwargs.pop('max_size', None)
         super().__init__(*args, **kwargs)
 
     @staticmethod
     def _sizeof_fmt(num, suffix='B'):
         for unit in ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z']:
             if abs(num) < 1024.0:
-                return "%3.1f%s%s" % (num, unit, suffix)
+                return '%3.1f%s%s' % (num, unit, suffix)
             num /= 1024.0
-        return "%.1f%s%s" % (num, 'Yi', suffix)
+        return '%.1f%s%s' % (num, 'Yi', suffix)
 
     def clean(self, *args, **kwargs):
         data = super().clean(*args, **kwargs)
         if isinstance(data, UploadedFile) and self.max_size and data.size > self.max_size:
-            raise forms.ValidationError(_("Please do not upload files larger than {size}!").format(
-                size=SizeFileField._sizeof_fmt(self.max_size)
-            ))
+            raise forms.ValidationError(_('Please do not upload files larger than {size}!').format(size=SizeFileField._sizeof_fmt(self.max_size)))
         return data
 
 
@@ -173,7 +168,7 @@ class ExtFileField(SizeFileField):
     widget = ClearableBasenameFileInput
 
     def __init__(self, *args, **kwargs):
-        ext_whitelist = kwargs.pop("ext_whitelist")
+        ext_whitelist = kwargs.pop('ext_whitelist')
         self.ext_whitelist = [i.lower() for i in ext_whitelist]
         super().__init__(*args, **kwargs)
 
@@ -184,7 +179,7 @@ class ExtFileField(SizeFileField):
             ext = os.path.splitext(filename)[1]
             ext = ext.lower()
             if ext not in self.ext_whitelist:
-                raise forms.ValidationError(_("Filetype not allowed!"))
+                raise forms.ValidationError(_('Filetype not allowed!'))
         return data
 
 
@@ -253,15 +248,9 @@ class MultipleLanguagesWidget(forms.CheckboxSelectMultiple):
     option_template_name = 'pretixcontrol/multi_languages_widget.html'
 
     def sort(self):
-        self.choices = sorted(self.choices, key=lambda l: (
-            (
-                0 if l[0] in settings.LANGUAGES_OFFICIAL
-                else (
-                    1 if l[0] not in settings.LANGUAGES_INCUBATING
-                    else 2
-                )
-            ), str(l[1])
-        ))
+        self.choices = sorted(
+            self.choices, key=lambda l: ((0 if l[0] in settings.LANGUAGES_OFFICIAL else (1 if l[0] not in settings.LANGUAGES_INCUBATING else 2)), str(l[1]))
+        )
 
     def options(self, name, value, attrs=None):
         self.sort()
@@ -279,29 +268,22 @@ class MultipleLanguagesWidget(forms.CheckboxSelectMultiple):
 
 
 class SingleLanguageWidget(forms.Select):
-
     def modify(self):
         if hasattr(self, '_modified'):
             return self.choices
-        self.choices = sorted(self.choices, key=lambda l: (
-            (
-                0 if l[0] in settings.LANGUAGES_OFFICIAL
-                else (
-                    1 if l[0] not in settings.LANGUAGES_INCUBATING
-                    else 2
-                )
-            ), str(l[1])
-        ))
+        self.choices = sorted(
+            self.choices, key=lambda l: ((0 if l[0] in settings.LANGUAGES_OFFICIAL else (1 if l[0] not in settings.LANGUAGES_INCUBATING else 2)), str(l[1]))
+        )
         new_choices = []
         for k, v in self.choices:
-            new_choices.append((
-                k,
-                v if k in settings.LANGUAGES_OFFICIAL
-                else (
-                    '{} (inofficial translation)'.format(v) if k not in settings.LANGUAGES_INCUBATING
-                    else '{} (translation in progress)'.format(v)
+            new_choices.append(
+                (
+                    k,
+                    v
+                    if k in settings.LANGUAGES_OFFICIAL
+                    else ('{} (inofficial translation)'.format(v) if k not in settings.LANGUAGES_INCUBATING else '{} (translation in progress)'.format(v)),
                 )
-            ))
+            )
         self._modified = True
         self.choices = new_choices
 
@@ -315,7 +297,6 @@ class SingleLanguageWidget(forms.Select):
 
 
 class SplitDateTimeField(forms.SplitDateTimeField):
-
     def compress(self, data_list):
         # Differs from the default implementation: If only a time is given and no date, we consider the field empty
         if data_list:

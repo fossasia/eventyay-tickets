@@ -33,35 +33,30 @@ def notify_incomplete_payment(o: Order):
         email_subject = gettext('Your order received an incomplete payment: %(code)s') % {'code': o.code}
 
         try:
-            o.send_mail(
-                email_subject, email_template, email_context,
-                'pretix.event.order.email.expire_warning_sent'
-            )
+            o.send_mail(email_subject, email_template, email_context, 'pretix.event.order.email.expire_warning_sent')
         except SendMailException:
             logger.exception('Reminder email could not be sent')
 
 
 def cancel_old_payments(order):
     for p in order.payments.filter(
-        state__in=(OrderPayment.PAYMENT_STATE_PENDING,
-                   OrderPayment.PAYMENT_STATE_CREATED),
+        state__in=(OrderPayment.PAYMENT_STATE_PENDING, OrderPayment.PAYMENT_STATE_CREATED),
         provider='banktransfer',
     ):
         try:
             with transaction.atomic():
                 p.payment_provider.cancel_payment(p)
-                order.log_action('pretix.event.order.payment.canceled', {
-                    'local_id': p.local_id,
-                    'provider': p.provider,
-                })
+                order.log_action(
+                    'pretix.event.order.payment.canceled',
+                    {
+                        'local_id': p.local_id,
+                        'provider': p.provider,
+                    },
+                )
         except PaymentException as e:
             order.log_action(
                 'pretix.event.order.payment.canceled.failed',
-                {
-                    'local_id': p.local_id,
-                    'provider': p.provider,
-                    'error': str(e)
-                },
+                {'local_id': p.local_id, 'provider': p.provider, 'error': str(e)},
             )
 
 
@@ -69,8 +64,8 @@ def _find_order_for_code(base_qs, code):
     try_codes = [
         code,
         Order.normalize_code(code, is_fallback=True),
-        code[:settings.ENTROPY['order_code']],
-        Order.normalize_code(code[:settings.ENTROPY['order_code']], is_fallback=True)
+        code[: settings.ENTROPY['order_code']],
+        Order.normalize_code(code[: settings.ENTROPY['order_code']], is_fallback=True),
     ]
     for c in try_codes:
         try:
@@ -137,7 +132,7 @@ def _handle_transaction(trans: BankTransaction, matches: tuple, event: Event = N
                 state__in=(OrderPayment.PAYMENT_STATE_CREATED, OrderPayment.PAYMENT_STATE_PENDING),
                 defaults={
                     'state': OrderPayment.PAYMENT_STATE_CREATED,
-                }
+                },
             )
         except OrderPayment.MultipleObjectsReturned:
             created = False
@@ -154,13 +149,12 @@ def _handle_transaction(trans: BankTransaction, matches: tuple, event: Event = N
             'iban': trans.iban,
             'bic': trans.bic,
             'full_amount': str(trans.amount),
-            'trans_id': trans.pk
+            'trans_id': trans.pk,
         }
 
         if created:
             # We're perform a payment method switching on-demand here
-            old_fee, new_fee, fee, p = change_payment_provider(order, p.payment_provider, p.amount,
-                                                               new_payment=p, create_log=False)  # noqa
+            old_fee, new_fee, fee, p = change_payment_provider(order, p.payment_provider, p.amount, new_payment=p, create_log=False)  # noqa
             if fee:
                 p.fee = fee
                 p.save(update_fields=['fee'])
@@ -187,7 +181,7 @@ def parse_date(date_str):
     try:
         return dateutil.parser.parse(
             date_str,
-            dayfirst="." in date_str,
+            dayfirst='.' in date_str,
         ).date()
     except (ValueError, OverflowError):
         pass
@@ -195,10 +189,8 @@ def parse_date(date_str):
 
 
 def _get_unknown_transactions(job: BankImportJob, data: list, event: Event = None, organizer: Organizer = None):
-    amount_pattern = re.compile("[^0-9.-]")
-    known_checksums = set(t['checksum'] for t in BankTransaction.objects.filter(
-        Q(event=event) if event else Q(organizer=organizer)
-    ).values('checksum'))
+    amount_pattern = re.compile('[^0-9.-]')
+    known_checksums = set(t['checksum'] for t in BankTransaction.objects.filter(Q(event=event) if event else Q(organizer=organizer)).values('checksum'))
 
     transactions = []
     for row in data:
@@ -210,18 +202,24 @@ def _get_unknown_transactions(job: BankImportJob, data: list, event: Event = Non
                     amount = amount.replace(',', '')
                 else:
                     amount = amount.replace('.', '')
-            amount = amount_pattern.sub("", amount.replace(',', '.'))
+            amount = amount_pattern.sub('', amount.replace(',', '.'))
             try:
                 amount = Decimal(amount)
             except:
                 logger.exception('Could not parse amount of transaction: {}'.format(amount))
-                amount = Decimal("0.00")
+                amount = Decimal('0.00')
 
-        trans = BankTransaction(event=event, organizer=organizer, import_job=job,
-                                payer=row.get('payer', ''),
-                                reference=row['reference'],
-                                amount=amount, date=row['date'],
-                                iban=row.get('iban', ''), bic=row.get('bic', ''))
+        trans = BankTransaction(
+            event=event,
+            organizer=organizer,
+            import_job=job,
+            payer=row.get('payer', ''),
+            reference=row['reference'],
+            amount=amount,
+            date=row['date'],
+            iban=row.get('iban', ''),
+            bic=row.get('bic', ''),
+        )
 
         trans.date_parsed = parse_date(trans.date)
 
@@ -236,7 +234,7 @@ def _get_unknown_transactions(job: BankImportJob, data: list, event: Event = Non
 
 @app.task(base=TransactionAwareTask, bind=True, max_retries=5, default_retry_delay=1)
 def process_banktransfers(self, job: int, data: list) -> None:
-    with language("en"):  # We'll translate error messages at display time
+    with language('en'):  # We'll translate error messages at display time
         with scopes_disabled():
             job = BankImportJob.objects.get(pk=job)
         with scope(organizer=job.organizer or job.event.organizer):
@@ -249,24 +247,18 @@ def process_banktransfers(self, job: int, data: list) -> None:
 
                 transactions = _get_unknown_transactions(job, data, **job.owner_kwargs)
 
-                code_len_agg = Order.objects.filter(event__organizer=job.organizer).annotate(
-                    clen=Length('code')
-                ).aggregate(min=Min('clen'), max=Max('clen'))
+                code_len_agg = Order.objects.filter(event__organizer=job.organizer).annotate(clen=Length('code')).aggregate(min=Min('clen'), max=Max('clen'))
                 if job.event:
                     prefixes = [job.event.slug.upper()]
                 else:
-                    prefixes = [e.slug.upper()
-                                for e in job.organizer.events.all()]
+                    prefixes = [e.slug.upper() for e in job.organizer.events.all()]
                 pattern = re.compile(
-                    "(%s)[ \\-_]*([A-Z0-9]{%s,%s})" % (
-                        "|".join(p.replace(".", r"\.").replace("-", r"[\- ]*") for p in prefixes),
-                        code_len_agg['min'] or 0,
-                        code_len_agg['max'] or 5
-                    )
+                    '(%s)[ \\-_]*([A-Z0-9]{%s,%s})'
+                    % ('|'.join(p.replace('.', r'\.').replace('-', r'[\- ]*') for p in prefixes), code_len_agg['min'] or 0, code_len_agg['max'] or 5)
                 )
 
                 for trans in transactions:
-                    matches = pattern.findall(trans.reference.replace(" ", "").replace("\n", "").upper())
+                    matches = pattern.findall(trans.reference.replace(' ', '').replace('\n', '').upper())
 
                     if matches:
                         if job.event:

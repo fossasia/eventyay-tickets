@@ -14,46 +14,53 @@ from pretix.control.forms.widgets import Select2, Select2Multiple
 
 
 class MailForm(forms.Form):
-    recipients = forms.ChoiceField(
-        label=_('Send email to'),
-        widget=forms.RadioSelect,
-        initial='orders',
-        choices=[]
-    )
+    recipients = forms.ChoiceField(label=_('Send email to'), widget=forms.RadioSelect, initial='orders', choices=[])
     sendto = forms.MultipleChoiceField()  # overridden later
-    subject = forms.CharField(label=_("Subject"))
-    message = forms.CharField(label=_("Message"))
+    subject = forms.CharField(label=_('Subject'))
+    message = forms.CharField(label=_('Message'))
     attachment = CachedFileField(
-        label=_("Attachment"),
+        label=_('Attachment'),
         required=False,
         ext_whitelist=(
-            ".png", ".jpg", ".gif", ".jpeg", ".pdf", ".txt", ".docx", ".gif", ".svg",
-            ".pptx", ".ppt", ".doc", ".xlsx", ".xls", ".jfif", ".heic", ".heif", ".pages",
-            ".bmp", ".tif", ".tiff"
+            '.png',
+            '.jpg',
+            '.gif',
+            '.jpeg',
+            '.pdf',
+            '.txt',
+            '.docx',
+            '.gif',
+            '.svg',
+            '.pptx',
+            '.ppt',
+            '.doc',
+            '.xlsx',
+            '.xls',
+            '.jfif',
+            '.heic',
+            '.heif',
+            '.pages',
+            '.bmp',
+            '.tif',
+            '.tiff',
         ),
-        help_text=_('Sending an attachment increases the chance of your email not arriving or being sorted into spam folders. We recommend only using PDFs '
-                    'of no more than 2 MB in size.'),
-        max_size=10 * 1024 * 1024
+        help_text=_(
+            'Sending an attachment increases the chance of your email not arriving or being sorted into spam folders. We recommend only using PDFs '
+            'of no more than 2 MB in size.'
+        ),
+        max_size=10 * 1024 * 1024,
     )  # TODO i18n
     items = forms.ModelMultipleChoiceField(
-        widget=forms.CheckboxSelectMultiple(
-            attrs={'class': 'scrolling-multiple-choice'}
-        ),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
         label=_('Only send to people who bought'),
         required=True,
-        queryset=Item.objects.none()
+        queryset=Item.objects.none(),
     )
-    filter_checkins = forms.BooleanField(
-        label=_('Filter check-in status'),
-        required=False
-    )
+    filter_checkins = forms.BooleanField(label=_('Filter check-in status'), required=False)
     checkin_lists = SafeModelMultipleChoiceField(queryset=CheckinList.objects.none(), required=False)  # overridden later
-    not_checked_in = forms.BooleanField(label=_("Send to customers not checked in"), required=False)
+    not_checked_in = forms.BooleanField(label=_('Send to customers not checked in'), required=False)
     subevent = forms.ModelChoiceField(
-        SubEvent.objects.none(),
-        label=_('Only send to customers of'),
-        required=False,
-        empty_label=pgettext_lazy('subevent', 'All dates')
+        SubEvent.objects.none(), label=_('Only send to customers of'), required=False, empty_label=pgettext_lazy('subevent', 'All dates')
     )
     subevents_from = forms.SplitDateTimeField(
         widget=SplitDateTimePickerWidget(),
@@ -85,44 +92,36 @@ class MailForm(forms.Form):
         return d
 
     def _set_field_placeholders(self, fn, base_parameters):
-        phs = [
-            '{%s}' % p
-            for p in sorted(get_available_placeholders(self.event, base_parameters).keys())
-        ]
-        ht = _('Available placeholders: {list}').format(
-            list=', '.join(phs)
-        )
+        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.event, base_parameters).keys())]
+        ht = _('Available placeholders: {list}').format(list=', '.join(phs))
         if self.fields[fn].help_text:
             self.fields[fn].help_text += ' ' + str(ht)
         else:
             self.fields[fn].help_text = ht
-        self.fields[fn].validators.append(
-            PlaceholderValidator(phs)
-        )
+        self.fields[fn].validators.append(PlaceholderValidator(phs))
 
     def __init__(self, *args, **kwargs):
         event = self.event = kwargs.pop('event')
         super().__init__(*args, **kwargs)
 
-        recp_choices = [
-            ('orders', _('Everyone who created a ticket order'))
-        ]
+        recp_choices = [('orders', _('Everyone who created a ticket order'))]
         if event.settings.attendee_emails_asked:
             recp_choices += [
-                ('attendees', _('Every attendee (falling back to the order contact when no attendee email address is '
-                                'given)')),
-                ('both', _('Both (all order contact addresses and all attendee email addresses)'))
+                ('attendees', _('Every attendee (falling back to the order contact when no attendee email address is given)')),
+                ('both', _('Both (all order contact addresses and all attendee email addresses)')),
             ]
         self.fields['recipients'].choices = recp_choices
 
         self.fields['subject'] = I18nFormField(
             label=_('Subject'),
-            widget=I18nTextInput, required=True,
+            widget=I18nTextInput,
+            required=True,
             locales=event.settings.get('locales'),
         )
         self.fields['message'] = I18nFormField(
             label=_('Message'),
-            widget=I18nTextarea, required=True,
+            widget=I18nTextarea,
+            required=True,
             locales=event.settings.get('locales'),
         )
         self._set_field_placeholders('subject', ['event', 'order', 'position_or_address'])
@@ -131,15 +130,9 @@ class MailForm(forms.Form):
         choices.insert(0, ('na', _('payment pending (except unapproved)')))
         choices.insert(0, ('pa', _('approval pending')))
         if not event.settings.get('payment_term_expire_automatically', as_type=bool):
-            choices.append(
-                ('overdue', _('pending with payment overdue'))
-            )
+            choices.append(('overdue', _('pending with payment overdue')))
         self.fields['sendto'] = forms.MultipleChoiceField(
-            label=_("Send to customers with order status"),
-            widget=forms.CheckboxSelectMultiple(
-                attrs={'class': 'scrolling-multiple-choice'}
-            ),
-            choices=choices
+            label=_('Send to customers with order status'), widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}), choices=choices
         )
         if not self.initial.get('sendto'):
             self.initial['sendto'] = ['p', 'na']
@@ -155,10 +148,13 @@ class MailForm(forms.Form):
         self.fields['checkin_lists'].widget = Select2Multiple(
             attrs={
                 'data-model-select2': 'generic',
-                'data-select2-url': reverse('control:event.orders.checkinlists.select2', kwargs={
-                    'event': event.slug,
-                    'organizer': event.organizer.slug,
-                }),
+                'data-select2-url': reverse(
+                    'control:event.orders.checkinlists.select2',
+                    kwargs={
+                        'event': event.slug,
+                        'organizer': event.organizer.slug,
+                    },
+                ),
                 'data-placeholder': _('Send to customers checked in on list'),
             }
         )
@@ -170,11 +166,14 @@ class MailForm(forms.Form):
             self.fields['subevent'].widget = Select2(
                 attrs={
                     'data-model-select2': 'event',
-                    'data-select2-url': reverse('control:event.subevents.select2', kwargs={
-                        'event': event.slug,
-                        'organizer': event.organizer.slug,
-                    }),
-                    'data-placeholder': pgettext_lazy('subevent', 'Date')
+                    'data-select2-url': reverse(
+                        'control:event.subevents.select2',
+                        kwargs={
+                            'event': event.slug,
+                            'organizer': event.organizer.slug,
+                        },
+                    ),
+                    'data-placeholder': pgettext_lazy('subevent', 'Date'),
                 }
             )
             self.fields['subevent'].widget.choices = self.fields['subevent'].choices

@@ -29,35 +29,35 @@ class CheckInListShow(EventPermissionRequiredMixin, PaginationMixin, ListView):
     permission = 'can_view_orders'
 
     def get_queryset(self, filter=True):
-        cqs = Checkin.objects.filter(
-            position_id=OuterRef('pk'),
-            list_id=self.list.pk,
-            type=Checkin.TYPE_ENTRY
-        ).order_by().values('position_id').annotate(
-            m=Max('datetime')
-        ).values('m')
-        cqs_exit = Checkin.objects.filter(
-            position_id=OuterRef('pk'),
-            list_id=self.list.pk,
-            type=Checkin.TYPE_EXIT
-        ).order_by().values('position_id').annotate(
-            m=Max('datetime')
-        ).values('m')
+        cqs = (
+            Checkin.objects.filter(position_id=OuterRef('pk'), list_id=self.list.pk, type=Checkin.TYPE_ENTRY)
+            .order_by()
+            .values('position_id')
+            .annotate(m=Max('datetime'))
+            .values('m')
+        )
+        cqs_exit = (
+            Checkin.objects.filter(position_id=OuterRef('pk'), list_id=self.list.pk, type=Checkin.TYPE_EXIT)
+            .order_by()
+            .values('position_id')
+            .annotate(m=Max('datetime'))
+            .values('m')
+        )
 
-        qs = OrderPosition.objects.filter(
-            order__event=self.request.event,
-            order__status__in=[Order.STATUS_PAID, Order.STATUS_PENDING] if self.list.include_pending else [Order.STATUS_PAID],
-        ).annotate(
-            last_entry=Subquery(cqs),
-            last_exit=Subquery(cqs_exit),
-            auto_checked_in=Exists(
-                Checkin.objects.filter(position_id=OuterRef('pk'), list_id=self.list.pk, auto_checked_in=True)
+        qs = (
+            OrderPosition.objects.filter(
+                order__event=self.request.event,
+                order__status__in=[Order.STATUS_PAID, Order.STATUS_PENDING] if self.list.include_pending else [Order.STATUS_PAID],
             )
-        ).select_related('item', 'variation', 'order', 'addon_to')
+            .annotate(
+                last_entry=Subquery(cqs),
+                last_exit=Subquery(cqs_exit),
+                auto_checked_in=Exists(Checkin.objects.filter(position_id=OuterRef('pk'), list_id=self.list.pk, auto_checked_in=True)),
+            )
+            .select_related('item', 'variation', 'order', 'addon_to')
+        )
         if self.list.subevent:
-            qs = qs.filter(
-                subevent=self.list.subevent
-            )
+            qs = qs.filter(subevent=self.list.subevent)
 
         if not self.list.all_products:
             qs = qs.filter(item__in=self.list.limit_products.values_list('id', flat=True))
@@ -69,14 +69,10 @@ class CheckInListShow(EventPermissionRequiredMixin, PaginationMixin, ListView):
 
     @cached_property
     def filter_form(self):
-        return CheckInFilterForm(
-            data=self.request.GET,
-            event=self.request.event,
-            list=self.list
-        )
+        return CheckInFilterForm(data=self.request.GET, event=self.request.event, list=self.list)
 
     def dispatch(self, request, *args, **kwargs):
-        self.list = get_object_or_404(self.request.event.checkin_lists.all(), pk=kwargs.get("list"))
+        self.list = get_object_or_404(self.request.event.checkin_lists.all(), pk=kwargs.get('list'))
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -84,8 +80,7 @@ class CheckInListShow(EventPermissionRequiredMixin, PaginationMixin, ListView):
         ctx['checkinlist'] = self.list
         if self.request.event.has_subevents:
             ctx['seats'] = (
-                self.list.subevent.seating_plan_id if self.list.subevent
-                else self.request.event.subevents.filter(seating_plan__isnull=False).exists()
+                self.list.subevent.seating_plan_id if self.list.subevent else self.request.event.subevents.filter(seating_plan__isnull=False).exists()
             )
         else:
             ctx['seats'] = self.request.event.seating_plan_id
@@ -114,27 +109,25 @@ class CheckInListShow(EventPermissionRequiredMixin, PaginationMixin, ListView):
         return ctx
 
     def post(self, request, *args, **kwargs):
-        if "can_change_orders" not in request.eventpermset:
+        if 'can_change_orders' not in request.eventpermset:
             messages.error(request, _('You do not have permission to perform this action.'))
-            return redirect(reverse('control:event.orders.checkins', kwargs={
-                'event': self.request.event.slug,
-                'organizer': self.request.event.organizer.slug
-            }) + '?' + request.GET.urlencode())
+            return redirect(
+                reverse('control:event.orders.checkins', kwargs={'event': self.request.event.slug, 'organizer': self.request.event.organizer.slug})
+                + '?'
+                + request.GET.urlencode()
+            )
 
-        positions = self.get_queryset(filter=False).filter(
-            pk__in=request.POST.getlist('checkin')
-        )
+        positions = self.get_queryset(filter=False).filter(pk__in=request.POST.getlist('checkin'))
 
         if request.POST.get('revert') == 'true':
             for op in positions:
                 if op.order.status == Order.STATUS_PAID or (self.list.include_pending and op.order.status == Order.STATUS_PENDING):
                     Checkin.objects.filter(position=op, list=self.list).delete()
-                    op.order.log_action('pretix.event.checkin.reverted', data={
-                        'position': op.id,
-                        'positionid': op.positionid,
-                        'list': self.list.pk,
-                        'web': True
-                    }, user=request.user)
+                    op.order.log_action(
+                        'pretix.event.checkin.reverted',
+                        data={'position': op.id, 'positionid': op.positionid, 'list': self.list.pk, 'web': True},
+                        user=request.user,
+                    )
                     op.order.touch()
 
             messages.success(request, _('The selected check-ins have been reverted.'))
@@ -149,31 +142,42 @@ class CheckInListShow(EventPermissionRequiredMixin, PaginationMixin, ListView):
                         created = True
                     else:
                         try:
-                            ci, created = Checkin.objects.get_or_create(position=op, list=self.list, defaults={
-                                'datetime': now(),
-                            })
+                            ci, created = Checkin.objects.get_or_create(
+                                position=op,
+                                list=self.list,
+                                defaults={
+                                    'datetime': now(),
+                                },
+                            )
                         except Checkin.MultipleObjectsReturned:
                             ci, created = Checkin.objects.filter(position=op, list=self.list).first(), False
 
-                    op.order.log_action('pretix.event.checkin', data={
-                        'position': op.id,
-                        'positionid': op.positionid,
-                        'first': created,
-                        'forced': False,
-                        'datetime': now(),
-                        'type': t,
-                        'list': self.list.pk,
-                        'web': True
-                    }, user=request.user)
+                    op.order.log_action(
+                        'pretix.event.checkin',
+                        data={
+                            'position': op.id,
+                            'positionid': op.positionid,
+                            'first': created,
+                            'forced': False,
+                            'datetime': now(),
+                            'type': t,
+                            'list': self.list.pk,
+                            'web': True,
+                        },
+                        user=request.user,
+                    )
                     checkin_created.send(op.order.event, checkin=ci)
 
             messages.success(request, _('The selected tickets have been marked as checked in.'))
 
-        return redirect(reverse('control:event.orders.checkinlists.show', kwargs={
-            'event': self.request.event.slug,
-            'organizer': self.request.event.organizer.slug,
-            'list': self.list.pk
-        }) + '?' + request.GET.urlencode())
+        return redirect(
+            reverse(
+                'control:event.orders.checkinlists.show',
+                kwargs={'event': self.request.event.slug, 'organizer': self.request.event.organizer.slug, 'list': self.list.pk},
+            )
+            + '?'
+            + request.GET.urlencode()
+        )
 
 
 class CheckinListList(EventPermissionRequiredMixin, PaginationMixin, ListView):
@@ -183,10 +187,10 @@ class CheckinListList(EventPermissionRequiredMixin, PaginationMixin, ListView):
     template_name = 'pretixcontrol/checkin/lists.html'
 
     def get_queryset(self):
-        qs = self.request.event.checkin_lists.select_related('subevent').prefetch_related("limit_products")
+        qs = self.request.event.checkin_lists.select_related('subevent').prefetch_related('limit_products')
 
-        if self.request.GET.get("subevent", "") != "":
-            s = self.request.GET.get("subevent", "")
+        if self.request.GET.get('subevent', '') != '':
+            s = self.request.GET.get('subevent', '')
             qs = qs.filter(subevent_id=s)
         return qs
 
@@ -201,11 +205,7 @@ class CheckinListList(EventPermissionRequiredMixin, PaginationMixin, ListView):
             cl.auto_checkin_sales_channels = [sales_channels[channel] for channel in cl.auto_checkin_sales_channels]
         ctx['checkinlists'] = clists
 
-        ctx['can_change_organizer_settings'] = self.request.user.has_organizer_permission(
-            self.request.organizer,
-            'can_change_organizer_settings',
-            self.request
-        )
+        ctx['can_change_organizer_settings'] = self.request.user.has_organizer_permission(self.request.organizer, 'can_change_organizer_settings', self.request)
 
         return ctx
 
@@ -219,14 +219,14 @@ class CheckinListCreate(EventPermissionRequiredMixin, CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         r = super().dispatch(request, *args, **kwargs)
-        r['Content-Security-Policy'] = 'script-src \'unsafe-eval\''
+        r['Content-Security-Policy'] = "script-src 'unsafe-eval'"
         return r
 
     @cached_property
     def copy_from(self):
-        if self.request.GET.get("copy_from") and not getattr(self, 'object', None):
+        if self.request.GET.get('copy_from') and not getattr(self, 'object', None):
             try:
-                return self.request.event.checkin_lists.get(pk=self.request.GET.get("copy_from"))
+                return self.request.event.checkin_lists.get(pk=self.request.GET.get('copy_from'))
             except CheckinList.DoesNotExist:
                 pass
 
@@ -242,18 +242,20 @@ class CheckinListCreate(EventPermissionRequiredMixin, CreateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        return reverse('control:event.orders.checkinlists', kwargs={
-            'organizer': self.request.event.organizer.slug,
-            'event': self.request.event.slug,
-        })
+        return reverse(
+            'control:event.orders.checkinlists',
+            kwargs={
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
+            },
+        )
 
     @transaction.atomic
     def form_valid(self, form):
         form.instance.event = self.request.event
         messages.success(self.request, _('The new check-in list has been created.'))
         ret = super().form_valid(form)
-        form.instance.log_action('pretix.event.checkinlist.added', user=self.request.user,
-                                 data=dict(form.cleaned_data))
+        form.instance.log_action('pretix.event.checkinlist.added', user=self.request.user, data=dict(form.cleaned_data))
         return ret
 
     def form_invalid(self, form):
@@ -270,34 +272,27 @@ class CheckinListUpdate(EventPermissionRequiredMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         r = super().dispatch(request, *args, **kwargs)
-        r['Content-Security-Policy'] = 'script-src \'unsafe-eval\''
+        r['Content-Security-Policy'] = "script-src 'unsafe-eval'"
         return r
 
     def get_object(self, queryset=None) -> CheckinList:
         try:
-            return self.request.event.checkin_lists.get(
-                id=self.kwargs['list']
-            )
+            return self.request.event.checkin_lists.get(id=self.kwargs['list'])
         except CheckinList.DoesNotExist:
-            raise Http404(_("The requested list does not exist."))
+            raise Http404(_('The requested list does not exist.'))
 
     @transaction.atomic
     def form_valid(self, form):
         messages.success(self.request, _('Your changes have been saved.'))
         if form.has_changed():
-            self.object.log_action(
-                'pretix.event.checkinlist.changed', user=self.request.user, data={
-                    k: form.cleaned_data.get(k) for k in form.changed_data
-                }
-            )
+            self.object.log_action('pretix.event.checkinlist.changed', user=self.request.user, data={k: form.cleaned_data.get(k) for k in form.changed_data})
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse('control:event.orders.checkinlists.edit', kwargs={
-            'organizer': self.request.event.organizer.slug,
-            'event': self.request.event.slug,
-            'list': self.object.pk
-        })
+        return reverse(
+            'control:event.orders.checkinlists.edit',
+            kwargs={'organizer': self.request.event.organizer.slug, 'event': self.request.event.slug, 'list': self.object.pk},
+        )
 
     def form_invalid(self, form):
         messages.error(self.request, _('We could not save your changes. See below for details.'))
@@ -312,11 +307,9 @@ class CheckinListDelete(EventPermissionRequiredMixin, DeleteView):
 
     def get_object(self, queryset=None) -> CheckinList:
         try:
-            return self.request.event.checkin_lists.get(
-                id=self.kwargs['list']
-            )
+            return self.request.event.checkin_lists.get(id=self.kwargs['list'])
         except CheckinList.DoesNotExist:
-            raise Http404(_("The requested list does not exist."))
+            raise Http404(_('The requested list does not exist.'))
 
     @transaction.atomic
     def form_valid(self, form):
@@ -329,7 +322,10 @@ class CheckinListDelete(EventPermissionRequiredMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
     def get_success_url(self) -> str:
-        return reverse('control:event.orders.checkinlists', kwargs={
-            'organizer': self.request.event.organizer.slug,
-            'event': self.request.event.slug,
-        })
+        return reverse(
+            'control:event.orders.checkinlists',
+            kwargs={
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
+            },
+        )

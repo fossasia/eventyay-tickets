@@ -21,12 +21,9 @@ logger = logging.getLogger(__name__)
 
 
 class ShredderMixin:
-
     @cached_property
     def shredders(self):
-        return OrderedDict(
-            sorted(self.request.event.get_data_shredders().items(), key=lambda s: s[1].verbose_name)
-        )
+        return OrderedDict(sorted(self.request.event.get_data_shredders().items(), key=lambda s: s[1].verbose_name))
 
 
 class StartShredView(RecentAuthenticationRequiredMixin, EventPermissionRequiredMixin, ShredderMixin, TemplateView):
@@ -48,13 +45,13 @@ class ShredDownloadView(RecentAuthenticationRequiredMixin, EventPermissionRequir
         try:
             cf = CachedFile.objects.get(pk=kwargs['file'])
         except CachedFile.DoesNotExist:
-            raise ShredError(_("The download file could no longer be found on the server, please try to start again."))
+            raise ShredError(_('The download file could no longer be found on the server, please try to start again.'))
 
         with ZipFile(cf.file.file, 'r') as zipfile:
             indexdata = json.loads(zipfile.read('index.json').decode())
 
         if indexdata['organizer'] != kwargs['organizer'] or indexdata['event'] != kwargs['event']:
-            raise ShredError(_("This file is from a different event."))
+            raise ShredError(_('This file is from a different event.'))
 
         shredders = []
         for s in indexdata['shredders']:
@@ -66,7 +63,7 @@ class ShredDownloadView(RecentAuthenticationRequiredMixin, EventPermissionRequir
         ctx = super().get_context_data(**kwargs)
         ctx['shredders'] = self.shredders
         ctx['download_on_shred'] = any(shredder.require_download_confirmation for shredder in shredders)
-        ctx['file'] = get_object_or_404(CachedFile, pk=kwargs.get("file"))
+        ctx['file'] = get_object_or_404(CachedFile, pk=kwargs.get('file'))
         return ctx
 
 
@@ -79,24 +76,19 @@ class ShredExportView(RecentAuthenticationRequiredMixin, EventPermissionRequired
         return None
 
     def get_success_url(self, value):
-        return reverse('control:event.shredder.download', kwargs={
-            'event': self.request.event.slug,
-            'organizer': self.request.event.organizer.slug,
-            'file': str(value)
-        })
+        return reverse(
+            'control:event.shredder.download', kwargs={'event': self.request.event.slug, 'organizer': self.request.event.organizer.slug, 'file': str(value)}
+        )
 
     def get_error_url(self):
-        return reverse('control:event.shredder.start', kwargs={
-            'event': self.request.event.slug,
-            'organizer': self.request.event.organizer.slug
-        })
+        return reverse('control:event.shredder.start', kwargs={'event': self.request.event.slug, 'organizer': self.request.event.organizer.slug})
 
     def post(self, request, *args, **kwargs):
         constr = shred_constraints(self.request.event)
         if constr:
             return self.error(ShredError(self.get_error_url()))
 
-        return self.do(self.request.event.id, request.POST.getlist("shredder"), self.request.session.session_key)
+        return self.do(self.request.event.id, request.POST.getlist('shredder'), self.request.session.session_key)
 
 
 class ShredDoView(RecentAuthenticationRequiredMixin, EventPermissionRequiredMixin, ShredderMixin, AsyncAction, View):
@@ -105,27 +97,29 @@ class ShredDoView(RecentAuthenticationRequiredMixin, EventPermissionRequiredMixi
     known_errortypes = ['ShredError']
 
     def get_success_url(self, value):
-        return reverse('control:event.shredder.start', kwargs={
-            'event': self.request.event.slug,
-            'organizer': self.request.event.organizer.slug,
-        })
+        return reverse(
+            'control:event.shredder.start',
+            kwargs={
+                'event': self.request.event.slug,
+                'organizer': self.request.event.organizer.slug,
+            },
+        )
 
     def get_success_message(self, value):
         return _('The selected data was deleted successfully.')
 
     def get_error_url(self):
-        return reverse('control:event.shredder.download', kwargs={
-            'event': self.request.event.slug,
-            'organizer': self.request.event.organizer.slug,
-            'file': self.request.POST.get("file")
-        })
+        return reverse(
+            'control:event.shredder.download',
+            kwargs={'event': self.request.event.slug, 'organizer': self.request.event.organizer.slug, 'file': self.request.POST.get('file')},
+        )
 
     def post(self, request, *args, **kwargs):
         constr = shred_constraints(self.request.event)
         if constr:
             return self.error(ShredError(self.get_error_url()))
 
-        if request.event.slug != request.POST.get("slug"):
-            return self.error(ShredError(_("The slug you entered was not correct.")))
+        if request.event.slug != request.POST.get('slug'):
+            return self.error(ShredError(_('The slug you entered was not correct.')))
 
-        return self.do(self.request.event.id, request.POST.get("file"), request.POST.get("confirm_code"))
+        return self.do(self.request.event.id, request.POST.get('file'), request.POST.get('confirm_code'))

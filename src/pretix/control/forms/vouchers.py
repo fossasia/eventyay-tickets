@@ -25,20 +25,24 @@ class FakeChoiceField(forms.ChoiceField):
 
 
 class VoucherForm(I18nModelForm):
-    itemvar = FakeChoiceField(
-        label=_("Product"),
-        help_text=_(
-            "This product is added to the user's cart if the voucher is redeemed."
-        ),
-        required=True
-    )
+    itemvar = FakeChoiceField(label=_('Product'), help_text=_("This product is added to the user's cart if the voucher is redeemed."), required=True)
 
     class Meta:
         model = Voucher
         localized_fields = '__all__'
         fields = [
-            'code', 'valid_until', 'block_quota', 'allow_ignore_quota', 'value', 'tag',
-            'comment', 'max_usages', 'price_mode', 'subevent', 'show_hidden_items', 'budget'
+            'code',
+            'valid_until',
+            'block_quota',
+            'allow_ignore_quota',
+            'value',
+            'tag',
+            'comment',
+            'max_usages',
+            'price_mode',
+            'subevent',
+            'show_hidden_items',
+            'budget',
         ]
         field_classes = {
             'valid_until': SplitDateTimeField,
@@ -71,11 +75,14 @@ class VoucherForm(I18nModelForm):
             self.fields['subevent'].widget = Select2(
                 attrs={
                     'data-model-select2': 'event',
-                    'data-select2-url': reverse('control:event.subevents.select2', kwargs={
-                        'event': instance.event.slug,
-                        'organizer': instance.event.organizer.slug,
-                    }),
-                    'data-placeholder': pgettext_lazy('subevent', 'Date')
+                    'data-select2-url': reverse(
+                        'control:event.subevents.select2',
+                        kwargs={
+                            'event': instance.event.slug,
+                            'organizer': instance.event.organizer.slug,
+                        },
+                    ),
+                    'data-placeholder': pgettext_lazy('subevent', 'Date'),
                 }
             )
             self.fields['subevent'].widget.choices = self.fields['subevent'].choices
@@ -105,11 +112,14 @@ class VoucherForm(I18nModelForm):
         self.fields['itemvar'].widget = Select2ItemVarQuota(
             attrs={
                 'data-model-select2': 'generic',
-                'data-select2-url': reverse('control:event.vouchers.itemselect2', kwargs={
-                    'event': instance.event.slug,
-                    'organizer': instance.event.organizer.slug,
-                }),
-                'data-placeholder': _('All products')
+                'data-select2-url': reverse(
+                    'control:event.vouchers.itemselect2',
+                    kwargs={
+                        'event': instance.event.slug,
+                        'organizer': instance.event.organizer.slug,
+                    },
+                ),
+                'data-placeholder': _('All products'),
             }
         )
         self.fields['itemvar'].required = False
@@ -117,7 +127,7 @@ class VoucherForm(I18nModelForm):
 
         if self.instance.event.seating_plan or self.instance.event.subevents.filter(seating_plan__isnull=False).exists():
             self.fields['seat'] = forms.CharField(
-                label=_("Specific seat ID"),
+                label=_('Specific seat ID'),
                 max_length=255,
                 required=False,
                 widget=forms.TextInput(attrs={'data-seat-guid-field': '1'}),
@@ -158,49 +168,40 @@ class VoucherForm(I18nModelForm):
                     self.instance.variation = None
 
             except ObjectDoesNotExist:
-                raise ValidationError(_("Invalid product selected."))
+                raise ValidationError(_('Invalid product selected.'))
 
         if 'codes' in data:
-            data['codes'] = [a.strip() for a in data.get('codes', '').strip().split("\n") if a]
+            data['codes'] = [a.strip() for a in data.get('codes', '').strip().split('\n') if a]
             cnt = len(data['codes']) * data.get('max_usages', 0)
         else:
             cnt = data.get('max_usages', 0)
 
         Voucher.clean_item_properties(
-            data, self.instance.event,
-            self.instance.quota, self.instance.item, self.instance.variation,
+            data,
+            self.instance.event,
+            self.instance.quota,
+            self.instance.item,
+            self.instance.variation,
             seats_given=data.get('seat') or data.get('seats'),
-            block_quota=data.get('block_quota')
+            block_quota=data.get('block_quota'),
         )
         if not self.instance.show_hidden_items and (
             (self.instance.quota and all(i.hide_without_voucher for i in self.instance.quota.items.all()))
             or (self.instance.item and self.instance.item.hide_without_voucher)
         ):
-            raise ValidationError({
-                'show_hidden_items': [
-                    _('The voucher only matches hidden products but you have not selected that it should show '
-                      'them.')
-                ]
-            })
-        Voucher.clean_subevent(
-            data, self.instance.event
-        )
+            raise ValidationError({'show_hidden_items': [_('The voucher only matches hidden products but you have not selected that it should show them.')]})
+        Voucher.clean_subevent(data, self.instance.event)
         Voucher.clean_max_usages(data, self.instance.redeemed)
         check_quota = Voucher.clean_quota_needs_checking(
-            data, self.initial_instance_data,
-            item_changed=data.get('itemvar') != self.initial.get('itemvar'),
-            creating=not self.instance.pk
+            data, self.initial_instance_data, item_changed=data.get('itemvar') != self.initial.get('itemvar'), creating=not self.instance.pk
         )
         if check_quota:
             Voucher.clean_quota_check(
-                data, cnt, self.initial_instance_data, self.instance.event,
-                self.instance.quota, self.instance.item, self.instance.variation
+                data, cnt, self.initial_instance_data, self.instance.event, self.instance.quota, self.instance.item, self.instance.variation
             )
         Voucher.clean_voucher_code(data, self.instance.event, self.instance.pk)
         if 'seat' in self.fields and data.get('seat'):
-            self.instance.seat = Voucher.clean_seat_id(
-                data, self.instance.item, self.instance.quota, self.instance.event, self.instance.pk
-            )
+            self.instance.seat = Voucher.clean_seat_id(data, self.instance.item, self.instance.quota, self.instance.event, self.instance.pk)
             self.instance.item = self.instance.seat.product
 
         voucher_form_validation.send(sender=self.instance.event, form=self, data=data)
@@ -214,67 +215,65 @@ class VoucherForm(I18nModelForm):
 class VoucherBulkForm(VoucherForm):
     codes = forms.CharField(
         widget=forms.Textarea,
-        label=_("Codes"),
-        help_text=_(
-            "Add one voucher code per line. We suggest that you copy this list and save it into a file."
-        ),
-        required=True
+        label=_('Codes'),
+        help_text=_('Add one voucher code per line. We suggest that you copy this list and save it into a file.'),
+        required=True,
     )
-    send = forms.BooleanField(
-        label=_("Send vouchers via email"),
-        required=False
-    )
+    send = forms.BooleanField(label=_('Send vouchers via email'), required=False)
     send_subject = forms.CharField(
-        label=_("Subject"),
-        widget=forms.TextInput(attrs={'data-display-dependency': '#id_send'}),
-        required=False,
-        initial=_('Your voucher for {event}')
+        label=_('Subject'), widget=forms.TextInput(attrs={'data-display-dependency': '#id_send'}), required=False, initial=_('Your voucher for {event}')
     )
     send_message = forms.CharField(
-        label=_("Message"),
+        label=_('Message'),
         widget=forms.Textarea(attrs={'data-display-dependency': '#id_send'}),
         required=False,
-        initial=_('Hello,\n\n'
-                  'with this email, we\'re sending you one or more vouchers for {event}:\n\n{voucher_list}\n\n'
-                  'You can redeem them here in our ticket shop:\n\n{url}\n\nBest regards,\n\n'
-                  'Your {event} team')
+        initial=_(
+            'Hello,\n\n'
+            "with this email, we're sending you one or more vouchers for {event}:\n\n{voucher_list}\n\n"
+            'You can redeem them here in our ticket shop:\n\n{url}\n\nBest regards,\n\n'
+            'Your {event} team'
+        ),
     )
     send_recipients = forms.CharField(
         label=_('Recipients'),
-        widget=forms.Textarea(attrs={
-            'data-display-dependency': '#id_send',
-            'placeholder': 'email,number,name,tag\njohn@example.org,3,John,example\n\n-- {} --\n\njohn@example.org\njane@example.net'.format(
-                _('or')
-            )
-        }),
+        widget=forms.Textarea(
+            attrs={
+                'data-display-dependency': '#id_send',
+                'placeholder': 'email,number,name,tag\njohn@example.org,3,John,example\n\n-- {} --\n\njohn@example.org\njane@example.net'.format(_('or')),
+            }
+        ),
         required=False,
-        help_text=_('You can either supply a list of email addresses with one email address per line, or a CSV file with a title column '
-                    'and one or more of the columns "email", "number", "name", or "tag".')
+        help_text=_(
+            'You can either supply a list of email addresses with one email address per line, or a CSV file with a title column '
+            'and one or more of the columns "email", "number", "name", or "tag".'
+        ),
     )
     Recipient = namedtuple('Recipient', 'email number name tag')
 
     def _set_field_placeholders(self, fn, base_parameters):
-        phs = [
-            '{%s}' % p
-            for p in sorted(get_available_placeholders(self.instance.event, base_parameters).keys())
-        ]
-        ht = _('Available placeholders: {list}').format(
-            list=', '.join(phs)
-        )
+        phs = ['{%s}' % p for p in sorted(get_available_placeholders(self.instance.event, base_parameters).keys())]
+        ht = _('Available placeholders: {list}').format(list=', '.join(phs))
         if self.fields[fn].help_text:
             self.fields[fn].help_text += ' ' + str(ht)
         else:
             self.fields[fn].help_text = ht
-        self.fields[fn].validators.append(
-            PlaceholderValidator(phs)
-        )
+        self.fields[fn].validators.append(PlaceholderValidator(phs))
 
     class Meta:
         model = Voucher
         localized_fields = '__all__'
         fields = [
-            'valid_until', 'block_quota', 'allow_ignore_quota', 'value', 'tag', 'comment',
-            'max_usages', 'price_mode', 'subevent', 'show_hidden_items', 'budget'
+            'valid_until',
+            'block_quota',
+            'allow_ignore_quota',
+            'value',
+            'tag',
+            'comment',
+            'max_usages',
+            'price_mode',
+            'subevent',
+            'show_hidden_items',
+            'budget',
         ]
         field_classes = {
             'valid_until': SplitDateTimeField,
@@ -283,12 +282,8 @@ class VoucherBulkForm(VoucherForm):
         widgets = {
             'valid_until': SplitDateTimePickerWidget(),
         }
-        labels = {
-            'max_usages': _('Maximum usages per voucher')
-        }
-        help_texts = {
-            'max_usages': _('Number of times times EACH of these vouchers can be redeemed.')
-        }
+        labels = {'max_usages': _('Maximum usages per voucher')}
+        help_texts = {'max_usages': _('Number of times times EACH of these vouchers can be redeemed.')}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -296,7 +291,7 @@ class VoucherBulkForm(VoucherForm):
         self._set_field_placeholders('send_message', ['event', 'voucher_list', 'name'])
         if 'seat' in self.fields:
             self.fields['seats'] = forms.CharField(
-                label=_("Specific seat IDs"),
+                label=_('Specific seat IDs'),
                 required=False,
                 widget=forms.Textarea(attrs={'data-seat-guid-field': '1'}),
                 initial=self.instance.seat.seat_guid if self.instance.seat else '',
@@ -314,7 +309,7 @@ class VoucherBulkForm(VoucherForm):
             dialect = csv.Sniffer().sniff(raw[:1024])
             reader = csv.DictReader(StringIO(raw), dialect=dialect)
             if 'email' not in reader.fieldnames:
-                raise ValidationError(_('CSV input needs to contain a field with the header "{header}".').format(header="email"))
+                raise ValidationError(_('CSV input needs to contain a field with the header "{header}".').format(header='email'))
             unknown_fields = [f for f in reader.fieldnames if f not in ('email', 'name', 'tag', 'number')]
             if unknown_fields:
                 raise ValidationError(_('CSV input contains an unknown field with the header "{header}".').format(header=unknown_fields[0]))
@@ -324,12 +319,7 @@ class VoucherBulkForm(VoucherForm):
                 except ValidationError as err:
                     raise ValidationError(_('{value} is not a valid email address.').format(value=row['email'])) from err
                 try:
-                    res.append(self.Recipient(
-                        name=row.get('name', ''),
-                        email=row['email'].strip(),
-                        number=int(row.get('number', 1)),
-                        tag=row.get('tag', None)
-                    ))
+                    res.append(self.Recipient(name=row.get('name', ''), email=row['email'].strip(), number=int(row.get('number', 1)), tag=row.get('tag', None)))
                 except ValueError as err:
                     raise ValidationError(_('Invalid value in row {number}.').format(number=i + 1)) from err
         else:
@@ -345,9 +335,7 @@ class VoucherBulkForm(VoucherForm):
     def clean(self):
         data = super().clean()
 
-        vouchers = self.instance.event.vouchers.annotate(
-            code_upper=Upper('code')
-        ).filter(code_upper__in=[c.upper() for c in data['codes']])
+        vouchers = self.instance.event.vouchers.annotate(code_upper=Upper('code')).filter(code_upper__in=[c.upper() for c in data['codes']])
         if vouchers.exists():
             raise ValidationError(_('A voucher with one of these codes already exists.'))
 
@@ -362,15 +350,13 @@ class VoucherBulkForm(VoucherForm):
                 raise ValidationError(_('You generated {codes} vouchers, but entered recipients for {recp} vouchers.').format(codes=code_len, recp=recp_len))
 
         if data.get('seats'):
-            seatids = [s.strip() for s in data.get('seats').strip().split("\n") if s]
+            seatids = [s.strip() for s in data.get('seats').strip().split('\n') if s]
             if len(seatids) != len(data.get('codes')):
                 raise ValidationError(_('You need to specify as many seats as voucher codes.'))
             data['seats'] = []
             for s in seatids:
                 data['seat'] = s
-                data['seats'].append(Voucher.clean_seat_id(
-                    data, self.instance.item, self.instance.quota, self.instance.event, None
-                ))
+                data['seats'].append(Voucher.clean_seat_id(data, self.instance.item, self.instance.quota, self.instance.event, None))
             self.instance.seat = data['seats'][0]  # Trick model-level validation
         else:
             data['seats'] = []

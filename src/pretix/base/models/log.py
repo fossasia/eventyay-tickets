@@ -35,6 +35,7 @@ class LogEntry(models.Model):
     :param data: Arbitrary data that can be used by the log action renderer
     :type data: str
     """
+
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -104,8 +105,15 @@ class LogEntry(models.Model):
     @cached_property
     def display_object(self):
         from . import (
-            Event, Item, ItemCategory, Order, Question, Quota, SubEvent,
-            TaxRule, Voucher,
+            Event,
+            Item,
+            ItemCategory,
+            Order,
+            Question,
+            Quota,
+            SubEvent,
+            TaxRule,
+            Voucher,
         )
 
         try:
@@ -121,81 +129,53 @@ class LogEntry(models.Model):
         if isinstance(co, Order):
             a_text = _('Order {val}')
             a_map = {
-                'href': reverse('control:event.order', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'code': co.code
-                }),
+                'href': reverse('control:event.order', kwargs={'event': self.event.slug, 'organizer': self.event.organizer.slug, 'code': co.code}),
                 'val': escape(co.code),
             }
         elif isinstance(co, Voucher):
             a_text = _('Voucher {val}…')
             a_map = {
-                'href': reverse('control:event.voucher', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'voucher': co.id
-                }),
+                'href': reverse('control:event.voucher', kwargs={'event': self.event.slug, 'organizer': self.event.organizer.slug, 'voucher': co.id}),
                 'val': escape(co.code[:6]),
             }
         elif isinstance(co, Item):
             a_text = _('Product {val}')
             a_map = {
-                'href': reverse('control:event.item', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'item': co.id
-                }),
+                'href': reverse('control:event.item', kwargs={'event': self.event.slug, 'organizer': self.event.organizer.slug, 'item': co.id}),
                 'val': escape(co.name),
             }
         elif isinstance(co, SubEvent):
             a_text = pgettext_lazy('subevent', 'Date {val}')
             a_map = {
-                'href': reverse('control:event.subevent', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'subevent': co.id
-                }),
-                'val': escape(str(co))
+                'href': reverse('control:event.subevent', kwargs={'event': self.event.slug, 'organizer': self.event.organizer.slug, 'subevent': co.id}),
+                'val': escape(str(co)),
             }
         elif isinstance(co, Quota):
             a_text = _('Quota {val}')
             a_map = {
-                'href': reverse('control:event.items.quotas.show', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'quota': co.id
-                }),
+                'href': reverse('control:event.items.quotas.show', kwargs={'event': self.event.slug, 'organizer': self.event.organizer.slug, 'quota': co.id}),
                 'val': escape(co.name),
             }
         elif isinstance(co, ItemCategory):
             a_text = _('Category {val}')
             a_map = {
-                'href': reverse('control:event.items.categories.edit', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'category': co.id
-                }),
+                'href': reverse(
+                    'control:event.items.categories.edit', kwargs={'event': self.event.slug, 'organizer': self.event.organizer.slug, 'category': co.id}
+                ),
                 'val': escape(co.name),
             }
         elif isinstance(co, Question):
             a_text = _('Question {val}')
             a_map = {
-                'href': reverse('control:event.items.questions.show', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'question': co.id
-                }),
+                'href': reverse(
+                    'control:event.items.questions.show', kwargs={'event': self.event.slug, 'organizer': self.event.organizer.slug, 'question': co.id}
+                ),
                 'val': escape(co.question),
             }
         elif isinstance(co, TaxRule):
             a_text = _('Tax rule {val}')
             a_map = {
-                'href': reverse('control:event.settings.tax.edit', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'rule': co.id
-                }),
+                'href': reverse('control:event.settings.tax.edit', kwargs={'event': self.event.slug, 'organizer': self.event.organizer.slug, 'rule': co.id}),
                 'val': escape(co.name),
             }
 
@@ -215,7 +195,7 @@ class LogEntry(models.Model):
         return json.loads(self.data)
 
     def delete(self, using=None, keep_parents=False):
-        raise TypeError("Logs cannot be deleted.")
+        raise TypeError('Logs cannot be deleted.')
 
     @classmethod
     def bulk_postprocess(cls, objects):

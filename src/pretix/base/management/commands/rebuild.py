@@ -5,7 +5,7 @@ from pretix.base.settings import GlobalSettingsObject
 
 
 class Command(BaseCommand):
-    help = "Rebuild static files and language files"
+    help = 'Rebuild static files and language files'
 
     def handle(self, *args, **options):
         call_command('compilemessages', verbosity=1)

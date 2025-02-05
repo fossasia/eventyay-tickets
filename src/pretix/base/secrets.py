@@ -5,7 +5,11 @@ import struct
 from cryptography.hazmat.backends.openssl.backend import Backend
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.serialization import (
-    Encoding, NoEncryption, PrivateFormat, PublicFormat, load_pem_private_key,
+    Encoding,
+    NoEncryption,
+    PrivateFormat,
+    PublicFormat,
+    load_pem_private_key,
     load_pem_public_key,
 )
 from django.conf import settings
@@ -52,8 +56,15 @@ class BaseTicketSecretGenerator:
         """
         return False
 
-    def generate_secret(self, item: Item, variation: ItemVariation = None, subevent: SubEvent = None,
-                        attendee_name: str = None, current_secret: str = None, force_invalidate=False) -> str:
+    def generate_secret(
+        self,
+        item: Item,
+        variation: ItemVariation = None,
+        subevent: SubEvent = None,
+        attendee_name: str = None,
+        current_secret: str = None,
+        force_invalidate=False,
+    ) -> str:
         """
         Generate a new secret for a ticket with product ``item``, variation ``variation``, subevent ``subevent``,
         attendee name ``attendee_name`` (can be ``None``) and the current secret ``current_secret`` (if any).
@@ -85,14 +96,21 @@ class RandomTicketSecretGenerator(BaseTicketSecretGenerator):
     identifier = 'random'
     use_revocation_list = False
 
-    def generate_secret(self, item: Item, variation: ItemVariation = None, subevent: SubEvent = None,
-                        attendee_name: str = None, current_secret: str = None, force_invalidate=False):
+    def generate_secret(
+        self,
+        item: Item,
+        variation: ItemVariation = None,
+        subevent: SubEvent = None,
+        attendee_name: str = None,
+        current_secret: str = None,
+        force_invalidate=False,
+    ):
         if current_secret and not force_invalidate:
             return current_secret
         return get_random_string(
             length=settings.ENTROPY['ticket_secret'],
             # Exclude o,0,1,i,l to avoid confusion with bad fonts/printers
-            allowed_chars='abcdefghjkmnpqrstuvwxyz23456789'
+            allowed_chars='abcdefghjkmnpqrstuvwxyz23456789',
         )
 
 
@@ -111,35 +129,28 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
     The resulting string is REVERSED, to avoid all secrets of same length beginning with the same 10
     characters, which would make it impossible to search for secrets manually.
     """
-    verbose_name = _('signature scheme 1 (for very large events, does not work with pretixSCAN on iOS and '
-                     'changes semantics of offline scanning – please refer to documentation or support for details)')
+
+    verbose_name = _(
+        'signature scheme 1 (for very large events, does not work with pretixSCAN on iOS and '
+        'changes semantics of offline scanning – please refer to documentation or support for details)'
+    )
     identifier = 'pretix_sig1'
     use_revocation_list = True
 
     def _generate_keys(self):
         privkey = Ed25519PrivateKey.generate()
         pubkey = privkey.public_key()
-        self.event.settings.ticket_secrets_pretix_sig1_privkey = base64.b64encode(privkey.private_bytes(
-            Encoding.PEM, PrivateFormat.PKCS8, NoEncryption()
-        )).decode()
-        self.event.settings.ticket_secrets_pretix_sig1_pubkey = base64.b64encode(pubkey.public_bytes(
-            Encoding.PEM, PublicFormat.SubjectPublicKeyInfo
-        )).decode()
+        self.event.settings.ticket_secrets_pretix_sig1_privkey = base64.b64encode(
+            privkey.private_bytes(Encoding.PEM, PrivateFormat.PKCS8, NoEncryption())
+        ).decode()
+        self.event.settings.ticket_secrets_pretix_sig1_pubkey = base64.b64encode(pubkey.public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo)).decode()
 
     def _sign_payload(self, payload):
         if not self.event.settings.ticket_secrets_pretix_sig1_privkey:
             self._generate_keys()
-        privkey = load_pem_private_key(
-            base64.b64decode(self.event.settings.ticket_secrets_pretix_sig1_privkey), None, Backend()
-        )
+        privkey = load_pem_private_key(base64.b64decode(self.event.settings.ticket_secrets_pretix_sig1_privkey), None, Backend())
         signature = privkey.sign(payload)
-        return (
-            bytes([0x01])
-            + struct.pack(">H", len(payload))
-            + struct.pack(">H", len(signature))
-            + payload
-            + signature
-        )
+        return bytes([0x01]) + struct.pack('>H', len(payload)) + struct.pack('>H', len(signature)) + payload + signature
 
     def _parse(self, secret):
         try:
@@ -147,13 +158,11 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
             if rawbytes[0] != 1:
                 raise ValueError('Invalid version')
 
-            payload_len = struct.unpack(">H", rawbytes[1:3])[0]
-            sig_len = struct.unpack(">H", rawbytes[3:5])[0]
-            payload = rawbytes[5:5 + payload_len]
-            signature = rawbytes[5 + payload_len:5 + payload_len + sig_len]
-            pubkey = load_pem_public_key(
-                base64.b64decode(self.event.settings.ticket_secrets_pretix_sig1_pubkey), Backend()
-            )
+            payload_len = struct.unpack('>H', rawbytes[1:3])[0]
+            sig_len = struct.unpack('>H', rawbytes[3:5])[0]
+            payload = rawbytes[5 : 5 + payload_len]
+            signature = rawbytes[5 + payload_len : 5 + payload_len + sig_len]
+            pubkey = load_pem_public_key(base64.b64decode(self.event.settings.ticket_secrets_pretix_sig1_pubkey), Backend())
             pubkey.verify(signature, payload)
             t = pretix_sig1_pb2.Ticket()
             t.ParseFromString(payload)
@@ -161,15 +170,12 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
         except:
             return None
 
-    def generate_secret(self, item: Item, variation: ItemVariation = None, subevent: SubEvent = None,
-                        current_secret: str = None, force_invalidate=False):
+    def generate_secret(self, item: Item, variation: ItemVariation = None, subevent: SubEvent = None, current_secret: str = None, force_invalidate=False):
         if current_secret and not force_invalidate:
             ticket = self._parse(current_secret)
             if ticket:
                 unchanged = (
-                    ticket.item == item.pk and
-                    ticket.variation == (variation.pk if variation else 0) and
-                    ticket.subevent == (subevent.pk if subevent else 0)
+                    ticket.item == item.pk and ticket.variation == (variation.pk if variation else 0) and ticket.subevent == (subevent.pk if subevent else 0)
                 )
                 if unchanged:
                     return current_secret
@@ -184,7 +190,7 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
         return result
 
 
-@receiver(register_ticket_secret_generators, dispatch_uid="ticket_generator_default")
+@receiver(register_ticket_secret_generators, dispatch_uid='ticket_generator_default')
 def recv_classic(sender, **kwargs):
     return [RandomTicketSecretGenerator, Sig1TicketSecretGenerator]
 
@@ -203,7 +209,7 @@ def assign_ticket_secret(event, position, force_invalidate_if_revokation_list_us
         subevent=position.subevent,
         current_secret=position.secret,
         force_invalidate=force_invalidate,
-        **kwargs
+        **kwargs,
     )
     changed = position.secret != secret
     if position.secret and changed and gen.use_revocation_list:

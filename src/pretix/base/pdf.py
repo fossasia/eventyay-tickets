@@ -47,331 +47,367 @@ from pretix.presale.style import get_fonts
 logger = logging.getLogger(__name__)
 
 
-DEFAULT_VARIABLES = OrderedDict((
-    ("secret", {
-        "label": _("Ticket code (barcode content)"),
-        "editor_sample": "tdmruoekvkpbv1o2mv8xccvqcikvr58u",
-        "evaluate": lambda orderposition, order, event: (
-            orderposition.secret[:30] + "…" if len(orderposition.secret) > 32 else orderposition.secret
-        )
-    }),
-    ("order", {
-        "label": _("Order code"),
-        "editor_sample": "A1B2C",
-        "evaluate": lambda orderposition, order, event: orderposition.order.code
-    }),
-    ("positionid", {
-        "label": _("Order position number"),
-        "editor_sample": "1",
-        "evaluate": lambda orderposition, order, event: str(orderposition.positionid)
-    }),
-    ("item", {
-        "label": _("Product name"),
-        "editor_sample": _("Sample product"),
-        "evaluate": lambda orderposition, order, event: str(orderposition.item.name)
-    }),
-    ("variation", {
-        "label": _("Variation name"),
-        "editor_sample": _("Sample variation"),
-        "evaluate": lambda op, order, event: str(op.variation) if op.variation else ''
-    }),
-    ("item_description", {
-        "label": _("Product description"),
-        "editor_sample": _("Sample product description"),
-        "evaluate": lambda orderposition, order, event: str(orderposition.item.description)
-    }),
-    ("itemvar", {
-        "label": _("Product name and variation"),
-        "editor_sample": _("Sample product – sample variation"),
-        "evaluate": lambda orderposition, order, event: (
-            '{} - {}'.format(orderposition.item.name, orderposition.variation)
-            if orderposition.variation else str(orderposition.item.name)
-        )
-    }),
-    ("itemvar_description", {
-        "label": _("Product variation description"),
-        "editor_sample": _("Sample product variation description"),
-        "evaluate": lambda orderposition, order, event: (
-            str(orderposition.variation.description) if orderposition.variation else str(orderposition.item.description)
-        )
-    }),
-    ("item_category", {
-        "label": _("Product category"),
-        "editor_sample": _("Ticket category"),
-        "evaluate": lambda orderposition, order, event: (
-            str(orderposition.item.category.name) if orderposition.item.category else ""
-        )
-    }),
-    ("price", {
-        "label": _("Price"),
-        "editor_sample": _("123.45 EUR"),
-        "evaluate": lambda op, order, event: money_filter(op.price, event.currency)
-    }),
-    ("price_with_addons", {
-        "label": _("Price including add-ons"),
-        "editor_sample": _("123.45 EUR"),
-        "evaluate": lambda op, order, event: money_filter(op.price + sum(
-            p.price
-            for p in op.addons.all()
-            if not p.canceled
-        ), event.currency)
-    }),
-    ("attendee_name", {
-        "label": _("Attendee name"),
-        "editor_sample": _("John Doe"),
-        "evaluate": lambda op, order, ev: op.attendee_name or (op.addon_to.attendee_name if op.addon_to else '')
-    }),
-    ("attendee_company", {
-        "label": _("Attendee company"),
-        "editor_sample": _("Sample company"),
-        "evaluate": lambda op, order, ev: op.company or (op.addon_to.company if op.addon_to else '')
-    }),
-    ('attendee_address', {
-        'label': _('Full attendee address'),
-        'editor_sample': _('John Doe\nSample company\nSesame Street 42\n12345 Any City\nAtlantis'),
-        'evaluate': lambda op, order, event: op.address_format()
-    }),
-    ("attendee_street", {
-        "label": _("Attendee street"),
-        "editor_sample": 'Sesame Street 42',
-        "evaluate": lambda op, order, ev: op.street or (op.addon_to.street if op.addon_to else '')
-    }),
-    ("attendee_zipcode", {
-        "label": _("Attendee ZIP code"),
-        "editor_sample": '12345',
-        "evaluate": lambda op, order, ev: op.zipcode or (op.addon_to.zipcode if op.addon_to else '')
-    }),
-    ("attendee_city", {
-        "label": _("Attendee city"),
-        "editor_sample": 'Any City',
-        "evaluate": lambda op, order, ev: op.city or (op.addon_to.city if op.addon_to else '')
-    }),
-    ("attendee_state", {
-        "label": _("Attendee state"),
-        "editor_sample": 'Sample State',
-        "evaluate": lambda op, order, ev: op.state or (op.addon_to.state if op.addon_to else '')
-    }),
-    ("attendee_country", {
-        "label": _("Attendee country"),
-        "editor_sample": 'Atlantis',
-        "evaluate": lambda op, order, ev: str(getattr(op.country, 'name', '')) or (
-            str(getattr(op.addon_to.country, 'name', '')) if op.addon_to else ''
-        )
-    }),
-    ("attendee_email", {
-        "label": _("Attendee email"),
-        "editor_sample": 'foo@bar.com',
-        "evaluate": lambda op, order, ev: op.attendee_email or (op.addon_to.attendee_email if op.addon_to else '')
-    }),
-    ("event_name", {
-        "label": _("Event name"),
-        "editor_sample": _("Sample event name"),
-        "evaluate": lambda op, order, ev: str(ev.name)
-    }),
-    ("event_series_name", {
-        "label": _("Event series"),
-        "editor_sample": _("Sample event name"),
-        "evaluate": lambda op, order, ev: str(order.event.name)
-    }),
-    ("event_date", {
-        "label": _("Event date"),
-        "editor_sample": _("May 31st, 2017"),
-        "evaluate": lambda op, order, ev: ev.get_date_from_display(show_times=False)
-    }),
-    ("event_date_range", {
-        "label": _("Event date range"),
-        "editor_sample": _("May 31st – June 4th, 2017"),
-        "evaluate": lambda op, order, ev: ev.get_date_range_display(force_show_end=True)
-    }),
-    ("event_begin", {
-        "label": _("Event begin date and time"),
-        "editor_sample": _("2017-05-31 20:00"),
-        "evaluate": lambda op, order, ev: date_format(
-            ev.date_from.astimezone(timezone(ev.settings.timezone)),
-            "SHORT_DATETIME_FORMAT"
-        ) if ev.date_from else ""
-    }),
-    ("event_begin_date", {
-        "label": _("Event begin date"),
-        "editor_sample": _("2017-05-31"),
-        "evaluate": lambda op, order, ev: date_format(
-            ev.date_from.astimezone(timezone(ev.settings.timezone)),
-            "SHORT_DATE_FORMAT"
-        ) if ev.date_from else ""
-    }),
-    ("event_begin_time", {
-        "label": _("Event begin time"),
-        "editor_sample": _("20:00"),
-        "evaluate": lambda op, order, ev: ev.get_time_from_display()
-    }),
-    ("event_end", {
-        "label": _("Event end date and time"),
-        "editor_sample": _("2017-05-31 22:00"),
-        "evaluate": lambda op, order, ev: date_format(
-            ev.date_to.astimezone(timezone(ev.settings.timezone)),
-            "SHORT_DATETIME_FORMAT"
-        ) if ev.date_to else ""
-    }),
-    ("event_end_date", {
-        "label": _("Event end date"),
-        "editor_sample": _("2017-05-31"),
-        "evaluate": lambda op, order, ev: date_format(
-            ev.date_to.astimezone(timezone(ev.settings.timezone)),
-            "SHORT_DATE_FORMAT"
-        ) if ev.date_to else ""
-    }),
-    ("event_end_time", {
-        "label": _("Event end time"),
-        "editor_sample": _("22:00"),
-        "evaluate": lambda op, order, ev: date_format(
-            ev.date_to.astimezone(timezone(ev.settings.timezone)),
-            "TIME_FORMAT"
-        ) if ev.date_to else ""
-    }),
-    ("event_admission", {
-        "label": _("Event admission date and time"),
-        "editor_sample": _("2017-05-31 19:00"),
-        "evaluate": lambda op, order, ev: date_format(
-            ev.date_admission.astimezone(timezone(ev.settings.timezone)),
-            "SHORT_DATETIME_FORMAT"
-        ) if ev.date_admission else ""
-    }),
-    ("event_admission_time", {
-        "label": _("Event admission time"),
-        "editor_sample": _("19:00"),
-        "evaluate": lambda op, order, ev: date_format(
-            ev.date_admission.astimezone(timezone(ev.settings.timezone)),
-            "TIME_FORMAT"
-        ) if ev.date_admission else ""
-    }),
-    ("event_location", {
-        "label": _("Event location"),
-        "editor_sample": _("Random City"),
-        "evaluate": lambda op, order, ev: str(ev.location)
-    }),
-    ("telephone", {
-        "label": _("Phone number"),
-        "editor_sample": "+01 1234 567890",
-        "evaluate": lambda op, order, ev: phone_format(order.phone)
-    }),
-    ("email", {
-        "label": _("Email"),
-        "editor_sample": "foo@bar.com",
-        "evaluate": lambda op, order, ev: order.email
-    }),
-    ("invoice_name", {
-        "label": _("Invoice address name"),
-        "editor_sample": _("John Doe"),
-        "evaluate": lambda op, order, ev: order.invoice_address.name if getattr(order, 'invoice_address', None) else ''
-    }),
-    ("invoice_company", {
-        "label": _("Invoice address company"),
-        "editor_sample": _("Sample company"),
-        "evaluate": lambda op, order, ev: order.invoice_address.company if getattr(order, 'invoice_address', None) else ''
-    }),
-    ("invoice_street", {
-        "label": _("Invoice address street"),
-        "editor_sample": _("Sesame Street 42"),
-        "evaluate": lambda op, order, ev: order.invoice_address.street if getattr(order, 'invoice_address', None) else ''
-    }),
-    ("invoice_zipcode", {
-        "label": _("Invoice address ZIP code"),
-        "editor_sample": _("12345"),
-        "evaluate": lambda op, order, ev: order.invoice_address.zipcode if getattr(order, 'invoice_address', None) else ''
-    }),
-    ("invoice_city", {
-        "label": _("Invoice address city"),
-        "editor_sample": _("Sample city"),
-        "evaluate": lambda op, order, ev: order.invoice_address.city if getattr(order, 'invoice_address', None) else ''
-    }),
-    ("invoice_state", {
-        "label": _("Invoice address state"),
-        "editor_sample": _("Sample State"),
-        "evaluate": lambda op, order, ev: order.invoice_address.state if getattr(order, 'invoice_address', None) else ''
-    }),
-    ("invoice_country", {
-        "label": _("Invoice address country"),
-        "editor_sample": _("Atlantis"),
-        "evaluate": lambda op, order, ev: str(getattr(order.invoice_address.country, 'name', '')) if getattr(order, 'invoice_address', None) else ''
-    }),
-    ("addons", {
-        "label": _("List of Add-Ons"),
-        "editor_sample": _("Add-on 1\nAdd-on 2"),
-        "evaluate": lambda op, order, ev: "\n".join([
-            '{} - {}'.format(p.item, p.variation) if p.variation else str(p.item)
-            for p in (
-                op.addons.all() if 'addons' in getattr(op, '_prefetched_objects_cache', {})
-                else op.addons.select_related('item', 'variation')
-            )
-            if not p.canceled
-        ])
-    }),
-    ("organizer", {
-        "label": _("Organizer name"),
-        "editor_sample": _("Event organizer company"),
-        "evaluate": lambda op, order, ev: str(order.event.organizer.name)
-    }),
-    ("organizer_info_text", {
-        "label": _("Organizer info text"),
-        "editor_sample": _("Event organizer info text"),
-        "evaluate": lambda op, order, ev: str(order.event.settings.organizer_info_text)
-    }),
-    ("event_info_text", {
-        "label": _("Event info text"),
-        "editor_sample": _("Event info text"),
-        "evaluate": lambda op, order, ev: str(order.event.settings.event_info_text)
-    }),
-    ("now_date", {
-        "label": _("Printing date"),
-        "editor_sample": _("2017-05-31"),
-        "evaluate": lambda op, order, ev: date_format(
-            now().astimezone(timezone(ev.settings.timezone)),
-            "SHORT_DATE_FORMAT"
-        )
-    }),
-    ("now_datetime", {
-        "label": _("Printing date and time"),
-        "editor_sample": _("2017-05-31 19:00"),
-        "evaluate": lambda op, order, ev: date_format(
-            now().astimezone(timezone(ev.settings.timezone)),
-            "SHORT_DATETIME_FORMAT"
-        )
-    }),
-    ("now_time", {
-        "label": _("Printing time"),
-        "editor_sample": _("19:00"),
-        "evaluate": lambda op, order, ev: date_format(
-            now().astimezone(timezone(ev.settings.timezone)),
-            "TIME_FORMAT"
-        ) if ev.date_admission else ""
-    }),
-    ("seat", {
-        "label": _("Seat: Full name"),
-        "editor_sample": _("Ground floor, Row 3, Seat 4"),
-        "evaluate": lambda op, order, ev: str(op.seat if op.seat else
-                                              _('General admission') if ev.seating_plan_id is not None else "")
-    }),
-    ("seat_zone", {
-        "label": _("Seat: zone"),
-        "editor_sample": _("Ground floor"),
-        "evaluate": lambda op, order, ev: str(op.seat.zone_name if op.seat else
-                                              _('General admission') if ev.seating_plan_id is not None else "")
-    }),
-    ("seat_row", {
-        "label": _("Seat: row"),
-        "editor_sample": "3",
-        "evaluate": lambda op, order, ev: str(op.seat.row_name if op.seat else "")
-    }),
-    ("seat_number", {
-        "label": _("Seat: seat number"),
-        "editor_sample": 4,
-        "evaluate": lambda op, order, ev: str(op.seat.seat_number if op.seat else "")
-    }),
-))
+DEFAULT_VARIABLES = OrderedDict(
+    (
+        (
+            'secret',
+            {
+                'label': _('Ticket code (barcode content)'),
+                'editor_sample': 'tdmruoekvkpbv1o2mv8xccvqcikvr58u',
+                'evaluate': lambda orderposition, order, event: (orderposition.secret[:30] + '…' if len(orderposition.secret) > 32 else orderposition.secret),
+            },
+        ),
+        ('order', {'label': _('Order code'), 'editor_sample': 'A1B2C', 'evaluate': lambda orderposition, order, event: orderposition.order.code}),
+        (
+            'positionid',
+            {'label': _('Order position number'), 'editor_sample': '1', 'evaluate': lambda orderposition, order, event: str(orderposition.positionid)},
+        ),
+        (
+            'item',
+            {'label': _('Product name'), 'editor_sample': _('Sample product'), 'evaluate': lambda orderposition, order, event: str(orderposition.item.name)},
+        ),
+        (
+            'variation',
+            {
+                'label': _('Variation name'),
+                'editor_sample': _('Sample variation'),
+                'evaluate': lambda op, order, event: str(op.variation) if op.variation else '',
+            },
+        ),
+        (
+            'item_description',
+            {
+                'label': _('Product description'),
+                'editor_sample': _('Sample product description'),
+                'evaluate': lambda orderposition, order, event: str(orderposition.item.description),
+            },
+        ),
+        (
+            'itemvar',
+            {
+                'label': _('Product name and variation'),
+                'editor_sample': _('Sample product – sample variation'),
+                'evaluate': lambda orderposition, order, event: (
+                    '{} - {}'.format(orderposition.item.name, orderposition.variation) if orderposition.variation else str(orderposition.item.name)
+                ),
+            },
+        ),
+        (
+            'itemvar_description',
+            {
+                'label': _('Product variation description'),
+                'editor_sample': _('Sample product variation description'),
+                'evaluate': lambda orderposition, order, event: (
+                    str(orderposition.variation.description) if orderposition.variation else str(orderposition.item.description)
+                ),
+            },
+        ),
+        (
+            'item_category',
+            {
+                'label': _('Product category'),
+                'editor_sample': _('Ticket category'),
+                'evaluate': lambda orderposition, order, event: (str(orderposition.item.category.name) if orderposition.item.category else ''),
+            },
+        ),
+        ('price', {'label': _('Price'), 'editor_sample': _('123.45 EUR'), 'evaluate': lambda op, order, event: money_filter(op.price, event.currency)}),
+        (
+            'price_with_addons',
+            {
+                'label': _('Price including add-ons'),
+                'editor_sample': _('123.45 EUR'),
+                'evaluate': lambda op, order, event: money_filter(op.price + sum(p.price for p in op.addons.all() if not p.canceled), event.currency),
+            },
+        ),
+        (
+            'attendee_name',
+            {
+                'label': _('Attendee name'),
+                'editor_sample': _('John Doe'),
+                'evaluate': lambda op, order, ev: op.attendee_name or (op.addon_to.attendee_name if op.addon_to else ''),
+            },
+        ),
+        (
+            'attendee_company',
+            {
+                'label': _('Attendee company'),
+                'editor_sample': _('Sample company'),
+                'evaluate': lambda op, order, ev: op.company or (op.addon_to.company if op.addon_to else ''),
+            },
+        ),
+        (
+            'attendee_address',
+            {
+                'label': _('Full attendee address'),
+                'editor_sample': _('John Doe\nSample company\nSesame Street 42\n12345 Any City\nAtlantis'),
+                'evaluate': lambda op, order, event: op.address_format(),
+            },
+        ),
+        (
+            'attendee_street',
+            {
+                'label': _('Attendee street'),
+                'editor_sample': 'Sesame Street 42',
+                'evaluate': lambda op, order, ev: op.street or (op.addon_to.street if op.addon_to else ''),
+            },
+        ),
+        (
+            'attendee_zipcode',
+            {
+                'label': _('Attendee ZIP code'),
+                'editor_sample': '12345',
+                'evaluate': lambda op, order, ev: op.zipcode or (op.addon_to.zipcode if op.addon_to else ''),
+            },
+        ),
+        (
+            'attendee_city',
+            {'label': _('Attendee city'), 'editor_sample': 'Any City', 'evaluate': lambda op, order, ev: op.city or (op.addon_to.city if op.addon_to else '')},
+        ),
+        (
+            'attendee_state',
+            {
+                'label': _('Attendee state'),
+                'editor_sample': 'Sample State',
+                'evaluate': lambda op, order, ev: op.state or (op.addon_to.state if op.addon_to else ''),
+            },
+        ),
+        (
+            'attendee_country',
+            {
+                'label': _('Attendee country'),
+                'editor_sample': 'Atlantis',
+                'evaluate': lambda op, order, ev: str(getattr(op.country, 'name', ''))
+                or (str(getattr(op.addon_to.country, 'name', '')) if op.addon_to else ''),
+            },
+        ),
+        (
+            'attendee_email',
+            {
+                'label': _('Attendee email'),
+                'editor_sample': 'foo@bar.com',
+                'evaluate': lambda op, order, ev: op.attendee_email or (op.addon_to.attendee_email if op.addon_to else ''),
+            },
+        ),
+        ('event_name', {'label': _('Event name'), 'editor_sample': _('Sample event name'), 'evaluate': lambda op, order, ev: str(ev.name)}),
+        ('event_series_name', {'label': _('Event series'), 'editor_sample': _('Sample event name'), 'evaluate': lambda op, order, ev: str(order.event.name)}),
+        (
+            'event_date',
+            {'label': _('Event date'), 'editor_sample': _('May 31st, 2017'), 'evaluate': lambda op, order, ev: ev.get_date_from_display(show_times=False)},
+        ),
+        (
+            'event_date_range',
+            {
+                'label': _('Event date range'),
+                'editor_sample': _('May 31st – June 4th, 2017'),
+                'evaluate': lambda op, order, ev: ev.get_date_range_display(force_show_end=True),
+            },
+        ),
+        (
+            'event_begin',
+            {
+                'label': _('Event begin date and time'),
+                'editor_sample': _('2017-05-31 20:00'),
+                'evaluate': lambda op, order, ev: date_format(ev.date_from.astimezone(timezone(ev.settings.timezone)), 'SHORT_DATETIME_FORMAT')
+                if ev.date_from
+                else '',
+            },
+        ),
+        (
+            'event_begin_date',
+            {
+                'label': _('Event begin date'),
+                'editor_sample': _('2017-05-31'),
+                'evaluate': lambda op, order, ev: date_format(ev.date_from.astimezone(timezone(ev.settings.timezone)), 'SHORT_DATE_FORMAT')
+                if ev.date_from
+                else '',
+            },
+        ),
+        ('event_begin_time', {'label': _('Event begin time'), 'editor_sample': _('20:00'), 'evaluate': lambda op, order, ev: ev.get_time_from_display()}),
+        (
+            'event_end',
+            {
+                'label': _('Event end date and time'),
+                'editor_sample': _('2017-05-31 22:00'),
+                'evaluate': lambda op, order, ev: date_format(ev.date_to.astimezone(timezone(ev.settings.timezone)), 'SHORT_DATETIME_FORMAT')
+                if ev.date_to
+                else '',
+            },
+        ),
+        (
+            'event_end_date',
+            {
+                'label': _('Event end date'),
+                'editor_sample': _('2017-05-31'),
+                'evaluate': lambda op, order, ev: date_format(ev.date_to.astimezone(timezone(ev.settings.timezone)), 'SHORT_DATE_FORMAT') if ev.date_to else '',
+            },
+        ),
+        (
+            'event_end_time',
+            {
+                'label': _('Event end time'),
+                'editor_sample': _('22:00'),
+                'evaluate': lambda op, order, ev: date_format(ev.date_to.astimezone(timezone(ev.settings.timezone)), 'TIME_FORMAT') if ev.date_to else '',
+            },
+        ),
+        (
+            'event_admission',
+            {
+                'label': _('Event admission date and time'),
+                'editor_sample': _('2017-05-31 19:00'),
+                'evaluate': lambda op, order, ev: date_format(ev.date_admission.astimezone(timezone(ev.settings.timezone)), 'SHORT_DATETIME_FORMAT')
+                if ev.date_admission
+                else '',
+            },
+        ),
+        (
+            'event_admission_time',
+            {
+                'label': _('Event admission time'),
+                'editor_sample': _('19:00'),
+                'evaluate': lambda op, order, ev: date_format(ev.date_admission.astimezone(timezone(ev.settings.timezone)), 'TIME_FORMAT')
+                if ev.date_admission
+                else '',
+            },
+        ),
+        ('event_location', {'label': _('Event location'), 'editor_sample': _('Random City'), 'evaluate': lambda op, order, ev: str(ev.location)}),
+        ('telephone', {'label': _('Phone number'), 'editor_sample': '+01 1234 567890', 'evaluate': lambda op, order, ev: phone_format(order.phone)}),
+        ('email', {'label': _('Email'), 'editor_sample': 'foo@bar.com', 'evaluate': lambda op, order, ev: order.email}),
+        (
+            'invoice_name',
+            {
+                'label': _('Invoice address name'),
+                'editor_sample': _('John Doe'),
+                'evaluate': lambda op, order, ev: order.invoice_address.name if getattr(order, 'invoice_address', None) else '',
+            },
+        ),
+        (
+            'invoice_company',
+            {
+                'label': _('Invoice address company'),
+                'editor_sample': _('Sample company'),
+                'evaluate': lambda op, order, ev: order.invoice_address.company if getattr(order, 'invoice_address', None) else '',
+            },
+        ),
+        (
+            'invoice_street',
+            {
+                'label': _('Invoice address street'),
+                'editor_sample': _('Sesame Street 42'),
+                'evaluate': lambda op, order, ev: order.invoice_address.street if getattr(order, 'invoice_address', None) else '',
+            },
+        ),
+        (
+            'invoice_zipcode',
+            {
+                'label': _('Invoice address ZIP code'),
+                'editor_sample': _('12345'),
+                'evaluate': lambda op, order, ev: order.invoice_address.zipcode if getattr(order, 'invoice_address', None) else '',
+            },
+        ),
+        (
+            'invoice_city',
+            {
+                'label': _('Invoice address city'),
+                'editor_sample': _('Sample city'),
+                'evaluate': lambda op, order, ev: order.invoice_address.city if getattr(order, 'invoice_address', None) else '',
+            },
+        ),
+        (
+            'invoice_state',
+            {
+                'label': _('Invoice address state'),
+                'editor_sample': _('Sample State'),
+                'evaluate': lambda op, order, ev: order.invoice_address.state if getattr(order, 'invoice_address', None) else '',
+            },
+        ),
+        (
+            'invoice_country',
+            {
+                'label': _('Invoice address country'),
+                'editor_sample': _('Atlantis'),
+                'evaluate': lambda op, order, ev: str(getattr(order.invoice_address.country, 'name', '')) if getattr(order, 'invoice_address', None) else '',
+            },
+        ),
+        (
+            'addons',
+            {
+                'label': _('List of Add-Ons'),
+                'editor_sample': _('Add-on 1\nAdd-on 2'),
+                'evaluate': lambda op, order, ev: '\n'.join(
+                    [
+                        '{} - {}'.format(p.item, p.variation) if p.variation else str(p.item)
+                        for p in (
+                            op.addons.all() if 'addons' in getattr(op, '_prefetched_objects_cache', {}) else op.addons.select_related('item', 'variation')
+                        )
+                        if not p.canceled
+                    ]
+                ),
+            },
+        ),
+        (
+            'organizer',
+            {'label': _('Organizer name'), 'editor_sample': _('Event organizer company'), 'evaluate': lambda op, order, ev: str(order.event.organizer.name)},
+        ),
+        (
+            'organizer_info_text',
+            {
+                'label': _('Organizer info text'),
+                'editor_sample': _('Event organizer info text'),
+                'evaluate': lambda op, order, ev: str(order.event.settings.organizer_info_text),
+            },
+        ),
+        (
+            'event_info_text',
+            {'label': _('Event info text'), 'editor_sample': _('Event info text'), 'evaluate': lambda op, order, ev: str(order.event.settings.event_info_text)},
+        ),
+        (
+            'now_date',
+            {
+                'label': _('Printing date'),
+                'editor_sample': _('2017-05-31'),
+                'evaluate': lambda op, order, ev: date_format(now().astimezone(timezone(ev.settings.timezone)), 'SHORT_DATE_FORMAT'),
+            },
+        ),
+        (
+            'now_datetime',
+            {
+                'label': _('Printing date and time'),
+                'editor_sample': _('2017-05-31 19:00'),
+                'evaluate': lambda op, order, ev: date_format(now().astimezone(timezone(ev.settings.timezone)), 'SHORT_DATETIME_FORMAT'),
+            },
+        ),
+        (
+            'now_time',
+            {
+                'label': _('Printing time'),
+                'editor_sample': _('19:00'),
+                'evaluate': lambda op, order, ev: date_format(now().astimezone(timezone(ev.settings.timezone)), 'TIME_FORMAT') if ev.date_admission else '',
+            },
+        ),
+        (
+            'seat',
+            {
+                'label': _('Seat: Full name'),
+                'editor_sample': _('Ground floor, Row 3, Seat 4'),
+                'evaluate': lambda op, order, ev: str(op.seat if op.seat else _('General admission') if ev.seating_plan_id is not None else ''),
+            },
+        ),
+        (
+            'seat_zone',
+            {
+                'label': _('Seat: zone'),
+                'editor_sample': _('Ground floor'),
+                'evaluate': lambda op, order, ev: str(op.seat.zone_name if op.seat else _('General admission') if ev.seating_plan_id is not None else ''),
+            },
+        ),
+        ('seat_row', {'label': _('Seat: row'), 'editor_sample': '3', 'evaluate': lambda op, order, ev: str(op.seat.row_name if op.seat else '')}),
+        ('seat_number', {'label': _('Seat: seat number'), 'editor_sample': 4, 'evaluate': lambda op, order, ev: str(op.seat.seat_number if op.seat else '')}),
+    )
+)
 DEFAULT_IMAGES = OrderedDict([])
 
 
-@receiver(layout_image_variables, dispatch_uid="pretix_base_layout_image_variables_questions")
+@receiver(layout_image_variables, dispatch_uid='pretix_base_layout_image_variables_questions')
 def images_from_questions(sender, *args, **kwargs):
     def get_answer(op, order, event, question_id, etag):
         a = None
@@ -392,7 +428,7 @@ def images_from_questions(sender, *args, **kwargs):
         else:
             a = op.answers.filter(question_id=question_id).first()
 
-        if not a or not a.file or not any(a.file.name.lower().endswith(e) for e in (".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff")):
+        if not a or not a.file or not any(a.file.name.lower().endswith(e) for e in ('.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tif', '.tiff')):
             return None
         else:
             if etag:
@@ -411,7 +447,7 @@ def images_from_questions(sender, *args, **kwargs):
     return d
 
 
-@receiver(layout_text_variables, dispatch_uid="pretix_base_layout_text_variables_questions")
+@receiver(layout_text_variables, dispatch_uid='pretix_base_layout_text_variables_questions')
 def variables_from_questions(sender, *args, **kwargs):
     def get_answer(op, order, event, question_id):
         a = None
@@ -433,7 +469,7 @@ def variables_from_questions(sender, *args, **kwargs):
             a = op.answers.filter(question_id=question_id).first()
 
         if not a:
-            return ""
+            return ''
         else:
             return str(a)
 
@@ -444,7 +480,7 @@ def variables_from_questions(sender, *args, **kwargs):
         d['question_{}'.format(q.pk)] = {
             'label': _('Question: {question}').format(question=q.question),
             'editor_sample': _('<Answer: {question}>').format(question=q.question),
-            'evaluate': partial(get_answer, question_id=q.pk)
+            'evaluate': partial(get_answer, question_id=q.pk),
         }
     return d
 
@@ -474,16 +510,16 @@ def get_variables(event):
     scheme = PERSON_NAME_SCHEMES[event.settings.name_scheme]
     for key, label, weight in scheme['fields']:
         v['attendee_name_%s' % key] = {
-            'label': _("Attendee name: {part}").format(part=label),
+            'label': _('Attendee name: {part}').format(part=label),
             'editor_sample': scheme['sample'][key],
-            'evaluate': partial(_get_attendee_name_part, key)
+            'evaluate': partial(_get_attendee_name_part, key),
         }
     for i in range(2, len(scheme['fields']) + 1):
         for comb in itertools.combinations(scheme['fields'], i):
             v['attendee_name_%s' % ('_'.join(c[0] for c in comb))] = {
-                'label': _("Attendee name: {part}").format(part=' + '.join(str(c[1]) for c in comb)),
+                'label': _('Attendee name: {part}').format(part=' + '.join(str(c[1]) for c in comb)),
                 'editor_sample': ' '.join(str(scheme['sample'][c[0]]) for c in comb),
-                'evaluate': partial(_get_attendee_name_part, comb)
+                'evaluate': partial(_get_attendee_name_part, comb),
             }
 
     v['invoice_name']['editor_sample'] = scheme['concatenation'](scheme['sample'])
@@ -491,9 +527,9 @@ def get_variables(event):
 
     for key, label, weight in scheme['fields']:
         v['invoice_name_%s' % key] = {
-            'label': _("Invoice address name: {part}").format(part=label),
+            'label': _('Invoice address name: {part}').format(part=label),
             'editor_sample': scheme['sample'][key],
-            "evaluate": partial(_get_ia_name_part, key)
+            'evaluate': partial(_get_ia_name_part, key),
         }
 
     for recv, res in layout_text_variables.send(sender=event):
@@ -503,7 +539,6 @@ def get_variables(event):
 
 
 class Renderer:
-
     def __init__(self, event, layout, background_file):
         self.layout = layout
         self.background_file = background_file
@@ -543,21 +578,13 @@ class Renderer:
         try:
             width, height = ir.resize(None, float(o['size']) * mm, 300)
         except:
-            logger.exception("Can not resize image")
+            logger.exception('Can not resize image')
             pass
-        canvas.drawImage(ir,
-                         float(o['left']) * mm, float(o['bottom']) * mm,
-                         width=width, height=height,
-                         preserveAspectRatio=True, anchor='n',
-                         mask='auto')
+        canvas.drawImage(ir, float(o['left']) * mm, float(o['bottom']) * mm, width=width, height=height, preserveAspectRatio=True, anchor='n', mask='auto')
 
     def _draw_barcodearea(self, canvas: Canvas, op: OrderPosition, o: dict):
         content = o.get('content', 'secret')
-        content_dict = {
-            'event': str(op.event),
-            'ticket': op.secret,
-            'lead': op.pseudonymization_id
-        }
+        content_dict = {'event': str(op.event), 'ticket': op.secret, 'lead': op.pseudonymization_id}
         content = json.dumps(content_dict)
         level = 'H'
         if len(content) > 32:
@@ -613,7 +640,7 @@ class Renderer:
             try:
                 ir.resize(float(o['width']) * mm, float(o['height']) * mm, 300)
             except:
-                logger.exception("Can not resize image")
+                logger.exception('Can not resize image')
                 pass
             canvas.drawImage(
                 image=ir,
@@ -623,11 +650,11 @@ class Renderer:
                 height=float(o['height']) * mm,
                 preserveAspectRatio=True,
                 anchor='c',  # centered in frame
-                mask='auto'
+                mask='auto',
             )
         else:
             canvas.saveState()
-            canvas.setFillColorRGB(.8, .8, .8, alpha=1)
+            canvas.setFillColorRGB(0.8, 0.8, 0.8, alpha=1)
             canvas.rect(
                 x=float(o['left']) * mm,
                 y=float(o['bottom']) * mm,
@@ -645,23 +672,19 @@ class Renderer:
         if o['italic']:
             font += ' I'
 
-        align_map = {
-            'left': TA_LEFT,
-            'center': TA_CENTER,
-            'right': TA_RIGHT
-        }
+        align_map = {'left': TA_LEFT, 'center': TA_CENTER, 'right': TA_RIGHT}
         style = ParagraphStyle(
             name=uuid.uuid4().hex,
             fontName=font,
             fontSize=float(o['fontsize']),
             leading=float(o['fontsize']),
-            autoLeading="max",
+            autoLeading='max',
             textColor=Color(o['color'][0] / 255, o['color'][1] / 255, o['color'][2] / 255),
-            alignment=align_map[o['align']]
+            alignment=align_map[o['align']],
         )
         text = conditional_escape(
-            self._get_text_content(op, order, o) or "",
-        ).replace("\n", "<br/>\n")
+            self._get_text_content(op, order, o) or '',
+        ).replace('\n', '<br/>\n')
 
         # reportlab does not support RTL, ligature-heavy scripts like Arabic. Therefore, we use ArabicReshaper
         # to resolve all ligatures and python-bidi to switch RTL texts.
@@ -671,7 +694,7 @@ class Renderer:
         }
         reshaper = ArabicReshaper(configuration=configuration)
         try:
-            text = "<br/>".join(get_display(reshaper.reshape(l)) for l in text.split("<br/>"))
+            text = '<br/>'.join(get_display(reshaper.reshape(l)) for l in text.split('<br/>'))
         except:
             logger.exception('Reshaping/Bidi fixes failed on string {}'.format(repr(text)))
 
@@ -694,13 +717,13 @@ class Renderer:
 
     def draw_page(self, canvas: Canvas, order: Order, op: OrderPosition, show_page=True):
         for o in self.layout:
-            if o['type'] == "barcodearea":
+            if o['type'] == 'barcodearea':
                 self._draw_barcodearea(canvas, op, o)
-            elif o['type'] == "imagearea":
+            elif o['type'] == 'imagearea':
                 self._draw_imagearea(canvas, op, order, o)
-            elif o['type'] == "textarea":
+            elif o['type'] == 'textarea':
                 self._draw_textarea(canvas, op, order, o)
-            elif o['type'] == "poweredby":
+            elif o['type'] == 'poweredby':
                 self._draw_poweredby(canvas, op, o)
             if self.bg_pdf:
                 canvas.setPageSize((self.bg_pdf.pages[0].mediabox[2], self.bg_pdf.pages[0].mediabox[3]))
@@ -715,19 +738,15 @@ class Renderer:
                     f.write(self.bg_bytes)
                 with open(os.path.join(d, 'front.pdf'), 'wb') as f:
                     f.write(buffer.read())
-                subprocess.run([
-                    settings.PDFTK,
-                    os.path.join(d, 'front.pdf'),
-                    'background',
-                    os.path.join(d, 'back.pdf'),
-                    'output',
-                    os.path.join(d, 'out.pdf'),
-                    'compress'
-                ], check=True)
+                subprocess.run(
+                    [settings.PDFTK, os.path.join(d, 'front.pdf'), 'background', os.path.join(d, 'back.pdf'), 'output', os.path.join(d, 'out.pdf'), 'compress'],
+                    check=True,
+                )
                 with open(os.path.join(d, 'out.pdf'), 'rb') as f:
                     return BytesIO(f.read())
         else:
             from pypdf import PdfReader, PdfWriter
+
             buffer.seek(0)
             new_pdf = PdfReader(buffer)
             output = PdfWriter()
@@ -737,10 +756,12 @@ class Renderer:
                 bg_page.merge_page(page)
                 output.add_page(bg_page)
 
-            output.add_metadata({
-                '/Title': str(title),
-                '/Creator': 'pretix',
-            })
+            output.add_metadata(
+                {
+                    '/Title': str(title),
+                    '/Creator': 'pretix',
+                }
+            )
             outbuffer = BytesIO()
             output.write(outbuffer)
             outbuffer.seek(0)

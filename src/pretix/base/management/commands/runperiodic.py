@@ -11,13 +11,11 @@ from ...signals import periodic_task
 
 
 class Command(BaseCommand):
-    help = "Run periodic tasks"
+    help = 'Run periodic tasks'
 
     def add_arguments(self, parser):
-        parser.add_argument('--tasks', action='store', type=str, help='Only execute the tasks with this name '
-                                                                      '(dotted path, comma separation)')
-        parser.add_argument('--exclude', action='store', type=str, help='Exclude the tasks with this name '
-                                                                        '(dotted path, comma separation)')
+        parser.add_argument('--tasks', action='store', type=str, help='Only execute the tasks with this name (dotted path, comma separation)')
+        parser.add_argument('--exclude', action='store', type=str, help='Exclude the tasks with this name (dotted path, comma separation)')
 
     def handle(self, *args, **options):
         verbosity = int(options['verbosity'])
@@ -44,6 +42,7 @@ class Command(BaseCommand):
                     raise err
                 if settings.SENTRY_ENABLED:
                     from sentry_sdk import capture_exception
+
                     capture_exception(err)
                     self.stdout.write(self.style.ERROR(f'ERROR runperiodic {str(err)}\n'))
                 else:

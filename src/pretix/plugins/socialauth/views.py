@@ -31,17 +31,11 @@ class OAuthLoginView(View):
         self.set_oauth2_params(request)
 
         gs = GlobalSettingsObject()
-        client_id = (
-            gs.settings.get("login_providers", as_type=dict)
-            .get(provider, {})
-            .get("client_id")
-        )
+        client_id = gs.settings.get('login_providers', as_type=dict).get(provider, {}).get('client_id')
         provider_instance = adapter.get_provider(request, provider, client_id=client_id)
 
         base_url = provider_instance.get_login_url(request)
-        query_params = {
-            "next": build_absolute_uri("plugins:socialauth:social.oauth.return")
-        }
+        query_params = {'next': build_absolute_uri('plugins:socialauth:social.oauth.return')}
         parsed_url = urlparse(base_url)
         updated_url = parsed_url._replace(query=urlencode(query_params))
         return redirect(urlunparse(updated_url))
@@ -52,7 +46,7 @@ class OAuthLoginView(View):
         Handle Login with SSO button from other components
         This function will set 'oauth2_params' in session for oauth2_callback
         """
-        next_url = request.GET.get("next", "")
+        next_url = request.GET.get('next', '')
         if not next_url:
             return
 
@@ -63,17 +57,13 @@ class OAuthLoginView(View):
             return
 
         params = parse_qs(parsed.query)
-        sanitized_params = {
-            k: v[0]
-            for k, v in params.items()
-            if k in OAuth2Params.model_fields.keys()
-        }
+        sanitized_params = {k: v[0] for k, v in params.items() if k in OAuth2Params.model_fields.keys()}
 
         try:
             oauth2_params = OAuth2Params.model_validate(sanitized_params)
-            request.session["oauth2_params"] = oauth2_params.model_dump()
+            request.session['oauth2_params'] = oauth2_params.model_dump()
         except ValidationError as e:
-            logger.warning("Ignore invalid OAuth2 parameters: %s.", e)
+            logger.warning('Ignore invalid OAuth2 parameters: %s.', e)
 
 
 class OAuthReturnView(View):
@@ -81,23 +71,21 @@ class OAuthReturnView(View):
         try:
             user = self.get_or_create_user(request)
             response = process_login_and_set_cookie(request, user, False)
-            oauth2_params = request.session.pop("oauth2_params", {})
+            oauth2_params = request.session.pop('oauth2_params', {})
             if oauth2_params:
                 try:
                     oauth2_params = OAuth2Params.model_validate(oauth2_params)
                     query_string = urlencode(oauth2_params.model_dump())
-                    auth_url = reverse("control:oauth2_provider.authorize")
-                    return redirect(f"{auth_url}?{query_string}")
+                    auth_url = reverse('control:oauth2_provider.authorize')
+                    return redirect(f'{auth_url}?{query_string}')
                 except ValidationError as e:
-                    logger.warning("Ignore invalid OAuth2 parameters: %s.", e)
+                    logger.warning('Ignore invalid OAuth2 parameters: %s.', e)
 
             return response
         except AttributeError as e:
-            messages.error(
-                request, _("Error while authorizing: no email address available.")
-            )
-            logger.error("Error while authorizing: %s", e)
-            return redirect("control:auth.login")
+            messages.error(request, _('Error while authorizing: no email address available.'))
+            logger.error('Error while authorizing: %s', e)
+            return redirect('control:auth.login')
 
     @staticmethod
     def get_or_create_user(request: HttpRequest) -> User:
@@ -107,10 +95,10 @@ class OAuthReturnView(View):
         return User.objects.get_or_create(
             email=request.user.email,
             defaults={
-                "locale": getattr(request, "LANGUAGE_CODE", settings.LANGUAGE_CODE),
-                "timezone": getattr(request, "timezone", settings.TIME_ZONE),
-                "auth_backend": "native",
-                "password": "",
+                'locale': getattr(request, 'LANGUAGE_CODE', settings.LANGUAGE_CODE),
+                'timezone': getattr(request, 'timezone', settings.TIME_ZONE),
+                'auth_backend': 'native',
+                'password': '',
             },
         )[0]
 
@@ -119,9 +107,9 @@ class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
     template_name = 'socialauth/social_auth_settings.html'
 
     class SettingState(StrEnum):
-        ENABLED = "enabled"
-        DISABLED = "disabled"
-        CREDENTIALS = "credentials"
+        ENABLED = 'enabled'
+        DISABLED = 'disabled'
+        CREDENTIALS = 'credentials'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -133,6 +121,7 @@ class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
         Set the initial state of the login providers
         If the login providers are not valid, set them to the default
         """
+
         def validate_login_providers(login_providers):
             try:
                 validated_providers = LoginProviders.model_validate(login_providers)
@@ -177,7 +166,7 @@ class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
                 defaults={
                     'client_id': client_id_value,
                     'secret': secret_value,
-                }
+                },
             )
 
     def update_provider_state(self, request, provider, login_providers):

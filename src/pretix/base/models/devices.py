@@ -36,20 +36,18 @@ def generate_api_token():
 
 
 class Gate(LoggedModel):
-    organizer = models.ForeignKey(
-        'pretixbase.Organizer',
-        on_delete=models.PROTECT,
-        related_name='gates'
-    )
+    organizer = models.ForeignKey('pretixbase.Organizer', on_delete=models.PROTECT, related_name='gates')
     name = models.CharField(
-        verbose_name=_("Name"),
+        verbose_name=_('Name'),
         max_length=190,
     )
     identifier = models.CharField(
-        max_length=190, blank=True,
-        verbose_name=_("Internal identifier"),
-        help_text=_('You can enter any value here to make it easier to match the data with other sources. If you do '
-                    'not input one, we will generate one automatically.')
+        max_length=190,
+        blank=True,
+        verbose_name=_('Internal identifier'),
+        help_text=_(
+            'You can enter any value here to make it easier to match the data with other sources. If you do not input one, we will generate one automatically.'
+        ),
     )
 
     class Meta:
@@ -81,59 +79,27 @@ class Gate(LoggedModel):
 
 
 class Device(LoggedModel):
-    organizer = models.ForeignKey(
-        'pretixbase.Organizer',
-        on_delete=models.PROTECT,
-        related_name='devices'
-    )
-    gate = models.ForeignKey(
-        'pretixbase.Gate',
-        verbose_name=_('Gate'),
-        on_delete=models.SET_NULL,
-        null=True, blank=True,
-        related_name='devices'
-    )
+    organizer = models.ForeignKey('pretixbase.Organizer', on_delete=models.PROTECT, related_name='devices')
+    gate = models.ForeignKey('pretixbase.Gate', verbose_name=_('Gate'), on_delete=models.SET_NULL, null=True, blank=True, related_name='devices')
     device_id = models.PositiveIntegerField()
     unique_serial = models.CharField(max_length=190, default=generate_serial, unique=True)
     initialization_token = models.CharField(max_length=190, default=generate_initialization_token, unique=True)
     api_token = models.CharField(max_length=190, unique=True, null=True)
-    all_events = models.BooleanField(default=False, verbose_name=_("All events (including newly created ones)"))
-    limit_events = models.ManyToManyField('Event', verbose_name=_("Limit to events"), blank=True)
+    all_events = models.BooleanField(default=False, verbose_name=_('All events (including newly created ones)'))
+    limit_events = models.ManyToManyField('Event', verbose_name=_('Limit to events'), blank=True)
     revoked = models.BooleanField(default=False)
-    name = models.CharField(
-        max_length=190,
-        verbose_name=_('Name')
-    )
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_('Setup date')
-    )
+    name = models.CharField(max_length=190, verbose_name=_('Name'))
+    created = models.DateTimeField(auto_now_add=True, verbose_name=_('Setup date'))
     initialized = models.DateTimeField(
         verbose_name=_('Initialization date'),
         null=True,
     )
-    hardware_brand = models.CharField(
-        max_length=190,
-        null=True, blank=True
-    )
-    hardware_model = models.CharField(
-        max_length=190,
-        null=True, blank=True
-    )
-    software_brand = models.CharField(
-        max_length=190,
-        null=True, blank=True
-    )
-    software_version = models.CharField(
-        max_length=190,
-        null=True, blank=True
-    )
+    hardware_brand = models.CharField(max_length=190, null=True, blank=True)
+    hardware_model = models.CharField(max_length=190, null=True, blank=True)
+    software_brand = models.CharField(max_length=190, null=True, blank=True)
+    software_version = models.CharField(max_length=190, null=True, blank=True)
     security_profile = models.CharField(
-        max_length=190,
-        choices=[(k, v.verbose_name) for k, v in DEVICE_SECURITY_PROFILES.items()],
-        default='full',
-        null=True,
-        blank=False
+        max_length=190, choices=[(k, v.verbose_name) for k, v in DEVICE_SECURITY_PROFILES.items()], default='full', null=True, blank=False
     )
 
     objects = ScopedManager(organizer='organizer')
@@ -142,9 +108,7 @@ class Device(LoggedModel):
         unique_together = (('organizer', 'device_id'),)
 
     def __str__(self):
-        return '#{}: {} ({} {})'.format(
-            self.device_id, self.name, self.hardware_brand, self.hardware_model
-        )
+        return '#{}: {} ({} {})'.format(self.device_id, self.name, self.hardware_brand, self.hardware_model)
 
     def save(self, *args, **kwargs):
         if not self.device_id:
@@ -152,11 +116,7 @@ class Device(LoggedModel):
         super().save(*args, **kwargs)
 
     def permission_set(self) -> set:
-        return {
-            'can_view_orders',
-            'can_change_orders',
-            'can_manage_gift_cards'
-        }
+        return {'can_view_orders', 'can_change_orders', 'can_manage_gift_cards'}
 
     def get_event_permission_set(self, organizer, event) -> set:
         """
@@ -166,9 +126,7 @@ class Device(LoggedModel):
         :param event: The event to check
         :return: set of permissions
         """
-        has_event_access = (self.all_events and organizer == self.organizer) or (
-            event in self.limit_events.all()
-        )
+        has_event_access = (self.all_events and organizer == self.organizer) or (event in self.limit_events.all())
         return self.permission_set() if has_event_access else set()
 
     def get_organizer_permission_set(self, organizer) -> set:
@@ -191,9 +149,7 @@ class Device(LoggedModel):
         :param request: This parameter is ignored and only defined for compatibility reasons.
         :return: bool
         """
-        has_event_access = (self.all_events and organizer == self.organizer) or (
-            event in self.limit_events.all()
-        )
+        has_event_access = (self.all_events and organizer == self.organizer) or (event in self.limit_events.all())
         if isinstance(perm_name, (tuple, list)):
             return has_event_access and any(p in self.permission_set() for p in perm_name)
         return has_event_access and (not perm_name or perm_name in self.permission_set())
@@ -230,10 +186,7 @@ class Device(LoggedModel):
         :param request: Ignored, for compatibility with User model
         :return: Iterable of Events
         """
-        if (
-            isinstance(permission, (list, tuple))
-            and any(p in self.permission_set() for p in permission)
-        ) or (
+        if (isinstance(permission, (list, tuple)) and any(p in self.permission_set() for p in permission)) or (
             isinstance(permission, str) and permission in self.permission_set()
         ):
             return self.get_events_with_any_permission()

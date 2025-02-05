@@ -112,16 +112,18 @@ class ListExporter(BaseExporter):
     def export_form_fields(self) -> dict:
         ff = OrderedDict(
             [
-                ('_format',
-                 forms.ChoiceField(
-                     label=_('Export format'),
-                     choices=(
-                         ('xlsx', _('Excel (.xlsx)')),
-                         ('default', _('CSV (with commas)')),
-                         ('csv-excel', _('CSV (Excel-style)')),
-                         ('semicolon', _('CSV (with semicolons)')),
-                     ),
-                 )),
+                (
+                    '_format',
+                    forms.ChoiceField(
+                        label=_('Export format'),
+                        choices=(
+                            ('xlsx', _('Excel (.xlsx)')),
+                            ('default', _('CSV (with commas)')),
+                            ('csv-excel', _('CSV (Excel-style)')),
+                            ('semicolon', _('CSV (with semicolons)')),
+                        ),
+                    ),
+                ),
             ]
         )
         ff.update(self.additional_form_fields)
@@ -148,10 +150,7 @@ class ListExporter(BaseExporter):
                 if isinstance(line, self.ProgressSetTotal):
                     total = line.total
                     continue
-                line = [
-                    localize(f) if isinstance(f, Decimal) else f
-                    for f in line
-                ]
+                line = [localize(f) if isinstance(f, Decimal) else f for f in line]
                 if total:
                     counter += 1
                     if counter % max(10, total // 100) == 0:
@@ -167,16 +166,13 @@ class ListExporter(BaseExporter):
                 if isinstance(line, self.ProgressSetTotal):
                     total = line.total
                     continue
-                line = [
-                    localize(f) if isinstance(f, Decimal) else f
-                    for f in line
-                ]
+                line = [localize(f) if isinstance(f, Decimal) else f for f in line]
                 if total:
                     counter += 1
                     if counter % max(10, total // 100) == 0:
                         self.progress_callback(counter / total * 100)
                 writer.writerow(line)
-            return self.get_filename() + '.csv', 'text/csv', output.getvalue().encode("utf-8")
+            return self.get_filename() + '.csv', 'text/csv', output.getvalue().encode('utf-8')
 
     def _render_xlsx(self, form_data, output_file=None):
         wb = Workbook(write_only=True)
@@ -191,10 +187,7 @@ class ListExporter(BaseExporter):
             if isinstance(line, self.ProgressSetTotal):
                 total = line.total
                 continue
-            ws.append([
-                excel_safe(val) if not isinstance(val, KNOWN_TYPES) else val
-                for val in line
-            ])
+            ws.append([excel_safe(val) if not isinstance(val, KNOWN_TYPES) else val for val in line])
             if total:
                 counter += 1
                 if counter % max(10, total // 100) == 0:
@@ -221,7 +214,6 @@ class ListExporter(BaseExporter):
 
 
 class MultiSheetListExporter(ListExporter):
-
     @property
     def sheets(self):
         raise NotImplementedError()
@@ -239,11 +231,13 @@ class MultiSheetListExporter(ListExporter):
             ]
         ff = OrderedDict(
             [
-                ('_format',
-                 forms.ChoiceField(
-                     label=_('Export format'),
-                     choices=choices,
-                 )),
+                (
+                    '_format',
+                    forms.ChoiceField(
+                        label=_('Export format'),
+                        choices=choices,
+                    ),
+                ),
             ]
         )
         ff.update(self.additional_form_fields)
@@ -269,10 +263,7 @@ class MultiSheetListExporter(ListExporter):
                 if isinstance(line, self.ProgressSetTotal):
                     total = line.total
                     continue
-                line = [
-                    localize(f) if isinstance(f, Decimal) else f
-                    for f in line
-                ]
+                line = [localize(f) if isinstance(f, Decimal) else f for f in line]
                 writer.writerow(line)
                 if total:
                     counter += 1
@@ -286,16 +277,13 @@ class MultiSheetListExporter(ListExporter):
                 if isinstance(line, self.ProgressSetTotal):
                     total = line.total
                     continue
-                line = [
-                    localize(f) if isinstance(f, Decimal) else f
-                    for f in line
-                ]
+                line = [localize(f) if isinstance(f, Decimal) else f for f in line]
                 writer.writerow(line)
                 if total:
                     counter += 1
                     if counter % max(10, total // 100) == 0:
                         self.progress_callback(counter / total * 100)
-            return self.get_filename() + '.csv', 'text/csv', output.getvalue().encode("utf-8")
+            return self.get_filename() + '.csv', 'text/csv', output.getvalue().encode('utf-8')
 
     def _render_xlsx(self, form_data, output_file=None):
         wb = Workbook(write_only=True)
@@ -311,10 +299,7 @@ class MultiSheetListExporter(ListExporter):
                 if isinstance(line, self.ProgressSetTotal):
                     total = line.total
                     continue
-                ws.append([
-                    excel_safe(val)
-                    for val in line
-                ])
+                ws.append([excel_safe(val) for val in line])
                 if total:
                     counter += 1
                     if counter % max(10, total // 100) == 0:
@@ -335,8 +320,7 @@ class MultiSheetListExporter(ListExporter):
         elif ':' in form_data.get('_format'):
             sheet, f = form_data.get('_format').split(':')
             if f == 'default':
-                return self._render_sheet_csv(form_data, sheet, quoting=csv.QUOTE_NONNUMERIC, delimiter=',',
-                                              output_file=output_file)
+                return self._render_sheet_csv(form_data, sheet, quoting=csv.QUOTE_NONNUMERIC, delimiter=',', output_file=output_file)
             elif f == 'excel':
                 return self._render_sheet_csv(form_data, sheet, dialect='excel', output_file=output_file)
             elif f == 'semicolon':

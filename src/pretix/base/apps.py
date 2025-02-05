@@ -22,6 +22,7 @@ class PretixBaseConfig(AppConfig):
 
         if hasattr(settings, 'RAVEN_CONFIG'):
             from ..sentry import initialize
+
             initialize()
 
 

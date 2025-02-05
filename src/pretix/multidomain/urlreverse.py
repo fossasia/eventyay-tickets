@@ -24,18 +24,16 @@ def get_event_domain(event, fallback=False, return_info=False):
     if domain is None:
         domain = None, None
         if fallback:
-            domains = KnownDomain.objects.filter(
-                Q(event=event) | Q(organizer_id=event.organizer_id, event__isnull=True)
-            )
+            domains = KnownDomain.objects.filter(Q(event=event) | Q(organizer_id=event.organizer_id, event__isnull=True))
             domains_event = [d for d in domains if d.event_id == event.pk]
             domains_org = [d for d in domains if not d.event_id]
             if domains_event:
-                domain = domains_event[0].domainname, "event"
+                domain = domains_event[0].domainname, 'event'
             elif domains_org:
-                domain = domains_org[0].domainname, "organizer"
+                domain = domains_org[0].domainname, 'organizer'
         else:
             domains = event.domains.all()
-            domain = domains[0].domainname if domains else None, "event"
+            domain = domains[0].domainname if domains else None, 'event'
         event.cache.set('domain' + suffix, domain or 'none')
         setattr(event, '_cached_domain' + suffix, domain or 'none')
     elif domain == 'none':
@@ -100,7 +98,9 @@ def eventreverse(obj, name, kwargs=None):
     :returns: An absolute URL (including scheme and host) as a string
     """
     from pretix.multidomain import (
-        event_domain_urlconf, maindomain_urlconf, organizer_domain_urlconf,
+        event_domain_urlconf,
+        maindomain_urlconf,
+        organizer_domain_urlconf,
     )
 
     c = None
@@ -124,15 +124,15 @@ def eventreverse(obj, name, kwargs=None):
     if event:
         domain, domaintype = get_event_domain(obj, fallback=True, return_info=True)
     else:
-        domain, domaintype = get_organizer_domain(organizer), "organizer"
+        domain, domaintype = get_organizer_domain(organizer), 'organizer'
 
     if domain:
-        if domaintype == "event" and 'event' in kwargs:
+        if domaintype == 'event' and 'event' in kwargs:
             del kwargs['event']
         if 'organizer' in kwargs:
             del kwargs['organizer']
 
-        path = reverse(name, kwargs=kwargs, urlconf=event_domain_urlconf if domaintype == "event" else organizer_domain_urlconf)
+        path = reverse(name, kwargs=kwargs, urlconf=event_domain_urlconf if domaintype == 'event' else organizer_domain_urlconf)
         siteurlsplit = urlsplit(settings.SITE_URL)
         if siteurlsplit.port and siteurlsplit.port not in (80, 443):
             domain = '%s:%d' % (domain, siteurlsplit.port)
@@ -184,44 +184,33 @@ def generate_token_url(event, order, position):
 def generate_token(event, customer_code, position):
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=30)
-    profile = {
-        'fields': {}
-    }
+    profile = {'fields': {}}
     if position.attendee_name:
         profile['display_name'] = position.attendee_name
     if position.company:
         profile['fields']['company'] = position.company
 
-    for a in position.answers.filter(question_id__in=event.settings.venueless_questions).select_related(
-            'question'):
+    for a in position.answers.filter(question_id__in=event.settings.venueless_questions).select_related('question'):
         profile['fields'][a.question.identifier] = a.answer
     payload = {
-        "iss": event.settings.venueless_issuer,
-        "aud": event.settings.venueless_audience,
-        "exp": exp,
-        "iat": iat,
-        "uid": customer_code if customer_code else position.pseudonymization_id,
-        "profile": profile,
-        "traits": list(
+        'iss': event.settings.venueless_issuer,
+        'aud': event.settings.venueless_audience,
+        'exp': exp,
+        'iat': iat,
+        'uid': customer_code if customer_code else position.pseudonymization_id,
+        'profile': profile,
+        'traits': list(
             {
                 'eventyay-video-event-{}'.format(event.slug),
                 'eventyay-video-subevent-{}'.format(position.subevent_id),
                 'eventyay-video-item-{}'.format(position.item_id),
                 'eventyay-video-variation-{}'.format(position.variation_id),
                 'eventyay-video-category-{}'.format(position.item.category_id),
-            } | {
-                'eventyay-video-item-{}'.format(p.item_id)
-                for p in position.addons.all()
-            } | {
-                'eventyay-video-variation-{}'.format(p.variation_id)
-                for p in position.addons.all() if p.variation_id
-            } | {
-                'eventyay-video-category-{}'.format(p.item.category_id)
-                for p in position.addons.all() if p.item.category_id
             }
-        )
+            | {'eventyay-video-item-{}'.format(p.item_id) for p in position.addons.all()}
+            | {'eventyay-video-variation-{}'.format(p.variation_id) for p in position.addons.all() if p.variation_id}
+            | {'eventyay-video-category-{}'.format(p.item.category_id) for p in position.addons.all() if p.item.category_id}
+        ),
     }
-    token = jwt.encode(
-        payload, event.settings.venueless_secret, algorithm="HS256"
-    )
-    return '{}/#token={}'.format(event.settings.venueless_url, token).replace("//#", "/#")
+    token = jwt.encode(payload, event.settings.venueless_secret, algorithm='HS256')
+    return '{}/#token={}'.format(event.settings.venueless_url, token).replace('//#', '/#')

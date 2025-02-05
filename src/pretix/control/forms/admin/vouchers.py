@@ -14,23 +14,21 @@ class InvoiceVoucherForm(I18nModelForm):
         queryset=Event.objects.none(),
         widget=forms.CheckboxSelectMultiple,
         required=False,
-        label=_("Event effect"),
-        help_text=_("The voucher will only be valid for the selected events.")
+        label=_('Event effect'),
+        help_text=_('The voucher will only be valid for the selected events.'),
     )
     organizer_effect = forms.ModelMultipleChoiceField(
         queryset=Organizer.objects.none(),
         widget=forms.CheckboxSelectMultiple,
         required=False,
-        label=_("Organizer effect"),
-        help_text=_("The voucher will be valid for all events under the selected organizers.")
+        label=_('Organizer effect'),
+        help_text=_('The voucher will be valid for all events under the selected organizers.'),
     )
 
     class Meta:
         model = InvoiceVoucher
         localized_fields = '__all__'
-        fields = [
-            'code', 'valid_until', 'value', 'max_usages', 'price_mode', 'budget', 'event_effect', 'organizer_effect'
-        ]
+        fields = ['code', 'valid_until', 'value', 'max_usages', 'price_mode', 'budget', 'event_effect', 'organizer_effect']
         field_classes = {
             'valid_until': SplitDateTimeField,
         }

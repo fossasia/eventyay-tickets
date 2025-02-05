@@ -19,8 +19,7 @@ def get_user_agent_hash(request):
 def assert_session_valid(request):
     if not settings.PRETIX_LONG_SESSIONS or not request.session.get('pretix_auth_long_session', False):
         last_used = request.session.get('pretix_auth_last_used', time.time())
-        if time.time() - request.session.get('pretix_auth_login_time',
-                                             time.time()) > settings.PRETIX_SESSION_TIMEOUT_ABSOLUTE:
+        if time.time() - request.session.get('pretix_auth_login_time', time.time()) > settings.PRETIX_SESSION_TIMEOUT_ABSOLUTE:
             request.session['pretix_auth_login_time'] = 0
             raise SessionInvalid()
         if time.time() - last_used > settings.PRETIX_SESSION_TIMEOUT_RELATIVE:

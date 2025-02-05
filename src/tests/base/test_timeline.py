@@ -27,7 +27,9 @@ def one(iterable):
 def event():
     o = Organizer.objects.create(name='Dummy', slug='dummy')
     event = Event.objects.create(
-        organizer=o, name='Dummy', slug='dummy',
+        organizer=o,
+        name='Dummy',
+        slug='dummy',
         date_from=datetime(2017, 10, 22, 12, 0, 0, tzinfo=tz),
         date_to=datetime(2017, 10, 23, 23, 0, 0, tzinfo=tz),
     )
@@ -44,11 +46,5 @@ def item(event):
 def test_event_dates(event):
     with language('en'):
         tl = timeline_for_event(event)
-        assert one([
-            e for e in tl
-            if e.event == event and e.datetime == event.date_from and e.description == 'Your event starts'
-        ])
-        assert one([
-            e for e in tl
-            if e.event == event and e.datetime == event.date_to and e.description == 'Your event ends'
-        ])
+        assert one([e for e in tl if e.event == event and e.datetime == event.date_from and e.description == 'Your event starts'])
+        assert one([e for e in tl if e.event == event and e.datetime == event.date_to and e.description == 'Your event ends'])

@@ -3,10 +3,7 @@ from base64 import urlsafe_b64decode, urlsafe_b64encode
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_der_public_key
 
-PUB_KEY_DER_EVENTYAY = (
-    b'\x30\x59\x30\x13\x06\x07\x2a\x86\x48\xce\x3d\x02\x01'
-    b'\x06\x08\x2a\x86\x48\xce\x3d\x03\x01\x07\x03\x42\x00'
-)
+PUB_KEY_DER_EVENTYAY = b'\x30\x59\x30\x13\x06\x07\x2a\x86\x48\xce\x3d\x02\x01\x06\x08\x2a\x86\x48\xce\x3d\x03\x01\x07\x03\x42\x00'
 
 
 def pub_key_from_der(der: bytes):

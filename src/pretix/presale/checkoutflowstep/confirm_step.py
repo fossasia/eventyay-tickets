@@ -12,7 +12,9 @@ from pretix.base.templatetags.rich_text import rich_text_snippet
 from pretix.base.views.tasks import AsyncAction
 from pretix.multidomain.urlreverse import eventreverse
 from pretix.presale.signals import (
-    checkout_all_optional, checkout_confirm_messages, contact_form_fields,
+    checkout_all_optional,
+    checkout_confirm_messages,
+    contact_form_fields,
     order_meta_from_request,
 )
 from pretix.presale.views import CartMixin, get_cart_is_free
@@ -23,8 +25,8 @@ from .template_flow_step import TemplateFlowStep
 
 class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
     priority = 1001
-    identifier = "confirm"
-    template_name = "pretixpresale/event/checkout_confirm.html"
+    identifier = 'confirm'
+    template_name = 'pretixpresale/event/checkout_confirm.html'
     task = perform_order
     known_errortypes = ['OrderError']
     label = pgettext_lazy('checkoutflow', 'Review order')
@@ -38,10 +40,8 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
 
     @cached_property
     def address_asked(self):
-        return (
-            self.request.event.settings.invoice_address_asked
-            and (not self.request.event.settings.invoice_address_not_asked_free or not get_cart_is_free(
-                self.request))
+        return self.request.event.settings.invoice_address_asked and (
+            not self.request.event.settings.invoice_address_not_asked_free or not get_cart_is_free(self.request)
         )
 
     def get_context_data(self, **kwargs):
@@ -118,28 +118,26 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
                 if request.POST.get('confirm_{}'.format(key)) != 'yes':
                     msg = str(_('You need to check all checkboxes on the bottom of the page.'))
                     messages.error(self.request, msg)
-                    if "ajax" in self.request.POST or "ajax" in self.request.GET:
-                        return JsonResponse({
-                            'ready': True,
-                            'redirect': self.get_error_url(),
-                            'message': msg
-                        })
+                    if 'ajax' in self.request.POST or 'ajax' in self.request.GET:
+                        return JsonResponse({'ready': True, 'redirect': self.get_error_url(), 'message': msg})
                     return redirect(self.get_error_url())
 
-        meta_info = {
-            'contact_form_data': self.cart_session.get('contact_form_data', {}),
-            'confirm_messages': [
-                str(m) for m in self.confirm_messages.values()
-            ]
-        }
+        meta_info = {'contact_form_data': self.cart_session.get('contact_form_data', {}), 'confirm_messages': [str(m) for m in self.confirm_messages.values()]}
         for receiver, response in order_meta_from_request.send(sender=request.event, request=request):
             meta_info.update(response)
 
-        return self.do(self.request.event.id, self.payment_provider.identifier if self.payment_provider else None,
-                       [p.id for p in self.positions], self.cart_session.get('email'),
-                       translation.get_language(), self.invoice_address.pk, meta_info,
-                       request.sales_channel.identifier, self.cart_session.get('gift_cards'),
-                       self.cart_session.get('shown_total'))
+        return self.do(
+            self.request.event.id,
+            self.payment_provider.identifier if self.payment_provider else None,
+            [p.id for p in self.positions],
+            self.cart_session.get('email'),
+            translation.get_language(),
+            self.invoice_address.pk,
+            meta_info,
+            request.sales_channel.identifier,
+            self.cart_session.get('gift_cards'),
+            self.cart_session.get('shown_total'),
+        )
 
     def get_success_message(self, value):
         create_empty_cart_id(self.request)
@@ -160,12 +158,15 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
     def get_order_url(self, order):
         payment = order.payments.filter(state=OrderPayment.PAYMENT_STATE_CREATED).first()
         if not payment:
-            return eventreverse(self.request.event, 'presale:event.order', kwargs={
-                'order': order.code,
-                'secret': order.secret,
-            }) + '?thanks=1'
-        return eventreverse(self.request.event, 'presale:event.order.pay.complete', kwargs={
-            'order': order.code,
-            'secret': order.secret,
-            'payment': payment.pk
-        })
+            return (
+                eventreverse(
+                    self.request.event,
+                    'presale:event.order',
+                    kwargs={
+                        'order': order.code,
+                        'secret': order.secret,
+                    },
+                )
+                + '?thanks=1'
+            )
+        return eventreverse(self.request.event, 'presale:event.order.pay.complete', kwargs={'order': order.code, 'secret': order.secret, 'payment': payment.pk})

@@ -91,8 +91,8 @@ class BaseAuthBackend:
         ``'next'`` query parameter. However, external authentication methods could use custom attributes with hardcoded
         names for security purposes. For example, OAuth uses ``'state'`` for keeping track of application state.
         """
-        if "next" in request.GET:
-            return request.GET.get("next")
+        if 'next' in request.GET:
+            return request.GET.get('next')
         return None
 
 
@@ -109,11 +109,12 @@ class NativeAuthBackend(BaseAuthBackend):
         This property may return form fields that the user needs to fill in
         to log in.
         """
-        d = OrderedDict([
-            ('email', forms.EmailField(label=_("E-mail"), max_length=254,
-                                       widget=forms.EmailInput(attrs={'autofocus': 'autofocus'}))),
-            ('password', forms.CharField(label=_("Password"), widget=forms.PasswordInput)),
-        ])
+        d = OrderedDict(
+            [
+                ('email', forms.EmailField(label=_('E-mail'), max_length=254, widget=forms.EmailInput(attrs={'autofocus': 'autofocus'}))),
+                ('password', forms.CharField(label=_('Password'), widget=forms.PasswordInput)),
+            ]
+        )
         return d
 
     def form_authenticate(self, request, form_data):

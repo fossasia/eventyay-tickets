@@ -25,7 +25,6 @@ import pretix.helpers.countries
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -171,7 +170,10 @@ class Migration(migrations.Migration):
                 ('invoice_from_name', models.CharField(max_length=190, null=True)),
                 ('invoice_from_zipcode', models.CharField(max_length=190, null=True)),
                 ('invoice_from_city', models.CharField(max_length=190, null=True)),
-                ('invoice_from_country', pretix.helpers.countries.FastCountryField(countries=pretix.helpers.countries.CachedCountries, max_length=2, null=True)),
+                (
+                    'invoice_from_country',
+                    pretix.helpers.countries.FastCountryField(countries=pretix.helpers.countries.CachedCountries, max_length=2, null=True),
+                ),
                 ('invoice_from_tax_id', models.CharField(max_length=190, null=True)),
                 ('invoice_from_vat_id', models.CharField(max_length=190, null=True)),
                 ('invoice_to', models.TextField()),
@@ -411,7 +413,10 @@ class Migration(migrations.Migration):
                 ('valid_date_max', models.DateField(blank=True, null=True)),
                 ('valid_datetime_min', models.DateTimeField(blank=True, null=True)),
                 ('valid_datetime_max', models.DateTimeField(blank=True, null=True)),
-                ('dependency_question', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='dependent_questions', to='pretixbase.question')),
+                (
+                    'dependency_question',
+                    models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='dependent_questions', to='pretixbase.question'),
+                ),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='questions', to='pretixbase.event')),
                 ('items', models.ManyToManyField(related_name='questions', to='pretixbase.item')),
             ],
@@ -563,7 +568,10 @@ class Migration(migrations.Migration):
                 ('quota', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='vouchers', to='pretixbase.quota')),
                 ('seat', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='vouchers', to='pretixbase.seat')),
                 ('subevent', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='pretixbase.subevent')),
-                ('variation', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='vouchers', to='pretixbase.itemvariation')),
+                (
+                    'variation',
+                    models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='vouchers', to='pretixbase.itemvariation'),
+                ),
             ],
             options={
                 'verbose_name': 'Voucher',
@@ -605,8 +613,14 @@ class Migration(migrations.Migration):
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='waitinglistentries', to='pretixbase.event')),
                 ('item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='waitinglistentries', to='pretixbase.item')),
                 ('subevent', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='pretixbase.subevent')),
-                ('variation', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='waitinglistentries', to='pretixbase.itemvariation')),
-                ('voucher', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='waitinglistentries', to='pretixbase.voucher')),
+                (
+                    'variation',
+                    models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='waitinglistentries', to='pretixbase.itemvariation'),
+                ),
+                (
+                    'voucher',
+                    models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='waitinglistentries', to='pretixbase.voucher'),
+                ),
             ],
             options={
                 'verbose_name': 'Waiting list entry',
@@ -720,7 +734,10 @@ class Migration(migrations.Migration):
                 ('layout_category', models.CharField(max_length=190)),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='seat_category_mappings', to='pretixbase.event')),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='seat_category_mappings', to='pretixbase.item')),
-                ('subevent', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='seat_category_mappings', to='pretixbase.subevent')),
+                (
+                    'subevent',
+                    models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='seat_category_mappings', to='pretixbase.subevent'),
+                ),
             ],
         ),
         migrations.AddField(
@@ -735,7 +752,10 @@ class Migration(migrations.Migration):
                 ('secret', models.TextField(db_index=True)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='revoked_secrets', to='pretixbase.event')),
-                ('position', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='revoked_secrets', to='pretixbase.orderposition')),
+                (
+                    'position',
+                    models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='revoked_secrets', to='pretixbase.orderposition'),
+                ),
             ],
         ),
         migrations.CreateModel(
@@ -884,7 +904,10 @@ class Migration(migrations.Migration):
                 ('designated_price', models.DecimalField(decimal_places=2, default=Decimal('0.00'), max_digits=10)),
                 ('base_item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bundles', to='pretixbase.item')),
                 ('bundled_item', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bundled_with', to='pretixbase.item')),
-                ('bundled_variation', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='bundled_with', to='pretixbase.itemvariation')),
+                (
+                    'bundled_variation',
+                    models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='bundled_with', to='pretixbase.itemvariation'),
+                ),
             ],
         ),
         migrations.AddField(
@@ -975,9 +998,22 @@ class Migration(migrations.Migration):
                 ('value', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('text', models.TextField(null=True)),
                 ('card', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='transactions', to='pretixbase.giftcard')),
-                ('order', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='gift_card_transactions', to='pretixbase.order')),
-                ('payment', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='gift_card_transactions', to='pretixbase.orderpayment')),
-                ('refund', models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='gift_card_transactions', to='pretixbase.orderrefund')),
+                (
+                    'order',
+                    models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='gift_card_transactions', to='pretixbase.order'),
+                ),
+                (
+                    'payment',
+                    models.ForeignKey(
+                        null=True, on_delete=django.db.models.deletion.PROTECT, related_name='gift_card_transactions', to='pretixbase.orderpayment'
+                    ),
+                ),
+                (
+                    'refund',
+                    models.ForeignKey(
+                        null=True, on_delete=django.db.models.deletion.PROTECT, related_name='gift_card_transactions', to='pretixbase.orderrefund'
+                    ),
+                ),
             ],
             options={
                 'ordering': ('datetime',),
@@ -987,8 +1023,14 @@ class Migration(migrations.Migration):
             name='GiftCardAcceptance',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
-                ('collector', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='gift_card_issuer_acceptance', to='pretixbase.organizer')),
-                ('issuer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='gift_card_collector_acceptance', to='pretixbase.organizer')),
+                (
+                    'collector',
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='gift_card_issuer_acceptance', to='pretixbase.organizer'),
+                ),
+                (
+                    'issuer',
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='gift_card_collector_acceptance', to='pretixbase.organizer'),
+                ),
             ],
         ),
         migrations.AddField(
@@ -1192,9 +1234,15 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False)),
                 ('answer', models.TextField()),
                 ('file', models.FileField(max_length=255, null=True, upload_to=pretix.base.models.orders.answerfile_name)),
-                ('cartposition', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='answers', to='pretixbase.cartposition')),
+                (
+                    'cartposition',
+                    models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='answers', to='pretixbase.cartposition'),
+                ),
                 ('options', models.ManyToManyField(related_name='answers', to='pretixbase.questionoption')),
-                ('orderposition', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='answers', to='pretixbase.orderposition')),
+                (
+                    'orderposition',
+                    models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='answers', to='pretixbase.orderposition'),
+                ),
                 ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='answers', to='pretixbase.question')),
             ],
             options={
@@ -1208,7 +1256,10 @@ class Migration(migrations.Migration):
                 ('action_type', models.CharField(max_length=255)),
                 ('method', models.CharField(max_length=255)),
                 ('enabled', models.BooleanField(default=True)),
-                ('event', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='notification_settings', to='pretixbase.event')),
+                (
+                    'event',
+                    models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='notification_settings', to='pretixbase.event'),
+                ),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='notification_settings', to=settings.AUTH_USER_MODEL)),
             ],
             options={

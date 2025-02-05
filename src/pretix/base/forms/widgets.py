@@ -20,9 +20,7 @@ class DatePickerWidget(forms.DateInput):
 
         def placeholder():
             df = date_format or get_format('DATE_INPUT_FORMATS')[0]
-            return now().replace(
-                year=2000, month=12, day=31, hour=18, minute=0, second=0, microsecond=0
-            ).strftime(df)
+            return now().replace(year=2000, month=12, day=31, hour=18, minute=0, second=0, microsecond=0).strftime(df)
 
         date_attrs['placeholder'] = lazy(placeholder, str)
 
@@ -41,9 +39,7 @@ class TimePickerWidget(forms.TimeInput):
 
         def placeholder():
             tf = time_format or get_format('TIME_INPUT_FORMATS')[0]
-            return now().replace(
-                year=2000, month=1, day=1, hour=0, minute=0, second=0, microsecond=0
-            ).strftime(tf)
+            return now().replace(year=2000, month=1, day=1, hour=0, minute=0, second=0, microsecond=0).strftime(tf)
 
         time_attrs['placeholder'] = lazy(placeholder, str)
 
@@ -81,15 +77,23 @@ class UploadedFileWidget(forms.ClearableFileInput):
             from pretix.multidomain.urlreverse import eventreverse
 
             if isinstance(self.position, OrderPosition):
-                return eventreverse(self.event, 'presale:event.order.download.answer', kwargs={
-                    'order': self.position.order.code,
-                    'secret': self.position.order.secret,
-                    'answer': self.answer.pk,
-                })
+                return eventreverse(
+                    self.event,
+                    'presale:event.order.download.answer',
+                    kwargs={
+                        'order': self.position.order.code,
+                        'secret': self.position.order.secret,
+                        'answer': self.answer.pk,
+                    },
+                )
             else:
-                return eventreverse(self.event, 'presale:event.cart.download.answer', kwargs={
-                    'answer': self.answer.pk,
-                })
+                return eventreverse(
+                    self.event,
+                    'presale:event.cart.download.answer',
+                    kwargs={
+                        'answer': self.answer.pk,
+                    },
+                )
 
     def format_value(self, value):
         if self.is_initial(value):
@@ -114,25 +118,17 @@ class SplitDateTimePickerWidget(forms.SplitDateTimeWidget):
         date_attrs['autocomplete'] = 'off'
         time_attrs['autocomplete'] = 'off'
         if min_date:
-            date_attrs['data-min'] = (
-                min_date if isinstance(min_date, date) else min_date.astimezone(get_current_timezone()).date()
-            ).isoformat()
+            date_attrs['data-min'] = (min_date if isinstance(min_date, date) else min_date.astimezone(get_current_timezone()).date()).isoformat()
         if max_date:
-            date_attrs['data-max'] = (
-                max_date if isinstance(max_date, date) else max_date.astimezone(get_current_timezone()).date()
-            ).isoformat()
+            date_attrs['data-max'] = (max_date if isinstance(max_date, date) else max_date.astimezone(get_current_timezone()).date()).isoformat()
 
         def date_placeholder():
             df = date_format or get_format('DATE_INPUT_FORMATS')[0]
-            return now().replace(
-                year=2000, month=12, day=31, hour=18, minute=0, second=0, microsecond=0
-            ).strftime(df)
+            return now().replace(year=2000, month=12, day=31, hour=18, minute=0, second=0, microsecond=0).strftime(df)
 
         def time_placeholder():
             tf = time_format or get_format('TIME_INPUT_FORMATS')[0]
-            return now().replace(
-                year=2000, month=1, day=1, hour=0, minute=0, second=0, microsecond=0
-            ).strftime(tf)
+            return now().replace(year=2000, month=1, day=1, hour=0, minute=0, second=0, microsecond=0).strftime(tf)
 
         date_attrs['placeholder'] = lazy(date_placeholder, str)
         time_attrs['placeholder'] = lazy(time_placeholder, str)
@@ -149,9 +145,7 @@ class BusinessBooleanRadio(forms.RadioSelect):
     def __init__(self, require_business=False, attrs=None):
         self.require_business = require_business
         if self.require_business:
-            choices = (
-                ('business', _('Business customer')),
-            )
+            choices = (('business', _('Business customer')),)
         else:
             choices = (
                 ('individual', _('Individual customer')),

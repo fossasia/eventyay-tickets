@@ -51,17 +51,19 @@ class ControlFieldRenderer(FieldRenderer):
         else:
             required = self.field.field.required
 
-        html = render_label(
-            label,
-            label_for=self.field.id_for_label,
-            label_class=self.get_label_class(),
-            optional=not required and not isinstance(self.widget, CheckboxInput)
-        ) + html
+        html = (
+            render_label(
+                label,
+                label_for=self.field.id_for_label,
+                label_class=self.get_label_class(),
+                optional=not required and not isinstance(self.widget, CheckboxInput),
+            )
+            + html
+        )
         return html
 
 
 class BulkEditMixin:
-
     def __init__(self, *args, **kwargs):
         kwargs['layout'] = self.layout
         super().__init__(*args, **kwargs)
@@ -79,13 +81,7 @@ class BulkEditMixin:
             '{html}'
             '</div>'
             '</div>'
-        ).format(
-            klass=field_class or '',
-            name=name,
-            label=pgettext('form_bulk', 'change'),
-            checked='checked' if checked else '',
-            html=html
-        )
+        ).format(klass=field_class or '', name=name, label=pgettext('form_bulk', 'change'), checked='checked' if checked else '', html=html)
         return html
 
 
