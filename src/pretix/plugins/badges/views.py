@@ -58,13 +58,12 @@ class LayoutCreate(EventPermissionRequiredMixin, CreateView):
         super().form_valid(form)
         if form.instance.background and form.instance.background.name:
             form.instance.background.save('background.pdf', form.instance.background)
-        form.instance.log_action('pretix.plugins.badges.layout.added', user=self.request.user,
-                                 data=dict(form.cleaned_data))
-        return redirect(reverse('plugins:badges:edit', kwargs={
-            'organizer': self.request.event.organizer.slug,
-            'event': self.request.event.slug,
-            'layout': form.instance.pk
-        }))
+        form.instance.log_action('pretix.plugins.badges.layout.added', user=self.request.user, data=dict(form.cleaned_data))
+        return redirect(
+            reverse(
+                'plugins:badges:edit', kwargs={'organizer': self.request.event.organizer.slug, 'event': self.request.event.slug, 'layout': form.instance.pk}
+            )
+        )
 
     def form_invalid(self, form):
         messages.error(self.request, _('We could not save your changes. See below for details.'))
@@ -75,9 +74,9 @@ class LayoutCreate(EventPermissionRequiredMixin, CreateView):
 
     @cached_property
     def copy_from(self):
-        if self.request.GET.get("copy_from") and not getattr(self, 'object', None):
+        if self.request.GET.get('copy_from') and not getattr(self, 'object', None):
             try:
-                return self.request.event.badge_layouts.get(pk=self.request.GET.get("copy_from"))
+                return self.request.event.badge_layouts.get(pk=self.request.GET.get('copy_from'))
             except BadgeLayout.DoesNotExist:
                 pass
 
@@ -99,11 +98,9 @@ class LayoutSetDefault(EventPermissionRequiredMixin, DetailView):
 
     def get_object(self, queryset=None) -> BadgeLayout:
         try:
-            return self.request.event.badge_layouts.get(
-                id=self.kwargs['layout']
-            )
+            return self.request.event.badge_layouts.get(id=self.kwargs['layout'])
         except BadgeLayout.DoesNotExist:
-            raise Http404(_("The requested badge layout does not exist."))
+            raise Http404(_('The requested badge layout does not exist.'))
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
@@ -115,10 +112,13 @@ class LayoutSetDefault(EventPermissionRequiredMixin, DetailView):
         return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
-        return reverse('plugins:badges:index', kwargs={
-            'organizer': self.request.event.organizer.slug,
-            'event': self.request.event.slug,
-        })
+        return reverse(
+            'plugins:badges:index',
+            kwargs={
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
+            },
+        )
 
 
 class LayoutDelete(EventPermissionRequiredMixin, DeleteView):
@@ -129,11 +129,9 @@ class LayoutDelete(EventPermissionRequiredMixin, DeleteView):
 
     def get_object(self, queryset=None) -> BadgeLayout:
         try:
-            return self.request.event.badge_layouts.get(
-                id=self.kwargs['layout']
-            )
+            return self.request.event.badge_layouts.get(id=self.kwargs['layout'])
         except BadgeLayout.DoesNotExist:
-            raise Http404(_("The requested badge layout does not exist."))
+            raise Http404(_('The requested badge layout does not exist.'))
 
     @transaction.atomic
     def form_valid(self, form):
@@ -149,31 +147,31 @@ class LayoutDelete(EventPermissionRequiredMixin, DeleteView):
         return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
-        return reverse('plugins:badges:index', kwargs={
-            'organizer': self.request.event.organizer.slug,
-            'event': self.request.event.slug,
-        })
+        return reverse(
+            'plugins:badges:index',
+            kwargs={
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
+            },
+        )
 
 
 class LayoutEditorView(BaseEditorView):
     @cached_property
     def layout(self):
         try:
-            return self.request.event.badge_layouts.get(
-                id=self.kwargs['layout']
-            )
+            return self.request.event.badge_layouts.get(id=self.kwargs['layout'])
         except BadgeLayout.DoesNotExist:
-            raise Http404(_("The requested badge layout does not exist."))
+            raise Http404(_('The requested badge layout does not exist.'))
 
     @property
     def title(self):
         return _('Badge layout: {}').format(self.layout)
 
     def save_layout(self):
-        self.layout.layout = self.request.POST.get("data")
+        self.layout.layout = self.request.POST.get('data')
         self.layout.save(update_fields=['layout'])
-        self.layout.log_action(action='pretix.plugins.badges.layout.changed', user=self.request.user,
-                               data={'layout': self.request.POST.get("data")})
+        self.layout.log_action(action='pretix.plugins.badges.layout.changed', user=self.request.user, data={'layout': self.request.POST.get('data')})
 
     def get_default_background(self):
         return static('pretixplugins/badges/badge_default_a6l.pdf')
@@ -183,11 +181,11 @@ class LayoutEditorView(BaseEditorView):
 
         buffer = BytesIO()
         if override_background:
-            bgf = default_storage.open(override_background.name, "rb")
+            bgf = default_storage.open(override_background.name, 'rb')
         elif isinstance(self.layout.background, File) and self.layout.background.name:
-            bgf = default_storage.open(self.layout.background.name, "rb")
+            bgf = default_storage.open(self.layout.background.name, 'rb')
         else:
-            bgf = open(finders.find('pretixplugins/badges/badge_default_a6l.pdf'), "rb")
+            bgf = open(finders.find('pretixplugins/badges/badge_default_a6l.pdf'), 'rb')
         r = Renderer(
             self.request.event,
             override_layout or self.get_current_layout(),
@@ -223,10 +221,13 @@ class OrderPrintDo(EventPermissionRequiredMixin, AsyncAction, View):
         return reverse('cachedfile.download', kwargs={'id': str(value)})
 
     def get_error_url(self):
-        return reverse('control:event.index', kwargs={
-            'organizer': self.request.organizer.slug,
-            'event': self.request.event.slug,
-        })
+        return reverse(
+            'control:event.index',
+            kwargs={
+                'organizer': self.request.organizer.slug,
+                'event': self.request.event.slug,
+            },
+        )
 
     def get_error_message(self, exception):
         if isinstance(exception, str):
@@ -234,7 +235,7 @@ class OrderPrintDo(EventPermissionRequiredMixin, AsyncAction, View):
         return super().get_error_message(exception)
 
     def post(self, request, *args, **kwargs):
-        order = get_object_or_404(self.request.event.orders, code=request.GET.get("code"))
+        order = get_object_or_404(self.request.event.orders, code=request.GET.get('code'))
         cf = CachedFile(web_download=True, session_key=self.request.session.session_key)
         cf.date = now()
         cf.type = 'application/pdf'

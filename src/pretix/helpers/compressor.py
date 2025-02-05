@@ -19,13 +19,8 @@ class VueCompiler(CompilerFilter):
         if not os.path.exists(self.rollup_bin) and not settings.DEBUG:
             raise FilterError("Rollup not installed or system not built properly, please run 'make npminstall' in source root.")
         command = (
-            ' '.join((
-                'NODE_PATH=' + shlex.quote(node_path),
-                shlex.quote(self.rollup_bin),
-                '-c',
-                shlex.quote(rollup_config))
-            ) +
-            ' --input {infile} -n {export_name} --file {outfile}'
+            ' '.join(('NODE_PATH=' + shlex.quote(node_path), shlex.quote(self.rollup_bin), '-c', shlex.quote(rollup_config)))
+            + ' --input {infile} -n {export_name} --file {outfile}'
         )
         super().__init__(content, command=command, **kwargs)
 
@@ -34,9 +29,7 @@ class VueCompiler(CompilerFilter):
             raise FilterError('VueCompiler can only compile files, not inline code.')
         if not os.path.exists(self.rollup_bin):
             raise FilterError("Rollup not installed, please run 'make npminstall' in source root.")
-        self.options += (('export_name', re.sub(
-            r'^([a-z])|[^a-z0-9A-Z]+([a-zA-Z0-9])?',
-            lambda s: s.group(0)[-1].upper(),
-            os.path.basename(self.filename).split('.')[0]
-        )),)
+        self.options += (
+            ('export_name', re.sub(r'^([a-z])|[^a-z0-9A-Z]+([a-zA-Z0-9])?', lambda s: s.group(0)[-1].upper(), os.path.basename(self.filename).split('.')[0])),
+        )
         return super().input(**kwargs)

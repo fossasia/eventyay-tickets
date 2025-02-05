@@ -22,28 +22,17 @@ class WebHookViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         inst = serializer.save(organizer=self.request.organizer)
         self.request.organizer.log_action(
-            'pretix.webhook.created',
-            user=self.request.user,
-            auth=self.request.auth,
-            data=merge_dicts(self.request.data, {'id': inst.pk})
+            'pretix.webhook.created', user=self.request.user, auth=self.request.auth, data=merge_dicts(self.request.data, {'id': inst.pk})
         )
 
     def perform_update(self, serializer):
         inst = serializer.save(organizer=self.request.organizer)
         self.request.organizer.log_action(
-            'pretix.webhook.changed',
-            user=self.request.user,
-            auth=self.request.auth,
-            data=merge_dicts(self.request.data, {'id': serializer.instance.pk})
+            'pretix.webhook.changed', user=self.request.user, auth=self.request.auth, data=merge_dicts(self.request.data, {'id': serializer.instance.pk})
         )
         return inst
 
     def perform_destroy(self, instance):
-        self.request.organizer.log_action(
-            'pretix.webhook.changed',
-            user=self.request.user,
-            auth=self.request.auth,
-            data={'id': instance.pk, 'enabled': False}
-        )
+        self.request.organizer.log_action('pretix.webhook.changed', user=self.request.user, auth=self.request.auth, data={'id': instance.pk, 'enabled': False})
         instance.enabled = False
         instance.save(update_fields=['enabled'])

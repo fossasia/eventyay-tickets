@@ -17,10 +17,13 @@ from pretix.base.services.update_check import check_result_table, update_check
 from pretix.base.settings import GlobalSettingsObject
 from pretix.common.enums import ValidStates
 from pretix.control.forms.global_settings import (
-    GlobalSettingsForm, SSOConfigForm, UpdateSettingsForm,
+    GlobalSettingsForm,
+    SSOConfigForm,
+    UpdateSettingsForm,
 )
 from pretix.control.permissions import (
-    AdministratorPermissionRequiredMixin, StaffMemberRequiredMixin,
+    AdministratorPermissionRequiredMixin,
+    StaffMemberRequiredMixin,
 )
 
 logger = logging.getLogger(__name__)
@@ -36,9 +39,7 @@ class GlobalSettingsView(AdministratorPermissionRequiredMixin, FormView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('Your changes have not been saved, see below for errors.')
-        )
+        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
         return super().form_invalid(form)
 
     def get_success_url(self):
@@ -68,9 +69,7 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
         return self.render_to_response(self.get_context_data(form=form, result=result))
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('Your changes have not been saved, see below for errors.')
-        )
+        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
         return super().form_invalid(form)
 
     def get_success_url(self):
@@ -80,7 +79,7 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
         application, created = OAuthApplication.objects.get_or_create(
             redirect_uris=redirect_uris,
             defaults={
-                'name': "Talk SSO Client",
+                'name': 'Talk SSO Client',
                 'client_type': OAuthApplication.CLIENT_CONFIDENTIAL,
                 'authorization_grant_type': OAuthApplication.GRANT_AUTHORIZATION_CODE,
                 'user': None,
@@ -92,13 +91,9 @@ class SSOView(AdministratorPermissionRequiredMixin, FormView):
         )
 
         return {
-            "success_message": (
-                "Successfully created OAuth2 Application"
-                if created
-                else "OAuth2 Application with this redirect URI already exists"
-            ),
-            "client_id": application.client_id,
-            "client_secret": application.client_secret,
+            'success_message': ('Successfully created OAuth2 Application' if created else 'OAuth2 Application with this redirect URI already exists'),
+            'client_id': application.client_id,
+            'client_secret': application.client_secret,
         }
 
 
@@ -123,9 +118,7 @@ class UpdateCheckView(StaffMemberRequiredMixin, FormView):
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(
-            self.request, _('Your changes have not been saved, see below for errors.')
-        )
+        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
         return super().form_invalid(form)
 
     def get_context_data(self, **kwargs):

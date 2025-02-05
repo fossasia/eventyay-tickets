@@ -4,13 +4,11 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-DELIMITER = "\x1F"
+DELIMITER = '\x1f'
 
 
 class MultiStringField(TextField):
-    default_error_messages = {
-        'delimiter_found': _('No value can contain the delimiter character.')
-    }
+    default_error_messages = {'delimiter_found': _('No value can contain the delimiter character.')}
 
     def __init__(self, verbose_name=None, name=None, **kwargs):
         super().__init__(verbose_name, name, **kwargs)
@@ -31,8 +29,8 @@ class MultiStringField(TextField):
         if isinstance(value, (list, tuple)):
             return DELIMITER + DELIMITER.join(value) + DELIMITER
         elif value is None:
-            return ""
-        raise TypeError("Invalid data type passed.")
+            return ''
+        raise TypeError('Invalid data type passed.')
 
     def get_prep_lookup(self, lookup_type, value):  # NOQA
         raise TypeError('Lookups on multi strings are currently not supported.')
@@ -65,14 +63,14 @@ class MultiStringField(TextField):
 class MultiStringContains(builtin_lookups.Contains):
     def process_rhs(self, qn, connection):
         sql, params = super().process_rhs(qn, connection)
-        params[0] = "%" + DELIMITER + params[0][1:-1] + DELIMITER + "%"
+        params[0] = '%' + DELIMITER + params[0][1:-1] + DELIMITER + '%'
         return sql, params
 
 
 class MultiStringIContains(builtin_lookups.IContains):
     def process_rhs(self, qn, connection):
         sql, params = super().process_rhs(qn, connection)
-        params[0] = "%" + DELIMITER + params[0][1:-1] + DELIMITER + "%"
+        params[0] = '%' + DELIMITER + params[0][1:-1] + DELIMITER + '%'
         return sql, params
 
 

@@ -28,15 +28,16 @@ def get_sizes(size, imgsize):
         wfactor = min(1, size[0] / imgsize[0])
         hfactor = min(1, size[1] / imgsize[1])
         if wfactor == hfactor:
-            return (int(imgsize[0] * wfactor), int(imgsize[1] * hfactor)), \
-                   (0, int((imgsize[1] * wfactor - imgsize[1] * hfactor) / 2),
-                    imgsize[0] * hfactor, int((imgsize[1] * wfactor + imgsize[1] * wfactor) / 2))
+            return (int(imgsize[0] * wfactor), int(imgsize[1] * hfactor)), (
+                0,
+                int((imgsize[1] * wfactor - imgsize[1] * hfactor) / 2),
+                imgsize[0] * hfactor,
+                int((imgsize[1] * wfactor + imgsize[1] * wfactor) / 2),
+            )
         elif wfactor > hfactor:
-            return (int(size[0]), int(imgsize[1] * wfactor)), \
-                   (0, int((imgsize[1] * wfactor - size[1]) / 2), size[0], int((imgsize[1] * wfactor + size[1]) / 2))
+            return (int(size[0]), int(imgsize[1] * wfactor)), (0, int((imgsize[1] * wfactor - size[1]) / 2), size[0], int((imgsize[1] * wfactor + size[1]) / 2))
         else:
-            return (int(imgsize[0] * hfactor), int(size[1])), \
-                   (int((imgsize[0] * hfactor - size[0]) / 2), 0, int((imgsize[0] * hfactor + size[0]) / 2), size[1])
+            return (int(imgsize[0] * hfactor), int(size[1])), (int((imgsize[0] * hfactor - size[0]) / 2), 0, int((imgsize[0] * hfactor + size[0]) / 2), size[1])
     else:
         wfactor = min(1, size[0] / imgsize[0])
         hfactor = min(1, size[1] / imgsize[1])
@@ -67,7 +68,7 @@ def create_thumbnail(sourcename, size):
     checksum = hashlib.md5(image.tobytes()).hexdigest()
     name = checksum + '.' + size.replace('^', 'c') + '.png'
     buffer = BytesIO()
-    if image.mode not in ("1", "L", "RGB", "RGBA"):
+    if image.mode not in ('1', 'L', 'RGB', 'RGBA'):
         image = image.convert('RGB')
     image.save(fp=buffer, format='PNG')
     imgfile = ContentFile(buffer.getvalue())

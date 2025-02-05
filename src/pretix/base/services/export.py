@@ -7,13 +7,21 @@ from django.utils.translation import gettext
 
 from pretix.base.i18n import LazyLocaleException, language
 from pretix.base.models import (
-    CachedFile, Device, Event, Organizer, TeamAPIToken, User, cachedfile_name,
+    CachedFile,
+    Device,
+    Event,
+    Organizer,
+    TeamAPIToken,
+    User,
+    cachedfile_name,
 )
 from pretix.base.services.tasks import (
-    ProfiledEventTask, ProfiledOrganizerUserTask,
+    ProfiledEventTask,
+    ProfiledOrganizerUserTask,
 )
 from pretix.base.signals import (
-    register_data_exporters, register_multievent_data_exporters,
+    register_data_exporters,
+    register_multievent_data_exporters,
 )
 from pretix.celery_app import app
 
@@ -26,10 +34,7 @@ class ExportError(LazyLocaleException):
 def export(self, event: Event, fileid: str, provider: str, form_data: Dict[str, Any]) -> None:
     def set_progress(val):
         if not self.request.called_directly:
-            self.update_state(
-                state='PROGRESS',
-                meta={'value': val}
-            )
+            self.update_state(state='PROGRESS', meta={'value': val})
 
     file = CachedFile.objects.get(id=fileid)
     with language(event.settings.locale, event.settings.region), override(event.settings.timezone):
@@ -39,9 +44,7 @@ def export(self, event: Event, fileid: str, provider: str, form_data: Dict[str, 
             if ex.identifier == provider:
                 d = ex.render(form_data)
                 if d is None:
-                    raise ExportError(
-                        gettext('Your export did not contain any data.')
-                    )
+                    raise ExportError(gettext('Your export did not contain any data.'))
                 file.filename, file.type, data = d
                 file.file.save(cachedfile_name(file, file.filename), ContentFile(data))
                 file.save()
@@ -58,10 +61,7 @@ def multiexport(self, organizer: Organizer, user: User, device: int, token: int,
 
     def set_progress(val):
         if not self.request.called_directly:
-            self.update_state(
-                state='PROGRESS',
-                meta={'value': val}
-            )
+            self.update_state(state='PROGRESS', meta={'value': val})
 
     file = CachedFile.objects.get(id=fileid)
     if user:
@@ -92,9 +92,7 @@ def multiexport(self, organizer: Organizer, user: User, device: int, token: int,
             if ex.identifier == provider:
                 d = ex.render(form_data)
                 if d is None:
-                    raise ExportError(
-                        gettext('Your export did not contain any data.')
-                    )
+                    raise ExportError(gettext('Your export did not contain any data.'))
                 file.filename, file.type, data = d
                 file.file.save(cachedfile_name(file, file.filename), ContentFile(data))
                 file.save()

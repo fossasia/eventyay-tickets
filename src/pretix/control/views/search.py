@@ -22,25 +22,25 @@ class OrderSearch(PaginationMixin, ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
         ctx['filter_form'] = self.filter_form
-        ctx['meta_fields'] = [
-            self.filter_form[k] for k in self.filter_form.fields if k.startswith('meta_')
-        ]
+        ctx['meta_fields'] = [self.filter_form[k] for k in self.filter_form.fields if k.startswith('meta_')]
 
         # Only compute this annotations for this page (query optimization)
-        s = OrderPosition.objects.filter(
-            order=OuterRef('pk')
-        ).order_by().values('order').annotate(k=Count('id')).values('k')
+        s = OrderPosition.objects.filter(order=OuterRef('pk')).order_by().values('order').annotate(k=Count('id')).values('k')
         annotated = {
             o['pk']: o
-            for o in
-            Order.annotate_overpayments(Order.objects).using(settings.DATABASE_REPLICA).filter(
-                pk__in=[o.pk for o in ctx['orders']]
-            ).annotate(
-                pcnt=Subquery(s, output_field=IntegerField()),
-                has_cancellation_request=Exists(CancellationRequest.objects.filter(order=OuterRef('pk')))
-            ).values(
-                'pk', 'pcnt', 'is_overpaid', 'is_underpaid', 'is_pending_with_full_payment', 'has_external_refund',
-                'has_pending_refund', 'has_cancellation_request'
+            for o in Order.annotate_overpayments(Order.objects)
+            .using(settings.DATABASE_REPLICA)
+            .filter(pk__in=[o.pk for o in ctx['orders']])
+            .annotate(pcnt=Subquery(s, output_field=IntegerField()), has_cancellation_request=Exists(CancellationRequest.objects.filter(order=OuterRef('pk'))))
+            .values(
+                'pk',
+                'pcnt',
+                'is_overpaid',
+                'is_underpaid',
+                'is_pending_with_full_payment',
+                'has_external_refund',
+                'has_pending_refund',
+                'has_cancellation_request',
             )
         }
 
@@ -61,9 +61,7 @@ class OrderSearch(PaginationMixin, ListView):
         qs = Order.objects.using(settings.DATABASE_REPLICA)
 
         if not self.request.user.has_active_staff_session(self.request.session.session_key):
-            qs = qs.filter(
-                Q(event_id__in=self.request.user.get_events_with_permission('can_view_orders').values_list('id', flat=True))
-            )
+            qs = qs.filter(Q(event_id__in=self.request.user.get_events_with_permission('can_view_orders').values_list('id', flat=True)))
 
         if self.filter_form.is_valid():
             qs = self.filter_form.filter_qs(qs)
@@ -97,9 +95,7 @@ class OrderSearch(PaginationMixin, ListView):
                     offset = 0
                 resultids = list(qs.order_by().values_list('id', flat=True)[:201])
                 if len(resultids) <= 200 and len(resultids) <= offset + limit:
-                    qs = Order.objects.using(settings.DATABASE_REPLICA).filter(
-                        id__in=resultids
-                    )
+                    qs = Order.objects.using(settings.DATABASE_REPLICA).filter(id__in=resultids)
 
         """
         We use prefetch_related here instead of select_related for a reason, even though select_related
@@ -109,9 +105,20 @@ class OrderSearch(PaginationMixin, ListView):
         leading to lots of unnecessary queries. Due to the way prefetch_related works differently, it
         will only create one shared Django object.
         """
-        return qs.only(
-            'id', 'invoice_address__name_cached', 'invoice_address__name_parts', 'code', 'event', 'email',
-            'datetime', 'total', 'status', 'require_approval', 'testmode'
-        ).prefetch_related(
-            'event', 'event__organizer'
-        ).select_related('invoice_address')
+        return (
+            qs.only(
+                'id',
+                'invoice_address__name_cached',
+                'invoice_address__name_parts',
+                'code',
+                'event',
+                'email',
+                'datetime',
+                'total',
+                'status',
+                'require_approval',
+                'testmode',
+            )
+            .prefetch_related('event', 'event__organizer')
+            .select_related('invoice_address')
+        )

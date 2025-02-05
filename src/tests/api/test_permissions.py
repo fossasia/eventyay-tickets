@@ -222,7 +222,7 @@ def test_organizer_not_existing(token_client, organizer):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("url", event_urls)
+@pytest.mark.parametrize('url', event_urls)
 def test_event_allowed_all_events(token_client, team, organizer, event, url):
     team.all_events = True
     team.save()
@@ -231,7 +231,7 @@ def test_event_allowed_all_events(token_client, team, organizer, event, url):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("url", event_urls)
+@pytest.mark.parametrize('url', event_urls)
 def test_event_allowed_all_events_device(device_client, device, organizer, event, url):
     resp = device_client.get('/api/v1/organizers/{}/events/{}/{}'.format(organizer.slug, event.slug, url[1]))
     if url[0] is None or url[0] in device.permission_set():
@@ -241,7 +241,7 @@ def test_event_allowed_all_events_device(device_client, device, organizer, event
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("url", event_urls)
+@pytest.mark.parametrize('url', event_urls)
 def test_event_allowed_limit_events(token_client, organizer, team, event, url):
     team.all_events = False
     team.save()
@@ -251,7 +251,7 @@ def test_event_allowed_limit_events(token_client, organizer, team, event, url):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("url", event_urls)
+@pytest.mark.parametrize('url', event_urls)
 def test_event_allowed_limit_events_device(device_client, organizer, device, event, url):
     device.all_events = False
     device.save()
@@ -264,7 +264,7 @@ def test_event_allowed_limit_events_device(device_client, organizer, device, eve
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("url", event_urls)
+@pytest.mark.parametrize('url', event_urls)
 def test_event_not_allowed(token_client, organizer, team, event, url):
     team.all_events = False
     team.save()
@@ -273,7 +273,7 @@ def test_event_not_allowed(token_client, organizer, team, event, url):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("url", event_urls)
+@pytest.mark.parametrize('url', event_urls)
 def test_event_not_allowed_device(device_client, organizer, device, event, url):
     device.all_events = False
     device.save()
@@ -282,26 +282,25 @@ def test_event_not_allowed_device(device_client, organizer, device, event, url):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("url", event_urls)
+@pytest.mark.parametrize('url', event_urls)
 def test_event_not_existing(token_client, organizer, url, event):
     resp = token_client.get('/api/v1/organizers/{}/events/{}/{}'.format(organizer.slug, event.slug, url[1]))
     assert resp.status_code == 403
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("urlset", event_permission_sub_urls)
+@pytest.mark.parametrize('urlset', event_permission_sub_urls)
 def test_token_event_subresources_permission_allowed(token_client, team, organizer, event, urlset):
     team.all_events = True
     if urlset[1]:
         setattr(team, urlset[1], True)
     team.save()
-    resp = getattr(token_client, urlset[0])('/api/v1/organizers/{}/events/{}/{}'.format(
-        organizer.slug, event.slug, urlset[2]))
+    resp = getattr(token_client, urlset[0])('/api/v1/organizers/{}/events/{}/{}'.format(organizer.slug, event.slug, urlset[2]))
     assert resp.status_code == urlset[3]
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("urlset", event_permission_sub_urls)
+@pytest.mark.parametrize('urlset', event_permission_sub_urls)
 def test_token_event_subresources_permission_not_allowed(token_client, team, organizer, event, urlset):
     if urlset[1] is None:
         team.all_events = False
@@ -310,8 +309,7 @@ def test_token_event_subresources_permission_not_allowed(token_client, team, org
         setattr(team, urlset[1], False)
     team.save()
     with scope(organizer=organizer):
-        resp = getattr(token_client, urlset[0])('/api/v1/organizers/{}/events/{}/{}'.format(
-            organizer.slug, event.slug, urlset[2]))
+        resp = getattr(token_client, urlset[0])('/api/v1/organizers/{}/events/{}/{}'.format(organizer.slug, event.slug, urlset[2]))
     if urlset[3] == 404:
         assert resp.status_code == 403
     else:
@@ -319,7 +317,7 @@ def test_token_event_subresources_permission_not_allowed(token_client, team, org
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("urlset", event_permission_root_urls)
+@pytest.mark.parametrize('urlset', event_permission_root_urls)
 def test_token_event_permission_allowed(token_client, team, organizer, event, urlset):
     team.all_events = True
     setattr(team, urlset[1], True)
@@ -332,7 +330,7 @@ def test_token_event_permission_allowed(token_client, team, organizer, event, ur
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("urlset", event_permission_root_urls)
+@pytest.mark.parametrize('urlset', event_permission_root_urls)
 def test_token_event_permission_not_allowed(token_client, team, organizer, event, urlset):
     team.all_events = True
     setattr(team, urlset[1], False)
@@ -441,12 +439,11 @@ def test_update_session_activity(user_client, team, organizer, event):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("urlset", event_permission_sub_urls)
+@pytest.mark.parametrize('urlset', event_permission_sub_urls)
 def test_device_subresource_permission_check(device_client, device, organizer, event, urlset):
     if urlset == ('get', 'can_change_event_settings', 'settings/', 200):
         return
-    resp = getattr(device_client, urlset[0])('/api/v1/organizers/{}/events/{}/{}'.format(
-        organizer.slug, event.slug, urlset[2]))
+    resp = getattr(device_client, urlset[0])('/api/v1/organizers/{}/events/{}/{}'.format(organizer.slug, event.slug, urlset[2]))
     if urlset[1] is None or urlset[1] in device.permission_set():
         assert resp.status_code == urlset[3]
     else:
@@ -457,19 +454,18 @@ def test_device_subresource_permission_check(device_client, device, organizer, e
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("urlset", org_permission_sub_urls)
+@pytest.mark.parametrize('urlset', org_permission_sub_urls)
 def test_token_org_subresources_permission_allowed(token_client, team, organizer, event, urlset):
     team.all_events = True
     if urlset[1]:
         setattr(team, urlset[1], True)
     team.save()
-    resp = getattr(token_client, urlset[0])('/api/v1/organizers/{}/{}'.format(
-        organizer.slug, urlset[2].format(team_id=team.pk)))
+    resp = getattr(token_client, urlset[0])('/api/v1/organizers/{}/{}'.format(organizer.slug, urlset[2].format(team_id=team.pk)))
     assert resp.status_code == urlset[3]
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("urlset", org_permission_sub_urls)
+@pytest.mark.parametrize('urlset', org_permission_sub_urls)
 def test_token_org_subresources_permission_not_allowed(token_client, team, organizer, event, urlset):
     if urlset[1] is None:
         team.all_events = False
@@ -477,8 +473,7 @@ def test_token_org_subresources_permission_not_allowed(token_client, team, organ
         team.all_events = True
         setattr(team, urlset[1], False)
     team.save()
-    resp = getattr(token_client, urlset[0])('/api/v1/organizers/{}/{}'.format(
-        organizer.slug, urlset[2].format(team_id=team.pk)))
+    resp = getattr(token_client, urlset[0])('/api/v1/organizers/{}/{}'.format(organizer.slug, urlset[2].format(team_id=team.pk)))
     if urlset[3] == 404:
         assert resp.status_code == 403
     else:
@@ -486,7 +481,7 @@ def test_token_org_subresources_permission_not_allowed(token_client, team, organ
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("url", event_urls)
+@pytest.mark.parametrize('url', event_urls)
 def test_event_staff_requires_staff_session(user_client, organizer, team, event, url, user):
     team.delete()
     user.is_staff = True

@@ -7,10 +7,13 @@ from django.db.models import Max
 from django.forms.formsets import DELETION_FIELD_NAME
 from django.urls import reverse
 from django.utils.translation import (
-    gettext as __, gettext_lazy as _, pgettext_lazy,
+    gettext as __,
+    gettext_lazy as _,
+    pgettext_lazy,
 )
 from django_scopes.forms import (
-    SafeModelChoiceField, SafeModelMultipleChoiceField,
+    SafeModelChoiceField,
+    SafeModelMultipleChoiceField,
 )
 from i18nfield.forms import I18nFormField, I18nTextarea
 
@@ -18,7 +21,12 @@ from pretix.base.channels import get_all_sales_channels
 from pretix.base.forms import I18nFormSet, I18nModelForm
 from pretix.base.forms.widgets import DatePickerWidget
 from pretix.base.models import (
-    Item, ItemCategory, ItemVariation, Question, QuestionOption, Quota,
+    Item,
+    ItemCategory,
+    ItemVariation,
+    Question,
+    QuestionOption,
+    Quota,
 )
 from pretix.base.models.items import ItemAddOn, ItemBundle, ItemMetaValue
 from pretix.base.signals import item_copy_data
@@ -32,20 +40,11 @@ class CategoryForm(I18nModelForm):
     class Meta:
         model = ItemCategory
         localized_fields = '__all__'
-        fields = [
-            'name',
-            'internal_name',
-            'description',
-            'is_addon'
-        ]
+        fields = ['name', 'internal_name', 'description', 'is_addon']
 
 
 class QuestionForm(I18nModelForm):
-    question = I18nFormField(
-        label=_("Question"),
-        widget_kwargs={'attrs': {'rows': 2}},
-        widget=I18nTextarea
-    )
+    question = I18nFormField(label=_('Question'), widget_kwargs={'attrs': {'rows': 2}}, widget=I18nTextarea)
 
     def removeDesOption(self):
         choices = list(self.fields['type'].choices)
@@ -61,13 +60,10 @@ class QuestionForm(I18nModelForm):
         self.fields['items'].queryset = self.instance.event.items.all()
         self.fields['items'].required = True
         self.fields['dependency_question'].queryset = self.instance.event.questions.filter(
-            type__in=(Question.TYPE_BOOLEAN, Question.TYPE_CHOICE, Question.TYPE_CHOICE_MULTIPLE),
-            ask_during_checkin=False
+            type__in=(Question.TYPE_BOOLEAN, Question.TYPE_CHOICE, Question.TYPE_CHOICE_MULTIPLE), ask_during_checkin=False
         )
         if self.instance.pk:
-            self.fields['dependency_question'].queryset = self.fields['dependency_question'].queryset.exclude(
-                pk=self.instance.pk
-            )
+            self.fields['dependency_question'].queryset = self.fields['dependency_question'].queryset.exclude(pk=self.instance.pk)
         self.fields['identifier'].required = False
         self.fields['dependency_values'].required = False
         self.fields['help_text'].widget.attrs['rows'] = 3
@@ -134,9 +130,7 @@ class QuestionForm(I18nModelForm):
             'valid_datetime_max': SplitDateTimePickerWidget(),
             'valid_date_min': DatePickerWidget(),
             'valid_date_max': DatePickerWidget(),
-            'items': forms.CheckboxSelectMultiple(
-                attrs={'class': 'scrolling-multiple-choice'}
-            ),
+            'items': forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
             'dependency_values': forms.SelectMultiple,
         }
         field_classes = {
@@ -149,16 +143,15 @@ class QuestionForm(I18nModelForm):
 
 class DescriptionForm(QuestionForm):
     question = I18nFormField(
-        label=_("Description Title"),
+        label=_('Description Title'),
         widget_kwargs={'attrs': {'rows': 2}},
         widget=I18nTextarea,
-
     )
     description = I18nFormField(
-        label=_("Description"),
+        label=_('Description'),
         widget_kwargs={'attrs': {'rows': 3}},
         widget=I18nTextarea,
-        initial="hahaha",
+        initial='hahaha',
     )
 
     def removeDesOption(self):
@@ -167,7 +160,7 @@ class DescriptionForm(QuestionForm):
 
     def __init__(self, *args, **kwargs):
         kwargs['initial'] = {
-            "type": "DES",
+            'type': 'DES',
         }
         super().__init__(*args, **kwargs)
 
@@ -189,9 +182,7 @@ class QuotaForm(I18nModelForm):
         self.original_instance = modelcopy(self.instance) if self.instance else None
         initial = kwargs.get('initial', {})
         if self.instance and self.instance.pk and 'itemvars' not in initial:
-            initial['itemvars'] = [str(i.pk) for i in self.instance.items.all()] + [
-                '{}-{}'.format(v.item_id, v.pk) for v in self.instance.variations.all()
-            ]
+            initial['itemvars'] = [str(i.pk) for i in self.instance.items.all()] + ['{}-{}'.format(v.item_id, v.pk) for v in self.instance.variations.all()]
         kwargs['initial'] = initial
         super().__init__(**kwargs)
 
@@ -203,23 +194,21 @@ class QuotaForm(I18nModelForm):
             else:
                 choices.append(('{}'.format(item.pk), str(item)))
 
-        self.fields['itemvars'] = forms.MultipleChoiceField(
-            label=_('Products'),
-            required=False,
-            choices=choices,
-            widget=forms.CheckboxSelectMultiple
-        )
+        self.fields['itemvars'] = forms.MultipleChoiceField(label=_('Products'), required=False, choices=choices, widget=forms.CheckboxSelectMultiple)
 
         if self.event.has_subevents:
             self.fields['subevent'].queryset = self.event.subevents.all()
             self.fields['subevent'].widget = Select2(
                 attrs={
                     'data-model-select2': 'event',
-                    'data-select2-url': reverse('control:event.subevents.select2', kwargs={
-                        'event': self.event.slug,
-                        'organizer': self.event.organizer.slug,
-                    }),
-                    'data-placeholder': pgettext_lazy('subevent', 'Date')
+                    'data-select2-url': reverse(
+                        'control:event.subevents.select2',
+                        kwargs={
+                            'event': self.event.slug,
+                            'organizer': self.event.organizer.slug,
+                        },
+                    ),
+                    'data-placeholder': pgettext_lazy('subevent', 'Date'),
                 }
             )
             self.fields['subevent'].widget.choices = self.fields['subevent'].choices
@@ -245,12 +234,10 @@ class QuotaForm(I18nModelForm):
         creating = not self.instance.pk
         inst = super().save(*args, **kwargs)
 
-        selected_items = set(list(self.event.items.filter(id__in=[
-            i.split('-')[0] for i in self.cleaned_data['itemvars']
-        ])))
-        selected_variations = list(ItemVariation.objects.filter(item__event=self.event, id__in=[
-            i.split('-')[1] for i in self.cleaned_data['itemvars'] if '-' in i
-        ]))
+        selected_items = set(list(self.event.items.filter(id__in=[i.split('-')[0] for i in self.cleaned_data['itemvars']])))
+        selected_variations = list(
+            ItemVariation.objects.filter(item__event=self.event, id__in=[i.split('-')[1] for i in self.cleaned_data['itemvars'] if '-' in i])
+        )
 
         current_items = [] if creating else self.instance.items.all()
         current_variations = [] if creating else self.instance.variations.all()
@@ -266,10 +253,11 @@ class ItemCreateForm(I18nModelForm):
     NONE = 'none'
     EXISTING = 'existing'
     NEW = 'new'
-    has_variations = forms.BooleanField(label=_('The product should exist in multiple variations'),
-                                        help_text=_('Select this option e.g. for t-shirts that come in multiple sizes. '
-                                                    'You can select the variations in the next step.'),
-                                        required=False)
+    has_variations = forms.BooleanField(
+        label=_('The product should exist in multiple variations'),
+        help_text=_('Select this option e.g. for t-shirts that come in multiple sizes. You can select the variations in the next step.'),
+        required=False,
+    )
 
     def __init__(self, *args, **kwargs):
         self.event = kwargs['event']
@@ -282,10 +270,13 @@ class ItemCreateForm(I18nModelForm):
         self.fields['category'].widget = Select2(
             attrs={
                 'data-model-select2': 'generic',
-                'data-select2-url': reverse('control:event.items.categories.select2', kwargs={
-                    'event': self.instance.event.slug,
-                    'organizer': self.instance.event.organizer.slug,
-                }),
+                'data-select2-url': reverse(
+                    'control:event.items.categories.select2',
+                    kwargs={
+                        'event': self.instance.event.slug,
+                        'organizer': self.instance.event.organizer.slug,
+                    },
+                ),
                 'data-placeholder': _('No category'),
             }
         )
@@ -295,52 +286,38 @@ class ItemCreateForm(I18nModelForm):
         change_decimal_field(self.fields['default_price'], self.instance.event.currency)
         self.fields['tax_rule'].empty_label = _('No taxation')
         self.fields['copy_from'] = forms.ModelChoiceField(
-            label=_("Copy product information"),
-            queryset=self.event.items.all(),
-            widget=forms.Select,
-            empty_label=_('Do not copy'),
-            required=False
+            label=_('Copy product information'), queryset=self.event.items.all(), widget=forms.Select, empty_label=_('Do not copy'), required=False
         )
         if self.event.tax_rules.exists():
             self.fields['tax_rule'].required = True
 
         if not self.event.has_subevents:
             choices = [
-                (self.NONE, _("Do not add to a quota now")),
-                (self.EXISTING, _("Add product to an existing quota")),
-                (self.NEW, _("Create a new quota for this product"))
+                (self.NONE, _('Do not add to a quota now')),
+                (self.EXISTING, _('Add product to an existing quota')),
+                (self.NEW, _('Create a new quota for this product')),
             ]
             if not self.event.quotas.exists():
                 choices.remove(choices[1])
 
             self.fields['quota_option'] = forms.ChoiceField(
-                label=_("Quota options"),
-                widget=forms.RadioSelect,
-                choices=choices,
-                initial=self.NONE,
-                required=False
+                label=_('Quota options'), widget=forms.RadioSelect, choices=choices, initial=self.NONE, required=False
             )
 
             self.fields['quota_add_existing'] = forms.ModelChoiceField(
-                label=_("Add to existing quota"),
-                widget=forms.Select(),
-                queryset=self.instance.event.quotas.all(),
-                required=False
+                label=_('Add to existing quota'), widget=forms.Select(), queryset=self.instance.event.quotas.all(), required=False
             )
 
             self.fields['quota_add_new_name'] = forms.CharField(
-                label=_("Name"),
-                max_length=200,
-                widget=forms.TextInput(attrs={'placeholder': _("New quota name")}),
-                required=False
+                label=_('Name'), max_length=200, widget=forms.TextInput(attrs={'placeholder': _('New quota name')}), required=False
             )
 
             self.fields['quota_add_new_size'] = forms.IntegerField(
                 min_value=0,
-                label=_("Size"),
-                widget=forms.TextInput(attrs={'placeholder': _("Number of tickets")}),
-                help_text=_("Leave empty for an unlimited number of tickets."),
-                required=False
+                label=_('Size'),
+                widget=forms.TextInput(attrs={'placeholder': _('Number of tickets')}),
+                help_text=_('Leave empty for an unlimited number of tickets.'),
+                required=False,
             )
 
     def save(self, *args, **kwargs):
@@ -381,43 +358,39 @@ class ItemCreateForm(I18nModelForm):
             if self.cleaned_data.get('quota_option') == self.EXISTING and self.cleaned_data.get('quota_add_existing') is not None:
                 quota = self.cleaned_data.get('quota_add_existing')
                 quota.items.add(self.instance)
-                quota.log_action('pretix.event.quota.changed', user=self.user, data={
-                    'item_added': self.instance.pk
-                })
+                quota.log_action('pretix.event.quota.changed', user=self.user, data={'item_added': self.instance.pk})
             elif self.cleaned_data.get('quota_option') == self.NEW:
                 quota_name = self.cleaned_data.get('quota_add_new_name')
                 quota_size = self.cleaned_data.get('quota_add_new_size')
 
-                quota = Quota.objects.create(
-                    event=self.event, name=quota_name, size=quota_size
-                )
+                quota = Quota.objects.create(event=self.event, name=quota_name, size=quota_size)
                 quota.items.add(self.instance)
-                quota.log_action('pretix.event.quota.added', user=self.user, data={
-                    'name': quota_name,
-                    'size': quota_size,
-                    'items': [self.instance.pk]
-                })
+                quota.log_action('pretix.event.quota.added', user=self.user, data={'name': quota_name, 'size': quota_size, 'items': [self.instance.pk]})
 
         if self.cleaned_data.get('has_variations'):
             if self.cleaned_data.get('copy_from') and self.cleaned_data.get('copy_from').has_variations:
                 for variation in self.cleaned_data['copy_from'].variations.all():
-                    ItemVariation.objects.create(item=instance, value=variation.value, active=variation.active,
-                                                 position=variation.position, default_price=variation.default_price,
-                                                 description=variation.description, original_price=variation.original_price)
+                    ItemVariation.objects.create(
+                        item=instance,
+                        value=variation.value,
+                        active=variation.active,
+                        position=variation.position,
+                        default_price=variation.default_price,
+                        description=variation.description,
+                        original_price=variation.original_price,
+                    )
             else:
-                ItemVariation.objects.create(
-                    item=instance, value=__('Standard')
-                )
+                ItemVariation.objects.create(item=instance, value=__('Standard'))
 
         if self.cleaned_data.get('copy_from'):
             for question in self.cleaned_data['copy_from'].questions.all():
                 question.items.add(instance)
             for a in self.cleaned_data['copy_from'].addons.all():
-                instance.addons.create(addon_category=a.addon_category, min_count=a.min_count, max_count=a.max_count,
-                                       price_included=a.price_included, position=a.position)
+                instance.addons.create(
+                    addon_category=a.addon_category, min_count=a.min_count, max_count=a.max_count, price_included=a.price_included, position=a.position
+                )
             for b in self.cleaned_data['copy_from'].bundles.all():
-                instance.bundles.create(bundled_item=b.bundled_item, bundled_variation=b.bundled_variation,
-                                        count=b.count, designated_price=b.designated_price)
+                instance.bundles.create(bundled_item=b.bundled_item, bundled_variation=b.bundled_variation, count=b.count, designated_price=b.designated_price)
 
             item_copy_data.send(sender=self.event, source=self.cleaned_data['copy_from'], target=instance)
 
@@ -429,14 +402,10 @@ class ItemCreateForm(I18nModelForm):
         if not self.event.has_subevents:
             if cleaned_data.get('quota_option') == self.NEW:
                 if not self.cleaned_data.get('quota_add_new_name'):
-                    raise forms.ValidationError(
-                        {'quota_add_new_name': [_("Quota name is required.")]}
-                    )
+                    raise forms.ValidationError({'quota_add_new_name': [_('Quota name is required.')]})
             elif cleaned_data.get('quota_option') == self.EXISTING:
                 if not self.cleaned_data.get('quota_add_existing'):
-                    raise forms.ValidationError(
-                        {'quota_add_existing': [_("Please select a quota.")]}
-                    )
+                    raise forms.ValidationError({'quota_add_existing': [_('Please select a quota.')]})
 
         return cleaned_data
 
@@ -488,21 +457,22 @@ class ItemUpdateForm(I18nModelForm):
         self.fields['sales_channels'] = forms.MultipleChoiceField(
             label=_('Sales channels'),
             required=False,
-            choices=(
-                (c.identifier, c.verbose_name) for c in get_all_sales_channels().values()
-            ),
-            widget=forms.CheckboxSelectMultiple
+            choices=((c.identifier, c.verbose_name) for c in get_all_sales_channels().values()),
+            widget=forms.CheckboxSelectMultiple,
         )
         change_decimal_field(self.fields['default_price'], self.event.currency)
         self.fields['hidden_if_available'].queryset = self.event.quotas.all()
         self.fields['hidden_if_available'].widget = Select2(
             attrs={
                 'data-model-select2': 'generic',
-                'data-select2-url': reverse('control:event.items.quotas.select2', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                }),
-                'data-placeholder': _('Shown independently of other products')
+                'data-select2-url': reverse(
+                    'control:event.items.quotas.select2',
+                    kwargs={
+                        'event': self.event.slug,
+                        'organizer': self.event.organizer.slug,
+                    },
+                ),
+                'data-placeholder': _('Shown independently of other products'),
             }
         )
         self.fields['hidden_if_available'].widget.choices = self.fields['hidden_if_available'].choices
@@ -512,10 +482,13 @@ class ItemUpdateForm(I18nModelForm):
         self.fields['category'].widget = Select2(
             attrs={
                 'data-model-select2': 'generic',
-                'data-select2-url': reverse('control:event.items.categories.select2', kwargs={
-                    'event': self.instance.event.slug,
-                    'organizer': self.instance.event.organizer.slug,
-                }),
+                'data-select2-url': reverse(
+                    'control:event.items.categories.select2',
+                    kwargs={
+                        'event': self.instance.event.slug,
+                        'organizer': self.instance.event.organizer.slug,
+                    },
+                ),
                 'data-placeholder': _('No category'),
             }
         )
@@ -527,15 +500,10 @@ class ItemUpdateForm(I18nModelForm):
             if d['tax_rule'] and d['tax_rule'].rate > 0:
                 self.add_error(
                     'tax_rule',
-                    _("Gift card products should not be associated with non-zero tax rates since sales tax will be applied when the gift card is redeemed.")
+                    _('Gift card products should not be associated with non-zero tax rates since sales tax will be applied when the gift card is redeemed.'),
                 )
             if d['admission']:
-                self.add_error(
-                    'admission',
-                    _(
-                        "Gift card products should not be admission products at the same time."
-                    )
-                )
+                self.add_error('admission', _('Gift card products should not be admission products at the same time.'))
         return d
 
     class Meta:
@@ -579,12 +547,12 @@ class ItemUpdateForm(I18nModelForm):
             'available_from': SplitDateTimePickerWidget(),
             'available_until': SplitDateTimePickerWidget(attrs={'data-date-after': '#id_available_from_0'}),
             'generate_tickets': TicketNullBooleanSelect(),
-            'show_quota_left': ShowQuotaNullBooleanSelect()
+            'show_quota_left': ShowQuotaNullBooleanSelect(),
         }
 
 
 class ItemVariationsFormSet(I18nFormSet):
-    template = "pretixcontrol/item/include_variations.html"
+    template = 'pretixcontrol/item/include_variations.html'
     title = _('Variations')
 
     def clean(self):
@@ -594,9 +562,11 @@ class ItemVariationsFormSet(I18nFormSet):
                 f.fields['DELETE'].initial = False
                 f.fields['DELETE'].disabled = True
                 raise ValidationError(
-                    message=_('The variation "%s" cannot be deleted because it has already been ordered by a user or '
-                              'currently is in a user\'s cart. Please set the variation as "inactive" instead.'),
-                    params=(str(f.instance),)
+                    message=_(
+                        'The variation "%s" cannot be deleted because it has already been ordered by a user or '
+                        'currently is in a user\'s cart. Please set the variation as "inactive" instead.'
+                    ),
+                    params=(str(f.instance),),
                 )
 
     def _should_delete_form(self, form):
@@ -619,7 +589,7 @@ class ItemVariationsFormSet(I18nFormSet):
             empty_permitted=True,
             use_required_attribute=False,
             locales=self.locales,
-            event=self.event
+            event=self.event,
         )
         self.add_fields(form, None)
         return form
@@ -644,7 +614,7 @@ class ItemVariationForm(I18nModelForm):
 
 class ItemAddOnsFormSet(I18nFormSet):
     title = _('Add-ons')
-    template = "pretixcontrol/item/include_addons.html"
+    template = 'pretixcontrol/item/include_addons.html'
 
     def __init__(self, *args, **kwargs):
         self.event = kwargs.get('event')
@@ -684,7 +654,7 @@ class ItemAddOnsFormSet(I18nFormSet):
             empty_permitted=True,
             use_required_attribute=False,
             locales=self.locales,
-            event=self.event
+            event=self.event,
         )
         self.add_fields(form, None)
         return form
@@ -697,10 +667,13 @@ class ItemAddOnForm(I18nModelForm):
         self.fields['addon_category'].widget = Select2(
             attrs={
                 'data-model-select2': 'generic',
-                'data-select2-url': reverse('control:event.items.categories.select2', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                }),
+                'data-select2-url': reverse(
+                    'control:event.items.categories.select2',
+                    kwargs={
+                        'event': self.event.slug,
+                        'organizer': self.event.organizer.slug,
+                    },
+                ),
             }
         )
         self.fields['addon_category'].widget.choices = self.fields['addon_category'].choices
@@ -715,14 +688,11 @@ class ItemAddOnForm(I18nModelForm):
             'price_included',
             'multi_allowed',
         ]
-        help_texts = {
-            'min_count': _('Be aware that setting a minimal number makes it impossible to buy this product if all '
-                           'available add-ons are sold out.')
-        }
+        help_texts = {'min_count': _('Be aware that setting a minimal number makes it impossible to buy this product if all available add-ons are sold out.')}
 
 
 class ItemBundleFormSet(I18nFormSet):
-    template = "pretixcontrol/item/include_bundles.html"
+    template = 'pretixcontrol/item/include_bundles.html'
     title = _('Bundled products')
 
     def __init__(self, *args, **kwargs):
@@ -745,7 +715,7 @@ class ItemBundleFormSet(I18nFormSet):
             use_required_attribute=False,
             locales=self.locales,
             item=self.item,
-            event=self.event
+            event=self.event,
         )
         self.add_fields(form, None)
         return form
@@ -802,8 +772,7 @@ class ItemBundleForm(I18nModelForm):
 
             if variations:
                 for v in variations:
-                    choices.append(('%d-%d' % (i.pk, v.pk),
-                                    '%s – %s' % (pname, v.value)))
+                    choices.append(('%d-%d' % (i.pk, v.pk), '%s – %s' % (pname, v.value)))
             else:
                 choices.append((str(i.pk), '%s' % pname))
         self.fields['itemvar'].choices = choices
@@ -828,9 +797,9 @@ class ItemBundleForm(I18nModelForm):
                 variation = None
 
             if item == self.item:
-                raise ValidationError(_("The bundled item must not be the same item as the bundling one."))
+                raise ValidationError(_('The bundled item must not be the same item as the bundling one.'))
             if item.bundles.exists():
-                raise ValidationError(_("The bundled item must not have bundles on its own."))
+                raise ValidationError(_('The bundled item must not have bundles on its own.'))
 
             self.instance.bundled_item = item
             self.instance.bundled_variation = variation
@@ -847,24 +816,22 @@ class ItemBundleForm(I18nModelForm):
 
 
 class ItemMetaValueForm(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         self.property = kwargs.pop('property')
         super().__init__(*args, **kwargs)
         self.fields['value'].required = False
         self.fields['value'].widget.attrs['placeholder'] = self.property.default
         self.fields['value'].widget.attrs['data-typeahead-url'] = (
-            reverse('control:event.items.meta.typeahead', kwargs={
-                'organizer': self.property.event.organizer.slug,
-                'event': self.property.event.slug
-            }) + '?' + urlencode({
-                'property': self.property.name,
-            })
+            reverse('control:event.items.meta.typeahead', kwargs={'organizer': self.property.event.organizer.slug, 'event': self.property.event.slug})
+            + '?'
+            + urlencode(
+                {
+                    'property': self.property.name,
+                }
+            )
         )
 
     class Meta:
         model = ItemMetaValue
         fields = ['value']
-        widgets = {
-            'value': forms.TextInput()
-        }
+        widgets = {'value': forms.TextInput()}

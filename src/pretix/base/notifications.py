@@ -33,7 +33,7 @@ class Notification:
       each consisting of a button label and an absolute URL to point to.
     """
 
-    def __init__(self, event: Event, title: str, detail: str=None, url: str=None):
+    def __init__(self, event: Event, title: str, detail: str = None, url: str = None):
         self.title = title
         self.event = event
         self.detail = detail
@@ -92,10 +92,7 @@ class NotificationType:
         This is the main function that you should override. It is supposed to turn a log entry
         object into a notification object that can then be rendered e.g. into an email.
         """
-        return Notification(
-            logentry.event,
-            logentry.display()
-        )
+        return Notification(logentry.event, logentry.display())
 
 
 def get_all_notification_types(event=None):
@@ -117,9 +114,9 @@ def get_all_notification_types(event=None):
 
 
 class ActionRequiredNotificationType(NotificationType):
-    required_permission = "can_change_orders"
-    action_type = "pretix.event.action_required"
-    verbose_name = _("Administrative action required")
+    required_permission = 'can_change_orders'
+    action_type = 'pretix.event.action_required'
+    verbose_name = _('Administrative action required')
 
     def build_notification(self, logentry: LogEntry):
         control_url = build_absolute_uri(
@@ -127,22 +124,24 @@ class ActionRequiredNotificationType(NotificationType):
             kwargs={
                 'organizer': logentry.event.organizer.slug,
                 'event': logentry.event.slug,
-            }
+            },
         )
 
         n = Notification(
             event=logentry.event,
             title=_('Administrative action required'),
-            detail=_('Something happened in your event that our system cannot handle automatically, e.g. an external '
-                     'refund. You need to resolve it manually or choose to ignore it, depending on the issue at hand.'),
-            url=control_url
+            detail=_(
+                'Something happened in your event that our system cannot handle automatically, e.g. an external '
+                'refund. You need to resolve it manually or choose to ignore it, depending on the issue at hand.'
+            ),
+            url=control_url,
         )
         n.add_action(_('View all unresolved problems'), control_url)
         return n
 
 
 class ParametrizedOrderNotificationType(NotificationType):
-    required_permission = "can_view_orders"
+    required_permission = 'can_view_orders'
 
     def __init__(self, event, action_type, verbose_name, title):
         self._action_type = action_type
@@ -162,19 +161,10 @@ class ParametrizedOrderNotificationType(NotificationType):
         order = logentry.content_object
 
         order_url = build_absolute_uri(
-            'control:event.order',
-            kwargs={
-                'organizer': logentry.event.organizer.slug,
-                'event': logentry.event.slug,
-                'code': order.code
-            }
+            'control:event.order', kwargs={'organizer': logentry.event.organizer.slug, 'event': logentry.event.slug, 'code': order.code}
         )
 
-        n = Notification(
-            event=logentry.event,
-            title=self._title.format(order=order, event=logentry.event),
-            url=order_url
-        )
+        n = Notification(event=logentry.event, title=self._title.format(order=order, event=logentry.event), url=order_url)
         n.add_attribute(_('Event'), order.event.name)
         if order.event.has_subevents:
             ses = []
@@ -215,7 +205,7 @@ class ParametrizedOrderNotificationType(NotificationType):
         return n
 
 
-@receiver(register_notification_types, dispatch_uid="base_register_default_notification_types")
+@receiver(register_notification_types, dispatch_uid='base_register_default_notification_types')
 def register_default_notification_types(sender, **kwargs):
     return (
         ParametrizedOrderNotificationType(
@@ -230,24 +220,9 @@ def register_default_notification_types(sender, **kwargs):
             _('New order requires approval'),
             _('A new order has been placed that requires approval: {order.code}'),
         ),
-        ParametrizedOrderNotificationType(
-            sender,
-            'pretix.event.order.paid',
-            _('Order marked as paid'),
-            _('Order {order.code} has been marked as paid.')
-        ),
-        ParametrizedOrderNotificationType(
-            sender,
-            'pretix.event.order.canceled',
-            _('Order canceled'),
-            _('Order {order.code} has been canceled.')
-        ),
-        ParametrizedOrderNotificationType(
-            sender,
-            'pretix.event.order.reactivated',
-            _('Order reactivated'),
-            _('Order {order.code} has been reactivated.')
-        ),
+        ParametrizedOrderNotificationType(sender, 'pretix.event.order.paid', _('Order marked as paid'), _('Order {order.code} has been marked as paid.')),
+        ParametrizedOrderNotificationType(sender, 'pretix.event.order.canceled', _('Order canceled'), _('Order {order.code} has been canceled.')),
+        ParametrizedOrderNotificationType(sender, 'pretix.event.order.reactivated', _('Order reactivated'), _('Order {order.code} has been reactivated.')),
         ParametrizedOrderNotificationType(
             sender,
             'pretix.event.order.expired',
@@ -255,42 +230,20 @@ def register_default_notification_types(sender, **kwargs):
             _('Order {order.code} has been marked as expired.'),
         ),
         ParametrizedOrderNotificationType(
-            sender,
-            'pretix.event.order.modified',
-            _('Order information changed'),
-            _('The ticket information of order {order.code} has been changed.')
+            sender, 'pretix.event.order.modified', _('Order information changed'), _('The ticket information of order {order.code} has been changed.')
         ),
         ParametrizedOrderNotificationType(
-            sender,
-            'pretix.event.order.contact.changed',
-            _('Order contact address changed'),
-            _('The contact address of order {order.code} has been changed.')
+            sender, 'pretix.event.order.contact.changed', _('Order contact address changed'), _('The contact address of order {order.code} has been changed.')
+        ),
+        ParametrizedOrderNotificationType(sender, 'pretix.event.order.changed.*', _('Order changed'), _('Order {order.code} has been changed.')),
+        ParametrizedOrderNotificationType(sender, 'pretix.event.order.overpaid', _('Order has been overpaid'), _('Order {order.code} has been overpaid.')),
+        ParametrizedOrderNotificationType(
+            sender, 'pretix.event.order.refund.created.externally', _('External refund of payment'), _('An external refund for {order.code} has occurred.')
         ),
         ParametrizedOrderNotificationType(
-            sender,
-            'pretix.event.order.changed.*',
-            _('Order changed'),
-            _('Order {order.code} has been changed.')
-        ),
-        ParametrizedOrderNotificationType(
-            sender,
-            'pretix.event.order.overpaid',
-            _('Order has been overpaid'),
-            _('Order {order.code} has been overpaid.')
-        ),
-        ParametrizedOrderNotificationType(
-            sender,
-            'pretix.event.order.refund.created.externally',
-            _('External refund of payment'),
-            _('An external refund for {order.code} has occurred.')
-        ),
-        ParametrizedOrderNotificationType(
-            sender,
-            'pretix.event.order.refund.requested',
-            _('Refund requested'),
-            _('You have been requested to issue a refund for {order.code}.')
+            sender, 'pretix.event.order.refund.requested', _('Refund requested'), _('You have been requested to issue a refund for {order.code}.')
         ),
         ActionRequiredNotificationType(
             sender,
-        )
+        ),
     )

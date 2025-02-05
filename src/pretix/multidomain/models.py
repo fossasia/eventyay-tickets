@@ -12,8 +12,8 @@ class KnownDomain(models.Model):
     event = models.ForeignKey(Event, blank=True, null=True, related_name='domains', on_delete=models.PROTECT)
 
     class Meta:
-        verbose_name = _("Known domain")
-        verbose_name_plural = _("Known domains")
+        verbose_name = _('Known domain')
+        verbose_name_plural = _('Known domains')
 
     def __str__(self):
         return self.domainname

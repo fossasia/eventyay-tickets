@@ -14,9 +14,9 @@ logger = logging.getLogger(__name__)
 
 
 class EventCreatedFor(StrEnum):
-    BOTH = "all"
-    TICKET = "tickets"
-    TALK = "talk"
+    BOTH = 'all'
+    TICKET = 'tickets'
+    TALK = 'talk'
 
 
 def generate_token(request):
@@ -30,12 +30,12 @@ def generate_token(request):
     exp = iat + timedelta(days=30)
 
     payload = {
-        "exp": exp,
-        "iat": iat,
-        "uid": uid_token,
-        "has_permission": check_create_permission(request),
+        'exp': exp,
+        'iat': iat,
+        'uid': uid_token,
+        'has_permission': check_create_permission(request),
     }
-    token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
+    token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
     return token
 
 
@@ -58,13 +58,8 @@ def check_create_permission(request):
     @param request: user request
     @return: true if the user has permission to create videos or has admin session mode else false
     """
-    is_create_permission = (
-        "can_create_events"
-        in request.user.get_organizer_permission_set(request.organizer)
-    )
-    is_active_staff_session = request.user.has_active_staff_session(
-        request.session.session_key
-    )
+    is_create_permission = 'can_create_events' in request.user.get_organizer_permission_set(request.organizer)
+    is_active_staff_session = request.user.has_active_staff_session(request.session.session_key)
 
     if is_create_permission or is_active_staff_session:
         return True
@@ -75,7 +70,7 @@ def get_subevent(request: HttpRequest) -> Optional[SubEvent]:
     """
     Retrieve a specific subevent based on request parameters.
     """
-    subevent_id = request.GET.get("subevent", "").strip()
+    subevent_id = request.GET.get('subevent', '').strip()
     if subevent_id and request.event.has_subevents:
         try:
             pk = int(subevent_id)
@@ -83,6 +78,6 @@ def get_subevent(request: HttpRequest) -> Optional[SubEvent]:
         except SubEvent.DoesNotExist:
             pass
         except ValueError as e:
-            logger.error("Error parsing subevent ID: %s", e)
+            logger.error('Error parsing subevent ID: %s', e)
 
     return None

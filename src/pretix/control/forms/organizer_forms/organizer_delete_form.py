@@ -4,11 +4,11 @@ from django.utils.translation import gettext_lazy as _
 
 class OrganizerDeleteForm(forms.Form):
     error_messages = {
-        'slug_wrong': _("The slug you entered was not correct."),
+        'slug_wrong': _('The slug you entered was not correct.'),
     }
     slug = forms.CharField(
         max_length=255,
-        label=_("Event slug"),
+        label=_('Event slug'),
     )
 
     def __init__(self, *args, **kwargs):

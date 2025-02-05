@@ -22,9 +22,7 @@ class TicketLayoutItemForm(forms.ModelForm):
         self.sales_channel = kwargs.pop('sales_channel')
         super().__init__(*args, **kwargs)
         if self.sales_channel.identifier != 'web':
-            self.fields['layout'].label = _('PDF ticket layout for {channel}').format(
-                channel=self.sales_channel.verbose_name
-            )
+            self.fields['layout'].label = _('PDF ticket layout for {channel}').format(channel=self.sales_channel.verbose_name)
             self.fields['layout'].empty_label = _('(Same as above)')
         else:
             self.fields['layout'].label = _('PDF ticket layout')
@@ -41,5 +39,4 @@ class TicketLayoutItemForm(forms.ModelForm):
                 return
         else:
             return super().save(commit=commit)
-        tickets.invalidate_cache.apply_async(kwargs={'event': self.event.pk, 'provider': 'pdf',
-                                                     'item': self.instance.item_id})
+        tickets.invalidate_cache.apply_async(kwargs={'event': self.event.pk, 'provider': 'pdf', 'item': self.instance.item_id})

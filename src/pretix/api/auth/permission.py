@@ -5,12 +5,13 @@ from pretix.base.models import Device, Event, User
 from pretix.base.models.auth import SuperuserPermissionSet
 from pretix.base.models.organizer import TeamAPIToken
 from pretix.helpers.security import (
-    SessionInvalid, SessionReauthRequired, assert_session_valid,
+    SessionInvalid,
+    SessionReauthRequired,
+    assert_session_valid,
 )
 
 
 class EventPermission(BasePermission):
-
     def has_permission(self, request, view):
         if not request.user.is_authenticated and not isinstance(request.auth, (Device, TeamAPIToken)):
             return False
@@ -31,13 +32,16 @@ class EventPermission(BasePermission):
             except SessionReauthRequired:
                 return False
 
-        perm_holder = (request.auth if isinstance(request.auth, (Device, TeamAPIToken))
-                       else request.user)
+        perm_holder = request.auth if isinstance(request.auth, (Device, TeamAPIToken)) else request.user
         if 'event' in request.resolver_match.kwargs and 'organizer' in request.resolver_match.kwargs:
-            request.event = Event.objects.filter(
-                slug=request.resolver_match.kwargs['event'],
-                organizer__slug=request.resolver_match.kwargs['organizer'],
-            ).select_related('organizer').first()
+            request.event = (
+                Event.objects.filter(
+                    slug=request.resolver_match.kwargs['event'],
+                    organizer__slug=request.resolver_match.kwargs['organizer'],
+                )
+                .select_related('organizer')
+                .first()
+            )
             if not request.event or not perm_holder.has_event_permission(request.event.organizer, request.event, request=request):
                 return False
             request.organizer = request.event.organizer
@@ -87,15 +91,13 @@ class EventCRUDPermission(EventPermission):
             return False
         elif view.action == 'destroy' and 'can_change_event_settings' not in request.eventpermset:
             return False
-        elif view.action in ['update', 'partial_update'] \
-                and 'can_change_event_settings' not in request.eventpermset:
+        elif view.action in ['update', 'partial_update'] and 'can_change_event_settings' not in request.eventpermset:
             return False
 
         return True
 
 
 class ProfilePermission(BasePermission):
-
     def has_permission(self, request, view):
         if not request.user.is_authenticated and not isinstance(request.auth, (Device, TeamAPIToken)):
             return False
@@ -117,7 +119,6 @@ class ProfilePermission(BasePermission):
 
 
 class AnyAuthenticatedClientPermission(BasePermission):
-
     def has_permission(self, request, view):
         if not request.user.is_authenticated and not isinstance(request.auth, (Device, TeamAPIToken)):
             return False

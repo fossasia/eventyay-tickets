@@ -5,11 +5,7 @@ from pretix.base.models import Event
 
 class UserOrderFilterForm(forms.Form):
     event = forms.ModelChoiceField(
-        queryset=None,
-        required=False,
-        label="Event",
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        empty_label="Select an Event"
+        queryset=None, required=False, label='Event', widget=forms.Select(attrs={'class': 'form-control'}), empty_label='Select an Event'
     )
 
     def __init__(self, *args, **kwargs):

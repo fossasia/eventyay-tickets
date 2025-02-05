@@ -4,7 +4,8 @@ import ipaddress
 from django import forms
 from django.conf import settings
 from django.contrib.auth.password_validation import (
-    password_validators_help_texts, validate_password,
+    password_validators_help_texts,
+    validate_password,
 )
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -19,12 +20,13 @@ class LoginForm(forms.Form):
     Base class for authenticating users. Extend this to get a form that accepts
     username/password logins.
     """
-    keep_logged_in = forms.BooleanField(label=_("Keep me logged in"), required=False)
+
+    keep_logged_in = forms.BooleanField(label=_('Keep me logged in'), required=False)
 
     error_messages = {
-        'invalid_login': _("This combination of credentials is not known to our system."),
-        'rate_limit': _("For security reasons, please wait 5 minutes before you try again."),
-        'inactive': _("This account is inactive.")
+        'invalid_login': _('This combination of credentials is not known to our system.'),
+        'rate_limit': _('For security reasons, please wait 5 minutes before you try again.'),
+        'inactive': _('This account is inactive.'),
     }
 
     def __init__(self, backend, request=None, *args, **kwargs):
@@ -66,7 +68,8 @@ class LoginForm(forms.Form):
         if all(k in self.cleaned_data for k, f in self.fields.items() if f.required):
             if self.ratelimit_key:
                 from django_redis import get_redis_connection
-                rc = get_redis_connection("redis")
+
+                rc = get_redis_connection('redis')
                 cnt = rc.get(self.ratelimit_key)
                 if cnt and int(cnt) > 10:
                     raise forms.ValidationError(self.error_messages['rate_limit'], code='rate_limit')
@@ -75,10 +78,7 @@ class LoginForm(forms.Form):
                 if self.ratelimit_key:
                     rc.incr(self.ratelimit_key)
                     rc.expire(self.ratelimit_key, 300)
-                raise forms.ValidationError(
-                    self.error_messages['invalid_login'],
-                    code='invalid_login'
-                )
+                raise forms.ValidationError(self.error_messages['invalid_login'], code='invalid_login')
             else:
                 self.confirm_login_allowed(self.user_cache)
 
@@ -107,28 +107,29 @@ class LoginForm(forms.Form):
 
 class RegistrationForm(forms.Form):
     error_messages = {
-        'duplicate_email': _("You already registered with that email address, please use the login form."),
-        'pw_mismatch': _("Please enter the same password twice"),
+        'duplicate_email': _('You already registered with that email address, please use the login form.'),
+        'pw_mismatch': _('Please enter the same password twice'),
     }
-    email = forms.EmailField(
-        label=_('Email address'),
-        required=True
-    )
+    email = forms.EmailField(label=_('Email address'), required=True)
     password = forms.CharField(
         label=_('Password'),
-        widget=forms.PasswordInput(attrs={
-            'autocomplete': 'new-password'  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
-        }),
-        required=True
+        widget=forms.PasswordInput(
+            attrs={
+                'autocomplete': 'new-password'  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
+            }
+        ),
+        required=True,
     )
     password_repeat = forms.CharField(
         label=_('Repeat password'),
-        widget=forms.PasswordInput(attrs={
-            'autocomplete': 'new-password'  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
-        }),
-        required=True
+        widget=forms.PasswordInput(
+            attrs={
+                'autocomplete': 'new-password'  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
+            }
+        ),
+        required=True,
     )
-    keep_logged_in = forms.BooleanField(label=_("Keep me logged in"), required=False)
+    keep_logged_in = forms.BooleanField(label=_('Keep me logged in'), required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -140,9 +141,12 @@ class RegistrationForm(forms.Form):
         password2 = self.cleaned_data.get('password_repeat')
 
         if password1 and password1 != password2:
-            raise forms.ValidationError({
-                'password_repeat': self.error_messages['pw_mismatch'],
-            }, code='pw_mismatch')
+            raise forms.ValidationError(
+                {
+                    'password_repeat': self.error_messages['pw_mismatch'],
+                },
+                code='pw_mismatch',
+            )
         return self.cleaned_data
 
     def clean_password(self):
@@ -155,26 +159,16 @@ class RegistrationForm(forms.Form):
     def clean_email(self):
         email = self.cleaned_data['email']
         if User.objects.filter(email__iexact=email).exists():
-            raise forms.ValidationError(
-                self.error_messages['duplicate_email'],
-                code='duplicate_email'
-            )
+            raise forms.ValidationError(self.error_messages['duplicate_email'], code='duplicate_email')
         return email
 
 
 class PasswordRecoverForm(forms.Form):
     error_messages = {
-        'pw_mismatch': _("Please enter the same password twice"),
+        'pw_mismatch': _('Please enter the same password twice'),
     }
-    password = forms.CharField(
-        label=_('Password'),
-        widget=forms.PasswordInput,
-        required=True
-    )
-    password_repeat = forms.CharField(
-        label=_('Repeat password'),
-        widget=forms.PasswordInput
-    )
+    password = forms.CharField(label=_('Password'), widget=forms.PasswordInput, required=True)
+    password_repeat = forms.CharField(label=_('Repeat password'), widget=forms.PasswordInput)
 
     def __init__(self, user_id=None, *args, **kwargs):
         self.user_id = user_id
@@ -185,9 +179,12 @@ class PasswordRecoverForm(forms.Form):
         password2 = self.cleaned_data.get('password_repeat')
 
         if password1 and password1 != password2:
-            raise forms.ValidationError({
-                'password_repeat': self.error_messages['pw_mismatch'],
-            }, code='pw_mismatch')
+            raise forms.ValidationError(
+                {
+                    'password_repeat': self.error_messages['pw_mismatch'],
+                },
+                code='pw_mismatch',
+            )
 
         return self.cleaned_data
 
@@ -218,10 +215,7 @@ class PasswordForgotForm(forms.Form):
 
 
 class ReauthForm(forms.Form):
-    error_messages = {
-        'invalid_login': _("This combination of credentials is not known to our system."),
-        'inactive': _("This account is inactive.")
-    }
+    error_messages = {'invalid_login': _('This combination of credentials is not known to our system.'), 'inactive': _('This account is inactive.')}
 
     def __init__(self, backend, user, request=None, *args, **kwargs):
         """
@@ -242,10 +236,7 @@ class ReauthForm(forms.Form):
         self.cleaned_data['email'] = self.user.email
         user_cache = self.backend.form_authenticate(self.request, self.cleaned_data)
         if user_cache != self.user:
-            raise forms.ValidationError(
-                self.error_messages['invalid_login'],
-                code='invalid_login'
-            )
+            raise forms.ValidationError(self.error_messages['invalid_login'], code='invalid_login')
         else:
             self.confirm_login_allowed(user_cache)
 

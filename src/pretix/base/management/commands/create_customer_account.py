@@ -40,10 +40,7 @@ class Command(BaseCommand):
                 if order.email:
                     customer = Customer.objects.filter(email__iexact=order.email).first()
                     if not customer:
-                        name_parts_data = {
-                            "_scheme": "full",
-                            "full_name": order.email.split("@")[0]
-                        }
+                        name_parts_data = {'_scheme': 'full', 'full_name': order.email.split('@')[0]}
                         customer = organizer.customers.create(
                             email=order.email,
                             name_parts=name_parts_data,

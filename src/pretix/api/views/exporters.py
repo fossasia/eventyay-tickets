@@ -12,12 +12,14 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 from pretix.api.serializers.exporters import (
-    ExporterSerializer, JobRunSerializer,
+    ExporterSerializer,
+    JobRunSerializer,
 )
 from pretix.base.models import CachedFile, Device, TeamAPIToken
 from pretix.base.services.export import export, multiexport
 from pretix.base.signals import (
-    register_data_exporters, register_multievent_data_exporters,
+    register_data_exporters,
+    register_multievent_data_exporters,
 )
 from pretix.helpers.http import ChunkBasedFileResponse
 
@@ -25,12 +27,7 @@ from pretix.helpers.http import ChunkBasedFileResponse
 class ExportersMixin:
     def list(self, request, *args, **kwargs):
         res = ExporterSerializer(self.exporters, many=True)
-        return Response({
-            "count": len(self.exporters),
-            "next": None,
-            "previous": None,
-            "results": res.data
-        })
+        return Response({'count': len(self.exporters), 'next': None, 'previous': None, 'results': res.data})
 
     def get_object(self):
         instances = [e for e in self.exporters if e.identifier == self.kwargs.get('pk')]
@@ -51,10 +48,7 @@ class ExportersMixin:
             resp['Content-Disposition'] = 'attachment; filename="{}"'.format(cf.filename)
             return resp
         elif not settings.HAS_CELERY:
-            return Response(
-                {'status': 'failed', 'message': 'Unknown file ID or export failed'},
-                status=status.HTTP_410_GONE
-            )
+            return Response({'status': 'failed', 'message': 'Unknown file ID or export failed'}, status=status.HTTP_410_GONE)
 
         res = AsyncResult(kwargs['asyncid'])
         if res.failed():
@@ -62,17 +56,14 @@ class ExportersMixin:
                 msg = res.info['exc_message']
             else:
                 msg = 'Internal error'
-            return Response(
-                {'status': 'failed', 'message': msg},
-                status=status.HTTP_410_GONE
-            )
+            return Response({'status': 'failed', 'message': msg}, status=status.HTTP_410_GONE)
 
         return Response(
             {
                 'status': 'running' if res.state in ('PROGRESS', 'STARTED', 'SUCCESS') else 'waiting',
                 'percentage': res.result.get('value', None) if res.result else None,
             },
-            status=status.HTTP_409_CONFLICT
+            status=status.HTTP_409_CONFLICT,
         )
 
     @action(detail=True, methods=['POST'])
@@ -96,9 +87,7 @@ class ExportersMixin:
             'cfid': str(cf.id),
         }
         url_kwargs.update(self.kwargs)
-        return Response({
-            'download': reverse('api-v1:exporters-download', kwargs=url_kwargs, request=self.request)
-        }, status=status.HTTP_202_ACCEPTED)
+        return Response({'download': reverse('api-v1:exporters-download', kwargs=url_kwargs, request=self.request)}, status=status.HTTP_202_ACCEPTED)
 
 
 class EventExportersViewSet(ExportersMixin, viewsets.ViewSet):
@@ -126,8 +115,10 @@ class OrganizerExportersViewSet(ExportersMixin, viewsets.ViewSet):
     @cached_property
     def exporters(self):
         exporters = []
-        events = (self.request.auth or self.request.user).get_events_with_permission('can_view_orders', request=self.request).filter(
-            organizer=self.request.organizer
+        events = (
+            (self.request.auth or self.request.user)
+            .get_events_with_permission('can_view_orders', request=self.request)
+            .filter(organizer=self.request.organizer)
         )
         responses = register_multievent_data_exporters.send(self.request.organizer)
         for ex in sorted([response(events) for r, response in responses if response], key=lambda ex: str(ex.verbose_name)):
@@ -136,19 +127,17 @@ class OrganizerExportersViewSet(ExportersMixin, viewsets.ViewSet):
         return exporters
 
     def get_serializer_kwargs(self):
-        return {
-            'events': self.request.auth.get_events_with_permission('can_view_orders', request=self.request).filter(
-                organizer=self.request.organizer
-            )
-        }
+        return {'events': self.request.auth.get_events_with_permission('can_view_orders', request=self.request).filter(organizer=self.request.organizer)}
 
     def do_export(self, cf, instance, data):
-        return multiexport.apply_async(kwargs={
-            'organizer': self.request.organizer.id,
-            'user': self.request.user.id if self.request.user.is_authenticated else None,
-            'token': self.request.auth.pk if isinstance(self.request.auth, TeamAPIToken) else None,
-            'device': self.request.auth.pk if isinstance(self.request.auth, Device) else None,
-            'fileid': str(cf.id),
-            'provider': instance.identifier,
-            'form_data': data
-        })
+        return multiexport.apply_async(
+            kwargs={
+                'organizer': self.request.organizer.id,
+                'user': self.request.user.id if self.request.user.is_authenticated else None,
+                'token': self.request.auth.pk if isinstance(self.request.auth, TeamAPIToken) else None,
+                'device': self.request.auth.pk if isinstance(self.request.auth, Device) else None,
+                'fileid': str(cf.id),
+                'provider': instance.identifier,
+                'form_data': data,
+            }
+        )

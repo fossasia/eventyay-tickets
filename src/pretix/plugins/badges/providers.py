@@ -15,9 +15,10 @@ class BadgeOutputProvider(BaseTicketOutput):
     def generate(self, op: OrderPosition) -> Tuple[str, str, bytes]:
         try:
             from .exporters import OPTIONS, render_pdf
+
             pdf_buffer = render_pdf(op.order.event, [op], OPTIONS['one'])
             if pdf_buffer is None:
-                raise Exception("Failed to generate PDF")
+                raise Exception('Failed to generate PDF')
 
             if hasattr(pdf_buffer, 'getvalue'):
                 pdf_content = pdf_buffer.getvalue()

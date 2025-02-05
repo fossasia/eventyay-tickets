@@ -43,9 +43,9 @@ class EventPluginSignal(django.dispatch.Signal):
         if not core_module:
             while True:
                 app = app_cache.get(searchpath)
-                if "." not in searchpath or app:
+                if '.' not in searchpath or app:
                     break
-                searchpath, _ = searchpath.rsplit(".", 1)
+                searchpath, _ = searchpath.rsplit('.', 1)
 
         # Only fire receivers from active plugins and core modules
         excluded = settings.PRETIX_PLUGINS_EXCLUDE
@@ -62,7 +62,7 @@ class EventPluginSignal(django.dispatch.Signal):
         sender is required to be an instance of ``pretix.base.models.Event``.
         """
         if sender and not isinstance(sender, Event):
-            raise ValueError("Sender needs to be an event.")
+            raise ValueError('Sender needs to be an event.')
 
         responses = []
         if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
@@ -86,7 +86,7 @@ class EventPluginSignal(django.dispatch.Signal):
         sender is required to be an instance of ``pretix.base.models.Event``.
         """
         if sender and not isinstance(sender, Event):
-            raise ValueError("Sender needs to be an event.")
+            raise ValueError('Sender needs to be an event.')
 
         response = named.get(chain_kwarg_name)
         if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
@@ -110,13 +110,10 @@ class EventPluginSignal(django.dispatch.Signal):
         sender is required to be an instance of ``pretix.base.models.Event``.
         """
         if sender and not isinstance(sender, Event):
-            raise ValueError("Sender needs to be an event.")
+            raise ValueError('Sender needs to be an event.')
 
         responses = []
-        if (
-            not self.receivers
-            or self.sender_receivers_cache.get(sender) is NO_RECEIVERS
-        ):
+        if not self.receivers or self.sender_receivers_cache.get(sender) is NO_RECEIVERS:
             return []
 
         if not app_cache:
@@ -152,7 +149,6 @@ class GlobalSignal(django.dispatch.Signal):
 
 
 class DeprecatedSignal(django.dispatch.Signal):
-
     def connect(self, receiver, sender=None, weak=True, dispatch_uid=None):
         warnings.warn('This signal is deprecated and will soon be removed', stacklevel=3)
         super().connect(receiver, sender=None, weak=True, dispatch_uid=None)

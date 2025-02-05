@@ -10,10 +10,7 @@ from pretix.multidomain.models import KnownDomain
 @pytest.fixture
 def env():
     o = Organizer.objects.create(name='MRMCD', slug='mrmcd')
-    event = Event.objects.create(
-        organizer=o, name='MRMCD2015', slug='2015',
-        date_from=now(), live=True
-    )
+    event = Event.objects.create(organizer=o, name='MRMCD2015', slug='2015', date_from=now(), live=True)
     event.get_cache().clear()
     settings.SITE_URL = 'http://example.com'
     return o, event
@@ -104,10 +101,7 @@ def test_organizer_with_org_domain_on_main_domain(env, client):
 @pytest.mark.django_db
 def test_event_on_org_domain_only_with_wrong_organizer(env, client):
     organizer2 = Organizer.objects.create(name='Dummy', slug='dummy')
-    Event.objects.create(
-        organizer=organizer2, name='D1234', slug='1234',
-        date_from=now(), live=True
-    )
+    Event.objects.create(organizer=organizer2, name='D1234', slug='1234', date_from=now(), live=True)
     KnownDomain.objects.create(domainname='foobar', organizer=env[0])
     r = client.get('/dummy/1234/', HTTP_HOST='foobar')
     assert r.status_code == 404
@@ -116,10 +110,7 @@ def test_event_on_org_domain_only_with_wrong_organizer(env, client):
 @pytest.mark.django_db
 def test_unknown_event_on_org_domain(env, client):
     organizer2 = Organizer.objects.create(name='Dummy', slug='dummy')
-    Event.objects.create(
-        organizer=organizer2, name='D1234', slug='1234',
-        date_from=now(), live=True
-    )
+    Event.objects.create(organizer=organizer2, name='D1234', slug='1234', date_from=now(), live=True)
     KnownDomain.objects.create(domainname='foobar', organizer=env[0])
     r = client.get('/1234/', HTTP_HOST='foobar')
     assert r.status_code == 404
@@ -162,42 +153,39 @@ def test_with_forwarded_host(env, client):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("agent", [
-    'Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 '
-    'Chrome/79.0.0.0 Mobile Safari/537.36',
-    'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) '
-    'CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1',
-    'Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/603.1.23 (KHTML, like Gecko) Version/10.0 '
-    'Mobile/14E5239e Safari/602.1',
-    'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0',
-    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/534.59.10 (KHTML, like Gecko) Version/5.1.9 '
-    'Safari/534.59.10',
-    'Mozilla 5.0 (Windows NT 10.0; Win64; x64) AppleWebKit 537.36 (KHTML, like Gecko) Chrome 78.0.3904.97 Safari 537.36 OPR 65.0.3467.48',
-    'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20150101 Firefox/47.0 (Chrome)',
-    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.0.0',
-])
+@pytest.mark.parametrize(
+    'agent',
+    [
+        'Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.0.0 Mobile Safari/537.36',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 13_0 like Mac OS X) AppleWebKit/603.1.23 (KHTML, like Gecko) Version/10.0 Mobile/14E5239e Safari/602.1',
+        'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0',
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/534.59.10 (KHTML, like Gecko) Version/5.1.9 Safari/534.59.10',
+        'Mozilla 5.0 (Windows NT 10.0; Win64; x64) AppleWebKit 537.36 (KHTML, like Gecko) Chrome 78.0.3904.97 Safari 537.36 OPR 65.0.3467.48',
+        'Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20150101 Firefox/47.0 (Chrome)',
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.0.0',
+    ],
+)
 def test_cookie_samesite_none(env, client, agent):
-    client.post('/mrmcd/2015/cart/add', HTTP_HOST='example.com', HTTP_USER_AGENT=agent,
-                secure=True)
+    client.post('/mrmcd/2015/cart/add', HTTP_HOST='example.com', HTTP_USER_AGENT=agent, secure=True)
     r = client.get('/mrmcd/2015/', HTTP_HOST='example.com', HTTP_USER_AGENT=agent, secure=True)
     assert r.client.cookies['pretix_csrftoken']['samesite'] == 'None'
     assert r.client.cookies['pretix_session']['samesite'] == 'None'
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("agent", [
-    'Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 '
-    'Chrome/52.0.0.0 Mobile Safari/537.36',
-    'Mozilla/5.0 (iPhone; CPU iPhone OS 12_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) '
-    'CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1',
-    'Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/603.1.23 (KHTML, like Gecko) Version/10.0 '
-    'Mobile/14E5239e Safari/602.1',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_8) AppleWebKit/534.59.10 (KHTML, like Gecko) Version/5.1.9 '
-    'Safari/534.59.10',
-    'Mozilla/5.0 (Linux; Android 4.4.2; YOGA Tablet 2-1050L Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) '
-    'Version/4.0 Chrome/30.0.0.0 Safari/537.36 UCBrowser/3.1.0.403',
-])
+@pytest.mark.parametrize(
+    'agent',
+    [
+        'Mozilla/5.0 (Linux; Android 4.4; Nexus 5 Build/_BuildID_) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/52.0.0.0 Mobile Safari/537.36',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 12_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/603.1.23 (KHTML, like Gecko) Version/10.0 Mobile/14E5239e Safari/602.1',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_8) AppleWebKit/534.59.10 (KHTML, like Gecko) Version/5.1.9 Safari/534.59.10',
+        'Mozilla/5.0 (Linux; Android 4.4.2; YOGA Tablet 2-1050L Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) '
+        'Version/4.0 Chrome/30.0.0.0 Safari/537.36 UCBrowser/3.1.0.403',
+    ],
+)
 def test_cookie_samesite_none_only_on_compatible_browsers(env, client, agent):
     client.post('/mrmcd/2015/cart/add', HTTP_HOST='example.com', HTTP_USER_AGENT=agent, secure=True)
     r = client.get('/mrmcd/2015/', HTTP_HOST='example.com', HTTP_USER_AGENT=agent, secure=True)

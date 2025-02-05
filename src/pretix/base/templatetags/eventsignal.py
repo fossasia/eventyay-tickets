@@ -24,7 +24,7 @@ def eventsignal(event: Event, signame: str, **kwargs):
     for receiver, response in signal.send(event, **kwargs):
         if response:
             _html.append(response)
-    return mark_safe("".join(_html))
+    return mark_safe(''.join(_html))
 
 
 @register.simple_tag
@@ -43,4 +43,4 @@ def signal(signame: str, request, **kwargs):
     for receiver, response in signal.send(request, **kwargs):
         if response:
             _html.append(response)
-    return mark_safe("".join(_html))
+    return mark_safe(''.join(_html))

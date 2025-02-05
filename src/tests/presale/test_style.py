@@ -15,13 +15,11 @@ class StyleTest(TestCase):
         super().setUp()
         self.orga = Organizer.objects.create(name='CCC', slug='ccc')
         self.event = Event.objects.create(
-            organizer=self.orga, name='30C3', slug='30c3',
-            date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc),
-            live=True
+            organizer=self.orga, name='30C3', slug='30c3', date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc), live=True
         )
 
     def test_organizer_generate_css_for_inherited_events(self):
-        self.orga.settings.primary_color = "#33c33c"
+        self.orga.settings.primary_color = '#33c33c'
         regenerate_organizer_css.apply(args=(self.orga.pk,))
         self.orga.settings.flush()
         assert self.orga.settings.presale_css_file
@@ -34,8 +32,8 @@ class StyleTest(TestCase):
             assert '#33c33c' in c.read()
 
     def test_organizer_generate_css_only_for_inherited_events(self):
-        self.orga.settings.primary_color = "#33c33c"
-        self.event.settings.primary_color = "#34c34c"
+        self.orga.settings.primary_color = '#33c33c'
+        self.event.settings.primary_color = '#34c34c'
         regenerate_organizer_css.apply(args=(self.orga.pk,))
         self.orga.settings.flush()
         assert self.orga.settings.presale_css_file

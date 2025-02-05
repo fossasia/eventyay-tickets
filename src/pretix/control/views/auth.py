@@ -8,7 +8,10 @@ import webauthn
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import (
-    BACKEND_SESSION_KEY, authenticate, load_backend, login as auth_login,
+    BACKEND_SESSION_KEY,
+    authenticate,
+    load_backend,
+    login as auth_login,
     logout as auth_logout,
 )
 from django.contrib.auth.tokens import default_token_generator
@@ -26,7 +29,10 @@ from webauthn.helpers import generate_challenge
 
 from pretix.base.auth import get_auth_backends
 from pretix.base.forms.auth import (
-    LoginForm, PasswordForgotForm, PasswordRecoverForm, RegistrationForm,
+    LoginForm,
+    PasswordForgotForm,
+    PasswordRecoverForm,
+    RegistrationForm,
 )
 from pretix.base.models import TeamInvite, U2FDevice, User, WebAuthnDevice
 from pretix.base.models.page import Page
@@ -62,7 +68,7 @@ def process_login(request, user, keep_logged_in):
             twofa_url += '?next=' + quote(next_url)
         return redirect(twofa_url)
     else:
-        auth_login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+        auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         request.session['pretix_auth_login_time'] = int(time.time())
         if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts=None):
             return redirect(next_url)
@@ -86,14 +92,15 @@ def set_cookie_after_logged_in(request, response):
         # Set JWT as a cookie in the response
         token = generate_sso_token(request.user)
         set_cookie_without_samesite(
-            request, response,
-            "sso_token",
+            request,
+            response,
+            'sso_token',
             token,
             max_age=settings.CSRF_COOKIE_AGE,
             domain=get_cookie_domain(request),
             path=settings.CSRF_COOKIE_PATH,
             secure=request.scheme == 'https',
-            httponly=settings.CSRF_COOKIE_HTTPONLY
+            httponly=settings.CSRF_COOKIE_HTTPONLY,
         )
     return response
 
@@ -105,7 +112,7 @@ def login(request):
     """
     ctx = {}
     backenddict = get_auth_backends()
-    backends = sorted(backenddict.values(), key=lambda b: (b.identifier != "native", b.verbose_name))
+    backends = sorted(backenddict.values(), key=lambda b: (b.identifier != 'native', b.verbose_name))
     for b in backends:
         u = b.request_authenticate(request)
         if u and u.auth_backend == b.identifier:
@@ -159,23 +166,22 @@ def register(request):
         raise PermissionDenied('Registration is disabled')
     ctx = {}
     if request.user.is_authenticated:
-        return redirect(request.GET.get("next", 'control:index'))
+        return redirect(request.GET.get('next', 'control:index'))
     if request.method == 'POST':
         form = RegistrationForm(data=request.POST)
         if form.is_valid():
             user = User.objects.create_user(
-                form.cleaned_data['email'], form.cleaned_data['password'],
+                form.cleaned_data['email'],
+                form.cleaned_data['password'],
                 locale=request.LANGUAGE_CODE,
-                timezone=request.timezone if hasattr(request, 'timezone') else settings.TIME_ZONE
+                timezone=request.timezone if hasattr(request, 'timezone') else settings.TIME_ZONE,
             )
             user = authenticate(request=request, email=user.email, password=form.cleaned_data['password'])
             user.log_action('pretix.control.auth.user.created', user=user)
             auth_login(request, user)
             request.session['pretix_auth_login_time'] = int(time.time())
-            request.session['pretix_auth_long_session'] = (
-                settings.PRETIX_LONG_SESSIONS and form.cleaned_data.get('keep_logged_in', False)
-            )
-            response = redirect(request.GET.get("next", 'control:index'))
+            request.session['pretix_auth_long_session'] = settings.PRETIX_LONG_SESSIONS and form.cleaned_data.get('keep_logged_in', False)
+            response = redirect(request.GET.get('next', 'control:index'))
             set_cookie_after_logged_in(request, response)
             return response
     else:
@@ -197,25 +203,23 @@ def invite(request, token):
     try:
         inv = TeamInvite.objects.get(token=token)
     except TeamInvite.DoesNotExist:
-        messages.error(request, _('You used an invalid link. Please copy the link from your email to the address bar '
-                                  'and make sure it is correct and that the link has not been used before.'))
+        messages.error(
+            request,
+            _(
+                'You used an invalid link. Please copy the link from your email to the address bar '
+                'and make sure it is correct and that the link has not been used before.'
+            ),
+        )
         return redirect('control:auth.login')
 
     if request.user.is_authenticated:
         if inv.team.members.filter(pk=request.user.pk).exists():
-            messages.error(request, _('You cannot accept the invitation for "{}" as you already are part of '
-                                      'this team.').format(inv.team.name))
+            messages.error(request, _('You cannot accept the invitation for "{}" as you already are part of this team.').format(inv.team.name))
             return redirect('control:index')
         else:
             with transaction.atomic():
                 inv.team.members.add(request.user)
-                inv.team.log_action(
-                    'pretix.team.member.joined', data={
-                        'email': request.user.email,
-                        'invite_email': inv.email,
-                        'user': request.user.pk
-                    }
-                )
+                inv.team.log_action('pretix.team.member.joined', data={'email': request.user.email, 'invite_email': inv.email, 'user': request.user.pk})
                 inv.delete()
             messages.success(request, _('You are now part of the team "{}".').format(inv.team.name))
             return redirect('control:index')
@@ -226,26 +230,19 @@ def invite(request, token):
             valid = form.is_valid()
             if valid:
                 user = User.objects.create_user(
-                    form.cleaned_data['email'], form.cleaned_data['password'],
+                    form.cleaned_data['email'],
+                    form.cleaned_data['password'],
                     locale=request.LANGUAGE_CODE,
-                    timezone=request.timezone if hasattr(request, 'timezone') else settings.TIME_ZONE
+                    timezone=request.timezone if hasattr(request, 'timezone') else settings.TIME_ZONE,
                 )
                 user = authenticate(request=request, email=user.email, password=form.cleaned_data['password'])
                 user.log_action('pretix.control.auth.user.created', user=user)
                 auth_login(request, user)
                 request.session['pretix_auth_login_time'] = int(time.time())
-                request.session['pretix_auth_long_session'] = (
-                    settings.PRETIX_LONG_SESSIONS and form.cleaned_data.get('keep_logged_in', False)
-                )
+                request.session['pretix_auth_long_session'] = settings.PRETIX_LONG_SESSIONS and form.cleaned_data.get('keep_logged_in', False)
 
                 inv.team.members.add(request.user)
-                inv.team.log_action(
-                    'pretix.team.member.joined', data={
-                        'email': user.email,
-                        'invite_email': inv.email,
-                        'user': user.pk
-                    }
-                )
+                inv.team.log_action('pretix.team.member.joined', data={'email': user.email, 'invite_email': inv.email, 'user': user.pk})
                 inv.delete()
                 messages.success(request, _('Welcome to pretix! You are now part of the team "{}".').format(inv.team.name))
                 return redirect('control:index')
@@ -269,7 +266,7 @@ class Forgot(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(request.GET.get("next", 'control:index'))
+            return redirect(request.GET.get('next', 'control:index'))
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -283,7 +280,8 @@ class Forgot(TemplateView):
 
                 if has_redis:
                     from django_redis import get_redis_connection
-                    rc = get_redis_connection("redis")
+
+                    rc = get_redis_connection('redis')
                     if rc.exists('pretix_pwreset_%s' % (user.id)):
                         user.log_action('pretix.control.auth.user.forgot_password.denied.repeated')
                         raise RepeatedResetDenied()
@@ -291,10 +289,10 @@ class Forgot(TemplateView):
                         rc.setex('pretix_pwreset_%s' % (user.id), 3600 * 24, '1')
 
             except User.DoesNotExist:
-                logger.warning('Password reset for unregistered e-mail \"' + email + '\"requested.')
+                logger.warning('Password reset for unregistered e-mail "' + email + '"requested.')
 
             except SendMailException:
-                logger.exception('Sending password reset e-mail to \"' + email + '\" failed.')
+                logger.exception('Sending password reset e-mail to "' + email + '" failed.')
 
             except RepeatedResetDenied:
                 pass
@@ -305,8 +303,13 @@ class Forgot(TemplateView):
 
             finally:
                 if has_redis:
-                    messages.info(request, _('If the address is registered to valid account, then we have sent you an e-mail containing further instructions. '
-                                             'Please note that we will send at most one email every 24 hours.'))
+                    messages.info(
+                        request,
+                        _(
+                            'If the address is registered to valid account, then we have sent you an e-mail containing further instructions. '
+                            'Please note that we will send at most one email every 24 hours.'
+                        ),
+                    )
                 else:
                     messages.info(request, _('If the address is registered to valid account, then we have sent you an e-mail containing further instructions.'))
 
@@ -328,10 +331,12 @@ class Recover(TemplateView):
     template_name = 'pretixcontrol/auth/recover.html'
 
     error_messages = {
-        'invalid': _('You clicked on an invalid link. Please check that you copied the full '
-                     'web address into your address bar. Please note that the link is only valid '
-                     'for three days and that the link can only be used once.'),
-        'unknownuser': _('We were unable to find the user you requested a new password for.')
+        'invalid': _(
+            'You clicked on an invalid link. Please check that you copied the full '
+            'web address into your address bar. Please note that the link is only valid '
+            'for three days and that the link can only be used once.'
+        ),
+        'unknownuser': _('We were unable to find the user you requested a new password for.'),
     }
 
     def dispatch(self, request, *args, **kwargs):
@@ -341,7 +346,7 @@ class Recover(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect(request.GET.get("next", 'control:index'))
+            return redirect(request.GET.get('next', 'control:index'))
         try:
             user = User.objects.get(id=self.request.GET.get('id'), auth_backend='native')
         except User.DoesNotExist:
@@ -372,8 +377,7 @@ class Recover(TemplateView):
 
     @cached_property
     def form(self):
-        return PasswordRecoverForm(data=self.request.POST if self.request.method == 'POST' else None,
-                                   user_id=self.request.GET.get('id'))
+        return PasswordRecoverForm(data=self.request.POST if self.request.method == 'POST' else None, user_id=self.request.GET.get('id'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -420,9 +424,9 @@ class Login2FAView(TemplateView):
         if 'webauthn_challenge' in self.request.session and token.startswith('{'):
             challenge = self.request.session['webauthn_challenge']
 
-            resp = json.loads(self.request.POST.get("token"))
+            resp = json.loads(self.request.POST.get('token'))
             try:
-                devices = [WebAuthnDevice.objects.get(user=self.user, credential_id=resp.get("id"))]
+                devices = [WebAuthnDevice.objects.get(user=self.user, credential_id=resp.get('id'))]
             except WebAuthnDevice.DoesNotExist:
                 devices = U2FDevice.objects.filter(user=self.user)
 
@@ -439,7 +443,7 @@ class Login2FAView(TemplateView):
                     )
                     sign_count = webauthn_assertion_response.new_sign_count
                     if sign_count < credential_current_sign_count:
-                        raise Exception("Possible replay attack, sign count not higher")
+                        raise Exception('Possible replay attack, sign count not higher')
                 except Exception:
                     if isinstance(d, U2FDevice):
                         try:
@@ -452,7 +456,7 @@ class Login2FAView(TemplateView):
                                 credential_current_sign_count=credential_current_sign_count,
                             )
                             if webauthn_assertion_response.new_sign_count < 1:
-                                raise Exception("Possible replay attack, sign count set")
+                                raise Exception('Possible replay attack, sign count set')
                         except Exception:
                             logger.exception('U2F login failed')
                         else:
@@ -470,12 +474,12 @@ class Login2FAView(TemplateView):
             valid = match_token(self.user, token)
 
         if valid:
-            auth_login(request, self.user, backend="django.contrib.auth.backends.ModelBackend")
+            auth_login(request, self.user, backend='django.contrib.auth.backends.ModelBackend')
             request.session['pretix_auth_login_time'] = int(time.time())
             del request.session['pretix_auth_2fa_user']
             del request.session['pretix_auth_2fa_time']
-            if "next" in request.GET and url_has_allowed_host_and_scheme(request.GET.get("next"), allowed_hosts=None):
-                return redirect(request.GET.get("next"))
+            if 'next' in request.GET and url_has_allowed_host_and_scheme(request.GET.get('next'), allowed_hosts=None):
+                return redirect(request.GET.get('next'))
             return redirect(reverse('control:index'))
         else:
             messages.error(request, _('Invalid code, please try again.'))
@@ -487,9 +491,7 @@ class Login2FAView(TemplateView):
             del self.request.session['webauthn_challenge']
         challenge = generate_challenge()
         self.request.session['webauthn_challenge'] = base64.b64encode(challenge).decode()
-        devices = [
-            device.webauthndevice for device in WebAuthnDevice.objects.filter(confirmed=True, user=self.user)
-        ] + [
+        devices = [device.webauthndevice for device in WebAuthnDevice.objects.filter(confirmed=True, user=self.user)] + [
             device.webauthndevice for device in U2FDevice.objects.filter(confirmed=True, user=self.user)
         ]
         if devices:
@@ -499,7 +501,7 @@ class Login2FAView(TemplateView):
                 allow_credentials=devices,
             )
             j = json.loads(webauthn.options_to_json(auth_options))
-            j["extensions"] = {"appid": get_u2f_appid(self.request)}
+            j['extensions'] = {'appid': get_u2f_appid(self.request)}
             ctx['jsondata'] = json.dumps(j)
         return ctx
 
@@ -520,13 +522,14 @@ class CustomAuthorizationView(AuthorizationView):
             # Set JWT as a cookie in the response
             token = generate_sso_token(request.user)
             set_cookie_without_samesite(
-                request, response,
-                "sso_token",
+                request,
+                response,
+                'sso_token',
                 token,
                 max_age=settings.CSRF_COOKIE_AGE,
                 domain=get_cookie_domain(request),
                 path=settings.CSRF_COOKIE_PATH,
                 secure=request.scheme == 'https',
-                httponly=settings.CSRF_COOKIE_HTTPONLY
+                httponly=settings.CSRF_COOKIE_HTTPONLY,
             )
         return response
