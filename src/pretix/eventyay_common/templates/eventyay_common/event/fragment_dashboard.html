@@ -61,7 +61,7 @@
             </p>
             {% if is_video_enabled %}
                 <p>
-                    {% trans "Go to" %} <a href="{% url 'eventyay_common:event.create_access_to_video' organizer=request.organizer.slug event=request.event.slug %}" target="_blank">{% trans "Video Configuration" %}</a>
+                    {% trans "Go to" %} <a href="{% url 'eventyay_common:event.create_access_to_video' organizer=request.organizer.slug event=request.event.slug %}" target="_blank" rel="noopener noreferrer">{% trans "Video Configuration" %}</a>
                 </p>
             {% else %}
                 <p>
