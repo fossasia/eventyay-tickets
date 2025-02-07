@@ -9,8 +9,7 @@ from django.core.cache import cache
 from django.core.exceptions import DisallowedHost
 from django.http.request import split_domain_port
 from django.middleware.csrf import (
-    CSRF_SESSION_KEY,
-    CsrfViewMiddleware as BaseCsrfMiddleware,
+    CSRF_SESSION_KEY, CsrfViewMiddleware as BaseCsrfMiddleware,
 )
 from django.urls import set_urlconf
 from django.utils.cache import patch_vary_headers
@@ -44,7 +43,7 @@ class MultiDomainMiddleware(MiddlewareMixin):
         request.port = int(port) if port else None
         request.host = domain
         if domain == default_domain:
-            request.urlconf = 'pretix.multidomain.maindomain_urlconf'
+            request.urlconf = "pretix.multidomain.maindomain_urlconf"
         elif domain:
             cached = cache.get('pretix_multidomain_instance_{}'.format(domain))
 
@@ -56,7 +55,11 @@ class MultiDomainMiddleware(MiddlewareMixin):
                 except KnownDomain.DoesNotExist:
                     orga = False
                     event = False
-                cache.set('pretix_multidomain_instance_{}'.format(domain), (orga.pk if orga else None, event.pk if event else None), 3600)
+                cache.set(
+                    'pretix_multidomain_instance_{}'.format(domain),
+                    (orga.pk if orga else None, event.pk if event else None),
+                    3600
+                )
             else:
                 orga, event = cached
 
@@ -69,24 +72,24 @@ class MultiDomainMiddleware(MiddlewareMixin):
                     with scopes_disabled():
                         request.event = Event.objects.select_related('organizer').get(pk=event)
                         request.organizer = request.event.organizer
-                request.urlconf = 'pretix.multidomain.event_domain_urlconf'
+                request.urlconf = "pretix.multidomain.event_domain_urlconf"
             elif orga:
                 request.organizer_domain = True
                 request.organizer = orga if isinstance(orga, Organizer) else Organizer.objects.get(pk=orga)
-                request.urlconf = 'pretix.multidomain.organizer_domain_urlconf'
+                request.urlconf = "pretix.multidomain.organizer_domain_urlconf"
             elif settings.DEBUG or domain in LOCAL_HOST_NAMES:
-                request.urlconf = 'pretix.multidomain.maindomain_urlconf'
+                request.urlconf = "pretix.multidomain.maindomain_urlconf"
             else:
-                raise DisallowedHost('Unknown host: %r' % host)
+                raise DisallowedHost("Unknown host: %r" % host)
         else:
-            raise DisallowedHost('Invalid HTTP_HOST header: %r.' % host)
+            raise DisallowedHost("Invalid HTTP_HOST header: %r." % host)
 
         # We need to manually set the urlconf for the whole thread. Normally, Django's basic request handling
         # would do this for us, but we already need it in place for the other middlewares.
         set_urlconf(request.urlconf)
 
     def process_response(self, request, response):
-        if getattr(request, 'urlconf', None):
+        if getattr(request, "urlconf", None):
             patch_vary_headers(response, ('Host',))
         return response
 
@@ -126,16 +129,14 @@ class SessionMiddleware(BaseSessionMiddleware):
                     if response.status_code != 500:
                         request.session.save()
                         set_cookie_without_samesite(
-                            request,
-                            response,
+                            request, response,
                             settings.SESSION_COOKIE_NAME,
-                            request.session.session_key,
-                            max_age=max_age,
+                            request.session.session_key, max_age=max_age,
                             expires=expires,
                             domain=get_cookie_domain(request),
                             path=settings.SESSION_COOKIE_PATH,
                             secure=request.scheme == 'https',
-                            httponly=settings.SESSION_COOKIE_HTTPONLY or None,
+                            httponly=settings.SESSION_COOKIE_HTTPONLY or None
                         )
         return response
 
@@ -149,21 +150,20 @@ class CsrfViewMiddleware(BaseCsrfMiddleware):
 
     def _set_csrf_cookie(self, request, response):
         if settings.CSRF_USE_SESSIONS:
-            if request.session.get(CSRF_SESSION_KEY) != request.META['CSRF_COOKIE']:
-                request.session[CSRF_SESSION_KEY] = request.META['CSRF_COOKIE']
+            if request.session.get(CSRF_SESSION_KEY) != request.META["CSRF_COOKIE"]:
+                request.session[CSRF_SESSION_KEY] = request.META["CSRF_COOKIE"]
         else:
             # Set the CSRF cookie even if it's already set, so we renew
             # the expiry timer.
             set_cookie_without_samesite(
-                request,
-                response,
+                request, response,
                 settings.CSRF_COOKIE_NAME,
-                request.META['CSRF_COOKIE'],
+                request.META["CSRF_COOKIE"],
                 max_age=settings.CSRF_COOKIE_AGE,
                 domain=get_cookie_domain(request),
                 path=settings.CSRF_COOKIE_PATH,
                 secure=request.scheme == 'https',
-                httponly=settings.CSRF_COOKIE_HTTPONLY,
+                httponly=settings.CSRF_COOKIE_HTTPONLY
             )
             # Content varies with the CSRF cookie, so set the Vary header.
             patch_vary_headers(response, ('Cookie',))

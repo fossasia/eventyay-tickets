@@ -5,6 +5,7 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     dependencies = [
         ('pretixbase', '0006_create_invoice_voucher'),
     ]
@@ -34,5 +35,5 @@ class Migration(migrations.Migration):
             model_name='billinginvoice',
             name='voucher_value',
             field=models.DecimalField(decimal_places=2, default=0, max_digits=10),
-        ),
+        )
     ]

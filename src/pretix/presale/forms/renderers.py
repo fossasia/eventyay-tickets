@@ -22,7 +22,7 @@ def render_label(content, label_for=None, label_class=None, label_title='', labe
     if label_id:
         attrs['id'] = label_id
 
-    opt = ''
+    opt = ""
 
     if is_valid is not None:
         if is_valid:
@@ -38,7 +38,7 @@ def render_label(content, label_for=None, label_class=None, label_title='', labe
         # usually checkboxes have overall empty labels and special labels per checkbox
         # => remove for-attribute as well as "required"-text appended to label
         if 'for' in attrs:
-            del attrs['for']
+            del (attrs['for'])
     else:
         opt += '<i class="sr-only label-required">, {}</i>'.format(pgettext('form', 'required')) if not optional else ''
 
@@ -56,13 +56,7 @@ class CheckoutFieldRenderer(FieldRenderer):
     def __init__(self, *args, **kwargs):
         kwargs['layout'] = 'horizontal'
         super().__init__(*args, **kwargs)
-        self.is_group_widget = isinstance(
-            self.widget,
-            (
-                CheckboxSelectMultiple,
-                RadioSelect,
-            ),
-        ) or (self.is_multi_widget and len(self.widget.widgets) > 1)
+        self.is_group_widget = isinstance(self.widget, (CheckboxSelectMultiple, RadioSelect, )) or (self.is_multi_widget and len(self.widget.widgets) > 1)
 
     def get_form_group_class(self):
         form_group_class = self.form_group_class
@@ -72,11 +66,14 @@ class CheckoutFieldRenderer(FieldRenderer):
         else:
             if self.field.form.is_bound:
                 form_group_class = add_css_class(form_group_class, self.success_css_class)
-        required = getattr(self.field.field, '_show_required', False) or getattr(self.field.field, '_required', False) or self.field.field.required
+        required = (getattr(self.field.field, '_show_required', False) or getattr(self.field.field, '_required', False) or self.field.field.required)
         if required and self.required_css_class:
             form_group_class = add_css_class(form_group_class, self.required_css_class)
         if self.layout == 'horizontal':
-            form_group_class = add_css_class(form_group_class, self.get_size_class(prefix='form-group'))
+            form_group_class = add_css_class(
+                form_group_class,
+                self.get_size_class(prefix='form-group')
+            )
         return form_group_class
 
     def append_to_field(self, html):
@@ -96,8 +93,8 @@ class CheckoutFieldRenderer(FieldRenderer):
         if self.field_help:
             help_cnt += 1
         if help_cnt > 0:
-            help_ids = ['help-for-{id}-{idx}'.format(id=self.field.id_for_label, idx=idx) for idx in range(help_cnt)]
-            widget.attrs['aria-describedby'] = ' '.join(help_ids)
+            help_ids = ["help-for-{id}-{idx}".format(id=self.field.id_for_label, idx=idx) for idx in range(help_cnt)]
+            widget.attrs["aria-describedby"] = " ".join(help_ids)
 
     def add_label(self, html):
         label = self.get_label()
@@ -114,27 +111,24 @@ class CheckoutFieldRenderer(FieldRenderer):
             is_valid = None
 
         if self.is_group_widget:
-            label_for = ''
-            label_id = 'legend-{}'.format(self.field.html_name)
+            label_for = ""
+            label_id = "legend-{}".format(self.field.html_name)
         else:
             label_for = self.field.id_for_label
-            label_id = ''
+            label_id = ""
 
-        html = (
-            render_label(
-                label,
-                label_for=label_for,
-                label_class=self.get_label_class(),
-                label_id=label_id,
-                optional=not required and not isinstance(self.widget, CheckboxInput),
-                is_valid=is_valid,
-            )
-            + html
-        )
+        html = render_label(
+            label,
+            label_for=label_for,
+            label_class=self.get_label_class(),
+            label_id=label_id,
+            optional=not required and not isinstance(self.widget, CheckboxInput),
+            is_valid=is_valid
+        ) + html
         return html
 
     def put_inside_label(self, html):
-        content = '{field} {label}'.format(field=html, label=self.label)
+        content = "{field} {label}".format(field=html, label=self.label)
         return render_label(
             content=mark_safe(content),
             label_for=self.field.id_for_label,

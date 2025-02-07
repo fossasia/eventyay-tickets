@@ -159,6 +159,7 @@ class ParametrizedSubEventWebhookEvent(WebhookEvent):
 
 
 class ParametrizedOrderPositionWebhookEvent(ParametrizedOrderWebhookEvent):
+
     def build_payload(self, logentry: LogEntry):
         d = super().build_payload(logentry)
         if d is None:
@@ -170,7 +171,7 @@ class ParametrizedOrderPositionWebhookEvent(ParametrizedOrderWebhookEvent):
         return d
 
 
-@receiver(register_webhook_events, dispatch_uid='base_register_default_webhook_events')
+@receiver(register_webhook_events, dispatch_uid="base_register_default_webhook_events")
 def register_default_webhook_events(sender, **kwargs):
     return (
         ParametrizedOrderWebhookEvent(
@@ -276,10 +277,19 @@ def notify_webhooks(logentry_ids: list):
             _at = logentry.action_type
 
             # All webhooks that registered for this notification
-            event_listener = WebHookEventListener.objects.filter(webhook=OuterRef('pk'), action_type=notification_type.action_type)
-            webhooks = WebHook.objects.annotate(has_el=Exists(event_listener)).filter(organizer=logentry.organizer, has_el=True, enabled=True)
+            event_listener = WebHookEventListener.objects.filter(
+                webhook=OuterRef('pk'),
+                action_type=notification_type.action_type
+            )
+            webhooks = WebHook.objects.annotate(has_el=Exists(event_listener)).filter(
+                organizer=logentry.organizer,
+                has_el=True,
+                enabled=True
+            )
             if logentry.event_id:
-                webhooks = webhooks.filter(Q(all_events=True) | Q(limit_events__pk=logentry.event_id))
+                webhooks = webhooks.filter(
+                    Q(all_events=True) | Q(limit_events__pk=logentry.event_id)
+                )
 
         for wh in webhooks:
             send_webhook.apply_async(args=(logentry.id, notification_type.action_type, wh.pk))
@@ -306,7 +316,11 @@ def send_webhook(self, logentry_id: int, action_type: str, webhook_id: int):
 
         try:
             try:
-                resp = requests.post(webhook.target_url, json=payload, allow_redirects=False)
+                resp = requests.post(
+                    webhook.target_url,
+                    json=payload,
+                    allow_redirects=False
+                )
                 WebHookCall.objects.create(
                     webhook=webhook,
                     action_type=logentry.action_type,
@@ -315,8 +329,8 @@ def send_webhook(self, logentry_id: int, action_type: str, webhook_id: int):
                     execution_time=time.time() - t,
                     return_code=resp.status_code,
                     payload=json.dumps(payload),
-                    response_body=resp.text[: 1024 * 1024],
-                    success=200 <= resp.status_code <= 299,
+                    response_body=resp.text[:1024 * 1024],
+                    success=200 <= resp.status_code <= 299
                 )
                 if resp.status_code == 410:
                     webhook.enabled = False
@@ -332,7 +346,7 @@ def send_webhook(self, logentry_id: int, action_type: str, webhook_id: int):
                     execution_time=time.time() - t,
                     return_code=0,
                     payload=json.dumps(payload),
-                    response_body=str(e)[: 1024 * 1024],
+                    response_body=str(e)[:1024 * 1024]
                 )
                 raise self.retry(countdown=2 ** (self.request.retries * 2))  # max is 2 ** (8*2) = 65536 seconds = ~18 hours
         except MaxRetriesExceededError:

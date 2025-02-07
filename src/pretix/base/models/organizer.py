@@ -33,29 +33,31 @@ class Organizer(LoggedModel):
     """
 
     settings_namespace = 'organizer'
-    name = models.CharField(max_length=200, verbose_name=_('Name'))
+    name = models.CharField(max_length=200,
+                            verbose_name=_("Name"))
     slug = models.CharField(
-        max_length=50,
-        db_index=True,
+        max_length=50, db_index=True,
         help_text=_(
-            'Should be short, only contain lowercase letters, numbers, dots, and dashes. Every slug can only be used '
-            'once. This is being used in URLs to refer to your organizer accounts and your events.'
-        ),
+            "Should be short, only contain lowercase letters, numbers, dots, and dashes. Every slug can only be used "
+            "once. This is being used in URLs to refer to your organizer accounts and your events."),
         validators=[
             MinLengthValidator(
                 limit_value=2,
             ),
-            RegexValidator(regex='^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]$', message=_('The slug may only contain letters, numbers, dots and dashes.')),
-            OrganizerSlugBanlistValidator(),
+            RegexValidator(
+                regex="^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]$",
+                message=_("The slug may only contain letters, numbers, dots and dashes.")
+            ),
+            OrganizerSlugBanlistValidator()
         ],
-        verbose_name=_('Short form'),
-        unique=True,
+        verbose_name=_("Short form"),
+        unique=True
     )
 
     class Meta:
-        verbose_name = _('Organizer')
-        verbose_name_plural = _('Organizers')
-        ordering = ('name',)
+        verbose_name = _("Organizer")
+        verbose_name_plural = _("Organizers")
+        ordering = ("name",)
 
     def __str__(self) -> str:
         return self.name
@@ -99,20 +101,24 @@ class Organizer(LoggedModel):
             'control:organizer.log',
             kwargs={
                 'organizer': self.slug,
-            },
+            }
         )
 
     @property
     def has_gift_cards(self):
         return self.cache.get_or_set(
-            key='has_gift_cards', timeout=15, default=lambda: self.issued_gift_cards.exists() or self.gift_card_issuer_acceptance.exists()
+            key='has_gift_cards',
+            timeout=15,
+            default=lambda: self.issued_gift_cards.exists() or self.gift_card_issuer_acceptance.exists()
         )
 
     @property
     def accepted_gift_cards(self):
         from .giftcards import GiftCard, GiftCardAcceptance
 
-        return GiftCard.objects.annotate(accepted=Exists(GiftCardAcceptance.objects.filter(issuer=OuterRef('issuer'), collector=self))).filter(
+        return GiftCard.objects.annotate(
+            accepted=Exists(GiftCardAcceptance.objects.filter(issuer=OuterRef('issuer'), collector=self))
+        ).filter(
             Q(issuer=self) | Q(accepted=True)
         )
 
@@ -120,20 +126,17 @@ class Organizer(LoggedModel):
     def default_gift_card_expiry(self):
         if self.settings.giftcard_expiry_years is not None:
             tz = get_current_timezone()
-            return make_aware(
-                datetime.combine(
-                    date(now().astimezone(tz).year + self.settings.get('giftcard_expiry_years', as_type=int), 12, 31), time(hour=23, minute=59, second=59)
-                ),
-                tz,
-            )
+            return make_aware(datetime.combine(
+                date(now().astimezone(tz).year + self.settings.get('giftcard_expiry_years', as_type=int), 12, 31),
+                time(hour=23, minute=59, second=59)
+            ), tz)
 
     def allow_delete(self):
         from . import Invoice, Order
-
         return (
-            not Order.objects.filter(event__organizer=self).exists()
-            and not Invoice.objects.filter(event__organizer=self).exists()
-            and not self.devices.exists()
+            not Order.objects.filter(event__organizer=self).exists() and
+            not Invoice.objects.filter(event__organizer=self).exists() and
+            not self.devices.exists()
         )
 
     def delete_sub_objects(self):
@@ -144,7 +147,8 @@ class Organizer(LoggedModel):
 
     def has_unpaid_invoice(self):
         # Check if Organizer has unpaid invoices which status is pending or expired
-        return BillingInvoice.objects.filter(organizer=self, status__in=[BillingInvoice.STATUS_PENDING, BillingInvoice.STATUS_EXPIRED]).exists()
+        return BillingInvoice.objects.filter(organizer=self, status__in=[BillingInvoice.STATUS_PENDING,
+                                                                         BillingInvoice.STATUS_EXPIRED]).exists()
 
 
 def generate_invite_token():
@@ -188,54 +192,73 @@ class Team(LoggedModel):
     :param can_change_vouchers: If ``True``, the members can change and create vouchers for the associated events.
     :type can_change_vouchers: bool
     """
-
-    organizer = models.ForeignKey(Organizer, related_name='teams', on_delete=models.CASCADE)
-    name = models.CharField(max_length=190, verbose_name=_('Team name'))
-    members = models.ManyToManyField(User, related_name='teams', verbose_name=_('Team members'))
-    all_events = models.BooleanField(default=False, verbose_name=_('All events (including newly created ones)'))
-    limit_events = models.ManyToManyField('Event', verbose_name=_('Limit to events'), blank=True)
+    organizer = models.ForeignKey(Organizer, related_name="teams", on_delete=models.CASCADE)
+    name = models.CharField(max_length=190, verbose_name=_("Team name"))
+    members = models.ManyToManyField(User, related_name="teams", verbose_name=_("Team members"))
+    all_events = models.BooleanField(default=False, verbose_name=_("All events (including newly created ones)"))
+    limit_events = models.ManyToManyField('Event', verbose_name=_("Limit to events"), blank=True)
 
     can_create_events = models.BooleanField(
         default=False,
-        verbose_name=_('Can create events'),
+        verbose_name=_("Can create events"),
     )
     can_change_teams = models.BooleanField(
         default=False,
-        verbose_name=_('Can change teams and permissions'),
+        verbose_name=_("Can change teams and permissions"),
     )
     can_change_organizer_settings = models.BooleanField(
         default=False,
-        verbose_name=_('Can change organizer settings'),
-        help_text=_(
-            'Someone with this setting can get access to most data of all of your events, i.e. via privacy reports, so be careful who you add to this team!'
-        ),
+        verbose_name=_("Can change organizer settings"),
+        help_text=_('Someone with this setting can get access to most data of all of your events, i.e. via privacy '
+                    'reports, so be careful who you add to this team!')
     )
-    can_manage_gift_cards = models.BooleanField(default=False, verbose_name=_('Can manage gift cards'))
+    can_manage_gift_cards = models.BooleanField(
+        default=False,
+        verbose_name=_("Can manage gift cards")
+    )
 
-    can_change_event_settings = models.BooleanField(default=False, verbose_name=_('Can change event settings'))
-    can_change_items = models.BooleanField(default=False, verbose_name=_('Can change product settings'))
-    can_view_orders = models.BooleanField(default=False, verbose_name=_('Can view orders'))
-    can_change_orders = models.BooleanField(default=False, verbose_name=_('Can change orders'))
+    can_change_event_settings = models.BooleanField(
+        default=False,
+        verbose_name=_("Can change event settings")
+    )
+    can_change_items = models.BooleanField(
+        default=False,
+        verbose_name=_("Can change product settings")
+    )
+    can_view_orders = models.BooleanField(
+        default=False,
+        verbose_name=_("Can view orders")
+    )
+    can_change_orders = models.BooleanField(
+        default=False,
+        verbose_name=_("Can change orders")
+    )
     can_checkin_orders = models.BooleanField(
         default=False,
-        verbose_name=_('Can perform check-ins'),
-        help_text=_(
-            'This includes searching for attendees, which can be used to obtain personal information about '
-            'attendees. Users with "can change orders" can also perform check-ins.'
-        ),
+        verbose_name=_("Can perform check-ins"),
+        help_text=_('This includes searching for attendees, which can be used to obtain personal information about '
+                    'attendees. Users with "can change orders" can also perform check-ins.')
     )
-    can_view_vouchers = models.BooleanField(default=False, verbose_name=_('Can view vouchers'))
-    can_change_vouchers = models.BooleanField(default=False, verbose_name=_('Can change vouchers'))
+    can_view_vouchers = models.BooleanField(
+        default=False,
+        verbose_name=_("Can view vouchers")
+    )
+    can_change_vouchers = models.BooleanField(
+        default=False,
+        verbose_name=_("Can change vouchers")
+    )
 
     def __str__(self) -> str:
-        return _('%(name)s on %(object)s') % {
+        return _("%(name)s on %(object)s") % {
             'name': str(self.name),
             'object': str(self.organizer),
         }
 
     def permission_set(self) -> set:
         attribs = dir(self)
-        return {a for a in attribs if a.startswith('can_') and self.has_permission(a)}
+        return {
+            a for a in attribs if a.startswith('can_') and self.has_permission(a)
+        }
 
     @property
     def can_change_settings(self):  # Legacy compatiblilty
@@ -258,8 +281,8 @@ class Team(LoggedModel):
         return self.tokens.filter(active=True)
 
     class Meta:
-        verbose_name = _('Team')
-        verbose_name_plural = _('Teams')
+        verbose_name = _("Team")
+        verbose_name_plural = _("Teams")
 
 
 class TeamInvite(models.Model):
@@ -274,13 +297,14 @@ class TeamInvite(models.Model):
     :param token: The secret required to redeem the invite
     :type token: str
     """
-
-    team = models.ForeignKey(Team, related_name='invites', on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, related_name="invites", on_delete=models.CASCADE)
     email = models.EmailField(null=True, blank=True)
     token = models.CharField(default=generate_invite_token, max_length=64, null=True, blank=True)
 
     def __str__(self) -> str:
-        return _("Invite to team '{team}' for '{email}'").format(team=str(self.team), email=self.email)
+        return _("Invite to team '{team}' for '{email}'").format(
+            team=str(self.team), email=self.email
+        )
 
 
 class TeamAPIToken(models.Model):
@@ -296,8 +320,7 @@ class TeamAPIToken(models.Model):
     :param token: The secret required to submit to the API
     :type token: str
     """
-
-    team = models.ForeignKey(Team, related_name='tokens', on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, related_name="tokens", on_delete=models.CASCADE)
     name = models.CharField(max_length=190)
     active = models.BooleanField(default=True)
     token = models.CharField(default=generate_api_token, max_length=64)
@@ -310,7 +333,9 @@ class TeamAPIToken(models.Model):
         :param event: The event to check
         :return: set of permissions
         """
-        has_event_access = (self.team.all_events and organizer == self.team.organizer) or (event in self.team.limit_events.all())
+        has_event_access = (self.team.all_events and organizer == self.team.organizer) or (
+            event in self.team.limit_events.all()
+        )
         return self.team.permission_set() if has_event_access else set()
 
     def get_organizer_permission_set(self, organizer) -> set:
@@ -333,7 +358,9 @@ class TeamAPIToken(models.Model):
         :param request: This parameter is ignored and only defined for compatibility reasons.
         :return: bool
         """
-        has_event_access = (self.team.all_events and organizer == self.team.organizer) or (event in self.team.limit_events.all())
+        has_event_access = (self.team.all_events and organizer == self.team.organizer) or (
+            event in self.team.limit_events.all()
+        )
         if isinstance(perm_name, (tuple, list)):
             return has_event_access and any(self.team.has_permission(p) for p in perm_name)
         return has_event_access and (not perm_name or self.team.has_permission(perm_name))
@@ -370,9 +397,9 @@ class TeamAPIToken(models.Model):
         :param request: Ignored, for compatibility with User model
         :return: Iterable of Events
         """
-        if (isinstance(permission, (list, tuple)) and any(getattr(self.team, p, False) for p in permission)) or (
-            isinstance(permission, str) and getattr(self.team, permission, False)
-        ):
+        if (
+                isinstance(permission, (list, tuple)) and any(getattr(self.team, p, False) for p in permission)
+        ) or (isinstance(permission, str) and getattr(self.team, permission, False)):
             return self.get_events_with_any_permission()
         else:
             return self.team.organizer.events.none()
@@ -383,77 +410,84 @@ class OrganizerBillingModel(models.Model):
     Billing model - support billing information for organizer
     """
 
-    organizer = models.ForeignKey('Organizer', on_delete=models.CASCADE, related_name='billing')
+    organizer = models.ForeignKey(
+        "Organizer", on_delete=models.CASCADE, related_name="billing"
+    )
 
     primary_contact_name = models.CharField(
         max_length=255,
-        verbose_name=_('Primary Contact Name'),
+        verbose_name=_("Primary Contact Name"),
     )
 
     primary_contact_email = models.EmailField(
         max_length=255,
-        verbose_name=_('Primary Contact Email'),
+        verbose_name=_("Primary Contact Email"),
     )
 
     company_or_organization_name = models.CharField(
         max_length=255,
-        verbose_name=_('Company or Organization Name'),
+        verbose_name=_("Company or Organization Name"),
     )
 
     address_line_1 = models.CharField(
         max_length=255,
-        verbose_name=_('Address Line 1'),
+        verbose_name=_("Address Line 1"),
     )
 
     address_line_2 = models.CharField(
         max_length=255,
-        verbose_name=_('Address Line 2'),
+        verbose_name=_("Address Line 2"),
     )
 
     city = models.CharField(
         max_length=255,
-        verbose_name=_('City'),
+        verbose_name=_("City"),
     )
 
     zip_code = models.CharField(
         max_length=255,
-        verbose_name=_('Zip Code'),
+        verbose_name=_("Zip Code"),
     )
 
     country = models.CharField(
         max_length=255,
-        verbose_name=_('Country'),
+        verbose_name=_("Country"),
     )
 
     preferred_language = models.CharField(
         max_length=255,
-        verbose_name=_('Preferred Language'),
+        verbose_name=_("Preferred Language"),
     )
 
     tax_id = models.CharField(
         max_length=255,
-        verbose_name=_('Tax ID'),
+        verbose_name=_("Tax ID"),
     )
 
-    invoice_voucher = models.ForeignKey('pretixbase.InvoiceVoucher', on_delete=models.CASCADE, related_name='billing', null=True)
+    invoice_voucher = models.ForeignKey(
+        "pretixbase.InvoiceVoucher",
+        on_delete=models.CASCADE,
+        related_name="billing",
+        null=True
+    )
 
     stripe_customer_id = models.CharField(
         max_length=255,
-        verbose_name=_('Stripe Customer ID'),
+        verbose_name=_("Stripe Customer ID"),
         blank=True,
         null=True,
     )
 
     stripe_payment_method_id = models.CharField(
         max_length=255,
-        verbose_name=_('Payment Method'),
+        verbose_name=_("Payment Method"),
         blank=True,
         null=True,
     )
 
     stripe_setup_intent_id = models.CharField(
         max_length=255,
-        verbose_name=_('Setup Intent ID'),
+        verbose_name=_("Setup Intent ID"),
         blank=True,
         null=True,
     )

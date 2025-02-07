@@ -11,13 +11,22 @@ class Select2Mixin:
         if value and value[0]:
             for i, selected in enumerate(self.choices.queryset.filter(pk__in=value)):
                 yield self.create_option(
-                    None, self.choices.field.prepare_value(selected), self.choices.field.label_from_instance(selected), True, i, subindex=None, attrs=attrs
+                    None,
+                    self.choices.field.prepare_value(selected),
+                    self.choices.field.label_from_instance(selected),
+                    True,
+                    i,
+                    subindex=None,
+                    attrs=attrs
                 )
         return
 
     def optgroups(self, name, value, attrs=None):
         if value:
-            return [(None, [c], i) for i, c in enumerate(self.options(name, value, attrs))]
+            return [
+                (None, [c], i)
+                for i, c in enumerate(self.options(name, value, attrs))
+            ]
         return
 
 
@@ -30,9 +39,18 @@ class Select2Multiple(Select2Mixin, forms.SelectMultiple):
 
 
 class Select2ItemVarQuotaMixin(Select2Mixin):
+
     def options(self, name, value, attrs=None):
         if value and value[0]:
-            yield self.create_option(None, value[0], dict(self.choices)[value[0]], True, 0, subindex=None, attrs=attrs)
+            yield self.create_option(
+                None,
+                value[0],
+                dict(self.choices)[value[0]],
+                True,
+                0,
+                subindex=None,
+                attrs=attrs
+            )
         return
 
 

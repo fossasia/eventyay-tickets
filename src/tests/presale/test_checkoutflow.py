@@ -12,7 +12,10 @@ from pretix.presale.checkoutflowstep import BaseCheckoutFlowStep
 @pytest.fixture
 def event():
     o = Organizer.objects.create(name='MRMCD', slug='mrmcd')
-    e = Event.objects.create(organizer=o, name='MRMCD2015', slug='2015', date_from=now(), live=True)
+    e = Event.objects.create(
+        organizer=o, name='MRMCD2015', slug='2015',
+        date_from=now(), live=True
+    )
     with scope(organizer=o):
         yield e
 
@@ -29,7 +32,9 @@ def req_with_session():
 @pytest.mark.django_db
 def test_flow_order(event):
     orig_flow = checkoutflow.DEFAULT_FLOW
-    checkoutflow.DEFAULT_FLOW = (checkoutflow.ConfirmStep, checkoutflow.PaymentStep, checkoutflow.QuestionsStep)
+    checkoutflow.DEFAULT_FLOW = (
+        checkoutflow.ConfirmStep, checkoutflow.PaymentStep, checkoutflow.QuestionsStep
+    )
     flow = checkoutflow.get_checkout_flow(event)
     assert all(flow[i].priority <= flow[i + 1].priority for i in range(len(flow) - 1))
     checkoutflow.DEFAULT_FLOW = orig_flow
@@ -45,7 +50,6 @@ def test_double_linked_list(event):
 @pytest.mark.django_db
 def test_plugins_called(event, mocker):
     from pretix.presale.signals import checkout_flow_steps
-
     mocker.patch('pretix.presale.signals.checkout_flow_steps.send')
     checkoutflow.get_checkout_flow(event)
     checkout_flow_steps.send.assert_called_once_with(event)
@@ -53,7 +57,6 @@ def test_plugins_called(event, mocker):
 
 def with_mocked_step(mocker, step, event):
     from pretix.presale.signals import checkout_flow_steps
-
     mocker.patch('pretix.presale.signals.checkout_flow_steps.send')
     checkout_flow_steps.send.return_value = [(None, step)]
     return checkoutflow.get_checkout_flow(event)

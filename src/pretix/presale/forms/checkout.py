@@ -10,9 +10,7 @@ from phonenumbers import NumberParseException
 from phonenumbers.data import _COUNTRY_CODE_TO_REGION_CODE
 
 from pretix.base.forms.questions import (
-    BaseInvoiceAddressForm,
-    BaseQuestionsForm,
-    WrappedPhoneNumberPrefixWidget,
+    BaseInvoiceAddressForm, BaseQuestionsForm, WrappedPhoneNumberPrefixWidget,
     guess_country,
 )
 from pretix.base.i18n import get_babel_locale, language
@@ -22,7 +20,10 @@ from pretix.presale.signals import contact_form_fields
 
 class ContactForm(forms.Form):
     required_css_class = 'required'
-    email = forms.EmailField(label=_('E-mail'), validators=[EmailBanlistValidator()], widget=forms.EmailInput(attrs={'autocomplete': 'section-contact email'}))
+    email = forms.EmailField(label=_('E-mail'),
+                             validators=[EmailBanlistValidator()],
+                             widget=forms.EmailInput(attrs={'autocomplete': 'section-contact email'})
+                             )
 
     def __init__(self, *args, **kwargs):
         self.event = kwargs.pop('event')
@@ -45,7 +46,7 @@ class ContactForm(forms.Form):
                         default_prefix = prefix
                 try:
                     initial = self.initial.pop('phone', None)
-                    initial = PhoneNumber().from_string(initial) if initial else '+{}.'.format(default_prefix)
+                    initial = PhoneNumber().from_string(initial) if initial else "+{}.".format(default_prefix)
                 except NumberParseException:
                     initial = None
                 self.fields['phone'] = PhoneNumberField(
@@ -56,7 +57,7 @@ class ContactForm(forms.Form):
                     # a country code but no number as an initial value. It's a bit hacky, but should be stable for
                     # the future.
                     initial=initial,
-                    widget=WrappedPhoneNumberPrefixWidget(),
+                    widget=WrappedPhoneNumberPrefixWidget()
                 )
 
         if not self.request.session.get('iframe_session', False):
@@ -89,6 +90,7 @@ class InvoiceAddressForm(BaseInvoiceAddressForm):
 
 
 class InvoiceNameForm(InvoiceAddressForm):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for f in list(self.fields.keys()):
@@ -102,7 +104,6 @@ class QuestionsForm(BaseQuestionsForm):
     the attendee name for admission tickets, if the corresponding setting is enabled,
     as well as additional questions defined by the organizer.
     """
-
     required_css_class = 'required'
 
 
@@ -122,21 +123,17 @@ class AddOnRadioSelect(forms.RadioSelect):
             subgroup = []
             groups.append((group_name, subgroup, index))
 
-            selected = force_str(option_value) in value and (has_selected is False or self.allow_multiple_selected)
+            selected = (
+                force_str(option_value) in value and
+                (has_selected is False or self.allow_multiple_selected)
+            )
             if selected is True and has_selected is False:
                 has_selected = True
             attrs['description'] = option_desc
-            subgroup.append(
-                self.create_option(
-                    name,
-                    option_value,
-                    option_label,
-                    selected,
-                    index,
-                    subindex=None,
-                    attrs=attrs,
-                )
-            )
+            subgroup.append(self.create_option(
+                name, option_value, option_label, selected, index,
+                subindex=None, attrs=attrs,
+            ))
 
         return groups
 

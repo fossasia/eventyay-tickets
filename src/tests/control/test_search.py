@@ -6,14 +6,7 @@ from django_scopes import scopes_disabled
 from tests.base import SoupTest
 
 from pretix.base.models import (
-    Event,
-    InvoiceAddress,
-    Item,
-    Order,
-    OrderPosition,
-    Organizer,
-    Team,
-    User,
+    Event, InvoiceAddress, Item, Order, OrderPosition, Organizer, Team, User,
 )
 
 
@@ -24,52 +17,50 @@ class OrderSearchTest(SoupTest):
         self.user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
         self.orga1 = Organizer.objects.create(name='CCC', slug='ccc')
         self.event1 = Event.objects.create(
-            organizer=self.orga1,
-            name='30C3',
-            slug='30c3',
+            organizer=self.orga1, name='30C3', slug='30c3',
             date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc),
-            plugins='pretix.plugins.banktransfer,tests.testdummy',
+            plugins='pretix.plugins.banktransfer,tests.testdummy'
         )
         self.event2 = Event.objects.create(
-            organizer=self.orga1,
-            name='31C3',
-            slug='31c3',
+            organizer=self.orga1, name='31C3', slug='31c3',
             date_from=datetime.datetime(2014, 12, 26, tzinfo=datetime.timezone.utc),
         )
 
         o1 = Order.objects.create(
-            code='FO1A',
-            event=self.event1,
-            email='dummy1@dummy.test',
+            code='FO1A', event=self.event1, email='dummy1@dummy.test',
             status=Order.STATUS_PENDING,
-            datetime=now(),
-            expires=now() + datetime.timedelta(days=10),
-            total=14,
-            locale='en',
+            datetime=now(), expires=now() + datetime.timedelta(days=10),
+            total=14, locale='en'
         )
-        InvoiceAddress.objects.create(order=o1, company='Test Ltd.', name_parts={'full_name': 'Peter Miller', '_scheme': 'full'})
-        ticket1 = Item.objects.create(event=self.event1, name='Early-bird ticket', category=None, default_price=23, admission=True)
+        InvoiceAddress.objects.create(order=o1, company="Test Ltd.", name_parts={'full_name': "Peter Miller", "_scheme": "full"})
+        ticket1 = Item.objects.create(event=self.event1, name='Early-bird ticket',
+                                      category=None, default_price=23,
+                                      admission=True)
         OrderPosition.objects.create(
             order=o1,
             item=ticket1,
             variation=None,
-            price=Decimal('14'),
-            attendee_name_parts={'full_name': 'Peter', '_scheme': 'full'},
-            attendee_email='att@att.com',
+            price=Decimal("14"),
+            attendee_name_parts={'full_name': "Peter", "_scheme": "full"},
+            attendee_email="att@att.com"
         )
 
         o2 = Order.objects.create(
-            code='FO2',
-            event=self.event2,
-            email='dummy2@dummy.test',
+            code='FO2', event=self.event2, email='dummy2@dummy.test',
             status=Order.STATUS_PENDING,
-            datetime=now(),
-            expires=now() + datetime.timedelta(days=10),
-            total=14,
-            locale='en',
+            datetime=now(), expires=now() + datetime.timedelta(days=10),
+            total=14, locale='en'
         )
-        ticket2 = Item.objects.create(event=self.event1, name='Early-bird ticket', category=None, default_price=23, admission=True)
-        OrderPosition.objects.create(order=o2, item=ticket2, variation=None, price=Decimal('14'), attendee_name_parts={'full_name': 'Mark', '_scheme': 'full'})
+        ticket2 = Item.objects.create(event=self.event1, name='Early-bird ticket',
+                                      category=None, default_price=23,
+                                      admission=True)
+        OrderPosition.objects.create(
+            order=o2,
+            item=ticket2,
+            variation=None,
+            price=Decimal("14"),
+            attendee_name_parts={'full_name': "Mark", "_scheme": "full"}
+        )
 
         self.team = Team.objects.create(organizer=self.orga1, can_view_orders=True)
         self.team.members.add(self.user)

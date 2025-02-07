@@ -9,7 +9,11 @@ def custom_exception_handler(exc, context):
 
     if isinstance(exc, LockTimeoutException):
         response = Response(
-            {'detail': 'The server was too busy to process your request. Please try again.'}, status=status.HTTP_409_CONFLICT, headers={'Retry-After': 5}
+            {'detail': 'The server was too busy to process your request. Please try again.'},
+            status=status.HTTP_409_CONFLICT,
+            headers={
+                'Retry-After': 5
+            }
         )
 
     return response

@@ -11,17 +11,13 @@ from pretix.base.models.auth import StaffSession
 from pretix.base.models.page import Page
 from pretix.base.settings import GlobalSettingsObject
 from pretix.control.navigation import (
-    get_admin_navigation,
-    get_event_navigation,
-    get_global_navigation,
+    get_admin_navigation, get_event_navigation, get_global_navigation,
     get_organizer_navigation,
 )
 
 from ..eventyay_common.utils import EventCreatedFor
 from ..helpers.i18n import (
-    get_javascript_format,
-    get_javascript_output_format,
-    get_moment_locale,
+    get_javascript_format, get_javascript_output_format, get_moment_locale,
 )
 from ..helpers.plugin_enable import is_video_enabled
 from ..multidomain.urlreverse import get_event_domain
@@ -57,12 +53,17 @@ def _default_context(request):
     if hasattr(request, 'event') and request.user.is_authenticated:
         for receiver, response in html_head.send(request.event, request=request):
             _html_head.append(response)
-        ctx['talk_edit_url'] = settings.TALK_HOSTNAME + '/orga/event/' + request.event.slug
+        ctx["talk_edit_url"] = (
+            settings.TALK_HOSTNAME + "/orga/event/" + request.event.slug
+        )
         ctx['is_video_enabled'] = is_video_enabled(request.event)
-        ctx['is_talk_event_created'] = False
-        if request.event.settings.create_for == EventCreatedFor.BOTH.value or request.event.settings.talk_schedule_public is not None:
-            ctx['is_talk_event_created'] = True
-    ctx['html_head'] = ''.join(_html_head)
+        ctx["is_talk_event_created"] = False
+        if (
+            request.event.settings.create_for == EventCreatedFor.BOTH.value
+            or request.event.settings.talk_schedule_public is not None
+        ):
+            ctx["is_talk_event_created"] = True
+    ctx['html_head'] = "".join(_html_head)
 
     _js_payment_weekdays_disabled = '[]'
     if getattr(request, 'event', None) and hasattr(request, 'organizer') and request.user.is_authenticated:
@@ -138,9 +139,10 @@ def _default_context(request):
     if request.user.is_authenticated:
         ctx['staff_session'] = request.user.has_active_staff_session(request.session.session_key)
         ctx['staff_need_to_explain'] = (
-            StaffSession.objects.filter(user=request.user, date_end__isnull=False).filter(Q(comment__isnull=True) | Q(comment=''))
-            if request.user.is_staff and settings.PRETIX_ADMIN_AUDIT_COMMENTS
-            else StaffSession.objects.none()
+            StaffSession.objects.filter(user=request.user, date_end__isnull=False).filter(
+                Q(comment__isnull=True) | Q(comment="")
+            )
+            if request.user.is_staff and settings.PRETIX_ADMIN_AUDIT_COMMENTS else StaffSession.objects.none()
         )
 
     ctx['talk_hostname'] = settings.TALK_HOSTNAME

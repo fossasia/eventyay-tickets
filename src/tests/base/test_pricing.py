@@ -13,7 +13,10 @@ from pretix.base.services.pricing import get_price
 @pytest.fixture
 def event():
     o = Organizer.objects.create(name='Dummy', slug='dummy')
-    event = Event.objects.create(organizer=o, name='Dummy', slug='dummy', date_from=now())
+    event = Event.objects.create(
+        organizer=o, name='Dummy', slug='dummy',
+        date_from=now()
+    )
     return event
 
 
@@ -226,8 +229,14 @@ def test_tax_added(item):
 @pytest.mark.django_db
 def test_tax_reverse_charge_valid(item):
     item.default_price = Decimal('100.00')
-    item.tax_rule = item.event.tax_rules.create(rate=Decimal('19.00'), price_includes_tax=False, eu_reverse_charge=True, home_country=Country('DE'))
-    ia = InvoiceAddress(is_business=True, vat_id='EU1234', vat_id_validated=True, country=Country('BE'))
+    item.tax_rule = item.event.tax_rules.create(
+        rate=Decimal('19.00'), price_includes_tax=False,
+        eu_reverse_charge=True, home_country=Country('DE')
+    )
+    ia = InvoiceAddress(
+        is_business=True, vat_id="EU1234", vat_id_validated=True,
+        country=Country('BE')
+    )
     assert item.tax_rule.is_reverse_charge(ia)
     assert get_price(item, invoice_address=ia).gross == Decimal('100.00')
 
@@ -235,8 +244,14 @@ def test_tax_reverse_charge_valid(item):
 @pytest.mark.django_db
 def test_tax_reverse_charge_disabled(item):
     item.default_price = Decimal('100.00')
-    item.tax_rule = item.event.tax_rules.create(rate=Decimal('19.00'), price_includes_tax=False, eu_reverse_charge=False, home_country=Country('DE'))
-    ia = InvoiceAddress(is_business=True, vat_id='EU1234', vat_id_validated=True, country=Country('BE'))
+    item.tax_rule = item.event.tax_rules.create(
+        rate=Decimal('19.00'), price_includes_tax=False,
+        eu_reverse_charge=False, home_country=Country('DE')
+    )
+    ia = InvoiceAddress(
+        is_business=True, vat_id="EU1234", vat_id_validated=True,
+        country=Country('BE')
+    )
     assert not item.tax_rule.is_reverse_charge(ia)
     assert get_price(item, invoice_address=ia).gross == Decimal('119.00')
 
@@ -244,11 +259,12 @@ def test_tax_reverse_charge_disabled(item):
 @pytest.mark.django_db
 def test_tax_reverse_charge_no_country(item):
     item.default_price = Decimal('100.00')
-    item.tax_rule = item.event.tax_rules.create(rate=Decimal('19.00'), price_includes_tax=False, eu_reverse_charge=True, home_country=Country('DE'))
+    item.tax_rule = item.event.tax_rules.create(
+        rate=Decimal('19.00'), price_includes_tax=False,
+        eu_reverse_charge=True, home_country=Country('DE')
+    )
     ia = InvoiceAddress(
-        is_business=True,
-        vat_id='EU1234',
-        vat_id_validated=True,
+        is_business=True, vat_id="EU1234", vat_id_validated=True,
     )
     assert not item.tax_rule.is_reverse_charge(ia)
     assert get_price(item, invoice_address=ia).gross == Decimal('119.00')
@@ -257,8 +273,13 @@ def test_tax_reverse_charge_no_country(item):
 @pytest.mark.django_db
 def test_tax_reverse_charge_non_eu_country(item):
     item.default_price = Decimal('100.00')
-    item.tax_rule = item.event.tax_rules.create(rate=Decimal('19.00'), price_includes_tax=False, eu_reverse_charge=True, home_country=Country('DE'))
-    ia = InvoiceAddress(country=Country('US'))
+    item.tax_rule = item.event.tax_rules.create(
+        rate=Decimal('19.00'), price_includes_tax=False,
+        eu_reverse_charge=True, home_country=Country('DE')
+    )
+    ia = InvoiceAddress(
+        country=Country('US')
+    )
     assert not item.tax_rule.is_reverse_charge(ia)
     assert get_price(item, invoice_address=ia).gross == Decimal('100.00')
 
@@ -266,8 +287,14 @@ def test_tax_reverse_charge_non_eu_country(item):
 @pytest.mark.django_db
 def test_tax_reverse_charge_same_country(item):
     item.default_price = Decimal('100.00')
-    item.tax_rule = item.event.tax_rules.create(rate=Decimal('19.00'), price_includes_tax=False, eu_reverse_charge=True, home_country=Country('DE'))
-    ia = InvoiceAddress(is_business=True, vat_id='EU1234', vat_id_validated=True, country=Country('DE'))
+    item.tax_rule = item.event.tax_rules.create(
+        rate=Decimal('19.00'), price_includes_tax=False,
+        eu_reverse_charge=True, home_country=Country('DE')
+    )
+    ia = InvoiceAddress(
+        is_business=True, vat_id="EU1234", vat_id_validated=True,
+        country=Country('DE')
+    )
     assert not item.tax_rule.is_reverse_charge(ia)
     assert get_price(item, invoice_address=ia).gross == Decimal('119.00')
 
@@ -275,8 +302,13 @@ def test_tax_reverse_charge_same_country(item):
 @pytest.mark.django_db
 def test_tax_reverse_charge_consumer(item):
     item.default_price = Decimal('100.00')
-    item.tax_rule = item.event.tax_rules.create(rate=Decimal('19.00'), price_includes_tax=False, eu_reverse_charge=True, home_country=Country('DE'))
-    ia = InvoiceAddress(is_business=False, country=Country('BE'))
+    item.tax_rule = item.event.tax_rules.create(
+        rate=Decimal('19.00'), price_includes_tax=False,
+        eu_reverse_charge=True, home_country=Country('DE')
+    )
+    ia = InvoiceAddress(
+        is_business=False, country=Country('BE')
+    )
     assert not item.tax_rule.is_reverse_charge(ia)
     assert get_price(item, invoice_address=ia).gross == Decimal('119.00')
 
@@ -284,8 +316,14 @@ def test_tax_reverse_charge_consumer(item):
 @pytest.mark.django_db
 def test_tax_reverse_charge_invalid_vat_id(item):
     item.default_price = Decimal('100.00')
-    item.tax_rule = item.event.tax_rules.create(rate=Decimal('19.00'), price_includes_tax=False, eu_reverse_charge=True, home_country=Country('DE'))
-    ia = InvoiceAddress(is_business=True, vat_id='EU1234', vat_id_validated=False, country=Country('BE'))
+    item.tax_rule = item.event.tax_rules.create(
+        rate=Decimal('19.00'), price_includes_tax=False,
+        eu_reverse_charge=True, home_country=Country('DE')
+    )
+    ia = InvoiceAddress(
+        is_business=True, vat_id="EU1234", vat_id_validated=False,
+        country=Country('BE')
+    )
     assert not item.tax_rule.is_reverse_charge(ia)
     assert get_price(item, invoice_address=ia).gross == Decimal('119.00')
 
@@ -294,9 +332,15 @@ def test_tax_reverse_charge_invalid_vat_id(item):
 def test_country_specific_rule_net_based(item):
     item.default_price = Decimal('100.00')
     item.tax_rule = item.event.tax_rules.create(
-        rate=Decimal('19.00'), price_includes_tax=False, custom_rules=json.dumps([{'country': 'BE', 'address_type': '', 'action': 'vat', 'rate': '100.00'}])
+        rate=Decimal('19.00'), price_includes_tax=False,
+        custom_rules=json.dumps([
+            {'country': 'BE', 'address_type': '', 'action': 'vat', 'rate': '100.00'}
+        ])
     )
-    ia = InvoiceAddress(is_business=True, vat_id='EU1234', vat_id_validated=True, country=Country('BE'))
+    ia = InvoiceAddress(
+        is_business=True, vat_id="EU1234", vat_id_validated=True,
+        country=Country('BE')
+    )
     assert get_price(item, invoice_address=ia).gross == Decimal('200.00')
 
 
@@ -304,7 +348,13 @@ def test_country_specific_rule_net_based(item):
 def test_country_specific_rule_gross_based(item):
     item.default_price = Decimal('100.00')
     item.tax_rule = item.event.tax_rules.create(
-        rate=Decimal('19.00'), price_includes_tax=True, custom_rules=json.dumps([{'country': 'BE', 'address_type': '', 'action': 'vat', 'rate': '100.00'}])
+        rate=Decimal('19.00'), price_includes_tax=True,
+        custom_rules=json.dumps([
+            {'country': 'BE', 'address_type': '', 'action': 'vat', 'rate': '100.00'}
+        ])
     )
-    ia = InvoiceAddress(is_business=True, vat_id='EU1234', vat_id_validated=True, country=Country('BE'))
+    ia = InvoiceAddress(
+        is_business=True, vat_id="EU1234", vat_id_validated=True,
+        country=Country('BE')
+    )
     assert get_price(item, invoice_address=ia).gross == Decimal('168.06')

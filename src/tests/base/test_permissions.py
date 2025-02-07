@@ -16,7 +16,10 @@ def organizer():
 
 @pytest.fixture
 def event(organizer):
-    event = Event.objects.create(organizer=organizer, name='Dummy', slug='dummy', date_from=now())
+    event = Event.objects.create(
+        organizer=organizer, name='Dummy', slug='dummy',
+        date_from=now()
+    )
     return event
 
 
@@ -146,7 +149,10 @@ def test_event_permissions_multiple_teams(event, user):
     team1 = Team.objects.create(organizer=event.organizer, can_change_orders=True, all_events=True)
     team2 = Team.objects.create(organizer=event.organizer, can_change_vouchers=True)
     team3 = Team.objects.create(organizer=event.organizer, can_change_event_settings=True)
-    event2 = Event.objects.create(organizer=event.organizer, name='Dummy', slug='dummy2', date_from=now())
+    event2 = Event.objects.create(
+        organizer=event.organizer, name='Dummy', slug='dummy2',
+        date_from=now()
+    )
     team1.members.add(user)
     team2.members.add(user)
     team3.members.add(user)
@@ -157,7 +163,8 @@ def test_event_permissions_multiple_teams(event, user):
     assert user.has_event_permission(event.organizer, event, 'can_change_vouchers')
     assert not user.has_event_permission(event.organizer, event, 'can_change_event_settings')
     assert user.get_event_permission_set(event.organizer, event) == {'can_change_orders', 'can_change_vouchers'}
-    assert user.get_event_permission_set(event.organizer, event2) == {'can_change_orders', 'can_change_event_settings', 'can_change_settings'}
+    assert user.get_event_permission_set(event.organizer, event2) == {'can_change_orders', 'can_change_event_settings',
+                                                                      'can_change_settings'}
 
 
 @pytest.mark.django_db
@@ -222,10 +229,19 @@ def test_superuser(event, admin, admin_request):
 @pytest.mark.django_db
 def test_list_of_events(event, user, admin, admin_request):
     orga2 = Organizer.objects.create(slug='d2', name='d2')
-    event2 = Event.objects.create(organizer=event.organizer, name='Dummy', slug='dummy2', date_from=now())
-    event3 = Event.objects.create(organizer=orga2, name='Dummy', slug='dummy3', date_from=now())
-    event4 = Event.objects.create(organizer=orga2, name='Dummy', slug='dummy4', date_from=now())
-    User.objects.filter(email='admin@localhost').delete()
+    event2 = Event.objects.create(
+        organizer=event.organizer, name='Dummy', slug='dummy2',
+        date_from=now()
+    )
+    event3 = Event.objects.create(
+        organizer=orga2, name='Dummy', slug='dummy3',
+        date_from=now()
+    )
+    event4 = Event.objects.create(
+        organizer=orga2, name='Dummy', slug='dummy4',
+        date_from=now()
+    )
+    User.objects.filter(email="admin@localhost").delete()
 
     assert not user.get_events_with_any_permission()
 

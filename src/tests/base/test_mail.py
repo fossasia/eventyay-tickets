@@ -14,7 +14,10 @@ from pretix.base.services.mail import mail
 @pytest.fixture
 def env():
     o = Organizer.objects.create(name='Dummy', slug='dummy')
-    event = Event.objects.create(organizer=o, name='Dummy', slug='dummy', date_from=now())
+    event = Event.objects.create(
+        organizer=o, name='Dummy', slug='dummy',
+        date_from=now()
+    )
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
     user.email = 'dummy@dummy.dummy'
     user.save()
@@ -73,7 +76,10 @@ def test_send_mail_with_default_sender(env):
 
 
 @pytest.mark.django_db
-@pytest.mark.skipif(not os.path.exists(os.path.join(settings.LOCALE_PATHS[0], 'de', 'LC_MESSAGES', 'django.mo')), reason='requires locale files to be compiled')
+@pytest.mark.skipif(
+    not os.path.exists(os.path.join(settings.LOCALE_PATHS[0], 'de', 'LC_MESSAGES', 'django.mo')),
+    reason="requires locale files to be compiled"
+)
 def test_send_mail_with_user_locale(env):
     djmail.outbox = []
     event, user, organizer = env
@@ -91,7 +97,7 @@ def test_send_mail_with_user_locale(env):
 def test_sendmail_placeholder(env):
     djmail.outbox = []
     event, user, organizer = env
-    mail('dummy@dummy.dummy', '{event} Test subject', 'mailtest.txt', {'event': event}, event)
+    mail('dummy@dummy.dummy', '{event} Test subject', 'mailtest.txt', {"event": event}, event)
 
     assert len(djmail.outbox) == 1
     assert djmail.outbox[0].to == [user.email]

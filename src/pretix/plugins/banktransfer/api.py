@@ -24,7 +24,8 @@ class BankTransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BankTransaction
-        fields = ('state', 'message', 'checksum', 'payer', 'reference', 'amount', 'date', 'order', 'comment', 'iban', 'bic')
+        fields = ('state', 'message', 'checksum', 'payer', 'reference', 'amount', 'date', 'order',
+                  'comment', 'iban', 'bic')
 
 
 class BankImportJobSerializer(serializers.ModelSerializer):
@@ -72,24 +73,23 @@ class BankImportJobViewSet(CreateModelMixin, viewsets.ReadOnlyModelViewSet):
         return serializer.save()
 
     def create(self, request, *args, **kwargs):
-        perm_holder = request.auth if isinstance(request.auth, (Device, TeamAPIToken)) else request.user
+        perm_holder = (request.auth if isinstance(request.auth, (Device, TeamAPIToken)) else request.user)
         if not perm_holder.has_organizer_permission(request.organizer, 'can_change_orders'):
             raise PermissionDenied('Invalid set of permissions')
 
-        if (
-            BankImportJob.objects.filter(Q(organizer=request.organizer))
-            .filter(
-                state=BankImportJob.STATE_RUNNING,
-                created__lte=now() - timedelta(minutes=30),  # safety timeout
-            )
-            .exists()
-        ):
+        if BankImportJob.objects.filter(Q(organizer=request.organizer)).filter(
+            state=BankImportJob.STATE_RUNNING,
+            created__lte=now() - timedelta(minutes=30)  # safety timeout
+        ).exists():
             return Response({'error': ['A job is currently running.']}, status=status.HTTP_409_CONFLICT)
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         job = self.perform_create(serializer)
-        process_banktransfers.apply_async(kwargs={'job': job.pk, 'data': job._data})
+        process_banktransfers.apply_async(kwargs={
+            'job': job.pk,
+            'data': job._data
+        })
         job.refresh_from_db()
         return Response(self.get_serializer(instance=job).data, status=status.HTTP_201_CREATED)
 

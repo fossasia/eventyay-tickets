@@ -11,7 +11,10 @@ from pretix.multidomain.models import KnownDomain
 @pytest.fixture
 def env():
     o = Organizer.objects.create(name='MRMCD', slug='mrmcd')
-    event = Event.objects.create(organizer=o, name='MRMCD2015', slug='2015', date_from=now())
+    event = Event.objects.create(
+        organizer=o, name='MRMCD2015', slug='2015',
+        date_from=now()
+    )
     settings.SITE_URL = 'http://example.com'
     event.get_cache().clear()
     return o, event
@@ -23,27 +26,35 @@ TEMPLATE_KWARGS = Template("{% load eventurl %} {% eventurl event 'presale:event
 
 @pytest.mark.django_db
 def test_event_main_domain_front_page(env):
-    rendered = TEMPLATE_FRONT_PAGE.render(Context({'event': env[1]})).strip()
+    rendered = TEMPLATE_FRONT_PAGE.render(Context({
+        'event': env[1]
+    })).strip()
     assert rendered == '/mrmcd/2015/'
 
 
 @pytest.mark.django_db
 def test_event_custom_domain_front_page(env):
     KnownDomain.objects.create(domainname='foobar', organizer=env[0])
-    rendered = TEMPLATE_FRONT_PAGE.render(Context({'event': env[1]})).strip()
+    rendered = TEMPLATE_FRONT_PAGE.render(Context({
+        'event': env[1]
+    })).strip()
     assert rendered == 'http://foobar/2015/'
 
 
 @pytest.mark.django_db
 def test_event_main_domain_kwargs(env):
-    rendered = TEMPLATE_KWARGS.render(Context({'event': env[1]})).strip()
+    rendered = TEMPLATE_KWARGS.render(Context({
+        'event': env[1]
+    })).strip()
     assert rendered == '/mrmcd/2015/checkout/payment/'
 
 
 @pytest.mark.django_db
 def test_event_custom_domain_kwargs(env):
     KnownDomain.objects.create(domainname='foobar', organizer=env[0])
-    rendered = TEMPLATE_KWARGS.render(Context({'event': env[1]})).strip()
+    rendered = TEMPLATE_KWARGS.render(Context({
+        'event': env[1]
+    })).strip()
     assert rendered == 'http://foobar/2015/checkout/payment/'
 
 
@@ -57,7 +68,9 @@ def test_only_kwargs(env):
 def test_invalid_url(env):
     tpl = Template("{% load eventurl %} {% eventurl event 'presale:event.foo' %}")
     with pytest.raises(NoReverseMatch):
-        tpl.render(Context({'event': env[1]})).strip()
+        tpl.render(Context({
+            'event': env[1]
+        })).strip()
 
 
 @pytest.mark.django_db
@@ -69,5 +82,7 @@ def test_without_event(env):
 @pytest.mark.django_db
 def test_save_as(env):
     tpl = Template("{% load eventurl %} {% eventurl event 'presale:event.index' as u %}{{ u }}")
-    rendered = tpl.render(Context({'event': env[1]})).strip()
+    rendered = tpl.render(Context({
+        'event': env[1]
+    })).strip()
     assert rendered == '/mrmcd/2015/'

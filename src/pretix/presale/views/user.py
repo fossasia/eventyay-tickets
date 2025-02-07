@@ -31,18 +31,12 @@ class ResendLinkView(EventViewMixin, TemplateView):
 
         if settings.HAS_REDIS:
             from django_redis import get_redis_connection
-
-            rc = get_redis_connection('redis')
+            rc = get_redis_connection("redis")
             if rc.exists('pretix_resend_{}_{}'.format(request.event.pk, user)):
-                messages.error(
-                    request,
-                    _(
-                        'If the email address you entered is valid and associated with a ticket, we have '
-                        'already sent you an email with a link to your ticket in the past {number} hours. '
-                        'If the email did not arrive, please your check spam folder and also double check '
-                        'that you used the correct email address.'
-                    ).format(number=24),
-                )
+                messages.error(request, _('If the email address you entered is valid and associated with a ticket, we have '
+                                          'already sent you an email with a link to your ticket in the past {number} hours. '
+                                          'If the email did not arrive, please your check spam folder and also double check '
+                                          'that you used the correct email address.').format(number=24))
                 return redirect(eventreverse(self.request.event, 'presale:event.resend_link'))
             else:
                 rc.setex('pretix_resend_{}_{}'.format(request.event.pk, user), 3600 * 24, '1')

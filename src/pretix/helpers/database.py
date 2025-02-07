@@ -73,14 +73,14 @@ class GroupConcat(Aggregate):
 
     def as_postgresql(self, compiler, connection):
         return super().as_sql(
-            compiler,
-            connection,
+            compiler, connection,
             function='string_agg',
             template="%(function)s(%(field)s::text, '%(separator)s')",
         )
 
 
 class ReplicaRouter:
+
     def db_for_read(self, model, **hints):
         return 'default'
 
@@ -109,7 +109,7 @@ class NotEqual(Lookup):
 
 
 def _of_self():
-    return ('self',) if connection.features.has_select_for_update_of else ()
+    return ("self",) if connection.features.has_select_for_update_of else ()
 
 
 OF_SELF = lazy(_of_self, tuple)()

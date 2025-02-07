@@ -12,7 +12,7 @@ class FakePytestConfig:
 def mocker_context():
     result = MockFixture(FakePytestConfig())
     if result is None:
-        raise ValueError('MockFixture could not be initialized properly')
+        raise ValueError("MockFixture could not be initialized properly")
     try:
         yield result
     finally:

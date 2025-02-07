@@ -5,40 +5,43 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     dependencies = [
-        ('pretixbase', '0003_event_is_video_creation_and_more'),
+        ("pretixbase", "0003_event_is_video_creation_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='OrganizerBillingModel',
+            name="OrganizerBillingModel",
             fields=[
                 (
-                    'id',
-                    models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
                 ),
-                ('primary_contact_name', models.CharField(max_length=255)),
-                ('primary_contact_email', models.EmailField(max_length=255)),
-                ('company_or_organization_name', models.CharField(max_length=255)),
-                ('address_line_1', models.CharField(max_length=255)),
-                ('address_line_2', models.CharField(max_length=255)),
-                ('city', models.CharField(max_length=255)),
-                ('zip_code', models.CharField(max_length=255)),
-                ('country', models.CharField(max_length=255)),
-                ('preferred_language', models.CharField(max_length=255)),
-                ('tax_id', models.CharField(max_length=255)),
-                ('stripe_customer_id', models.CharField(max_length=255, null=True)),
+                ("primary_contact_name", models.CharField(max_length=255)),
+                ("primary_contact_email", models.EmailField(max_length=255)),
+                ("company_or_organization_name", models.CharField(max_length=255)),
+                ("address_line_1", models.CharField(max_length=255)),
+                ("address_line_2", models.CharField(max_length=255)),
+                ("city", models.CharField(max_length=255)),
+                ("zip_code", models.CharField(max_length=255)),
+                ("country", models.CharField(max_length=255)),
+                ("preferred_language", models.CharField(max_length=255)),
+                ("tax_id", models.CharField(max_length=255)),
+                ("stripe_customer_id", models.CharField(max_length=255, null=True)),
                 (
-                    'stripe_payment_method_id',
+                    "stripe_payment_method_id",
                     models.CharField(max_length=255, null=True),
                 ),
-                ('stripe_setup_intent_id', models.CharField(max_length=255, null=True)),
+                ("stripe_setup_intent_id", models.CharField(max_length=255, null=True)),
                 (
-                    'organizer',
+                    "organizer",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='billing',
-                        to='pretixbase.organizer',
+                        related_name="billing",
+                        to="pretixbase.organizer",
                     ),
                 ),
             ],

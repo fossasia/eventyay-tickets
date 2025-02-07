@@ -27,7 +27,10 @@ class IdempotencyMiddleware:
         if not request.headers.get('X-Idempotency-Key'):
             return self.get_response(request)
 
-        auth_hash_parts = '{}:{}'.format(request.headers.get('Authorization', ''), request.COOKIES.get(settings.SESSION_COOKIE_NAME, ''))
+        auth_hash_parts = '{}:{}'.format(
+            request.headers.get('Authorization', ''),
+            request.COOKIES.get(settings.SESSION_COOKIE_NAME, '')
+        )
         auth_hash = sha1(auth_hash_parts.encode()).hexdigest()
         idempotency_key = request.headers.get('X-Idempotency-Key', '')
 
@@ -41,8 +44,8 @@ class IdempotencyMiddleware:
                     'request_path': request.path,
                     'response_code': 0,
                     'response_headers': '{}',
-                    'response_body': b'',
-                },
+                    'response_body': b''
+                }
             )
 
         if created:
@@ -67,7 +70,8 @@ class IdempotencyMiddleware:
                         call.response_body = repr(resp).encode()
                     call.response_headers = json.dumps(resp.headers._store)
                     call.locked = None
-                    call.save(update_fields=['locked', 'response_code', 'response_headers', 'response_body'])
+                    call.save(update_fields=['locked', 'response_code', 'response_headers',
+                                             'response_body'])
             return resp
         else:
             if call.locked:

@@ -40,25 +40,9 @@ class VoucherSerializer(I18nAwareModelSerializer):
 
     class Meta:
         model = Voucher
-        fields = (
-            'id',
-            'code',
-            'max_usages',
-            'redeemed',
-            'valid_until',
-            'block_quota',
-            'allow_ignore_quota',
-            'price_mode',
-            'value',
-            'item',
-            'variation',
-            'quota',
-            'tag',
-            'comment',
-            'subevent',
-            'show_hidden_items',
-            'seat',
-        )
+        fields = ('id', 'code', 'max_usages', 'redeemed', 'valid_until', 'block_quota',
+                  'allow_ignore_quota', 'price_mode', 'value', 'item', 'variation', 'quota',
+                  'tag', 'comment', 'subevent', 'show_hidden_items', 'seat')
         read_only_fields = ('id', 'redeemed')
         list_serializer_class = VoucherListSerializer
 
@@ -69,35 +53,34 @@ class VoucherSerializer(I18nAwareModelSerializer):
         full_data.update(data)
 
         Voucher.clean_item_properties(
-            full_data,
-            self.context.get('event'),
-            full_data.get('quota'),
-            full_data.get('item'),
-            full_data.get('variation'),
-            block_quota=full_data.get('block_quota'),
+            full_data, self.context.get('event'),
+            full_data.get('quota'), full_data.get('item'), full_data.get('variation'),
+            block_quota=full_data.get('block_quota')
         )
-        Voucher.clean_subevent(full_data, self.context.get('event'))
+        Voucher.clean_subevent(
+            full_data, self.context.get('event')
+        )
         Voucher.clean_max_usages(full_data, self.instance.redeemed if self.instance else 0)
         check_quota = Voucher.clean_quota_needs_checking(
-            full_data,
-            self.instance,
-            item_changed=self.instance
-            and (
-                full_data.get('item') != self.instance.item
-                or full_data.get('variation') != self.instance.variation
-                or full_data.get('quota') != self.instance.quota
+            full_data, self.instance,
+            item_changed=self.instance and (
+                full_data.get('item') != self.instance.item or
+                full_data.get('variation') != self.instance.variation or
+                full_data.get('quota') != self.instance.quota
             ),
-            creating=not self.instance,
+            creating=not self.instance
         )
         if check_quota:
             Voucher.clean_quota_check(
-                full_data, 1, self.instance, self.context.get('event'), full_data.get('quota'), full_data.get('item'), full_data.get('variation')
+                full_data, 1, self.instance, self.context.get('event'),
+                full_data.get('quota'), full_data.get('item'), full_data.get('variation')
             )
         Voucher.clean_voucher_code(full_data, self.context.get('event'), self.instance.pk if self.instance else None)
 
         if full_data.get('seat'):
             data['seat'] = Voucher.clean_seat_id(
-                full_data, full_data.get('item'), full_data.get('quota'), self.context.get('event'), self.instance.pk if self.instance else None
+                full_data, full_data.get('item'), full_data.get('quota'), self.context.get('event'),
+                self.instance.pk if self.instance else None
             )
 
         return data

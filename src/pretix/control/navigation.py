@@ -3,10 +3,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 
 from pretix.control.signals import (
-    nav_event,
-    nav_event_settings,
-    nav_global,
-    nav_organizer,
+    nav_event, nav_event_settings, nav_global, nav_organizer,
 )
 
 
@@ -17,13 +14,10 @@ def get_event_navigation(request: HttpRequest):
     nav = [
         {
             'label': _('Dashboard'),
-            'url': reverse(
-                'control:event.index',
-                kwargs={
-                    'event': request.event.slug,
-                    'organizer': request.event.organizer.slug,
-                },
-            ),
+            'url': reverse('control:event.index', kwargs={
+                'event': request.event.slug,
+                'organizer': request.event.organizer.slug,
+            }),
             'active': (url.url_name == 'event.index'),
             'icon': 'dashboard',
         }
@@ -32,358 +26,265 @@ def get_event_navigation(request: HttpRequest):
         event_settings = [
             {
                 'label': _('General'),
-                'url': reverse(
-                    'control:event.settings',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
+                'url': reverse('control:event.settings', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
                 'active': url.url_name == 'event.settings',
             },
             {
                 'label': _('Payment'),
-                'url': reverse(
-                    'control:event.settings.payment',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
+                'url': reverse('control:event.settings.payment', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
                 'active': url.url_name == 'event.settings.payment',
             },
             {
                 'label': _('Plugins'),
-                'url': reverse(
-                    'control:event.settings.plugins',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
+                'url': reverse('control:event.settings.plugins', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
                 'active': url.url_name == 'event.settings.plugins',
             },
             {
                 'label': _('Tickets'),
-                'url': reverse(
-                    'control:event.settings.tickets',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
+                'url': reverse('control:event.settings.tickets', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
                 'active': url.url_name == 'event.settings.tickets',
             },
             {
                 'label': _('E-mail'),
-                'url': reverse(
-                    'control:event.settings.mail',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
+                'url': reverse('control:event.settings.mail', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
                 'active': url.url_name == 'event.settings.mail',
             },
             {
                 'label': _('Tax rules'),
-                'url': reverse(
-                    'control:event.settings.tax',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
+                'url': reverse('control:event.settings.tax', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
                 'active': url.url_name.startswith('event.settings.tax'),
             },
             {
                 'label': _('Invoicing'),
-                'url': reverse(
-                    'control:event.settings.invoice',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
+                'url': reverse('control:event.settings.invoice', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
                 'active': url.url_name == 'event.settings.invoice',
             },
             {
                 'label': pgettext_lazy('action', 'Cancellation'),
-                'url': reverse(
-                    'control:event.settings.cancel',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
+                'url': reverse('control:event.settings.cancel', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
                 'active': url.url_name == 'event.settings.cancel',
             },
             {
                 'label': _('Widget'),
-                'url': reverse(
-                    'control:event.settings.widget',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
+                'url': reverse('control:event.settings.widget', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
                 'active': url.url_name == 'event.settings.widget',
             },
         ]
-        event_settings += sorted(sum((list(a[1]) for a in nav_event_settings.send(request.event, request=request)), []), key=lambda r: r['label'])
-        nav.append(
-            {
-                'label': _('Settings'),
-                'url': reverse(
-                    'control:event.settings',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
-                'active': False,
-                'icon': 'wrench',
-                'children': event_settings,
-            }
+        event_settings += sorted(
+            sum((list(a[1]) for a in nav_event_settings.send(request.event, request=request)), []),
+            key=lambda r: r['label']
         )
+        nav.append({
+            'label': _('Settings'),
+            'url': reverse('control:event.settings', kwargs={
+                'event': request.event.slug,
+                'organizer': request.event.organizer.slug,
+            }),
+            'active': False,
+            'icon': 'wrench',
+            'children': event_settings
+        })
         if request.event.has_subevents:
-            nav.append(
-                {
-                    'label': pgettext_lazy('subevent', 'Dates'),
-                    'url': reverse(
-                        'control:event.subevents',
-                        kwargs={
-                            'event': request.event.slug,
-                            'organizer': request.event.organizer.slug,
-                        },
-                    ),
-                    'active': ('event.subevent' in url.url_name),
-                    'icon': 'calendar',
-                }
-            )
+            nav.append({
+                'label': pgettext_lazy('subevent', 'Dates'),
+                'url': reverse('control:event.subevents', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
+                'active': ('event.subevent' in url.url_name),
+                'icon': 'calendar',
+            })
 
     if 'can_change_items' in request.eventpermset:
-        nav.append(
-            {
-                'label': _('Products'),
-                'url': reverse(
-                    'control:event.items',
-                    kwargs={
+        nav.append({
+            'label': _('Products'),
+            'url': reverse('control:event.items', kwargs={
+                'event': request.event.slug,
+                'organizer': request.event.organizer.slug,
+            }),
+            'active': False,
+            'icon': 'ticket',
+            'children': [
+                {
+                    'label': _('Products'),
+                    'url': reverse('control:event.items', kwargs={
                         'event': request.event.slug,
                         'organizer': request.event.organizer.slug,
-                    },
-                ),
-                'active': False,
-                'icon': 'ticket',
-                'children': [
-                    {
-                        'label': _('Products'),
-                        'url': reverse(
-                            'control:event.items',
-                            kwargs={
-                                'event': request.event.slug,
-                                'organizer': request.event.organizer.slug,
-                            },
-                        ),
-                        'active': url.url_name in ('event.item', 'event.items.add', 'event.items') or 'event.item.' in url.url_name,
-                    },
-                    {
-                        'label': _('Quotas'),
-                        'url': reverse(
-                            'control:event.items.quotas',
-                            kwargs={
-                                'event': request.event.slug,
-                                'organizer': request.event.organizer.slug,
-                            },
-                        ),
-                        'active': 'event.items.quota' in url.url_name,
-                    },
-                    {
-                        'label': _('Categories'),
-                        'url': reverse(
-                            'control:event.items.categories',
-                            kwargs={
-                                'event': request.event.slug,
-                                'organizer': request.event.organizer.slug,
-                            },
-                        ),
-                        'active': 'event.items.categories' in url.url_name,
-                    },
-                    {
-                        'label': _('Questions'),
-                        'url': reverse(
-                            'control:event.items.questions',
-                            kwargs={
-                                'event': request.event.slug,
-                                'organizer': request.event.organizer.slug,
-                            },
-                        ),
-                        'active': 'event.items.questions' in url.url_name,
-                    },
-                ],
-            }
-        )
+                    }),
+                    'active': url.url_name in (
+                        'event.item', 'event.items.add', 'event.items') or "event.item." in url.url_name,
+                },
+                {
+                    'label': _('Quotas'),
+                    'url': reverse('control:event.items.quotas', kwargs={
+                        'event': request.event.slug,
+                        'organizer': request.event.organizer.slug,
+                    }),
+                    'active': 'event.items.quota' in url.url_name,
+                },
+                {
+                    'label': _('Categories'),
+                    'url': reverse('control:event.items.categories', kwargs={
+                        'event': request.event.slug,
+                        'organizer': request.event.organizer.slug,
+                    }),
+                    'active': 'event.items.categories' in url.url_name,
+                },
+                {
+                    'label': _('Questions'),
+                    'url': reverse('control:event.items.questions', kwargs={
+                        'event': request.event.slug,
+                        'organizer': request.event.organizer.slug,
+                    }),
+                    'active': 'event.items.questions' in url.url_name,
+                },
+            ]
+        })
 
     if 'can_view_orders' in request.eventpermset:
         children = [
             {
                 'label': _('All orders'),
-                'url': reverse(
-                    'control:event.orders',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
-                'active': url.url_name in ('event.orders', 'event.order', 'event.orders.search') or 'event.order.' in url.url_name,
+                'url': reverse('control:event.orders', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
+                'active': url.url_name in ('event.orders', 'event.order', 'event.orders.search') or "event.order." in url.url_name,
             },
             {
                 'label': _('Overview'),
-                'url': reverse(
-                    'control:event.orders.overview',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
+                'url': reverse('control:event.orders.overview', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
                 'active': 'event.orders.overview' in url.url_name,
             },
             {
                 'label': _('Refunds'),
-                'url': reverse(
-                    'control:event.orders.refunds',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
+                'url': reverse('control:event.orders.refunds', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
                 'active': 'event.orders.refunds' in url.url_name,
             },
             {
                 'label': _('Export'),
-                'url': reverse(
-                    'control:event.orders.export',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
+                'url': reverse('control:event.orders.export', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
                 'active': 'event.orders.export' in url.url_name,
             },
             {
                 'label': _('Waiting list'),
-                'url': reverse(
-                    'control:event.orders.waitinglist',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
+                'url': reverse('control:event.orders.waitinglist', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
                 'active': 'event.orders.waitinglist' in url.url_name,
             },
         ]
         if 'can_change_orders' in request.eventpermset:
-            children.append(
-                {
-                    'label': _('Import'),
-                    'url': reverse(
-                        'control:event.orders.import',
-                        kwargs={
-                            'event': request.event.slug,
-                            'organizer': request.event.organizer.slug,
-                        },
-                    ),
-                    'active': 'event.orders.import' in url.url_name,
-                }
-            )
-        nav.append(
-            {
-                'label': _('Orders'),
-                'url': reverse(
-                    'control:event.orders',
-                    kwargs={
-                        'event': request.event.slug,
-                        'organizer': request.event.organizer.slug,
-                    },
-                ),
-                'active': False,
-                'icon': 'shopping-cart',
-                'children': children,
-            }
-        )
+            children.append({
+                'label': _('Import'),
+                'url': reverse('control:event.orders.import', kwargs={
+                    'event': request.event.slug,
+                    'organizer': request.event.organizer.slug,
+                }),
+                'active': 'event.orders.import' in url.url_name,
+            })
+        nav.append({
+            'label': _('Orders'),
+            'url': reverse('control:event.orders', kwargs={
+                'event': request.event.slug,
+                'organizer': request.event.organizer.slug,
+            }),
+            'active': False,
+            'icon': 'shopping-cart',
+            'children': children
+        })
 
     if 'can_view_vouchers' in request.eventpermset:
-        nav.append(
-            {
-                'label': _('Vouchers'),
-                'url': reverse(
-                    'control:event.vouchers',
-                    kwargs={
+        nav.append({
+            'label': _('Vouchers'),
+            'url': reverse('control:event.vouchers', kwargs={
+                'event': request.event.slug,
+                'organizer': request.event.organizer.slug,
+            }),
+            'active': False,
+            'icon': 'tags',
+            'children': [
+                {
+                    'label': _('All vouchers'),
+                    'url': reverse('control:event.vouchers', kwargs={
                         'event': request.event.slug,
                         'organizer': request.event.organizer.slug,
-                    },
-                ),
-                'active': False,
-                'icon': 'tags',
-                'children': [
-                    {
-                        'label': _('All vouchers'),
-                        'url': reverse(
-                            'control:event.vouchers',
-                            kwargs={
-                                'event': request.event.slug,
-                                'organizer': request.event.organizer.slug,
-                            },
-                        ),
-                        'active': url.url_name != 'event.vouchers.tags' and 'event.vouchers' in url.url_name,
-                    },
-                    {
-                        'label': _('Tags'),
-                        'url': reverse(
-                            'control:event.vouchers.tags',
-                            kwargs={
-                                'event': request.event.slug,
-                                'organizer': request.event.organizer.slug,
-                            },
-                        ),
-                        'active': 'event.vouchers.tags' in url.url_name,
-                    },
-                ],
-            }
-        )
+                    }),
+                    'active': url.url_name != 'event.vouchers.tags' and "event.vouchers" in url.url_name,
+                },
+                {
+                    'label': _('Tags'),
+                    'url': reverse('control:event.vouchers.tags', kwargs={
+                        'event': request.event.slug,
+                        'organizer': request.event.organizer.slug,
+                    }),
+                    'active': 'event.vouchers.tags' in url.url_name,
+                },
+            ]
+        })
 
     if 'can_view_orders' in request.eventpermset:
-        nav.append(
-            {
-                'label': pgettext_lazy('navigation', 'Check-in'),
-                'url': reverse(
-                    'control:event.orders.checkinlists',
-                    kwargs={
+        nav.append({
+            'label': pgettext_lazy('navigation', 'Check-in'),
+            'url': reverse('control:event.orders.checkinlists', kwargs={
+                'event': request.event.slug,
+                'organizer': request.event.organizer.slug,
+            }),
+            'active': False,
+            'icon': 'check-square-o',
+            'children': [
+                {
+                    'label': _('Check-in lists'),
+                    'url': reverse('control:event.orders.checkinlists', kwargs={
                         'event': request.event.slug,
                         'organizer': request.event.organizer.slug,
-                    },
-                ),
-                'active': False,
-                'icon': 'check-square-o',
-                'children': [
-                    {
-                        'label': _('Check-in lists'),
-                        'url': reverse(
-                            'control:event.orders.checkinlists',
-                            kwargs={
-                                'event': request.event.slug,
-                                'organizer': request.event.organizer.slug,
-                            },
-                        ),
-                        'active': 'event.orders.checkin' in url.url_name,
-                    },
-                ],
-            }
-        )
+                    }),
+                    'active': 'event.orders.checkin' in url.url_name,
+                },
+            ]
+        })
 
-    merge_in(
-        nav, sorted(sum((list(a[1]) for a in nav_event.send(request.event, request=request)), []), key=lambda r: (1 if r.get('parent') else 0, r['label']))
-    )
+    merge_in(nav, sorted(
+        sum((list(a[1]) for a in nav_event.send(request.event, request=request)), []),
+        key=lambda r: (1 if r.get('parent') else 0, r['label'])
+    ))
 
     return nav
 
@@ -454,11 +355,14 @@ def get_global_navigation(request):
                     'url': reverse('control:user.settings.history'),
                     'active': 'user.settings.history' in url.url_name,
                 },
-            ],
+            ]
         },
     ]
 
-    merge_in(nav, sorted(sum((list(a[1]) for a in nav_global.send(request, request=request)), []), key=lambda r: (1 if r.get('parent') else 0, r['label'])))
+    merge_in(nav, sorted(
+        sum((list(a[1]) for a in nav_global.send(request, request=request)), []),
+        key=lambda r: (1 if r.get('parent') else 0, r['label'])
+    ))
     return nav
 
 
@@ -469,59 +373,63 @@ def get_organizer_navigation(request):
     nav = [
         {
             'label': _('My events'),
-            'url': reverse('control:organizer', kwargs={'organizer': request.organizer.slug}),
+            'url': reverse('control:organizer', kwargs={
+                'organizer': request.organizer.slug
+            }),
             'active': url.url_name == 'organizer',
             'icon': 'calendar',
         },
     ]
     if 'can_change_organizer_settings' in request.orgapermset:
-        nav.append(
-            {
-                'label': _('Settings'),
-                'url': reverse('control:organizer.edit', kwargs={'organizer': request.organizer.slug}),
-                'icon': 'wrench',
-                'children': [
-                    {
-                        'label': _('General'),
-                        'url': reverse('control:organizer.edit', kwargs={'organizer': request.organizer.slug}),
-                        'active': url.url_name == 'organizer.edit',
-                    },
-                    # Temporary disabled
-                    # {
-                    #     'label': _('Event metadata'),
-                    #     'url': reverse('control:organizer.properties', kwargs={
-                    #         'organizer': request.organizer.slug
-                    #     }),
-                    #     'active': url.url_name.startswith('organizer.propert'),
-                    # },
-                    # {
-                    #     'label': _('Webhooks'),
-                    #     'url': reverse('control:organizer.webhooks', kwargs={
-                    #         'organizer': request.organizer.slug
-                    #     }),
-                    #     'active': 'organizer.webhook' in url.url_name,
-                    #     'icon': 'bolt',
-                    # },
-                    {
-                        'label': _('Billing settings'),
-                        'url': reverse(
-                            'control:organizer.settings.billing',
-                            kwargs={'organizer': request.organizer.slug},
-                        ),
-                        'active': url.url_name == 'organizer.settings.billing',
-                    },
-                ],
-            }
-        )
+        nav.append({
+            'label': _('Settings'),
+            'url': reverse('control:organizer.edit', kwargs={
+                'organizer': request.organizer.slug
+            }),
+            'icon': 'wrench',
+            'children': [
+                {
+                    'label': _('General'),
+                    'url': reverse('control:organizer.edit', kwargs={
+                        'organizer': request.organizer.slug
+                    }),
+                    'active': url.url_name == 'organizer.edit',
+                },
+                # Temporary disabled
+                # {
+                #     'label': _('Event metadata'),
+                #     'url': reverse('control:organizer.properties', kwargs={
+                #         'organizer': request.organizer.slug
+                #     }),
+                #     'active': url.url_name.startswith('organizer.propert'),
+                # },
+                # {
+                #     'label': _('Webhooks'),
+                #     'url': reverse('control:organizer.webhooks', kwargs={
+                #         'organizer': request.organizer.slug
+                #     }),
+                #     'active': 'organizer.webhook' in url.url_name,
+                #     'icon': 'bolt',
+                # },
+                {
+                    "label": _("Billing settings"),
+                    "url": reverse(
+                        "control:organizer.settings.billing",
+                        kwargs={"organizer": request.organizer.slug},
+                    ),
+                    "active": url.url_name == "organizer.settings.billing",
+                }
+            ]
+        })
     if 'can_change_teams' in request.orgapermset:
-        nav.append(
-            {
-                'label': _('Teams'),
-                'url': reverse('control:organizer.teams', kwargs={'organizer': request.organizer.slug}),
-                'active': 'organizer.team' in url.url_name and url.namespace == 'control',
-                'icon': 'group',
-            }
-        )
+        nav.append({
+            'label': _('Teams'),
+            'url': reverse('control:organizer.teams', kwargs={
+                'organizer': request.organizer.slug
+            }),
+            'active': 'organizer.team' in url.url_name and url.namespace == 'control',
+            'icon': 'group',
+        })
 
     # if 'can_manage_gift_cards' in request.orgapermset:
     #     nav.append({
@@ -533,47 +441,44 @@ def get_organizer_navigation(request):
     #         'icon': 'credit-card',
     #     })
     if 'can_change_organizer_settings' in request.orgapermset:
-        nav.append(
-            {
-                'label': _('Devices'),
-                'url': reverse('control:organizer.devices', kwargs={'organizer': request.organizer.slug}),
-                'icon': 'tablet',
-                'children': [
-                    {
-                        'label': _('Devices'),
-                        'url': reverse('control:organizer.devices', kwargs={'organizer': request.organizer.slug}),
-                        'active': 'organizer.device' in url.url_name,
-                    },
-                    {
-                        'label': _('Gates'),
-                        'url': reverse('control:organizer.gates', kwargs={'organizer': request.organizer.slug}),
-                        'active': 'organizer.gate' in url.url_name,
-                    },
-                ],
-            }
-        )
-
-    nav.append(
-        {
-            'label': _('Export'),
-            'url': reverse(
-                'control:organizer.export',
-                kwargs={
-                    'organizer': request.organizer.slug,
+        nav.append({
+            'label': _('Devices'),
+            'url': reverse('control:organizer.devices', kwargs={
+                'organizer': request.organizer.slug
+            }),
+            'icon': 'tablet',
+            'children': [
+                {
+                    'label': _('Devices'),
+                    'url': reverse('control:organizer.devices', kwargs={
+                        'organizer': request.organizer.slug
+                    }),
+                    'active': 'organizer.device' in url.url_name,
                 },
-            ),
-            'active': 'organizer.export' in url.url_name,
-            'icon': 'download',
-        }
-    )
+                {
+                    'label': _('Gates'),
+                    'url': reverse('control:organizer.gates', kwargs={
+                        'organizer': request.organizer.slug
+                    }),
+                    'active': 'organizer.gate' in url.url_name,
+                }
+            ]
+        })
 
-    merge_in(
-        nav,
-        sorted(
-            sum((list(a[1]) for a in nav_organizer.send(request.organizer, request=request, organizer=request.organizer)), []),
-            key=lambda r: (1 if r.get('parent') else 0, r['label']),
-        ),
-    )
+    nav.append({
+        'label': _('Export'),
+        'url': reverse('control:organizer.export', kwargs={
+            'organizer': request.organizer.slug,
+        }),
+        'active': 'organizer.export' in url.url_name,
+        'icon': 'download',
+    })
+
+    merge_in(nav, sorted(
+        sum((list(a[1]) for a in nav_organizer.send(request.organizer, request=request, organizer=request.organizer)),
+            []),
+        key=lambda r: (1 if r.get('parent') else 0, r['label'])
+    ))
     return nav
 
 
@@ -583,7 +488,9 @@ def merge_in(nav, newnav):
             parents = [n for n in nav if n['url'] == item['parent']]
             if parents:
                 if 'children' not in parents[0]:
-                    parents[0]['children'] = [dict(parents[0])]
+                    parents[0]['children'] = [
+                        dict(parents[0])
+                    ]
                     parents[0]['active'] = False
                 parents[0]['children'].append(item)
                 continue
@@ -623,7 +530,7 @@ def get_admin_navigation(request):
             'label': _('Pages'),
             'url': reverse('control:admin.pages'),
             'active': 'pages' in url.url_name,
-            'icon': 'file-text',
+            'icon': "file-text",
         },
         {
             'label': _('Users'),
@@ -641,7 +548,7 @@ def get_admin_navigation(request):
                     'url': reverse('control:admin.user.sudo.list'),
                     'active': ('sudo' in url.url_name),
                 },
-            ],
+            ]
         },
         {
             'label': _('Vouchers'),
@@ -673,16 +580,19 @@ def get_admin_navigation(request):
                 {
                     'label': _('Social login settings'),
                     'url': reverse('plugins:socialauth:admin.global.social.auth.settings'),
-                    'active': (url.url_name == 'admin.global.social.auth.settings'),
+                    'active': (url.url_name == 'admin.global.social.auth.settings')
                 },
                 {
                     'label': _('Billing Validation'),
                     'url': reverse('control:admin.toggle.billing.validation'),
                     'active': (url.url_name == 'admin.toggle.billing.validation'),
                 },
-            ],
+            ]
         },
     ]
 
-    merge_in(nav, sorted(sum((list(a[1]) for a in nav_global.send(request, request=request)), []), key=lambda r: (1 if r.get('parent') else 0, r['label'])))
+    merge_in(nav, sorted(
+        sum((list(a[1]) for a in nav_global.send(request, request=request)), []),
+        key=lambda r: (1 if r.get('parent') else 0, r['label'])
+    ))
     return nav

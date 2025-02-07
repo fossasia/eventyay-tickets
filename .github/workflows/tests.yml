@@ -55,7 +55,7 @@ jobs:
       - name: Compile
         working-directory: ./src
         run: |
-          source ${GITHUB_WORKSPACE}/.venv/bin/activate
+          source .venv/bin/activate
           make all compress
       - name: Run tests
         working-directory: ./src

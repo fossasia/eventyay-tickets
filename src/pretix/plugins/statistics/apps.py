@@ -6,13 +6,13 @@ from pretix import __version__ as version
 
 class StatisticsApp(AppConfig):
     name = 'pretix.plugins.statistics'
-    verbose_name = _('Statistics')
+    verbose_name = _("Statistics")
 
     class PretixPluginMeta:
-        name = _('Statistics')
+        name = _("Statistics")
         version = version
         category = 'FEATURE'
-        description = _('This plugin shows you various statistics.')
+        description = _("This plugin shows you various statistics.")
 
     def ready(self):
         from . import signals  # NOQA

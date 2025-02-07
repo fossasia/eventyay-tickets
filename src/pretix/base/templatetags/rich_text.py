@@ -131,21 +131,24 @@ def abslink_callback(attrs, new=False):
 
 
 def markdown_compile_email(source):
-    linker = bleach.Linker(url_re=URL_RE, email_re=EMAIL_RE, callbacks=DEFAULT_CALLBACKS + [truelink_callback, abslink_callback], parse_email=True)
-    return linker.linkify(
-        bleach.clean(
-            markdown.markdown(
-                source,
-                extensions=[
-                    'markdown.extensions.sane_lists',
-                    #  'markdown.extensions.nl2br' # disabled for backwards-compatibility
-                ],
-            ),
-            tags=ALLOWED_TAGS,
-            attributes=ALLOWED_ATTRIBUTES,
-            protocols=ALLOWED_PROTOCOLS,
-        )
+    linker = bleach.Linker(
+        url_re=URL_RE,
+        email_re=EMAIL_RE,
+        callbacks=DEFAULT_CALLBACKS + [truelink_callback, abslink_callback],
+        parse_email=True
     )
+    return linker.linkify(bleach.clean(
+        markdown.markdown(
+            source,
+            extensions=[
+                'markdown.extensions.sane_lists',
+                #  'markdown.extensions.nl2br' # disabled for backwards-compatibility
+            ]
+        ),
+        tags=ALLOWED_TAGS,
+        attributes=ALLOWED_ATTRIBUTES,
+        protocols=ALLOWED_PROTOCOLS,
+    ))
 
 
 class SnippetExtension(markdown.extensions.Extension):
@@ -157,11 +160,17 @@ class SnippetExtension(markdown.extensions.Extension):
 
 def markdown_compile(source, snippet=False):
     tags = ALLOWED_TAGS_SNIPPET if snippet else ALLOWED_TAGS
-    exts = ['markdown.extensions.sane_lists', 'markdown.extensions.nl2br']
+    exts = [
+        'markdown.extensions.sane_lists',
+        'markdown.extensions.nl2br'
+    ]
     if snippet:
         exts.append(SnippetExtension())
     return bleach.clean(
-        markdown.markdown(source, extensions=exts),
+        markdown.markdown(
+            source,
+            extensions=exts
+        ),
         strip=snippet,
         tags=tags,
         attributes=ALLOWED_ATTRIBUTES,
@@ -179,7 +188,7 @@ def rich_text(text: str, **kwargs):
         url_re=URL_RE,
         email_re=EMAIL_RE,
         callbacks=DEFAULT_CALLBACKS + ([truelink_callback, safelink_callback] if kwargs.get('safelinks', True) else [truelink_callback, abslink_callback]),
-        parse_email=True,
+        parse_email=True
     )
     body_md = linker.linkify(markdown_compile(text))
     return mark_safe(body_md)
@@ -195,7 +204,7 @@ def rich_text_snippet(text: str, **kwargs):
         url_re=URL_RE,
         email_re=EMAIL_RE,
         callbacks=DEFAULT_CALLBACKS + ([truelink_callback, safelink_callback] if kwargs.get('safelinks', True) else [truelink_callback, abslink_callback]),
-        parse_email=True,
+        parse_email=True
     )
     body_md = linker.linkify(markdown_compile(text, snippet=True))
     return mark_safe(body_md)

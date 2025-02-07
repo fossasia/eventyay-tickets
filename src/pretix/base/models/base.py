@@ -22,7 +22,6 @@ class CachedFile(models.Model):
     """
     An uploaded file, with an optional expiry date.
     """
-
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     expires = models.DateTimeField(null=True, blank=True)
     date = models.DateTimeField(null=True, blank=True)
@@ -41,6 +40,7 @@ def cached_file_delete(sender, instance, **kwargs):
 
 
 class LoggingMixin:
+
     def log_action(self, action, data=None, user=None, api_token=None, auth=None, save=True):
         """
         Create a LogEntry object that is related to this object.
@@ -86,11 +86,11 @@ class LoggingMixin:
             for sensitivekey in sensitivekeys:
                 for k, v in data.items():
                     if (sensitivekey in k) and v:
-                        data[k] = '********'
+                        data[k] = "********"
 
             logentry.data = json.dumps(data, cls=CustomJSONEncoder, sort_keys=True)
         elif data:
-            raise TypeError('You should only supply dictionaries as log data.')
+            raise TypeError("You should only supply dictionaries as log data.")
         if save:
             logentry.save()
 
@@ -103,6 +103,7 @@ class LoggingMixin:
 
 
 class LoggedModel(models.Model, LoggingMixin):
+
     class Meta:
         abstract = True
 
@@ -125,8 +126,11 @@ class LoggedModel(models.Model, LoggingMixin):
             kwargs={
                 'event': event.slug,
                 'organizer': event.organizer.slug,
-            },
-        ) + '?content_type={}&object={}'.format(self.logs_content_type.pk, self.pk)
+            }
+        ) + '?content_type={}&object={}'.format(
+            self.logs_content_type.pk,
+            self.pk
+        )
 
     def top_logentries(self):
         qs = self.all_logentries()
@@ -145,9 +149,9 @@ class LoggedModel(models.Model, LoggingMixin):
         """
         from .log import LogEntry
 
-        return LogEntry.objects.filter(content_type=self.logs_content_type, object_id=self.pk).select_related(
-            'user', 'event', 'oauth_application', 'api_token', 'device'
-        )
+        return LogEntry.objects.filter(
+            content_type=self.logs_content_type, object_id=self.pk
+        ).select_related('user', 'event', 'oauth_application', 'api_token', 'device')
 
 
 class LockModel:
@@ -160,7 +164,9 @@ class LockModel:
             if not fields:
                 return
             if any(LOOKUP_SEP in f for f in fields):
-                raise ValueError('Found "%s" in fields argument. Relations and transforms are not allowed in fields.' % LOOKUP_SEP)
+                raise ValueError(
+                    'Found "%s" in fields argument. Relations and transforms '
+                    'are not allowed in fields.' % LOOKUP_SEP)
 
         hints = {'instance': self}
         db_instance_qs = self.__class__._base_manager.db_manager(using, hints=hints).filter(pk=self.pk).select_for_update(**kwargs)
@@ -171,7 +177,8 @@ class LockModel:
             fields = list(fields)
             db_instance_qs = db_instance_qs.only(*fields)
         elif deferred_fields:
-            fields = [f.attname for f in self._meta.concrete_fields if f.attname not in deferred_fields]
+            fields = [f.attname for f in self._meta.concrete_fields
+                      if f.attname not in deferred_fields]
             db_instance_qs = db_instance_qs.only(*fields)
 
         db_instance = db_instance_qs.get()

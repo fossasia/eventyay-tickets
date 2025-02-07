@@ -9,9 +9,7 @@ from pretix.base.models import Event, Organizer
 def event():
     o = Organizer.objects.create(name='MRMCD', slug='mrmcd')
     event = Event.objects.create(
-        organizer=o,
-        name='MRMCD2015',
-        slug='2015',
+        organizer=o, name='MRMCD2015', slug='2015',
         date_from=now(),
     )
     settings.SITE_URL = 'http://example.com'

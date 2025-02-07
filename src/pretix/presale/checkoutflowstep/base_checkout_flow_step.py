@@ -86,7 +86,9 @@ class BaseCheckoutFlowStep:
             else:
                 try:
                     with scopes_disabled():
-                        self.request._checkout_flow_invoice_address = InvoiceAddress.objects.get(pk=iapk, order__isnull=True)
+                        self.request._checkout_flow_invoice_address = InvoiceAddress.objects.get(
+                            pk=iapk, order__isnull=True
+                        )
                 except InvoiceAddress.DoesNotExist:
                     self.request._checkout_flow_invoice_address = InvoiceAddress()
         return self.request._checkout_flow_invoice_address

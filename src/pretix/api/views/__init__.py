@@ -7,6 +7,7 @@ from rest_framework.filters import OrderingFilter
 
 
 class RichOrderingFilter(OrderingFilter):
+
     def filter_queryset(self, request, queryset, view):
         ordering = self.get_ordering(request, queryset, view)
 
@@ -28,6 +29,7 @@ class RichOrderingFilter(OrderingFilter):
 
 
 class ConditionalListView:
+
     def list(self, request, **kwargs):
         if_modified_since = request.headers.get('If-Modified-Since')
         if if_modified_since:
@@ -41,7 +43,9 @@ class ConditionalListView:
         lmd = request.event.logentry_set.filter(
             content_type__model=self.get_queryset().model._meta.model_name,
             content_type__app_label=self.get_queryset().model._meta.app_label,
-        ).aggregate(m=Max('datetime'))['m']
+        ).aggregate(
+            m=Max('datetime')
+        )['m']
         if lmd:
             lmd_ts = timegm(lmd.utctimetuple())
 

@@ -1,8 +1,5 @@
 from pretix.presale.checkoutflowstep import (
-    AddOnsStep,
-    ConfirmStep,
-    PaymentStep,
-    QuestionsStep,
+    AddOnsStep, ConfirmStep, PaymentStep, QuestionsStep,
 )
 from pretix.presale.signals import checkout_flow_steps
 
@@ -28,4 +25,9 @@ def get_checkout_flow(event):
     return flow
 
 
-DEFAULT_FLOW = (AddOnsStep, QuestionsStep, PaymentStep, ConfirmStep)
+DEFAULT_FLOW = (
+    AddOnsStep,
+    QuestionsStep,
+    PaymentStep,
+    ConfirmStep
+)

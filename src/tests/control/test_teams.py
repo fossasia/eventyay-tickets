@@ -13,7 +13,10 @@ def organizer():
 
 @pytest.fixture
 def event(organizer):
-    event = Event.objects.create(organizer=organizer, name='Dummy', slug='dummy', date_from=now())
+    event = Event.objects.create(
+        organizer=organizer, name='Dummy', slug='dummy',
+        date_from=now()
+    )
     return event
 
 
@@ -50,7 +53,9 @@ def test_team_add_user(event, admin_user, admin_team, client):
 
     u = User.objects.create_user('dummy2@dummy.dummy', 'dummy')
 
-    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {'user': u.email}, follow=True)
+    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {
+        'user': u.email
+    }, follow=True)
     assert 'Admin team' in resp.content.decode()
     assert admin_user.email in resp.content.decode()
     assert u.email in resp.content.decode()
@@ -63,7 +68,9 @@ def test_team_create_invite(event, admin_user, admin_team, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
     djmail.outbox = []
 
-    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {'user': 'foo@example.org'}, follow=True)
+    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {
+        'user': 'foo@example.org'
+    }, follow=True)
     assert 'Admin team' in resp.content.decode()
     assert admin_user.email in resp.content.decode()
     assert 'foo@example.org' in resp.content.decode()
@@ -77,7 +84,9 @@ def test_team_create_token(event, admin_user, admin_team, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
     djmail.outbox = []
 
-    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {'name': 'Test token'}, follow=True)
+    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {
+        'name': 'Test token'
+    }, follow=True)
     assert 'Test token' in resp.content.decode()
     with scopes_disabled():
         assert admin_team.tokens.first().name == 'Test token'
@@ -90,7 +99,9 @@ def test_team_remove_token(event, admin_user, admin_team, client):
 
     with scopes_disabled():
         tk = admin_team.tokens.create(name='Test token')
-    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {'remove-token': str(tk.pk)}, follow=True)
+    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {
+        'remove-token': str(tk.pk)
+    }, follow=True)
     assert tk.token not in resp.content.decode()
     assert 'Test token' in resp.content.decode()
     tk.refresh_from_db()
@@ -103,7 +114,9 @@ def test_team_resend_invite(event, admin_user, admin_team, client):
     djmail.outbox = []
 
     inv = admin_team.invites.create(email='foo@example.org')
-    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {'resend-invite': str(inv.pk)}, follow=True)
+    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {
+        'resend-invite': str(inv.pk)
+    }, follow=True)
     assert 'Admin team' in resp.content.decode()
     assert admin_user.email in resp.content.decode()
     assert 'foo@example.org' in resp.content.decode()
@@ -116,7 +129,9 @@ def test_team_revoke_invite(event, admin_user, admin_team, client):
 
     with scopes_disabled():
         inv = admin_team.invites.create(email='foo@example.org')
-    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {'remove-invite': str(inv.pk)}, follow=True)
+    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {
+        'remove-invite': str(inv.pk)
+    }, follow=True)
     assert 'Admin team' in resp.content.decode()
     assert admin_user.email in resp.content.decode()
     with scopes_disabled():
@@ -131,7 +146,9 @@ def test_team_remove_user(event, admin_user, admin_team, client):
     with scopes_disabled():
         admin_team.members.add(u)
 
-    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {'remove-member': u.pk}, follow=True)
+    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {
+        'remove-member': u.pk
+    }, follow=True)
     assert 'Admin team' in resp.content.decode()
     assert admin_user.email in resp.content.decode()
     with scopes_disabled():
@@ -142,26 +159,34 @@ def test_team_remove_user(event, admin_user, admin_team, client):
 def test_team_remove_last_admin(event, admin_user, admin_team, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
 
-    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {'remove-member': admin_user.pk}, follow=True)
+    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {
+        'remove-member': admin_user.pk
+    }, follow=True)
     assert 'alert-danger' in resp.content.decode()
     with scopes_disabled():
         assert admin_user in admin_team.members.all()
 
     t2 = Team.objects.create(organizer=event.organizer, name='Admin team 2')
-    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {'remove-member': admin_user.pk}, follow=True)
+    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {
+        'remove-member': admin_user.pk
+    }, follow=True)
     assert 'alert-danger' in resp.content.decode()
     with scopes_disabled():
         assert admin_user in admin_team.members.all()
 
     t2.members.add(admin_user)
-    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {'remove-member': admin_user.pk}, follow=True)
+    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {
+        'remove-member': admin_user.pk
+    }, follow=True)
     assert 'alert-danger' in resp.content.decode()
     with scopes_disabled():
         assert admin_user in admin_team.members.all()
 
     t2.can_change_teams = True
     t2.save()
-    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {'remove-member': admin_user.pk}, follow=True)
+    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {
+        'remove-member': admin_user.pk
+    }, follow=True)
     assert 'alert-danger' not in resp.content.decode()
     with scopes_disabled():
         assert admin_user not in admin_team.members.all()
@@ -170,11 +195,12 @@ def test_team_remove_last_admin(event, admin_user, admin_team, client):
 @pytest.mark.django_db
 def test_create_team(event, admin_user, admin_team, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
-    client.post(
-        '/control/organizer/dummy/team/add',
-        {'name': 'Foo', 'can_create_events': 'on', 'limit_events': str(event.pk), 'can_change_event_settings': 'on'},
-        follow=True,
-    )
+    client.post('/control/organizer/dummy/team/add', {
+        'name': 'Foo',
+        'can_create_events': 'on',
+        'limit_events': str(event.pk),
+        'can_change_event_settings': 'on'
+    }, follow=True)
     with scopes_disabled():
         t = Team.objects.last()
         assert t.can_change_event_settings
@@ -187,11 +213,12 @@ def test_create_team(event, admin_user, admin_team, client):
 @pytest.mark.django_db
 def test_update_team(event, admin_user, admin_team, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
-    client.post(
-        '/control/organizer/dummy/team/{}/edit'.format(admin_team.pk),
-        {'name': 'Admin', 'can_change_teams': 'on', 'limit_events': str(event.pk), 'can_change_event_settings': 'on'},
-        follow=True,
-    )
+    client.post('/control/organizer/dummy/team/{}/edit'.format(admin_team.pk), {
+        'name': 'Admin',
+        'can_change_teams': 'on',
+        'limit_events': str(event.pk),
+        'can_change_event_settings': 'on'
+    }, follow=True)
     admin_team.refresh_from_db()
     assert admin_team.can_change_event_settings
     assert not admin_team.can_change_organizer_settings
@@ -202,7 +229,10 @@ def test_update_team(event, admin_user, admin_team, client):
 @pytest.mark.django_db
 def test_update_last_team_to_be_no_admin(event, admin_user, admin_team, client):
     client.login(email='dummy@dummy.dummy', password='dummy')
-    resp = client.post('/control/organizer/dummy/team/{}/edit'.format(admin_team.pk), {'name': 'Admin', 'can_change_event_settings': 'on'}, follow=True)
+    resp = client.post('/control/organizer/dummy/team/{}/edit'.format(admin_team.pk), {
+        'name': 'Admin',
+        'can_change_event_settings': 'on'
+    }, follow=True)
     assert 'alert-danger' in resp.content.decode()
 
 
@@ -235,7 +265,9 @@ def test_resend_invalid_invite(event, admin_user, admin_team, client):
 
     with scopes_disabled():
         inv = admin_team.invites.create(email='foo@example.org')
-    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {'resend-invite': inv.pk + 1}, follow=True)
+    resp = client.post('/control/organizer/dummy/team/{}/'.format(admin_team.pk), {
+        'resend-invite': inv.pk + 1
+    }, follow=True)
     assert b'alert-danger' in resp.content
     assert b'Invalid invite selected.' in resp.content
     assert len(djmail.outbox) == 0
@@ -281,9 +313,11 @@ def test_invite_new_user(event, admin_team, client):
         i = admin_team.invites.create(email='foo@bar.com')
     resp = client.get('/control/invite/{}'.format(i.token), follow=True)
     assert b'<form' in resp.content
-    resp = client.post(
-        '/control/invite/{}'.format(i.token), {'email': 'dummy@example.org', 'password': 'asdsdgfgjh', 'password_repeat': 'asdsdgfgjh'}, follow=True
-    )
+    resp = client.post('/control/invite/{}'.format(i.token), {
+        'email': 'dummy@example.org',
+        'password': 'asdsdgfgjh',
+        'password_repeat': 'asdsdgfgjh'
+    }, follow=True)
 
     assert b'alert-success' in resp.content
     with scopes_disabled():

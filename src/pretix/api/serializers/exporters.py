@@ -66,18 +66,31 @@ class JobRunSerializer(serializers.Serializer):
         events = kwargs.pop('events', None)
         super().__init__(*args, **kwargs)
         if events is not None:
-            self.fields['events'] = serializers.SlugRelatedField(queryset=events, required=True, allow_empty=False, slug_field='slug', many=True)
+            self.fields["events"] = serializers.SlugRelatedField(
+                queryset=events,
+                required=True,
+                allow_empty=False,
+                slug_field='slug',
+                many=True
+            )
         for k, v in ex.export_form_fields.items():
             for m_from, m_to, m_kwargs in simple_mappings:
                 if isinstance(v, m_from):
                     self.fields[k] = m_to(
-                        required=v.required, allow_null=not v.required, validators=v.validators, **{kwarg: getattr(v, kwargs, None) for kwarg in m_kwargs}
+                        required=v.required,
+                        allow_null=not v.required,
+                        validators=v.validators,
+                        **{kwarg: getattr(v, kwargs, None) for kwarg in m_kwargs}
                     )
                     break
 
             if isinstance(v, forms.ModelMultipleChoiceField):
                 self.fields[k] = PrimaryKeyRelatedField(
-                    queryset=v.queryset, required=v.required, allow_empty=not v.required, validators=v.validators, many=True
+                    queryset=v.queryset,
+                    required=v.required,
+                    allow_empty=not v.required,
+                    validators=v.validators,
+                    many=True
                 )
             elif isinstance(v, forms.ModelChoiceField):
                 self.fields[k] = PrimaryKeyRelatedField(

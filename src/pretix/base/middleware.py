@@ -10,23 +10,21 @@ from django.utils import timezone, translation
 from django.utils.cache import patch_vary_headers
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.translation.trans_real import (
-    check_for_language,
-    get_supported_language_variant,
-    language_code_re,
+    check_for_language, get_supported_language_variant, language_code_re,
     parse_accept_lang_header,
 )
 
 from pretix.base.i18n import get_language_without_region
 from pretix.base.settings import global_settings_object
 from pretix.multidomain.urlreverse import (
-    get_event_domain,
-    get_organizer_domain,
+    get_event_domain, get_organizer_domain,
 )
 
 _supported = None
 
 
 class LocaleMiddleware(MiddlewareMixin):
+
     """
     This middleware sets the correct locale and timezone
     for a request.
@@ -170,7 +168,7 @@ def _parse_csp(header):
 
 
 def _render_csp(h):
-    return '; '.join(k + ' ' + ' '.join(v) for k, v in h.items())
+    return "; ".join(k + ' ' + ' '.join(v) for k, v in h.items())
 
 
 def _merge_csp(a, b):
@@ -184,7 +182,9 @@ def _merge_csp(a, b):
 
 
 class SecurityMiddleware(MiddlewareMixin):
-    CSP_EXEMPT = ('/api/v1/docs/',)
+    CSP_EXEMPT = (
+        '/api/v1/docs/',
+    )
 
     def process_response(self, request, resp):
         if settings.DEBUG and resp.status_code >= 400:
@@ -197,32 +197,32 @@ class SecurityMiddleware(MiddlewareMixin):
         # We just need to have a P3P, not matter whats in there
         # https://blogs.msdn.microsoft.com/ieinternals/2013/09/17/a-quick-look-at-p3p/
         # https://github.com/pretix/pretix/issues/765
-        resp['P3P'] = 'CP="ALL DSP COR CUR ADM TAI OUR IND COM NAV INT"'
+        resp['P3P'] = 'CP=\"ALL DSP COR CUR ADM TAI OUR IND COM NAV INT\"'
 
         img_src = []
         gs = global_settings_object(request)
         if gs.settings.leaflet_tiles:
-            img_src.append(gs.settings.leaflet_tiles[: gs.settings.leaflet_tiles.index('/', 10)].replace('{s}', '*'))
+            img_src.append(gs.settings.leaflet_tiles[:gs.settings.leaflet_tiles.index("/", 10)].replace("{s}", "*"))
 
         h = {
-            'default-src': ['{static}'],
+            'default-src': ["{static}"],
             'script-src': ['{static}', 'https://checkout.stripe.com', 'https://js.stripe.com'],
             'object-src': ["'none'"],
             'frame-src': ['{static}', 'https://checkout.stripe.com', 'https://js.stripe.com'],
-            'style-src': ['{static}', '{media}'],
-            'connect-src': ['{dynamic}', '{media}', 'https://checkout.stripe.com'],
-            'img-src': ['{static}', '{media}', 'data:', 'https://*.stripe.com'] + img_src,
-            'font-src': ['{static}'],
-            'media-src': ['{static}', 'data:'],
+            'style-src': ["{static}", "{media}"],
+            'connect-src': ["{dynamic}", "{media}", "https://checkout.stripe.com"],
+            'img-src': ["{static}", "{media}", "data:", "https://*.stripe.com"] + img_src,
+            'font-src': ["{static}"],
+            'media-src': ["{static}", "data:"],
             # form-action is not only used to match on form actions, but also on URLs
             # form-actions redirect to. In the context of e.g. payment providers or
             # single-sign-on this can be nearly anything so we cannot really restrict
             # this. However, we'll restrict it to HTTPS.
-            'form-action': ['{dynamic}', 'https:'] + (['http:'] if settings.SITE_URL.startswith('http://') else []),
+            'form-action': ["{dynamic}", "https:"] + (['http:'] if settings.SITE_URL.startswith('http://') else []),
         }
         if settings.LOG_CSP:
             base_path = settings.BASE_PATH
-            h['report-uri'] = [f'{base_path}/csp_report/']
+            h['report-uri'] = [f"{base_path}/csp_report/"]
         if 'Content-Security-Policy' in resp:
             _merge_csp(h, _parse_csp(resp['Content-Security-Policy']))
         if settings.CSP_ADDITIONAL_HEADER:
@@ -232,16 +232,16 @@ class SecurityMiddleware(MiddlewareMixin):
         dynamicdomain = "'self'"
         mediadomain = "'self'"
         if settings.MEDIA_URL.startswith('http'):
-            mediadomain += ' ' + settings.MEDIA_URL[: settings.MEDIA_URL.find('/', 9)]
+            mediadomain += " " + settings.MEDIA_URL[:settings.MEDIA_URL.find('/', 9)]
         if settings.STATIC_URL.startswith('http'):
-            staticdomain += ' ' + settings.STATIC_URL[: settings.STATIC_URL.find('/', 9)]
+            staticdomain += " " + settings.STATIC_URL[:settings.STATIC_URL.find('/', 9)]
         if settings.SITE_URL.startswith('http'):
             if settings.SITE_URL.find('/', 9) > 0:
-                staticdomain += ' ' + settings.SITE_URL[: settings.SITE_URL.find('/', 9)]
-                dynamicdomain += ' ' + settings.SITE_URL[: settings.SITE_URL.find('/', 9)]
+                staticdomain += " " + settings.SITE_URL[:settings.SITE_URL.find('/', 9)]
+                dynamicdomain += " " + settings.SITE_URL[:settings.SITE_URL.find('/', 9)]
             else:
-                staticdomain += ' ' + settings.SITE_URL
-                dynamicdomain += ' ' + settings.SITE_URL
+                staticdomain += " " + settings.SITE_URL
+                dynamicdomain += " " + settings.SITE_URL
 
         if hasattr(request, 'organizer') and request.organizer:
             if hasattr(request, 'event') and request.event:
@@ -252,10 +252,11 @@ class SecurityMiddleware(MiddlewareMixin):
                 siteurlsplit = urlsplit(settings.SITE_URL)
                 if siteurlsplit.port and siteurlsplit.port not in (80, 443):
                     domain = '%s:%d' % (domain, siteurlsplit.port)
-                dynamicdomain += ' ' + domain
+                dynamicdomain += " " + domain
 
         if request.path not in self.CSP_EXEMPT and not getattr(resp, '_csp_ignore', False):
-            resp['Content-Security-Policy'] = _render_csp(h).format(static=staticdomain, dynamic=dynamicdomain, media=mediadomain)
+            resp['Content-Security-Policy'] = _render_csp(h).format(static=staticdomain, dynamic=dynamicdomain,
+                                                                    media=mediadomain)
             for k, v in h.items():
                 h[k] = ' '.join(v).format(static=staticdomain, dynamic=dynamicdomain, media=mediadomain).split(' ')
             resp['Content-Security-Policy'] = _render_csp(h)
@@ -266,6 +267,7 @@ class SecurityMiddleware(MiddlewareMixin):
 
 
 class CustomCommonMiddleware(CommonMiddleware):
+
     def get_full_path_with_slash(self, request):
         """
         Raise an error regardless of DEBUG mode when in POST, PUT, or PATCH.

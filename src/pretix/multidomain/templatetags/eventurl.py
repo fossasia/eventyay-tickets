@@ -20,8 +20,10 @@ class EventURLNode(URLNode):
 
     def render(self, context):
         from pretix.multidomain.urlreverse import eventreverse
-
-        kwargs = {smart_str(k, 'ascii'): v.resolve(context) for k, v in self.kwargs.items()}
+        kwargs = {
+            smart_str(k, 'ascii'): v.resolve(context)
+            for k, v in self.kwargs.items()
+        }
         view_name = self.view_name.resolve(context)
         event = self.event.resolve(context)
         url = ''
@@ -66,7 +68,7 @@ def eventurl(parser, token, absolute=False):
         for bit in bits:
             match = kwarg_re.match(bit)
             if not match:
-                raise TemplateSyntaxError('Malformed arguments to eventurl tag')
+                raise TemplateSyntaxError("Malformed arguments to eventurl tag")
             name, value = match.groups()
             if name:
                 kwargs[name] = parser.compile_filter(value)

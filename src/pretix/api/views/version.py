@@ -19,7 +19,14 @@ def numeric_version(v):
     #             ||------------- Stage (10 dev, 20 alpha, 30 beta, 40 rc, 50 release, 60 post)
     #               ||----------- Stage version (number of dev/alpha/beta/rc/post release)
     v = version.parse(v)
-    phases = {'dev': 10, 'a': 20, 'b': 30, 'rc': 40, 'release': 50, 'post': 60}
+    phases = {
+        'dev': 10,
+        'a': 20,
+        'b': 30,
+        'rc': 40,
+        'release': 50,
+        'post': 60
+    }
     vnum = 0
 
     if v.is_postrelease:
@@ -34,18 +41,18 @@ def numeric_version(v):
     else:
         vnum += phases['release'] * 100
     for i, part in enumerate(reversed(v.release)):
-        vnum += part * (1000**i) * 10000
+        vnum += part * (1000 ** i) * 10000
     return vnum
 
 
 class VersionView(APIView):
-    authentication_classes = (SessionAuthentication, OAuth2Authentication, DeviceTokenAuthentication, TeamTokenAuthentication)
+    authentication_classes = (
+        SessionAuthentication, OAuth2Authentication, DeviceTokenAuthentication, TeamTokenAuthentication
+    )
     permission_classes = [AnyAuthenticatedClientPermission]
 
     def get(self, request, format=None):
-        return Response(
-            {
-                'pretix': __version__,
-                'pretix_numeric': numeric_version(__version__),
-            }
-        )
+        return Response({
+            'pretix': __version__,
+            'pretix_numeric': numeric_version(__version__),
+        })
