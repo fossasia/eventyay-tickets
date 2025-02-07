@@ -10,7 +10,7 @@ with eventyay.
 First of all, when creating your event, you need to select that your event represents an "event series":
 
 
-.. image:: ../../../screens/event/create_step1.png
+.. thumbnail:: ../../../screens/event/create_step1.png
    :align: center
    :class: screenshot
 
@@ -30,21 +30,21 @@ menu on the left side and click "Create many new dates". Then, first enter the p
 example, the museum is open week Tuesday to Sunday. We recommend to create the slots for a few weeks at a time, but not
 e.g. for a full year, since it will be more complicated to change things later.
 
-.. image:: ../../../screens/event/timeslots_create.png
+.. thumbnail:: ../../../screens/event/timeslots_create.png
    :align: center
    :class: screenshot
 
 Then, scroll to the times section and create your time slots. You can do any interval you like. If you have different
 opening times on different week days, you will need to go through the creation process multiple times.
 
-.. image:: ../../../screens/event/timeslots_create_2.png
+.. thumbnail:: ../../../screens/event/timeslots_create_2.png
    :align: center
    :class: screenshot
 
 Scroll further down and create one or multiple quotas that define how many people can book a ticket for that time slot.
 In this example, 50 people in total are allowed to enter within every slot:
 
-.. image:: ../../../screens/event/timeslots_create_3.png
+.. thumbnail:: ../../../screens/event/timeslots_create_3.png
    :align: center
    :class: screenshot
 
@@ -61,13 +61,13 @@ Event settings
 We recommend that you navigate to "Settings" > "General" > "Display" and set the settings "Default overview style"
 to "Week calendar":
 
-.. image:: ../../../screens/event/timeslots_settings_1.png
+.. thumbnail:: ../../../screens/event/timeslots_settings_1.png
    :align: center
    :class: screenshot
 
 Now, your ticket shop should give users a nice weekly overview over all time slots and their availability:
 
-.. image:: ../../../screens/event/timeslots_presale.png
+.. thumbnail:: ../../../screens/event/timeslots_presale.png
    :align: center
    :class: screenshot
 
@@ -80,7 +80,7 @@ and do *not* choose a specific data. We will use one check-in list for all dates
 the top and set up two restrictions to make sure people can only get in during the time slot they registered for.
 You can create the rules exactly like shown in the following screenshot:
 
-.. image:: ../../../screens/event/timeslots_checkinlists.png
+.. thumbnail:: ../../../screens/event/timeslots_checkinlists.png
    :align: center
    :class: screenshot
 

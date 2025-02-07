@@ -1,11 +1,7 @@
 env/
-.venv
 .coverage
 htmlcov/
 .ropeproject
-*.egg-info/
-*.bak
-*.sqlite
 *.sqlite3
 *.db
 *.py[cod]
@@ -17,14 +13,7 @@ htmlcov/
 *~
 .ropeproject
 __pycache__/
-.cache
 _static/
-static.dist/
-build/
-_build/
-dist/
-pretix/static/jsi18n/
-node_modules/
 .idea
 .secret
 atlassian-ide-plugin.xml
@@ -35,6 +24,3 @@ local/
 .DS_Store
 .python-version
 
-pretix.cfg
-data/
-media/

@@ -10,7 +10,7 @@ orders and settings.
 To create an event, you can click the "Create a new event" tile on your dashboard or the button above the list of
 events. You will then be presented with the first step of event creation:
 
-.. image:: ../../screens/event/create_step1.png
+.. thumbnail:: ../../screens/event/create_step1.png
    :align: center
    :class: screenshot
 
@@ -32,7 +32,7 @@ you run e.g. a yearly conference. You can read more on this feature :ref:`here <
 
 Once you set these values, you can proceed to the next step:
 
-.. image:: ../../screens/event/create_step2.png
+.. thumbnail:: ../../screens/event/create_step2.png
    :align: center
    :class: screenshot
 
@@ -84,7 +84,7 @@ If all of this is set, you can proceed to the next step. If this is your first e
 and you are done! If you have already created events before, you will be asked if you want to copy settings from one
 of them:
 
-.. image:: ../../screens/event/create_step3.png
+.. thumbnail:: ../../screens/event/create_step3.png
    :align: center
    :class: screenshot
 
@@ -92,7 +92,7 @@ If you do so, all products, categories, quotas and most settings of the other ev
 still review them if they make sense for your new event, but it could save you a lot of work. After this step, your
 event is created successfully:
 
-.. image:: ../../screens/event/create_step4.png
+.. thumbnail:: ../../screens/event/create_step4.png
    :align: center
    :class: screenshot
 

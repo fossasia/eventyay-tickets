@@ -1,4 +1,4 @@
-.. spelling:word-list:: checkin
+.. spelling:: checkin
 
 Check-in lists
 ==============

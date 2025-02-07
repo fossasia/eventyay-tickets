@@ -40,7 +40,7 @@ First of all, configure your webserver or reverse proxy to pass requests to the 
 Then, go to the organizer account in pretix and click the "Edit" button. Enter the new domain in the "Custom Domain"
 field, then you're done!
 
-.. image:: ../../screens/organizer/edit_sysadmin.png
+.. thumbnail:: ../../screens/organizer/edit_sysadmin.png
    :align: center
    :class: screenshot
 

@@ -15,7 +15,7 @@ Configuring webhooks
 
 You can find the list of your active webhooks in the "Webhook" section of your organizer account:
 
-.. image:: ../screens/organizer/webhook_list.png
+.. thumbnail:: ../screens/organizer/webhook_list.png
    :align: center
    :class: screenshot
 
@@ -23,7 +23,7 @@ Click "Create webhook" if you want to add a new URL. You will then be able to en
 notifications. You need to select any number of notification types that you want to receive and you can optionally
 filter the events you want to receive notifications for.
 
-.. image:: ../screens/organizer/webhook_edit.png
+.. thumbnail:: ../screens/organizer/webhook_edit.png
    :align: center
    :class: screenshot
 

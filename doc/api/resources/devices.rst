@@ -1,4 +1,4 @@
-.. spelling:word-list:: fullname
+.. spelling:: fullname
 
 .. _`rest-devices`:
 

@@ -24,17 +24,19 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.11
-      - name: Install system packages
-        run: sudo apt-get update && sudo apt-get install enchant-2 hunspell aspell-en
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
+      - uses: actions/cache@v1
         with:
-          enable-cache: true
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install system packages
+        run: sudo apt update && sudo apt install enchant hunspell aspell-en
       - name: Install Dependencies
-        run: uv sync --only-group doc
+        run: pip3 install -Ur doc/requirements.txt
       - name: Spellcheck docs
-        run: uv run make spelling
+        run: make spelling
         working-directory: ./doc
-      - name: Check no errors
+      - name:
         run: '[ ! -s _build/spelling/output.txt ]'
         working-directory: ./doc
