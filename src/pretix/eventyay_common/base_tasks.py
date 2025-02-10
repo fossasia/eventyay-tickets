@@ -218,11 +218,12 @@ class SendEventTask(Task):
         Returns:
             Any: Result from parent class on_success method
         """
-        event = kwargs.get("event", {}).get("slug", "")
+        event_slug = kwargs.get("event", {}).get("slug", "")
         try:
-            event = Event.objects.get(slug=event)
-            event.settings.set("create_for", EventCreatedFor.BOTH.value)
-            event.save()
+            with scopes_disabled():
+                event = Event.objects.get(slug=event_slug)
+                event.settings.set("create_for", EventCreatedFor.BOTH.value)
+                event.save()
         except Event.DoesNotExist:
-            logger.error("Event with slug %s does not exist", event)
+            logger.error("Event with slug %s does not exist", event_slug)
         return super().on_success(retval, task_id, args, kwargs)
