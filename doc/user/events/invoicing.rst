@@ -3,7 +3,7 @@ Invoice settings
 
 .. spelling:: Inv
 
-The settings at "Settings" → "Invoice" allow you to specify if and how pretix should generate invoices for your orders.
+The settings at "Settings" → "Invoice" allow you to specify if and how eventyay should generate invoices for your orders.
 
 .. thumbnail:: ../../screens/event/settings_invoice.png
    :align: center
@@ -12,27 +12,27 @@ The settings at "Settings" → "Invoice" allow you to specify if and how pretix 
 In particular, you can configure the following things:
 
 Generate invoices
-    This field controls whether pretix should generate an invoice for an order. You have the following options:
+    This field controls whether eventyay should generate an invoice for an order. You have the following options:
 
     No
-        pretix will never generate an invoice. If you want to issue invoices, you need to do it yourself based on the
+        eventyay will never generate an invoice. If you want to issue invoices, you need to do it yourself based on the
         collected address data.
 
     Manually in admin panel
-        pretix will not create invoices automatically, but the order detail view will show a button that allows you to
+        eventyay will not create invoices automatically, but the order detail view will show a button that allows you to
         manually generate one for specific orders.
 
     Automatically on user request
-        pretix will not create invoices on its own, but both the panel as well as the customer view of the order will
+        eventyay will not create invoices on its own, but both the panel as well as the customer view of the order will
         show a button that instantly generates an invoice for the specified order.
 
     Automatically for all created orders
-        pretix will automatically create an invoice every time an order is placed.
+        eventyay will automatically create an invoice every time an order is placed.
 
     Automatically on payment
-        pretix will automatically create an invoice for an order, as soon as the payment for the order is received.
+        eventyay will automatically create an invoice for an order, as soon as the payment for the order is received.
 
-    pretix will never generate invoices for free orders, even though it might ask for the invoice address.
+    eventyay will never generate invoices for free orders, even though it might ask for the invoice address.
 
 Attach invoices to emails
     If enabled, invoices will be attached to order confirmation e-mails if the "Generate invoices" setting is set to
@@ -100,7 +100,7 @@ Your invoice details
     the header of the invoice.
 
 Invoice style
-    This setting allows you to choose the design of your invoice. Additional designs can be added by pretix plugins.
+    This setting allows you to choose the design of your invoice. Additional designs can be added by eventyay plugins.
 
 Introductory text
     A free custom text that will be printed above the list of products on the invoice.

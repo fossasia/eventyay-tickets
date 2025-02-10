@@ -14,18 +14,18 @@ can later be used to pay for tickets.
 Gift cards are very different feature than **vouchers**. The difference is:
 
 * Vouchers can be used to give a discount. When a voucher is used, the price of a ticket is reduced by the configured
-  discount and sold at a lower price. They therefore reduce both revenue as well as taxes. Vouchers (in pretix) are
+  discount and sold at a lower price. They therefore reduce both revenue as well as taxes. Vouchers (in eventyay) are
   always specific to a certain product in an order. Vouchers are usually not sold but given out as part of a
-  marketing campaign or to specific groups of people. Vouchers in pretix are bound to a specific event.
+  marketing campaign or to specific groups of people. Vouchers in eventyay are bound to a specific event.
 
 * Gift cards are not a discount, but rather a means of payment. If you buy a €20 ticket with a €10 gift card, it is
   still a €20 ticket and will still count towards your revenue with €20. Gift cards are usually bought for the money
-  that they are worth. Gift cards in pretix can be used across events (and even organizers).
+  that they are worth. Gift cards in eventyay can be used across events (and even organizers).
 
 Selling gift cards
 ------------------
 
-Selling gift cards works like selling every other type of product in pretix: Create a new product, then head to
+Selling gift cards works like selling every other type of product in eventyay: Create a new product, then head to
 "Additional settings" and select the option "This product is a gift card". Whenever someone buys this product and
 pays for it, a new gift card will be created.
 
@@ -33,12 +33,12 @@ In this case, the gift card code corresponds to the "ticket secret" in the PDF t
 you can use ticket downloads just as with normal tickets and use our ticket editor to create beautiful gift certificates
 people can give to their loved ones.
 
-Of course, you can use pretix' flexible options to modify your product. For example, you can configure that the customer
+Of course, you can use eventyay' flexible options to modify your product. For example, you can configure that the customer
 can freely choose the price of the gift card.
 
 .. note::
 
-   pretix currently does not support charging sales tax or VAT when selling gift cards, but instead charges VAT on
+   eventyay currently does not support charging sales tax or VAT when selling gift cards, but instead charges VAT on
    the full price when the gift card is redeemed. This is the correct behavior in Germany and some other countries for
    gift cards which are not bound to a very specific service ("Warengutschein"), but instead to a monetary amount
    ("Wertgutschein").
@@ -69,5 +69,5 @@ Manually issuing or using gift cards
 ------------------------------------
 
 Of course, you can also issue or redeem gift cards manually through our backend using the "Gift cards" menu item in your
-organizer profile or using our API. These gift cards will be tracked by pretix, but do not correspond to any purchase
-within pretix. You will therefore need to account for them in your books separately.
+organizer profile or using our API. These gift cards will be tracked by eventyay, but do not correspond to any purchase
+within eventyay. You will therefore need to account for them in your books separately.

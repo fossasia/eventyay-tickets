@@ -1,8 +1,8 @@
 Ticket secret generators
 ========================
 
-pretix allows you to change the way in which ticket secrets (also known as "ticket codes", "barcodes", …)
-are generated. This affects the value of the QR code in any tickets issued by pretix, regardless of ticket
+eventyay allows you to change the way in which ticket secrets (also known as "ticket codes", "barcodes", …)
+are generated. This affects the value of the QR code in any tickets issued by eventyay, regardless of ticket
 format.
 
 .. note:: This is intended for highly advanced use cases, usually when huge numbers of tickets (> 25k per event)
@@ -11,7 +11,7 @@ format.
 Default: Random secrets
 -----------------------
 
-By default, pretix generates a random code for every ticket, consisting of 32 lower case characters and
+By default, eventyay generates a random code for every ticket, consisting of 32 lower case characters and
 numbers. The characters ``oO1il`` are avoided to reduce confusion when ticket codes are printed and need to
 be typed in manually.
 
@@ -24,15 +24,15 @@ Choosing random codes has a number of advantages:
   different product or date, they can keep their ticket and it is just mapped to the new product in the
   database.
 
-This approach works really well for 99 % or events running with pretix.
+This approach works really well for 99 % or events running with eventyay.
 The big caveat is that the scanner needs to access a database of all ticket codes in order to know whether a ticket
 code is valid and what kind of ticket it represents.
 
-When scanning online this is no problem at all, since the pretix server always has such a database. In case your local
-internet connection is interrupted or the pretix server goes down, though, there needs to be a database locally on the
+When scanning online this is no problem at all, since the eventyay server always has such a database. In case your local
+internet connection is interrupted or the eventyay server goes down, though, there needs to be a database locally on the
 scanner.
 
-Therefore, our pretixSCAN apps by default download the database of all valid tickets onto the device itself. This makes
+Therefore, our eventyaySCAN apps by default download the database of all valid tickets onto the device itself. This makes
 it possible to seamlessly switch into offline mode when the connection is lost and continue scanning with the maximum
 possible feature set.
 
@@ -49,11 +49,11 @@ There are a few situations in which this approach is not ideal:
 Signature schemes
 -----------------
 
-The alternative approach that is included with pretix is to choose a signature-based ticket code generation scheme.
+The alternative approach that is included with eventyay is to choose a signature-based ticket code generation scheme.
 These secrets include the most important information that is required for verifying their validity and use modern
 cryptography to make sure they cannot be forged.
 
-Currently, pretix ships with one such scheme ("signature scheme 1") which encodes the product, the product
+Currently, eventyay ships with one such scheme ("signature scheme 1") which encodes the product, the product
 variation, and the date (if inside an event series) into the ticket code and signs the code with a `EdDSA`_ signature.
 This allows to verify whether a ticket is allowed to enter without any database or connection to the server, but has
 a few important drawbacks:
