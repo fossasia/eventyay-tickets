@@ -220,9 +220,10 @@ class SendEventTask(Task):
         """
         event = kwargs.get("event", {}).get("slug", "")
         try:
-            event = Event.objects.get(slug=event)
-            event.settings.set("create_for", EventCreatedFor.BOTH.value)
-            event.save()
+            with scopes_disabled():
+                event = Event.objects.get(slug=event)
+                event.settings.set("create_for", EventCreatedFor.BOTH.value)
+                event.save()
         except Event.DoesNotExist:
             logger.error("Event with slug %s does not exist", event)
         return super().on_success(retval, task_id, args, kwargs)
