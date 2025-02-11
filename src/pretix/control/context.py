@@ -1,5 +1,6 @@
 import sys
 from importlib import import_module
+from urllib.parse import urljoin
 
 from django.conf import settings
 from django.db.models import Q

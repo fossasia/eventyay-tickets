@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import urljoin
 
 from django.conf import settings
 from django.contrib import messages
@@ -70,6 +71,7 @@ class OrganizerCreate(CreateView):
             'slug': self.object.slug,
             'action': 'create',
         }
+        print("running")
         send_organizer_webhook.delay(user_id=self.request.user.id, organizer=organizer_data)
 
         team.members.add(self.request.user)
