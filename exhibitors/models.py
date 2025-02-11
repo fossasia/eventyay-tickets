@@ -130,7 +130,6 @@ class Lead(models.Model):
     ) 
     booth_id = models.CharField(
         max_length=100,
-        unique=True,
         editable=True
     )
     booth_name = models.CharField(

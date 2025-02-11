@@ -5,7 +5,7 @@ from pretix.api.serializers.order import CompatibleJSONField
 from pretix.base.models import OrderPosition
 from rest_framework import status, views, viewsets
 from rest_framework.response import Response
-
+from django.core.exceptions import ObjectDoesNotExist
 from .models import ExhibitorInfo, ExhibitorItem,ExhibitorSettings , ExhibitorTag, Lead
 
 
@@ -78,8 +78,6 @@ class LeadCreateView(views.APIView):
         """Helper method to get allowed attendee data based on settings"""
         # Get all allowed fields including defaults
         allowed_fields = settings.all_allowed_fields
-        print(allowed_fields)
-        print(order_position)
         attendee_data = {
             'name': order_position.attendee_name,  # Always included
             'email': order_position.attendee_email,  # Always included
@@ -118,9 +116,14 @@ class LeadCreateView(views.APIView):
 
         # Get attendee details
         try:
-            order_position = OrderPosition.objects.get(
-                pseudonymization_id=pseudonymization_id
-            )
+            if len(pseudonymization_id)<11:
+                order_position = OrderPosition.objects.get(
+                    pseudonymization_id=pseudonymization_id
+                )
+            else:
+                order_position = OrderPosition.objects.get(
+                    secret = pseudonymization_id
+                )
         except OrderPosition.DoesNotExist:
             return Response(
                 {'success': False, 'error': 'Attendee not found'},
@@ -152,7 +155,6 @@ class LeadCreateView(views.APIView):
             settings,
             exhibitor
         )
-        print(attendee_data)
         # Create the lead entry
         lead = Lead.objects.create(
             exhibitor=exhibitor,
