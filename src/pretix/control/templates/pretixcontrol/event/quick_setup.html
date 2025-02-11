@@ -166,22 +166,23 @@
                         Here are just two of them as examples, you can add more in the "Settings" part of your event.
                     {% endblocktrans %}
                 </p>
-                {% bootstrap_field form.payment_banktransfer__enabled layout="control" label_class="sr-only" field_class="col-md-12" %}
-                <div data-display-dependency="#id_payment_banktransfer__enabled">
-                    {% bootstrap_field form.payment_banktransfer_bank_details_type layout="control" %}
-                    {% bootstrap_field form.payment_banktransfer_bank_details_sepa_name layout="control" %}
-                    {% bootstrap_field form.payment_banktransfer_bank_details_sepa_iban layout="control" %}
-                    {% bootstrap_field form.payment_banktransfer_bank_details_sepa_bic layout="control" %}
-                    {% bootstrap_field form.payment_banktransfer_bank_details_sepa_bank layout="control" %}
-                    {% bootstrap_field form.payment_banktransfer_bank_details layout="control" %}
-                </div>
+                {% if form.payment_banktransfer__enabled %}
+                    {% bootstrap_field form.payment_banktransfer__enabled layout="control" label_class="sr-only" field_class="col-md-12" %}
+                    <div data-display-dependency="#id_payment_banktransfer__enabled">
+                        {% bootstrap_field form.payment_banktransfer_bank_details_type layout="control" %}
+                        {% bootstrap_field form.payment_banktransfer_bank_details_sepa_name layout="control" %}
+                        {% bootstrap_field form.payment_banktransfer_bank_details_sepa_iban layout="control" %}
+                        {% bootstrap_field form.payment_banktransfer_bank_details_sepa_bic layout="control" %}
+                        {% bootstrap_field form.payment_banktransfer_bank_details_sepa_bank layout="control" %}
+                        {% bootstrap_field form.payment_banktransfer_bank_details layout="control" %}
+                    </div>
+                {% endif %}
                 {% if form.payment_stripe__enabled %}
                     {% bootstrap_field form.payment_stripe__enabled layout="control" label_class="sr-only" field_class="col-md-12" %}
                     <div data-display-dependency="#id_payment_stripe__enabled">
                         <div class="alert alert-info">
                             {% blocktrans trimmed %}
-                                After you saved this page, we will redirect you to Stripe to create or connect an account
-                                there. Once you completed this, you will be taken back to pretix.
+                                After the setup, please go to the Payment area and set up the Stripe connection.
                             {% endblocktrans %}
                         </div>
                     </div>
