@@ -49,7 +49,7 @@ def send_organizer_webhook(self, user_id, organizer):
     try:
         # Send the POST request with the payload and the headers
         response = requests.post(
-            settings.TALK_HOSTNAME + "/webhook/organiser/",
+            urljoin(settings.TALK_HOSTNAME, "/webhook/organiser/"),
             json=payload,
             headers=headers,
         )
