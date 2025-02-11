@@ -1,5 +1,6 @@
 include _build/backend.py
 include LICENSE
+include CNAME
 include README.rst
 include src/pretalx.example.cfg
 include Dockerfile

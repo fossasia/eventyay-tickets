@@ -24,7 +24,7 @@
         </div>
         <hr>
 
-        {% include "common/auth.html" %}
+        {% include "common/auth.html" with next_url=request.get_full_path %}
 
     {% else %}
         <form method="post" class="col-md-6 ml-auto mr-auto">

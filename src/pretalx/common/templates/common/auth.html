@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load socialaccount %}
+{% load oauth_tags %}
 
 {% include "common/forms/errors.html" %}
 {% if no_form %}
@@ -26,7 +27,7 @@
     {% if not hide_login %}
         <div class="panel panel-default">
             <div class="panel-heading text-center" id="headingOne">
-                <a class="btn btn-lg btn-primary btn-block mt-3" href='{% url "eventyay_common:oauth2_provider.login" %}'>
+                <a class="btn btn-lg btn-primary btn-block mt-3" href="{% oauth_login_url next_url %}">
                     {% translate "Login with SSO" %}
                 </a>
             </div>
@@ -36,7 +37,7 @@
         <hr>
         <div class="panel panel-default">
             <div class="panel-heading text-center" id="headingTwo">
-                <a class="btn btn-lg btn-primary btn-block mt-3" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <a class="btn btn-lg btn-primary btn-block mt-3" href="{% register_account_url next_url %}">
                     {% translate "Register Speaker Account" %}
                 </a>
             </div>

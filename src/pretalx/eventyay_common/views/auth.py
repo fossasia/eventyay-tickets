@@ -1,12 +1,16 @@
 import logging
 import os
+from typing import Optional, Tuple
+from urllib.parse import quote, urljoin, urlparse
 
 from allauth.socialaccount.models import SocialApp
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.views import View
 from requests_oauthlib import OAuth2Session
 
 from pretalx.person.models import User
@@ -20,34 +24,77 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = (
 )
 
 
-def oauth2_login_view(request, *args, **kwargs):
-    sso_provider = SocialApp.objects.filter(
-        provider=settings.EVENTYAY_SSO_PROVIDER
-    ).first()
-    if not sso_provider:
+def validate_relative_url(next_url: str) -> bool:
+    """
+    Only allow relative urls
+    """
+    parsed = urlparse(next_url)
+    if parsed.scheme or parsed.netloc:
+        return False
+
+    return True
+
+
+def register(request: HttpRequest) -> HttpResponse:
+    """
+    Register a new user account and redirect to the previous page.
+
+    This function constructs a registration URL with a 'next' parameter
+    to ensure the user is redirected back to their original location
+    after registration.
+    """
+    register_url = urljoin(settings.EVENTYAY_TICKET_BASE_PATH, "/control/register")
+    next_url = request.GET.get("next") or request.POST.get("next")
+    if next_url and validate_relative_url(next_url):
+        full_next_url = request.build_absolute_uri(next_url)
+        next_param = f"?next={quote(full_next_url)}"
+        return redirect(f"{register_url}{next_param}")
+
+    return redirect(register_url)
+
+
+class OAuth2LoginView(View):
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        # Store the 'next' URL in the session, for redirecting user back after login
+        next_url = request.GET.get("next") or request.POST.get("next")
+        if next_url and validate_relative_url(next_url):
+            request.session["next"] = next_url
+
+        sso_provider = self.get_sso_provider()
+        if not sso_provider:
+            return self.handle_sso_not_configured(request)
+        oauth2_session = self.create_oauth2_session(sso_provider)
+        authorization_url, state = self.get_authorization_url(oauth2_session)
+        request.session["oauth2_state"] = state
+
+        return redirect(authorization_url)
+
+    @staticmethod
+    def get_sso_provider() -> Optional[SocialApp]:
+        return SocialApp.objects.filter(provider=settings.EVENTYAY_SSO_PROVIDER).first()
+
+    @staticmethod
+    def handle_sso_not_configured(request: HttpRequest) -> HttpResponse:
         messages.error(
             request,
             "SSO not configured yet, please contact the "
             "administrator or come back later.",
         )
         return redirect(reverse("orga:login"))
-    # Create an OAuth2 session using the client ID and redirect URI
-    oauth2_session = OAuth2Session(
-        client_id=sso_provider.client_id,
-        redirect_uri=settings.OAUTH2_PROVIDER["REDIRECT_URI"],
-        scope=settings.OAUTH2_PROVIDER["SCOPE"],
-    )
 
-    # Generate the authorization URL for the SSO provider
-    authorization_url, state = oauth2_session.authorization_url(
-        settings.OAUTH2_PROVIDER["AUTHORIZE_URL"]
-    )
+    @staticmethod
+    def create_oauth2_session(sso_provider: SocialApp) -> OAuth2Session:
+        return OAuth2Session(
+            client_id=sso_provider.client_id,
+            redirect_uri=settings.OAUTH2_PROVIDER["REDIRECT_URI"],
+            scope=settings.OAUTH2_PROVIDER["SCOPE"],
+        )
 
-    # Save the OAuth2 session state to the user's session for security
-    request.session["oauth2_state"] = state
-
-    # Redirect to the SSO provider's login page
-    return redirect(authorization_url)
+    @staticmethod
+    def get_authorization_url(oauth2_session: OAuth2Session) -> Tuple[str, str]:
+        return oauth2_session.authorization_url(
+            settings.OAUTH2_PROVIDER["AUTHORIZE_URL"]
+        )
 
 
 def oauth2_callback(request):
@@ -98,4 +145,8 @@ def oauth2_callback(request):
 
     # Log the user into the session
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+    # If a 'next' URL was stored in the session, use it for redirecting user back after login
+    next_url = request.session.pop("next", None)
+    if next_url and validate_relative_url(next_url):
+        return redirect(next_url)
     return redirect(reverse("cfp:root.main"))
