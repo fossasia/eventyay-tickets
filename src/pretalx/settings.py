@@ -3,7 +3,7 @@ import os
 import sys
 from contextlib import suppress
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 
 from django.contrib.messages import constants as messages
 from django.utils.crypto import get_random_string
@@ -500,7 +500,6 @@ DEFAULT_EVENT_PRIMARY_COLOR = "#2185d0"
 
 ## AUTHENTICATION SETTINGS
 AUTH_USER_MODEL = "person.User"
-LOGIN_URL = BASE_PATH + "/orga/login"
 AUTHENTICATION_BACKENDS = (
     "rules.permissions.ObjectPermissionBackend",
     "django.contrib.auth.backends.ModelBackend",
@@ -690,10 +689,10 @@ else:
     )
 
 EVENTYAY_TICKET_BASE_PATH = config.get(
-    "urls", "eventyay-ticket", fallback="https://app-test.eventyay.com/tickets"
+    "urls", "eventyay-ticket", fallback="http://localhost/tickets/"
 )
 EVENTYAY_VIDEO_BASE_PATH = config.get(
-    "urls", "eventyay-video", fallback="https://app-test.eventyay.com/video"
+    "urls", "eventyay-video", fallback="http://localhost/video/"
 )
 
 SITE_ID = 1
@@ -709,18 +708,9 @@ ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
 
 # OAuth2 Client settings
 OAUTH2_PROVIDER = {
-    "AUTHORIZE_URL": "/".join([EVENTYAY_TICKET_BASE_PATH, "control/oauth2/authorize/"]),
-    "ACCESS_TOKEN_URL": "/".join([EVENTYAY_TICKET_BASE_PATH, "control/oauth2/token/"]),
-    "REDIRECT_URI": "/".join(
-        filter(
-            None,
-            [
-                SITE_URL.rstrip("/"),
-                BASE_PATH.strip("/") if BASE_PATH else "",
-                "oauth2/callback/",
-            ],
-        )
-    ),
+    "AUTHORIZE_URL": urljoin(EVENTYAY_TICKET_BASE_PATH, "control/oauth2/authorize/"),
+    "ACCESS_TOKEN_URL": urljoin(EVENTYAY_TICKET_BASE_PATH, "control/oauth2/token/"),
+    "REDIRECT_URI": urljoin(SITE_URL, f'{BASE_PATH.strip("/")}/oauth2/callback/'),
     "SCOPE": ["profile"],
 }
 # Set default Application model if using default
@@ -730,12 +720,11 @@ OAUTH2_PROVIDER_REFRESH_TOKEN_MODEL = "oauth2_provider.RefreshToken"
 OAUTH2_PROVIDER_AUTHORIZATION_CODE_MODEL = "oauth2_provider.AuthorizationCode"
 OAUTH2_PROVIDER_CLIENT_MODEL = "oauth2_provider.Application"
 OAUTH2_PROVIDER_ID_TOKEN_MODEL = "oauth2_provider.IDToken"
-SSO_USER_INFO = "/".join([EVENTYAY_TICKET_BASE_PATH, "control/oauth2/user_info/"])
+SSO_USER_INFO = urljoin(EVENTYAY_TICKET_BASE_PATH, "control/oauth2/user_info/")
 # Disable this if you are not using HTTPS
 OAUTHLIB_INSECURE_TRANSPORT = True
 
 LOGOUT_REDIRECT_URL = "/"
-LOGIN_URL = BASE_PATH + "/login/"
 
 CORS_ORIGIN_WHITELIST = [EVENTYAY_TICKET_BASE_PATH]
 EVENTYAY_SSO_PROVIDER = "eventyay"

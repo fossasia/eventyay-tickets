@@ -43,7 +43,7 @@ def register(request: HttpRequest) -> HttpResponse:
     to ensure the user is redirected back to their original location
     after registration.
     """
-    register_url = urljoin(settings.EVENTYAY_TICKET_BASE_PATH, "/control/register")
+    register_url = urljoin(settings.EVENTYAY_TICKET_BASE_PATH, "control/register")
     next_url = request.GET.get("next") or request.POST.get("next")
     if next_url and validate_relative_url(next_url):
         full_next_url = request.build_absolute_uri(next_url)

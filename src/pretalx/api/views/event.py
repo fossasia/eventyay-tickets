@@ -1,5 +1,6 @@
 import logging
 from http import HTTPStatus
+from urllib.parse import urljoin
 
 import jwt
 from django.conf import settings
@@ -143,8 +144,8 @@ def save_video_settings_information(event_slug, video_tokens, event_instance):
 
     video_settings_data = {
         "token": video_tokens[0],
-        "url": "{}/api/v1/worlds/{}/".format(
-            settings.EVENTYAY_VIDEO_BASE_PATH, event_slug
+        "url": urljoin(
+            settings.EVENTYAY_VIDEO_BASE_PATH, f"api/v1/worlds/{event_slug}/"
         ),
     }
 
