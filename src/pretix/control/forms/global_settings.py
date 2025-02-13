@@ -233,7 +233,7 @@ class SSOConfigForm(SettingsForm):
     redirect_url = forms.URLField(
         required=True,
         label=_("Redirect URL"),
-        help_text=_("e.g. {sample}").format(sample="https://app-test.eventyay.com/talk/")
+        help_text=_("e.g. {sample}").format(sample="https://app-test.eventyay.com/talk/oauth2/callback/")
     )
 
     def __init__(self, *args, **kwargs):

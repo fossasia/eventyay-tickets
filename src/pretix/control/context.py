@@ -1,5 +1,6 @@
 import sys
 from importlib import import_module
+from urllib.parse import urljoin
 
 from django.conf import settings
 from django.db.models import Q
@@ -53,9 +54,7 @@ def _default_context(request):
     if hasattr(request, 'event') and request.user.is_authenticated:
         for receiver, response in html_head.send(request.event, request=request):
             _html_head.append(response)
-        ctx["talk_edit_url"] = (
-            settings.TALK_HOSTNAME + "/orga/event/" + request.event.slug
-        )
+        ctx["talk_edit_url"] = urljoin(settings.TALK_HOSTNAME, f"orga/event/{request.event.slug}")
         ctx['is_video_enabled'] = is_video_enabled(request.event)
         ctx["is_talk_event_created"] = False
         if (
