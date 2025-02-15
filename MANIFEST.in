@@ -1,6 +1,7 @@
 include LICENSE
 include CNAME
 include README.rst
+include Makefile
 global-include *.proto
 recursive-include src/pretix/static *
 recursive-include src/pretix/static.dist *

@@ -1,4 +1,6 @@
 FROM python:3.11-bookworm
+ARG UID=15371
+ARG GID=15371
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -30,7 +32,8 @@ RUN apt-get update && \
 	/usr/sbin/update-locale LANG=C.UTF-8 && \
     mkdir /etc/pretix && \
     mkdir /data && \
-    useradd -ms /bin/bash -d /pretix -u 15371 pretixuser && \
+    groupadd -g $GID pretixuser && \
+    useradd -ms /bin/bash -d /pretix -u $UID -g pretixuser pretixuser && \
     echo 'pretixuser ALL=(ALL) NOPASSWD:SETENV: /usr/bin/supervisord' >> /etc/sudoers && \
     mkdir /static && \
     mkdir /etc/supervisord
@@ -45,6 +48,10 @@ COPY deployment/docker/supervisord /etc/supervisord
 COPY deployment/docker/supervisord.all.conf /etc/supervisord.all.conf
 COPY deployment/docker/supervisord.web.conf /etc/supervisord.web.conf
 COPY deployment/docker/nginx.conf /etc/nginx/nginx.conf
+# We are mounting pretix into the dev container, so the following
+# will be actually overwritten.
+# This is fixed in docker-compose-dev.yaml by also mounting the
+# production_settings.py file independently into the src directory.
 COPY deployment/docker/production_settings.py /pretix/src/production_settings.py
 COPY pyproject.toml /pretix/pyproject.toml
 COPY src /pretix/src
