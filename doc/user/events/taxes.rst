@@ -13,14 +13,14 @@ details and on invoices.
 At the time of this writing, every product can be assigned exactly one tax rule. To view and change the tax rules of
 your event, go to the respective section in your event's settings:
 
-.. image:: ../../screens/event/tax_list.png
+.. thumbnail:: ../../screens/event/tax_list.png
    :align: center
    :class: screenshot
 
 On this page, you can create, edit and delete your tax rules. Clicking on the name of a tax rule will take you to its
 detailed settings:
 
-.. image:: ../../screens/event/tax_detail.png
+.. thumbnail:: ../../screens/event/tax_detail.png
    :align: center
    :class: screenshot
 

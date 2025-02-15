@@ -5,8 +5,7 @@ from django.urls import reverse
 from django.utils.timezone import get_current_timezone, make_aware, now
 from django.utils.translation import pgettext_lazy
 from django_scopes.forms import (
-    SafeModelChoiceField,
-    SafeModelMultipleChoiceField,
+    SafeModelChoiceField, SafeModelMultipleChoiceField,
 )
 
 from pretix.base.channels import get_all_sales_channels
@@ -20,13 +19,10 @@ class NextTimeField(forms.TimeField):
         if value is None:
             return
         tz = get_current_timezone()
-        result = make_aware(
-            datetime.combine(
-                now().astimezone(tz).date(),
-                value,
-            ),
-            tz,
-        )
+        result = make_aware(datetime.combine(
+            now().astimezone(tz).date(),
+            value,
+        ), tz)
         if result <= now():
             result += timedelta(days=1)
         return result
@@ -49,8 +45,10 @@ class CheckinListForm(forms.ModelForm):
             label=self.fields['auto_checkin_sales_channels'].label,
             help_text=self.fields['auto_checkin_sales_channels'].help_text,
             required=self.fields['auto_checkin_sales_channels'].required,
-            choices=((c.identifier, c.verbose_name) for c in get_all_sales_channels().values()),
-            widget=forms.CheckboxSelectMultiple,
+            choices=(
+                (c.identifier, c.verbose_name) for c in get_all_sales_channels().values()
+            ),
+            widget=forms.CheckboxSelectMultiple
         )
 
         if not self.event.organizer.gates.exists():
@@ -63,14 +61,11 @@ class CheckinListForm(forms.ModelForm):
             self.fields['subevent'].widget = Select2(
                 attrs={
                     'data-model-select2': 'event',
-                    'data-select2-url': reverse(
-                        'control:event.subevents.select2',
-                        kwargs={
-                            'event': self.event.slug,
-                            'organizer': self.event.organizer.slug,
-                        },
-                    ),
-                    'data-placeholder': pgettext_lazy('subevent', 'All dates'),
+                    'data-select2-url': reverse('control:event.subevents.select2', kwargs={
+                        'event': self.event.slug,
+                        'organizer': self.event.organizer.slug,
+                    }),
+                    'data-placeholder': pgettext_lazy('subevent', 'All dates')
                 }
             )
             self.fields['subevent'].widget.choices = self.fields['subevent'].choices
@@ -94,8 +89,12 @@ class CheckinListForm(forms.ModelForm):
             'exit_all_at',
         ]
         widgets = {
-            'limit_products': forms.CheckboxSelectMultiple(attrs={'data-inverse-dependency': '<[name$=all_products]'}),
-            'gates': forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
+            'limit_products': forms.CheckboxSelectMultiple(attrs={
+                'data-inverse-dependency': '<[name$=all_products]'
+            }),
+            'gates': forms.CheckboxSelectMultiple(attrs={
+                'class': 'scrolling-multiple-choice'
+            }),
             'auto_checkin_sales_channels': forms.CheckboxSelectMultiple(),
             'exit_all_at': NextTimeInput(attrs={'class': 'timepickerfield'}),
         }
@@ -136,8 +135,12 @@ class SimpleCheckinListForm(forms.ModelForm):
             'gates',
         ]
         widgets = {
-            'limit_products': forms.CheckboxSelectMultiple(attrs={'data-inverse-dependency': '<[name$=all_products]'}),
-            'gates': forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
+            'limit_products': forms.CheckboxSelectMultiple(attrs={
+                'data-inverse-dependency': '<[name$=all_products]'
+            }),
+            'gates': forms.CheckboxSelectMultiple(attrs={
+                'class': 'scrolling-multiple-choice'
+            }),
         }
         field_classes = {
             'limit_products': SafeModelMultipleChoiceField,

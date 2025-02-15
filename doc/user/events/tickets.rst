@@ -3,7 +3,7 @@ Ticket settings
 
 At "Settings" → "Tickets", you can configure the ticket download options that will be presented to your customers:
 
-.. image:: ../../screens/event/settings_tickets.png
+.. thumbnail:: ../../screens/event/settings_tickets.png
    :align: center
    :class: screenshot
 

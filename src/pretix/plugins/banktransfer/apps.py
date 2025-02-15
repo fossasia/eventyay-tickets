@@ -7,14 +7,15 @@ from pretix import __version__ as version
 
 class BankTransferApp(AppConfig):
     name = 'pretix.plugins.banktransfer'
-    verbose_name = _('Bank transfer')
+    verbose_name = _("Bank transfer")
 
     class PretixPluginMeta:
-        name = _('Bank transfer')
+        name = _("Bank transfer")
         category = 'PAYMENT'
         featured = True
         version = version
-        description = _('This plugin allows you to receive payments ' + 'via bank transfer.')
+        description = _("This plugin allows you to receive payments " +
+                        "via bank transfer.")
 
     def ready(self):
         from . import signals  # NOQA

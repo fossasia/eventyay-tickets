@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 from django.conf import settings
 from django.contrib import messages
 from django.db import transaction
@@ -63,7 +65,9 @@ class TeamCreateView(OrganizerDetailViewMixin, CreateView, OrganizerPermissionRe
         return super().form_invalid(form)
 
     def get_success_url(self):
-        return reverse('eventyay_common:organizer.teams', kwargs={'organizer': self.request.organizer.slug})
+        return reverse('eventyay_common:organizer.teams', kwargs={
+            'organizer': self.request.organizer.slug
+        })
 
 
 class TeamUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
@@ -85,12 +89,13 @@ class TeamUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        talk_host = settings.TALK_HOSTNAME
-        ctx['talk_edit_url'] = talk_host + '/orga/organiser/' + self.request.organizer.slug
+        ctx['talk_edit_url'] = urljoin(settings.TALK_HOSTNAME, f'orga/organiser/{self.request.organizer.slug}')
         return ctx
 
     def get_success_url(self):
-        return reverse('eventyay_common:organizer.teams', kwargs={'organizer': self.request.organizer.slug})
+        return reverse('eventyay_common:organizer.teams', kwargs={
+            'organizer': self.request.organizer.slug
+        })
 
     @transaction.atomic
     def form_valid(self, form):
@@ -132,7 +137,9 @@ class TeamDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
         return context
 
     def can_deleted(self) -> bool:
-        return self.request.organizer.teams.exclude(pk=self.kwargs.get('team')).filter(can_change_teams=True, members__isnull=False).exists()
+        return self.request.organizer.teams.exclude(pk=self.kwargs.get('team')).filter(
+            can_change_teams=True, members__isnull=False
+        ).exists()
 
     @transaction.atomic
     def form_valid(self, form):
@@ -153,9 +160,6 @@ class TeamDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin,
             return redirect(success_url)
 
     def get_success_url(self):
-        return reverse(
-            'eventyay_common:organizer.teams',
-            kwargs={
-                'organizer': self.request.organizer.slug,
-            },
-        )
+        return reverse('eventyay_common:organizer.teams', kwargs={
+            'organizer': self.request.organizer.slug,
+        })

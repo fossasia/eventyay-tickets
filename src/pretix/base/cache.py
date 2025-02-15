@@ -7,7 +7,8 @@ from django.db.models import Model
 
 
 class NamespacedCache:
-    def __init__(self, prefixkey: str, cache: str = 'default'):
+
+    def __init__(self, prefixkey: str, cache: str='default'):
         self.cache = caches[cache]
         self.prefixkey = prefixkey
         self._last_prefix = None
@@ -26,11 +27,11 @@ class NamespacedCache:
         key = '%s:%d:%s' % (self.prefixkey, prefix, original_key)
         if len(key) > 200:  # Hash long keys, as memcached has a length limit
             # TODO: Use a more efficient, non-cryptographic hash algorithm
-            key = hashlib.sha256(key.encode('UTF-8')).hexdigest()
+            key = hashlib.sha256(key.encode("UTF-8")).hexdigest()
         return key
 
     def _strip_prefix(self, key: str) -> str:
-        return key.split(':', 2 + self.prefixkey.count(':'))[-1]
+        return key.split(":", 2 + self.prefixkey.count(":"))[-1]
 
     def clear(self) -> None:
         self._last_prefix = None
@@ -40,14 +41,18 @@ class NamespacedCache:
             prefix = int(time.time())
             self.cache.set(self.prefixkey, prefix)
 
-    def set(self, key: str, value: str, timeout: int = 300):
+    def set(self, key: str, value: str, timeout: int=300):
         return self.cache.set(self._prefix_key(key), value, timeout)
 
     def get(self, key: str) -> str:
         return self.cache.get(self._prefix_key(key, known_prefix=self._last_prefix))
 
     def get_or_set(self, key: str, default: Callable, timeout=300) -> str:
-        return self.cache.get_or_set(self._prefix_key(key, known_prefix=self._last_prefix), default=default, timeout=timeout)
+        return self.cache.get_or_set(
+            self._prefix_key(key, known_prefix=self._last_prefix),
+            default=default,
+            timeout=timeout
+        )
 
     def get_many(self, keys: List[str]) -> Dict[str, str]:
         values = self.cache.get_many([self._prefix_key(key) for key in keys])
@@ -68,10 +73,10 @@ class NamespacedCache:
     def delete_many(self, keys: List[str]):  # NOQA
         return self.cache.delete_many([self._prefix_key(key) for key in keys])
 
-    def incr(self, key: str, by: int = 1):  # NOQA
+    def incr(self, key: str, by: int=1):  # NOQA
         return self.cache.incr(self._prefix_key(key), by)
 
-    def decr(self, key: str, by: int = 1):  # NOQA
+    def decr(self, key: str, by: int=1):  # NOQA
         return self.cache.decr(self._prefix_key(key), by)
 
     def close(self):  # NOQA
@@ -92,6 +97,6 @@ class ObjectRelatedCache(NamespacedCache):
     times as you want.
     """
 
-    def __init__(self, obj: Model, cache: str = 'default'):
+    def __init__(self, obj: Model, cache: str='default'):
         assert isinstance(obj, Model)
         super().__init__('%s:%s' % (obj._meta.object_name, obj.pk), cache)

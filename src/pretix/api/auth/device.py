@@ -4,8 +4,7 @@ from rest_framework import exceptions
 from rest_framework.authentication import TokenAuthentication
 
 from pretix.api.auth.devicesecurity import (
-    DEVICE_SECURITY_PROFILES,
-    FullAccessSecurityProfile,
+    DEVICE_SECURITY_PROFILES, FullAccessSecurityProfile,
 )
 from pretix.base.models import Device
 

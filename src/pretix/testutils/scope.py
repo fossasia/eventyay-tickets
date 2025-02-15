@@ -6,7 +6,5 @@ def classscope(attr='o'):
         def wrapped(self, *args, **kwargs):
             with scope(organizer=getattr(self, attr)):
                 return fn(self, *args, **kwargs)
-
         return wrapped
-
     return wrap

@@ -9,12 +9,8 @@ from hierarkey.models import GlobalSettingsBase, Hierarkey
 from i18nfield.strings import LazyI18nString
 
 from pretix.base.configurations import (
-    COUNTRIES_WITH_STATE,
-    CSS_SETTINGS,
-    DEFAULT_SETTINGS,
-    NAME_SALUTION,
-    NAME_SCHEMES,
-    TITLE_GROUP,
+    COUNTRIES_WITH_STATE, CSS_SETTINGS, DEFAULT_SETTINGS, NAME_SALUTION,
+    NAME_SCHEMES, TITLE_GROUP,
 )
 from pretix.base.configurations.lazy_i18n_string_list_base import (
     LazyI18nStringList,
@@ -43,9 +39,15 @@ def i18n_uns(v):
         return LazyI18nString(str(v))
 
 
-settings_hierarkey.add_type(LazyI18nString, serialize=lambda s: json.dumps(s.data), unserialize=i18n_uns)
-settings_hierarkey.add_type(LazyI18nStringList, serialize=operator.methodcaller('serialize'), unserialize=LazyI18nStringList.unserialize)
-settings_hierarkey.add_type(RelativeDateWrapper, serialize=lambda rdw: rdw.to_string(), unserialize=lambda s: RelativeDateWrapper.from_string(s))
+settings_hierarkey.add_type(LazyI18nString,
+                            serialize=lambda s: json.dumps(s.data),
+                            unserialize=i18n_uns)
+settings_hierarkey.add_type(LazyI18nStringList,
+                            serialize=operator.methodcaller("serialize"),
+                            unserialize=LazyI18nStringList.unserialize)
+settings_hierarkey.add_type(RelativeDateWrapper,
+                            serialize=lambda rdw: rdw.to_string(),
+                            unserialize=lambda s: RelativeDateWrapper.from_string(s))
 
 
 @settings_hierarkey.set_global(cache_namespace='global')
@@ -103,24 +105,35 @@ class SettingsSandbox:
 def validate_event_settings(event, settings_dict):
     from pretix.base.models import Event
     from pretix.base.signals import validate_event_settings
-
     default_locale = settings_dict.get('locale')
     locales = settings_dict.get('locales', [])
     if default_locale and default_locale not in locales:
-        raise ValidationError({'locale': _('Your default locale must also be enabled for your event (see box above).')})
+        raise ValidationError({
+            'locale': _('Your default locale must also be enabled for your event (see box above).')
+        })
     if settings_dict.get('attendee_names_required') and not settings_dict.get('attendee_names_asked'):
-        raise ValidationError({'attendee_names_required': _('You cannot require specifying attendee names if you do not ask for them.')})
+        raise ValidationError({
+            'attendee_names_required': _('You cannot require specifying attendee names if you do not ask for them.')
+        })
     if settings_dict.get('attendee_emails_required') and not settings_dict.get('attendee_emails_asked'):
-        raise ValidationError({'attendee_emails_required': _('You have to ask for attendee emails if you want to make them required.')})
+        raise ValidationError({
+            'attendee_emails_required': _('You have to ask for attendee emails if you want to make them required.')
+        })
     if settings_dict.get('invoice_address_required') and not settings_dict.get('invoice_address_asked'):
-        raise ValidationError({'invoice_address_required': _('You have to ask for invoice addresses if you want to make them required.')})
+        raise ValidationError({
+            'invoice_address_required': _('You have to ask for invoice addresses if you want to make them required.')
+        })
     if settings_dict.get('invoice_address_company_required') and not settings_dict.get('invoice_address_required'):
-        raise ValidationError({'invoice_address_company_required': _('You have to require invoice addresses to require for company names.')})
+        raise ValidationError({
+            'invoice_address_company_required': _('You have to require invoice addresses to require for company names.')
+        })
 
     payment_term_last = settings_dict.get('payment_term_last')
     if payment_term_last and event.presale_end:
         if payment_term_last.date(event) < event.presale_end.date():
-            raise ValidationError({'payment_term_last': _('The last payment date cannot be before the end of presale.')})
+            raise ValidationError({
+                'payment_term_last': _('The last payment date cannot be before the end of presale.')
+            })
 
     if isinstance(event, Event):
         validate_event_settings.send(sender=event, settings_dict=settings_dict)

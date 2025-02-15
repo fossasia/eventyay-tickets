@@ -18,7 +18,9 @@ from pretix.helpers.countries import FastCountryField
 def invoice_filename(instance, filename: str) -> str:
     secret = get_random_string(length=16, allowed_chars=string.ascii_letters + string.digits)
     return 'invoices/{org}/{ev}/{no}-{code}-{secret}.{ext}'.format(
-        org=instance.event.organizer.slug, ev=instance.event.slug, no=instance.number, code=instance.order.code, secret=secret, ext=filename.split('.')[-1]
+        org=instance.event.organizer.slug, ev=instance.event.slug,
+        no=instance.number, code=instance.order.code, secret=secret,
+        ext=filename.split('.')[-1]
     )
 
 
@@ -70,7 +72,6 @@ class Invoice(models.Model):
     :param file: The filename of the rendered invoice
     :type file: File
     """
-
     order = models.ForeignKey('Order', related_name='invoices', db_index=True, on_delete=models.CASCADE)
     organizer = models.ForeignKey('Organizer', related_name='invoices', db_index=True, on_delete=models.PROTECT)
     event = models.ForeignKey('Event', related_name='invoices', db_index=True, on_delete=models.CASCADE)
@@ -120,18 +121,18 @@ class Invoice(models.Model):
 
     @property
     def full_invoice_from(self):
-        taxidrow = ''
+        taxidrow = ""
         if self.invoice_from_tax_id:
-            if str(self.invoice_from_country) == 'AU':
-                taxidrow = 'ABN: %s' % self.invoice_from_tax_id
+            if str(self.invoice_from_country) == "AU":
+                taxidrow = "ABN: %s" % self.invoice_from_tax_id
             else:
-                taxidrow = pgettext('invoice', 'Tax ID: %s') % self.invoice_from_tax_id
+                taxidrow = pgettext("invoice", "Tax ID: %s") % self.invoice_from_tax_id
         parts = [
             self.invoice_from_name,
             self.invoice_from,
-            (self.invoice_from_zipcode or '') + ' ' + (self.invoice_from_city or ''),
-            self.invoice_from_country.name if self.invoice_from_country else '',
-            pgettext('invoice', 'VAT-ID: %s') % self.invoice_from_vat_id if self.invoice_from_vat_id else '',
+            (self.invoice_from_zipcode or "") + " " + (self.invoice_from_city or ""),
+            self.invoice_from_country.name if self.invoice_from_country else "",
+            pgettext("invoice", "VAT-ID: %s") % self.invoice_from_vat_id if self.invoice_from_vat_id else "",
             taxidrow,
         ]
         return '\n'.join([p.strip() for p in parts if p and p.strip()])
@@ -141,8 +142,8 @@ class Invoice(models.Model):
         parts = [
             self.invoice_from_name,
             self.invoice_from,
-            (self.invoice_from_zipcode or '') + ' ' + (self.invoice_from_city or ''),
-            self.invoice_from_country.name if self.invoice_from_country else '',
+            (self.invoice_from_zipcode or "") + " " + (self.invoice_from_city or ""),
+            self.invoice_from_country.name if self.invoice_from_country else "",
         ]
         return '\n'.join([p.strip() for p in parts if p and p.strip()])
 
@@ -151,13 +152,15 @@ class Invoice(models.Model):
         if self.invoice_to and not self.invoice_to_company and not self.invoice_to_name:
             return self.invoice_to
 
-        state_name = ''
+        state_name = ""
         if self.invoice_to_state:
             state_name = self.invoice_to_state
             if str(self.invoice_to_country) in COUNTRIES_WITH_STATE_IN_ADDRESS:
                 if COUNTRIES_WITH_STATE_IN_ADDRESS[str(self.invoice_to_country)][1] == 'long':
                     try:
-                        state_name = pycountry.subdivisions.get(code='{}-{}'.format(self.invoice_to_country, self.invoice_to_state)).name
+                        state_name = pycountry.subdivisions.get(
+                            code='{}-{}'.format(self.invoice_to_country, self.invoice_to_state)
+                        ).name
                     except:
                         pass
 
@@ -165,22 +168,20 @@ class Invoice(models.Model):
             self.invoice_to_company,
             self.invoice_to_name,
             self.invoice_to_street,
-            ((self.invoice_to_zipcode or '') + ' ' + (self.invoice_to_city or '') + ' ' + (state_name or '')).strip(),
-            self.invoice_to_country.name if self.invoice_to_country else '',
+            ((self.invoice_to_zipcode or "") + " " + (self.invoice_to_city or "") + " " + (state_name or "")).strip(),
+            self.invoice_to_country.name if self.invoice_to_country else "",
         ]
         return '\n'.join([p.strip() for p in parts if p and p.strip()])
 
     def _get_numeric_invoice_number(self, c_length):
-        numeric_invoices = (
-            Invoice.objects.filter(
-                event__organizer=self.event.organizer,
-                prefix=self.prefix,
-            )
-            .exclude(invoice_no__contains='-')
-            .annotate(numeric_number=Cast('invoice_no', models.IntegerField()))
-            .aggregate(max=Max('numeric_number'))['max']
-            or 0
-        )
+        numeric_invoices = Invoice.objects.filter(
+            event__organizer=self.event.organizer,
+            prefix=self.prefix,
+        ).exclude(invoice_no__contains='-').annotate(
+            numeric_number=Cast('invoice_no', models.IntegerField())
+        ).aggregate(
+            max=Max('numeric_number')
+        )['max'] or 0
         return self._to_numeric_invoice_number(numeric_invoices + 1, c_length)
 
     def _get_invoice_number_from_order(self):
@@ -235,7 +236,10 @@ class Invoice(models.Model):
         """
         Returns the invoice number in a human-readable string with the event slug prepended.
         """
-        return '{prefix}{code}'.format(prefix=self.prefix, code=self.invoice_no)
+        return '{prefix}{code}'.format(
+            prefix=self.prefix,
+            code=self.invoice_no
+        )
 
     @cached_property
     def canceled(self):
@@ -243,10 +247,7 @@ class Invoice(models.Model):
 
     class Meta:
         unique_together = ('organizer', 'prefix', 'invoice_no')
-        ordering = (
-            'date',
-            'invoice_no',
-        )
+        ordering = ('date', 'invoice_no',)
 
     def __repr__(self):
         return '<Invoice {} / {}>'.format(self.full_invoice_no, self.pk)
@@ -281,7 +282,6 @@ class InvoiceLine(models.Model):
     :param attendee_name: The attendee name at the time the invoice was created
     :type attendee_name: str
     """
-
     invoice = models.ForeignKey('Invoice', related_name='lines', on_delete=models.CASCADE)
     position = models.PositiveIntegerField(default=0)
     description = models.TextField()

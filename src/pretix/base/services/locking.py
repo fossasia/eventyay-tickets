@@ -96,7 +96,7 @@ def lock_event_db(event):
                     l.token = newtoken
                     event._lock = l
                     return True
-        time.sleep(2**i / 100)
+        time.sleep(2 ** i / 100)
     raise LockTimeoutException()
 
 
@@ -117,7 +117,7 @@ def redis_lock_from_event(event):
     from redis.lock import Lock
 
     if not hasattr(event, '_lock') or not event._lock:
-        rc = get_redis_connection('redis')
+        rc = get_redis_connection("redis")
         event._lock = Lock(redis=rc, name='pretix_event_%s' % event.id, timeout=LOCK_TIMEOUT)
     return event._lock
 
@@ -134,7 +134,7 @@ def lock_event_redis(event):
         except RedisError:
             logger.exception('Error locking an event')
             raise LockTimeoutException()
-        time.sleep(2**i / 100)
+        time.sleep(2 ** i / 100)
     raise LockTimeoutException()
 
 

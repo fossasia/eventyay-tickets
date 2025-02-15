@@ -5,19 +5,8 @@ import dateutil
 import pytz
 from django import forms
 from django.db.models import (
-    Case,
-    CharField,
-    Count,
-    DateTimeField,
-    F,
-    IntegerField,
-    Max,
-    Min,
-    OuterRef,
-    Q,
-    Subquery,
-    Sum,
-    When,
+    Case, CharField, Count, DateTimeField, F, IntegerField, Max, Min, OuterRef,
+    Q, Subquery, Sum, When,
 )
 from django.db.models.functions import Coalesce, TruncDate
 from django.dispatch import receiver
@@ -26,13 +15,8 @@ from django.utils.timezone import get_current_timezone, now
 from django.utils.translation import gettext as _, gettext_lazy, pgettext
 
 from pretix.base.models import (
-    GiftCard,
-    GiftCardTransaction,
-    Invoice,
-    InvoiceAddress,
-    Order,
-    OrderPosition,
-    Question,
+    GiftCard, GiftCardTransaction, Invoice, InvoiceAddress, Order,
+    OrderPosition, Question,
 )
 from pretix.base.models.orders import OrderFee, OrderPayment, OrderRefund
 from pretix.base.services.quotas import QuotaAvailability
@@ -43,8 +27,7 @@ from ...helpers import GroupConcat
 from ...helpers.iter import chunked_iterable
 from ..exporter import ListExporter, MultiSheetListExporter
 from ..signals import (
-    register_data_exporters,
-    register_multievent_data_exporters,
+    register_data_exporters, register_multievent_data_exporters,
 )
 
 
@@ -67,51 +50,54 @@ class OrderListExporter(MultiSheetListExporter):
     @property
     def additional_form_fields(self):
         d = [
-            ('paid_only', forms.BooleanField(label=_('Only paid orders'), initial=True, required=False)),
-            ('include_payment_amounts', forms.BooleanField(label=_('Include payment amounts'), initial=False, required=False)),
-            ('group_multiple_choice', forms.BooleanField(label=_('Show multiple choice answers grouped in one column'), initial=False, required=False)),
-            (
-                'date_from',
-                forms.DateField(
-                    label=_('Start date'),
-                    widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
-                    required=False,
-                    help_text=_('Only include orders created on or after this date.'),
-                ),
-            ),
-            (
-                'date_to',
-                forms.DateField(
-                    label=_('End date'),
-                    widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
-                    required=False,
-                    help_text=_('Only include orders created on or before this date.'),
-                ),
-            ),
-            (
-                'event_date_from',
-                forms.DateField(
-                    label=_('Start event date'),
-                    widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
-                    required=False,
-                    help_text=_(
-                        'Only include orders including at least one ticket for a date on or after this date. '
-                        'Will also include other dates in case of mixed orders!'
-                    ),
-                ),
-            ),
-            (
-                'event_date_to',
-                forms.DateField(
-                    label=_('End event date'),
-                    widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
-                    required=False,
-                    help_text=_(
-                        'Only include orders including at least one ticket for a date on or after this date. '
-                        'Will also include other dates in case of mixed orders!'
-                    ),
-                ),
-            ),
+            ('paid_only',
+             forms.BooleanField(
+                 label=_('Only paid orders'),
+                 initial=True,
+                 required=False
+             )),
+            ('include_payment_amounts',
+             forms.BooleanField(
+                 label=_('Include payment amounts'),
+                 initial=False,
+                 required=False
+             )),
+            ('group_multiple_choice',
+             forms.BooleanField(
+                 label=_('Show multiple choice answers grouped in one column'),
+                 initial=False,
+                 required=False
+             )),
+            ('date_from',
+             forms.DateField(
+                 label=_('Start date'),
+                 widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
+                 required=False,
+                 help_text=_('Only include orders created on or after this date.')
+             )),
+            ('date_to',
+             forms.DateField(
+                 label=_('End date'),
+                 widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
+                 required=False,
+                 help_text=_('Only include orders created on or before this date.')
+             )),
+            ('event_date_from',
+             forms.DateField(
+                 label=_('Start event date'),
+                 widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
+                 required=False,
+                 help_text=_('Only include orders including at least one ticket for a date on or after this date. '
+                             'Will also include other dates in case of mixed orders!')
+             )),
+            ('event_date_to',
+             forms.DateField(
+                 label=_('End event date'),
+                 widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
+                 required=False,
+                 help_text=_('Only include orders including at least one ticket for a date on or after this date. '
+                             'Will also include other dates in case of mixed orders!')
+             )),
         ]
         d = OrderedDict(d)
         if not self.is_multievent and not self.event.has_subevents:
@@ -121,17 +107,25 @@ class OrderListExporter(MultiSheetListExporter):
 
     def _get_all_payment_methods(self, qs):
         pps = dict(get_all_payment_providers())
-        return sorted(
-            [
-                (pp, pps[pp])
-                for pp in set(OrderPayment.objects.exclude(provider='free').filter(order__event__in=self.events).values_list('provider', flat=True).distinct())
-            ],
-            key=lambda pp: pp[0],
-        )
+        return sorted([(pp, pps[pp]) for pp in set(
+            OrderPayment.objects.exclude(provider='free').filter(order__event__in=self.events).values_list(
+                'provider', flat=True
+            ).distinct()
+        )], key=lambda pp: pp[0])
 
     def _get_all_tax_rates(self, qs):
-        tax_rates = set(a for a in OrderFee.objects.filter(order__event__in=self.events).values_list('tax_rate', flat=True).distinct().order_by())
-        tax_rates |= set(a for a in OrderPosition.objects.filter(order__event__in=self.events).values_list('tax_rate', flat=True).distinct().order_by())
+        tax_rates = set(
+            a for a
+            in OrderFee.objects.filter(
+                order__event__in=self.events
+            ).values_list('tax_rate', flat=True).distinct().order_by()
+        )
+        tax_rates |= set(
+            a for a
+            in OrderPosition.objects.filter(
+                order__event__in=self.events
+            ).values_list('tax_rate', flat=True).distinct().order_by()
+        )
         tax_rates = sorted(tax_rates)
         return tax_rates
 
@@ -194,51 +188,41 @@ class OrderListExporter(MultiSheetListExporter):
         return qs
 
     def iterate_orders(self, form_data: dict):
-        p_date = (
-            OrderPayment.objects.filter(
-                order=OuterRef('pk'), state__in=(OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_REFUNDED), payment_date__isnull=False
-            )
-            .values('order')
-            .annotate(m=Max('payment_date'))
-            .values('m')
-            .order_by()
-        )
-        p_providers = (
-            OrderPayment.objects.filter(
-                order=OuterRef('pk'),
-                state__in=(
-                    OrderPayment.PAYMENT_STATE_CONFIRMED,
-                    OrderPayment.PAYMENT_STATE_REFUNDED,
-                    OrderPayment.PAYMENT_STATE_PENDING,
-                    OrderPayment.PAYMENT_STATE_CREATED,
-                ),
-            )
-            .values('order')
-            .annotate(m=GroupConcat('provider', delimiter=','))
-            .values('m')
-            .order_by()
-        )
-        i_numbers = (
-            Invoice.objects.filter(
-                order=OuterRef('pk'),
-            )
-            .values('order')
-            .annotate(m=GroupConcat('full_invoice_no', delimiter=', '))
-            .values('m')
-            .order_by()
-        )
+        p_date = OrderPayment.objects.filter(
+            order=OuterRef('pk'),
+            state__in=(OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_REFUNDED),
+            payment_date__isnull=False
+        ).values('order').annotate(
+            m=Max('payment_date')
+        ).values(
+            'm'
+        ).order_by()
+        p_providers = OrderPayment.objects.filter(
+            order=OuterRef('pk'),
+            state__in=(OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_REFUNDED,
+                       OrderPayment.PAYMENT_STATE_PENDING, OrderPayment.PAYMENT_STATE_CREATED),
+        ).values('order').annotate(
+            m=GroupConcat('provider', delimiter=',')
+        ).values(
+            'm'
+        ).order_by()
+        i_numbers = Invoice.objects.filter(
+            order=OuterRef('pk'),
+        ).values('order').annotate(
+            m=GroupConcat('full_invoice_no', delimiter=', ')
+        ).values(
+            'm'
+        ).order_by()
 
-        s = OrderPosition.objects.filter(order=OuterRef('pk')).order_by().values('order').annotate(k=Count('id')).values('k')
-        qs = (
-            Order.objects.filter(event__in=self.events)
-            .annotate(
-                payment_date=Subquery(p_date, output_field=DateTimeField()),
-                payment_providers=Subquery(p_providers, output_field=CharField()),
-                invoice_numbers=Subquery(i_numbers, output_field=CharField()),
-                pcnt=Subquery(s, output_field=IntegerField()),
-            )
-            .select_related('invoice_address')
-        )
+        s = OrderPosition.objects.filter(
+            order=OuterRef('pk')
+        ).order_by().values('order').annotate(k=Count('id')).values('k')
+        qs = Order.objects.filter(event__in=self.events).annotate(
+            payment_date=Subquery(p_date, output_field=DateTimeField()),
+            payment_providers=Subquery(p_providers, output_field=CharField()),
+            invoice_numbers=Subquery(i_numbers, output_field=CharField()),
+            pcnt=Subquery(s, output_field=IntegerField())
+        ).select_related('invoice_address')
 
         qs = self._date_filter(qs, form_data, rel='')
 
@@ -247,32 +231,16 @@ class OrderListExporter(MultiSheetListExporter):
         tax_rates = self._get_all_tax_rates(qs)
 
         headers = [
-            _('Event slug'),
-            _('Order code'),
-            _('Order total'),
-            _('Status'),
-            _('Email'),
-            _('Phone number'),
-            _('Order date'),
-            _('Order time'),
-            _('Company'),
-            _('Name'),
+            _('Event slug'), _('Order code'), _('Order total'), _('Status'), _('Email'), _('Phone number'), _('Order date'),
+            _('Order time'), _('Company'), _('Name'),
         ]
         name_scheme = PERSON_NAME_SCHEMES[self.event.settings.name_scheme] if not self.is_multievent else None
         if name_scheme and len(name_scheme['fields']) > 1:
             for k, label, w in name_scheme['fields']:
                 headers.append(label)
         headers += [
-            _('Address'),
-            _('ZIP code'),
-            _('City'),
-            _('Country'),
-            pgettext('address', 'State'),
-            _('Custom address field'),
-            _('VAT ID'),
-            _('Date of last payment'),
-            _('Fees'),
-            _('Order locale'),
+            _('Address'), _('ZIP code'), _('City'), _('Country'), pgettext('address', 'State'),
+            _('Custom address field'), _('VAT ID'), _('Date of last payment'), _('Fees'), _('Order locale')
         ]
 
         for tr in tax_rates:
@@ -296,30 +264,37 @@ class OrderListExporter(MultiSheetListExporter):
         yield headers
 
         full_fee_sum_cache = {
-            o['order__id']: o['grosssum'] for o in OrderFee.objects.values('tax_rate', 'order__id').order_by().annotate(grosssum=Sum('value'))
+            o['order__id']: o['grosssum'] for o in
+            OrderFee.objects.values('tax_rate', 'order__id').order_by().annotate(grosssum=Sum('value'))
         }
         fee_sum_cache = {
-            (o['order__id'], o['tax_rate']): o
-            for o in OrderFee.objects.values('tax_rate', 'order__id').order_by().annotate(taxsum=Sum('tax_value'), grosssum=Sum('value'))
+            (o['order__id'], o['tax_rate']): o for o in
+            OrderFee.objects.values('tax_rate', 'order__id').order_by().annotate(
+                taxsum=Sum('tax_value'), grosssum=Sum('value')
+            )
         }
         if form_data.get('include_payment_amounts'):
             payment_sum_cache = {
-                (o['order__id'], o['provider']): o['grosssum']
-                for o in OrderPayment.objects.values('provider', 'order__id')
-                .order_by()
-                .filter(state__in=[OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_REFUNDED])
-                .annotate(grosssum=Sum('amount'))
+                (o['order__id'], o['provider']): o['grosssum'] for o in
+                OrderPayment.objects.values('provider', 'order__id').order_by().filter(
+                    state__in=[OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_REFUNDED]
+                ).annotate(
+                    grosssum=Sum('amount')
+                )
             }
             refund_sum_cache = {
-                (o['order__id'], o['provider']): o['grosssum']
-                for o in OrderRefund.objects.values('provider', 'order__id')
-                .order_by()
-                .filter(state__in=[OrderRefund.REFUND_STATE_DONE, OrderRefund.REFUND_STATE_TRANSIT])
-                .annotate(grosssum=Sum('amount'))
+                (o['order__id'], o['provider']): o['grosssum'] for o in
+                OrderRefund.objects.values('provider', 'order__id').order_by().filter(
+                    state__in=[OrderRefund.REFUND_STATE_DONE, OrderRefund.REFUND_STATE_TRANSIT]
+                ).annotate(
+                    grosssum=Sum('amount')
+                )
             }
         sum_cache = {
-            (o['order__id'], o['tax_rate']): o
-            for o in OrderPosition.objects.values('tax_rate', 'order__id').order_by().annotate(taxsum=Sum('tax_value'), grosssum=Sum('price'))
+            (o['order__id'], o['tax_rate']): o for o in
+            OrderPosition.objects.values('tax_rate', 'order__id').order_by().annotate(
+                taxsum=Sum('tax_value'), grosssum=Sum('price')
+            )
         }
 
         yield self.ProgressSetTotal(total=qs.count())
@@ -343,12 +318,15 @@ class OrderListExporter(MultiSheetListExporter):
                 ]
                 if name_scheme and len(name_scheme['fields']) > 1:
                     for k, label, w in name_scheme['fields']:
-                        row.append(order.invoice_address.name_parts.get(k, ''))
+                        row.append(
+                            order.invoice_address.name_parts.get(k, '')
+                        )
                 row += [
                     order.invoice_address.street,
                     order.invoice_address.zipcode,
                     order.invoice_address.city,
-                    order.invoice_address.country if order.invoice_address.country else order.invoice_address.country_old,
+                    order.invoice_address.country if order.invoice_address.country else
+                    order.invoice_address.country_old,
                     order.invoice_address.state,
                     order.invoice_address.custom_field,
                     order.invoice_address.vat_id,
@@ -364,52 +342,52 @@ class OrderListExporter(MultiSheetListExporter):
 
             for tr in tax_rates:
                 taxrate_values = sum_cache.get((order.id, tr), {'grosssum': Decimal('0.00'), 'taxsum': Decimal('0.00')})
-                fee_taxrate_values = fee_sum_cache.get((order.id, tr), {'grosssum': Decimal('0.00'), 'taxsum': Decimal('0.00')})
+                fee_taxrate_values = fee_sum_cache.get((order.id, tr),
+                                                       {'grosssum': Decimal('0.00'), 'taxsum': Decimal('0.00')})
 
                 row += [
                     taxrate_values['grosssum'] + fee_taxrate_values['grosssum'],
-                    (taxrate_values['grosssum'] - taxrate_values['taxsum'] + fee_taxrate_values['grosssum'] - fee_taxrate_values['taxsum']),
+                    (
+                        taxrate_values['grosssum'] - taxrate_values['taxsum'] +
+                        fee_taxrate_values['grosssum'] - fee_taxrate_values['taxsum']
+                    ),
                     taxrate_values['taxsum'] + fee_taxrate_values['taxsum'],
                 ]
 
             row.append(order.invoice_numbers)
             row.append(order.sales_channel)
             row.append(_('Yes') if order.checkin_attention else _('No'))
-            row.append(order.comment or '')
+            row.append(order.comment or "")
             row.append(order.pcnt)
-            row.append(', '.join([str(self.providers.get(p, p)) for p in sorted(set((order.payment_providers or '').split(','))) if p and p != 'free']))
+            row.append(', '.join([
+                str(self.providers.get(p, p)) for p in sorted(set((order.payment_providers or '').split(',')))
+                if p and p != 'free'
+            ]))
 
             if form_data.get('include_payment_amounts'):
                 payment_methods = self._get_all_payment_methods(qs)
                 for id, vn in payment_methods:
-                    row.append(payment_sum_cache.get((order.id, id), Decimal('0.00')) - refund_sum_cache.get((order.id, id), Decimal('0.00')))
+                    row.append(
+                        payment_sum_cache.get((order.id, id), Decimal('0.00')) -
+                        refund_sum_cache.get((order.id, id), Decimal('0.00'))
+                    )
             yield row
 
     def iterate_fees(self, form_data: dict):
-        p_providers = (
-            OrderPayment.objects.filter(
-                order=OuterRef('order'),
-                state__in=(
-                    OrderPayment.PAYMENT_STATE_CONFIRMED,
-                    OrderPayment.PAYMENT_STATE_REFUNDED,
-                    OrderPayment.PAYMENT_STATE_PENDING,
-                    OrderPayment.PAYMENT_STATE_CREATED,
-                ),
-            )
-            .values('order')
-            .annotate(m=GroupConcat('provider', delimiter=','))
-            .values('m')
-            .order_by()
-        )
-        qs = (
-            OrderFee.objects.filter(
-                order__event__in=self.events,
-            )
-            .annotate(
-                payment_providers=Subquery(p_providers, output_field=CharField()),
-            )
-            .select_related('order', 'order__invoice_address', 'tax_rule')
-        )
+        p_providers = OrderPayment.objects.filter(
+            order=OuterRef('order'),
+            state__in=(OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_REFUNDED,
+                       OrderPayment.PAYMENT_STATE_PENDING, OrderPayment.PAYMENT_STATE_CREATED),
+        ).values('order').annotate(
+            m=GroupConcat('provider', delimiter=',')
+        ).values(
+            'm'
+        ).order_by()
+        qs = OrderFee.objects.filter(
+            order__event__in=self.events,
+        ).annotate(
+            payment_providers=Subquery(p_providers, output_field=CharField()),
+        ).select_related('order', 'order__invoice_address', 'tax_rule')
         if form_data['paid_only']:
             qs = qs.filter(order__status=Order.STATUS_PAID)
 
@@ -437,12 +415,7 @@ class OrderListExporter(MultiSheetListExporter):
             for k, label, w in name_scheme['fields']:
                 headers.append(_('Invoice address name') + ': ' + str(label))
         headers += [
-            _('Address'),
-            _('ZIP code'),
-            _('City'),
-            _('Country'),
-            pgettext('address', 'State'),
-            _('VAT ID'),
+            _('Address'), _('ZIP code'), _('City'), _('Country'), pgettext('address', 'State'), _('VAT ID'),
         ]
 
         headers.append(_('Payment providers'))
@@ -474,45 +447,46 @@ class OrderListExporter(MultiSheetListExporter):
                 ]
                 if name_scheme and len(name_scheme['fields']) > 1:
                     for k, label, w in name_scheme['fields']:
-                        row.append(order.invoice_address.name_parts.get(k, ''))
+                        row.append(
+                            order.invoice_address.name_parts.get(k, '')
+                        )
                 row += [
                     order.invoice_address.street,
                     order.invoice_address.zipcode,
                     order.invoice_address.city,
-                    order.invoice_address.country if order.invoice_address.country else order.invoice_address.country_old,
+                    order.invoice_address.country if order.invoice_address.country else
+                    order.invoice_address.country_old,
                     order.invoice_address.state,
                     order.invoice_address.vat_id,
                 ]
             except InvoiceAddress.DoesNotExist:
                 row += [''] * (8 + (len(name_scheme['fields']) if name_scheme and len(name_scheme['fields']) > 1 else 0))
-            row.append(', '.join([str(self.providers.get(p, p)) for p in sorted(set((op.payment_providers or '').split(','))) if p and p != 'free']))
+            row.append(', '.join([
+                str(self.providers.get(p, p)) for p in sorted(set((op.payment_providers or '').split(',')))
+                if p and p != 'free'
+            ]))
             yield row
 
     def iterate_positions(self, form_data: dict):
-        p_providers = (
-            OrderPayment.objects.filter(
-                order=OuterRef('order'),
-                state__in=(
-                    OrderPayment.PAYMENT_STATE_CONFIRMED,
-                    OrderPayment.PAYMENT_STATE_REFUNDED,
-                    OrderPayment.PAYMENT_STATE_PENDING,
-                    OrderPayment.PAYMENT_STATE_CREATED,
-                ),
-            )
-            .values('order')
-            .annotate(m=GroupConcat('provider', delimiter=','))
-            .values('m')
-            .order_by()
-        )
+        p_providers = OrderPayment.objects.filter(
+            order=OuterRef('order'),
+            state__in=(OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_REFUNDED,
+                       OrderPayment.PAYMENT_STATE_PENDING, OrderPayment.PAYMENT_STATE_CREATED),
+        ).values('order').annotate(
+            m=GroupConcat('provider', delimiter=',')
+        ).values(
+            'm'
+        ).order_by()
         base_qs = OrderPosition.objects.filter(
             order__event__in=self.events,
         )
-        qs = (
-            base_qs.annotate(
-                payment_providers=Subquery(p_providers, output_field=CharField()),
-            )
-            .select_related('order', 'order__invoice_address', 'item', 'variation', 'voucher', 'tax_rule')
-            .prefetch_related('answers', 'answers__question', 'answers__options')
+        qs = base_qs.annotate(
+            payment_providers=Subquery(p_providers, output_field=CharField()),
+        ).select_related(
+            'order', 'order__invoice_address', 'item', 'variation',
+            'voucher', 'tax_rule'
+        ).prefetch_related(
+            'answers', 'answers__question', 'answers__options'
         )
         if form_data['paid_only']:
             qs = qs.filter(order__status=Order.STATUS_PAID)
@@ -589,16 +563,10 @@ class OrderListExporter(MultiSheetListExporter):
             for k, label, w in name_scheme['fields']:
                 headers.append(_('Invoice address name') + ': ' + str(label))
         headers += [
-            _('Address'),
-            _('ZIP code'),
-            _('City'),
-            _('Country'),
-            pgettext('address', 'State'),
-            _('VAT ID'),
+            _('Address'), _('ZIP code'), _('City'), _('Country'), pgettext('address', 'State'), _('VAT ID'),
         ]
         headers += [
-            _('Sales channel'),
-            _('Order locale'),
+            _('Sales channel'), _('Order locale'),
             _('Payment providers'),
         ]
 
@@ -645,7 +613,9 @@ class OrderListExporter(MultiSheetListExporter):
                 ]
                 if name_scheme and len(name_scheme['fields']) > 1:
                     for k, label, w in name_scheme['fields']:
-                        row.append(op.attendee_name_parts.get(k, ''))
+                        row.append(
+                            op.attendee_name_parts.get(k, '')
+                        )
                 row += [
                     op.attendee_email,
                     op.company or '',
@@ -683,7 +653,7 @@ class OrderListExporter(MultiSheetListExporter):
                 for q in questions:
                     if q.type == Question.TYPE_CHOICE_MULTIPLE:
                         if form_data['group_multiple_choice']:
-                            row.append(', '.join(str(o.answer) for o in options[q.pk] if o.pk in acache.get(q.pk, set())))
+                            row.append(", ".join(str(o.answer) for o in options[q.pk] if o.pk in acache.get(q.pk, set())))
                         else:
                             for o in options[q.pk]:
                                 row.append(_('Yes') if o.pk in acache.get(q.pk, set()) else _('No'))
@@ -697,12 +667,15 @@ class OrderListExporter(MultiSheetListExporter):
                     ]
                     if name_scheme and len(name_scheme['fields']) > 1:
                         for k, label, w in name_scheme['fields']:
-                            row.append(order.invoice_address.name_parts.get(k, ''))
+                            row.append(
+                                order.invoice_address.name_parts.get(k, '')
+                            )
                     row += [
                         order.invoice_address.street,
                         order.invoice_address.zipcode,
                         order.invoice_address.city,
-                        order.invoice_address.country if order.invoice_address.country else order.invoice_address.country_old,
+                        order.invoice_address.country if order.invoice_address.country else
+                        order.invoice_address.country_old,
                         order.invoice_address.state,
                         order.invoice_address.vat_id,
                     ]
@@ -712,7 +685,10 @@ class OrderListExporter(MultiSheetListExporter):
                     order.sales_channel,
                     order.locale,
                 ]
-                row.append(', '.join([str(self.providers.get(p, p)) for p in sorted(set((op.payment_providers or '').split(','))) if p and p != 'free']))
+                row.append(', '.join([
+                    str(self.providers.get(p, p)) for p in sorted(set((op.payment_providers or '').split(',')))
+                    if p and p != 'free'
+                ]))
                 yield row
 
     def get_filename(self):
@@ -730,48 +706,43 @@ class PaymentListExporter(ListExporter):
     def additional_form_fields(self):
         return OrderedDict(
             [
-                (
-                    'payment_states',
-                    forms.MultipleChoiceField(
-                        label=_('Payment states'),
-                        choices=OrderPayment.PAYMENT_STATES,
-                        initial=[OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_REFUNDED],
-                        required=False,
-                        widget=forms.CheckboxSelectMultiple,
-                    ),
-                ),
-                (
-                    'refund_states',
-                    forms.MultipleChoiceField(
-                        label=_('Refund states'),
-                        choices=OrderRefund.REFUND_STATES,
-                        initial=[OrderRefund.REFUND_STATE_DONE, OrderRefund.REFUND_STATE_CREATED, OrderRefund.REFUND_STATE_TRANSIT],
-                        widget=forms.CheckboxSelectMultiple,
-                        required=False,
-                    ),
-                ),
+                ('payment_states',
+                 forms.MultipleChoiceField(
+                     label=_('Payment states'),
+                     choices=OrderPayment.PAYMENT_STATES,
+                     initial=[OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_REFUNDED],
+                     required=False,
+                     widget=forms.CheckboxSelectMultiple,
+                 )),
+                ('refund_states',
+                 forms.MultipleChoiceField(
+                     label=_('Refund states'),
+                     choices=OrderRefund.REFUND_STATES,
+                     initial=[OrderRefund.REFUND_STATE_DONE, OrderRefund.REFUND_STATE_CREATED,
+                              OrderRefund.REFUND_STATE_TRANSIT],
+                     widget=forms.CheckboxSelectMultiple,
+                     required=False
+                 )),
             ]
         )
 
     def iterate_list(self, form_data):
         provider_names = dict(get_all_payment_providers())
 
-        payments = OrderPayment.objects.filter(order__event__in=self.events, state__in=form_data.get('payment_states', [])).order_by('created')
-        refunds = OrderRefund.objects.filter(order__event__in=self.events, state__in=form_data.get('refund_states', [])).order_by('created')
+        payments = OrderPayment.objects.filter(
+            order__event__in=self.events,
+            state__in=form_data.get('payment_states', [])
+        ).order_by('created')
+        refunds = OrderRefund.objects.filter(
+            order__event__in=self.events,
+            state__in=form_data.get('refund_states', [])
+        ).order_by('created')
 
         objs = sorted(list(payments) + list(refunds), key=lambda o: o.created)
 
         headers = [
-            _('Event slug'),
-            _('Order'),
-            _('Payment ID'),
-            _('Creation date'),
-            _('Completion date'),
-            _('Status'),
-            _('Status code'),
-            _('Amount'),
-            _('Payment method'),
-            _('Comment'),
+            _('Event slug'), _('Order'), _('Payment ID'), _('Creation date'), _('Completion date'), _('Status'),
+            _('Status code'), _('Amount'), _('Payment method'), _('Comment')
         ]
         yield headers
 
@@ -794,7 +765,7 @@ class PaymentListExporter(ListExporter):
                 obj.state,
                 obj.amount * (-1 if isinstance(obj, OrderRefund) else 1),
                 provider_names.get(obj.provider, obj.provider),
-                obj.comment if isinstance(obj, OrderRefund) else '',
+                obj.comment if isinstance(obj, OrderRefund) else "",
             ]
             yield row
 
@@ -812,15 +783,8 @@ class QuotaListExporter(ListExporter):
     def iterate_list(self, form_data):
         has_subevents = self.event.has_subevents
         headers = [
-            _('Quota name'),
-            _('Total quota'),
-            _('Paid orders'),
-            _('Pending orders'),
-            _('Blocking vouchers'),
-            _("Current user's carts"),
-            _('Waiting list'),
-            _('Exited orders'),
-            _('Current availability'),
+            _('Quota name'), _('Total quota'), _('Paid orders'), _('Pending orders'), _('Blocking vouchers'),
+            _('Current user\'s carts'), _('Waiting list'), _('Exited orders'), _('Current availability')
         ]
         if has_subevents:
             headers.append(pgettext('subevent', 'Date'))
@@ -844,7 +808,7 @@ class QuotaListExporter(ListExporter):
                 qa.count_cart[quota],
                 qa.count_waitinglist[quota],
                 qa.count_exited_orders[quota],
-                _('Infinite') if avail[1] is None else avail[1],
+                _('Infinite') if avail[1] is None else avail[1]
             ]
             if has_subevents:
                 if quota.subevent:
@@ -874,11 +838,17 @@ class GiftcardRedemptionListExporter(ListExporter):
             provider='giftcard',
             state__in=(OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_REFUNDED),
         ).order_by('created')
-        refunds = OrderRefund.objects.filter(order__event__in=self.events, provider='giftcard', state=OrderRefund.REFUND_STATE_DONE).order_by('created')
+        refunds = OrderRefund.objects.filter(
+            order__event__in=self.events,
+            provider='giftcard',
+            state=OrderRefund.REFUND_STATE_DONE
+        ).order_by('created')
 
         objs = sorted(list(payments) + list(refunds), key=lambda o: (o.order.code, o.created))
 
-        headers = [_('Event slug'), _('Order'), _('Payment ID'), _('Date'), _('Gift card code'), _('Amount'), _('Issuer')]
+        headers = [
+            _('Event slug'), _('Order'), _('Payment ID'), _('Date'), _('Gift card code'), _('Amount'), _('Issuer')
+        ]
         yield headers
 
         for obj in objs:
@@ -891,7 +861,7 @@ class GiftcardRedemptionListExporter(ListExporter):
                 obj.created.astimezone(tz).date().strftime('%Y-%m-%d'),
                 gc.secret,
                 obj.amount * (-1 if isinstance(obj, OrderRefund) else 1),
-                gc.issuer,
+                gc.issuer
             ]
             yield row
 
@@ -911,59 +881,46 @@ def generate_GiftCardListExporter(organizer):  # hackhack
         def additional_form_fields(self):
             return OrderedDict(
                 [
-                    (
-                        'date',
-                        forms.DateTimeField(
-                            label=_('Show value at'),
-                            initial=now(),
+                    ('date', forms.DateTimeField(
+                        label=_('Show value at'),
+                        initial=now(),
+                    )),
+                    ('testmode', forms.ChoiceField(
+                        label=_('Test mode'),
+                        choices=(
+                            ('', _('All')),
+                            ('yes', _('Test mode')),
+                            ('no', _('Live')),
                         ),
-                    ),
-                    (
-                        'testmode',
-                        forms.ChoiceField(
-                            label=_('Test mode'),
-                            choices=(
-                                ('', _('All')),
-                                ('yes', _('Test mode')),
-                                ('no', _('Live')),
-                            ),
-                            initial='no',
-                            required=False,
+                        initial='no',
+                        required=False
+                    )),
+                    ('state', forms.ChoiceField(
+                        label=_('Status'),
+                        choices=(
+                            ('', _('All')),
+                            ('empty', _('Empty')),
+                            ('valid_value', _('Valid and with value')),
+                            ('expired_value', _('Expired and with value')),
+                            ('expired', _('Expired')),
                         ),
-                    ),
-                    (
-                        'state',
-                        forms.ChoiceField(
-                            label=_('Status'),
-                            choices=(
-                                ('', _('All')),
-                                ('empty', _('Empty')),
-                                ('valid_value', _('Valid and with value')),
-                                ('expired_value', _('Expired and with value')),
-                                ('expired', _('Expired')),
-                            ),
-                            initial='valid_value',
-                            required=False,
-                        ),
-                    ),
+                        initial='valid_value',
+                        required=False
+                    ))
                 ]
             )
 
         def iterate_list(self, form_data):
-            s = (
-                GiftCardTransaction.objects.filter(card=OuterRef('pk'), datetime__lte=form_data['date'])
-                .order_by()
-                .values('card')
-                .annotate(s=Sum('value'))
-                .values('s')
-            )
-            qs = (
-                organizer.issued_gift_cards.filter(issuance__lte=form_data['date'])
-                .annotate(
-                    cached_value=Coalesce(Subquery(s), Decimal('0.00')),
-                )
-                .order_by('issuance')
-                .prefetch_related('transactions', 'transactions__order', 'transactions__order__event', 'transactions__order__invoices')
+            s = GiftCardTransaction.objects.filter(
+                card=OuterRef('pk'),
+                datetime__lte=form_data['date']
+            ).order_by().values('card').annotate(s=Sum('value')).values('s')
+            qs = organizer.issued_gift_cards.filter(
+                issuance__lte=form_data['date']
+            ).annotate(
+                cached_value=Coalesce(Subquery(s), Decimal('0.00')),
+            ).order_by('issuance').prefetch_related(
+                'transactions', 'transactions__order', 'transactions__order__event', 'transactions__order__invoices'
             )
 
             if form_data.get('testmode') == 'yes':
@@ -1025,41 +982,41 @@ def generate_GiftCardListExporter(organizer):  # hackhack
     return GiftcardListExporter
 
 
-@receiver(register_data_exporters, dispatch_uid='exporter_orderlist')
+@receiver(register_data_exporters, dispatch_uid="exporter_orderlist")
 def register_orderlist_exporter(sender, **kwargs):
     return OrderListExporter
 
 
-@receiver(register_multievent_data_exporters, dispatch_uid='multiexporter_orderlist')
+@receiver(register_multievent_data_exporters, dispatch_uid="multiexporter_orderlist")
 def register_multievent_orderlist_exporter(sender, **kwargs):
     return OrderListExporter
 
 
-@receiver(register_data_exporters, dispatch_uid='exporter_paymentlist')
+@receiver(register_data_exporters, dispatch_uid="exporter_paymentlist")
 def register_paymentlist_exporter(sender, **kwargs):
     return PaymentListExporter
 
 
-@receiver(register_multievent_data_exporters, dispatch_uid='multiexporter_paymentlist')
+@receiver(register_multievent_data_exporters, dispatch_uid="multiexporter_paymentlist")
 def register_multievent_paymentlist_exporter(sender, **kwargs):
     return PaymentListExporter
 
 
-@receiver(register_data_exporters, dispatch_uid='exporter_quotalist')
+@receiver(register_data_exporters, dispatch_uid="exporter_quotalist")
 def register_quotalist_exporter(sender, **kwargs):
     return QuotaListExporter
 
 
-@receiver(register_data_exporters, dispatch_uid='exporter_giftcardredemptionlist')
+@receiver(register_data_exporters, dispatch_uid="exporter_giftcardredemptionlist")
 def register_giftcardredemptionlist_exporter(sender, **kwargs):
     return GiftcardRedemptionListExporter
 
 
-@receiver(register_multievent_data_exporters, dispatch_uid='multiexporter_giftcardredemptionlist')
+@receiver(register_multievent_data_exporters, dispatch_uid="multiexporter_giftcardredemptionlist")
 def register_multievent_i_giftcardredemptionlist_exporter(sender, **kwargs):
     return GiftcardRedemptionListExporter
 
 
-@receiver(register_multievent_data_exporters, dispatch_uid='multiexporter_giftcardlist')
+@receiver(register_multievent_data_exporters, dispatch_uid="multiexporter_giftcardlist")
 def register_multievent_i_giftcardlist_exporter(sender, **kwargs):
     return generate_GiftCardListExporter(sender)

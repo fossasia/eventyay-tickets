@@ -11,14 +11,14 @@ plugins = get_all_plugins()
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize('plugin', plugins)
+@pytest.mark.parametrize("plugin", plugins)
 def test_metadata(plugin):
     assert hasattr(plugin, 'name')
     assert hasattr(plugin, 'version')
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize('plugin', plugins)
+@pytest.mark.parametrize("plugin", plugins)
 def test_plugin_installed(plugin):
     assert plugin.module in settings.INSTALLED_APPS
 
@@ -27,13 +27,10 @@ class PluginSignalTest(TestCase):
     """
     This test case tests the EventPluginSignal handler
     """
-
     def setUp(self):
         o = Organizer.objects.create(name='Dummy', slug='dummy')
         self.event = Event.objects.create(
-            organizer=o,
-            name='Dummy',
-            slug='dummy',
+            organizer=o, name='Dummy', slug='dummy',
             date_from=now(),
         )
 

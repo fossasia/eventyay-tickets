@@ -17,11 +17,13 @@ def pytest_configure(config):
 
     def _handle_crashitem(self, nodeid, worker):
         first = nodeid not in CRASHED_ITEMS
-        runner = self.config.pluginmanager.getplugin('runner')
-        fspath = nodeid.split('::')[0]
-        msg = 'Worker %r crashed while running %r' % (worker.gateway.id, nodeid)
+        runner = self.config.pluginmanager.getplugin("runner")
+        fspath = nodeid.split("::")[0]
+        msg = "Worker %r crashed while running %r" % (worker.gateway.id, nodeid)
         CRASHED_ITEMS.add(nodeid)
-        rep = runner.TestReport(nodeid, (fspath, None, fspath), (), 'restarted' if first else 'failed', msg, '???')
+        rep = runner.TestReport(
+            nodeid, (fspath, None, fspath), (), "restarted" if first else "failed", msg, "???"
+        )
         rep.node = worker
         self.config.hook.pytest_runtest_logreport(report=rep)
 

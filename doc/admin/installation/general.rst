@@ -1,6 +1,6 @@
 .. highlight:: ini
 
-.. spelling:word-list:: SQL
+.. spelling:: SQL
 
 General remarks
 ===============

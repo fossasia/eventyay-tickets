@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
@@ -22,24 +22,15 @@ jobs:
           sudo add-apt-repository universe multiverse
           sudo apt update && sudo apt install enchant-2 libffi-dev libssl-dev libxml2-dev libxslt1-dev gettext libfreetype-dev libjpeg-dev
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
-
-      - name: Install Python dependencies
-        run: uv sync --only-group doc
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install "Jinja2<3.1" "sphinx==5.0.*"
         working-directory: doc
-
+      
       - name: Build documentation
-        run: |
-          source ${GITHUB_WORKSPACE}/.venv/bin/activate
-          make html
+        run: make html
         working-directory: doc  # Adjust to your Sphinx docs directory
-
-      - name: Copy CNAME if it exists
-        run: |
-          if [ -f CNAME ]; then cp CNAME doc/_build/html/; fi
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

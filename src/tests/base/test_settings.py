@@ -11,15 +11,16 @@ from pretix.control.forms.global_settings import GlobalSettingsObject
 
 class SettingsTestCase(TestCase):
     def setUp(self):
-        settings.DEFAULTS['test_default'] = {'default': 'def', 'type': str}
+        settings.DEFAULTS['test_default'] = {
+            'default': 'def',
+            'type': str
+        }
         self.global_settings = GlobalSettingsObject()
         self.global_settings.settings.flush()
         self.organizer = Organizer.objects.create(name='Dummy', slug='dummy')
         self.organizer.settings.flush()
         self.event = Event.objects.create(
-            organizer=self.organizer,
-            name='Dummy',
-            slug='dummy',
+            organizer=self.organizer, name='Dummy', slug='dummy',
             date_from=now(),
         )
         self.event.settings.flush()

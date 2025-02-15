@@ -24,18 +24,17 @@ class PDFRenderer(BaseRenderer):
 
 class BadgesApp(AppConfig):
     name = 'pretix.plugins.badges'
-    verbose_name = _('Badges')
+    verbose_name = _("Badges")
 
     class PretixPluginMeta:
-        name = _('Badges')
+        name = _("Badges")
         version = version
-        category = 'FEATURE'
+        category = "FEATURE"
         featured = True
-        description = _('This plugin allows you to generate badges or name tags for your attendees.')
+        description = _("This plugin allows you to generate badges or name tags for your attendees.")
 
     def ready(self):
         from . import signals  # NOQA
-
         # Register PDF format with REST framework
         if not hasattr(settings, 'REST_FRAMEWORK'):
             settings.REST_FRAMEWORK = {}
@@ -49,7 +48,10 @@ class BadgesApp(AppConfig):
         # Add our PDFRenderer to the renderer classes if it's not already there
         pdf_renderer_path = 'pretix.plugins.badges.apps.PDFRenderer'
         if pdf_renderer_path not in settings.REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES']:
-            settings.REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = settings.REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] + (pdf_renderer_path,)
+            settings.REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = (
+                settings.REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] +
+                (pdf_renderer_path,)
+            )
 
     def installed(self, event):
         if not event.badge_layouts.exists():
@@ -68,7 +70,11 @@ class BadgesApp(AppConfig):
                     with open(template_path, 'rb') as f:
                         content = f.read()
                     content_file = ContentFile(content, name=f'{design_name}.pdf')
-                    event.badge_layouts.create(name=gettext(design_name), layout=template_data['layout'], background=content_file)
+                    event.badge_layouts.create(
+                        name=gettext(design_name),
+                        layout=template_data['layout'],
+                        background=content_file
+                    )
 
 
 default_app_config = 'pretix.plugins.badges.BadgesApp'

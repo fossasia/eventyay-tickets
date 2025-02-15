@@ -7,12 +7,14 @@ from .models import TicketLayout, TicketLayoutItem
 
 
 class ItemAssignmentSerializer(I18nAwareModelSerializer):
+
     class Meta:
         model = TicketLayoutItem
         fields = ('id', 'layout', 'item', 'sales_channel')
 
 
 class NestedItemAssignmentSerializer(I18nAwareModelSerializer):
+
     class Meta:
         model = TicketLayoutItem
         fields = ('item', 'sales_channel')

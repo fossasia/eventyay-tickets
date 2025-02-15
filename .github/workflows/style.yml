@@ -13,11 +13,53 @@ on:
       - 'src/pretix/static/**'
 
 jobs:
-  ruff:
-    name: Ruff
+  isort:
+    name: isort
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/ruff-action@v3
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v1
         with:
-          src: './src'
+          python-version: 3.11
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install system packages
+        run: sudo apt update && sudo apt install gettext
+      - name: Install Dependencies
+        run: |
+          sed -i '/eventyay-stripe/d' pyproject.toml
+          sed -i '/eventyay-paypal/d' pyproject.toml
+          pip3 install -e ".[dev]" psycopg2-binary
+      - name: Run isort
+        run: isort -c .
+        working-directory: ./src
+  flake:
+    name: flake8
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.11
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Install system packages
+        run: sudo apt update && sudo apt install gettext
+      - name: Install Dependencies
+        run: |
+          sed -i '/eventyay-stripe/d' pyproject.toml
+          sed -i '/eventyay-paypal/d' pyproject.toml
+          pip3 install -e ".[dev]" psycopg2-binary
+      - name: Run flake8
+        run: flake8 .
+        working-directory: ./src

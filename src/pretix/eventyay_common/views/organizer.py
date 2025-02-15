@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import urljoin
 
 from django.conf import settings
 from django.contrib import messages
@@ -59,19 +60,10 @@ class OrganizerCreate(CreateView):
         messages.success(self.request, _('New organizer is created.'))
         response = super().form_valid(form)
         team = Team.objects.create(
-            organizer=form.instance,
-            name=_('Administrators'),
-            all_events=True,
-            can_create_events=True,
-            can_change_teams=True,
-            can_manage_gift_cards=True,
-            can_change_organizer_settings=True,
-            can_change_event_settings=True,
-            can_change_items=True,
-            can_view_orders=True,
-            can_change_orders=True,
-            can_view_vouchers=True,
-            can_change_vouchers=True,
+            organizer=form.instance, name=_('Administrators'),
+            all_events=True, can_create_events=True, can_change_teams=True, can_manage_gift_cards=True,
+            can_change_organizer_settings=True, can_change_event_settings=True, can_change_items=True,
+            can_view_orders=True, can_change_orders=True, can_view_vouchers=True, can_change_vouchers=True
         )
         # Trigger webhook in talk to create organiser in talk component
         organizer_data = {
@@ -107,14 +99,17 @@ class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        talk_host = settings.TALK_HOSTNAME
-        ctx['talk_edit_url'] = talk_host + '/orga/organiser/' + self.object.slug
+        ctx["talk_edit_url"] = urljoin(settings.TALK_HOSTNAME, f"orga/organiser/{self.object.slug}")
         return ctx
 
     @transaction.atomic
     def form_valid(self, form):
         response = super().form_valid(form)
-        organizer_data = {'name': self.object.name, 'slug': self.object.slug, 'action': 'update'}
+        organizer_data = {
+            'name': self.object.name,
+            'slug': self.object.slug,
+            'action': 'update'
+        }
         send_organizer_webhook.delay(user_id=self.request.user.id, organizer=organizer_data)
         return response
 

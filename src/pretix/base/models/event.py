@@ -11,10 +11,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.mail import get_connection
 from django.core.validators import (
-    MaxValueValidator,
-    MinLengthValidator,
-    MinValueValidator,
-    RegexValidator,
+    MaxValueValidator, MinLengthValidator, MinValueValidator, RegexValidator,
 )
 from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q, Subquery, Value
@@ -46,11 +43,24 @@ TALK_HOSTNAME = settings.TALK_HOSTNAME
 
 
 class EventMixin:
+
     def clean(self):
-        if self.presale_start and self.presale_end and self.presale_start > self.presale_end:
-            raise ValidationError({'presale_end': _('The end of the presale period has to be later than its start.')})
+        if (
+            self.presale_start
+            and self.presale_end
+            and self.presale_start > self.presale_end
+        ):
+            raise ValidationError(
+                {
+                    "presale_end": _(
+                        "The end of the presale period has to be later than its start."
+                    )
+                }
+            )
         if self.date_from and self.date_to and self.date_from > self.date_to:
-            raise ValidationError({'date_to': _('The end of the event has to be later than its start.')})
+            raise ValidationError(
+                {"date_to": _("The end of the event has to be later than its start.")}
+            )
         super().clean()
 
     def get_short_date_from_display(self, tz=None, show_times=True) -> str:
@@ -61,7 +71,11 @@ class EventMixin:
         tz = tz or self.timezone
         return _date(
             self.date_from.astimezone(tz),
-            ('SHORT_DATETIME_FORMAT' if self.settings.show_times and show_times else 'DATE_FORMAT'),
+            (
+                "SHORT_DATETIME_FORMAT"
+                if self.settings.show_times and show_times
+                else "DATE_FORMAT"
+            ),
         )
 
     def get_short_date_to_display(self, tz=None) -> str:
@@ -72,10 +86,10 @@ class EventMixin:
         """
         tz = tz or self.timezone
         if not self.settings.show_date_to or not self.date_to:
-            return ''
+            return ""
         return _date(
             self.date_to.astimezone(tz),
-            'SHORT_DATETIME_FORMAT' if self.settings.show_times else 'DATE_FORMAT',
+            "SHORT_DATETIME_FORMAT" if self.settings.show_times else "DATE_FORMAT",
         )
 
     def get_date_from_display(self, tz=None, show_times=True, short=False) -> str:
@@ -86,7 +100,12 @@ class EventMixin:
         tz = tz or self.timezone
         return _date(
             self.date_from.astimezone(tz),
-            ('SHORT_' if short else '') + ('DATETIME_FORMAT' if self.settings.show_times and show_times else 'DATE_FORMAT'),
+            ("SHORT_" if short else "")
+            + (
+                "DATETIME_FORMAT"
+                if self.settings.show_times and show_times
+                else "DATE_FORMAT"
+            ),
         )
 
     def get_time_from_display(self, tz=None) -> str:
@@ -95,7 +114,7 @@ class EventMixin:
         the ``show_times`` setting.
         """
         tz = tz or self.timezone
-        return _date(self.date_from.astimezone(tz), 'TIME_FORMAT')
+        return _date(self.date_from.astimezone(tz), "TIME_FORMAT")
 
     def get_date_to_display(self, tz=None, show_times=True, short=False) -> str:
         """
@@ -105,10 +124,15 @@ class EventMixin:
         """
         tz = tz or self.timezone
         if not self.settings.show_date_to or not self.date_to:
-            return ''
+            return ""
         return _date(
             self.date_to.astimezone(tz),
-            ('SHORT_' if short else '') + ('DATETIME_FORMAT' if self.settings.show_times and show_times else 'DATE_FORMAT'),
+            ("SHORT_" if short else "")
+            + (
+                "DATETIME_FORMAT"
+                if self.settings.show_times and show_times
+                else "DATE_FORMAT"
+            ),
         )
 
     def get_date_range_display(self, tz=None, force_show_end=False) -> str:
@@ -119,7 +143,7 @@ class EventMixin:
         """
         tz = tz or self.timezone
         if (not self.settings.show_date_to and not force_show_end) or not self.date_to:
-            return _date(self.date_from.astimezone(tz), 'DATE_FORMAT')
+            return _date(self.date_from.astimezone(tz), "DATE_FORMAT")
         return daterange(self.date_from.astimezone(tz), self.date_to.astimezone(tz))
 
     @property
@@ -134,7 +158,11 @@ class EventMixin:
         """
         if isinstance(self, SubEvent):
             presale_ends = [self.presale_end, self.event.presale_end]
-            return min(filter(lambda x: x is not None, presale_ends)) if any(presale_ends) else None
+            return (
+                min(filter(lambda x: x is not None, presale_ends))
+                if any(presale_ends)
+                else None
+            )
         else:
             return self.presale_end
 
@@ -148,7 +176,10 @@ class EventMixin:
         elif self.date_to:
             return now() > self.date_to
         else:
-            return now().astimezone(self.timezone).date() > self.date_from.astimezone(self.timezone).date()
+            return (
+                now().astimezone(self.timezone).date()
+                > self.date_from.astimezone(self.timezone).date()
+            )
 
     @property
     def effective_presale_start(self):
@@ -158,7 +189,11 @@ class EventMixin:
         """
         if isinstance(self, SubEvent):
             presale_starts = [self.presale_start, self.event.presale_start]
-            return max(filter(lambda x: x is not None, presale_starts)) if any(presale_starts) else None
+            return (
+                max(filter(lambda x: x is not None, presale_starts))
+                if any(presale_starts)
+                else None
+            )
         else:
             return self.presale_start
 
@@ -177,70 +212,86 @@ class EventMixin:
         import json
 
         eventdict = {
-            '@context': 'http://schema.org',
-            '@type': 'Event',
-            'location': {
-                '@type': 'Place',
-                'address': str(self.location),
+            "@context": "http://schema.org",
+            "@type": "Event",
+            "location": {
+                "@type": "Place",
+                "address": str(self.location),
             },
-            'name': str(self.name),
+            "name": str(self.name),
         }
-        img = getattr(self, 'event', self).social_image
+        img = getattr(self, "event", self).social_image
         if img:
-            eventdict['image'] = img
+            eventdict["image"] = img
 
         if self.settings.show_times:
-            eventdict['startDate'] = self.date_from.isoformat()
+            eventdict["startDate"] = self.date_from.isoformat()
             if self.settings.show_date_to and self.date_to is not None:
-                eventdict['endDate'] = self.date_to.isoformat()
+                eventdict["endDate"] = self.date_to.isoformat()
         else:
-            eventdict['startDate'] = self.date_from.date().isoformat()
+            eventdict["startDate"] = self.date_from.date().isoformat()
             if self.settings.show_date_to and self.date_to is not None:
-                eventdict['endDate'] = self.date_to.date().isoformat()
+                eventdict["endDate"] = self.date_to.date().isoformat()
 
         return safe_string(json.dumps(eventdict))
 
     @classmethod
-    def annotated(cls, qs, channel='web'):
+    def annotated(cls, qs, channel="web"):
         from pretix.base.models import Item, ItemVariation, Quota
 
         sq_active_item = (
             Item.objects.using(settings.DATABASE_REPLICA)
             .filter_available(channel=channel)
-            .filter(Q(variations__isnull=True) & Q(quotas__pk=OuterRef('pk')))
+            .filter(Q(variations__isnull=True) & Q(quotas__pk=OuterRef("pk")))
             .order_by()
-            .values_list('quotas__pk')
-            .annotate(items=GroupConcat('pk', delimiter=','))
-            .values('items')
+            .values_list("quotas__pk")
+            .annotate(items=GroupConcat("pk", delimiter=","))
+            .values("items")
         )
         sq_active_variation = (
             ItemVariation.objects.filter(
                 Q(active=True)
                 & Q(item__active=True)
-                & Q(Q(item__available_from__isnull=True) | Q(item__available_from__lte=now()))
-                & Q(Q(item__available_until__isnull=True) | Q(item__available_until__gte=now()))
+                & Q(
+                    Q(item__available_from__isnull=True)
+                    | Q(item__available_from__lte=now())
+                )
+                & Q(
+                    Q(item__available_until__isnull=True)
+                    | Q(item__available_until__gte=now())
+                )
                 & Q(Q(item__category__isnull=True) | Q(item__category__is_addon=False))
                 & Q(item__sales_channels__contains=channel)
                 & Q(item__hide_without_voucher=False)
                 & Q(item__require_bundling=False)
-                & Q(quotas__pk=OuterRef('pk'))
+                & Q(quotas__pk=OuterRef("pk"))
             )
             .order_by()
-            .values_list('quotas__pk')
-            .annotate(items=GroupConcat('pk', delimiter=','))
-            .values('items')
+            .values_list("quotas__pk")
+            .annotate(items=GroupConcat("pk", delimiter=","))
+            .values("items")
         )
-        return qs.annotate(has_paid_item=Exists(Item.objects.filter(event_id=OuterRef(cls._event_id), default_price__gt=0))).prefetch_related(
+        return qs.annotate(
+            has_paid_item=Exists(
+                Item.objects.filter(
+                    event_id=OuterRef(cls._event_id), default_price__gt=0
+                )
+            )
+        ).prefetch_related(
             Prefetch(
-                'quotas',
-                to_attr='active_quotas',
+                "quotas",
+                to_attr="active_quotas",
                 queryset=Quota.objects.using(settings.DATABASE_REPLICA)
                 .annotate(
-                    active_items=Subquery(sq_active_item, output_field=models.TextField()),
-                    active_variations=Subquery(sq_active_variation, output_field=models.TextField()),
+                    active_items=Subquery(
+                        sq_active_item, output_field=models.TextField()
+                    ),
+                    active_variations=Subquery(
+                        sq_active_variation, output_field=models.TextField()
+                    ),
                 )
-                .exclude(Q(active_items='') & Q(active_variations=''))
-                .select_related('event', 'subevent'),
+                .exclude(Q(active_items="") & Q(active_variations=""))
+                .select_related("event", "subevent"),
             )
         )
 
@@ -248,8 +299,10 @@ class EventMixin:
     def best_availability_state(self):
         from .items import Quota
 
-        if not hasattr(self, 'active_quotas'):
-            raise TypeError('Call this only if you fetched the subevents via Event/SubEvent.annotated()')
+        if not hasattr(self, "active_quotas"):
+            raise TypeError(
+                "Call this only if you fetched the subevents via Event/SubEvent.annotated()"
+            )
         items_available = set()
         vars_available = set()
         items_reserved = set()
@@ -257,41 +310,49 @@ class EventMixin:
         items_gone = set()
         vars_gone = set()
 
-        r = getattr(self, '_quota_cache', {})
+        r = getattr(self, "_quota_cache", {})
         for q in self.active_quotas:
             res = r[q] if q in r else q.availability(allow_cache=True)
 
             if res[0] == Quota.AVAILABILITY_OK:
                 if q.active_items:
-                    items_available.update(q.active_items.split(','))
+                    items_available.update(q.active_items.split(","))
                 if q.active_variations:
-                    vars_available.update(q.active_variations.split(','))
+                    vars_available.update(q.active_variations.split(","))
             elif res[0] == Quota.AVAILABILITY_RESERVED:
                 if q.active_items:
-                    items_reserved.update(q.active_items.split(','))
+                    items_reserved.update(q.active_items.split(","))
                 if q.active_variations:
-                    vars_available.update(q.active_variations.split(','))
+                    vars_available.update(q.active_variations.split(","))
             elif res[0] < Quota.AVAILABILITY_RESERVED:
                 if q.active_items:
-                    items_gone.update(q.active_items.split(','))
+                    items_gone.update(q.active_items.split(","))
                 if q.active_variations:
-                    vars_gone.update(q.active_variations.split(','))
+                    vars_gone.update(q.active_variations.split(","))
         if not self.active_quotas:
             return None
-        if items_available - items_reserved - items_gone or vars_available - vars_reserved - vars_gone:
+        if (
+            items_available - items_reserved - items_gone
+            or vars_available - vars_reserved - vars_gone
+        ):
             return Quota.AVAILABILITY_OK
         if items_reserved - items_gone or vars_reserved - vars_gone:
             return Quota.AVAILABILITY_RESERVED
         return Quota.AVAILABILITY_GONE
 
-    def free_seats(self, ignore_voucher=None, sales_channel='web', include_blocked=False):
+    def free_seats(
+        self, ignore_voucher=None, sales_channel="web", include_blocked=False
+    ):
         qs_annotated = self._seats(ignore_voucher=ignore_voucher)
 
         qs = qs_annotated.filter(has_order=False, has_cart=False, has_voucher=False)
         if self.settings.seating_minimal_distance > 0:
             qs = qs.filter(has_closeby_taken=False)
 
-        if not (sales_channel in self.settings.seating_allow_blocked_seats_for_channel or include_blocked):
+        if not (
+            sales_channel in self.settings.seating_allow_blocked_seats_for_channel
+            or include_blocked
+        ):
             qs = qs.filter(blocked=False)
         return qs
 
@@ -309,7 +370,7 @@ class EventMixin:
         return qs.filter(q)
 
 
-@settings_hierarkey.add(parent_field='organizer', cache_namespace='event')
+@settings_hierarkey.add(parent_field="organizer", cache_namespace="event")
 class Event(EventMixin, LoggedModel):
     """
     This model represents an event. An event is anything you can buy
@@ -347,71 +408,86 @@ class Event(EventMixin, LoggedModel):
     :type sales_channels: list
     """
 
-    settings_namespace = 'event'
-    _event_id = 'pk'
-    CURRENCY_CHOICES = [(c.alpha_3, c.alpha_3 + ' - ' + c.name) for c in settings.CURRENCIES]
-    organizer = models.ForeignKey(Organizer, related_name='events', on_delete=models.PROTECT)
+    settings_namespace = "event"
+    _event_id = "pk"
+    CURRENCY_CHOICES = [
+        (c.alpha_3, c.alpha_3 + " - " + c.name) for c in settings.CURRENCIES
+    ]
+    organizer = models.ForeignKey(
+        Organizer, related_name="events", on_delete=models.PROTECT
+    )
     testmode = models.BooleanField(default=False)
     name = I18nCharField(
         max_length=200,
-        verbose_name=_('Event name'),
+        verbose_name=_("Event name"),
     )
     slug = models.CharField(
         max_length=50,
         db_index=True,
         help_text=_(
-            'Should be short, only contain lowercase letters, numbers, dots, and dashes, and must be unique among your '
-            'events. We recommend some kind of abbreviation or a date with less than 10 characters that can be easily '
-            'remembered, but you can also choose to use a random value. '
-            'This will be used in URLs, order codes, invoice numbers, and bank transfer references.'
+            "Should be short, only contain lowercase letters, numbers, dots, and dashes, and must be unique among your "
+            "events. We recommend some kind of abbreviation or a date with less than 10 characters that can be easily "
+            "remembered, but you can also choose to use a random value. "
+            "This will be used in URLs, order codes, invoice numbers, and bank transfer references."
         ),
         validators=[
             MinLengthValidator(
                 limit_value=2,
             ),
             RegexValidator(
-                regex='^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]$',
-                message=_('The slug may only contain letters, numbers, dots and dashes.'),
+                regex="^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]$",
+                message=_(
+                    "The slug may only contain letters, numbers, dots and dashes."
+                ),
             ),
             EventSlugBanlistValidator(),
         ],
-        verbose_name=_('Short form'),
+        verbose_name=_("Short form"),
     )
-    live = models.BooleanField(default=False, verbose_name=_('Shop is live'))
+    live = models.BooleanField(default=False, verbose_name=_("Shop is live"))
     currency = models.CharField(
         max_length=10,
-        verbose_name=_('Event currency'),
+        verbose_name=_("Event currency"),
         choices=CURRENCY_CHOICES,
         default=settings.DEFAULT_CURRENCY,
     )
-    date_from = models.DateTimeField(verbose_name=_('Event start time'))
-    date_to = models.DateTimeField(null=True, blank=True, verbose_name=_('Event end time'))
-    date_admission = models.DateTimeField(null=True, blank=True, verbose_name=_('Admission time'))
+    date_from = models.DateTimeField(verbose_name=_("Event start time"))
+    date_to = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("Event end time")
+    )
+    date_admission = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("Admission time")
+    )
     is_public = models.BooleanField(
         default=True,
-        verbose_name=_('Show in lists'),
-        help_text=_('If selected, this event will show up publicly on the list of events for your organizer account.'),
+        verbose_name=_("Show in lists"),
+        help_text=_(
+            "If selected, this event will show up publicly on the list of events for your organizer account."
+        ),
     )
     presale_end = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('End of presale'),
-        help_text=_('Optional. No products will be sold after this date. If you do not set this value, the presale will end after the end date of your event.'),
+        verbose_name=_("End of presale"),
+        help_text=_(
+            "Optional. No products will be sold after this date. If you do not set this value, the presale "
+            "will end after the end date of your event."
+        ),
     )
     presale_start = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Start of presale'),
-        help_text=_('Optional. No products will be sold before this date.'),
+        verbose_name=_("Start of presale"),
+        help_text=_("Optional. No products will be sold before this date."),
     )
     location = I18nTextField(
         null=True,
         blank=True,
         max_length=200,
-        verbose_name=_('Location'),
+        verbose_name=_("Location"),
     )
     geo_lat = models.FloatField(
-        verbose_name=_('Latitude'),
+        verbose_name=_("Latitude"),
         null=True,
         blank=True,
         validators=[
@@ -420,7 +496,7 @@ class Event(EventMixin, LoggedModel):
         ],
     )
     geo_lon = models.FloatField(
-        verbose_name=_('Longitude'),
+        verbose_name=_("Longitude"),
         null=True,
         blank=True,
         validators=[
@@ -431,34 +507,38 @@ class Event(EventMixin, LoggedModel):
     plugins = models.TextField(
         null=False,
         blank=True,
-        verbose_name=_('Plugins'),
+        verbose_name=_("Plugins"),
     )
-    comment = models.TextField(verbose_name=_('Internal comment'), null=True, blank=True)
-    has_subevents = models.BooleanField(verbose_name=_('Event series'), default=False)
+    comment = models.TextField(
+        verbose_name=_("Internal comment"), null=True, blank=True
+    )
+    has_subevents = models.BooleanField(verbose_name=_("Event series"), default=False)
     seating_plan = models.ForeignKey(
-        'SeatingPlan',
+        "SeatingPlan",
         on_delete=models.PROTECT,
         null=True,
         blank=True,
-        related_name='events',
+        related_name="events",
     )
     sales_channels = MultiStringField(
-        verbose_name=_('Restrict to specific sales channels'),
-        help_text=_('Only sell tickets for this event on the following sales channels.'),
-        default=['web'],
+        verbose_name=_("Restrict to specific sales channels"),
+        help_text=_(
+            "Only sell tickets for this event on the following sales channels."
+        ),
+        default=["web"],
     )
     is_video_creation = models.BooleanField(
-        verbose_name=_('Add video call'),
-        help_text=_('Create Video platform for Event.'),
+        verbose_name=_("Add video call"),
+        help_text=_("Create Video platform for Event."),
         default=False,
     )
-    objects = ScopedManager(organizer='organizer')
+    objects = ScopedManager(organizer="organizer")
 
     class Meta:
-        verbose_name = _('Event')
-        verbose_name_plural = _('Events')
-        ordering = ('date_from', 'name')
-        unique_together = (('organizer', 'slug'),)
+        verbose_name = _("Event")
+        verbose_name_plural = _("Events")
+        ordering = ("date_from", "name")
+        unique_together = (("organizer", "slug"),)
 
     def __str__(self):
         return str(self.name)
@@ -468,27 +548,27 @@ class Event(EventMixin, LoggedModel):
         This will be called after event creation, but only if the event was not created by copying an existing one.
         This way, we can use this to introduce new default settings to pretix that do not affect existing events.
         """
-        self.settings.invoice_renderer = 'modern1'
+        self.settings.invoice_renderer = "modern1"
         self.settings.invoice_include_expire_date = True
         self.settings.ticketoutput_pdf__enabled = True
         self.settings.ticketoutput_passbook__enabled = True
-        self.settings.event_list_type = 'calendar'
+        self.settings.event_list_type = "calendar"
         self.settings.invoice_email_attachment = True
-        self.settings.name_scheme = 'given_family'
+        self.settings.name_scheme = "given_family"
 
     @property
     def social_image(self):
         from pretix.multidomain.urlreverse import build_absolute_uri
 
         img = None
-        logo_file = self.settings.get('logo_image', as_type=str, default='')[7:]
-        og_file = self.settings.get('og_image', as_type=str, default='')[7:]
+        logo_file = self.settings.get("logo_image", as_type=str, default="")[7:]
+        og_file = self.settings.get("og_image", as_type=str, default="")[7:]
         if og_file:
-            img = get_thumbnail(og_file, '1200').thumb.url
+            img = get_thumbnail(og_file, "1200").thumb.url
         elif logo_file:
-            img = get_thumbnail(logo_file, '5000x120').thumb.url
+            img = get_thumbnail(logo_file, "5000x120").thumb.url
         if img:
-            return urljoin(build_absolute_uri(self, 'presale:event.index'), img)
+            return urljoin(build_absolute_uri(self, "presale:event.index"), img)
 
     def _seats(self, ignore_voucher=None):
         from .seating import Seat
@@ -515,7 +595,7 @@ class Event(EventMixin, LoggedModel):
         from .orders import OrderFee, OrderPayment, OrderPosition, OrderRefund
 
         if not really:
-            raise TypeError('Pass really=True as a parameter.')
+            raise TypeError("Pass really=True as a parameter.")
 
         OrderPosition.all.filter(order__event=self, addon_to__isnull=False).delete()
         OrderPosition.all.filter(order__event=self).delete()
@@ -535,7 +615,7 @@ class Event(EventMixin, LoggedModel):
         """
         if self.plugins is None:
             return []
-        return self.plugins.split(',')
+        return self.plugins.split(",")
 
     def get_cache(self):
         """
@@ -579,7 +659,7 @@ class Event(EventMixin, LoggedModel):
         gs = GlobalSettingsObject()
 
         if self.settings.smtp_use_custom or force_custom:
-            if self.settings.email_vendor == 'sendgrid':
+            if self.settings.email_vendor == "sendgrid":
                 return SendGridEmail(api_key=self.settings.send_grid_api_key)
             return CustomSMTPBackend(
                 host=self.settings.smtp_host,
@@ -592,7 +672,7 @@ class Event(EventMixin, LoggedModel):
                 timeout=timeout,
             )
         elif gs.settings.email_vendor is not None:
-            if gs.settings.email_vendor == 'sendgrid':
+            if gs.settings.email_vendor == "sendgrid":
                 return SendGridEmail(api_key=gs.settings.send_grid_api_key)
             else:
                 return CustomSMTPBackend(
@@ -616,7 +696,9 @@ class Event(EventMixin, LoggedModel):
         tz = pytz.timezone(self.settings.timezone)
         return make_aware(
             datetime.combine(
-                self.settings.get('payment_term_last', as_type=RelativeDateWrapper).datetime(self).date(),
+                self.settings.get("payment_term_last", as_type=RelativeDateWrapper)
+                .datetime(self)
+                .date(),
                 time(hour=23, minute=59, second=59),
             ),
             tz,
@@ -625,22 +707,21 @@ class Event(EventMixin, LoggedModel):
     def copy_data_from(self, other):
         from ..signals import event_copy_data
         from . import (
-            Item,
-            ItemAddOn,
-            ItemBundle,
-            ItemCategory,
-            ItemMetaValue,
-            Question,
+            Item, ItemAddOn, ItemBundle, ItemCategory, ItemMetaValue, Question,
             Quota,
         )
 
         self.plugins = other.plugins
         self.is_public = other.is_public
         if other.date_admission:
-            self.date_admission = self.date_from + (other.date_admission - other.date_from)
+            self.date_admission = self.date_from + (
+                other.date_admission - other.date_from
+            )
         self.testmode = other.testmode
         self.save()
-        self.log_action('pretix.object.cloned', data={'source': other.slug, 'source_id': other.pk})
+        self.log_action(
+            "pretix.object.cloned", data={"source": other.slug, "source_id": other.pk}
+        )
 
         tax_map = {}
         for t in other.tax_rules.all():
@@ -648,7 +729,7 @@ class Event(EventMixin, LoggedModel):
             t.pk = None
             t.event = self
             t.save()
-            t.log_action('pretix.object.cloned')
+            t.log_action("pretix.object.cloned")
 
         category_map = {}
         for c in ItemCategory.objects.filter(event=other):
@@ -656,7 +737,7 @@ class Event(EventMixin, LoggedModel):
             c.pk = None
             c.event = self
             c.save()
-            c.log_action('pretix.object.cloned')
+            c.log_action("pretix.object.cloned")
 
         item_meta_properties_map = {}
         for imp in other.item_meta_properties.all():
@@ -664,11 +745,11 @@ class Event(EventMixin, LoggedModel):
             imp.pk = None
             imp.event = self
             imp.save()
-            imp.log_action('pretix.object.cloned')
+            imp.log_action("pretix.object.cloned")
 
         item_map = {}
         variation_map = {}
-        for i in Item.objects.filter(event=other).prefetch_related('variations'):
+        for i in Item.objects.filter(event=other).prefetch_related("variations"):
             vars = list(i.variations.all())
             item_map[i.pk] = i
             i.pk = None
@@ -680,26 +761,32 @@ class Event(EventMixin, LoggedModel):
             if i.tax_rule_id:
                 i.tax_rule = tax_map[i.tax_rule_id]
             i.save()
-            i.log_action('pretix.object.cloned')
+            i.log_action("pretix.object.cloned")
             for v in vars:
                 variation_map[v.pk] = v
                 v.pk = None
                 v.item = i
                 v.save()
 
-        for imv in ItemMetaValue.objects.filter(item__event=other).prefetch_related('item', 'property'):
+        for imv in ItemMetaValue.objects.filter(item__event=other).prefetch_related(
+            "item", "property"
+        ):
             imv.pk = None
             imv.property = item_meta_properties_map[imv.property.pk]
             imv.item = item_map[imv.item.pk]
             imv.save()
 
-        for ia in ItemAddOn.objects.filter(base_item__event=other).prefetch_related('base_item', 'addon_category'):
+        for ia in ItemAddOn.objects.filter(base_item__event=other).prefetch_related(
+            "base_item", "addon_category"
+        ):
             ia.pk = None
             ia.base_item = item_map[ia.base_item.pk]
             ia.addon_category = category_map[ia.addon_category.pk]
             ia.save()
 
-        for ia in ItemBundle.objects.filter(base_item__event=other).prefetch_related('base_item', 'bundled_item', 'bundled_variation'):
+        for ia in ItemBundle.objects.filter(base_item__event=other).prefetch_related(
+            "base_item", "bundled_item", "bundled_variation"
+        ):
             ia.pk = None
             ia.base_item = item_map[ia.base_item.pk]
             ia.bundled_item = item_map[ia.bundled_item.pk]
@@ -707,7 +794,9 @@ class Event(EventMixin, LoggedModel):
                 ia.bundled_variation = variation_map[ia.bundled_variation.pk]
             ia.save()
 
-        for q in Quota.objects.filter(event=other, subevent__isnull=True).prefetch_related('items', 'variations'):
+        for q in Quota.objects.filter(
+            event=other, subevent__isnull=True
+        ).prefetch_related("items", "variations"):
             items = list(q.items.all())
             vars = list(q.variations.all())
             oldid = q.pk
@@ -715,23 +804,27 @@ class Event(EventMixin, LoggedModel):
             q.event = self
             q.closed = False
             q.save()
-            q.log_action('pretix.object.cloned')
+            q.log_action("pretix.object.cloned")
             for i in items:
                 if i.pk in item_map:
                     q.items.add(item_map[i.pk])
             for v in vars:
                 q.variations.add(variation_map[v.pk])
-            self.items.filter(hidden_if_available_id=oldid).update(hidden_if_available=q)
+            self.items.filter(hidden_if_available_id=oldid).update(
+                hidden_if_available=q
+            )
 
         question_map = {}
-        for q in Question.objects.filter(event=other).prefetch_related('items', 'options'):
+        for q in Question.objects.filter(event=other).prefetch_related(
+            "items", "options"
+        ):
             items = list(q.items.all())
             opts = list(q.options.all())
             question_map[q.pk] = q
             q.pk = None
             q.event = self
             q.save()
-            q.log_action('pretix.object.cloned')
+            q.log_action("pretix.object.cloned")
 
             for i in items:
                 q.items.add(item_map[i.pk])
@@ -742,16 +835,24 @@ class Event(EventMixin, LoggedModel):
 
         for q in self.questions.filter(dependency_question__isnull=False):
             q.dependency_question = question_map[q.dependency_question_id]
-            q.save(update_fields=['dependency_question'])
+            q.save(update_fields=["dependency_question"])
 
         def _walk_rules(rules):
             if isinstance(rules, dict):
                 for k, v in rules.items():
-                    if k == 'lookup':
-                        if v[0] == 'product':
-                            v[1] = str(item_map.get(int(v[1]), 0).pk) if int(v[1]) in item_map else '0'
-                        elif v[0] == 'variation':
-                            v[1] = str(variation_map.get(int(v[1]), 0).pk) if int(v[1]) in variation_map else '0'
+                    if k == "lookup":
+                        if v[0] == "product":
+                            v[1] = (
+                                str(item_map.get(int(v[1]), 0).pk)
+                                if int(v[1]) in item_map
+                                else "0"
+                            )
+                        elif v[0] == "variation":
+                            v[1] = (
+                                str(variation_map.get(int(v[1]), 0).pk)
+                                if int(v[1]) in variation_map
+                                else "0"
+                            )
                     else:
                         _walk_rules(v)
             elif isinstance(rules, list):
@@ -759,7 +860,9 @@ class Event(EventMixin, LoggedModel):
                     _walk_rules(i)
 
         checkin_list_map = {}
-        for cl in other.checkin_lists.filter(subevent__isnull=True).prefetch_related('limit_products'):
+        for cl in other.checkin_lists.filter(subevent__isnull=True).prefetch_related(
+            "limit_products"
+        ):
             items = list(cl.limit_products.all())
             checkin_list_map[cl.pk] = cl
             cl.pk = None
@@ -768,7 +871,7 @@ class Event(EventMixin, LoggedModel):
             _walk_rules(rules)
             cl.rules = rules
             cl.save()
-            cl.log_action('pretix.object.cloned')
+            cl.log_action("pretix.object.cloned")
             for i in items:
                 cl.limit_products.add(item_map[i.pk])
 
@@ -776,7 +879,9 @@ class Event(EventMixin, LoggedModel):
             if other.seating_plan.organizer_id == self.organizer_id:
                 self.seating_plan = other.seating_plan
             else:
-                self.organizer.seating_plans.create(name=other.seating_plan.name, layout=other.seating_plan.layout)
+                self.organizer.seating_plans.create(
+                    name=other.seating_plan.name, layout=other.seating_plan.layout
+                )
             self.save()
 
         for m in other.seat_category_mappings.filter(subevent__isnull=True):
@@ -793,8 +898,8 @@ class Event(EventMixin, LoggedModel):
             s.save()
 
         skip_settings = (
-            'ticket_secrets_pretix_sig1_pubkey',
-            'ticket_secrets_pretix_sig1_privkey',
+            "ticket_secrets_pretix_sig1_pubkey",
+            "ticket_secrets_pretix_sig1_privkey",
         )
         for s in other.settings._objects.all():
             if s.key in skip_settings:
@@ -802,21 +907,21 @@ class Event(EventMixin, LoggedModel):
 
             s.object = self
             s.pk = None
-            if s.value.startswith('file://'):
-                fi = default_storage.open(s.value[7:], 'rb')
+            if s.value.startswith("file://"):
+                fi = default_storage.open(s.value[7:], "rb")
                 nonce = get_random_string(length=8)
                 # TODO: make sure pub is always correct
-                fname = 'pub/%s/%s/%s.%s.%s' % (
+                fname = "pub/%s/%s/%s.%s.%s" % (
                     self.organizer.slug,
                     self.slug,
                     s.key,
                     nonce,
-                    s.value.split('.')[-1],
+                    s.value.split(".")[-1],
                 )
                 newname = default_storage.save(fname, fi)
-                s.value = 'file://' + newname
+                s.value = "file://" + newname
                 s.save()
-            elif s.key == 'tax_rate_default':
+            elif s.key == "tax_rate_default":
                 try:
                     if int(s.value) in tax_map:
                         s.value = tax_map.get(int(s.value)).pk
@@ -844,7 +949,7 @@ class Event(EventMixin, LoggedModel):
         """
         from ..signals import register_payment_providers
 
-        if not cached or not hasattr(self, '_cached_payment_providers'):
+        if not cached or not hasattr(self, "_cached_payment_providers"):
             responses = register_payment_providers.send(self)
             providers = {}
             for receiver, response in responses:
@@ -924,7 +1029,7 @@ class Event(EventMixin, LoggedModel):
         Returns the currently configured ticket secret generator.
         """
         tsgs = self.ticket_secret_generators
-        return tsgs.get(self.settings.ticket_secret_generator, tsgs.get('random'))
+        return tsgs.get(self.settings.ticket_secret_generator, tsgs.get("random"))
 
     def get_data_shredders(self) -> dict:
         """
@@ -954,17 +1059,19 @@ class Event(EventMixin, LoggedModel):
         return SubEvent.annotated(self.subevents, channel)
 
     def subevents_sorted(self, queryset):
-        ordering = self.settings.get('frontpage_subevent_ordering', default='date_ascending', as_type=str)
+        ordering = self.settings.get(
+            "frontpage_subevent_ordering", default="date_ascending", as_type=str
+        )
         orderfields = {
-            'date_ascending': ('date_from', 'name'),
-            'date_descending': ('-date_from', 'name'),
-            'name_ascending': ('name', 'date_from'),
-            'name_descending': ('-name', 'date_from'),
+            "date_ascending": ("date_from", "name"),
+            "date_descending": ("-date_from", "name"),
+            "name_ascending": ("name", "date_from"),
+            "name_descending": ("-name", "date_from"),
         }[ordering]
         subevs = queryset.annotate(
             has_paid_item=Value(
                 self.cache.get_or_set(
-                    'has_paid_item',
+                    "has_paid_item",
                     lambda: self.items.filter(default_price__gt=0).exists(),
                     3600,
                 ),
@@ -973,10 +1080,16 @@ class Event(EventMixin, LoggedModel):
         ).filter(
             Q(active=True)
             & Q(is_public=True)
-            & (Q(Q(date_to__isnull=True) & Q(date_from__gte=now() - timedelta(hours=24))) | Q(date_to__gte=now() - timedelta(hours=24)))
+            & (
+                Q(
+                    Q(date_to__isnull=True)
+                    & Q(date_from__gte=now() - timedelta(hours=24))
+                )
+                | Q(date_to__gte=now() - timedelta(hours=24))
+            )
         )  # order_by doesn't make sense with I18nField
         for f in reversed(orderfields):
-            if f.startswith('-'):
+            if f.startswith("-"):
                 subevs = sorted(subevs, key=attrgetter(f[1:]), reverse=True)
             else:
                 subevs = sorted(subevs, key=attrgetter(f))
@@ -985,10 +1098,15 @@ class Event(EventMixin, LoggedModel):
     @property
     def meta_data(self):
         data = {p.name: p.default for p in self.organizer.meta_properties.all()}
-        if hasattr(self, 'meta_values_cached'):
+        if hasattr(self, "meta_values_cached"):
             data.update({v.property.name: v.value for v in self.meta_values_cached})
         else:
-            data.update({v.property.name: v.value for v in self.meta_values.select_related('property').all()})
+            data.update(
+                {
+                    v.property.name: v.value
+                    for v in self.meta_values.select_related("property").all()
+                }
+            )
 
         return OrderedDict((k, v) for k, v in sorted(data.items(), key=lambda k: k[0]))
 
@@ -997,10 +1115,10 @@ class Event(EventMixin, LoggedModel):
         result = False
         for provider in self.get_payment_providers().values():
             if provider.is_enabled and provider.identifier not in (
-                'free',
-                'boxoffice',
-                'offsetting',
-                'giftcard',
+                "free",
+                "boxoffice",
+                "offsetting",
+                "giftcard",
             ):
                 result = True
                 break
@@ -1010,31 +1128,36 @@ class Event(EventMixin, LoggedModel):
     def has_paid_things(self):
         from .items import Item, ItemVariation
 
-        return Item.objects.filter(event=self, default_price__gt=0).exists() or ItemVariation.objects.filter(item__event=self, default_price__gt=0).exists()
+        return (
+            Item.objects.filter(event=self, default_price__gt=0).exists()
+            or ItemVariation.objects.filter(
+                item__event=self, default_price__gt=0
+            ).exists()
+        )
 
     @property
     def talk_schedule_url(self):
-        url = urljoin(TALK_HOSTNAME, f'{self.slug}/schedule')
+        url = urljoin(TALK_HOSTNAME, f"{self.slug}/schedule")
         return url
 
     @property
     def talk_session_url(self):
-        url = urljoin(TALK_HOSTNAME, f'{self.slug}/talk')
+        url = urljoin(TALK_HOSTNAME, f"{self.slug}/talk")
         return url
 
     @property
     def talk_speaker_url(self):
-        url = urljoin(TALK_HOSTNAME, f'{self.slug}/speaker')
+        url = urljoin(TALK_HOSTNAME, f"{self.slug}/speaker")
         return url
 
     @property
     def talk_dashboard_url(self):
-        url = urljoin(TALK_HOSTNAME, f'orga/event/{self.slug}')
+        url = urljoin(TALK_HOSTNAME, f"orga/event/{self.slug}")
         return url
 
     @property
     def talk_settings_url(self):
-        url = urljoin(TALK_HOSTNAME, f'orga/event/{self.slug}/settings')
+        url = urljoin(TALK_HOSTNAME, f"orga/event/{self.slug}/settings")
         return url
 
     @cached_property
@@ -1044,26 +1167,38 @@ class Event(EventMixin, LoggedModel):
         issues = []
 
         if self.has_paid_things and not self.has_payment_provider:
-            issues.append(_('You have configured at least one paid product but have not enabled any payment methods.'))
+            issues.append(
+                _(
+                    "You have configured at least one paid product but have not enabled any payment methods."
+                )
+            )
 
         if not self.quotas.exists():
-            issues.append(_('You need to configure at least one quota to sell anything.'))
+            issues.append(
+                _("You need to configure at least one quota to sell anything.")
+            )
 
         if self.organizer.has_unpaid_invoice():
-            issues.append(_('You have unpaid invoices, please pay them before going live.'))
+            issues.append(
+                _("You have unpaid invoices, please pay them before going live.")
+            )
 
         for mp in self.organizer.meta_properties.all():
             if mp.required and not self.meta_data.get(mp.name):
                 issues.append(
-                    ('<a {a_attr}>' + gettext('You need to fill the meta parameter "{property}".') + '</a>').format(
+                    (
+                        "<a {a_attr}>"
+                        + gettext('You need to fill the meta parameter "{property}".')
+                        + "</a>"
+                    ).format(
                         property=mp.name,
                         a_attr='href="%s#id_prop-%d-value"'
                         % (
                             reverse(
-                                'control:event.settings',
+                                "control:event.settings",
                                 kwargs={
-                                    'organizer': self.organizer.slug,
-                                    'event': self.slug,
+                                    "organizer": self.organizer.slug,
+                                    "event": self.slug,
                                 },
                             ),
                             mp.pk,
@@ -1072,11 +1207,18 @@ class Event(EventMixin, LoggedModel):
                 )
 
         gs = GlobalSettingsObject()
-        if gs.settings.get('billing_validation', True) is True:
+        if gs.settings.get("billing_validation", True) is True:
             billing_obj = OrganizerBillingModel.objects.filter(organizer=self.organizer).first()
             if not billing_obj or not billing_obj.stripe_payment_method_id:
-                url = reverse('control:organizer.settings.billing', kwargs={'organizer': self.organizer.slug})
-                issue = format_html('<a href="{}#tab-0-1-open">{}</a>', url, gettext('You need to fill the billing information.'))
+                url = reverse(
+                    "control:organizer.settings.billing",
+                    kwargs={"organizer": self.organizer.slug}
+                )
+                issue = format_html(
+                    '<a href="{}#tab-0-1-open">{}</a>',
+                    url,
+                    gettext("You need to fill the billing information.")
+                )
                 issues.append(issue)
 
         responses = event_live_issues.send(self)
@@ -1107,9 +1249,9 @@ class Event(EventMixin, LoggedModel):
         else:
             kwargs = {}
 
-        team_with_perm = Team.objects.filter(members__pk=OuterRef('pk'), organizer=self.organizer, **kwargs).filter(
-            Q(all_events=True) | Q(limit_events__pk=self.pk)
-        )
+        team_with_perm = Team.objects.filter(
+            members__pk=OuterRef("pk"), organizer=self.organizer, **kwargs
+        ).filter(Q(all_events=True) | Q(limit_events__pk=self.pk))
 
         return User.objects.annotate(twp=Exists(team_with_perm)).filter(twp=True)
 
@@ -1132,17 +1274,26 @@ class Event(EventMixin, LoggedModel):
         from pretix.base.plugins import get_all_plugins
 
         plugins_active = self.get_plugins()
-        plugins_available = {p.module: p for p in get_all_plugins(self) if not p.name.startswith('.') and getattr(p, 'visible', True)}
+        plugins_available = {
+            p.module: p
+            for p in get_all_plugins(self)
+            if not p.name.startswith(".") and getattr(p, "visible", True)
+        }
 
-        enable = [m for m in modules if m not in plugins_active and m in plugins_available]
+        enable = [
+            m for m in modules if m not in plugins_active and m in plugins_available
+        ]
 
         for module in enable:
-            if getattr(plugins_available[module].app, 'restricted', False) and not allow_restricted:
+            if (
+                getattr(plugins_available[module].app, "restricted", False)
+                and not allow_restricted
+            ):
                 modules.remove(module)
-            elif hasattr(plugins_available[module].app, 'installed'):
-                getattr(plugins_available[module].app, 'installed')(self)
+            elif hasattr(plugins_available[module].app, "installed"):
+                getattr(plugins_available[module].app, "installed")(self)
 
-        self.plugins = ','.join(modules)
+        self.plugins = ",".join(modules)
 
     def enable_plugin(self, module, allow_restricted=False):
         plugins_active = self.get_plugins()
@@ -1168,28 +1319,36 @@ class Event(EventMixin, LoggedModel):
     def clean_has_subevents(event, has_subevents):
         if event is not None and event.has_subevents is not None:
             if event.has_subevents != has_subevents:
-                raise ValidationError(_('Once created an event cannot change between an series and a single event.'))
+                raise ValidationError(
+                    _(
+                        "Once created an event cannot change between an series and a single event."
+                    )
+                )
 
     @staticmethod
     def clean_slug(organizer, event, slug):
         if event is not None and event.slug is not None:
             if event.slug != slug:
-                raise ValidationError(_('The event slug cannot be changed.'))
+                raise ValidationError(_("The event slug cannot be changed."))
         else:
             if Event.objects.filter(slug=slug, organizer=organizer).exists():
-                raise ValidationError(_('This slug has already been used for a different event.'))
+                raise ValidationError(
+                    _("This slug has already been used for a different event.")
+                )
 
     @staticmethod
     def clean_dates(date_from, date_to):
         if date_from is not None and date_to is not None:
             if date_from > date_to:
-                raise ValidationError(_('The event cannot end before it starts.'))
+                raise ValidationError(_("The event cannot end before it starts."))
 
     @staticmethod
     def clean_presale(presale_start, presale_end):
         if presale_start is not None and presale_end is not None:
             if presale_start > presale_end:
-                raise ValidationError(_("The event's presale cannot end before it starts."))
+                raise ValidationError(
+                    _("The event's presale cannot end before it starts.")
+                )
 
 
 class SubEvent(EventMixin, LoggedModel):
@@ -1216,45 +1375,58 @@ class SubEvent(EventMixin, LoggedModel):
     :type location: str
     """
 
-    _event_id = 'event_id'
-    event = models.ForeignKey(Event, related_name='subevents', on_delete=models.PROTECT)
+    _event_id = "event_id"
+    event = models.ForeignKey(Event, related_name="subevents", on_delete=models.PROTECT)
     active = models.BooleanField(
         default=False,
-        verbose_name=_('Active'),
-        help_text=_('Only with this checkbox enabled, this date is visible in the frontend to users.'),
+        verbose_name=_("Active"),
+        help_text=_(
+            "Only with this checkbox enabled, this date is visible in the "
+            "frontend to users."
+        ),
     )
     is_public = models.BooleanField(
         default=True,
-        verbose_name=_('Show in lists'),
-        help_text=_('If selected, this event will show up publicly on the list of dates for your event.'),
+        verbose_name=_("Show in lists"),
+        help_text=_(
+            "If selected, this event will show up publicly on the list of dates "
+            "for your event."
+        ),
     )
     name = I18nCharField(
         max_length=200,
-        verbose_name=_('Name'),
+        verbose_name=_("Name"),
     )
-    date_from = models.DateTimeField(verbose_name=_('Event start time'))
-    date_to = models.DateTimeField(null=True, blank=True, verbose_name=_('Event end time'))
-    date_admission = models.DateTimeField(null=True, blank=True, verbose_name=_('Admission time'))
+    date_from = models.DateTimeField(verbose_name=_("Event start time"))
+    date_to = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("Event end time")
+    )
+    date_admission = models.DateTimeField(
+        null=True, blank=True, verbose_name=_("Admission time")
+    )
     presale_end = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('End of presale'),
-        help_text=_('Optional. No products will be sold after this date. If you do not set this value, the presale will end after the end date of your event.'),
+        verbose_name=_("End of presale"),
+        help_text=_(
+            "Optional. No products will be sold after this date. If you do not set this value, the presale "
+            "will end after the end date of your event."
+        ),
     )
     presale_start = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('Start of presale'),
-        help_text=_('Optional. No products will be sold before this date.'),
+        verbose_name=_("Start of presale"),
+        help_text=_("Optional. No products will be sold before this date."),
     )
     location = I18nTextField(
         null=True,
         blank=True,
         max_length=200,
-        verbose_name=_('Location'),
+        verbose_name=_("Location"),
     )
     geo_lat = models.FloatField(
-        verbose_name=_('Latitude'),
+        verbose_name=_("Latitude"),
         null=True,
         blank=True,
         validators=[
@@ -1263,7 +1435,7 @@ class SubEvent(EventMixin, LoggedModel):
         ],
     )
     geo_lon = models.FloatField(
-        verbose_name=_('Longitude'),
+        verbose_name=_("Longitude"),
         null=True,
         blank=True,
         validators=[
@@ -1271,31 +1443,39 @@ class SubEvent(EventMixin, LoggedModel):
             MaxValueValidator(180),
         ],
     )
-    frontpage_text = I18nTextField(null=True, blank=True, verbose_name=_('Frontpage text'))
+    frontpage_text = I18nTextField(
+        null=True, blank=True, verbose_name=_("Frontpage text")
+    )
     seating_plan = models.ForeignKey(
-        'SeatingPlan',
+        "SeatingPlan",
         on_delete=models.PROTECT,
         null=True,
         blank=True,
-        related_name='subevents',
+        related_name="subevents",
     )
     last_modified = models.DateTimeField(auto_now=True, db_index=True)
 
-    items = models.ManyToManyField('Item', through='SubEventItem')
-    variations = models.ManyToManyField('ItemVariation', through='SubEventItemVariation')
+    items = models.ManyToManyField("Item", through="SubEventItem")
+    variations = models.ManyToManyField(
+        "ItemVariation", through="SubEventItemVariation"
+    )
 
-    objects = ScopedManager(organizer='event__organizer')
+    objects = ScopedManager(organizer="event__organizer")
 
     class Meta:
-        verbose_name = _('Date in event series')
-        verbose_name_plural = _('Dates in event series')
-        ordering = ('date_from', 'name')
+        verbose_name = _("Date in event series")
+        verbose_name_plural = _("Dates in event series")
+        ordering = ("date_from", "name")
 
     def __str__(self):
-        return '{} - {} {}'.format(
+        return "{} - {} {}".format(
             self.name,
             self.get_date_range_display(),
-            (date_format(self.date_from.astimezone(self.timezone), 'TIME_FORMAT') if self.settings.show_times else ''),
+            (
+                date_format(self.date_from.astimezone(self.timezone), "TIME_FORMAT")
+                if self.settings.show_times
+                else ""
+            ),
         ).strip()
 
     def _seats(self, ignore_voucher=None):
@@ -1325,20 +1505,36 @@ class SubEvent(EventMixin, LoggedModel):
     def var_overrides(self):
         from .items import SubEventItemVariation
 
-        return {si.variation_id: si for si in SubEventItemVariation.objects.filter(subevent=self)}
+        return {
+            si.variation_id: si
+            for si in SubEventItemVariation.objects.filter(subevent=self)
+        }
 
     @property
     def item_price_overrides(self):
-        return {si.item_id: si.price for si in self.item_overrides.values() if si.price is not None}
+        return {
+            si.item_id: si.price
+            for si in self.item_overrides.values()
+            if si.price is not None
+        }
 
     @property
     def var_price_overrides(self):
-        return {si.variation_id: si.price for si in self.var_overrides.values() if si.price is not None}
+        return {
+            si.variation_id: si.price
+            for si in self.var_overrides.values()
+            if si.price is not None
+        }
 
     @property
     def meta_data(self):
         data = self.event.meta_data
-        data.update({v.property.name: v.value for v in self.meta_values.select_related('property').all()})
+        data.update(
+            {
+                v.property.name: v.value
+                for v in self.meta_values.select_related("property").all()
+            }
+        )
         return data
 
     @property
@@ -1349,7 +1545,7 @@ class SubEvent(EventMixin, LoggedModel):
         return not self.orderposition_set.exists()
 
     def delete(self, *args, **kwargs):
-        clear_cache = kwargs.pop('clear_cache', False)
+        clear_cache = kwargs.pop("clear_cache", False)
         super().delete(*args, **kwargs)
         if self.event and clear_cache:
             self.event.cache.clear()
@@ -1361,7 +1557,7 @@ class SubEvent(EventMixin, LoggedModel):
     def save(self, *args, **kwargs):
         from .orders import Order
 
-        clear_cache = kwargs.pop('clear_cache', False)
+        clear_cache = kwargs.pop("clear_cache", False)
         super().save(*args, **kwargs)
         if self.event and clear_cache:
             self.event.cache.clear()
@@ -1374,24 +1570,32 @@ class SubEvent(EventMixin, LoggedModel):
             the app needs to know when a subevent is moved to a date in the future, since that
             might require it to re-download and re-store the orders.
             """
-            Order.objects.filter(all_positions__subevent=self).update(last_modified=now())
+            Order.objects.filter(all_positions__subevent=self).update(
+                last_modified=now()
+            )
 
     @staticmethod
     def clean_items(event, items):
         for item in items:
             if event != item.event:
-                raise ValidationError(_('One or more items do not belong to this event.'))
+                raise ValidationError(
+                    _("One or more items do not belong to this event.")
+                )
 
     @staticmethod
     def clean_variations(event, variations):
         for variation in variations:
             if event != variation.item.event:
-                raise ValidationError(_('One or more variations do not belong to this event.'))
+                raise ValidationError(
+                    _("One or more variations do not belong to this event.")
+                )
 
 
 @scopes_disabled()
 def generate_invite_token():
-    return get_random_string(length=32, allowed_chars=string.ascii_lowercase + string.digits)
+    return get_random_string(
+        length=32, allowed_chars=string.ascii_lowercase + string.digits
+    )
 
 
 class EventLock(models.Model):
@@ -1423,18 +1627,20 @@ class RequiredAction(models.Model):
 
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)
     done = models.BooleanField(default=False)
-    user = models.ForeignKey('User', null=True, blank=True, on_delete=models.PROTECT)
-    event = models.ForeignKey('Event', null=True, blank=True, on_delete=models.CASCADE)
+    user = models.ForeignKey("User", null=True, blank=True, on_delete=models.PROTECT)
+    event = models.ForeignKey("Event", null=True, blank=True, on_delete=models.CASCADE)
     action_type = models.CharField(max_length=255)
-    data = models.TextField(default='{}')
+    data = models.TextField(default="{}")
 
     class Meta:
-        ordering = ('datetime',)
+        ordering = ("datetime",)
 
     def display(self, request):
         from ..signals import requiredaction_display
 
-        for receiver, response in requiredaction_display.send(self.event, action=self, request=request):
+        for receiver, response in requiredaction_display.send(
+            self.event, action=self, request=request
+        ):
             if response:
                 return response
         return self.action_type
@@ -1448,7 +1654,7 @@ class RequiredAction(models.Model):
 
             logentry = LogEntry.objects.create(
                 content_object=self,
-                action_type='pretix.event.action_required',
+                action_type="pretix.event.action_required",
                 event=self.event,
                 visible=False,
             )
@@ -1468,44 +1674,61 @@ class EventMetaProperty(LoggedModel):
     :type default: str
     """
 
-    organizer = models.ForeignKey(Organizer, related_name='meta_properties', on_delete=models.CASCADE)
+    organizer = models.ForeignKey(
+        Organizer, related_name="meta_properties", on_delete=models.CASCADE
+    )
     name = models.CharField(
         max_length=50,
         db_index=True,
-        help_text=_('Can not contain spaces or special characters except underscores'),
+        help_text=_("Can not contain spaces or special characters except underscores"),
         validators=[
             RegexValidator(
-                regex='^[a-zA-Z0-9_]+$',
-                message=_('The property name may only contain letters, numbers and underscores.'),
+                regex="^[a-zA-Z0-9_]+$",
+                message=_(
+                    "The property name may only contain letters, numbers and underscores."
+                ),
             ),
         ],
-        verbose_name=_('Name'),
+        verbose_name=_("Name"),
     )
-    default = models.TextField(blank=True, verbose_name=_('Default value'))
+    default = models.TextField(blank=True, verbose_name=_("Default value"))
     protected = models.BooleanField(
         default=False,
-        verbose_name=_('Can only be changed by organizer-level administrators'),
+        verbose_name=_("Can only be changed by organizer-level administrators"),
     )
     required = models.BooleanField(
         default=False,
-        verbose_name=_('Required for events'),
+        verbose_name=_("Required for events"),
         help_text=_(
-            'If checked, an event can only be taken live if the property is set. In event series, its always optional to set a value for individual dates'
+            "If checked, an event can only be taken live if the property is set. In event series, its always "
+            "optional to set a value for individual dates"
         ),
     )
     allowed_values = models.TextField(
         null=True,
         blank=True,
-        verbose_name=_('Valid values'),
-        help_text=_('If you keep this empty, any value is allowed. Otherwise, enter one possible value per line.'),
+        verbose_name=_("Valid values"),
+        help_text=_(
+            "If you keep this empty, any value is allowed. Otherwise, enter one possible value per line."
+        ),
     )
 
     def full_clean(self, exclude=None, validate_unique=True):
         super().full_clean(exclude, validate_unique)
         if self.default and self.required:
-            raise ValidationError(_('A property can either be required or have a default value, not both.'))
-        if self.default and self.allowed_values and self.default not in self.allowed_values.splitlines():
-            raise ValidationError(_('You cannot set a default value that is not a valid value.'))
+            raise ValidationError(
+                _(
+                    "A property can either be required or have a default value, not both."
+                )
+            )
+        if (
+            self.default
+            and self.allowed_values
+            and self.default not in self.allowed_values.splitlines()
+        ):
+            raise ValidationError(
+                _("You cannot set a default value that is not a valid value.")
+            )
 
 
 class EventMetaValue(LoggedModel):
@@ -1520,12 +1743,16 @@ class EventMetaValue(LoggedModel):
     :type value: str
     """
 
-    event = models.ForeignKey('Event', on_delete=models.CASCADE, related_name='meta_values')
-    property = models.ForeignKey('EventMetaProperty', on_delete=models.CASCADE, related_name='event_values')
+    event = models.ForeignKey(
+        "Event", on_delete=models.CASCADE, related_name="meta_values"
+    )
+    property = models.ForeignKey(
+        "EventMetaProperty", on_delete=models.CASCADE, related_name="event_values"
+    )
     value = models.TextField()
 
     class Meta:
-        unique_together = ('event', 'property')
+        unique_together = ("event", "property")
 
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
@@ -1550,12 +1777,16 @@ class SubEventMetaValue(LoggedModel):
     :type value: str
     """
 
-    subevent = models.ForeignKey('SubEvent', on_delete=models.CASCADE, related_name='meta_values')
-    property = models.ForeignKey('EventMetaProperty', on_delete=models.CASCADE, related_name='subevent_values')
+    subevent = models.ForeignKey(
+        "SubEvent", on_delete=models.CASCADE, related_name="meta_values"
+    )
+    property = models.ForeignKey(
+        "EventMetaProperty", on_delete=models.CASCADE, related_name="subevent_values"
+    )
     value = models.TextField()
 
     class Meta:
-        unique_together = ('subevent', 'property')
+        unique_together = ("subevent", "property")
 
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)

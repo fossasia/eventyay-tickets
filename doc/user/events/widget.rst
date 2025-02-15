@@ -11,7 +11,7 @@ To obtain the correct HTML code for embedding your event into your website, we r
 tab of your event's settings. You can specify some optional settings there (for example the language of the widget)
 and then click "Generate widget code".
 
-.. image:: ../../screens/event/widget_form.png
+.. thumbnail:: ../../screens/event/widget_form.png
    :align: center
    :class: screenshot
 

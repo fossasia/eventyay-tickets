@@ -12,12 +12,11 @@ from pretix.celery_app import app
 
 if settings.HAS_REDIS:
     import django_redis
+    redis = django_redis.get_redis_connection("redis")
 
-    redis = django_redis.get_redis_connection('redis')
-
-REDIS_KEY = 'pretix_metrics'
-_INF = float('inf')
-_MINUS_INF = float('-inf')
+REDIS_KEY = "pretix_metrics"
+_INF = float("inf")
+_MINUS_INF = float("-inf")
 
 
 def _float_to_go_string(d):
@@ -43,7 +42,7 @@ class Metric(object):
         self.labelnames = labelnames or []
 
     def __repr__(self):
-        return self.name + '{' + ','.join(self.labelnames) + '}'
+        return self.name + "{" + ",".join(self.labelnames) + "}"
 
     def _check_label_consistency(self, labels):
         """
@@ -53,11 +52,11 @@ class Metric(object):
         # test if every required label is provided
         for labelname in self.labelnames:
             if labelname not in labels:
-                raise ValueError('Label {0} not specified.'.format(labelname))
+                raise ValueError("Label {0} not specified.".format(labelname))
 
         # now test if no further labels are required
         if len(labels) != len(self.labelnames):
-            raise ValueError('Unknown labels used: {}'.format(', '.join(set(labels) - set(self.labelnames))))
+            raise ValueError("Unknown labels used: {}".format(", ".join(set(labels) - set(self.labelnames))))
 
     def _construct_metric_identifier(self, metricname, labels=None, labelnames=None):
         """
@@ -67,10 +66,10 @@ class Metric(object):
             return metricname
         else:
             named_labels = []
-            for labelname in labelnames or self.labelnames:
+            for labelname in (labelnames or self.labelnames):
                 named_labels.append('{}="{}"'.format(labelname, labels[labelname]))
 
-            return metricname + '{' + ','.join(named_labels) + '}'
+            return metricname + "{" + ",".join(named_labels) + "}"
 
     def _inc_in_redis(self, key, amount, pipeline=None):
         """
@@ -111,7 +110,7 @@ class Counter(Metric):
         Increments Counter by given amount for the labels specified in kwargs.
         """
         if amount < 0:
-            raise ValueError('Counter cannot be increased by negative values.')
+            raise ValueError("Counter cannot be increased by negative values.")
 
         self._check_label_consistency(kwargs)
 
@@ -139,7 +138,7 @@ class Gauge(Metric):
         Increments Gauge by given amount for the labels specified in kwargs.
         """
         if amount < 0:
-            raise ValueError('Amount must be greater than zero. Otherwise use dec().')
+            raise ValueError("Amount must be greater than zero. Otherwise use dec().")
 
         self._check_label_consistency(kwargs)
 
@@ -151,7 +150,7 @@ class Gauge(Metric):
         Decrements Gauge by given amount for the labels specified in kwargs.
         """
         if amount < 0:
-            raise ValueError('Amount must be greater than zero. Otherwise use inc().')
+            raise ValueError("Amount must be greater than zero. Otherwise use inc().")
 
         self._check_label_consistency(kwargs)
 
@@ -164,9 +163,8 @@ class Histogram(Metric):
     Histogram Metric Object
     """
 
-    def __init__(
-        self, name, helpstring, labelnames=None, buckets=(0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.25, 0.5, 0.75, 1.0, 2.5, 5.0, 7.5, 10.0, 30.0, _INF)
-    ):
+    def __init__(self, name, helpstring, labelnames=None,
+                 buckets=(.005, .01, .025, .05, .075, .1, .25, .5, .75, 1.0, 2.5, 5.0, 7.5, 10.0, 30.0, _INF)):
         if list(buckets) != sorted(buckets):
             # This is probably an error on the part of the user,
             # so raise rather than sorting for them.
@@ -186,7 +184,7 @@ class Histogram(Metric):
         Stores a value in the histogram for the labels specified in kwargs.
         """
         if amount < 0:
-            raise ValueError('Amount must be greater than zero. Otherwise use inc().')
+            raise ValueError("Amount must be greater than zero. Otherwise use inc().")
 
         self._check_label_consistency(kwargs)
 
@@ -202,7 +200,8 @@ class Histogram(Metric):
         for i, bound in enumerate(self.buckets):
             if amount <= bound:
                 kwargs_le['le'] = _float_to_go_string(bound)
-                bmetric = self._construct_metric_identifier(self.name + '_bucket', kwargs_le, labelnames=self.labelnames + ['le'])
+                bmetric = self._construct_metric_identifier(self.name + '_bucket', kwargs_le,
+                                                            labelnames=self.labelnames + ["le"])
                 self._inc_in_redis(bmetric, 1, pipeline=pipe)
 
         self._execute_redis_pipeline(pipe)
@@ -230,18 +229,22 @@ def metric_values():
     # Metrics from redis
     if settings.HAS_REDIS:
         for key, value in redis.hscan_iter(REDIS_KEY):
-            dkey = key.decode('utf-8')
-            splitted = dkey.split('{', 2)
-            value = float(value.decode('utf-8'))
-            metrics[splitted[0]]['{' + splitted[1]] = value
+            dkey = key.decode("utf-8")
+            splitted = dkey.split("{", 2)
+            value = float(value.decode("utf-8"))
+            metrics[splitted[0]]["{" + splitted[1]] = value
 
     # Aliases
-    aliases = {'pretix_view_requests_total': 'pretix_view_duration_seconds_count'}
+    aliases = {
+        'pretix_view_requests_total': 'pretix_view_duration_seconds_count'
+    }
     for a, atarget in aliases.items():
         metrics[a] = metrics[atarget]
 
     # Throwaway metrics
-    exact_tables = [Order, OrderPosition, Invoice, Event, Organizer]
+    exact_tables = [
+        Order, OrderPosition, Invoice, Event, Organizer
+    ]
     for m in apps.get_models():  # Count all models
         if any(issubclass(m, p) for p in exact_tables):
             metrics['pretix_model_instances']['{model="%s"}' % m._meta] = m.objects.count()
@@ -267,6 +270,9 @@ def metric_values():
 """
 Provided metrics
 """
-pretix_view_duration_seconds = Histogram('pretix_view_duration_seconds', 'Return time of views.', ['status_code', 'method', 'url_name'])
-pretix_task_runs_total = Counter('pretix_task_runs_total', 'Total calls to a celery task', ['task_name', 'status'])
-pretix_task_duration_seconds = Histogram('pretix_task_duration_seconds', 'Call time of a celery task', ['task_name'])
+pretix_view_duration_seconds = Histogram("pretix_view_duration_seconds", "Return time of views.",
+                                         ["status_code", "method", "url_name"])
+pretix_task_runs_total = Counter("pretix_task_runs_total", "Total calls to a celery task",
+                                 ["task_name", "status"])
+pretix_task_duration_seconds = Histogram("pretix_task_duration_seconds", "Call time of a celery task",
+                                         ["task_name"])

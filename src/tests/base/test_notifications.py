@@ -8,19 +8,17 @@ from django.utils.timezone import now
 from django_scopes import scope
 
 from pretix.base.models import (
-    Event,
-    Item,
-    Order,
-    OrderPosition,
-    Organizer,
-    User,
+    Event, Item, Order, OrderPosition, Organizer, User,
 )
 
 
 @pytest.fixture
 def event():
     o = Organizer.objects.create(name='Dummy', slug='dummy')
-    event = Event.objects.create(organizer=o, name='Dummy', slug='dummy', date_from=now())
+    event = Event.objects.create(
+        organizer=o, name='Dummy', slug='dummy',
+        date_from=now()
+    )
     with scope(organizer=o):
         yield event
 
@@ -28,18 +26,18 @@ def event():
 @pytest.fixture
 def order(event):
     o = Order.objects.create(
-        code='FOO',
-        event=event,
-        email='dummy@dummy.test',
-        status=Order.STATUS_PENDING,
-        locale='en',
-        datetime=now(),
-        expires=now() + timedelta(days=10),
+        code='FOO', event=event, email='dummy@dummy.test',
+        status=Order.STATUS_PENDING, locale='en',
+        datetime=now(), expires=now() + timedelta(days=10),
         total=Decimal('46.00'),
     )
     tr19 = event.tax_rules.create(rate=Decimal('19.00'))
-    ticket = Item.objects.create(event=event, name='Early-bird ticket', tax_rule=tr19, default_price=Decimal('23.00'), admission=True)
-    OrderPosition.objects.create(order=o, item=ticket, variation=None, price=Decimal('23.00'), attendee_name_parts={'full_name': 'Peter'}, positionid=1)
+    ticket = Item.objects.create(event=event, name='Early-bird ticket', tax_rule=tr19,
+                                 default_price=Decimal('23.00'), admission=True)
+    OrderPosition.objects.create(
+        order=o, item=ticket, variation=None,
+        price=Decimal("23.00"), attendee_name_parts={'full_name': "Peter"}, positionid=1
+    )
     return o
 
 
@@ -57,23 +55,27 @@ def user(team):
 
 @pytest.fixture
 def monkeypatch_on_commit(monkeypatch):
-    monkeypatch.setattr('django.db.transaction.on_commit', lambda t: t())
+    monkeypatch.setattr("django.db.transaction.on_commit", lambda t: t())
 
 
 @pytest.mark.django_db
 def test_notification_trigger_event_specific(event, order, user, monkeypatch_on_commit):
     djmail.outbox = []
-    user.notification_settings.create(method='mail', event=event, action_type='pretix.event.order.paid', enabled=True)
+    user.notification_settings.create(
+        method='mail', event=event, action_type='pretix.event.order.paid', enabled=True
+    )
     with transaction.atomic():
         order.log_action('pretix.event.order.paid', {})
     assert len(djmail.outbox) == 1
-    assert djmail.outbox[0].subject.endswith('DUMMY: Order FOO has been marked as paid.')
+    assert djmail.outbox[0].subject.endswith("DUMMY: Order FOO has been marked as paid.")
 
 
 @pytest.mark.django_db
 def test_notification_trigger_global(event, order, user, monkeypatch_on_commit):
     djmail.outbox = []
-    user.notification_settings.create(method='mail', event=None, action_type='pretix.event.order.paid', enabled=True)
+    user.notification_settings.create(
+        method='mail', event=None, action_type='pretix.event.order.paid', enabled=True
+    )
     with transaction.atomic():
         order.log_action('pretix.event.order.paid', {})
     assert len(djmail.outbox) == 1
@@ -82,7 +84,9 @@ def test_notification_trigger_global(event, order, user, monkeypatch_on_commit):
 @pytest.mark.django_db
 def test_notification_trigger_global_wildcard(event, order, user, monkeypatch_on_commit):
     djmail.outbox = []
-    user.notification_settings.create(method='mail', event=None, action_type='pretix.event.order.changed.*', enabled=True)
+    user.notification_settings.create(
+        method='mail', event=None, action_type='pretix.event.order.changed.*', enabled=True
+    )
     with transaction.atomic():
         order.log_action('pretix.event.order.changed.item', {})
     assert len(djmail.outbox) == 1
@@ -91,8 +95,12 @@ def test_notification_trigger_global_wildcard(event, order, user, monkeypatch_on
 @pytest.mark.django_db
 def test_notification_enabled_global_ignored_specific(event, order, user, monkeypatch_on_commit):
     djmail.outbox = []
-    user.notification_settings.create(method='mail', event=None, action_type='pretix.event.order.paid', enabled=True)
-    user.notification_settings.create(method='mail', event=event, action_type='pretix.event.order.paid', enabled=False)
+    user.notification_settings.create(
+        method='mail', event=None, action_type='pretix.event.order.paid', enabled=True
+    )
+    user.notification_settings.create(
+        method='mail', event=event, action_type='pretix.event.order.paid', enabled=False
+    )
     with transaction.atomic():
         order.log_action('pretix.event.order.paid', {})
     assert len(djmail.outbox) == 0
@@ -101,7 +109,9 @@ def test_notification_enabled_global_ignored_specific(event, order, user, monkey
 @pytest.mark.django_db
 def test_notification_ignore_same_user(event, order, user, monkeypatch_on_commit):
     djmail.outbox = []
-    user.notification_settings.create(method='mail', event=event, action_type='pretix.event.order.paid', enabled=True)
+    user.notification_settings.create(
+        method='mail', event=event, action_type='pretix.event.order.paid', enabled=True
+    )
     with transaction.atomic():
         order.log_action('pretix.event.order.paid', {}, user=user)
     assert len(djmail.outbox) == 0
@@ -112,10 +122,11 @@ def test_notification_ignore_insufficient_permissions(event, order, user, team, 
     djmail.outbox = []
     team.can_view_orders = False
     team.save()
-    user.notification_settings.create(method='mail', event=event, action_type='pretix.event.order.paid', enabled=True)
+    user.notification_settings.create(
+        method='mail', event=event, action_type='pretix.event.order.paid', enabled=True
+    )
     with transaction.atomic():
         order.log_action('pretix.event.order.paid', {})
     assert len(djmail.outbox) == 0
-
 
 # TODO: Test email content

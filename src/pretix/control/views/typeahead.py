@@ -13,15 +13,8 @@ from django.utils.timezone import make_aware
 from django.utils.translation import gettext as _, pgettext
 
 from pretix.base.models import (
-    EventMetaProperty,
-    EventMetaValue,
-    ItemMetaProperty,
-    ItemMetaValue,
-    ItemVariation,
-    Order,
-    Organizer,
-    User,
-    Voucher,
+    EventMetaProperty, EventMetaValue, ItemMetaProperty, ItemMetaValue,
+    ItemVariation, Order, Organizer, User, Voucher,
 )
 from pretix.control.forms.event import EventWizardCopyForm
 from pretix.control.permissions import event_permission_required
@@ -30,7 +23,13 @@ from pretix.helpers.i18n import i18ncomp
 
 
 def serialize_user(u):
-    return {'id': u.pk, 'type': 'user', 'name': str(u), 'text': str(u), 'url': reverse('control:index')}
+    return {
+        'id': u.pk,
+        'type': 'user',
+        'name': str(u),
+        'text': str(u),
+        'url': reverse('control:index')
+    }
 
 
 def serialize_orga(o):
@@ -40,7 +39,9 @@ def serialize_orga(o):
         'type': 'organizer',
         'name': str(o.name),
         'text': str(o.name),
-        'url': reverse('control:organizer', kwargs={'organizer': o.slug}),
+        'url': reverse('control:organizer', kwargs={
+            'organizer': o.slug
+        })
     }
 
 
@@ -51,7 +52,10 @@ def serialize_event(e):
             dr = pgettext('subevent', 'No dates')
         else:
             tz = pytz.timezone(e.settings.timezone)
-            dr = _('Series:') + ' ' + daterange(e.min_from.astimezone(tz), (e.max_fromto or e.max_to or e.max_from).astimezone(tz))
+            dr = _('Series:') + ' ' + daterange(
+                e.min_from.astimezone(tz),
+                (e.max_fromto or e.max_to or e.max_from).astimezone(tz)
+            )
     return {
         'id': e.pk,
         'slug': e.slug,
@@ -60,7 +64,10 @@ def serialize_event(e):
         'name': str(e.name),
         'text': str(e.name),
         'date_range': dr,
-        'url': reverse('control:event.index', kwargs={'event': e.slug, 'organizer': e.organizer.slug}),
+        'url': reverse('control:event.index', kwargs={
+            'event': e.slug,
+            'organizer': e.organizer.slug
+        })
     }
 
 
@@ -69,7 +76,11 @@ def serialize_order(o):
         'type': 'order',
         'event': str(o.event),
         'title': _('Order {}').format(str(o.code)),
-        'url': reverse('control:event.order', kwargs={'event': o.event.slug, 'organizer': o.event.organizer.slug, 'code': o.code}),
+        'url': reverse('control:event.order', kwargs={
+            'event': o.event.slug,
+            'organizer': o.event.organizer.slug,
+            'code': o.code
+        })
     }
 
 
@@ -78,7 +89,11 @@ def serialize_voucher(v):
         'type': 'voucher',
         'event': str(v.event),
         'title': _('Voucher {}').format(str(v.code)),
-        'url': reverse('control:event.voucher', kwargs={'event': v.event.slug, 'organizer': v.event.organizer.slug, 'voucher': v.pk}),
+        'url': reverse('control:event.voucher', kwargs={
+            'event': v.event.slug,
+            'organizer': v.event.organizer.slug,
+            'voucher': v.pk
+        })
     }
 
 
@@ -94,28 +109,28 @@ def event_list(request):
     else:
         qs = request.user.get_events_with_any_permission(request)
 
-    qs = (
-        qs.filter(
-            Q(name__icontains=i18ncomp(query)) | Q(slug__icontains=query) | Q(organizer__name__icontains=i18ncomp(query)) | Q(organizer__slug__icontains=query)
-        )
-        .annotate(
-            min_from=Min('subevents__date_from'),
-            max_from=Max('subevents__date_from'),
-            max_to=Max('subevents__date_to'),
-            max_fromto=Greatest(Max('subevents__date_to'), Max('subevents__date_from')),
-        )
-        .annotate(
-            order_from=Coalesce('min_from', 'date_from'),
-        )
-        .order_by('-order_from')
-    )
+    qs = qs.filter(
+        Q(name__icontains=i18ncomp(query)) | Q(slug__icontains=query) |
+        Q(organizer__name__icontains=i18ncomp(query)) | Q(organizer__slug__icontains=query)
+    ).annotate(
+        min_from=Min('subevents__date_from'),
+        max_from=Max('subevents__date_from'),
+        max_to=Max('subevents__date_to'),
+        max_fromto=Greatest(Max('subevents__date_to'), Max('subevents__date_from'))
+    ).annotate(
+        order_from=Coalesce('min_from', 'date_from'),
+    ).order_by('-order_from')
 
     total = qs.count()
     pagesize = 20
     offset = (page - 1) * pagesize
     doc = {
-        'results': [serialize_event(e) for e in qs.select_related('organizer')[offset : offset + pagesize]],
-        'pagination': {'more': total >= (offset + pagesize)},
+        'results': [
+            serialize_event(e) for e in qs.select_related('organizer')[offset:offset + pagesize]
+        ],
+        'pagination': {
+            "more": total >= (offset + pagesize)
+        }
     }
     return JsonResponse(doc)
 
@@ -129,20 +144,16 @@ def nav_context_list(request):
     except ValueError:
         page = 1
 
-    qs_events = (
-        request.user.get_events_with_any_permission(request)
-        .filter(Q(name__icontains=i18ncomp(query)) | Q(slug__icontains=query))
-        .annotate(
-            min_from=Min('subevents__date_from'),
-            max_from=Max('subevents__date_from'),
-            max_to=Max('subevents__date_to'),
-            max_fromto=Greatest(Max('subevents__date_to'), Max('subevents__date_from')),
-        )
-        .annotate(
-            order_from=Coalesce('min_from', 'date_from'),
-        )
-        .order_by('-order_from')
-    )
+    qs_events = request.user.get_events_with_any_permission(request).filter(
+        Q(name__icontains=i18ncomp(query)) | Q(slug__icontains=query)
+    ).annotate(
+        min_from=Min('subevents__date_from'),
+        max_from=Max('subevents__date_from'),
+        max_to=Max('subevents__date_to'),
+        max_fromto=Greatest(Max('subevents__date_to'), Max('subevents__date_from'))
+    ).annotate(
+        order_from=Coalesce('min_from', 'date_from'),
+    ).order_by('-order_from')
 
     if request.user.has_active_staff_session(request.session.session_key):
         qs_orga = Organizer.objects.all()
@@ -152,38 +163,50 @@ def nav_context_list(request):
         qs_orga = qs_orga.filter(Q(name__icontains=query) | Q(slug__icontains=query))
 
     if query:
-        qs_orders = Order.objects.filter(code__icontains=query).select_related('event', 'event__organizer').only('event', 'code', 'pk').order_by()
+        qs_orders = Order.objects.filter(
+            code__icontains=query
+        ).select_related('event', 'event__organizer').only('event', 'code', 'pk').order_by()
         if not request.user.has_active_staff_session(request.session.session_key):
             qs_orders = qs_orders.filter(
-                Q(event__organizer_id__in=request.user.teams.filter(all_events=True, can_view_orders=True).values_list('organizer', flat=True))
-                | Q(event_id__in=request.user.teams.filter(can_view_orders=True).values_list('limit_events__id', flat=True))
+                Q(event__organizer_id__in=request.user.teams.filter(
+                    all_events=True, can_view_orders=True).values_list('organizer', flat=True))
+                | Q(event_id__in=request.user.teams.filter(
+                    can_view_orders=True).values_list('limit_events__id', flat=True))
             )
 
-        qs_vouchers = Voucher.objects.filter(code__icontains=query).select_related('event', 'event__organizer').only('event', 'code', 'pk').order_by()
+        qs_vouchers = Voucher.objects.filter(
+            code__icontains=query
+        ).select_related('event', 'event__organizer').only('event', 'code', 'pk').order_by()
         if not request.user.has_active_staff_session(request.session.session_key):
             qs_vouchers = qs_vouchers.filter(
-                Q(event__organizer_id__in=request.user.teams.filter(all_events=True, can_view_vouchers=True).values_list('organizer', flat=True))
-                | Q(event_id__in=request.user.teams.filter(can_view_vouchers=True).values_list('limit_events__id', flat=True))
+                Q(event__organizer_id__in=request.user.teams.filter(
+                    all_events=True, can_view_vouchers=True).values_list('organizer', flat=True))
+                | Q(event_id__in=request.user.teams.filter(
+                    can_view_vouchers=True).values_list('limit_events__id', flat=True))
             )
     else:
         qs_vouchers = Voucher.objects.none()
         qs_orders = Order.objects.none()
 
-    show_user = (
-        not query
-        or (query and request.user.email and query.lower() in request.user.email.lower())
-        or (query and request.user.fullname and query.lower() in request.user.fullname.lower())
+    show_user = not query or (
+        query and request.user.email and query.lower() in request.user.email.lower()
+    ) or (
+        query and request.user.fullname and query.lower() in request.user.fullname.lower()
     )
     total = qs_events.count() + qs_orga.count()
     pagesize = 20
     offset = (page - 1) * pagesize
-    results = (
-        ([serialize_user(request.user)] if show_user else [])
-        + [serialize_orga(e) for e in qs_orga[offset : offset + (pagesize if query else 5)]]
-        + [serialize_event(e) for e in qs_events.select_related('organizer')[offset : offset + (pagesize if query else 5)]]
-        + [serialize_order(e) for e in qs_orders[offset : offset + (pagesize if query else 5)]]
-        + [serialize_voucher(e) for e in qs_vouchers[offset : offset + (pagesize if query else 5)]]
-    )
+    results = ([
+        serialize_user(request.user)
+    ] if show_user else []) + [
+        serialize_orga(e) for e in qs_orga[offset:offset + (pagesize if query else 5)]
+    ] + [
+        serialize_event(e) for e in qs_events.select_related('organizer')[offset:offset + (pagesize if query else 5)]
+    ] + [
+        serialize_order(e) for e in qs_orders[offset:offset + (pagesize if query else 5)]
+    ] + [
+        serialize_voucher(e) for e in qs_vouchers[offset:offset + (pagesize if query else 5)]
+    ]
 
     if show_user and organizer:
         try:
@@ -197,7 +220,12 @@ def nav_context_list(request):
                     results.remove(organizer)
                 results.insert(1, organizer)
 
-    doc = {'results': results, 'pagination': {'more': total >= (offset + pagesize)}}
+    doc = {
+        'results': results,
+        'pagination': {
+            "more": total >= (offset + pagesize)
+        }
+    }
     return JsonResponse(doc)
 
 
@@ -225,7 +253,9 @@ def subevent_select2(request, **kwargs):
         dt_end = make_aware(datetime.combine(dt.date(), time(hour=23, minute=59, second=59)), tz)
         qf |= Q(date_from__gte=dt_start) & Q(date_from__lte=dt_end)
 
-    qs = request.event.subevents.filter(qf).order_by('-date_from', 'name', 'pk')
+    qs = request.event.subevents.filter(
+        qf
+    ).order_by('-date_from', 'name', 'pk')
 
     total = qs.count()
     pagesize = 20
@@ -235,12 +265,16 @@ def subevent_select2(request, **kwargs):
             {
                 'id': e.pk,
                 'name': str(e.name),
-                'date_range': e.get_date_range_display() + (' ' + date_format(e.date_from.astimezone(tz), 'TIME_FORMAT') if e.settings.show_times else ''),
-                'text': str(e),
+                'date_range': e.get_date_range_display() + (
+                    " " + date_format(e.date_from.astimezone(tz), "TIME_FORMAT") if e.settings.show_times else ""
+                ),
+                'text': str(e)
             }
-            for e in qs[offset : offset + pagesize]
+            for e in qs[offset:offset + pagesize]
         ],
-        'pagination': {'more': total >= (offset + pagesize)},
+        'pagination': {
+            "more": total >= (offset + pagesize)
+        }
     }
     return JsonResponse(doc)
 
@@ -269,14 +303,25 @@ def quotas_select2(request, **kwargs):
         dt_end = make_aware(datetime.combine(dt.date(), time(hour=23, minute=59, second=59)), tz)
         qf |= Q(subevent__date_from__gte=dt_start) & Q(subevent__date_from__lte=dt_end)
 
-    qs = request.event.quotas.filter(qf).order_by('-subevent__date_from', 'name')
+    qs = request.event.quotas.filter(
+        qf
+    ).order_by('-subevent__date_from', 'name')
 
     total = qs.count()
     pagesize = 20
     offset = (page - 1) * pagesize
     doc = {
-        'results': [{'id': q.pk, 'name': str(q.name), 'text': q.name} for q in qs[offset : offset + pagesize]],
-        'pagination': {'more': total >= (offset + pagesize)},
+        'results': [
+            {
+                'id': q.pk,
+                'name': str(q.name),
+                'text': q.name
+            }
+            for q in qs[offset:offset + pagesize]
+        ],
+        'pagination': {
+            "more": total >= (offset + pagesize)
+        }
     }
     return JsonResponse(doc)
 
@@ -289,7 +334,9 @@ def items_select2(request, **kwargs):
     except ValueError:
         page = 1
 
-    qs = request.event.items.filter(name__icontains=i18ncomp(query)).order_by('position')
+    qs = request.event.items.filter(
+        name__icontains=i18ncomp(query)
+    ).order_by('position')
 
     total = qs.count()
     pagesize = 20
@@ -300,9 +347,11 @@ def items_select2(request, **kwargs):
                 'id': e.pk,
                 'text': str(e),
             }
-            for e in qs[offset : offset + pagesize]
+            for e in qs[offset:offset + pagesize]
         ],
-        'pagination': {'more': total >= (offset + pagesize)},
+        'pagination': {
+            "more": total >= (offset + pagesize)
+        }
     }
     return JsonResponse(doc)
 
@@ -328,11 +377,13 @@ def variations_select2(request, **kwargs):
         'results': [
             {
                 'id': e.pk,
-                'text': str(e.item) + ' – ' + str(e),
+                'text': str(e.item) + " – " + str(e),
             }
-            for e in qs[offset : offset + pagesize]
+            for e in qs[offset:offset + pagesize]
         ],
-        'pagination': {'more': total >= (offset + pagesize)},
+        'pagination': {
+            "more": total >= (offset + pagesize)
+        }
     }
     return JsonResponse(doc)
 
@@ -345,7 +396,9 @@ def category_select2(request, **kwargs):
     except ValueError:
         page = 1
 
-    qs = request.event.categories.filter(name__icontains=i18ncomp(query)).order_by('name')
+    qs = request.event.categories.filter(
+        name__icontains=i18ncomp(query)
+    ).order_by('name')
 
     total = qs.count()
     pagesize = 20
@@ -356,9 +409,11 @@ def category_select2(request, **kwargs):
                 'id': e.pk,
                 'text': str(e),
             }
-            for e in qs[offset : offset + pagesize]
+            for e in qs[offset:offset + pagesize]
         ],
-        'pagination': {'more': total >= (offset + pagesize)},
+        'pagination': {
+            "more": total >= (offset + pagesize)
+        }
     }
     return JsonResponse(doc)
 
@@ -384,7 +439,9 @@ def checkinlist_select2(request, **kwargs):
             dt_end = make_aware(datetime.combine(dt.date(), time(hour=23, minute=59, second=59)), tz)
             qf |= Q(subevent__date_from__gte=dt_start) & Q(subevent__date_from__lte=dt_end)
 
-    qs = request.event.checkin_lists.select_related('subevent').filter(qf).order_by('name')
+    qs = request.event.checkin_lists.select_related('subevent').filter(
+        qf
+    ).order_by('name')
 
     total = qs.count()
     pagesize = 20
@@ -396,9 +453,11 @@ def checkinlist_select2(request, **kwargs):
                 'text': str(e.name),
                 'event': str(e.subevent) if request.event.has_subevents and e.subevent else None,
             }
-            for e in qs[offset : offset + pagesize]
+            for e in qs[offset:offset + pagesize]
         ],
-        'pagination': {'more': total >= (offset + pagesize)},
+        'pagination': {
+            "more": total >= (offset + pagesize)
+        }
     }
     return JsonResponse(doc)
 
@@ -434,19 +493,23 @@ def itemvarquota_select2(request, **kwargs):
                     dt_end = make_aware(datetime.combine(dt.date(), time(hour=23, minute=59, second=59)), tz)
                     quotaf |= Q(subevent__date_from__gte=dt_start) & Q(subevent__date_from__lte=dt_end)
 
-            itemqs = request.event.items.prefetch_related('variations').filter(Q(name__icontains=i18ncomp(query)) | Q(internal_name__icontains=query))
+            itemqs = request.event.items.prefetch_related('variations').filter(
+                Q(name__icontains=i18ncomp(query)) | Q(internal_name__icontains=query)
+            )
             quotaqs = request.event.quotas.filter(quotaf).select_related('subevent')
             more = False
         else:
             if page == 1:
-                itemqs = request.event.items.prefetch_related('variations').filter(Q(name__icontains=i18ncomp(query)) | Q(internal_name__icontains=query))
+                itemqs = request.event.items.prefetch_related('variations').filter(
+                    Q(name__icontains=i18ncomp(query)) | Q(internal_name__icontains=query)
+                )
             else:
                 itemqs = request.event.items.none()
             quotaqs = request.event.quotas.filter(name__icontains=query).select_related('subevent')
             total = quotaqs.count()
             pagesize = 20
             offset = (page - 1) * pagesize
-            quotaqs = quotaqs[offset : offset + pagesize]
+            quotaqs = quotaqs[offset:offset + pagesize]
             more = total >= (offset + pagesize)
 
     for i in itemqs:
@@ -459,7 +522,10 @@ def itemvarquota_select2(request, **kwargs):
             choices.append((str(i.pk), str(i), ''))
     for q in quotaqs:
         if request.event.has_subevents:
-            choices.append(('q-%d' % q.pk, _('Any product in quota "{quota}"').format(quota=q), str(q.subevent)))
+            choices.append(('q-%d' % q.pk,
+                            _('Any product in quota "{quota}"').format(
+                                quota=q
+                            ), str(q.subevent)))
         else:
             choices.append(('q-%d' % q.pk, _('Any product in quota "{quota}"').format(quota=q), ''))
 
@@ -472,7 +538,9 @@ def itemvarquota_select2(request, **kwargs):
             }
             for k, v, t in choices
         ],
-        'pagination': {'more': more},
+        'pagination': {
+            "more": more
+        }
     }
     return JsonResponse(doc)
 
@@ -496,7 +564,17 @@ def organizer_select2(request):
     pagesize = 20
     offset = (page - 1) * pagesize
 
-    doc = {'results': [{'id': o.pk, 'text': str(o.name)} for o in qs[offset : offset + pagesize]], 'pagination': {'more': total >= (offset + pagesize)}}
+    doc = {
+        "results": [
+            {
+                'id': o.pk,
+                'text': str(o.name)
+            } for o in qs[offset:offset + pagesize]
+        ],
+        "pagination": {
+            "more": total >= (offset + pagesize)
+        }
+    }
 
     return JsonResponse(doc)
 
@@ -518,7 +596,17 @@ def users_select2(request):
     pagesize = 20
     offset = (page - 1) * pagesize
 
-    doc = {'results': [{'id': o.pk, 'text': str(o.email)} for o in qs[offset : offset + pagesize]], 'pagination': {'more': total >= (offset + pagesize)}}
+    doc = {
+        "results": [
+            {
+                'id': o.pk,
+                'text': str(o.email)
+            } for o in qs[offset:offset + pagesize]
+        ],
+        "pagination": {
+            "more": total >= (offset + pagesize)
+        }
+    }
 
     return JsonResponse(doc)
 
@@ -528,8 +616,14 @@ def meta_values(request):
     propname = request.GET.get('property')
     organizer = request.GET.get('organizer')
 
-    matches = EventMetaValue.objects.filter(value__icontains=q, property__name=propname)
-    defaults = EventMetaProperty.objects.filter(name=propname, default__icontains=q)
+    matches = EventMetaValue.objects.filter(
+        value__icontains=q,
+        property__name=propname
+    )
+    defaults = EventMetaProperty.objects.filter(
+        name=propname,
+        default__icontains=q
+    )
 
     if organizer:
         organizer = get_object_or_404(Organizer, slug=organizer)
@@ -538,9 +632,10 @@ def meta_values(request):
 
         defaults = defaults.filter(organizer_id=organizer.pk)
         matches = matches.filter(event__organizer_id=organizer.pk)
-        all_access = (request and request.user.has_active_staff_session(request.session.session_key)) or request.user.teams.filter(
-            all_events=True, organizer=organizer
-        ).exists()
+        all_access = (
+            (request and request.user.has_active_staff_session(request.session.session_key))
+            or request.user.teams.filter(all_events=True, organizer=organizer).exists()
+        )
         if not all_access:
             matches = matches.filter(event__id__in=request.user.teams.values_list('limit_events__id', flat=True))
 
@@ -557,21 +652,26 @@ def meta_values(request):
                 | Q(event__id__in=request.user.teams.values_list('limit_events__id', flat=True))
             )
 
-    return JsonResponse(
-        {
-            'results': [
-                {'name': v, 'id': v} for v in sorted(set(defaults.values_list('default', flat=True)[:10]) | set(matches.values_list('value', flat=True)[:10]))
-            ]
-        }
-    )
+    return JsonResponse({
+        'results': [
+            {'name': v, 'id': v}
+            for v in sorted(set(defaults.values_list('default', flat=True)[:10]) | set(matches.values_list('value', flat=True)[:10]))
+        ]
+    })
 
 
 def item_meta_values(request, organizer, event):
     q = request.GET.get('q')
     propname = request.GET.get('property')
 
-    matches = ItemMetaValue.objects.filter(value__icontains=q, property__name=propname)
-    defaults = ItemMetaProperty.objects.filter(name=propname, default__icontains=q)
+    matches = ItemMetaValue.objects.filter(
+        value__icontains=q,
+        property__name=propname
+    )
+    defaults = ItemMetaProperty.objects.filter(
+        name=propname,
+        default__icontains=q
+    )
 
     organizer = get_object_or_404(Organizer, slug=organizer)
     if not request.user.has_organizer_permission(organizer, request=request):
@@ -584,13 +684,20 @@ def item_meta_values(request, organizer, event):
         or request.user.teams.filter(all_events=True, organizer=organizer, can_change_items=True).exists()
     )
     if not all_access:
-        defaults = matches.filter(event__id__in=request.user.teams.filter(can_change_items=True).values_list('limit_events__id', flat=True))
-        matches = matches.filter(item__event__id__in=request.user.teams.filter(can_change_items=True).values_list('limit_events__id', flat=True))
+        defaults = matches.filter(
+            event__id__in=request.user.teams.filter(can_change_items=True).values_list(
+                'limit_events__id', flat=True
+            )
+        )
+        matches = matches.filter(
+            item__event__id__in=request.user.teams.filter(can_change_items=True).values_list(
+                'limit_events__id', flat=True
+            )
+        )
 
-    return JsonResponse(
-        {
-            'results': [
-                {'name': v, 'id': v} for v in sorted(set(defaults.values_list('default', flat=True)[:10]) | set(matches.values_list('value', flat=True)[:10]))
-            ]
-        }
-    )
+    return JsonResponse({
+        'results': [
+            {'name': v, 'id': v}
+            for v in sorted(set(defaults.values_list('default', flat=True)[:10]) | set(matches.values_list('value', flat=True)[:10]))
+        ]
+    })

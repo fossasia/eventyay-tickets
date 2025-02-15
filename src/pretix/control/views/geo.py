@@ -17,7 +17,10 @@ class GeoCodeView(LoginRequiredMixin, View):
         q = self.request.GET.get('q')
         cd = cache.get('geocode:{}'.format(q))
         if cd:
-            return JsonResponse({'success': True, 'results': cd}, status=200)
+            return JsonResponse({
+                'success': True,
+                'results': cd
+            }, status=200)
 
         gs = GlobalSettingsObject()
         try:
@@ -26,18 +29,31 @@ class GeoCodeView(LoginRequiredMixin, View):
             elif gs.settings.mapquest_apikey:
                 res = self._use_mapquest(q)
             else:
-                return JsonResponse({'success': False, 'results': []}, status=200)
+                return JsonResponse({
+                    'success': False,
+                    'results': []
+                }, status=200)
         except IOError:
-            logger.exception('Geocoding failed')
-            return JsonResponse({'success': False, 'results': []}, status=200)
+            logger.exception("Geocoding failed")
+            return JsonResponse({
+                'success': False,
+                'results': []
+            }, status=200)
 
         cache.set('geocode:{}'.format(q), res, timeout=3600 * 6)
-        return JsonResponse({'success': True, 'results': res}, status=200)
+        return JsonResponse({
+            'success': True,
+            'results': res
+        }, status=200)
 
     def _use_opencage(self, q):
         gs = GlobalSettingsObject()
 
-        r = requests.get('https://api.opencagedata.com/geocode/v1/json?q={}&key={}'.format(quote(q), gs.settings.opencagedata_apikey))
+        r = requests.get(
+            'https://api.opencagedata.com/geocode/v1/json?q={}&key={}'.format(
+                quote(q), gs.settings.opencagedata_apikey
+            )
+        )
         r.raise_for_status()
         d = r.json()
         res = [
@@ -45,15 +61,18 @@ class GeoCodeView(LoginRequiredMixin, View):
                 'formatted': r['formatted'],
                 'lat': r['geometry']['lat'],
                 'lon': r['geometry']['lng'],
-            }
-            for r in d['results']
+            } for r in d['results']
         ]
         return res
 
     def _use_mapquest(self, q):
         gs = GlobalSettingsObject()
 
-        r = requests.get('https://www.mapquestapi.com/geocoding/v1/address?location={}&key={}'.format(quote(q), gs.settings.mapquest_apikey))
+        r = requests.get(
+            'https://www.mapquestapi.com/geocoding/v1/address?location={}&key={}'.format(
+                quote(q), gs.settings.mapquest_apikey
+            )
+        )
         r.raise_for_status()
         d = r.json()
         res = [
@@ -61,7 +80,6 @@ class GeoCodeView(LoginRequiredMixin, View):
                 'formatted': q,
                 'lat': r['locations'][0]['latLng']['lat'],
                 'lon': r['locations'][0]['latLng']['lng'],
-            }
-            for r in d['results']
+            } for r in d['results']
         ]
         return res

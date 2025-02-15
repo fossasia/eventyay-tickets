@@ -10,63 +10,68 @@ import pretix.base.models.base
 
 
 class Migration(migrations.Migration):
+
     dependencies = [
         (
-            'pretixbase',
-            '0003_alter_cachedcombinedticket_id_alter_cachedticket_id_and_more',
+            "pretixbase",
+            "0003_alter_cachedcombinedticket_id_alter_cachedticket_id_and_more",
         ),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='BillingInvoice',
+            name="BillingInvoice",
             fields=[
                 (
-                    'id',
-                    models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False
+                    ),
                 ),
-                ('status', models.CharField(default='n', max_length=1)),
-                ('amount', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('currency', models.CharField(max_length=3)),
-                ('ticket_fee', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('payment_method', models.CharField(max_length=20, null=True)),
-                ('paid_datetime', models.DateTimeField(blank=True, null=True)),
-                ('note', models.TextField(null=True)),
-                ('monthly_bill', models.DateField(default=datetime.date.today)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('created_by', models.CharField(max_length=50)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('updated_by', models.CharField(max_length=50)),
-                ('last_reminder_datetime', models.DateTimeField(blank=True, null=True)),
-                ('next_reminder_datetime', models.DateTimeField(blank=True, null=True)),
+                ("status", models.CharField(default="n", max_length=1)),
+                ("amount", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("currency", models.CharField(max_length=3)),
+                ("ticket_fee", models.DecimalField(decimal_places=2, max_digits=10)),
+                ("payment_method", models.CharField(max_length=20, null=True)),
+                ("paid_datetime", models.DateTimeField(blank=True, null=True)),
+                ("note", models.TextField(null=True)),
+                ("monthly_bill", models.DateField(default=datetime.date.today)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("created_by", models.CharField(max_length=50)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("updated_by", models.CharField(max_length=50)),
+                ("last_reminder_datetime", models.DateTimeField(blank=True, null=True)),
+                ("next_reminder_datetime", models.DateTimeField(blank=True, null=True)),
                 (
-                    'reminder_schedule',
-                    django.contrib.postgres.fields.ArrayField(base_field=models.IntegerField(), default=list, size=None),
+                    "reminder_schedule",
+                    django.contrib.postgres.fields.ArrayField(
+                        base_field=models.IntegerField(), default=list, size=None
+                    ),
                 ),
-                ('reminder_enabled', models.BooleanField(default=True)),
+                ("reminder_enabled", models.BooleanField(default=True)),
                 (
-                    'stripe_payment_intent_id',
+                    "stripe_payment_intent_id",
                     models.CharField(max_length=50, null=True),
                 ),
                 (
-                    'event',
+                    "event",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to='pretixbase.event',
+                        to="pretixbase.event",
                     ),
                 ),
                 (
-                    'organizer',
+                    "organizer",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to='pretixbase.organizer',
+                        to="pretixbase.organizer",
                     ),
                 ),
             ],
             options={
-                'verbose_name': 'Billing Invoice',
-                'verbose_name_plural': 'Billing Invoices',
-                'ordering': ('-created_at',),
+                "verbose_name": "Billing Invoice",
+                "verbose_name_plural": "Billing Invoices",
+                "ordering": ("-created_at",),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),

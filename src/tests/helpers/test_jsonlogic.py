@@ -10,15 +10,15 @@ with open(os.path.join(os.path.dirname(__file__), 'jsonlogic-tests.json'), 'r') 
     params = [r for r in data if isinstance(r, list)]
 
 params += [
-    ({'==': [True, True]}, {}, True),
-    ({'==': [True, False]}, {}, False),
-    ({'<': [0, 'foo']}, {}, False),
-    ({'+': [3.4, '0.1']}, {}, 3.5),
-    ({'missing_some': [0, {'var': ''}]}, {}, []),
+    ({"==": [True, True]}, {}, True),
+    ({"==": [True, False]}, {}, False),
+    ({"<": [0, "foo"]}, {}, False),
+    ({"+": [3.4, "0.1"]}, {}, 3.5),
+    ({"missing_some": [0, {'var': ''}]}, {}, []),
 ]
 
 
-@pytest.mark.parametrize('logic,data,expected', params)
+@pytest.mark.parametrize("logic,data,expected", params)
 def test_shared_tests(logic, data, expected):
     assert Logic().apply(logic, data) == expected
 

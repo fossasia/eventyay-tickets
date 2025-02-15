@@ -4,10 +4,7 @@ from typing import List
 from django.core.files.base import ContentFile
 
 from pretix.base.models import (
-    CachedFile,
-    Event,
-    OrderPosition,
-    cachedfile_name,
+    CachedFile, Event, OrderPosition, cachedfile_name,
 )
 from pretix.base.services.orders import OrderError
 from pretix.base.services.tasks import EventTask

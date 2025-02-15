@@ -16,28 +16,28 @@ def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
         return []
     nav = [
         {
-            'label': _('Dashboard'),
-            'url': reverse('eventyay_common:dashboard'),
-            'active': (url.url_name == 'dashboard'),
-            'icon': 'dashboard',
+            "label": _("Dashboard"),
+            "url": reverse("eventyay_common:dashboard"),
+            "active": (url.url_name == "dashboard"),
+            "icon": "dashboard",
         },
         {
-            'label': _('My Events'),
-            'url': reverse('eventyay_common:events'),
-            'active': 'events' in url.url_name,
-            'icon': 'calendar',
+            "label": _("My Events"),
+            "url": reverse("eventyay_common:events"),
+            "active": "events" in url.url_name,
+            "icon": "calendar",
         },
         {
-            'label': _('Organizers'),
-            'url': reverse('eventyay_common:organizers'),
-            'active': 'organizers' in url.url_name,
-            'icon': 'group',
+            "label": _("Organizers"),
+            "url": reverse("eventyay_common:organizers"),
+            "active": "organizers" in url.url_name,
+            "icon": "group",
         },
         {
-            'label': _('Account'),
-            'url': reverse('eventyay_common:account'),
-            'active': 'account' in url.url_name,
-            'icon': 'user',
+            "label": _("Account"),
+            "url": reverse("eventyay_common:account"),
+            "active": "account" in url.url_name,
+            "icon": "user",
         },
     ]
 
@@ -49,7 +49,9 @@ def get_global_navigation(request: HttpRequest) -> List[Dict[str, Any]]:
             plugin_nav_items.extend(response)
 
     # Sort navigation items, prioritizing non-parent items and alphabetically
-    sorted_plugin_items = sorted(plugin_nav_items, key=lambda r: (1 if r.get('parent') else 0, r['label']))
+    sorted_plugin_items = sorted(
+        plugin_nav_items, key=lambda r: (1 if r.get("parent") else 0, r["label"])
+    )
 
     # Merge plugin items into default navigation
     merge_in(nav, sorted_plugin_items)
@@ -64,28 +66,28 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[Dict[str, A
         return []
     nav = [
         {
-            'label': _('Dashboard'),
-            'url': reverse(
-                'eventyay_common:event.index',
+            "label": _("Dashboard"),
+            "url": reverse(
+                "eventyay_common:event.index",
                 kwargs={
-                    'event': event.slug,
-                    'organizer': event.organizer.slug,
+                    "event": event.slug,
+                    "organizer": event.organizer.slug,
                 },
             ),
-            'active': (url.url_name == 'event.index'),
-            'icon': 'dashboard',
+            "active": (url.url_name == "event.index"),
+            "icon": "dashboard",
         },
         {
-            'label': _('Settings'),
-            'url': reverse(
-                'eventyay_common:event.update',
+            "label": _("Settings"),
+            "url": reverse(
+                "eventyay_common:event.update",
                 kwargs={
-                    'event': event.slug,
-                    'organizer': event.organizer.slug,
+                    "event": event.slug,
+                    "organizer": event.organizer.slug,
                 },
             ),
-            'active': (url.url_name == 'event.update'),
-            'icon': 'wrench',
+            "active": (url.url_name == "event.update"),
+            "icon": "wrench",
         },
     ]
 
@@ -97,7 +99,9 @@ def get_event_navigation(request: HttpRequest, event: Event) -> List[Dict[str, A
             plugin_nav_items.extend(response)
 
     # Sort navigation items, prioritizing non-parent items and alphabetically
-    sorted_plugin_items = sorted(plugin_nav_items, key=lambda r: (1 if r.get('parent') else 0, r['label']))
+    sorted_plugin_items = sorted(
+        plugin_nav_items, key=lambda r: (1 if r.get("parent") else 0, r["label"])
+    )
 
     # Merge plugin items into default navigation
     merge_in(nav, sorted_plugin_items)

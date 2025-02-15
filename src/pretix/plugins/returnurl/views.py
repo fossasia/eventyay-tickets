@@ -5,15 +5,14 @@ from django.utils.translation import gettext_lazy as _
 from pretix.base.forms import SettingsForm
 from pretix.base.models import Event
 from pretix.control.views.event import (
-    EventSettingsFormView,
-    EventSettingsViewMixin,
+    EventSettingsFormView, EventSettingsViewMixin,
 )
 
 
 class ReturnSettingsForm(SettingsForm):
     returnurl_prefix = forms.URLField(
-        label=_('Base redirection URL'),
-        help_text=_('Redirection will only be allowed to URLs that start with this prefix.'),
+        label=_("Base redirection URL"),
+        help_text=_("Redirection will only be allowed to URLs that start with this prefix."),
         required=False,
     )
 
@@ -25,4 +24,7 @@ class ReturnSettings(EventSettingsViewMixin, EventSettingsFormView):
     permission = 'can_change_settings'
 
     def get_success_url(self) -> str:
-        return reverse('plugins:returnurl:settings', kwargs={'organizer': self.request.event.organizer.slug, 'event': self.request.event.slug})
+        return reverse('plugins:returnurl:settings', kwargs={
+            'organizer': self.request.event.organizer.slug,
+            'event': self.request.event.slug
+        })

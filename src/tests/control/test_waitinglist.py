@@ -5,14 +5,7 @@ from django.utils.timezone import now
 from django_scopes import scopes_disabled
 
 from pretix.base.models import (
-    Event,
-    Item,
-    Organizer,
-    Quota,
-    Team,
-    User,
-    Voucher,
-    WaitingListEntry,
+    Event, Item, Organizer, Quota, Team, User, Voucher, WaitingListEntry,
 )
 from pretix.control.views.dashboards import waitinglist_widgets
 
@@ -20,20 +13,33 @@ from pretix.control.views.dashboards import waitinglist_widgets
 @pytest.fixture
 def env():
     o = Organizer.objects.create(name='Dummy', slug='dummy')
-    event = Event.objects.create(organizer=o, name='Dummy', slug='dummy', date_from=now(), plugins='pretix.plugins.banktransfer,tests.testdummy')
+    event = Event.objects.create(
+        organizer=o, name='Dummy', slug='dummy',
+        date_from=now(), plugins='pretix.plugins.banktransfer,tests.testdummy'
+    )
     event.settings.set('ticketoutput_testdummy__enabled', True)
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
-    item1 = Item.objects.create(event=event, name='Ticket', default_price=23, admission=True)
-    item2 = Item.objects.create(event=event, name='Ticket', default_price=23, admission=True)
+    item1 = Item.objects.create(event=event, name="Ticket", default_price=23,
+                                admission=True)
+    item2 = Item.objects.create(event=event, name="Ticket", default_price=23,
+                                admission=True)
 
     for i in range(5):
-        WaitingListEntry.objects.create(event=event, item=item1, email='foo{}@bar.com'.format(i))
+        WaitingListEntry.objects.create(
+            event=event, item=item1, email='foo{}@bar.com'.format(i)
+        )
     v = Voucher.objects.create(item=item1, event=event, block_quota=True, redeemed=1)
-    WaitingListEntry.objects.create(event=event, item=item1, email='success@example.org', voucher=v)
+    WaitingListEntry.objects.create(
+        event=event, item=item1, email='success@example.org', voucher=v
+    )
     v = Voucher.objects.create(item=item1, event=event, block_quota=True, redeemed=0, valid_until=now() - timedelta(days=5))
-    WaitingListEntry.objects.create(event=event, item=item2, email='expired@example.org', voucher=v)
+    WaitingListEntry.objects.create(
+        event=event, item=item2, email='expired@example.org', voucher=v
+    )
     v = Voucher.objects.create(item=item1, event=event, block_quota=True, redeemed=0, valid_until=now() + timedelta(days=5))
-    WaitingListEntry.objects.create(event=event, item=item2, email='valid@example.org', voucher=v)
+    WaitingListEntry.objects.create(
+        event=event, item=item2, email='valid@example.org', voucher=v
+    )
 
     t = Team.objects.create(organizer=o, can_view_orders=True, can_change_orders=True)
     t.members.add(user)
@@ -93,7 +99,9 @@ def test_assign_single(client, env):
     with scopes_disabled():
         wle = WaitingListEntry.objects.filter(voucher__isnull=True).last()
 
-    client.post('/control/event/dummy/dummy/waitinglist/', {'assign': wle.pk})
+    client.post('/control/event/dummy/dummy/waitinglist/', {
+        'assign': wle.pk
+    })
     wle.refresh_from_db()
     assert wle.voucher
 
@@ -105,13 +113,19 @@ def test_priority_single(client, env):
         wle = WaitingListEntry.objects.filter(voucher__isnull=True).last()
     assert wle.priority == 0
 
-    client.post('/control/event/dummy/dummy/waitinglist/', {'move_top': wle.pk})
+    client.post('/control/event/dummy/dummy/waitinglist/', {
+        'move_top': wle.pk
+    })
     wle.refresh_from_db()
     assert wle.priority == 1
-    client.post('/control/event/dummy/dummy/waitinglist/', {'move_top': wle.pk})
+    client.post('/control/event/dummy/dummy/waitinglist/', {
+        'move_top': wle.pk
+    })
     wle.refresh_from_db()
     assert wle.priority == 2
-    client.post('/control/event/dummy/dummy/waitinglist/', {'move_end': wle.pk})
+    client.post('/control/event/dummy/dummy/waitinglist/', {
+        'move_end': wle.pk
+    })
     wle.refresh_from_db()
     assert wle.priority == -1
 
@@ -131,7 +145,7 @@ def test_delete_single(client, env):
 @pytest.mark.django_db
 def test_dashboard(client, env):
     with scopes_disabled():
-        quota = Quota.objects.create(name='Test', size=2, event=env[0])
+        quota = Quota.objects.create(name="Test", size=2, event=env[0])
         quota.items.add(env[3])
         w = waitinglist_widgets(env[0])
     assert '1' in w[0]['content']

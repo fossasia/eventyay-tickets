@@ -4,7 +4,7 @@ General settings
 At "Settings" → "Payment", you can configure every aspect related to the payments you want to accept. The "Deadline"
 and "Advanced" tabs of the page show a number of general settings that affect all payment methods:
 
-.. image:: ../../screens/event/settings_payment.png
+.. thumbnail:: ../../screens/event/settings_payment.png
    :align: center
    :class: screenshot
 

@@ -1,4 +1,4 @@
-.. spelling:word-list::
+.. spelling::
    Analytics
 
 List of plugins

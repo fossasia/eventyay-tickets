@@ -22,9 +22,9 @@ def parse(data, hint):
             # Wrong column count
             continue
         if hint.get('payer') is not None:
-            resrow['payer'] = '\n'.join([row[int(i)].strip() for i in hint.get('payer')]).strip()
+            resrow['payer'] = "\n".join([row[int(i)].strip() for i in hint.get('payer')]).strip()
         if hint.get('reference') is not None:
-            resrow['reference'] = '\n'.join([row[int(i)].strip() for i in hint.get('reference')]).strip()
+            resrow['reference'] = "\n".join([row[int(i)].strip() for i in hint.get('reference')]).strip()
         if hint.get('amount') is not None:
             resrow['amount'] = row[int(hint.get('amount'))].strip()
             resrow['amount'] = re.sub('[^0-9,+.-]', '', resrow['amount'])
@@ -48,7 +48,6 @@ def get_rows_from_file(file):
     data = file.read()
     try:
         import chardet
-
         charset = chardet.detect(data)['encoding']
     except ImportError:
         charset = file.charset
@@ -62,19 +61,19 @@ def get_rows_from_file(file):
     # See also: http://bugs.python.org/issue2078
     last_e = None
     dialect = None
-    for line in data.split('\n'):
+    for line in data.split("\n"):
         line = line.strip()
         if len(line) == 0:
             continue
         try:
-            dialect = csv.Sniffer().sniff(line, delimiters=';,.#:')
+            dialect = csv.Sniffer().sniff(line, delimiters=";,.#:")
         except Exception as e:
             last_e = e
         else:
             last_e = None
             break
     if dialect is None:
-        raise last_e or csv.Error('No dialect detected')
+        raise last_e or csv.Error("No dialect detected")
     reader = csv.reader(io.StringIO(data), dialect)
     rows = []
     for row in reader:

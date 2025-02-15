@@ -2,7 +2,7 @@
 
 .. _`config`:
 
-.. spelling:word-list:: Galera
+.. spelling:: Galera
 
 Configuration file
 ==================

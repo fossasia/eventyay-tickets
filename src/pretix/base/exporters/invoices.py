@@ -21,62 +21,48 @@ from ..exporter import BaseExporter, MultiSheetListExporter
 from ..services.export import ExportError
 from ..services.invoices import invoice_pdf_task
 from ..signals import (
-    register_data_exporters,
-    register_multievent_data_exporters,
+    register_data_exporters, register_multievent_data_exporters,
 )
 
 
 class InvoiceExporterMixin:
+
     @property
     def invoice_exporter_form_fields(self):
         return OrderedDict(
             [
-                (
-                    'date_from',
-                    forms.DateField(
-                        label=_('Start date'),
-                        widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
-                        required=False,
-                        help_text=_(
-                            'Only include invoices issued on or after this date. Note that the invoice date does '
-                            'not always correspond to the order or payment date.'
-                        ),
-                    ),
-                ),
-                (
-                    'date_to',
-                    forms.DateField(
-                        label=_('End date'),
-                        widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
-                        required=False,
-                        help_text=_(
-                            'Only include invoices issued on or before this date. Note that the invoice date '
-                            'does not always correspond to the order or payment date.'
-                        ),
-                    ),
-                ),
-                (
-                    'payment_provider',
-                    forms.ChoiceField(
-                        label=_('Payment provider'),
-                        choices=[
-                            ('', _('All payment providers')),
-                        ]
-                        + get_all_payment_providers()
-                        if self.is_multievent
-                        else [
-                            ('', _('All payment providers')),
-                        ]
-                        + [(k, v.verbose_name) for k, v in self.event.get_payment_providers().items()],
-                        required=False,
-                        help_text=_(
-                            'Only include invoices for orders that have at least one payment attempt '
-                            'with this payment provider. '
-                            'Note that this might include some invoices of orders which in the end have been '
-                            'fully or partially paid with a different provider.'
-                        ),
-                    ),
-                ),
+                ('date_from',
+                 forms.DateField(
+                     label=_('Start date'),
+                     widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
+                     required=False,
+                     help_text=_('Only include invoices issued on or after this date. Note that the invoice date does '
+                                 'not always correspond to the order or payment date.')
+                 )),
+                ('date_to',
+                 forms.DateField(
+                     label=_('End date'),
+                     widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
+                     required=False,
+                     help_text=_('Only include invoices issued on or before this date. Note that the invoice date '
+                                 'does not always correspond to the order or payment date.')
+                 )),
+                ('payment_provider',
+                 forms.ChoiceField(
+                     label=_('Payment provider'),
+                     choices=[
+                         ('', _('All payment providers')),
+                     ] + get_all_payment_providers() if self.is_multievent else [
+                         ('', _('All payment providers')),
+                     ] + [
+                         (k, v.verbose_name) for k, v in self.event.get_payment_providers().items()
+                     ],
+                     required=False,
+                     help_text=_('Only include invoices for orders that have at least one payment attempt '
+                                 'with this payment provider. '
+                                 'Note that this might include some invoices of orders which in the end have been '
+                                 'fully or partially paid with a different provider.')
+                 )),
             ]
         )
 
@@ -85,7 +71,11 @@ class InvoiceExporterMixin:
 
         if form_data.get('payment_provider'):
             qs = qs.annotate(
-                has_payment_with_provider=Exists(OrderPayment.objects.filter(Q(order=OuterRef('order_id')) & Q(provider=form_data.get('payment_provider'))))
+                has_payment_with_provider=Exists(
+                    OrderPayment.objects.filter(
+                        Q(order=OuterRef('order_id')) & Q(provider=form_data.get('payment_provider'))
+                    )
+                )
             )
             qs = qs.filter(has_payment_with_provider=1)
         if form_data.get('date_from'):
@@ -205,38 +195,35 @@ class InvoiceDataExporter(InvoiceExporterMixin, MultiSheetListExporter):
                 _('Payment providers'),
             ]
 
-            p_providers = (
-                OrderPayment.objects.filter(
-                    order=OuterRef('order'),
-                    state__in=(
-                        OrderPayment.PAYMENT_STATE_CONFIRMED,
-                        OrderPayment.PAYMENT_STATE_REFUNDED,
-                        OrderPayment.PAYMENT_STATE_PENDING,
-                        OrderPayment.PAYMENT_STATE_CREATED,
-                    ),
-                )
-                .values('order')
-                .annotate(m=GroupConcat('provider', delimiter=','))
-                .values('m')
-                .order_by()
-            )
+            p_providers = OrderPayment.objects.filter(
+                order=OuterRef('order'),
+                state__in=(OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_REFUNDED,
+                           OrderPayment.PAYMENT_STATE_PENDING, OrderPayment.PAYMENT_STATE_CREATED),
+            ).values('order').annotate(
+                m=GroupConcat('provider', delimiter=',')
+            ).values(
+                'm'
+            ).order_by()
 
-            base_qs = self.invoices_queryset(form_data)
-            qs = (
-                base_qs.select_related('order', 'refers')
-                .prefetch_related('order__payments')
-                .annotate(
-                    payment_providers=Subquery(p_providers, output_field=CharField()),
-                    total_gross=Subquery(
-                        InvoiceLine.objects.filter(invoice=OuterRef('pk')).order_by().values('invoice').annotate(s=Sum('gross_value')).values('s')
-                    ),
-                    total_net=Subquery(
-                        InvoiceLine.objects.filter(invoice=OuterRef('pk'))
-                        .order_by()
-                        .values('invoice')
-                        .annotate(s=Sum(F('gross_value') - F('tax_value')))
-                        .values('s')
-                    ),
+            base_qs = self.invoices_queryset(form_data)\
+
+            qs = base_qs.select_related(
+                'order', 'refers'
+            ).prefetch_related('order__payments').annotate(
+                payment_providers=Subquery(p_providers, output_field=CharField()),
+                total_gross=Subquery(
+                    InvoiceLine.objects.filter(
+                        invoice=OuterRef('pk')
+                    ).order_by().values('invoice').annotate(
+                        s=Sum('gross_value')
+                    ).values('s')
+                ),
+                total_net=Subquery(
+                    InvoiceLine.objects.filter(
+                        invoice=OuterRef('pk')
+                    ).order_by().values('invoice').annotate(
+                        s=Sum(F('gross_value') - F('tax_value'))
+                    ).values('s')
                 )
             )
 
@@ -248,12 +235,8 @@ class InvoiceDataExporter(InvoiceExporterMixin, MultiSheetListExporter):
                 for i in invs:
                     pmis = []
                     for p in i.order.payments.all():
-                        if p.state in (
-                            OrderPayment.PAYMENT_STATE_CONFIRMED,
-                            OrderPayment.PAYMENT_STATE_CREATED,
-                            OrderPayment.PAYMENT_STATE_PENDING,
-                            OrderPayment.PAYMENT_STATE_REFUNDED,
-                        ):
+                        if p.state in (OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_CREATED,
+                                       OrderPayment.PAYMENT_STATE_PENDING, OrderPayment.PAYMENT_STATE_REFUNDED):
                             pprov = p.payment_provider
                             if pprov:
                                 mid = pprov.matching_id(p)
@@ -262,7 +245,7 @@ class InvoiceDataExporter(InvoiceExporterMixin, MultiSheetListExporter):
                     pmi = '\n'.join(pmis)
                     yield [
                         i.full_invoice_no,
-                        date_format(i.date, 'SHORT_DATE_FORMAT'),
+                        date_format(i.date, "SHORT_DATE_FORMAT"),
                         i.order.code,
                         i.order.email,
                         _('Cancellation') if i.is_cancellation else _('Invoice'),
@@ -291,7 +274,10 @@ class InvoiceDataExporter(InvoiceExporterMixin, MultiSheetListExporter):
                         i.total_gross if i.total_gross else Decimal('0.00'),
                         Decimal(i.total_net if i.total_net else '0.00').quantize(Decimal('0.01')),
                         pmi,
-                        ', '.join([str(self.providers.get(p, p)) for p in sorted(set((i.payment_providers or '').split(','))) if p and p != 'free']),
+                        ', '.join([
+                            str(self.providers.get(p, p)) for p in sorted(set((i.payment_providers or '').split(',')))
+                            if p and p != 'free'
+                        ])
                     ]
         elif sheet == 'lines':
             yield [
@@ -304,6 +290,7 @@ class InvoiceDataExporter(InvoiceExporterMixin, MultiSheetListExporter):
                 _('Tax rate'),
                 _('Tax name'),
                 _('Event start date'),
+
                 _('Date'),
                 _('Order code'),
                 _('E-mail address'),
@@ -329,29 +316,22 @@ class InvoiceDataExporter(InvoiceExporterMixin, MultiSheetListExporter):
                 _('Payment providers'),
             ]
 
-            p_providers = (
-                OrderPayment.objects.filter(
-                    order=OuterRef('invoice__order'),
-                    state__in=(
-                        OrderPayment.PAYMENT_STATE_CONFIRMED,
-                        OrderPayment.PAYMENT_STATE_REFUNDED,
-                        OrderPayment.PAYMENT_STATE_PENDING,
-                        OrderPayment.PAYMENT_STATE_CREATED,
-                    ),
-                )
-                .values('order')
-                .annotate(m=GroupConcat('provider', delimiter=','))
-                .values('m')
-                .order_by()
-            )
+            p_providers = OrderPayment.objects.filter(
+                order=OuterRef('invoice__order'),
+                state__in=(OrderPayment.PAYMENT_STATE_CONFIRMED, OrderPayment.PAYMENT_STATE_REFUNDED,
+                           OrderPayment.PAYMENT_STATE_PENDING, OrderPayment.PAYMENT_STATE_CREATED),
+            ).values('order').annotate(
+                m=GroupConcat('provider', delimiter=',')
+            ).values(
+                'm'
+            ).order_by()
 
-            qs = (
-                InvoiceLine.objects.annotate(
-                    payment_providers=Subquery(p_providers, output_field=CharField()),
-                )
-                .filter(invoice__in=self.invoices_queryset(form_data))
-                .order_by('invoice__full_invoice_no', 'position')
-                .select_related('invoice', 'invoice__order', 'invoice__refers')
+            qs = InvoiceLine.objects.annotate(
+                payment_providers=Subquery(p_providers, output_field=CharField()),
+            ).filter(
+                invoice__in=self.invoices_queryset(form_data)
+            ).order_by('invoice__full_invoice_no', 'position').select_related(
+                'invoice', 'invoice__order', 'invoice__refers'
             )
             yield self.ProgressSetTotal(total=qs.count())
 
@@ -360,14 +340,14 @@ class InvoiceDataExporter(InvoiceExporterMixin, MultiSheetListExporter):
                 yield [
                     i.full_invoice_no,
                     l.position + 1,
-                    l.description.replace('<br />', ' - '),
+                    l.description.replace("<br />", " - "),
                     l.gross_value,
                     l.net_value,
                     l.tax_value,
                     l.tax_rate,
                     l.tax_name,
-                    date_format(l.event_date_from, 'SHORT_DATE_FORMAT') if l.event_date_from else '',
-                    date_format(i.date, 'SHORT_DATE_FORMAT'),
+                    date_format(l.event_date_from, "SHORT_DATE_FORMAT") if l.event_date_from else "",
+                    date_format(i.date, "SHORT_DATE_FORMAT"),
                     i.order.code,
                     i.order.email,
                     _('Cancellation') if i.is_cancellation else _('Invoice'),
@@ -389,7 +369,10 @@ class InvoiceDataExporter(InvoiceExporterMixin, MultiSheetListExporter):
                     i.invoice_to_vat_id,
                     i.invoice_to_beneficiary,
                     i.internal_reference,
-                    ', '.join([str(self.providers.get(p, p)) for p in sorted(set((l.payment_providers or '').split(','))) if p and p != 'free']),
+                    ', '.join([
+                        str(self.providers.get(p, p)) for p in sorted(set((l.payment_providers or '').split(',')))
+                        if p and p != 'free'
+                    ])
                 ]
 
     @cached_property
@@ -403,21 +386,21 @@ class InvoiceDataExporter(InvoiceExporterMixin, MultiSheetListExporter):
             return '{}_invoices'.format(self.event.slug)
 
 
-@receiver(register_data_exporters, dispatch_uid='exporter_invoices')
+@receiver(register_data_exporters, dispatch_uid="exporter_invoices")
 def register_invoice_export(sender, **kwargs):
     return InvoiceExporter
 
 
-@receiver(register_multievent_data_exporters, dispatch_uid='multiexporter_invoices')
+@receiver(register_multievent_data_exporters, dispatch_uid="multiexporter_invoices")
 def register_multievent_invoice_export(sender, **kwargs):
     return InvoiceExporter
 
 
-@receiver(register_data_exporters, dispatch_uid='exporter_invoicedata')
+@receiver(register_data_exporters, dispatch_uid="exporter_invoicedata")
 def register_invoicedata_exporter(sender, **kwargs):
     return InvoiceDataExporter
 
 
-@receiver(register_multievent_data_exporters, dispatch_uid='multiexporter_invoicedata')
+@receiver(register_multievent_data_exporters, dispatch_uid="multiexporter_invoicedata")
 def register_multievent_invoicedatae_xporter(sender, **kwargs):
     return InvoiceDataExporter

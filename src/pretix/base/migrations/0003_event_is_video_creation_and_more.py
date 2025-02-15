@@ -4,14 +4,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     dependencies = [
-        ('pretixbase', '0002_question_description'),
+        ("pretixbase", "0002_question_description"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='event',
-            name='is_video_creation',
+            model_name="event",
+            name="is_video_creation",
             field=models.BooleanField(default=False),
         )
     ]

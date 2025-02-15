@@ -4,10 +4,10 @@ dynamic = ["version"]
 description = "the open source event solution"
 readme = "README.rst"
 requires-python = ">=3.11"
-license = { file = "LICENSE" }
+license = {file = "LICENSE"}
 keywords = ["tickets", "events", "web", "shop", "ecommerce"]
-authors = [{ name = "eventyay", email = "info@eventyay.com" }]
-maintainers = [{ name = "eventyay", email = "info@eventyay.com" }]
+authors = [ {name = "eventyay", email = "info@eventyay.com"}, ]
+maintainers = [ {name = "eventyay", email = "info@eventyay.com"}, ]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
@@ -19,123 +19,116 @@ classifiers = [
   "Framework :: Django :: 5.1",
 ]
 dependencies = [
-  'Django==5.1.*',
-  'djangorestframework==3.15.*',
-  'python-dateutil==2.9.*',
-  'isoweek',
-  'requests>=2.32.3',
-  'pytz',
-  'django-bootstrap3==24.3',
-  'django-formset-js-improved==0.5.0.3',
-  'django-compressor==4.5.1',
-  'django-hierarkey==1.2.*',
-  'django-filter==24.3',
-  'django-scopes==2.0.*',
-  'django-localflavor==4.0',
-  'django-cors-headers',
-  'reportlab==4.2.*',
-  'Pillow==11.0.*',
-  'pypdf==5.1.*',
-  'django-libsass==0.9',
-  'libsass==0.23.*',
-  'django-otp==1.5.*',
-  'webauthn>=2.5.0',
-  'django-formtools==2.5.1',
-  "celery==5.4.*",
-  'kombu>=5.4.2',
-  'django-statici18n>=2.6.0',
-  'css-inline==0.14.*',
-  'BeautifulSoup4==4.12.*',
-  'lxml',
-  'static3==0.7.*',
-  'dj-static',
-  'csscompressor',
-  'django-markup',
-  'markdown==3.7',
-  'bleach>=6.2.0',
-  'sentry-sdk>=2.20.0',
-  'babel',
-  'pycparser==2.22',
-  'django-redis==5.4.*',
-  'redis==5.0.*',
-  'fakeredis==2.26.*',
-  'stripe<11.4.0',
-  'chardet==5.2.*',
-  'mt-940==4.30.*',
-  'django-i18nfield>=1.10.2',
-  'psycopg>=3.2.4',
-  'tqdm==4.*',
-  'vobject==0.9.*',
-  'pycountry',
-  'django-countries==7.6.*',
-  'pyuca',                                                                                # for better sorting of country names in django-countries
-  'defusedcsv>=1.1.0',
-  'vat_moss_forked==2020.3.20.0.11.0',
-  'jsonschema',
-  'django-hijack==3.7.*',
-  'openpyxl==3.1.*',
-  'django-oauth-toolkit>=3.0.1',
-  'oauthlib==3.2.*',
-  'django-phonenumber-field>=8.0.0',
-  'phonenumberslite>=8.13.53',
-  'python-bidi==0.6.*',                                                                   # Support for Arabic in reportlab
-  'arabic-reshaper==3.0.0',                                                               # Support for Arabic in reportlab
-  'packaging',
-  'tlds>=2020041600',
-  'text-unidecode==1.*',
-  'protobuf>=5.29.3',
-  'cryptography>=3.4.2',
-  'pycryptodome>=3.21.0',
-  'sepaxml==2.6.*',
-  'geoip2==4.*',
-  'sendgrid==6.11.*',
-  'importlib_metadata==8.*',
-  'qrcode>=8.0',
-  'pretix-pages @ git+https://github.com/fossasia/eventyay-ticket-pages.git@master',
-  'pretix-venueless @ git+https://github.com/fossasia/eventyay-ticket-video.git@master',
-  'django-sso==3.0.2',
-  'PyJWT~=2.8.0',
-  'exhibitors @ git+https://github.com/fossasia/eventyay-tickets-exhibitors.git@master',
-  'pyvat==1.3.18',
-  'eventyay-paypal @ git+https://github.com/fossasia/eventyay-tickets-paypal.git@master',
-  'django_celery_beat==2.7.0',
-  'cron-descriptor==1.4.5',
-  'django-allauth[socialaccount]>=65.3.1',
-  'eventyay-stripe @ git+https://github.com/fossasia/eventyay-tickets-stripe.git@master',
-  'pydantic>=2.10.5',
+        'Django==5.1.*',
+        'djangorestframework==3.15.*',
+        'python-dateutil==2.9.*',
+        'isoweek',
+        'requests==2.31.*',
+        'pytz',
+        'django-bootstrap3==24.3',
+        'django-formset-js-improved==0.5.0.3',
+        'django-compressor==4.5.1',
+        'django-hierarkey==1.2.*',
+        'django-filter==24.3',
+        'django-scopes==2.0.*',
+        'django-localflavor==4.0',
+        'django-cors-headers',
+        'reportlab==4.2.*',
+        'Pillow==11.0.*',
+        'pypdf==5.1.*',
+        'django-libsass==0.9',
+        'libsass==0.23.*',
+        'django-otp==1.5.*',
+        'webauthn==2.2.*',
+        'django-formtools==2.5.1',
+        "celery==5.4.*",
+        'kombu==5.3.*',
+        'django-statici18n==2.5.*',
+        'css-inline==0.14.*',
+        'BeautifulSoup4==4.12.*',
+        'lxml',
+        'static3==0.7.*',
+        'dj-static',
+        'csscompressor',
+        'django-markup',
+        'markdown==3.7',
+        'bleach==5.0.*',
+        'sentry-sdk==2.19.*',
+        'babel',
+        'pycparser==2.22',
+        'django-redis==5.4.*',
+        'redis==5.0.*',
+        'fakeredis==2.26.*',
+        'stripe==11.3.*',
+        'chardet==5.2.*',
+        'mt-940==4.30.*',
+        'django-i18nfield==1.9.*,>=1.9.4',
+        'psycopg2-binary==2.9.9',
+        'tqdm==4.*',
+        'vobject==0.9.*',
+        'pycountry',
+        'django-countries==7.6.*',
+        'pyuca', # for better sorting of country names in django-countries
+        'defusedcsv>=1.1.0',
+        'vat_moss_forked==2020.3.20.0.11.0',
+        'jsonschema',
+        'django-hijack==3.7.*',
+        'openpyxl==3.1.*',
+        'django-oauth-toolkit==2.4.*',
+        'oauthlib==3.2.*',
+        'django-phonenumber-field==7.3.*',
+        'phonenumberslite==8.13.*',
+        'python-bidi==0.6.*',  # Support for Arabic in reportlab
+        'arabic-reshaper==3.0.0',  # Support for Arabic in reportlab
+        'packaging',
+        'tlds>=2020041600',
+        'text-unidecode==1.*',
+        'protobuf==5.28.*',
+        'cryptography>=3.4.2',
+        'pycryptodome==3.20.*',
+        'sepaxml==2.6.*',
+        'geoip2==4.*',
+        'sendgrid==6.11.*',
+        'importlib_metadata==8.*',
+        'qrcode==7.4.*',
+        'pretix-pages @ git+https://github.com/fossasia/eventyay-ticket-pages.git@master',
+        'pretix-venueless @ git+https://github.com/fossasia/eventyay-ticket-video.git@master',
+        'django-sso==3.0.2',
+        'PyJWT~=2.8.0',
+        'exhibitors @ git+https://github.com/fossasia/eventyay-tickets-exhibitors.git@master',
+        'pyvat==1.3.18',
+        # Note: To install eventyay-stripe/Paypal dependencies, replace {your_token} with your GitHub token
+        # Access is required to the private repositories, if you don't have access, you can remove the dependencies
+        'eventyay-paypal @ git+https://your_token@github.com/fossasia/eventyay-tickets-paypal.git@master',
+        'django_celery_beat==2.7.0',
+        'cron-descriptor==1.4.5',
+        'django-allauth[socialaccount]==65.3.0',
+        'eventyay-stripe @ git+https://github.com/fossasia/eventyay-tickets-stripe.git@master',
+        'pydantic==2.10.4'
 ]
 
 [project.optional-dependencies]
-memcached = ['pylibmc']
-
-[dependency-groups]
-lint = ['djlint>=1.36.4', 'ruff>=0.9.4']
-test = [
-  'pytest-mock>=3.10.0',
-  'pytest>=7.3.2',
-  'pytest-django>=4.9.0',
-  'pytest-env>=1.0.1',
-  'pytest-mypy>=0.10.3',
-  'responses>=0.25.5',
-  'potypo>=0.0.2',
-  'freezegun>=1.5.1',
-  'pytest-cache>=1.0',
-  'pytest-cov>=6.0.0',
-  'pytest-sugar>=1.0.0',
-  'coveralls>=4.0.1',
-  'coverage>=7.6.10',
-  "pytest-rerunfailures>=15.0",
-  "pytest-xdist>=3.6.1",
-]
-dev = ['django-debug-toolbar>=4.4.0', "pre-commit>=4.0.1"]
-doc = [
-  "sphinx-rtd-theme>=3.0.2",
-  "sphinx>=8.1.3",
-  "sphinxcontrib-httpdomain>=1.8.1",
-  "sphinxemoji>=0.3.1",
-  "pygments-markdown-lexer>=0.1.0.dev39",
-  "sphinxcontrib-spelling>=8.0.1",
-  "pyenchant>=3.2.2",
+memcached = ["pylibmc"]
+dev = [
+            'django-debug-toolbar==4.4.*',
+            'pycodestyle==2.12.*',
+            'pyflakes==3.2.*',
+            'flake8==7.1.*',
+            'pep8-naming==0.14.*',
+            'coveralls',
+            'coverage',
+            'pytest==7.2.*',
+            'pytest-django==4.*',
+            'pytest-xdist==3.6.*',
+            'isort==5.13.*',
+            'pytest-mock==3.14.*',
+            'pytest-rerunfailures==14.*',
+            'responses',
+            'potypo',
+            'freezegun',
+            'pytest-cache',
+            'pytest-cov',
+            'pytest-sugar',
 ]
 
 [project.entry-points."distutils.commands"]
@@ -144,7 +137,12 @@ build_ext = "setup:CustomBuildExt"
 
 
 [build-system]
-requires = ['setuptools']
+requires = [
+  'setuptools',
+  'setuptools-rust',
+  'wheel',
+  'importlib_metadata'
+]
 
 [project.urls]
 homepage = "https://eventyay.com"
@@ -156,61 +154,9 @@ changelog = "https://eventyay.com"
 include-package-data = true
 
 [tool.setuptools.dynamic]
-version = { attr = "pretix.__version__" }
+version = {attr = "pretix.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["pretix*"]
 namespaces = false
-
-[tool.ruff]
-line-length = 160
-target-version = 'py312'
-# Exclude a variety of commonly ignored directories.
-exclude = [
-  '.bzr',
-  '.direnv',
-  '.eggs',
-  '.git',
-  '.hg',
-  '.mypy_cache',
-  '.nox',
-  '.pants.d',
-  '.ruff_cache',
-  '.svn',
-  '.tox',
-  '.venv',
-  '__pypackages__',
-  '_build',
-  'buck-out',
-  'build',
-  'dist',
-  'node_modules',
-  'venv',
-]
-
-[tool.ruff.lint]
-# Enable Pyflakes `E` and `F` codes by default.
-select = ['E', 'F']
-ignore = []
-# Allow unused variables when underscore-prefixed.
-dummy-variable-rgx = '^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$'
-
-[tool.ruff.lint.per-file-ignores]
-'**/migrations/**' = ['E501']
-# This file uses star import (`import *`) which is not recommended.
-'src/tests/settings.py' = ['F403', 'F405']
-'src/pretix/testutils/settings.py' = ['F403', 'F405']
-# These files are index of models, we can ignore "imported but unused".
-'src/**/models/__init__.py' = ['F401']
-
-[tool.ruff.format]
-quote-style = 'single'
-
-[tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = 'tests.settings'
-# addopts = '--reruns 3 -rw'
-filterwarnings = [
-  "ignore:The 'warn' method is deprecated:DeprecationWarning",
-  "ignore:django.contrib.staticfiles.templatetags.static:DeprecationWarning",
-]

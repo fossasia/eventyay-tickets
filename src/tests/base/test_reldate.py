@@ -15,14 +15,13 @@ BERLIN = pytz.timezone('Europe/Berlin')
 def event():
     o = Organizer.objects.create(name='Dummy', slug='dummy')
     event = Event.objects.create(
-        organizer=o,
-        name='Dummy',
-        slug='dummy',
+        organizer=o, name='Dummy', slug='dummy',
         date_from=TOKYO.localize(datetime(2017, 12, 27, 5, 0, 0)),
         presale_start=TOKYO.localize(datetime(2017, 12, 1, 5, 0, 0)),
-        plugins='pretix.plugins.banktransfer',
+        plugins='pretix.plugins.banktransfer'
+
     )
-    event.settings.timezone = 'Asia/Tokyo'
+    event.settings.timezone = "Asia/Tokyo"
     return event
 
 
@@ -54,7 +53,7 @@ def test_relative_date_other_base_point(event):
         assert rdw.to_string() == 'RELDATE/1/-/presale_end/'
 
         # subevent base
-        se = event.subevents.create(name='SE1', date_from=TOKYO.localize(datetime(2017, 11, 27, 5, 0, 0)))
+        se = event.subevents.create(name="SE1", date_from=TOKYO.localize(datetime(2017, 11, 27, 5, 0, 0)))
         rdw = RelativeDateWrapper(RelativeDate(days_before=1, time=None, base_date_name='date_from', minutes_before=None))
         assert rdw.datetime(se) == TOKYO.localize(datetime(2017, 11, 26, 5, 0, 0))
 
@@ -83,7 +82,7 @@ def test_relative_date_with_time(event):
 
 @pytest.mark.django_db
 def test_relative_date_with_time_around_dst(event):
-    event.settings.timezone = 'Europe/Berlin'
+    event.settings.timezone = "Europe/Berlin"
     event.date_from = BERLIN.localize(datetime(2020, 3, 29, 18, 0, 0))
 
     rdw = RelativeDateWrapper(RelativeDate(days_before=1, time=time(18, 0, 0), base_date_name='date_from', minutes_before=None))

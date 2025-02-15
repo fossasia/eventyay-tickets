@@ -6,6 +6,7 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     dependencies = [
         ('pretixapi', '0003_oauthapplication_post_logout_redirect_uris_and_more'),
     ]

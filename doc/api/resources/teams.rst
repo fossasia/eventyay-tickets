@@ -1,4 +1,4 @@
-.. spelling:word-list:: fullname checkin
+.. spelling:: fullname checkin
 
 .. _`rest-teams`:
 

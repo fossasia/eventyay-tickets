@@ -13,7 +13,7 @@ class AllowListSecurityProfile:
     allowlist = ()
 
     def is_allowed(self, request):
-        key = (request.method, f'{request.resolver_match.namespace}:{request.resolver_match.url_name}')
+        key = (request.method, f"{request.resolver_match.namespace}:{request.resolver_match.url_name}")
         return key in self.allowlist
 
 
@@ -127,8 +127,7 @@ class PretixPosSecurityProfile(AllowListSecurityProfile):
 
 
 DEVICE_SECURITY_PROFILES = {
-    k.identifier: k()
-    for k in (
+    k.identifier: k() for k in (
         FullAccessSecurityProfile,
         PretixScanSecurityProfile,
         PretixScanNoSyncSecurityProfile,

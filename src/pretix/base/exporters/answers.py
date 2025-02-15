@@ -21,15 +21,15 @@ class AnswerFilesExporter(BaseExporter):
     def export_form_fields(self):
         return OrderedDict(
             [
-                (
-                    'questions',
-                    forms.ModelMultipleChoiceField(
-                        queryset=self.event.questions.filter(type='F'),
-                        label=_('Questions'),
-                        widget=forms.CheckboxSelectMultiple(attrs={'class': 'scrolling-multiple-choice'}),
-                        required=False,
-                    ),
-                ),
+                ('questions',
+                 forms.ModelMultipleChoiceField(
+                     queryset=self.event.questions.filter(type='F'),
+                     label=_('Questions'),
+                     widget=forms.CheckboxSelectMultiple(
+                         attrs={'class': 'scrolling-multiple-choice'}
+                     ),
+                     required=False
+                 )),
             ]
         )
 
@@ -50,7 +50,7 @@ class AnswerFilesExporter(BaseExporter):
                             i.orderposition.order.code,
                             i.orderposition.positionid,
                             i.question.pk,
-                            os.path.basename(i.file.name).split('.', 1)[1],
+                            os.path.basename(i.file.name).split('.', 1)[1]
                         )
                         any = True
                         zipf.writestr(fname, i.file.read())
@@ -62,6 +62,6 @@ class AnswerFilesExporter(BaseExporter):
                 return '{}_answers.zip'.format(self.event.slug), 'application/zip', zipf.read()
 
 
-@receiver(register_data_exporters, dispatch_uid='exporter_answers')
+@receiver(register_data_exporters, dispatch_uid="exporter_answers")
 def register_anwers_export(sender, **kwargs):
     return AnswerFilesExporter

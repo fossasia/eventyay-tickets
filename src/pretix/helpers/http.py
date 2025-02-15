@@ -1,8 +1,6 @@
 from django.conf import settings
 from django.http import (
-    HttpResponsePermanentRedirect,
-    HttpResponseRedirect,
-    StreamingHttpResponse,
+    HttpResponsePermanentRedirect, HttpResponseRedirect, StreamingHttpResponse,
 )
 
 
