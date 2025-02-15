@@ -48,8 +48,10 @@ COPY deployment/docker/supervisord /etc/supervisord
 COPY deployment/docker/supervisord.all.conf /etc/supervisord.all.conf
 COPY deployment/docker/supervisord.web.conf /etc/supervisord.web.conf
 COPY deployment/docker/nginx.conf /etc/nginx/nginx.conf
-# TODO mounting the local pretix will drop this one, not good
-# we need a workaround for that
+# We are mounting pretix into the dev container, so the following
+# will be actually overwritten.
+# This is fixed in docker-compose-dev.yaml by also mounting the
+# production_settings.py file independently into the src directory.
 COPY deployment/docker/production_settings.py /pretix/src/production_settings.py
 COPY pyproject.toml /pretix/pyproject.toml
 COPY src /pretix/src
