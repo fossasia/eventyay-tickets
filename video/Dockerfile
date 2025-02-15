@@ -1,4 +1,6 @@
 FROM python:3.11-bookworm
+ARG UID=15371
+ARG GID=15371
 
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash && \
     apt-get install -y --install-suggests \
@@ -23,7 +25,8 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash && \
     mkdir /etc/venueless && \
     mkdir -p /venueless/webapp && \
     mkdir /data && \
-    useradd -ms /bin/bash -d /venueless -u 15371 venueless && \
+    groupadd -g $GID venueless && \
+    useradd -ms /bin/bash -d /venueless -u $UID -g venueless venueless && \
     echo 'venueless ALL=(ALL) NOPASSWD:SETENV: /usr/bin/supervisord' >> /etc/sudoers && \
     mkdir /static
 
