@@ -4,6 +4,7 @@ include CNAME
 include README.rst
 include src/pretalx.example.cfg
 include Dockerfile
+include Makefile
 
 recursive-include deployment *.bash
 recursive-include deployment *.conf

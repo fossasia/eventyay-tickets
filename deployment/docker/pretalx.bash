@@ -11,6 +11,8 @@ GUNICORN_WORKERS="${GUNICORN_WORKERS:-${WEB_CONCURRENCY:-$((2 * $(nproc)))}}"
 GUNICORN_MAX_REQUESTS="${GUNICORN_MAX_REQUESTS:-1200}"
 GUNICORN_MAX_REQUESTS_JITTER="${GUNICORN_MAX_REQUESTS_JITTER:-50}"
 GUNICORN_FORWARDED_ALLOW_IPS="${GUNICORN_FORWARDED_ALLOW_IPS:-127.0.0.1}"
+GUNICORN_RELOAD="${GUNICORN_RELOAD:-false}"
+GUNICORN_LOGLEVEL="${GUNICORN_LOGLEVEL:-info}"
 
 AUTOMIGRATE="${AUTOMIGRATE:-yes}"
 AUTOREBUILD="${AUTOREBUILD:-yes}"
@@ -23,6 +25,12 @@ if [ "$PRETALX_FILESYSTEM_MEDIA" != "/data/media" ]; then
 fi
 if [ "$PRETALX_FILESYSTEM_STATIC" != "/pretalx/src/static.dist" ]; then
     export PRETALX_FILESYSTEM_STATIC
+fi
+
+if [ "$GUNICORN_RELOAD" = "true" ]; then
+    RELOAD_ARGUMENT="--reload"
+else
+    RELOAD_ARGUMENT=""
 fi
 
 if [ ! -d "$PRETALX_FILESYSTEM_LOGS" ]; then
@@ -57,8 +65,20 @@ if [ "$1" == "webworker" ]; then
         --max-requests "${GUNICORN_MAX_REQUESTS}" \
         --max-requests-jitter "${GUNICORN_MAX_REQUESTS_JITTER}" \
         --forwarded-allow-ips "${GUNICORN_FORWARDED_ALLOW_IPS}" \
-        --log-level=info \
+        $RELOAD_ARGUMENT \
+        --log-level="${GUNICORN_LOGLEVEL}" \
         --bind=0.0.0.0:80
+fi
+
+# for in-docker development, we want logging to be debug, and
+# gunicorn to reload when source files have changed.
+# We need to preserve these variables when calling sudo, as sudo
+# normally drops the complete environment.
+if [ "$1" == "devel" ]; then
+    python3 -m pretalx rebuild
+    export GUNICORN_LOGLEVEL=debug
+    export GUNICORN_RELOAD=true
+    exec sudo -E /usr/bin/supervisord -n -c /etc/supervisord.conf
 fi
 
 if [ "$1" == "taskworker" ]; then

@@ -1,4 +1,6 @@
 FROM python:3.11-bookworm
+ARG UID=999
+ARG GID=999
 
 RUN apt-get update && \
     apt-get install -y git gettext libpq-dev locales libmemcached-dev build-essential \
@@ -14,9 +16,9 @@ RUN apt-get update && \
     mkdir /etc/pretalx && \
     mkdir /data && \
     mkdir /public && \
-    groupadd -g 999 pretalxuser && \
-    useradd -r -u 999 -g pretalxuser -d /pretalx -ms /bin/bash pretalxuser && \
-    echo 'pretalxuser ALL=(ALL) NOPASSWD: /usr/bin/supervisord' >> /etc/sudoers
+    groupadd -g $GID pretalxuser && \
+    useradd -r -u $UID -g pretalxuser -d /pretalx -ms /bin/bash pretalxuser && \
+    echo 'pretalxuser ALL=(ALL) NOPASSWD:SETENV: /usr/bin/supervisord' >> /etc/sudoers
 
 ENV LC_ALL=C.UTF-8
 ENV BASE_PATH=/talk
