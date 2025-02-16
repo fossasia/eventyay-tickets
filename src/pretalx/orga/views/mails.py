@@ -393,7 +393,7 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                     _("There are no recipients matching this selection."),
                 )
                 return self.get(self.request, *self.args, **self.kwargs)
-            from pretalx.common.templatetags.rich_text import rich_text
+            from pretalx.common.templatetags.rich_text import render_markdown_abslinks
 
             for locale in self.request.event.locales:
                 with language(locale):
@@ -415,7 +415,9 @@ class ComposeMailBaseView(EventPermissionRequired, FormView):
                         self.request.event, subject.format_map(context_dict)
                     )
                     message = form.cleaned_data["text"].localize(locale)
-                    preview_text = rich_text(message.format_map(context_dict))
+                    preview_text = render_markdown_abslinks(
+                        message.format_map(context_dict)
+                    )
                     self.output[locale] = {
                         "subject": _("Subject: {subject}").format(
                             subject=preview_subject

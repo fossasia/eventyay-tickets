@@ -151,12 +151,12 @@ class MailTemplateForm(ReadOnlyFlag, I18nHelpText, I18nModelForm):
             warnings = ", ".join("{" + warning + "}" for warning in warnings)
             raise forms.ValidationError(str(_("Unknown placeholder!")) + " " + warnings)
 
-        from pretalx.common.templatetags.rich_text import rich_text
+        from pretalx.common.templatetags.rich_text import render_markdown_abslinks
 
         for locale in self.event.locales:
             with language(locale):
                 message = text.localize(locale)
-                preview_text = rich_text(
+                preview_text = render_markdown_abslinks(
                     message.format_map(
                         {
                             key: escape(value.render_sample(self.event))

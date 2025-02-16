@@ -4,8 +4,11 @@ from functools import partial
 import bleach
 import markdown
 from django import template
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.safestring import mark_safe
 from publicsuffixlist import PublicSuffixList
+
+from pretalx.common.views.redirect import safelink as sl
 
 register = template.Library()
 
@@ -65,9 +68,26 @@ TLD_REGEX = bleach.linkifier.build_url_re(
 EMAIL_REGEX = bleach.linkifier.build_email_re(tlds=ALLOWED_TLDS)
 
 
-def link_callback(attrs, new=False):
+def link_callback(attrs, is_new, **kwargs):
+    """Makes sure external links open safely."""
+    safelink = kwargs.get("safelink", True)
+    url = attrs.get((None, "href"), "/")
+    if (
+        url.startswith("mailto:")
+        or url.startswith("tel:")
+        # Exclude internal links
+        or url_has_allowed_host_and_scheme(url, allowed_hosts=None)
+    ):
+        return attrs
     attrs[None, "target"] = "_blank"
+    attrs[None, "rel"] = "noopener"
+    if safelink:
+        attrs[None, "href"] = sl(url)
     return attrs
+
+
+safelink_callback = partial(link_callback, safelink=True)
+abslink_callback = partial(link_callback, safelink=False)
 
 
 CLEANER = bleach.Cleaner(
@@ -81,7 +101,22 @@ CLEANER = bleach.Cleaner(
             parse_email=True,
             email_re=EMAIL_REGEX,
             skip_tags={"pre", "code"},
-            callbacks=bleach.linkifier.DEFAULT_CALLBACKS + [link_callback],
+            callbacks=bleach.linkifier.DEFAULT_CALLBACKS + [safelink_callback],
+        )
+    ],
+)
+ABSLINK_CLEANER = bleach.Cleaner(
+    tags=ALLOWED_TAGS,
+    attributes=ALLOWED_ATTRIBUTES,
+    protocols=ALLOWED_PROTOCOLS,
+    filters=[
+        partial(
+            bleach.linkifier.LinkifyFilter,
+            url_re=TLD_REGEX,
+            parse_email=True,
+            email_re=EMAIL_REGEX,
+            skip_tags={"pre", "code"},
+            callbacks=bleach.linkifier.DEFAULT_CALLBACKS + [abslink_callback],
         )
     ],
 )
@@ -126,6 +161,12 @@ def render_markdown(text: str, cleaner=CLEANER) -> str:
         return ""
     body_md = cleaner.clean(md.reset().convert(str(text)))
     return mark_safe(body_md)
+
+
+def render_markdown_abslinks(text: str) -> str:
+    """Process markdown and cleans HTML in a text input, but use absolute links instead
+    of safelink redirects."""
+    return render_markdown(text, cleaner=ABSLINK_CLEANER)
 
 
 @register.filter

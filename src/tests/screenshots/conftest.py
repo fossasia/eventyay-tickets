@@ -2,10 +2,10 @@ import datetime as dt
 import random
 from urllib.parse import urlparse
 
-from django.db.models import F
 import pytest
 from django.conf import settings
 from django.core.management import call_command
+from django.db.models import F
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django_scopes import scope
@@ -19,6 +19,7 @@ def chrome_options(chrome_options):
     chrome_options.add_argument("window-size=1600,1600")
     return chrome_options
 
+
 @pytest.fixture(autouse=True)
 def fix_settings(live_server):
     # Override the Django settings as to use the live_server fixture's URL
@@ -31,8 +32,8 @@ def event():
     from pretalx.common.models.settings import GlobalSettings
     from pretalx.event.models import Event
     from pretalx.person.models import User
-    from pretalx.submission.models import AnswerOption, Question, QuestionVariant
     from pretalx.schedule.models import TalkSlot
+    from pretalx.submission.models import AnswerOption, Question, QuestionVariant
 
     gs = GlobalSettings()
     gs.settings.update_check_result_warning = False
