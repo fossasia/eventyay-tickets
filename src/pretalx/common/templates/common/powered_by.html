@@ -1,5 +1,4 @@
 {% load i18n %}
-{% load safelink %}
 
 {% comment %}
 
@@ -31,8 +30,7 @@
     you can reach me at sales@pretalx.com.
 
 {% endcomment %}
-{% safelink "https://eventyay.com" as redir %}
-{% with 'href="'|add:redir|add:'" target="_blank" rel="noopener"'|safe as a_attr %}
+{% with 'href="https://eventyay.com" target="_blank" rel="noopener"' as a_attr %}
     {% blocktranslate trimmed %}
         powered by <a {{ a_attr }}>eventyay</a>
     {% endblocktranslate %}

@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 from django.urls import include, path
 from django.utils.module_loading import import_string
 
-from pretalx.common.views import error_view, redirect_view
+from pretalx.common.views import error_view
 
 plugin_patterns = []
 for app in apps.get_app_configs():
@@ -24,7 +24,6 @@ urlpatterns = [
     path("500", error_view(500)),
     path("orga/", include("pretalx.orga.urls", namespace="orga")),
     path("api/", include("pretalx.api.urls", namespace="api")),
-    path("redirect/", redirect_view, name="redirect"),
     # Root patterns are ordered by precedence:
     # Plugins last, so that they cannot break anything
     path("", include("pretalx.eventyay_common.urls", namespace="eventyay_common")),

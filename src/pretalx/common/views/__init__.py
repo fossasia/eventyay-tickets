@@ -7,7 +7,6 @@ from .generic import (
     GenericResetView,
 )
 from .helpers import get_static, is_form_bound
-from .redirect import redirect_view
 
 __all__ = [
     "CreateOrUpdateView",
@@ -19,5 +18,4 @@ __all__ = [
     "get_static",
     "handle_500",
     "is_form_bound",
-    "redirect_view",
 ]
