@@ -28,7 +28,7 @@
         <div class="panel panel-default">
             <div class="panel-heading text-center" id="headingOne">
                 <a class="btn btn-lg btn-primary btn-block mt-3" href="{% oauth_login_url next_url %}">
-                    {% translate "Login with SSO" %}
+                    {{ _('Login') }}
                 </a>
             </div>
         </div>
@@ -38,7 +38,7 @@
         <div class="panel panel-default">
             <div class="panel-heading text-center" id="headingTwo">
                 <a class="btn btn-lg btn-primary btn-block mt-3" href="{% register_account_url next_url %}">
-                    {% translate "Register Speaker Account" %}
+                  {{ _('Register account') }}
                 </a>
             </div>
         </div>
