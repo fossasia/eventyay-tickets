@@ -17,6 +17,8 @@ class PhrasesMetaClass(ABCMeta):  # noqa
         super().__init__(*args, **kwargs)
 
 
+# TODO: This utility seems to be for caching text. If so, we should use https://pypi.org/project/moka-py/
+# to have proper type support.
 class Phrases(metaclass=PhrasesMetaClass, app=""):
     def __getattribute__(self, attribute):
         result = super().__getattribute__(attribute)
@@ -102,3 +104,10 @@ class BasePhrases(Phrases, app="base"):
     general = _("General")
     email_subject = pgettext_lazy("email subject", "Subject")
     text_body = _("Text")
+
+
+# We want to show different button label depending on deployment site.
+CALL_FOR_SPEAKER_LOGIN_BTN_LABELS = {
+    "default": _("Login"),
+    "mediawiki": _("Login with MediaWiki SSO or Email"),
+}

@@ -2,8 +2,10 @@ import copy
 import json
 import logging
 from collections import OrderedDict
+from configparser import RawConfigParser
 from contextlib import suppress
 from pathlib import Path
+from typing import cast
 
 from django.conf import settings
 from django.contrib import messages
@@ -25,7 +27,7 @@ from i18nfield.utils import I18nJSONEncoder
 from pretalx.cfp.signals import cfp_steps
 from pretalx.common.exceptions import SendMailException
 from pretalx.common.language import language
-from pretalx.common.text.phrases import phrases
+from pretalx.common.text.phrases import CALL_FOR_SPEAKER_LOGIN_BTN_LABELS, phrases
 from pretalx.person.forms import SpeakerProfileForm, UserForm
 from pretalx.person.models import User
 from pretalx.submission.forms import InfoForm, QuestionsForm
@@ -35,6 +37,8 @@ from pretalx.submission.models import (
     SubmissionType,
     Track,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def i18n_string(data, locales):
@@ -182,6 +186,19 @@ class TemplateFlowStep(TemplateResponseMixin, BaseCfPStep):
                 if step.is_applicable(self.request)
             ],
         )
+        # Select label for login button
+        config = cast(RawConfigParser, settings.CONFIG)
+        try:
+            key = config["site"]["call_for_speaker_login_button_label"]
+        except KeyError:
+            # TODO: The logs cannot be observed with the development Docker setup. Should be fixed.
+            logger.info("Config file misses `call_for_speaker_login_button_label` key!")
+            key = "default"
+        try:
+            button_label = CALL_FOR_SPEAKER_LOGIN_BTN_LABELS[key]
+        except KeyError:
+            button_label = CALL_FOR_SPEAKER_LOGIN_BTN_LABELS["default"]
+        kwargs.setdefault("login_button_label", button_label)
         return kwargs
 
     def render(self, **kwargs):

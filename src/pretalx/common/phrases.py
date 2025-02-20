@@ -7,6 +7,7 @@ from django.utils.translation import pgettext_lazy
 _phrase_book = {}
 
 
+# TODO: It seems to be superseded by the pretalx.common.text.phrases module.
 class PhrasesMetaClass(ABCMeta):  # noqa
     def __new__(cls, class_name, bases, namespace, app):
         new = super().__new__(cls, class_name, bases, namespace)
