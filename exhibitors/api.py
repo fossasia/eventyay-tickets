@@ -96,6 +96,7 @@ class LeadCreateView(views.APIView):
         scanned = request.data.get('scanned')
         scan_type = request.data.get('scan_type')
         device_name = request.data.get('device_name')
+        open_event = request.data.get('open_event')
         key = request.headers.get('Exhibitor')
 
         if not all([pseudonymization_id, scanned, scan_type, device_name]):
@@ -116,13 +117,13 @@ class LeadCreateView(views.APIView):
 
         # Get attendee details
         try:
-            if len(pseudonymization_id)<11:
+            if open_event:
                 order_position = OrderPosition.objects.get(
-                    pseudonymization_id=pseudonymization_id
+                    secret = pseudonymization_id
                 )
             else:
                 order_position = OrderPosition.objects.get(
-                    secret = pseudonymization_id
+                    pseudonymization_id=pseudonymization_id
                 )
         except OrderPosition.DoesNotExist:
             return Response(
