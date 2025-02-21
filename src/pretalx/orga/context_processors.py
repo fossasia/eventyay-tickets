@@ -1,9 +1,15 @@
+import logging
+from configparser import RawConfigParser
+from typing import cast
+
 from django.conf import settings
 from django.utils.module_loading import import_string
 
+from pretalx.common.text.phrases import CALL_FOR_SPEAKER_LOGIN_BTN_LABELS
 from pretalx.orga.signals import html_head, nav_event, nav_event_settings, nav_global
 
 SessionStore = import_string(f"{settings.SESSION_ENGINE}.SessionStore")
+logger = logging.getLogger(__name__)
 
 
 def collect_signal(signal, kwargs):
@@ -23,12 +29,22 @@ def orga_events(request):
     # Extract site specific values from settings.CONFIG.items('site') and add them to the context
     # This is a bit of a hack, but it's the only way to get the site specific values into the context
     # rather than using the settings object directly in the template
-    site_config = dict(settings.CONFIG.items("site"))
+    config = cast(RawConfigParser, settings.CONFIG)
+    site_config = dict(config.items("site"))
     context["site_config"] = site_config
     context["base_path"] = settings.BASE_PATH
+    # Login button label
+    key = site_config.get("call_for_speaker_login_button_label", "default")
+    button_label = CALL_FOR_SPEAKER_LOGIN_BTN_LABELS.get(key)
+    if not button_label:
+        logger.warning("%s does not exist in CALL_FOR_SPEAKER_LOGIN_BTN_LABELS", key)
+        button_label = CALL_FOR_SPEAKER_LOGIN_BTN_LABELS["default"]
+    context["login_button_label"] = button_label
 
     if not request.path_info.startswith("/orga/"):
-        return {}
+        return {
+            "login_button_label": button_label,
+        }
 
     if not getattr(request, "user", None) or not request.user.is_authenticated:
         return context
