@@ -1,4 +1,5 @@
 import datetime as dt
+import logging
 
 from django.conf import settings
 from django.contrib import messages
@@ -20,6 +21,7 @@ from pretalx.common.views import GenericLoginView, GenericResetView
 from pretalx.person.models import User
 
 SessionStore = import_string(f"{settings.SESSION_ENGINE}.SessionStore")
+logger = logging.getLogger(__name__)
 
 
 class LogoutView(View):
@@ -42,6 +44,7 @@ class LoginView(GenericLoginView):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.event.is_public:
+            logger.info("Event %s is not public. Blocking access.", request.event.slug)
             raise Http404()
         return super().dispatch(request, *args, **kwargs)
 
@@ -58,6 +61,8 @@ class LoginView(GenericLoginView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["register_url"] = settings.EVENTYAY_TICKET_BASE_PATH
+        # We already have a primary login button in this page, disable the subheader login link.
+        context["subheader_login_link_disabled"] = True
         return context
 
 

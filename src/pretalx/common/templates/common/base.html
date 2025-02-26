@@ -139,7 +139,7 @@
                                     </form>
                                 </div>
                             </details>
-                        {% elif not is_html_export %}
+                        {% elif not subheader_login_link_disabled and not is_html_export %}
                             {% if request.event %}
                                 <a href="{{ request.event.urls.login }}?next={{ request.path|urlencode }}">login</a>
                             {% else %}
