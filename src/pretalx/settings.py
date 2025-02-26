@@ -597,6 +597,9 @@ STORAGES = {
     },
 }
 
+# We need this for Django to detect correctly that our website is served via HTTPS
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 VITE_DEV_SERVER_PORT = 8080
 VITE_DEV_SERVER = f"http://localhost:{VITE_DEV_SERVER_PORT}"
 VITE_DEV_MODE = DEBUG
