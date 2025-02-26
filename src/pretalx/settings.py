@@ -445,6 +445,12 @@ LANGUAGES_INFORMATION = {
         "official": True,
         "percentage": 0,
     },
+    "sw": {
+        "name": _("Swahili"),
+        "natural_name": "Kiswahili",
+        "official": False,
+        "percentage": 0,
+    },
     "ua": {
         "name": _("Ukrainian"),
         "natural_name": "Українська",
