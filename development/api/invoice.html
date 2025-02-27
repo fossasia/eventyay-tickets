@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Writing an invoice renderer plugin &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Plugin development" href="index.html"/>
+        <link rel="next" title="Writing a data shredder" href="shredder.html"/>
+        <link rel="prev" title="Writing an e-mail placeholder plugin" href="placeholder.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../implementation/index.html">Implementation and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Plugin development</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Creating a plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporter.html">Writing an exporter plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ticketoutput.html">Writing a ticket output plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment.html">Writing a payment provider plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment_2.0.html">Porting a payment provider from pretix 1.x to pretix 2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">Writing an HTML e-mail renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="placeholder.html">Writing an e-mail placeholder plugin</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Writing an invoice renderer plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#output-registration">Output registration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-renderer-class">The renderer class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#helper-class-for-reportlab-base-renderers">Helper class for reportlab-base renderers</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="shredder.html">Writing a data shredder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="import.html">Extending the order import process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customview.html">Creating custom views</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auth.html">Pluggable authentication backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="general.html">General APIs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quality.html">Plugin quality checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Plugin development</a> &raquo;</li>
+        
+      <li>Writing an invoice renderer plugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/api/invoice.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="writing-an-invoice-renderer-plugin">
+<h1>Writing an invoice renderer plugin<a class="headerlink" href="#writing-an-invoice-renderer-plugin" title="Permalink to this heading">¶</a></h1>
+<p>An invoice renderer controls how invoice files are built.
+The creation of such a plugin is very similar to creating an export output.</p>
+<p>Please read <a class="reference internal" href="plugins.html#pluginsetup"><span class="std std-ref">Creating a plugin</span></a> first, if you haven’t already.</p>
+<section id="output-registration">
+<h2>Output registration<a class="headerlink" href="#output-registration" title="Permalink to this heading">¶</a></h2>
+<p>The invoice renderer API does not make a lot of usage from signals, however, it
+does use a signal to get a list of all available invoice renderers. Your plugin
+should listen for this signal and return the subclass of <code class="docutils literal notranslate"><span class="pre">pretix.base.invoice.BaseInvoiceRenderer</span></code>
+that we’ll provide in this plugin:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">django.dispatch</span><span class="w"> </span><span class="kn">import</span> <span class="n">receiver</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="kn">from</span><span class="w"> </span><span class="nn">pretix.base.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_invoice_renderers</span>
+<span class="linenos">4</span>
+<span class="linenos">5</span>
+<span class="linenos">6</span><span class="nd">@receiver</span><span class="p">(</span><span class="n">register_invoice_renderers</span><span class="p">,</span> <span class="n">dispatch_uid</span><span class="o">=</span><span class="s2">&quot;output_custom&quot;</span><span class="p">)</span>
+<span class="linenos">7</span><span class="k">def</span><span class="w"> </span><span class="nf">register_invoice_renderers</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos">8</span>    <span class="kn">from</span><span class="w"> </span><span class="nn">.invoice</span><span class="w"> </span><span class="kn">import</span> <span class="n">MyInvoiceRenderer</span>
+<span class="linenos">9</span>    <span class="k">return</span> <span class="n">MyInvoiceRenderer</span>
+</pre></div>
+</div>
+</section>
+<section id="the-renderer-class">
+<h2>The renderer class<a class="headerlink" href="#the-renderer-class" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pretix.base.invoice.BaseInvoiceRenderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pretix.base.invoice.</span></span><span class="sig-name descname"><span class="pre">BaseInvoiceRenderer</span></span><a class="headerlink" href="#pretix.base.invoice.BaseInvoiceRenderer" title="Permalink to this definition">¶</a></dt>
+<dd><p>The central object of each invoice renderer is the subclass of <code class="docutils literal notranslate"><span class="pre">BaseInvoiceRenderer</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.invoice.BaseInvoiceRenderer.BaseInvoiceRenderer.event">
+<span class="sig-prename descclassname"><span class="pre">BaseInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">event</span></span><a class="headerlink" href="#pretix.base.invoice.BaseInvoiceRenderer.BaseInvoiceRenderer.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default constructor sets this property to the event we are currently
+working for.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.invoice.pretix.base.invoice.BaseInvoiceRenderer.BaseInvoiceRenderer.identifier">
+<span class="sig-prename descclassname"><span class="pre">BaseInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">identifier</span></span><a class="headerlink" href="#pretix.base.invoice.pretix.base.invoice.BaseInvoiceRenderer.BaseInvoiceRenderer.identifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>A short and unique identifier for this renderer.
+This should only contain lowercase letters and in most
+cases will be the same as your package name.</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.invoice.pretix.base.invoice.BaseInvoiceRenderer.BaseInvoiceRenderer.verbose_name">
+<span class="sig-prename descclassname"><span class="pre">BaseInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">verbose_name</span></span><a class="headerlink" href="#pretix.base.invoice.pretix.base.invoice.BaseInvoiceRenderer.BaseInvoiceRenderer.verbose_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A human-readable name for this renderer. This should be short but
+self-explanatory. Good examples include ‘German DIN 5008’ or ‘Italian invoice’.</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.invoice.pretix.base.invoice.BaseInvoiceRenderer.BaseInvoiceRenderer.generate">
+<span class="sig-prename descclassname"><span class="pre">BaseInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">invoice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.Invoice" title="pretix.base.models.invoices.Invoice"><span class="pre">Invoice</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pretix.base.invoice.pretix.base.invoice.BaseInvoiceRenderer.BaseInvoiceRenderer.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should generate the invoice file and return a tuple consisting of a
+filename, a file type and file content. The extension will be taken from the filename
+which is otherwise ignored.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="helper-class-for-reportlab-base-renderers">
+<h2>Helper class for reportlab-base renderers<a class="headerlink" href="#helper-class-for-reportlab-base-renderers" title="Permalink to this heading">¶</a></h2>
+<p>All PDF rendering that ships with pretix is based on reportlab. We recommend to read the
+<a class="reference external" href="https://www.reportlab.com/docs/reportlab-userguide.pdf">reportlab User Guide</a> to understand all the concepts used here.</p>
+<p>If you want to implement a renderer that also uses report lab, this helper class might be
+convenient to you:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pretix.base.invoice.BaseReportlabInvoiceRenderer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pretix.base.invoice.</span></span><span class="sig-name descname"><span class="pre">BaseReportlabInvoiceRenderer</span></span><a class="headerlink" href="#pretix.base.invoice.BaseReportlabInvoiceRenderer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.pagesize">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">pagesize</span></span><a class="headerlink" href="#pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.pagesize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.left_margin">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">left_margin</span></span><a class="headerlink" href="#pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.left_margin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.right_margin">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">right_margin</span></span><a class="headerlink" href="#pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.right_margin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.top_margin">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">top_margin</span></span><a class="headerlink" href="#pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.top_margin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.bottom_margin">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">bottom_margin</span></span><a class="headerlink" href="#pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.bottom_margin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.doc_template_class">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">doc_template_class</span></span><a class="headerlink" href="#pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.doc_template_class" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.invoice">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">invoice</span></span><a class="headerlink" href="#pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer.invoice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._init">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the renderer. By default, this registers fonts and sets <code class="docutils literal notranslate"><span class="pre">self.stylesheet</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._get_stylesheet">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">_get_stylesheet</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._get_stylesheet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a stylesheet. By default, this contains the “Normal” and “Heading1” styles.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._register_fonts">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">_register_fonts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._register_fonts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register fonts with reportlab. By default, this registers the OpenSans font family</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._on_first_page">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">_on_first_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._on_first_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when a new page is rendered that is the first page.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._on_other_page">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">_on_other_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._on_other_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when a new page is rendered that is <em>not</em> the first page.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._get_first_page_frames">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">_get_first_page_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._get_first_page_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called to create a list of frames for the first page.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._get_other_page_frames">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">_get_other_page_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._get_other_page_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called to create a list of frames for the other pages.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._build_doc">
+<span class="sig-prename descclassname"><span class="pre">BaseReportlabInvoiceRenderer.</span></span><span class="sig-name descname"><span class="pre">_build_doc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fhandle</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.invoice.pretix.base.invoice.BaseReportlabInvoiceRenderer.BaseReportlabInvoiceRenderer._build_doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a PDF document in a given file handle</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="shredder.html" class="btn btn-neutral float-right" title="Writing a data shredder" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="placeholder.html" class="btn btn-neutral" title="Writing an e-mail placeholder plugin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

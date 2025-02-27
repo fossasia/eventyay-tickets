@@ -1,0 +1,368 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Invoice settings &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Configuring an event" href="settings.html"/>
+        <link rel="next" title="Product structure guide" href="structureguide.html"/>
+        <link rel="prev" title="Configuring taxes" href="taxes.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create.html">Creating an event</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="settings.html">Configuring an event</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="subevents.html">Event series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../payments/index.html">Payment settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Configuring plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="display.html">Display settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tickets.html">Ticket settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">E-mail settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="taxes.html">Configuring taxes</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Invoice settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="structureguide.html">Product structure guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widget.html">Embeddable Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../markdown.html">Markdown Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="settings.html">Configuring an event</a> &raquo;</li>
+        
+      <li>Invoice settings</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user/events/invoicing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="invoice-settings">
+<h1>Invoice settings<a class="headerlink" href="#invoice-settings" title="Permalink to this heading">¶</a></h1>
+<p>The settings at “Settings” → “Invoice” allow you to specify if and how eventyay should generate invoices for your orders.</p>
+<a class="screenshot"
+               data-lightbox="group-27e74955-cb72-4c75-a779-5db059059bea"
+               href="../../_images/settings_invoice1.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../_images/settings_invoice1.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>In particular, you can configure the following things:</p>
+<dl>
+<dt>Generate invoices</dt><dd><p>This field controls whether eventyay should generate an invoice for an order. You have the following options:</p>
+<dl class="simple">
+<dt>No</dt><dd><p>eventyay will never generate an invoice. If you want to issue invoices, you need to do it yourself based on the
+collected address data.</p>
+</dd>
+<dt>Manually in admin panel</dt><dd><p>eventyay will not create invoices automatically, but the order detail view will show a button that allows you to
+manually generate one for specific orders.</p>
+</dd>
+<dt>Automatically on user request</dt><dd><p>eventyay will not create invoices on its own, but both the panel as well as the customer view of the order will
+show a button that instantly generates an invoice for the specified order.</p>
+</dd>
+<dt>Automatically for all created orders</dt><dd><p>eventyay will automatically create an invoice every time an order is placed.</p>
+</dd>
+<dt>Automatically on payment</dt><dd><p>eventyay will automatically create an invoice for an order, as soon as the payment for the order is received.</p>
+</dd>
+</dl>
+<p>eventyay will never generate invoices for free orders, even though it might ask for the invoice address.</p>
+</dd>
+<dt>Attach invoices to emails</dt><dd><p>If enabled, invoices will be attached to order confirmation e-mails if the “Generate invoices” setting is set to
+“Automatically for all created orders” or to the payment confirmation e-mails if it is set to “Automatically on
+payment”.</p>
+</dd>
+<dt>Invoice number prefix</dt><dd><p>This is the prefix that will be prepended to all your invoice numbers. For example, if you set this to “Inv”, your
+invoices will be numbered Inv00001, Inv00002, etc. If you leave this field empty, your event slug will be used,
+followed by a dash, e.g. DEMOCON-00001.</p>
+<p>Within one organizer account, events with the same number prefix will share their number range. For example, if you
+set this to “Inv” for all of your events, there will be only one invoice numbered Inv00007 across all your events
+and the numbers will have gaps within one event.</p>
+</dd>
+<dt>Generate invoices with consecutive numbers</dt><dd><p>If enabled, invoices will be created with numerical invoice numbers in the order of their creation, i.e.
+PREFIX-00001, PREFIX-00002, and so on. If disabled, invoice numbers will instead be generated from the order code,
+i.e. PREFIX-YHASD-1. When in doubt, keep this option enabled since it might be legally required in your country,
+but disabling it has the advantage that your customers can not estimate the number of tickets sold by looking at
+the invoice numbers.</p>
+</dd>
+<dt>Invoice language</dt><dd><p>This setting allows you to configure the language of all invoices. You can either set it to one of your event
+language or dynamically to the language used by the customer.</p>
+</dd>
+<dt>Show free products on invoices</dt><dd><p>If enabled, products that do not cost anything will still show up on invoices. Note that the order needs to contain
+at least one non-free product in order to generate an invoice.</p>
+</dd>
+<dt>Show attendee names on invoices</dt><dd><p>If enabled, the attendee name will be printed on the invoice for admission tickets.</p>
+</dd>
+<dt>Ask for invoice address</dt><dd><p>If this checkbox is enabled, customers will be able to enter an invoice address during checkout. If you only enable
+this box, the invoice address will be optional to fill in.</p>
+</dd>
+<dt>Require invoice address</dt><dd><p>If this checkbox is enabled, entering an invoice address will be obligatory for all customers and it will not be
+able to create an order without entering an address.</p>
+</dd>
+<dt>Require customer name</dt><dd><p>If this checkbox is enabled, the street, city, and country fields of the invoice address will still be optional but
+the name field will be obligatory.</p>
+</dd>
+<dt>Require a business address</dt><dd><p>If enabled, the invoice address form will require a company name and do not allow personal addresses.</p>
+</dd>
+<dt>Ask for beneficiary</dt><dd><p>If enabled, the invoice address form will contain an additional field to input the beneficiary of the transaction.</p>
+</dd>
+<dt>Ask for VAT ID</dt><dd><p>If enabled, the invoice address form will not only ask for a postal address, but also for a VAT ID. The VAT ID will
+always be an optional field.</p>
+</dd>
+<dt>Generate invoices with consecutive numbers</dt><dd><p>If enabled, invoices will be created with numerical invoice numbers in the order of their creation, i.e.
+PREFIX-00001, PREFIX-00002, and so on. If disabled, invoice numbers will instead be generated from the order code,
+i.e. PREFIX-YHASD-1. When in doubt, keep this option enabled since it might be legally required in your country,
+but disabling it has the advantage that your customers can not estimate the number of tickets sold by looking at
+the invoice numbers.</p>
+</dd>
+<dt>Your invoice details</dt><dd><p>These fields should be set to the address of the entity issuing the invoice (read: you) and will be printed inside
+the header of the invoice.</p>
+</dd>
+<dt>Invoice style</dt><dd><p>This setting allows you to choose the design of your invoice. Additional designs can be added by eventyay plugins.</p>
+</dd>
+<dt>Introductory text</dt><dd><p>A free custom text that will be printed above the list of products on the invoice.</p>
+</dd>
+<dt>Additional text</dt><dd><p>A free custom text that will be printed below the list of products and the invoice total.</p>
+</dd>
+<dt>Footer</dt><dd><p>A text that will be printed in the foot line of the invoice. This could contain your contact details or legal
+information on the issuing entity, e.g. registration numbers, your VAT ID, etc.</p>
+</dd>
+<dt>Logo image</dt><dd><p>A square image that will be printed in the invoice header, currently with a width of 2.5cm.</p>
+</dd>
+</dl>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="structureguide.html" class="btn btn-neutral float-right" title="Product structure guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="taxes.html" class="btn btn-neutral" title="Configuring taxes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

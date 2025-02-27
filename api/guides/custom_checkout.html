@@ -1,0 +1,387 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Creating an external checkout process &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="API Usage Guides" href="index.html"/>
+        <link rel="next" title="Developer documentation" href="../../development/index.html"/>
+        <link rel="prev" title="Understanding the life cycle of orders" href="order_lifecycle.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">REST API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../fundamentals.html">Basic concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../auth.html">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources and endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ratelimit.html">Rate limiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../webhooks.html">Webhooks</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">API Usage Guides</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="order_lifecycle.html">Understanding the life cycle of orders</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Creating an external checkout process</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creating-orders">Creating orders</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#handling-payments-yourself">Handling payments yourself</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-pretix-payment-providers">Using pretix payment providers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-cart-reservations">Optional: Cart reservations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">REST API</a> &raquo;</li>
+        
+          <li><a href="index.html">API Usage Guides</a> &raquo;</li>
+        
+      <li>Creating an external checkout process</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api/guides/custom_checkout.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="creating-an-external-checkout-process">
+<h1>Creating an external checkout process<a class="headerlink" href="#creating-an-external-checkout-process" title="Permalink to this heading">¶</a></h1>
+<p>Occasionally, we get asked whether it is possible to just use pretix’ powerful backend as a ticketing engine but use
+a fully-customized checkout process that only communicates via the API. This is possible, but with a few limitations.
+If you go down this route, you will miss out on many of pretix features and safeguards, as well as the added flexibility
+by most of pretix’ plugins. We strongly recommend to talk this through with us before you decide this is the way to go.</p>
+<p>However, this is really useful if you need to tightly integrate pretix into existing web applications that e.g. control
+the pricing of your products in a way that cannot be mapped to pretix’ product structures.</p>
+<section id="creating-orders">
+<h2>Creating orders<a class="headerlink" href="#creating-orders" title="Permalink to this heading">¶</a></h2>
+<p>After letting your user select the products to  buy in your application, you should create a new order object inside
+pretix. Below, you can see an example of such an order, but most fields are optional and there are some more features
+supported. Read <a class="reference internal" href="../resources/orders.html#rest-orders-create"><span class="std std-ref">Creating orders</span></a> to learn more about this endpoint.</p>
+<p>Please note that this endpoint assumes trustworthy input for the most part. By default, the endpoint checks that
+you do not exceed any quotas, do not sell any seats twice, or do not use any redeemed vouchers. However, it will not
+complain about violation of any other availability constraints, such as violation of time frames or minimum/maximum
+amounts of either your product or event. Bundled products will not be added in automatically and fees will not be
+calculated automatically.</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/organizers/democon/events/3vjrh/orders/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">test.eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+<span class="na">Authorization</span><span class="o">:</span> <span class="l">…</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dummy@example.org&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;locale&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;en&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sales_channel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;web&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;payment_provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;banktransfer&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_address&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;is_business&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;company&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sample company&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name_parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;full_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;street&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sesam Street 12&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;zipcode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;city&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sample City&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;country&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;US&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NY&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;internal_reference&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vat_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;positions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;item&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">21</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;variation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;attendee_name_parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;full_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Peter&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;answers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;question&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;answer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;23&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;subevent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;fees&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You will be returned a full order object that you can inspect, store, or use to build emails or confirmation pages for
+the user. If you don’t want to do that yourself, it will also contain the URL to our confirmation page in the <code class="docutils literal notranslate"><span class="pre">url</span></code>
+attribute. If you pass the <code class="docutils literal notranslate"><span class="pre">&quot;send_mail&quot;:</span> <span class="pre">true</span></code> option, pretix will also send order confirmations for you.</p>
+</section>
+<section id="handling-payments-yourself">
+<h2>Handling payments yourself<a class="headerlink" href="#handling-payments-yourself" title="Permalink to this heading">¶</a></h2>
+<p>If you want to handle payments in your application, you can either just create the orders with status “paid” or you can
+create them in “pending” state (the default) and later confirm the payment. We strongly advise to use the payment
+provider <code class="docutils literal notranslate"><span class="pre">&quot;manual&quot;</span></code> in this case to avoid interference with payment code with pretix.</p>
+<p>However, it is often unfeasible to implement the payment process yourself, and it also requires you to give up a
+lot of pretix functionality, such as automatic refunds. Therefore, it is also possible to utilize pretix’ native
+payment process even in this case:</p>
+</section>
+<section id="using-pretix-payment-providers">
+<h2>Using pretix payment providers<a class="headerlink" href="#using-pretix-payment-providers" title="Permalink to this heading">¶</a></h2>
+<p>If you passed a <code class="docutils literal notranslate"><span class="pre">payment_provider</span></code> during order creation above, pretix will have created a payment object with state
+<code class="docutils literal notranslate"><span class="pre">created</span></code> that you can see in the returned order object. This payment object will have an attribute <code class="docutils literal notranslate"><span class="pre">payment_url</span></code>
+that you can use to let the user pay. For example, you could link or redirect to this page.</p>
+<p>If you want the user to return to your application after the payment is complete, you can pass a query parameter
+<code class="docutils literal notranslate"><span class="pre">return_url</span></code>. To prepare your event for this, open your event in the pretix backend and go to “Settings”, then
+“Plugins”. Enable the plugin “Redirection from order page”. Then, go to the new page “Settings”, then “Redirection”.
+Enter the base URL of your web application. This will allow you to redirect to pages under this base URL later on.
+For example, if you want users to be redirected to <code class="docutils literal notranslate"><span class="pre">https://example.org/order/return?tx_id=1234</span></code>, you could now
+either enter <code class="docutils literal notranslate"><span class="pre">https://example.org</span></code> or <code class="docutils literal notranslate"><span class="pre">https://example.org/order/</span></code>.</p>
+<p>The user will be redirected back to your page instead of pretix’ order confirmation page after the payment,
+<strong>regardless of whether it was successful or not</strong>. Make sure you use our API to check if the payment actually
+worked! Your final URL could look like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://test.eventyay.com/democon/3vjrh/order/NSLEZ/ujbrnsjzbq4dzhck/pay/123/?return_url=https%3A%2F%2Fexample.org%2Forder%2Freturn%3Ftx_id%3D1234
+</pre></div>
+</div>
+<p>You can also embed this page in an <code class="docutils literal notranslate"><span class="pre">&lt;iframe&gt;</span></code> instead. Note, however, that this causes problems with some payment
+methods such as PayPal which do not allow being opened in an iframe. pretix can partly work around these issues by
+opening a new window, but will only to so if you also append an <code class="docutils literal notranslate"><span class="pre">iframe=1</span></code> parameter to the URL:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://test.eventyay.com/democon/3vjrh/order/NSLEZ/ujbrnsjzbq4dzhck/pay/123/?return_url=https%3A%2F%2Fexample.org%2Forder%2Freturn%3Ftx_id%3D1234&amp;iframe=1
+</pre></div>
+</div>
+<p>If you did <strong>not</strong> pass a payment method since you want us to ask the user which payment method they want to use, you
+need to construct the URL from the <code class="docutils literal notranslate"><span class="pre">url</span></code> attribute of the order and the sub-path <code class="docutils literal notranslate"><span class="pre">pay/change`</span></code>. For example, you
+would end up with the following URL:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">test</span><span class="o">.</span><span class="n">eventyay</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">democon</span><span class="o">/</span><span class="mi">3</span><span class="n">vjrh</span><span class="o">/</span><span class="n">order</span><span class="o">/</span><span class="n">NSLEZ</span><span class="o">/</span><span class="n">ujbrnsjzbq4dzhck</span><span class="o">/</span><span class="n">pay</span><span class="o">/</span><span class="n">change</span>
+</pre></div>
+</div>
+<p>Of course, you can also use the <code class="docutils literal notranslate"><span class="pre">iframe</span></code> and <code class="docutils literal notranslate"><span class="pre">return_url</span></code> parameters here.</p>
+</section>
+<section id="optional-cart-reservations">
+<h2>Optional: Cart reservations<a class="headerlink" href="#optional-cart-reservations" title="Permalink to this heading">¶</a></h2>
+<p>Creating orders is an atomic operation: The order is either created as a whole or not at all. However, pretix’
+built-in checkout automatically reserves tickets in a user’s cart for a configurable amount of time to ensure users
+will actually get their tickets once they started entering all their details. If you want a similar behavior in your
+application, you need to create <a class="reference internal" href="../resources/carts.html#rest-carts"><span class="std std-ref">Cart positions</span></a> through the API.</p>
+<p>When creating your order, you can pass a <code class="docutils literal notranslate"><span class="pre">consume_carts</span></code> parameter with the cart ID(s) of your user. This way, the
+quota reserved by the cart will be credited towards the order and the carts will be destroyed if (and only if) the
+order creation succeeds.</p>
+<p>Cart creation is currently even more limited than the order creation endpoints, as cart creation currently does not
+support vouchers or automatic price calculation. If you require these features, please get in touch with us.</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../development/index.html" class="btn btn-neutral float-right" title="Developer documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="order_lifecycle.html" class="btn btn-neutral" title="Understanding the life cycle of orders" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

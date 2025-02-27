@@ -1,0 +1,687 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Embeddable Widget &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="User Guide" href="../index.html"/>
+        <link rel="next" title="Gift cards" href="giftcards.html"/>
+        <link rel="prev" title="Use case: Time slots" href="guides/timeslots.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create.html">Creating an event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html">Configuring an event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structureguide.html">Product structure guide</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Embeddable Widget</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#styling">Styling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ssl">SSL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#always-open-a-new-tab">Always open a new tab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pre-selecting-a-voucher">Pre-selecting a voucher</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#disabling-the-voucher-input">Disabling the voucher input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filtering-products">Filtering products</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-event-selection">Multi-event selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pretix-button">pretix Button</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dynamically-opening-the-widget">Dynamically opening the widget</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dynamically-loading-the-widget">Dynamically loading the widget</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#waiting-for-the-widget-to-load">Waiting for the widget to load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#passing-user-data-to-the-widget">Passing user data to the widget</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../markdown.html">Markdown Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+      <li>Embeddable Widget</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user/events/widget.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="embeddable-widget">
+<span id="widget"></span><h1>Embeddable Widget<a class="headerlink" href="#embeddable-widget" title="Permalink to this heading">¶</a></h1>
+<p>If you want to show your ticket shop on your event website or blog, you can use our JavaScript widget. This way,
+users will not need to leave your site to buy their ticket in most cases. The widget will still open a new tab
+for the checkout if the user is on a mobile device.</p>
+<p>To obtain the correct HTML code for embedding your event into your website, we recommend that you go to the “Widget”
+tab of your event’s settings. You can specify some optional settings there (for example the language of the widget)
+and then click “Generate widget code”.</p>
+<a class="screenshot"
+               data-lightbox="group-d08ece78-a167-466a-acf8-2e24faeda84e"
+               href="../../_images/widget_form1.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../_images/widget_form1.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>You will obtain two code snippets that look <em>roughly</em> like the following. The first should be embedded into the
+<code class="docutils literal notranslate"><span class="pre">&lt;head&gt;</span></code> part of your website, if possible. If this inconvenient, you can put it in the <code class="docutils literal notranslate"><span class="pre">&lt;body&gt;</span></code> part as well:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text/css&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/democon/widget/v1.css&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">script</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/widget/v1.en.js&quot;</span> <span class="k">async</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>The second snippet should be embedded at the position where the widget should show up:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/democon/&quot;</span><span class="o">&gt;&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">noscript</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;pretix-widget&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;pretix-widget-info-message&quot;</span><span class="o">&gt;</span>
+            <span class="n">JavaScript</span> <span class="ow">is</span> <span class="n">disabled</span> <span class="ow">in</span> <span class="n">your</span> <span class="n">browser</span><span class="o">.</span> <span class="n">To</span> <span class="n">access</span> <span class="n">our</span> <span class="n">ticket</span> <span class="n">shop</span> <span class="n">without</span> <span class="n">JavaScript</span><span class="p">,</span>
+            <span class="n">please</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;_blank&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/democon/&quot;</span><span class="o">&gt;</span><span class="n">click</span> <span class="n">here</span><span class="o">&lt;/</span><span class="n">a</span><span class="o">&gt;.</span>
+        <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">noscript</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can of course embed multiple widgets of multiple events on your page. In this case, please add the first
+snippet only <em>once</em> and the second snippets once <em>for each event</em>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some website builders like Jimdo have trouble with our custom HTML tag. In that case, you can use
+<code class="docutils literal notranslate"><span class="pre">&lt;div</span> <span class="pre">class=&quot;pretix-widget-compat&quot;</span> <span class="pre">…&gt;&lt;/div&gt;</span></code> instead of <code class="docutils literal notranslate"><span class="pre">&lt;pretix-widget</span> <span class="pre">…&gt;&lt;/pretix-widget&gt;</span></code> starting with
+pretix 1.14.</p>
+</div>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h2>
+<p>Your embedded widget could look like the following:</p>
+<link rel="stylesheet" type="text/css" href="https://eventyay.com/demo/democon/widget/v1.css">
+<script type="text/javascript" src="https://eventyay.com/widget/v1.en.js" async></script>
+<pretix-widget event="https://eventyay.com/demo/democon/"></pretix-widget>
+<noscript>
+   <div class="pretix-widget">
+        <div class="pretix-widget-info-message">
+            JavaScript is disabled in your browser. To access our ticket shop without javascript, please <a target="_blank" href="https://eventyay.com/demo/democon/">click here</a>.
+        </div>
+    </div>
+</noscript></section>
+<section id="styling">
+<h2>Styling<a class="headerlink" href="#styling" title="Permalink to this heading">¶</a></h2>
+<p>If you want, you can customize the appearance of the widget to fit your website with CSS. If you inspect the rendered
+HTML of the widget with your browser’s developer tools, you will see that nearly every element has a custom class
+and all classes are prefixed with <code class="docutils literal notranslate"><span class="pre">pretix-widget</span></code>. You can override the styles as much as you want to and if
+you want to go all custom, you don’t even need to use the stylesheet provided by us at all.</p>
+</section>
+<section id="ssl">
+<h2>SSL<a class="headerlink" href="#ssl" title="Permalink to this heading">¶</a></h2>
+<p>Since buying a ticket normally involves entering sensitive data, we strongly suggest that you use SSL/HTTPS for the page
+that includes the widget. Initiatives like <a class="reference external" href="https://letsencrypt.org/">Let’s Encrypt</a> allow you to obtain a SSL certificate free of charge.</p>
+<p>All data transferred to pretix will be made over SSL, even if using the widget on a non-SSL site. However, without
+using SSL for your site, a man-in-the-middle attacker could potentially alter the widget in dangerous ways. Moreover,
+using SSL is becoming standard practice and your customers might want expect see the secure lock icon in their browser
+granted to SSL-enabled web pages.</p>
+<p>By default, the checkout process will open in a new tab in your customer’s browsers if you don’t use SSL for your
+website. If you confident to have a good reason for not using SSL, you can override this behavior with the
+<code class="docutils literal notranslate"><span class="pre">skip-ssl-check</span></code> attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/democon/&quot;</span> <span class="n">skip</span><span class="o">-</span><span class="n">ssl</span><span class="o">-</span><span class="n">check</span><span class="o">&gt;&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="always-open-a-new-tab">
+<h2>Always open a new tab<a class="headerlink" href="#always-open-a-new-tab" title="Permalink to this heading">¶</a></h2>
+<p>If you want the checkout process to always open a new tab regardless of screen size, you can pass the <code class="docutils literal notranslate"><span class="pre">disable-iframe</span></code>
+attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/democon/&quot;</span> <span class="n">disable</span><span class="o">-</span><span class="n">iframe</span><span class="o">&gt;&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="pre-selecting-a-voucher">
+<h2>Pre-selecting a voucher<a class="headerlink" href="#pre-selecting-a-voucher" title="Permalink to this heading">¶</a></h2>
+<p>You can pre-select a voucher for the widget with the <code class="docutils literal notranslate"><span class="pre">voucher</span></code> attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/democon/&quot;</span> <span class="n">voucher</span><span class="o">=</span><span class="s2">&quot;ABCDE123456&quot;</span><span class="o">&gt;&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>This way, the widget will only show products that can be bought with the voucher and prices according to the
+voucher’s settings.</p>
+<pretix-widget event="https://eventyay.com/demo/democon/" voucher="ABCDE123456"></pretix-widget>
+<noscript>
+   <div class="pretix-widget">
+        <div class="pretix-widget-info-message">
+            JavaScript is disabled in your browser. To access our ticket shop without javascript, please <a target="_blank" href="https://eventyay.com/demo/democon/">click here</a>.
+        </div>
+    </div>
+</noscript></section>
+<section id="disabling-the-voucher-input">
+<h2>Disabling the voucher input<a class="headerlink" href="#disabling-the-voucher-input" title="Permalink to this heading">¶</a></h2>
+<p>If you want to disable voucher input in the widget, you can pass the <code class="docutils literal notranslate"><span class="pre">disable-vouchers</span></code> attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/democon/&quot;</span> <span class="n">disable</span><span class="o">-</span><span class="n">vouchers</span><span class="o">&gt;&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="filtering-products">
+<h2>Filtering products<a class="headerlink" href="#filtering-products" title="Permalink to this heading">¶</a></h2>
+<p>You can filter the products shown in the widget by passing in a list of product IDs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/democon/&quot;</span> <span class="n">items</span><span class="o">=</span><span class="s2">&quot;23,42&quot;</span><span class="o">&gt;&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Alternatively, you can select one or more categories to be shown:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/democon/&quot;</span> <span class="n">categories</span><span class="o">=</span><span class="s2">&quot;12,25&quot;</span><span class="o">&gt;&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="multi-event-selection">
+<h2>Multi-event selection<a class="headerlink" href="#multi-event-selection" title="Permalink to this heading">¶</a></h2>
+<p>If you want to embed multiple events in a single widget, you can do so. If it’s multiple dates of an event series, just leave off the <code class="docutils literal notranslate"><span class="pre">series</span></code> attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/series/&quot;</span><span class="o">&gt;&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>If you want to include all your public events, you can just reference your organizer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/&quot;</span><span class="o">&gt;&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>There is an optional <code class="docutils literal notranslate"><span class="pre">style</span></code> parameter that let’s you choose between a monthly calendar view, a week view and a list
+view. If you do not set it, the choice will be taken from your organizer settings:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/series/&quot;</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="o">&gt;&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/series/&quot;</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;calendar&quot;</span><span class="o">&gt;&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/series/&quot;</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;week&quot;</span><span class="o">&gt;&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>If you have more than 100 events, the system might refuse to show a list view and always show a calendar for performance
+reasons instead.</p>
+<p>You can see an example here:</p>
+<pretix-widget event="https://eventyay.com/demo/series/" style="calendar"></pretix-widget>
+<noscript>
+   <div class="pretix-widget">
+        <div class="pretix-widget-info-message">
+            JavaScript is disabled in your browser. To access our ticket shop without javascript, please <a target="_blank" href="https://eventyay.com/demo/series/">click here</a>.
+        </div>
+    </div>
+</noscript><p>You can filter events by meta data attributes. You can create those attributes in your order profile and set their values in both event and series date
+settings. For example, if you set up a meta data property called “Promoted” that you set to “Yes” on some events, you can pass a filter like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/series/&quot;</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;list&quot;</span> <span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;attr[Promoted]=Yes&quot;</span><span class="o">&gt;&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="pretix-button">
+<h2>pretix Button<a class="headerlink" href="#pretix-button" title="Permalink to this heading">¶</a></h2>
+<p>Instead of a product list, you can also display just a single button. When pressed, the button will add a number of
+products associated with the button to the cart and will immediately proceed to checkout if the operation succeeded.
+You can try out this behavior here:</p>
+<pretix-button event="https://eventyay.com/demo/democon/" items="item_6424=1">Buy ticket!</pretix-button>
+<noscript>
+   <div class="pretix-widget">
+        <div class="pretix-widget-info-message">
+            JavaScript is disabled in your browser. To access our ticket shop without javascript, please <a target="_blank" href="https://eventyay.com/demo/democon/">click here</a>.
+        </div>
+    </div>
+</noscript>
+<br><br><p>You can embed the pretix Button just like the pretix Widget. Just like above, first embed the CSS and JavaScript
+resources. Then, instead of the <code class="docutils literal notranslate"><span class="pre">pretix-widget</span></code> tag, use the <code class="docutils literal notranslate"><span class="pre">pretix-button</span></code> tag:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;pretix-button event=&quot;https://eventyay.com/demo/democon/&quot; items=&quot;item_6424=1&quot;&gt;
+    Buy ticket!
+&lt;/pretix-button&gt;
+</pre></div>
+</div>
+<p>As you can see, the <code class="docutils literal notranslate"><span class="pre">pretix-button</span></code> element takes an additional <code class="docutils literal notranslate"><span class="pre">items</span></code> attribute that specifies the items that
+should be added to the cart. The syntax of this attribute is <code class="docutils literal notranslate"><span class="pre">item_ITEMID=1,item_ITEMID=2,variation_ITEMID_VARID=4</span></code>
+where <code class="docutils literal notranslate"><span class="pre">ITEMID</span></code> are the internal IDs of items to be added and <code class="docutils literal notranslate"><span class="pre">VARID</span></code> are the internal IDs of variations of those
+items, if the items have variations. If you omit the <code class="docutils literal notranslate"><span class="pre">items</span></code> attribute, the general start page will be presented.</p>
+<p>In case you are using an event-series, you will need to specify the subevent for which the item(s) should be put in the
+cart. This can be done by specifying the <code class="docutils literal notranslate"><span class="pre">subevent</span></code>-attribute.</p>
+<p>Just as the widget, the button supports the optional attributes <code class="docutils literal notranslate"><span class="pre">voucher</span></code>, <code class="docutils literal notranslate"><span class="pre">disable-iframe</span></code>, and <code class="docutils literal notranslate"><span class="pre">skip-ssl-check</span></code>.</p>
+<p>You can style the button using the <code class="docutils literal notranslate"><span class="pre">pretix-button</span></code> CSS class.</p>
+</section>
+<section id="dynamically-opening-the-widget">
+<h2>Dynamically opening the widget<a class="headerlink" href="#dynamically-opening-the-widget" title="Permalink to this heading">¶</a></h2>
+<p>You can get the behavior of the pretix Button without a button at all, so you can trigger it from your own code in
+response to a user action. Usually, this will open an overlay with your ticket shop, however in some cases, such as
+missing HTTPS encryption on your case or a really small screen (mobile), it will open a new tab instead of an overlay.
+Therefore, make sure you call this <em>in direct response to a user action</em>, otherwise most browser will block it as an
+unwanted pop-up.</p>
+<dl class="js function">
+<dt class="sig sig-object js" id="window.PretixWidget.open">
+<span class="sig-prename descclassname"><span class="n"><span class="pre">window</span></span><span class="p"><span class="pre">.</span></span><span class="n"><span class="pre">PretixWidget</span></span><span class="p"><span class="pre">.</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">open</span></span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_url</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">voucher</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">subevent</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">items</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">widget_data</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">skip_ssl_check</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="#window.PretixWidget.open" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Arguments<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_url</strong> (<span><code class="xref js js-func docutils literal notranslate"><span class="pre">string()</span></code></span>) – The URL of the ticket shop.</p></li>
+<li><p><strong>voucher</strong> (<span><code class="xref js js-func docutils literal notranslate"><span class="pre">string()</span></code></span>) – A voucher code to be pre-selected, or <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></li>
+<li><p><strong>subevent</strong> (<span><code class="xref js js-func docutils literal notranslate"><span class="pre">string()</span></code></span>) – A subevent to be pre-selected, or <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></li>
+<li><p><strong>items</strong> (<span><code class="xref js js-func docutils literal notranslate"><span class="pre">array()</span></code></span>) – A collection of items to be put in the cart, of the form <code class="docutils literal notranslate"><span class="pre">[{&quot;item&quot;:</span> <span class="pre">&quot;item_3&quot;,</span> <span class="pre">&quot;count&quot;:</span> <span class="pre">1},</span> <span class="pre">{&quot;item&quot;:</span> <span class="pre">&quot;variation_5_6&quot;,</span> <span class="pre">&quot;count&quot;:</span> <span class="pre">4}]</span></code></p></li>
+<li><p><strong>widget_data</strong> (<span><code class="xref js js-func docutils literal notranslate"><span class="pre">object()</span></code></span>) – Additional data to be passed to the shop, see below.</p></li>
+<li><p><strong>skip_ssl_check</strong> (<span><code class="xref js js-func docutils literal notranslate"><span class="pre">boolean()</span></code></span>) – Whether to ignore the check for HTTPS. Only to be used during development.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="dynamically-loading-the-widget">
+<h2>Dynamically loading the widget<a class="headerlink" href="#dynamically-loading-the-widget" title="Permalink to this heading">¶</a></h2>
+<p>If you need to control the way or timing the widget loads, for example because you want to modify user data (see
+below) dynamically via JavaScript, you can register a listener that we will call before creating the widget:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+<span class="n">window</span><span class="o">.</span><span class="n">pretixWidgetCallback</span> <span class="o">=</span> <span class="n">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="o">//</span> <span class="n">Will</span> <span class="n">be</span> <span class="n">run</span> <span class="n">before</span> <span class="n">we</span> <span class="n">create</span> <span class="n">the</span> <span class="n">widget</span><span class="o">.</span>
+<span class="p">}</span>
+<span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>If you want, you can suppress us loading the widget and/or modify the user data passed to the widget:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+<span class="n">window</span><span class="o">.</span><span class="n">pretixWidgetCallback</span> <span class="o">=</span> <span class="n">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">PretixWidget</span><span class="o">.</span><span class="n">build_widgets</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">PretixWidget</span><span class="o">.</span><span class="n">widget_data</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;test@example.org&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>If you then later want to trigger loading the widgets, just call <code class="docutils literal notranslate"><span class="pre">window.PretixWidget.buildWidgets()</span></code>.</p>
+</section>
+<section id="waiting-for-the-widget-to-load">
+<h2>Waiting for the widget to load<a class="headerlink" href="#waiting-for-the-widget-to-load" title="Permalink to this heading">¶</a></h2>
+<p>If you want to run custom JavaScript once the widget is fully loaded, you can register a callback function. Note that
+this function might be run multiple times, for example if you have multiple widgets on a page or if the user switches
+e.g. from an event list to an event detail view:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+<span class="n">window</span><span class="o">.</span><span class="n">pretixWidgetCallback</span> <span class="o">=</span> <span class="n">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="n">window</span><span class="o">.</span><span class="n">PretixWidget</span><span class="o">.</span><span class="n">addLoadListener</span><span class="p">(</span><span class="n">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;Widget has loaded!&quot;</span><span class="p">);</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+<span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="passing-user-data-to-the-widget">
+<h2>Passing user data to the widget<a class="headerlink" href="#passing-user-data-to-the-widget" title="Permalink to this heading">¶</a></h2>
+<p>If you display the widget in a restricted area of your website and you want to pre-fill fields in the checkout process
+with known user data to save your users some typing and increase conversions, you can pass additional data attributes
+with that information:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;https://eventyay.com/demo/democon/&quot;</span>
+    <span class="n">data</span><span class="o">-</span><span class="n">attendee</span><span class="o">-</span><span class="n">name</span><span class="o">-</span><span class="n">given</span><span class="o">-</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;John&quot;</span>
+    <span class="n">data</span><span class="o">-</span><span class="n">attendee</span><span class="o">-</span><span class="n">name</span><span class="o">-</span><span class="n">family</span><span class="o">-</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Doe&quot;</span>
+    <span class="n">data</span><span class="o">-</span><span class="n">invoice</span><span class="o">-</span><span class="n">address</span><span class="o">-</span><span class="n">name</span><span class="o">-</span><span class="n">given</span><span class="o">-</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;John&quot;</span>
+    <span class="n">data</span><span class="o">-</span><span class="n">invoice</span><span class="o">-</span><span class="n">address</span><span class="o">-</span><span class="n">name</span><span class="o">-</span><span class="n">family</span><span class="o">-</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Doe&quot;</span>
+    <span class="n">data</span><span class="o">-</span><span class="n">email</span><span class="o">=</span><span class="s2">&quot;test@example.org&quot;</span>
+    <span class="n">data</span><span class="o">-</span><span class="n">question</span><span class="o">-</span><span class="n">L9G8NG9M</span><span class="o">=</span><span class="s2">&quot;Foobar&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">pretix</span><span class="o">-</span><span class="n">widget</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>This works for the pretix Button as well, if you also specify a product.
+Currently, the following attributes are understood by pretix itself:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data-email</span></code> will pre-fill the order email field as well as the attendee email field (if enabled).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data-question-IDENTIFIER</span></code> will pre-fill the answer for the question with the given identifier. You can view and set
+identifiers in the <em>Questions</em> section of the backend.</p></li>
+<li><p>Depending on the person name scheme configured in your event settings, you can pass one or more of
+<code class="docutils literal notranslate"><span class="pre">data-attendee-name-full-name</span></code>, <code class="docutils literal notranslate"><span class="pre">data-attendee-name-given-name</span></code>, <code class="docutils literal notranslate"><span class="pre">data-attendee-name-family-name</span></code>,
+<code class="docutils literal notranslate"><span class="pre">data-attendee-name-middle-name</span></code>, <code class="docutils literal notranslate"><span class="pre">data-attendee-name-title</span></code>, <code class="docutils literal notranslate"><span class="pre">data-attendee-name-calling-name</span></code>,
+<code class="docutils literal notranslate"><span class="pre">data-attendee-name-latin-transcription</span></code>. If you don’t know or don’t care, you can also just pass a string as
+<code class="docutils literal notranslate"><span class="pre">data-attendee-name</span></code>, which will pre-fill the last part of the name, whatever that is.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data-invoice-address-FIELD</span></code> will  pre-fill the corresponding field of the invoice address. Possible values for
+<code class="docutils literal notranslate"><span class="pre">FIELD</span></code> are <code class="docutils literal notranslate"><span class="pre">company</span></code>, <code class="docutils literal notranslate"><span class="pre">street</span></code>, <code class="docutils literal notranslate"><span class="pre">zipcode</span></code>, <code class="docutils literal notranslate"><span class="pre">city</span></code> and <code class="docutils literal notranslate"><span class="pre">country</span></code>, as well as fields specified by the
+naming scheme such as <code class="docutils literal notranslate"><span class="pre">name-title</span></code> or <code class="docutils literal notranslate"><span class="pre">name-given-name</span></code> (see above). <code class="docutils literal notranslate"><span class="pre">country</span></code> expects a two-character
+country code.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">data-fix=&quot;true&quot;</span></code> is given, the user will not be able to change the other given values later. This currently
+only works for the order email address as well as the invoice address. Attendee-level fields and questions can
+always be modified. Note that this is not a security feature and can easily be overridden by users, so do not rely
+on this for authentication.</p></li>
+</ul>
+<p>Any configured pretix plugins might understand more data fields. For example, if the appropriate plugins on pretix
+Hosted or pretix Enterprise are active, you can pass the following fields:</p>
+<ul>
+<li><p>If you use the campaigns plugin, you can pass a campaign ID as a value to <code class="docutils literal notranslate"><span class="pre">data-campaign</span></code>. This way, all orders
+made through this widget will be counted towards this campaign.</p></li>
+<li><p>If you use the tracking plugin, you can enable cross-domain tracking. To do so, you need to initialize the
+pretix-widget manually. Use the html code to embed the widget and add one the following code snippets. Make sure to
+replace all occurrences of &lt;MEASUREMENT_ID&gt; with your Google Analytics MEASUREMENT_ID (UA-XXXXXXX-X or G-XXXXXXXX)</p>
+<p>Please also make sure to add the embedding website to your <a class="reference external" href="https://support.google.com/analytics/answer/2795830">Referral exclusions</a> in your Google Analytics settings.</p>
+<p>If you use Google Analytics 4 (GA4 – G-XXXXXXXX):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;script async src=&quot;https://www.googletagmanager.com/gtag/js?id=&lt;MEASUREMENT_ID&gt;&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag(&#39;js&#39;, new Date());
+    gtag(&#39;config&#39;, &#39;&lt;MEASUREMENT_ID&gt;&#39;);
+
+    window.pretixWidgetCallback = function () {
+        window.PretixWidget.build_widgets = false;
+        window.addEventListener(&#39;load&#39;, function() { // Wait for GA to be loaded
+            if (!window[&#39;google_tag_manager&#39;]) {
+                window.PretixWidget.buildWidgets();
+                return;
+            }
+
+            var clientId;
+            var sessionId;
+            var loadingTimeout;
+            function build() {
+                // use loadingTimeout to make sure build() is only called once
+                if (!loadingTimeout) return;
+                window.clearTimeout(loadingTimeout);
+                loadingTimeout = null;
+                if (clientId) window.PretixWidget.widget_data[&quot;tracking-ga-id&quot;] = clientId;
+                if (sessionId) window.PretixWidget.widget_data[&quot;tracking-ga-sessid&quot;] = sessionId;
+                window.PretixWidget.buildWidgets();
+            };
+            // make sure to build pretix-widgets if gtag fails to load either client_id or session_id
+            loadingTimeout = window.setTimeout(build, 2000);
+
+            gtag(&#39;get&#39;, &#39;&lt;MEASUREMENT_ID&gt;&#39;, &#39;client_id&#39;, function(id) {
+                clientId = id;
+                if (sessionId !== undefined) build();
+            });
+            gtag(&#39;get&#39;, &#39;&lt;MEASUREMENT_ID&gt;&#39;, &#39;session_id&#39;, function(id) {
+                sessionId = id;
+                if (clientId !== undefined) build();
+            });
+        });
+    };
+&lt;/script&gt;
+</pre></div>
+</div>
+<p>If you use Universal Analytics with <code class="docutils literal notranslate"><span class="pre">gtag.js</span></code> (UA-XXXXXXX-X):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;script async src=&quot;https://www.googletagmanager.com/gtag/js?id=&lt;MEASUREMENT_ID&gt;&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag(&#39;js&#39;, new Date());
+    gtag(&#39;config&#39;, &#39;&lt;MEASUREMENT_ID&gt;&#39;);
+
+    window.pretixWidgetCallback = function () {
+        window.PretixWidget.build_widgets = false;
+        window.addEventListener(&#39;load&#39;, function() { // Wait for GA to be loaded
+            if (!window[&#39;google_tag_manager&#39;]) {
+                window.PretixWidget.buildWidgets();
+                return;
+            }
+
+            // make sure to build pretix-widgets if gtag fails to load client_id
+            var loadingTimeout = window.setTimeout(function() {
+                loadingTimeout = null;
+                window.PretixWidget.buildWidgets();
+            }, 1000);
+
+            gtag(&#39;get&#39;, &#39;&lt;MEASUREMENT_ID&gt;&#39;, &#39;client_id&#39;, function(id) {
+                if (loadingTimeout) {
+                    window.clearTimeout(loadingTimeout);
+                    window.PretixWidget.widget_data[&quot;tracking-ga-id&quot;] = id;
+                    window.PretixWidget.buildWidgets();
+                }
+            });
+        });
+    };
+&lt;/script&gt;
+</pre></div>
+</div>
+<p>If you use <a href="#id1"><span class="problematic" id="id2">``</span></a><cite>analytics.js</cite> (Universal Analytics):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;script&gt;
+    (function(i,s,o,g,r,a,m){i[&#39;GoogleAnalyticsObject&#39;]=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,&#39;script&#39;,&#39;https://www.google-analytics.com/analytics.js&#39;,&#39;ga&#39;);
+
+    ga(&#39;create&#39;, &#39;&lt;MEASUREMENT_ID&gt;&#39;, &#39;auto&#39;);
+    ga(&#39;send&#39;, &#39;pageview&#39;);
+
+    window.pretixWidgetCallback = function () {
+        window.PretixWidget.build_widgets = false;
+        window.addEventListener(&#39;load&#39;, function() { // Wait for GA to be loaded
+            if (!window[&#39;ga&#39;] || !ga.create) {
+                // Tracking is probably blocked
+                window.PretixWidget.buildWidgets()
+                return;
+            }
+
+            var loadingTimeout = window.setTimeout(function() {
+                loadingTimeout = null;
+                window.PretixWidget.buildWidgets();
+            }, 1000);
+            ga(function(tracker) {
+                if (loadingTimeout) {
+                    window.clearTimeout(loadingTimeout);
+                    window.PretixWidget.widget_data[&quot;tracking-ga-id&quot;] = tracker.get(&#39;clientId&#39;);
+                    window.PretixWidget.buildWidgets();
+                }
+            });
+        });
+    };
+&lt;/script&gt;
+</pre></div>
+</div>
+</li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 3.6: </span>Dynamically opening the widget has been added in pretix 3.6.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="giftcards.html" class="btn btn-neutral float-right" title="Gift cards" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="guides/timeslots.html" class="btn btn-neutral" title="Use case: Time slots" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,405 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Use case: Time slots &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Product structure guide" href="../structureguide.html"/>
+        <link rel="next" title="Embeddable Widget" href="../widget.html"/>
+        <link rel="prev" title="Product structure guide" href="../structureguide.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../create.html">Creating an event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../settings.html">Configuring an event</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../structureguide.html">Product structure guide</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../structureguide.html#terminology">Terminology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../structureguide.html#use-case-multiple-price-levels">Use case: Multiple price levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../structureguide.html#use-case-early-bird-tiers-based-on-dates">Use case: Early-bird tiers based on dates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../structureguide.html#use-case-early-bird-tiers-based-on-ticket-numbers">Use case: Early-bird tiers based on ticket numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../structureguide.html#use-case-up-selling-of-ticket-extras">Use case: Up-selling of ticket extras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../structureguide.html#use-case-conference-with-workshops">Use case: Conference with workshops</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../structureguide.html#use-case-discounted-packages">Use case: Discounted packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../structureguide.html#use-case-group-discounts">Use case: Group discounts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../structureguide.html#use-case-restricted-audience">Use case: Restricted audience</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../structureguide.html#use-case-mixed-taxation">Use case: Mixed taxation</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../structureguide.html#more-use-cases">More use cases</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Use case: Time slots</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../widget.html">Embeddable Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../markdown.html">Markdown Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="../structureguide.html">Product structure guide</a> &raquo;</li>
+        
+      <li>Use case: Time slots</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/user/events/guides/timeslots.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="use-case-time-slots">
+<span id="timeslots"></span><h1>Use case: Time slots<a class="headerlink" href="#use-case-time-slots" title="Permalink to this heading">¶</a></h1>
+<p>A more advanced use case of eventyay is using eventyay for time-slot-based access to an area with a limited visitor
+capacity, such as a museum or other attraction. This guide will show you the quickest way to set up such an event
+with eventyay.</p>
+<p>First of all, when creating your event, you need to select that your event represents an “event series”:</p>
+<a class="screenshot"
+               data-lightbox="group-5a79ca3b-78da-4859-8d9c-b2c6ffb9dfa1"
+               href="../../../_images/create_step11.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../../_images/create_step11.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>You can click <a class="reference internal" href="../subevents.html#subevents"><span class="std std-ref">here</span></a> for a more general description of event series with eventyay, but everything you
+need to know is in this chapter as well.</p>
+<section id="general-event-setup">
+<h2>General event setup<a class="headerlink" href="#general-event-setup" title="Permalink to this heading">¶</a></h2>
+<p>Before you go further, set up your products that you want to sell for each time slot, such as different types of entry.</p>
+</section>
+<section id="creating-slots">
+<h2>Creating slots<a class="headerlink" href="#creating-slots" title="Permalink to this heading">¶</a></h2>
+<p>To create the time slots, you need to create a number of “dates” in the event series. Select “Dates” in the navigation
+menu on the left side and click “Create many new dates”. Then, first enter the pattern of your opening days. In the
+example, the museum is open week Tuesday to Sunday. We recommend to create the slots for a few weeks at a time, but not
+e.g. for a full year, since it will be more complicated to change things later.</p>
+<a class="screenshot"
+               data-lightbox="group-db98803a-7f70-415b-b58b-de818a84e736"
+               href="../../../_images/timeslots_create1.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../../_images/timeslots_create1.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>Then, scroll to the times section and create your time slots. You can do any interval you like. If you have different
+opening times on different week days, you will need to go through the creation process multiple times.</p>
+<a class="screenshot"
+               data-lightbox="group-dbf33496-da63-4aa6-b0b0-35a47d12ebf4"
+               href="../../../_images/timeslots_create_21.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../../_images/timeslots_create_21.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>Scroll further down and create one or multiple quotas that define how many people can book a ticket for that time slot.
+In this example, 50 people in total are allowed to enter within every slot:</p>
+<a class="screenshot"
+               data-lightbox="group-4dba386e-cd54-4368-afb3-538e14b57efd"
+               href="../../../_images/timeslots_create_31.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../../_images/timeslots_create_31.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>Do <strong>not</strong> create a check-in list at this point. We will deal with this further below in the guide.
+Now, press “Save” to create your slots.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If you create a lot of time slots at once, the server might need a few minutes to create them all in our
+system. If you receive an error page because it took too long, please do not try again immediately but wait
+for a few minutes. Most likely, the slots will be created successfully even though you saw an error.</p>
+</div>
+</section>
+<section id="event-settings">
+<h2>Event settings<a class="headerlink" href="#event-settings" title="Permalink to this heading">¶</a></h2>
+<p>We recommend that you navigate to “Settings” &gt; “General” &gt; “Display” and set the settings “Default overview style”
+to “Week calendar”:</p>
+<a class="screenshot"
+               data-lightbox="group-08c6036e-ea92-4f3c-8bac-edffef4ff4a8"
+               href="../../../_images/timeslots_settings_11.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../../_images/timeslots_settings_11.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>Now, your ticket shop should give users a nice weekly overview over all time slots and their availability:</p>
+<a class="screenshot"
+               data-lightbox="group-f916935d-987d-4628-a47f-0d8765484902"
+               href="../../../_images/timeslots_presale1.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../../_images/timeslots_presale1.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a></section>
+<section id="check-in">
+<h2>Check-in<a class="headerlink" href="#check-in" title="Permalink to this heading">¶</a></h2>
+<p>If you want to scan people at the entrance of your event and only admit them at their designated time, we recommend
+the following setup: Go to “Check-in” in the main navigation on the left and create a new check-in list. Give it a name
+and do <em>not</em> choose a specific data. We will use one check-in list for all dates. Then, go to the “Advanced” tab at
+the top and set up two restrictions to make sure people can only get in during the time slot they registered for.
+You can create the rules exactly like shown in the following screenshot:</p>
+<a class="screenshot"
+               data-lightbox="group-29433bae-7119-4c4a-9fdd-095fca5010fd"
+               href="../../../_images/timeslots_checkinlists1.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../../_images/timeslots_checkinlists1.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>If you want, you can enter a tolerance of e.g. “10” if you want to be a little bit more relaxed and admit people up to
+10 minutes before or after their time slot.</p>
+<p>Now, download our <a class="reference external" href="https://eventyay.com/about/en/scan">Android or Desktop app</a> and register it to your account. The app will ask you to select one the
+time slots, but it does not matter, you can select any one of them and then select your newly created check-in list.
+That’s it, you’re good to go!</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../widget.html" class="btn btn-neutral float-right" title="Embeddable Widget" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../structureguide.html" class="btn btn-neutral" title="Product structure guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

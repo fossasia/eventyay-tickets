@@ -1,0 +1,346 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installing pretix Enterprise plugins &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Installation guide" href="index.html"/>
+        <link rel="next" title="Configuration file" href="../config.html"/>
+        <link rel="prev" title="Installing a development version" href="dev_version.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Administrator documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Installation guide</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="general.html">General remarks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docker_smallscale.html">Small-scale deployment with Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="manual_smallscale.html">Small-scale manual deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev_version.html">Installing a development version</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Installing pretix Enterprise plugins</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#buying-the-license">Buying the license</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#manual-installation">Manual installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#docker-installation">Docker installation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../config.html">Configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../maintainance.html">Backups and Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../scaling.html">Scaling guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../indexes.html">Additional database indices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Administrator documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Installation guide</a> &raquo;</li>
+        
+      <li>Installing pretix Enterprise plugins</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/admin/installation/enterprise.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="installing-pretix-enterprise-plugins">
+<h1>Installing pretix Enterprise plugins<a class="headerlink" href="#installing-pretix-enterprise-plugins" title="Permalink to this heading">¶</a></h1>
+<p>If you want to use a feature of pretix that is part of our commercial offering pretix Enterprise, you need to follow
+some extra steps. Installation works similar to normal pretix plugins, but involves a few extra steps.</p>
+<section id="buying-the-license">
+<h2>Buying the license<a class="headerlink" href="#buying-the-license" title="Permalink to this heading">¶</a></h2>
+<p>To obtain a license, please get in touch at <a class="reference external" href="mailto:sales&#37;&#52;&#48;eventyay&#46;com">sales<span>&#64;</span>eventyay<span>&#46;</span>com</a>. Please let us know how many tickets you roughly intend
+to sell per year and how many servers you want to use the plugin on. We recommend having a look at our <a class="reference external" href="https://eventyay.com/about/en/pricing">price list</a>
+first.</p>
+</section>
+<section id="manual-installation">
+<h2>Manual installation<a class="headerlink" href="#manual-installation" title="Permalink to this heading">¶</a></h2>
+<p>First, generate an SSH key for the system user that you install pretix as. In our tutorial, that would be the user
+<code class="docutils literal notranslate"><span class="pre">pretix</span></code>. Choose an empty passphrase:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># su pretix
+$ ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/var/pretix/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /var/pretix/.ssh/id_rsa.
+Your public key has been saved in /var/pretix/.ssh/id_rsa.pub.
+</pre></div>
+</div>
+<p>Next, send the content of the <em>public</em> key to your sales representative at pretix:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ cat /var/pretix/.ssh/id_rsa.pub
+ssh-rsa AAAAB3N...744HZawHlD pretix@foo
+</pre></div>
+</div>
+<p>After we configured your key in our system, you can install the plugin directly using <code class="docutils literal notranslate"><span class="pre">pip</span></code> from the URL we told
+you, for example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ source /var/pretix/venv/bin/activate
+(venv)$ pip3 install -U &quot;git+ssh://git@code.rami.io:10022/pretix/pretix-slack.git@stable#egg=pretix-slack&quot;
+(venv)$ python -m pretix migrate
+(venv)$ python -m pretix rebuild
+# systemctl restart pretix-web pretix-worker
+</pre></div>
+</div>
+</section>
+<section id="docker-installation">
+<h2>Docker installation<a class="headerlink" href="#docker-installation" title="Permalink to this heading">¶</a></h2>
+<p>To install a plugin, you need to build your own docker image. To do so, create a new directory to work in. As a first
+step, generate a new SSH key in that directory to use for authentication with us:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ cd /home/me/mypretixdocker
+$ ssh-keygen -N &quot;&quot; -f id_pretix_enterprise
+</pre></div>
+</div>
+<p>Next, send the content of the <em>public</em> key to your sales representative at pretix:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ cat id_pretix_enterprise.pub
+ssh-rsa AAAAB3N...744HZawHlD pretix@foo
+</pre></div>
+</div>
+<p>After we configured your key in our system, you can add a <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code> in your directory that includes the newly
+generated key and installs the plugin from the URL we told you:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>FROM pretix/standalone:stable
+USER root
+COPY id_pretix_enterprise /root/.ssh/id_rsa
+COPY id_pretix_enterprise.pub /root/.ssh/id_rsa.pub
+RUN chmod -R 0600 /root/.ssh &amp;&amp; \
+    mkdir -p /etc/ssh &amp;&amp; \
+    ssh-keyscan -t rsa -p 10022 code.rami.io &gt;&gt; /root/.ssh/known_hosts &amp;&amp; \
+    echo StrictHostKeyChecking=no &gt;&gt; /root/.ssh/config &amp;&amp; \
+    DJANGO_SETTINGS_MODULE=pretix.settings pip3 install -U &quot;git+ssh://git@code.rami.io:10022/pretix/pretix-slack.git@stable#egg=pretix-slack&quot; &amp;&amp; \
+    cd /pretix/src &amp;&amp; \
+    sudo -u pretixuser make production
+USER pretixuser
+</pre></div>
+</div>
+<p>Then, build the image for docker:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ docker build -t mypretix
+</pre></div>
+</div>
+<p>You can now use that image <code class="docutils literal notranslate"><span class="pre">mypretix</span></code> instead of <code class="docutils literal notranslate"><span class="pre">pretix/standalone:stable</span></code> in your <code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/pretix.service</span></code>
+service file. Be sure to re-build your custom image after you pulled <code class="docutils literal notranslate"><span class="pre">pretix/standalone</span></code> if you want to perform an
+update to a new version of pretix.</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../config.html" class="btn btn-neutral float-right" title="Configuration file" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="dev_version.html" class="btn btn-neutral" title="Installing a development version" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

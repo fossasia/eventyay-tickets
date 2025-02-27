@@ -1,0 +1,587 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Glossary &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="up" title="User Guide" href="index.html"/>
+        <link rel="next" title="Administrator documentation" href="../admin/index.html"/>
+        <link rel="prev" title="Markdown Guide" href="markdown.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events/create.html">Creating an event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events/settings.html">Configuring an event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events/structureguide.html">Product structure guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events/widget.html">Embeddable Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events/giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="markdown.html">Markdown Guide</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">User Guide</a> &raquo;</li>
+        
+      <li>Glossary</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/user/glossary.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="glossary">
+<h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this heading">¶</a></h1>
+<p>This page gives definitions of domain-specific terms that we use a lot inside eventyay and that might be used slightly
+differently elsewhere, as well as their official translations to other languages. In some cases, things have a different
+name internally, which is noted with a 🔧 symbol. If you only use eventyay, you’ll never see these, but if you’re
+going to develop around eventyay, for example connect to eventyay through our API, you need to know these as well.</p>
+<table class="rest-resource-table docutils align-default" id="id1">
+<caption><span class="caption-text">Glossary</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 67%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Term</p></th>
+<th class="head"><p>Definition</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Organizer</strong></div>
+<div class="line">🇩🇪 Veranstalter</div>
+</div>
+</td>
+<td><p>An organizer represents the entity using eventyay, usually the company or institution running one or multiple events.
+In terms of navigation in the system, organizers are the “middle layer” between the system itself and the specific
+events.
+Multiple organizers on the same eventyay system are fully separated from each other with very few exceptions.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Event</strong></div>
+<div class="line">🇩🇪 Veranstaltung</div>
+</div>
+</td>
+<td><p>An event is the central entity in eventyay that you and your customers interact with all the time. An event
+represents one <strong>shop</strong> in which things like tickets can be bought. Since the introduction of event series (see
+below), this might include multiple events in the real world.</p>
+<p>Every purchase needs to be connected to an event, and most things are completely separate between different
+events, i.e. most actions and configurations in eventyay are done per-event.</p>
+</td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Event series</strong></div>
+<div class="line">🇩🇪 Veranstaltungsreihe</div>
+</div>
+</td>
+<td><p>An event series is one of two types of events. Unlike a non-series event, an event series groups together
+multiple real-world events into one eventyay shop. Examples are time-slot-based booking for a museum, a band on
+tour, a theater group playing the same play multiple times, etc.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Date</strong></div>
+<div class="line">🇩🇪 Termin</div>
+<div class="line">🔧 Subevent</div>
+</div>
+</td>
+<td><p>A date represents a single real-world event inside an event series. Dates can differ from each other in name,
+date, time, location, pricing, capacity, and seating plans, but otherwise share the same configuration.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Product</strong></div>
+<div class="line">🇩🇪 Produkt</div>
+<div class="line">🔧 Item</div>
+</div>
+</td>
+<td><p>A product is anything that can be sold, such as a specific type of ticket or merchandise.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Admission product</strong></div>
+<div class="line">🇩🇪 Zutrittsprodukt</div>
+</div>
+</td>
+<td><p>A product is considered an <strong>admission product</strong> if its purchase represents a person being granted access to your
+event. This applies to most ticketing products, but not e.g. to merchandise.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Variation</strong></div>
+<div class="line">🇩🇪 Variante</div>
+<div class="line">🔧 Item variation</div>
+</div>
+</td>
+<td><p>Some products come in multiple variations that can differ in description, price and capacity. Examples would
+include “Adult” and “Child” in case of a concert ticket, or “S”, “M”, “L”, … in case of a t-shirt product.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Category</strong></div>
+<div class="line">🇩🇪 Kategorie</div>
+</div>
+</td>
+<td><p>Products can be grouped together in categories. This is mostly to organize them cleanly in the frontend if you
+have lots of them.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Quota</strong></div>
+<div class="line">🇩🇪 Kontingent</div>
+</div>
+</td>
+<td><p>A quota is a capacity pool that defines how many times a product can be sold. A quota can be connected to multiple
+products, in which case all of them are counted together. This is useful e.g. if you have full-price and reduced
+tickets and only want to sell a certain number of tickets in total. The same way, multiple quotas can be connected
+to the same product, in which case the ticket will be available as long as all of them have capacity left.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Add-on product</strong></div>
+<div class="line">🇩🇪 Zusatzprodukt</div>
+</div>
+</td>
+<td><p>An add-on product is a product that is purchased as an upgrade or optional addition to a different product.
+Examples would be include a conference ticket that optionally allows to buy a public transport ticket for the
+same day, or a family ticket for 4 persons that allows you to add additional persons at a small cost, or a
+“two workshops” package that allows you to select two of a larger number of workshops at a discounted price.
+In all cases, there is a “main product” (the conference ticket, the family ticket) and a number of “add-on products”
+that can be chosen from.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Bundled product</strong></div>
+<div class="line">🇩🇪 Enthaltenes Produkt</div>
+</div>
+</td>
+<td><p>A bundled product is a product that is automatically put into the cart when another product is purchased. It’s
+similar to an add-on product, except that the customer has no choice between whether it is added or which of a
+set of product is added.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Question</strong></div>
+<div class="line">🇩🇪 Frage</div>
+</div>
+</td>
+<td><p>A question is a custom field that customers need to fill in when purchasing a specific product.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Voucher</strong></div>
+<div class="line">🇩🇪 Gutschein</div>
+</div>
+</td>
+<td><p>A voucher is a code that can be used for multiple purposes: To grant a discount to specific customers, to only
+show certain products to certain customers, or to keep a seat open for someone specific even though you are
+sold out. If a voucher is used to apply a discount, the price of the purchased product is reduced by the
+discounted amount. Vouchers are connected to a specific event.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Gift card</strong></div>
+<div class="line">🇩🇪 Geschenkgutschein</div>
+</div>
+</td>
+<td><p>A <a class="reference internal" href="events/giftcards.html#giftcards"><span class="std std-ref">gift card</span></a> is a coupon representing an exact amount of money that can be used for purchases
+of any kind. Gift cards can be sold, created manually, or used as a method to refund your customer without paying
+them back directly.
+Unlike a voucher, it does not reduce the price of the purchased products when redeemed, but instead works as a
+payment method to lower the amount that needs to be paid through other methods. Gift cards are specific to an
+organizer by default but can even by shared between organizers.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Cart</strong></div>
+<div class="line">🇩🇪 Warenkorb</div>
+</div>
+</td>
+<td><p>A cart is a collection of products that are reserved by a customer who is currently completing the checkout
+process, but has not yet finished it.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Order</strong></div>
+<div class="line">🇩🇪 Bestellung</div>
+</div>
+</td>
+<td><p>An order is a purchase by a client, containing multiple different products. An order goes through various
+states and can change during its lifetime.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Order code</strong></div>
+<div class="line">🇩🇪 Bestellnummer</div>
+</div>
+</td>
+<td><p>An order code is the unique identifier of an order, usually consisting of 5 numbers and letters.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Order position</strong></div>
+<div class="line">🇩🇪 Bestellposition</div>
+</div>
+</td>
+<td><p>An order position is a single line inside an order, representing the purchase of one specific product. If the
+product is an admission product, this represents an attendee.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Attendees</strong></div>
+<div class="line">🇩🇪 Teilnehmende</div>
+</div>
+</td>
+<td><p>An attendee is the person designated to use a specific order position to access the event.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Fee</strong></div>
+<div class="line">🇩🇪 Gebühr</div>
+</div>
+</td>
+<td><p>A fee is an additional type of line inside an order that represents a cost that needs to be paid by the customer,
+but is not related to a specific product. A typical example is a shipping fee.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Invoice</strong> and <strong>Cancellation</strong></div>
+<div class="line">🇩🇪 Rechnung und Rechnungskorrektur</div>
+</div>
+</td>
+<td><p>An invoice refers to a legal document created to document a purchase for tax purposes. Invoices have individual
+numbers and no longer change after they have been issued. Every invoice is connected to an order, but an order
+can have multiple invoices: If an order changes, a cancellation document is created for the old invoice and a
+new invoice is created.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Check-in</strong></div>
+<div class="line">🇩🇪 Check-in</div>
+</div>
+</td>
+<td><p>A check-in is the event of someone being successfully scanned at an entry or exit of the event.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Check-in list</strong></div>
+<div class="line">🇩🇪 Check-in-Liste</div>
+</div>
+</td>
+<td><p>A check-in list is used to configure who can be scanned at a specific entry or exit of the event. Check-in lists
+are isolated from each other, so by default each ticket is valid once on every check-in list individually. They
+are therefore often used to represent <em>parts</em> of an event, either time-wise (e.g. conference days) or space-wise
+(e.g. rooms).</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Plugin</strong></div>
+<div class="line">🇩🇪 Erweiterung</div>
+</div>
+</td>
+<td><p>A plugin is an optional software module that contains additional functionality and can be turned on and off per
+event. If you host eventyay on your own server, most plugins need to be installed separately.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Tax rule</strong></div>
+<div class="line">🇩🇪 Steuer-Regel</div>
+</div>
+</td>
+<td><p>A tax rule defines how sales taxes are calculated for a product, possibly depending on type and country of the
+customer.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Ticket</strong></div>
+<div class="line">🇩🇪 Ticket</div>
+</div>
+</td>
+<td><p>A ticket usually refers to the actual file presented to the customer to be used at check-in, i.e. the PDF or
+Passbook file carrying the QR code. In some cases, “ticket” may also be used to refer to an order position,
+especially in case of admission products.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Ticket secret</strong></div>
+<div class="line">🇩🇪 Ticket-Code</div>
+</div>
+</td>
+<td><p>The ticket secret (sometimes “ticket code”) is what’s contained in the QR code on the ticket.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Badge</strong></div>
+<div class="line">🇩🇪 Badge</div>
+</div>
+</td>
+<td><p>A badge refers to the file used as a name tag for an attendee of your event.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>User</strong></div>
+<div class="line">🇩🇪 Benutzer</div>
+</div>
+</td>
+<td><p>A user is anyone who can sign into the backend interface of eventyay.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Team</strong></div>
+<div class="line">🇩🇪 Team</div>
+</div>
+</td>
+<td><p>A <a class="reference internal" href="organizers/teams.html#user-teams"><span class="std std-ref">team</span></a> is a collection of users who are granted some level of access to a set of events.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Device</strong></div>
+<div class="line">🇩🇪 Gerät</div>
+</div>
+</td>
+<td><p>A device is something that talks to eventyay but does not run on a server. Usually a device refers to an
+installation of eventyaySCAN, eventyayPOS or some compatible third-party app on one of your computing devices.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Gate</strong></div>
+<div class="line">🇩🇪 Station</div>
+</div>
+</td>
+<td><p>A gate is a location at your event where people are being scanned, e.g. an entry or exit door. You can configure
+gates in eventyay to group multiple devices together that are used in the same location, mostly for statistical
+purposes.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Widget</strong></div>
+<div class="line">🇩🇪 Widget</div>
+</div>
+</td>
+<td><p>The <a class="reference internal" href="events/widget.html#widget"><span class="std std-ref">Embeddable Widget</span></a> is a JavaScript component that can be used to embed the shop of an event or a list of events
+into a third-party web page.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Sales channel</strong></div>
+<div class="line">🇩🇪 Verkaufskanal</div>
+</div>
+</td>
+<td><p>A sales channel refers to the type in which a purchase arrived in the system, e.g. through eventyay’ web shop itself,
+or through other channels like box office or reseller sales.</p></td>
+</tr>
+<tr class="row-even"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Box office</strong></div>
+<div class="line">🇩🇪 Abendkasse</div>
+</div>
+</td>
+<td><p>Box office purchases refer to all purchases made in-person from the organizer directly, through a point of sale
+system like eventyayPOS.</p></td>
+</tr>
+<tr class="row-odd"><td><div class="line-block">
+<div class="line">🇬🇧 <strong>Reseller</strong></div>
+<div class="line">🇩🇪 Vorverkaufsstelle</div>
+</div>
+</td>
+<td><p>Resellers are third-party entities offering in-person sales of events to customers.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../admin/index.html" class="btn btn-neutral float-right" title="Administrator documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="markdown.html" class="btn btn-neutral" title="Markdown Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

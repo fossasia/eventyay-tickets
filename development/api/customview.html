@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Creating custom views &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Plugin development" href="index.html"/>
+        <link rel="next" title="Pluggable authentication backends" href="auth.html"/>
+        <link rel="prev" title="Extending the order import process" href="import.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../implementation/index.html">Implementation and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Plugin development</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Creating a plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporter.html">Writing an exporter plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ticketoutput.html">Writing a ticket output plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment.html">Writing a payment provider plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment_2.0.html">Porting a payment provider from pretix 1.x to pretix 2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">Writing an HTML e-mail renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="placeholder.html">Writing an e-mail placeholder plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="invoice.html">Writing an invoice renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shredder.html">Writing a data shredder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="import.html">Extending the order import process</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Creating custom views</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#control-panel-views">Control panel views</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#event-settings-view">Event settings view</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#frontend-views">Frontend views</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rest-api-viewsets">REST API viewsets</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="auth.html">Pluggable authentication backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="general.html">General APIs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quality.html">Plugin quality checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Plugin development</a> &raquo;</li>
+        
+      <li>Creating custom views</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/api/customview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="creating-custom-views">
+<span id="customview"></span><h1>Creating custom views<a class="headerlink" href="#creating-custom-views" title="Permalink to this heading">¶</a></h1>
+<p>This page describes how to provide a custom view from within your plugin. Before you start
+reading this page, please read and understand how <a class="reference internal" href="../implementation/urlconfig.html#urlconf"><span class="std std-ref">URL handling</span></a> works in
+pretix.</p>
+<section id="control-panel-views">
+<h2>Control panel views<a class="headerlink" href="#control-panel-views" title="Permalink to this heading">¶</a></h2>
+<p>If you want to add a custom view to the control area of an event, just register an URL in your
+<code class="docutils literal notranslate"><span class="pre">urls.py</span></code> that lives in the <code class="docutils literal notranslate"><span class="pre">/control/</span></code> subpath:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">django.conf.urls</span><span class="w"> </span><span class="kn">import</span> <span class="n">url</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">views</span>
+<span class="linenos">4</span>
+<span class="linenos">5</span><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos">6</span>    <span class="n">url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^control/event/(?P&lt;organizer&gt;[^/]+)/(?P&lt;event&gt;[^/]+)/mypluginname/&#39;</span><span class="p">,</span>
+<span class="linenos">7</span>        <span class="n">views</span><span class="o">.</span><span class="n">admin_view</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;backend&#39;</span><span class="p">),</span>
+<span class="linenos">8</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>It is required that your URL parameters are called <code class="docutils literal notranslate"><span class="pre">organizer</span></code> and <code class="docutils literal notranslate"><span class="pre">event</span></code>. If you want to
+install a view on organizer level, you can leave out the <code class="docutils literal notranslate"><span class="pre">event</span></code>.</p>
+<p>You can then implement the view as you would normally do. Our middleware will automatically
+detect the <code class="docutils literal notranslate"><span class="pre">/control/</span></code> subpath and will ensure the following things if this is an URL with
+both the <code class="docutils literal notranslate"><span class="pre">event</span></code> and <code class="docutils literal notranslate"><span class="pre">organizer</span></code> parameters:</p>
+<ul class="simple">
+<li><p>The user is logged in</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">request.event</span></code> attribute contains the current event</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">request.organizer</span></code> attribute contains the event’s organizer</p></li>
+<li><p>The user has permission to access view the current event</p></li>
+</ul>
+<p>If only the <code class="docutils literal notranslate"><span class="pre">organizer</span></code> parameter is present, it will be ensured that:</p>
+<ul class="simple">
+<li><p>The user is logged in</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">request.organizer</span></code> attribute contains the event’s organizer</p></li>
+<li><p>The user has permission to access view the current organizer</p></li>
+</ul>
+<p>If you want to require specific permission types, we provide you with a decorator or a mixin for
+your views:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">pretix.control.permissions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<span class="linenos"> 2</span>    <span class="n">event_permission_required</span><span class="p">,</span> <span class="n">EventPermissionRequiredMixin</span>
+<span class="linenos"> 3</span><span class="p">)</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="k">class</span><span class="w"> </span><span class="nc">AdminView</span><span class="p">(</span><span class="n">EventPermissionRequiredMixin</span><span class="p">,</span> <span class="n">View</span><span class="p">):</span>
+<span class="linenos"> 6</span>    <span class="n">permission</span> <span class="o">=</span> <span class="s1">&#39;can_view_orders&#39;</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span>    <span class="o">...</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span><span class="nd">@event_permission_required</span><span class="p">(</span><span class="s1">&#39;can_view_orders&#39;</span><span class="p">)</span>
+<span class="linenos">12</span><span class="k">def</span><span class="w"> </span><span class="nf">admin_view</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">organizer</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="linenos">13</span>    <span class="o">...</span>
+</pre></div>
+</div>
+<p>Similarly, there is <code class="docutils literal notranslate"><span class="pre">organizer_permission_required</span></code> and <code class="docutils literal notranslate"><span class="pre">OrganizerPermissionRequiredMixin</span></code>. In case of
+event-related views, there is also a signal that allows you to add the view to the event navigation like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">django.urls</span><span class="w"> </span><span class="kn">import</span> <span class="n">resolve</span><span class="p">,</span> <span class="n">reverse</span>
+<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">django.dispatch</span><span class="w"> </span><span class="kn">import</span> <span class="n">receiver</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">django.utils.translation</span><span class="w"> </span><span class="kn">import</span> <span class="n">gettext_lazy</span> <span class="k">as</span> <span class="n">_</span>
+<span class="linenos"> 4</span><span class="kn">from</span><span class="w"> </span><span class="nn">pretix.control.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">nav_event</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="nd">@receiver</span><span class="p">(</span><span class="n">nav_event</span><span class="p">,</span> <span class="n">dispatch_uid</span><span class="o">=</span><span class="s1">&#39;friends_tickets_nav&#39;</span><span class="p">)</span>
+<span class="linenos"> 8</span><span class="k">def</span><span class="w"> </span><span class="nf">navbar_info</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos"> 9</span>    <span class="n">url</span> <span class="o">=</span> <span class="n">resolve</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">path_info</span><span class="p">)</span>
+<span class="linenos">10</span>    <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">has_event_permission</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">organizer</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="s1">&#39;can_change_vouchers&#39;</span><span class="p">):</span>
+<span class="linenos">11</span>        <span class="k">return</span> <span class="p">[]</span>
+<span class="linenos">12</span>    <span class="k">return</span> <span class="p">[{</span>
+<span class="linenos">13</span>        <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;My plugin view&#39;</span><span class="p">),</span>
+<span class="linenos">14</span>        <span class="s1">&#39;icon&#39;</span><span class="p">:</span> <span class="s1">&#39;heart&#39;</span><span class="p">,</span>
+<span class="linenos">15</span>        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;plugins:myplugin:index&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+<span class="linenos">16</span>            <span class="s1">&#39;event&#39;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span>
+<span class="linenos">17</span>            <span class="s1">&#39;organizer&#39;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">organizer</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span>
+<span class="linenos">18</span>        <span class="p">}),</span>
+<span class="linenos">19</span>        <span class="s1">&#39;active&#39;</span><span class="p">:</span> <span class="n">url</span><span class="o">.</span><span class="n">namespace</span> <span class="o">==</span> <span class="s1">&#39;plugins:myplugin&#39;</span> <span class="ow">and</span> <span class="n">url</span><span class="o">.</span><span class="n">url_name</span> <span class="o">==</span> <span class="s1">&#39;review&#39;</span><span class="p">,</span>
+<span class="linenos">20</span>    <span class="p">}]</span>
+</pre></div>
+</div>
+</section>
+<section id="event-settings-view">
+<h2>Event settings view<a class="headerlink" href="#event-settings-view" title="Permalink to this heading">¶</a></h2>
+<p>A special case of a control panel view is a view hooked into the event settings page. For this case, there is a
+special navigation signal:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@receiver</span><span class="p">(</span><span class="n">nav_event_settings</span><span class="p">,</span> <span class="n">dispatch_uid</span><span class="o">=</span><span class="s1">&#39;friends_tickets_nav_settings&#39;</span><span class="p">)</span>
+<span class="linenos"> 2</span><span class="k">def</span><span class="w"> </span><span class="nf">navbar_settings</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos"> 3</span>    <span class="n">url</span> <span class="o">=</span> <span class="n">resolve</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">path_info</span><span class="p">)</span>
+<span class="linenos"> 4</span>    <span class="k">return</span> <span class="p">[{</span>
+<span class="linenos"> 5</span>        <span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;My settings&#39;</span><span class="p">),</span>
+<span class="linenos"> 6</span>        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;plugins:myplugin:settings&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+<span class="linenos"> 7</span>            <span class="s1">&#39;event&#39;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span>
+<span class="linenos"> 8</span>            <span class="s1">&#39;organizer&#39;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">organizer</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span>
+<span class="linenos"> 9</span>        <span class="p">}),</span>
+<span class="linenos">10</span>        <span class="s1">&#39;active&#39;</span><span class="p">:</span> <span class="n">url</span><span class="o">.</span><span class="n">namespace</span> <span class="o">==</span> <span class="s1">&#39;plugins:myplugin&#39;</span> <span class="ow">and</span> <span class="n">url</span><span class="o">.</span><span class="n">url_name</span> <span class="o">==</span> <span class="s1">&#39;settings&#39;</span><span class="p">,</span>
+<span class="linenos">11</span>    <span class="p">}]</span>
+</pre></div>
+</div>
+<p>Also, your view should inherit from <code class="docutils literal notranslate"><span class="pre">EventSettingsViewMixin</span></code> and your template from <code class="docutils literal notranslate"><span class="pre">pretixcontrol/event/settings_base.html</span></code>
+for good integration. If you just want to display a form, you could do it like the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">class</span><span class="w"> </span><span class="nc">MySettingsView</span><span class="p">(</span><span class="n">EventSettingsViewMixin</span><span class="p">,</span> <span class="n">EventSettingsFormView</span><span class="p">):</span>
+<span class="linenos"> 2</span>    <span class="n">model</span> <span class="o">=</span> <span class="n">Event</span>
+<span class="linenos"> 3</span>    <span class="n">permission</span> <span class="o">=</span> <span class="s1">&#39;can_change_settings&#39;</span>
+<span class="linenos"> 4</span>    <span class="n">form_class</span> <span class="o">=</span> <span class="n">MySettingsForm</span>
+<span class="linenos"> 5</span>    <span class="n">template_name</span> <span class="o">=</span> <span class="s1">&#39;my_plugin/settings.html&#39;</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>    <span class="k">def</span><span class="w"> </span><span class="nf">get_success_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos"> 8</span>        <span class="k">return</span> <span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;plugins:myplugin:settings&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+<span class="linenos"> 9</span>            <span class="s1">&#39;organizer&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">organizer</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span>
+<span class="linenos">10</span>            <span class="s1">&#39;event&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span>
+<span class="linenos">11</span>        <span class="p">})</span>
+</pre></div>
+</div>
+<p>With this template:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s2">&quot;pretixcontrol/event/settings_base.html&quot;</span> <span class="o">%</span><span class="p">}</span>
+<span class="linenos"> 2</span><span class="p">{</span><span class="o">%</span> <span class="n">load</span> <span class="n">i18n</span> <span class="o">%</span><span class="p">}</span>
+<span class="linenos"> 3</span><span class="p">{</span><span class="o">%</span> <span class="n">load</span> <span class="n">bootstrap3</span> <span class="o">%</span><span class="p">}</span>
+<span class="linenos"> 4</span><span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">title</span> <span class="o">%</span><span class="p">}</span> <span class="p">{</span><span class="o">%</span> <span class="n">trans</span> <span class="s2">&quot;Friends Tickets Settings&quot;</span> <span class="o">%</span><span class="p">}</span> <span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+<span class="linenos"> 5</span><span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">inside</span> <span class="o">%</span><span class="p">}</span>
+<span class="linenos"> 6</span>    <span class="o">&lt;</span><span class="n">form</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;&quot;</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;post&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-horizontal&quot;</span><span class="o">&gt;</span>
+<span class="linenos"> 7</span>        <span class="p">{</span><span class="o">%</span> <span class="n">csrf_token</span> <span class="o">%</span><span class="p">}</span>
+<span class="linenos"> 8</span>        <span class="o">&lt;</span><span class="n">fieldset</span><span class="o">&gt;</span>
+<span class="linenos"> 9</span>            <span class="o">&lt;</span><span class="n">legend</span><span class="o">&gt;</span><span class="p">{</span><span class="o">%</span> <span class="n">trans</span> <span class="s2">&quot;Friends Tickets Settings&quot;</span> <span class="o">%</span><span class="p">}</span><span class="o">&lt;/</span><span class="n">legend</span><span class="o">&gt;</span>
+<span class="linenos">10</span>            <span class="p">{</span><span class="o">%</span> <span class="n">bootstrap_form</span> <span class="n">form</span> <span class="n">layout</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span> <span class="o">%</span><span class="p">}</span>
+<span class="linenos">11</span>        <span class="o">&lt;/</span><span class="n">fieldset</span><span class="o">&gt;</span>
+<span class="linenos">12</span>        <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-group submit-group&quot;</span><span class="o">&gt;</span>
+<span class="linenos">13</span>            <span class="o">&lt;</span><span class="n">button</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-primary btn-save&quot;</span><span class="o">&gt;</span>
+<span class="linenos">14</span>                <span class="p">{</span><span class="o">%</span> <span class="n">trans</span> <span class="s2">&quot;Save&quot;</span> <span class="o">%</span><span class="p">}</span>
+<span class="linenos">15</span>            <span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+<span class="linenos">16</span>        <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="linenos">17</span>    <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+<span class="linenos">18</span><span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="frontend-views">
+<h2>Frontend views<a class="headerlink" href="#frontend-views" title="Permalink to this heading">¶</a></h2>
+<p>Including a custom view into the participant-facing frontend is a little bit different as there is
+no path prefix like <code class="docutils literal notranslate"><span class="pre">control/</span></code>.</p>
+<p>First, define your URL in your <code class="docutils literal notranslate"><span class="pre">urls.py</span></code>, but this time in the <code class="docutils literal notranslate"><span class="pre">event_patterns</span></code> section and wrapped by
+<code class="docutils literal notranslate"><span class="pre">event_url</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">pretix.multidomain</span><span class="w"> </span><span class="kn">import</span> <span class="n">event_url</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">views</span>
+<span class="linenos">4</span>
+<span class="linenos">5</span><span class="n">event_patterns</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos">6</span>    <span class="n">event_url</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^mypluginname/&#39;</span><span class="p">,</span> <span class="n">views</span><span class="o">.</span><span class="n">frontend_view</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;frontend&#39;</span><span class="p">),</span>
+<span class="linenos">7</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>You can then implement a view as you would normally do. It will be automatically ensured that:</p>
+<ul class="simple">
+<li><p>The requested event exists</p></li>
+<li><p>The requested event is active (you can disable this check using <code class="docutils literal notranslate"><span class="pre">event_url(…,</span> <span class="pre">require_live=True)</span></code>)</p></li>
+<li><p>The event is accessed via the domain it should be accessed</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">request.event</span></code> attribute contains the correct <code class="docutils literal notranslate"><span class="pre">Event</span></code> object</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">request.organizer</span></code> attribute contains the correct <code class="docutils literal notranslate"><span class="pre">Organizer</span></code> object</p></li>
+<li><p>Your plugin is enabled</p></li>
+<li><p>The locale is set correctly</p></li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.7: </span>The <code class="docutils literal notranslate"><span class="pre">event_url()</span></code> wrapper has been added in 1.7 to replace the former <code class="docutils literal notranslate"><span class="pre">&#64;event_view</span></code> decorator. The
+<code class="docutils literal notranslate"><span class="pre">event_url()</span></code> wrapper is optional and using <code class="docutils literal notranslate"><span class="pre">url()</span></code> still works, but you will not be able to set the
+<code class="docutils literal notranslate"><span class="pre">require_live</span></code> setting any more via the decorator. The <code class="docutils literal notranslate"><span class="pre">&#64;event_view</span></code> decorator is now deprecated and
+does nothing.</p>
+</div>
+</section>
+<section id="rest-api-viewsets">
+<h2>REST API viewsets<a class="headerlink" href="#rest-api-viewsets" title="Permalink to this heading">¶</a></h2>
+<p>Our REST API is built upon <a class="reference external" href="http://www.django-rest-framework.org/">Django REST Framework</a> (DRF). DRF has two important concepts that are different from
+standard Django request handling: There are <a class="reference external" href="http://www.django-rest-framework.org/api-guide/viewsets/">ViewSets</a> to group related views in a single class and <a class="reference external" href="http://www.django-rest-framework.org/api-guide/routers/">Routers</a> to
+automatically build URL configurations from them.</p>
+<p>To integrate a custom viewset with pretix’ REST API, you can just register with one of our routers within the
+<code class="docutils literal notranslate"><span class="pre">urls.py</span></code> module of your plugin:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">pretix.api.urls</span><span class="w"> </span><span class="kn">import</span> <span class="n">event_router</span><span class="p">,</span> <span class="n">router</span><span class="p">,</span> <span class="n">orga_router</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="n">router</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;global_viewset&#39;</span><span class="p">,</span> <span class="n">MyViewSet</span><span class="p">)</span>
+<span class="linenos">4</span><span class="n">orga_router</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;orga_level_viewset&#39;</span><span class="p">,</span> <span class="n">MyViewSet</span><span class="p">)</span>
+<span class="linenos">5</span><span class="n">event_router</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;event_level_viewset&#39;</span><span class="p">,</span> <span class="n">MyViewSet</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Routes registered with <code class="docutils literal notranslate"><span class="pre">router</span></code> are inserted into the global API space at <code class="docutils literal notranslate"><span class="pre">/api/v1/</span></code>. Routes registered with
+<code class="docutils literal notranslate"><span class="pre">orga_router</span></code> will be included at <code class="docutils literal notranslate"><span class="pre">/api/v1/organizers/(organizer)/</span></code> and routes registered with <code class="docutils literal notranslate"><span class="pre">event_router</span></code>
+will be included at <code class="docutils literal notranslate"><span class="pre">/api/v1/organizers/(organizer)/events/(event)/</span></code>.</p>
+<p>In case of <code class="docutils literal notranslate"><span class="pre">orga_router</span></code> and <code class="docutils literal notranslate"><span class="pre">event_router</span></code>, permission checking is done for you similarly as with custom views
+in the control panel. However, you need to make sure on your own only to return the correct subset of data! <code class="docutils literal notranslate"><span class="pre">request</span>
+<span class="pre">.event</span></code> and <code class="docutils literal notranslate"><span class="pre">request.organizer</span></code> are available as usual.</p>
+<p>To require a special permission like <code class="docutils literal notranslate"><span class="pre">can_view_orders</span></code>, you do not need to inherit from a special ViewSet base
+class, you can just set the <code class="docutils literal notranslate"><span class="pre">permission</span></code> attribute on your viewset:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyViewSet</span><span class="p">(</span><span class="n">ModelViewSet</span><span class="p">):</span>
+    <span class="n">permission</span> <span class="o">=</span> <span class="s1">&#39;can_view_orders&#39;</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>If you want to check the permission only for some methods of your viewset, you have to do it yourself. Note here that
+API authentications can be done via user sessions or API tokens and you should therefore check something like the
+following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">perm_holder</span> <span class="o">=</span> <span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">auth</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">auth</span><span class="p">,</span> <span class="n">TeamAPIToken</span><span class="p">)</span> <span class="k">else</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">perm_holder</span><span class="o">.</span><span class="n">has_event_permission</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">organizer</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">event</span><span class="p">,</span> <span class="s1">&#39;can_view_orders&#39;</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is important that you do this in the <code class="docutils literal notranslate"><span class="pre">yourplugin.urls</span></code> module, otherwise pretix will not find your
+routes early enough during system startup.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="auth.html" class="btn btn-neutral float-right" title="Pluggable authentication backends" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="import.html" class="btn btn-neutral" title="Extending the order import process" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

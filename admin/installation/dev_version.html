@@ -1,0 +1,303 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installing a development version &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Installation guide" href="index.html"/>
+        <link rel="next" title="Installing pretix Enterprise plugins" href="enterprise.html"/>
+        <link rel="prev" title="Small-scale manual deployment" href="manual_smallscale.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Administrator documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Installation guide</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="general.html">General remarks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docker_smallscale.html">Small-scale deployment with Docker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="manual_smallscale.html">Small-scale manual deployment</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Installing a development version</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#manual-installation">Manual installation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#docker-installation">Docker installation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise.html">Installing pretix Enterprise plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../config.html">Configuration file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../maintainance.html">Backups and Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../scaling.html">Scaling guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../indexes.html">Additional database indices</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Administrator documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Installation guide</a> &raquo;</li>
+        
+      <li>Installing a development version</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/admin/installation/dev_version.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="installing-a-development-version">
+<h1>Installing a development version<a class="headerlink" href="#installing-a-development-version" title="Permalink to this heading">¶</a></h1>
+<p>If you want to use a feature of pretix that is not yet contained in the last monthly release, you can also
+install a development version with pretix.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When in production, we strongly recommend only installing released versions. Development versions might
+be broken, incompatible to plugins, or in rare cases incompatible to upgrade later on.</p>
+</div>
+<section id="manual-installation">
+<h2>Manual installation<a class="headerlink" href="#manual-installation" title="Permalink to this heading">¶</a></h2>
+<p>You can use <code class="docutils literal notranslate"><span class="pre">pip</span></code> to update pretix directly to the development branch. Then, upgrade as usual:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ source /var/pretix/venv/bin/activate
+(venv)$ pip3 install -U &quot;git+https://github.com/pretix/pretix.git#egg=pretix&amp;subdirectory=src&quot;
+(venv)$ python -m pretix migrate
+(venv)$ python -m pretix rebuild
+(venv)$ python -m pretix updatestyles
+# systemctl restart pretix-web pretix-worker
+</pre></div>
+</div>
+</section>
+<section id="docker-installation">
+<h2>Docker installation<a class="headerlink" href="#docker-installation" title="Permalink to this heading">¶</a></h2>
+<p>To use the latest development version with Docker, first pull it from Docker Hub:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ docker pull pretix/standalone:latest
+</pre></div>
+</div>
+<p>Then change your <code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/pretix.service</span></code> file to use the <code class="docutils literal notranslate"><span class="pre">:latest</span></code> tag instead of <code class="docutils literal notranslate"><span class="pre">:stable</span></code> as well
+and upgrade as usual:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ systemctl restart pretix.service
+$ docker exec -it pretix.service pretix upgrade
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="enterprise.html" class="btn btn-neutral float-right" title="Installing pretix Enterprise plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="manual_smallscale.html" class="btn btn-neutral" title="Small-scale manual deployment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

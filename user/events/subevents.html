@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Event series &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Configuring an event" href="settings.html"/>
+        <link rel="next" title="Payment settings" href="../payments/index.html"/>
+        <link rel="prev" title="Configuring an event" href="settings.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create.html">Creating an event</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="settings.html">Configuring an event</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Event series</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creating-and-modifying-dates-in-the-series">Creating and modifying dates in the series</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../payments/index.html">Payment settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Configuring plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="display.html">Display settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tickets.html">Ticket settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">E-mail settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="taxes.html">Configuring taxes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="invoicing.html">Invoice settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="structureguide.html">Product structure guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widget.html">Embeddable Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../markdown.html">Markdown Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="settings.html">Configuring an event</a> &raquo;</li>
+        
+      <li>Event series</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user/events/subevents.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="event-series">
+<span id="subevents"></span><h1>Event series<a class="headerlink" href="#event-series" title="Permalink to this heading">¶</a></h1>
+<p>During creation of a new event, you can choose that you want to create this event as an event series.
+By event series, we mean a group of events that are similar in their structure and that you want to
+sell within a single shop. An event series consists of <strong>dates</strong>. Each date represents one “event”
+within the series.</p>
+<p>For example, we think good examples to use the event series feature are:</p>
+<ul class="simple">
+<li><p>A theater or theater group that shows the same play on five evenings.</p></li>
+<li><p>A band on tour that hosts the same show in different locations.</p></li>
+<li><p>A workshop that is given multiple times in different locations or at different times.</p></li>
+</ul>
+<p>We <strong>don’t</strong> think that the feature is well-suited for events like the following:</p>
+<ul class="simple">
+<li><p>Event series distributed over a large timescale like annual conferences. We suggest using multiple events in this
+case. You can avoid having to configure everything twice since you can copy settings from an existing event during
+creation of the new event.</p></li>
+<li><p>Multiple parts of a conference or festival (e.g. different days) if a significant number of attendees will visit
+more than one of them. We suggest just using different products in this case.</p></li>
+</ul>
+<p>When using an event series, the single dates of the series are using the same settings in most places. They can
+<strong>only</strong> differ in the following aspects:</p>
+<ul class="simple">
+<li><p>They can have different date, time, and location parameters.</p></li>
+<li><p>They can use different text on the shop front page.</p></li>
+<li><p>They can have different prices for the various products.</p></li>
+<li><p>They always have distinct quotas, which allows you to assign different amounts of tickets or to enable or disable
+some products completely.</p></li>
+<li><p>They can have different rules for check-in.</p></li>
+</ul>
+<p>Therefore, if your events are likely to need more different settings, this is probably not the feature for you. The
+benefits of using event series, on the other hand, are:</p>
+<ul class="simple">
+<li><p>You only need to set most settings once, as the multiple dates live in the same shop.</p></li>
+<li><p>Your customers can build mixed orders, i.e. they can order tickets for multiple dates at once.</p></li>
+</ul>
+<section id="creating-and-modifying-dates-in-the-series">
+<h2>Creating and modifying dates in the series<a class="headerlink" href="#creating-and-modifying-dates-in-the-series" title="Permalink to this heading">¶</a></h2>
+<p>Click on “Dates” in the left navigation menu of your event. This page shows you the list of currently existing event
+dates and allows you to create, edit, clone and delete them.</p>
+<p>If “Dates” is missing from the navigation menu, you have insufficient permission or your event has not been set up as
+an event series and you need to create a new event.</p>
+<a class="screenshot"
+               data-lightbox="group-357687dc-8cde-4c46-9235-03420fced713"
+               href="../../_images/subevent_list1.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../_images/subevent_list1.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>If you click on one of them or create a new one, you will see the following form:</p>
+<a class="screenshot"
+               data-lightbox="group-d9d1b3ae-9f3c-435f-88d9-e89ee25d2cf3"
+               href="../../_images/subevent_create1.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../_images/subevent_create1.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>Here, you can make changes to the following fields, most of which are optional:</p>
+<dl class="simple">
+<dt>Name</dt><dd><p>This is the public name of your date. It should be descriptive enough to tell the user which date to select in
+a calendar.</p>
+</dd>
+<dt>Active</dt><dd><p>This date will only show up for customers if you check this box. In this sense, it corresponds to the “live” setting
+of events.</p>
+</dd>
+<dt>Event start time</dt><dd><p>The date and time that this date starts at.</p>
+</dd>
+<dt>Event end time</dt><dd><p>The date and time this date ends at.</p>
+</dd>
+<dt>Location</dt><dd><p>This is the location of your date in a human-readable format. We will show this on the ticket shop frontpage, but
+it might also be used e.g. in Wallet tickets.</p>
+</dd>
+<dt>Admission time</dt><dd><p>The admission date and time to show on the ticket shop page or on the tickets.</p>
+</dd>
+<dt>Frontpage text</dt><dd><p>A text to show on the front page of the ticket shop for this date.</p>
+</dd>
+<dt>Start of presale</dt><dd><p>If you set this, no ticket will be sold before the time you set. If you set this on event series level as well,
+both dates must be in the past for the tickets to be available.</p>
+</dd>
+<dt>End of presale</dt><dd><p>If you set this, no ticket will be sold after the time you set. If you set this on event series level as well,
+both dates must be in the future for the tickets to be available.</p>
+</dd>
+<dt>Quotas</dt><dd><p>As for all events, no tickets will be available unless there is a quota created for them that specifies the number
+of tickets available. You can create multiple quotas that are assigned to this date directly from this interface.</p>
+</dd>
+<dt>Item prices</dt><dd><p>This is a table of all products configured for your shop. If you want, you can enter a new price for each one of them
+in the right column to make them cheaper or more expensive for this date. If you leave a field empty, the price will
+follow the product’s default price.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../payments/index.html" class="btn btn-neutral float-right" title="Payment settings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="settings.html" class="btn btn-neutral" title="Configuring an event" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,387 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Porting a payment provider from pretix 1.x to pretix 2.x &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Plugin development" href="index.html"/>
+        <link rel="next" title="Writing an HTML e-mail renderer plugin" href="email.html"/>
+        <link rel="prev" title="Writing a payment provider plugin" href="payment.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../implementation/index.html">Implementation and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Plugin development</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Creating a plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporter.html">Writing an exporter plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ticketoutput.html">Writing a ticket output plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment.html">Writing a payment provider plugin</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Porting a payment provider from pretix 1.x to pretix 2.x</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#conceptual-overview">Conceptual overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#your-to-do-list">Your to-do list</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">Writing an HTML e-mail renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="placeholder.html">Writing an e-mail placeholder plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="invoice.html">Writing an invoice renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shredder.html">Writing a data shredder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="import.html">Extending the order import process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customview.html">Creating custom views</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auth.html">Pluggable authentication backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="general.html">General APIs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quality.html">Plugin quality checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Plugin development</a> &raquo;</li>
+        
+      <li>Porting a payment provider from pretix 1.x to pretix 2.x</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/api/payment_2.0.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="porting-a-payment-provider-from-pretix-1-x-to-pretix-2-x">
+<span id="payment2-0"></span><h1>Porting a payment provider from pretix 1.x to pretix 2.x<a class="headerlink" href="#porting-a-payment-provider-from-pretix-1-x-to-pretix-2-x" title="Permalink to this heading">¶</a></h1>
+<p>In pretix 2.x, we changed large parts of the payment provider API. This documentation details the changes we made
+and shows you how you can make an existing pretix 1.x payment provider compatible with pretix 2.x</p>
+<section id="conceptual-overview">
+<h2>Conceptual overview<a class="headerlink" href="#conceptual-overview" title="Permalink to this heading">¶</a></h2>
+<p>In pretix 1.x, an order was always directly connected to a payment provider for the full life of an order. As long as
+an order was unpaid, this could still be changed in some cases, but once an order was paid, no changes to the payment
+provider were possible any more. Additionally, the internal state of orders allowed orders only to be fully paid or
+not paid at all. This leads to a couple of consequences:</p>
+<ul>
+<li><p>Payment-related functions (like “execute payment” or “do a refund”) always operated on full orders.</p></li>
+<li><p>Changing the total of an order was basically impossible once an order was paid, since there was no concept of
+partial payments or partial refunds.</p></li>
+<li><p>Payment provider plugins needed to take complicated steps to detect cases that require human intervention, like e.g.</p>
+<ul class="simple">
+<li><p>An order has expired, no quota is left to revive it, but a payment has been received</p></li>
+<li><p>A payment has been received for a canceled order</p></li>
+<li><p>A payment has been received for an order that has already been paid with a different payment method</p></li>
+<li><p>An external payment service notified us of a refund/dispute</p></li>
+</ul>
+<p>We noticed that we copied and repeated large portions of code in all our official payment provider plugins, just
+to deal with some of these cases.</p>
+</li>
+<li><p>Sometimes, there is the need to mark an order as refunded within pretix, without automatically triggering a refund
+with an external API. Every payment method needed to implement a user interface for this independently.</p></li>
+<li><p>If a refund was not possible automatically, there was no way user to track which payments actually have been refunded
+manually and which are still left to do.</p></li>
+<li><p>When the payment with one payment provider failed and the user changed to a different payment provider, all
+information about the first payment was lost from the order object and could only be retrieved from order log data,
+which also made it hard to design a data shredder API to get rid of this data.</p></li>
+</ul>
+<p>In pretix 2.x, we introduced two new models, <a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.OrderPayment"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrderPayment</span></code></a> and
+<a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderRefund" title="pretix.base.models.OrderRefund"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrderRefund</span></code></a>. Each instance of these is connected to an order and
+represents one single attempt to pay or refund a specific amount of money. Each one of these has an individual state,
+can individually fail or succeed, and carries an amount variable that can differ from the order total.</p>
+<p>This has the following advantages:</p>
+<ul class="simple">
+<li><p>The system can now detect orders that are over- or underpaid, independent of the payment providers in use.</p></li>
+<li><p>Therefore, we can now allow partial payments, partial refunds, and changing paid orders, and automatically detect
+the cases listed above and notify the user.</p></li>
+</ul>
+<p>Payment providers now interact with those payment and refund objects more than with orders.</p>
+</section>
+<section id="your-to-do-list">
+<h2>Your to-do list<a class="headerlink" href="#your-to-do-list" title="Permalink to this heading">¶</a></h2>
+<section id="payment-processing">
+<h3>Payment processing<a class="headerlink" href="#payment-processing" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>The method <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.order_pending_render</span></code> has been removed and replaced by a new
+<code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.payment_pending_render(request,</span> <span class="pre">payment)</span></code> method that is passed an <code class="docutils literal notranslate"><span class="pre">OrderPayment</span></code>
+object instead of an <code class="docutils literal notranslate"><span class="pre">Order</span></code>.</p></li>
+<li><p>The method <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.payment_form_render</span></code> now receives a new <code class="docutils literal notranslate"><span class="pre">total</span></code> parameter.</p></li>
+<li><p>The method <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.payment_perform</span></code> has been removed and replaced by a new method
+<code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.execute_payment(request,</span> <span class="pre">payment)</span></code> that is passed an <code class="docutils literal notranslate"><span class="pre">OrderPayment</span></code>
+object instead of an <code class="docutils literal notranslate"><span class="pre">Order</span></code>.</p></li>
+<li><p>The function <code class="docutils literal notranslate"><span class="pre">pretix.base.services.mark_order_paid</span></code> has been removed, instead call <code class="docutils literal notranslate"><span class="pre">payment.confirm()</span></code>
+on a pending <code class="docutils literal notranslate"><span class="pre">OrderPayment</span></code> object. If no further payments are required for this order, this will also
+mark the order as paid automatically. Note that <code class="docutils literal notranslate"><span class="pre">payment.confirm()</span></code> can still throw a <code class="docutils literal notranslate"><span class="pre">QuotaExceededException</span></code>,
+however it will still mark the payment as complete (not the order!), so you should catch this exception and
+inform the user, but not abort the transaction.</p></li>
+<li><p>A new property <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.abort_pending_allowed</span></code> has been introduced. Only if set, the user will
+be able to retry a payment or switch the payment method when the order currently has a payment object in
+state <code class="docutils literal notranslate"><span class="pre">&quot;pending&quot;</span></code>. This replaces <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.order_can_retry</span></code>, which no longer exists.</p></li>
+<li><p>The methods <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.retry_prepare</span></code> and <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.order_prepare</span></code> have both been
+replaced by a new method <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.payment_prepare(request,</span> <span class="pre">payment)</span></code> that is passed an <code class="docutils literal notranslate"><span class="pre">OrderPayment</span></code>
+object instead of an <code class="docutils literal notranslate"><span class="pre">Order</span></code>. <strong>Keep in mind that this payment object might have an amount property that
+differs from the order total, if the order is already partially paid.</strong></p></li>
+<li><p>The method <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.order_paid_render</span></code> has been removed.</p></li>
+<li><p>The method <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.order_control_render</span></code> has been removed and replaced by a new method
+<code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.payment_control_render(request,</span> <span class="pre">payment)</span></code> that is passed an <code class="docutils literal notranslate"><span class="pre">OrderPayment</span></code>
+object instead of an <code class="docutils literal notranslate"><span class="pre">Order</span></code>.</p></li>
+<li><p>There’s no need to manually deal with excess payments or duplicate payments anymore, just setting the <code class="docutils literal notranslate"><span class="pre">OrderPayment</span></code>
+methods to the correct state will do the job.</p></li>
+</ul>
+</section>
+<section id="creating-refunds">
+<h3>Creating refunds<a class="headerlink" href="#creating-refunds" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>The methods <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.order_control_refund_render</span></code> and <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.order_control_refund_perform</span></code>
+have been removed.</p></li>
+<li><p>Two new boolean methods <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.payment_refund_supported(payment)</span></code> and <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.payment_partial_refund_supported(payment)</span></code>
+have been introduced. They should be set to return <code class="docutils literal notranslate"><span class="pre">True</span></code> if and only if the payment API allows to <em>automatically</em>
+transfer the money back to the customer.</p></li>
+<li><p>A new method <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.execute_refund(refund)</span></code> has been introduced. This method is called using a
+<code class="docutils literal notranslate"><span class="pre">OrderRefund</span></code> object in <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code> state and is expected to transfer the money back and confirm success with
+calling <code class="docutils literal notranslate"><span class="pre">refund.done()</span></code>. This will only ever be called if either <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.payment_refund_supported(payment)</span></code>
+or <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.payment_partial_refund_supported(payment)</span></code> return <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</section>
+<section id="processing-external-refunds">
+<h3>Processing external refunds<a class="headerlink" href="#processing-external-refunds" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>If e.g. a webhook API notifies you that a payment has been disputed or refunded with the external API, you are
+expected to call <code class="docutils literal notranslate"><span class="pre">OrderPayment.create_external_refund(self,</span> <span class="pre">amount,</span> <span class="pre">execution_date,</span> <span class="pre">info='{}')</span></code> on this payment.
+This will create and return an appropriate <code class="docutils literal notranslate"><span class="pre">OrderRefund</span></code> object and send out a notification. However, it will not
+mark the order as refunded, but will ask the event organizer for a decision.</p></li>
+</ul>
+</section>
+<section id="data-shredders">
+<h3>Data shredders<a class="headerlink" href="#data-shredders" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>The method <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider.shred_payment_info</span></code> is no longer passed an order, but instead <strong>either</strong>
+an <code class="docutils literal notranslate"><span class="pre">OrderPayment</span></code> <strong>or</strong> an <code class="docutils literal notranslate"><span class="pre">OrderRefund</span></code>.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="email.html" class="btn btn-neutral float-right" title="Writing an HTML e-mail renderer plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="payment.html" class="btn btn-neutral" title="Writing a payment provider plugin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

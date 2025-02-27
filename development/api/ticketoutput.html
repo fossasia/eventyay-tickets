@@ -1,0 +1,480 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Writing a ticket output plugin &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Plugin development" href="index.html"/>
+        <link rel="next" title="Writing a payment provider plugin" href="payment.html"/>
+        <link rel="prev" title="Writing an exporter plugin" href="exporter.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../implementation/index.html">Implementation and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Plugin development</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Creating a plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporter.html">Writing an exporter plugin</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Writing a ticket output plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#output-registration">Output registration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-output-class">The output class</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="payment.html">Writing a payment provider plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="payment_2.0.html">Porting a payment provider from pretix 1.x to pretix 2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">Writing an HTML e-mail renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="placeholder.html">Writing an e-mail placeholder plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="invoice.html">Writing an invoice renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shredder.html">Writing a data shredder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="import.html">Extending the order import process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customview.html">Creating custom views</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auth.html">Pluggable authentication backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="general.html">General APIs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quality.html">Plugin quality checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Plugin development</a> &raquo;</li>
+        
+      <li>Writing a ticket output plugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/api/ticketoutput.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="writing-a-ticket-output-plugin">
+<h1>Writing a ticket output plugin<a class="headerlink" href="#writing-a-ticket-output-plugin" title="Permalink to this heading">¶</a></h1>
+<p>A ticket output is a method to offer a ticket (an order) for the user to download.</p>
+<p>In this document, we will walk through the creation of a ticket output plugin. This
+is very similar to creating an export output.</p>
+<p>Please read <a class="reference internal" href="plugins.html#pluginsetup"><span class="std std-ref">Creating a plugin</span></a> first, if you haven’t already.</p>
+<section id="output-registration">
+<h2>Output registration<a class="headerlink" href="#output-registration" title="Permalink to this heading">¶</a></h2>
+<p>The ticket output API does not make a lot of usage from signals, however, it
+does use a signal to get a list of all available ticket outputs. Your plugin
+should listen for this signal and return the subclass of <code class="docutils literal notranslate"><span class="pre">pretix.base.ticketoutput.BaseTicketOutput</span></code>
+that we’ll provide in this plugin:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">django.dispatch</span><span class="w"> </span><span class="kn">import</span> <span class="n">receiver</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="kn">from</span><span class="w"> </span><span class="nn">pretix.base.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_ticket_outputs</span>
+<span class="linenos">4</span>
+<span class="linenos">5</span>
+<span class="linenos">6</span><span class="nd">@receiver</span><span class="p">(</span><span class="n">register_ticket_outputs</span><span class="p">,</span> <span class="n">dispatch_uid</span><span class="o">=</span><span class="s2">&quot;output_pdf&quot;</span><span class="p">)</span>
+<span class="linenos">7</span><span class="k">def</span><span class="w"> </span><span class="nf">register_ticket_output</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos">8</span>    <span class="kn">from</span><span class="w"> </span><span class="nn">.ticketoutput</span><span class="w"> </span><span class="kn">import</span> <span class="n">PdfTicketOutput</span>
+<span class="linenos">9</span>    <span class="k">return</span> <span class="n">PdfTicketOutput</span>
+</pre></div>
+</div>
+</section>
+<section id="the-output-class">
+<h2>The output class<a class="headerlink" href="#the-output-class" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.BaseTicketOutput">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pretix.base.ticketoutput.</span></span><span class="sig-name descname"><span class="pre">BaseTicketOutput</span></span><a class="headerlink" href="#pretix.base.ticketoutput.BaseTicketOutput" title="Permalink to this definition">¶</a></dt>
+<dd><p>The central object of each ticket output is the subclass of <code class="docutils literal notranslate"><span class="pre">BaseTicketOutput</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.event">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">event</span></span><a class="headerlink" href="#pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default constructor sets this property to the event we are currently
+working for.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.settings">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">settings</span></span><a class="headerlink" href="#pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default constructor sets this property to a <code class="docutils literal notranslate"><span class="pre">SettingsSandbox</span></code> object. You can
+use this object to store settings using its <code class="docutils literal notranslate"><span class="pre">get</span></code> and <code class="docutils literal notranslate"><span class="pre">set</span></code> methods. All settings
+you store are transparently prefixed, so you get your very own settings namespace.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.identifier">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">identifier</span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.identifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>A short and unique identifier for this ticket output.
+This should only contain lowercase letters and in most
+cases will be the same as your package name.</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.verbose_name">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">verbose_name</span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.verbose_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A human-readable name for this ticket output. This should be short but
+self-explanatory. Good examples include ‘PDF tickets’ and ‘Passbook’.</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.is_enabled">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">is_enabled</span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.is_enabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether or whether not this output is enabled.
+By default, this is determined by the value of the <code class="docutils literal notranslate"><span class="pre">_enabled</span></code> setting.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.multi_download_enabled">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">multi_download_enabled</span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.multi_download_enabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether or not the <code class="docutils literal notranslate"><span class="pre">generate_order</span></code> method may be called. Returns
+<code class="docutils literal notranslate"><span class="pre">True</span></code> by default.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.settings_form_fields">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">settings_form_fields</span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.settings_form_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>When the event’s administrator visits the event configuration
+page, this method is called to return the configuration fields available.</p>
+<p>It should therefore return a dictionary where the keys should be (unprefixed)
+settings keys and the values should be corresponding Django form fields.</p>
+<p>The default implementation returns the appropriate fields for the <code class="docutils literal notranslate"><span class="pre">_enabled</span></code>
+setting mentioned above.</p>
+<p>We suggest that you return an <code class="docutils literal notranslate"><span class="pre">OrderedDict</span></code> object instead of a dictionary
+and make use of the default implementation. Your implementation could look
+like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@property</span>
+<span class="linenos"> 2</span><span class="k">def</span><span class="w"> </span><span class="nf">settings_form_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 3</span>    <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">(</span>
+<span class="linenos"> 4</span>        <span class="nb">list</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings_form_fields</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="o">+</span> <span class="p">[</span>
+<span class="linenos"> 5</span>            <span class="p">(</span><span class="s1">&#39;paper_size&#39;</span><span class="p">,</span>
+<span class="linenos"> 6</span>             <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span>
+<span class="linenos"> 7</span>                 <span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Paper size&#39;</span><span class="p">),</span>
+<span class="linenos"> 8</span>                 <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+<span class="linenos"> 9</span>             <span class="p">))</span>
+<span class="linenos">10</span>        <span class="p">]</span>
+<span class="linenos">11</span>    <span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is highly discouraged to alter the <code class="docutils literal notranslate"><span class="pre">_enabled</span></code> field of the default
+implementation.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.settings_content_render">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">settings_content_render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.settings_content_render" title="Permalink to this definition">¶</a></dt>
+<dd><p>When the event’s administrator visits the event configuration
+page, this method is called. It may return HTML containing additional information
+that is displayed below the form fields configured in <code class="docutils literal notranslate"><span class="pre">settings_form_fields</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.generate">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPosition" title="pretix.base.models.orders.OrderPosition"><span class="pre">OrderPosition</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method should generate the download file and return a tuple consisting of a
+filename, a file type and file content. The extension will be taken from the filename
+which is otherwise ignored.</p>
+<p>Alternatively, you can pass a tuple consisting of an arbitrary string, <code class="docutils literal notranslate"><span class="pre">text/uri-list</span></code>
+and a single URL. In this case, the user will be redirected to this link instead of
+being asked to download a generated file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the event uses the event series feature (internally called subevents)
+and your generated ticket contains information like the event name or date,
+you probably want to display the properties of the subevent. A common pattern
+to do this would be a declaration <code class="docutils literal notranslate"><span class="pre">ev</span> <span class="pre">=</span> <span class="pre">position.subevent</span> <span class="pre">or</span> <span class="pre">position.order.event</span></code>
+and then access properties that are present on both classes like <code class="docutils literal notranslate"><span class="pre">ev.name</span></code> or
+<code class="docutils literal notranslate"><span class="pre">ev.date_from</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Should you elect to use the URI redirection feature instead of offering downloads,
+you should also set the <code class="docutils literal notranslate"><span class="pre">multi_download_enabled</span></code>-property to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.generate_order">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">generate_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.Order" title="pretix.base.models.orders.Order"><span class="pre">Order</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.generate_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is the same as order() but should not generate one file per order position
+but instead one file for the full order.</p>
+<p>This method is optional to implement. If you don’t implement it, the default
+implementation will offer a zip file of the generate() results for the order positions.</p>
+<p>This method should generate a download file and return a tuple consisting of a
+filename, a file type and file content. The extension will be taken from the filename
+which is otherwise ignored.</p>
+<p>If you override this method, make sure that positions that are addons (i.e. <code class="docutils literal notranslate"><span class="pre">addon_to</span></code>
+is set) are only outputted if the event setting <code class="docutils literal notranslate"><span class="pre">ticket_download_addons</span></code> is active.
+Do the same for positions that are non-admission without <code class="docutils literal notranslate"><span class="pre">ticket_download_nonadm</span></code> active.
+If you want, you can just iterate over <code class="docutils literal notranslate"><span class="pre">order.positions_with_tickets</span></code> which applies the
+appropriate filters for you.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.download_button_text">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">download_button_text</span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.download_button_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>The text on the download button in the frontend.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.download_button_icon">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">download_button_icon</span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.download_button_icon" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Font Awesome icon on the download button in the frontend.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.multi_download_button_text">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">multi_download_button_text</span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.multi_download_button_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>The text on the multi download button in the frontend.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.long_download_button_text">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">long_download_button_text</span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.long_download_button_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>The text on the large download button in the frontend.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.preview_allowed">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">preview_allowed</span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.preview_allowed" title="Permalink to this definition">¶</a></dt>
+<dd><p>By default, the <code class="docutils literal notranslate"><span class="pre">generate()</span></code> method is called for generating a preview in the pretix backend.
+In case your plugin cannot generate previews for any reason, you can manually disable it here.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.javascript_required">
+<span class="sig-prename descclassname"><span class="pre">BaseTicketOutput.</span></span><span class="sig-name descname"><span class="pre">javascript_required</span></span><a class="headerlink" href="#pretix.base.ticketoutput.pretix.base.ticketoutput.BaseTicketOutput.BaseTicketOutput.javascript_required" title="Permalink to this definition">¶</a></dt>
+<dd><p>If this property is set to true, the download-button for this ticket-type will not be displayed
+when the user’s browser has JavaScript disabled.</p>
+<p>Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="payment.html" class="btn btn-neutral float-right" title="Writing a payment provider plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="exporter.html" class="btn btn-neutral" title="Writing an exporter plugin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

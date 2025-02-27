@@ -1,0 +1,345 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>General settings &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Payment settings" href="index.html"/>
+        <link rel="next" title="Payment method overview" href="overview.html"/>
+        <link rel="prev" title="Payment settings" href="index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/create.html">Creating an event</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../events/settings.html">Configuring an event</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../events/subevents.html">Event series</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Payment settings</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">General settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="overview.html">Payment method overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fees.html">Payment method fees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="paypal.html">PayPal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stripe.html">Stripe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="banktransfer.html">Bank transfer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../events/plugins.html">Configuring plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/display.html">Display settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/tickets.html">Ticket settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/email.html">E-mail settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/taxes.html">Configuring taxes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/invoicing.html">Invoice settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../events/structureguide.html">Product structure guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/widget.html">Embeddable Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../markdown.html">Markdown Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="../events/settings.html">Configuring an event</a> &raquo;</li>
+        
+          <li><a href="index.html">Payment settings</a> &raquo;</li>
+        
+      <li>General settings</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user/payments/settings.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="general-settings">
+<h1>General settings<a class="headerlink" href="#general-settings" title="Permalink to this heading">¶</a></h1>
+<p>At “Settings” → “Payment”, you can configure every aspect related to the payments you want to accept. The “Deadline”
+and “Advanced” tabs of the page show a number of general settings that affect all payment methods:</p>
+<a class="screenshot"
+               data-lightbox="group-72e11cdc-7dca-4c2c-84d3-b4a88c74314a"
+               href="../../_images/settings_payment1.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../_images/settings_payment1.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>In particular, these are:</p>
+<dl class="simple">
+<dt>Payment term in days</dt><dd><p>If a order has been created, it is supposed to be paid within this number of days. Of course, some payment methods
+(like credit card) succeed immediately in most cases, but others don’t (like bank transfer) and even credit card
+payments might fail and you might want to give the customer a chance to try another credit card before losing their
+ticket. Therefore, we recommend setting a few days here. If you are accepting bank transfers, we wouldn’t recommend
+less than 10 days.</p>
+</dd>
+<dt>Last date of payments</dt><dd><p>There is probably no use for payments received after your event, so you can set a date that the payment deadline of
+a new order will never exceed. This has precedence over the number of days configured above, so if I create an order
+two days before the configured last date of payments, my payment term will only be two days, not ten. If you have
+payment methods that always require some time (like bank transfer), you will later be able to selectively disable them
+once the event comes closer.</p>
+</dd>
+<dt>Only end payment terms on weekdays</dt><dd><p>If you check this box, the payment term calculated by the number of days configured above will never end on a Saturday
+or a Sunday. If it technically would do so, the term is extended to the next Monday. Note that this currently does not
+take into account national or bank holidays in your country.</p>
+</dd>
+<dt>Automatically expire unpaid orders</dt><dd><p>If you check this box, orders will automatically go into “expired” state if the payment term is over and no payment
+has been received. This means that the tickets will no longer be reserved for the customer and someone else can buy
+them from the shop again. If you do not check this box, tickets do not become available again automatically, but you
+can mark orders as expired manually.</p>
+</dd>
+<dt>Accept late payments</dt><dd><p>If you check this box, incoming payments will accepted even if the order is in “expired” state – as long as there
+still is sufficient quota available and the last date of payments is not yet over. We recommend to check this in most
+cases.</p>
+</dd>
+<dt>Tax rule for payment fees</dt><dd><p>If you pass on the payment method fees to your customers, you will most likely also need to pay sales tax on those
+fees. Here, you can configure the tax rate. Read <a class="reference internal" href="../events/taxes.html#taxes"><span class="std std-ref">Configuring taxes</span></a> for more information.</p>
+</dd>
+</dl>
+<p>Below, you can configure the details of the various payment methods. You can find information on their different settings
+on the next pages of this documentation, but there are a few things most of them have in common:</p>
+<dl class="simple">
+<dt>Enable payment method</dt><dd><p>Check this box to allow customers to use this method. At least one method needs to be active to process non-free orders.</p>
+</dd>
+<dt>Additional fee (absolute and percentage), Calculate the fee from the total value including the fee</dt><dd><p>These fields allow you to pass fees on to your customers instead of paying them yourselves. Read <a class="reference internal" href="fees.html#payment-fees"><span class="std std-ref">Payment method fees</span></a>
+for documentation on how this behaves.</p>
+</dd>
+<dt>Available until</dt><dd><p>This allows you to set a date at which this payment method will automatically become disabled. This is useful if you
+want people to be able to pay by card on the day before your event, but not by bank transfer, because it would not
+arrive in time.</p>
+</dd>
+<dt>Text on invoices</dt><dd><p>If you are using eventyay’ invoicing feature, this is a text that will be printed on every invoice for an order that
+uses this payment method. You could use this to tell the accounting department of the invoice receiver that the payment
+has already been received online or that it should be performed via bank transfer.</p>
+</dd>
+</dl>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="overview.html" class="btn btn-neutral float-right" title="Payment method overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Payment settings" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

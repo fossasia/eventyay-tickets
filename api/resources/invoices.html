@@ -1,0 +1,819 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Invoices &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Resources and endpoints" href="index.html"/>
+        <link rel="next" title="Vouchers" href="vouchers.html"/>
+        <link rel="prev" title="Orders" href="orders.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">REST API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../fundamentals.html">Basic concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../auth.html">Authentication</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Resources and endpoints</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="organizers.html">Organizers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subevents.html">Event series dates / Sub-events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="taxrules.html">Tax rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="categories.html">Item categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="items.html">Items</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_variations.html">Item variations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_bundles.html">Item bundles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_add-ons.html">Item add-ons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="questions.html">Questions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="question_options.html">Question options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quotas.html">Quotas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orders.html">Orders</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Invoices</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#resource-description">Resource description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="vouchers.html">Vouchers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkinlists.html">Check-in lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="waitinglist.html">Waiting list entries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="giftcards.html">Gift cards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="carts.html">Cart positions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webhooks.html">Webhooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seatingplans.html">Seating plans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporters.html">Data exporters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="billing_invoices.html">pretix Hosted billing invoices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="billing_var.html">pretix Hosted reseller API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ratelimit.html">Rate limiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../webhooks.html">Webhooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/index.html">API Usage Guides</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">REST API</a> &raquo;</li>
+        
+          <li><a href="index.html">Resources and endpoints</a> &raquo;</li>
+        
+      <li>Invoices</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api/resources/invoices.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="invoices">
+<h1>Invoices<a class="headerlink" href="#invoices" title="Permalink to this heading">¶</a></h1>
+<section id="resource-description">
+<h2>Resource description<a class="headerlink" href="#resource-description" title="Permalink to this heading">¶</a></h2>
+<p>The invoice resource contains the following public fields:</p>
+<table class="rest-resource-table docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>number</p></td>
+<td><p>string</p></td>
+<td><p>Invoice number (with prefix)</p></td>
+</tr>
+<tr class="row-odd"><td><p>order</p></td>
+<td><p>string</p></td>
+<td><p>Order code of the order this invoice belongs to</p></td>
+</tr>
+<tr class="row-even"><td><p>is_cancellation</p></td>
+<td><p>boolean</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code>, if this invoice is the cancellation of a
+different invoice.</p></td>
+</tr>
+<tr class="row-odd"><td><p>invoice_from_name</p></td>
+<td><p>string</p></td>
+<td><p>Sender address: Name</p></td>
+</tr>
+<tr class="row-even"><td><p>invoice_from</p></td>
+<td><p>string</p></td>
+<td><p>Sender address: Address lines</p></td>
+</tr>
+<tr class="row-odd"><td><p>invoice_from_zipcode</p></td>
+<td><p>string</p></td>
+<td><p>Sender address: ZIP code</p></td>
+</tr>
+<tr class="row-even"><td><p>invoice_from_city</p></td>
+<td><p>string</p></td>
+<td><p>Sender address: City</p></td>
+</tr>
+<tr class="row-odd"><td><p>invoice_from_country</p></td>
+<td><p>string</p></td>
+<td><p>Sender address: Country code</p></td>
+</tr>
+<tr class="row-even"><td><p>invoice_from_tax_id</p></td>
+<td><p>string</p></td>
+<td><p>Sender address: Local Tax ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>invoice_from_vat_id</p></td>
+<td><p>string</p></td>
+<td><p>Sender address: EU VAT ID</p></td>
+</tr>
+<tr class="row-even"><td><p>invoice_to</p></td>
+<td><p>string</p></td>
+<td><p>Full recipient address</p></td>
+</tr>
+<tr class="row-odd"><td><p>invoice_to_company</p></td>
+<td><p>string</p></td>
+<td><p>Recipient address: Company name</p></td>
+</tr>
+<tr class="row-even"><td><p>invoice_to_name</p></td>
+<td><p>string</p></td>
+<td><p>Recipient address: Person name</p></td>
+</tr>
+<tr class="row-odd"><td><p>invoice_to_street</p></td>
+<td><p>string</p></td>
+<td><p>Recipient address: Address lines</p></td>
+</tr>
+<tr class="row-even"><td><p>invoice_to_zipcode</p></td>
+<td><p>string</p></td>
+<td><p>Recipient address: ZIP code</p></td>
+</tr>
+<tr class="row-odd"><td><p>invoice_to_city</p></td>
+<td><p>string</p></td>
+<td><p>Recipient address: City</p></td>
+</tr>
+<tr class="row-even"><td><p>invoice_to_state</p></td>
+<td><p>string</p></td>
+<td><p>Recipient address: State (only used in some countries)</p></td>
+</tr>
+<tr class="row-odd"><td><p>invoice_to_country</p></td>
+<td><p>string</p></td>
+<td><p>Recipient address: Country code</p></td>
+</tr>
+<tr class="row-even"><td><p>invoice_to_vat_id</p></td>
+<td><p>string</p></td>
+<td><p>Recipient address: EU VAT ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>invoice_to_beneficiary</p></td>
+<td><p>string</p></td>
+<td><p>Invoice beneficiary</p></td>
+</tr>
+<tr class="row-even"><td><p>custom_field</p></td>
+<td><p>string</p></td>
+<td><p>Custom invoice address field</p></td>
+</tr>
+<tr class="row-odd"><td><p>date</p></td>
+<td><p>date</p></td>
+<td><p>Invoice date</p></td>
+</tr>
+<tr class="row-even"><td><p>refers</p></td>
+<td><p>string</p></td>
+<td><p>Invoice number of an invoice this invoice refers to
+(for example a cancellation refers to the invoice it
+cancels) or <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>locale</p></td>
+<td><p>string</p></td>
+<td><p>Invoice locale</p></td>
+</tr>
+<tr class="row-even"><td><p>introductory_text</p></td>
+<td><p>string</p></td>
+<td><p>Text to be printed above the product list</p></td>
+</tr>
+<tr class="row-odd"><td><p>additional_text</p></td>
+<td><p>string</p></td>
+<td><p>Text to be printed below the product list</p></td>
+</tr>
+<tr class="row-even"><td><p>payment_provider_text</p></td>
+<td><p>string</p></td>
+<td><p>Text to be printed below the product list with
+payment information</p></td>
+</tr>
+<tr class="row-odd"><td><p>footer_text</p></td>
+<td><p>string</p></td>
+<td><p>Text to be printed in the page footer area</p></td>
+</tr>
+<tr class="row-even"><td><p>lines</p></td>
+<td><p>list of objects</p></td>
+<td><p>The actual invoice contents</p></td>
+</tr>
+<tr class="row-odd"><td><p>├ position</p></td>
+<td><p>integer</p></td>
+<td><p>Number of the line within an invoice.</p></td>
+</tr>
+<tr class="row-even"><td><p>├ description</p></td>
+<td><p>string</p></td>
+<td><p>Text representing the invoice line (e.g. product name)</p></td>
+</tr>
+<tr class="row-odd"><td><p>├ item</p></td>
+<td><p>integer</p></td>
+<td><p>Product used to create this line. Note that everything
+about the product might have changed since the creation
+of the invoice. Can be <code class="docutils literal notranslate"><span class="pre">null</span></code> for all invoice lines
+created before this field was introduced as well as for
+all lines not created by a product (e.g. a shipping or
+cancellation fee).</p></td>
+</tr>
+<tr class="row-even"><td><p>├ variation</p></td>
+<td><p>integer</p></td>
+<td><p>Product variation used to create this line. Note that everything
+about the product might have changed since the creation
+of the invoice. Can be <code class="docutils literal notranslate"><span class="pre">null</span></code> for all invoice lines
+created before this field was introduced as well as for
+all lines not created by a product (e.g. a shipping or
+cancellation fee).</p></td>
+</tr>
+<tr class="row-odd"><td><p>├ event_date_from</p></td>
+<td><p>datetime</p></td>
+<td><p>Start date of the (sub)event this line was created for as it
+was set during invoice creation. Can be <code class="docutils literal notranslate"><span class="pre">null</span></code> for all invoice
+lines created before this was introduced as well as for lines in
+an event series not created by a product (e.g. shipping or
+cancellation fees).</p></td>
+</tr>
+<tr class="row-even"><td><p>├ event_date_to</p></td>
+<td><p>datetime</p></td>
+<td><p>End date of the (sub)event this line was created for as it
+was set during invoice creation. Can be <code class="docutils literal notranslate"><span class="pre">null</span></code> for all invoice
+lines created before this was introduced as well as for lines in
+an event series not created by a product (e.g. shipping or
+cancellation fees) as well as whenever the respective (sub)event
+has no end date set.</p></td>
+</tr>
+<tr class="row-odd"><td><p>├ attendee_name</p></td>
+<td><p>string</p></td>
+<td><p>Attendee name at time of invoice creation. Can be <code class="docutils literal notranslate"><span class="pre">null</span></code> if no
+name was set or if names are configured to not be added to invoices.</p></td>
+</tr>
+<tr class="row-even"><td><p>├ gross_value</p></td>
+<td><p>money (string)</p></td>
+<td><p>Price including taxes</p></td>
+</tr>
+<tr class="row-odd"><td><p>├ tax_value</p></td>
+<td><p>money (string)</p></td>
+<td><p>Tax amount included</p></td>
+</tr>
+<tr class="row-even"><td><p>├ tax_name</p></td>
+<td><p>string</p></td>
+<td><p>Name of used tax rate (e.g. “VAT”)</p></td>
+</tr>
+<tr class="row-odd"><td><p>└ tax_rate</p></td>
+<td><p>decimal (string)</p></td>
+<td><p>Used tax rate</p></td>
+</tr>
+<tr class="row-even"><td><p>foreign_currency_display</p></td>
+<td><p>string</p></td>
+<td><p>If the invoice should also show the total and tax
+amount in a different currency, this contains the
+currency code (<code class="docutils literal notranslate"><span class="pre">null</span></code> otherwise).</p></td>
+</tr>
+<tr class="row-odd"><td><p>foreign_currency_rate</p></td>
+<td><p>decimal (string)</p></td>
+<td><p>If <code class="docutils literal notranslate"><span class="pre">foreign_currency_rate</span></code> is set and the system
+knows the exchange rate to the event currency at
+invoicing time, it is stored here.</p></td>
+</tr>
+<tr class="row-even"><td><p>foreign_currency_rate_date</p></td>
+<td><p>date</p></td>
+<td><p>If <code class="docutils literal notranslate"><span class="pre">foreign_currency_rate</span></code> is set, this signifies the
+date at which the currency rate was obtained.</p></td>
+</tr>
+<tr class="row-odd"><td><p>internal_reference</p></td>
+<td><p>string</p></td>
+<td><p>Customer’s reference to be printed on the invoice.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 3.4: </span>The attribute <code class="docutils literal notranslate"><span class="pre">lines.number</span></code> has been added.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 3.17: </span>The attribute <code class="docutils literal notranslate"><span class="pre">invoice_to_*</span></code>, <code class="docutils literal notranslate"><span class="pre">invoice_from_*</span></code>, <code class="docutils literal notranslate"><span class="pre">custom_field</span></code>, <code class="docutils literal notranslate"><span class="pre">lines.item</span></code>, <code class="docutils literal notranslate"><span class="pre">lines.variation</span></code>, <code class="docutils literal notranslate"><span class="pre">lines.event_date_from</span></code>,
+<code class="docutils literal notranslate"><span class="pre">lines.event_date_to</span></code>, and <code class="docutils literal notranslate"><span class="pre">lines.attendee_name</span></code> have been added.
+<code class="docutils literal notranslate"><span class="pre">refers</span></code> now returns an invoice number including the prefix.</p>
+</div>
+</section>
+<section id="endpoints">
+<h2>Endpoints<a class="headerlink" href="#endpoints" title="Permalink to this heading">¶</a></h2>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-events-(event)-invoices-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/invoices/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-events-(event)-invoices-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all invoices within a given event.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/invoices/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;next&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;previous&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;results&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;number&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLECONF-00001&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;order&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ABC12&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;is_cancellation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_from_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Big Events LLC&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_from&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Demo street 12&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_from_zipcode&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_from_city&quot;</span><span class="p">:</span><span class="s2">&quot;Demo town&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_from_country&quot;</span><span class="p">:</span><span class="s2">&quot;US&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_from_tax_id&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_from_vat_id&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_to&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sample company\nJohn Doe\nTest street 12\n12345 Testington\nTestikistan\nVAT-ID: EU123456789&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_to_company&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sample company&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_to_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_to_street&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Test street 12&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_to_zipcode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_to_city&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Testington&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_to_state&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_to_country&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TE&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_to_vat_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EU123456789&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;invoice_to_beneficiary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;custom_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2017-12-01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;refers&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;locale&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;en&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;introductory_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;thank you for your purchase of the following items:&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;internal_reference&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;additional_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;We are looking forward to see you on our conference!&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;payment_provider_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Please transfer the money to our account ABC…&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;footer_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Big Events LLC - Registration No. 123456 - VAT ID: EU0987654321&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;lines&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;position&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Budget Ticket&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;item&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1234</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;variation&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">245</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;event_date_from&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2017-12-27T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;event_date_to&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;attendee_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;gross_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;23.00&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;tax_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.00&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;tax_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VAT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;tax_rate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.00&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;foreign_currency_display&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PLN&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;foreign_currency_rate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.2408&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;foreign_currency_rate_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2017-07-24&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Query Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>page</strong> (<em>integer</em>) – The page number in case of a multi-page result set, default is 1</p></li>
+<li><p><strong>is_cancellation</strong> (<em>boolean</em>) – If set to <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code>, only invoices with this value for the field
+<code class="docutils literal notranslate"><span class="pre">is_cancellation</span></code> will be returned.</p></li>
+<li><p><strong>order</strong> (<em>string</em>) – If set, only invoices belonging to the order with the given order code will be returned.</p></li>
+<li><p><strong>refers</strong> (<em>string</em>) – If set, only invoices referring to the given invoice will be returned.</p></li>
+<li><p><strong>locale</strong> (<em>string</em>) – If set, only invoices with the given locale will be returned.</p></li>
+<li><p><strong>ordering</strong> (<em>string</em>) – Manually set the ordering of results. Valid fields to be used are <code class="docutils literal notranslate"><span class="pre">date</span></code> and
+<code class="docutils literal notranslate"><span class="pre">nr</span></code> (equals to <code class="docutils literal notranslate"><span class="pre">number</span></code>). Default: <code class="docutils literal notranslate"><span class="pre">nr</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-events-(event)-invoices-(number)-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/invoices/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">number</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-events-(event)-invoices-(number)-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns information on one invoice, identified by its invoice number.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/invoices/SAMPLECONF-00001/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;number&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLECONF-00001&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;order&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ABC12&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;is_cancellation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_from_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Big Events LLC&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_from&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Demo street 12&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_from_zipcode&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_from_city&quot;</span><span class="p">:</span><span class="s2">&quot;Demo town&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_from_country&quot;</span><span class="p">:</span><span class="s2">&quot;US&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_from_tax_id&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_from_vat_id&quot;</span><span class="p">:</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_to&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sample company\nJohn Doe\nTest street 12\n12345 Testington\nTestikistan\nVAT-ID: EU123456789&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_to_company&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sample company&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_to_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_to_street&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Test street 12&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_to_zipcode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12345&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_to_city&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Testington&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_to_state&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_to_country&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_to_vat_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EU123456789&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;invoice_to_beneficiary&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;custom_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2017-12-01&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;refers&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;locale&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;en&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;introductory_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;thank you for your purchase of the following items:&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;internal_reference&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;additional_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;We are looking forward to see you on our conference!&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;payment_provider_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Please transfer the money to our account ABC…&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;footer_text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Big Events LLC - Registration No. 123456 - VAT ID: EU0987654321&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;lines&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;position&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Budget Ticket&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;item&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1234</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;variation&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">245</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;event_date_from&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2017-12-27T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;event_date_to&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;attendee_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;gross_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;23.00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;tax_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;tax_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VAT&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;tax_rate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.00&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;foreign_currency_display&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PLN&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;foreign_currency_rate&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4.2408&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;foreign_currency_rate_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2017-07-24&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+<li><p><strong>invoice_no</strong> – The <code class="docutils literal notranslate"><span class="pre">invoice_no</span></code> field of the invoice to fetch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-events-(event)-invoices-(invoice_no)-download-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/invoices/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">invoice_no</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/download/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-events-(event)-invoices-(invoice_no)-download-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download an invoice in PDF format.</p>
+<p>Note that in some cases the PDF file might not yet have been created. In that case, you will receive a status
+code <a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.10">409 Conflict</a> and you are expected to retry the request after a short period of waiting.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/invoices/00001/download/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/pdf</span>
+
+...
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+<li><p><strong>invoice_no</strong> – The <code class="docutils literal notranslate"><span class="pre">invoice_no</span></code> field of the invoice to fetch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.10">409 Conflict</a></span> – The file is not yet ready and will now be prepared. Retry the request after waiting for a few
+seconds.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-v1-organizers-(organizer)-events-(event)-invoices-(invoice_no)-reissue-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/invoices/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">invoice_no</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/reissue/</span></span><a class="headerlink" href="#post--api-v1-organizers-(organizer)-events-(event)-invoices-(invoice_no)-reissue-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancels the invoice and creates a new one.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/invoices/00001/reissue/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">No Content</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/pdf</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+<li><p><strong>invoice_no</strong> – The <code class="docutils literal notranslate"><span class="pre">invoice_no</span></code> field of the invoice to reissue</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – The invoice has already been canceled</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to change this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-v1-organizers-(organizer)-events-(event)-invoices-(invoice_no)-regenerate-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/invoices/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">invoice_no</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/regenerate/</span></span><a class="headerlink" href="#post--api-v1-organizers-(organizer)-events-(event)-invoices-(invoice_no)-regenerate-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Re-generates the invoice from order data.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/invoices/00001/regenerate/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">No Content</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/pdf</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+<li><p><strong>invoice_no</strong> – The <code class="docutils literal notranslate"><span class="pre">invoice_no</span></code> field of the invoice to regenerate</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – The invoice has already been canceled</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to change this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="vouchers.html" class="btn btn-neutral float-right" title="Vouchers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="orders.html" class="btn btn-neutral" title="Orders" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

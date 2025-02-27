@@ -1,0 +1,464 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>OAuth authentication / “Connect with eventyay-ticket” &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="up" title="Authentication" href="auth.html"/>
+        <link rel="next" title="Device authentication" href="deviceauth.html"/>
+        <link rel="prev" title="Token-based authentication" href="tokenauth.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">REST API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html">Basic concepts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="auth.html">Authentication</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tokenauth.html">Token-based authentication</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">OAuth authentication / “Connect with eventyay-ticket”</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#registering-an-application">Registering an application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#obtaining-an-authorization-grant">Obtaining an authorization grant</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#getting-an-access-token">Getting an access token</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-the-api-with-an-access-token">Using the API with an access token</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#refreshing-an-access-token">Refreshing an access token</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#revoking-a-token">Revoking a token</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fetching-the-user-profile">Fetching the user profile</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="deviceauth.html">Device authentication</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources and endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ratelimit.html">Rate limiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webhooks.html">Webhooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/index.html">API Usage Guides</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">REST API</a> &raquo;</li>
+        
+          <li><a href="auth.html">Authentication</a> &raquo;</li>
+        
+      <li>OAuth authentication / “Connect with eventyay-ticket”</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/oauth.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="oauth-authentication-connect-with-eventyay-ticket">
+<span id="rest-oauth"></span><h1>OAuth authentication / “Connect with eventyay-ticket”<a class="headerlink" href="#oauth-authentication-connect-with-eventyay-ticket" title="Permalink to this heading">¶</a></h1>
+<p>In addition to static tokens, eventyay-ticket supports <a class="reference external" href="https://en.wikipedia.org/wiki/OAuth">OAuth2</a>-based authentication starting with
+eventyay-ticket 1.16. This allows you to put a “Connect with eventyay-ticket” button into your website or tool
+that allows the user to easily set up a connection between the two systems.</p>
+<p>If you haven’t worked with OAuth before, have a look at the <a class="reference external" href="https://aaronparecki.com/oauth-2-simplified/">OAuth2 Simplified</a> tutorial.</p>
+<section id="registering-an-application">
+<h2>Registering an application<a class="headerlink" href="#registering-an-application" title="Permalink to this heading">¶</a></h2>
+<p>To use OAuth, you need to register your application with the eventyay-ticket instance you want to connect to.
+In order to do this, log in to your eventyay-ticket account and go to your user settings. Click on “Authorized applications”
+first and then on “Manage your own apps”. From there, you can “Create a new application”.</p>
+<p>You should fill in a descriptive name of your application that allows users to recognize who you are. You also need to
+give a list of fully-qualified URLs that users will be redirected to after a successful authorization. After you pressed
+“Save”, you will be presented with a client ID and a client secret. Please note them down and treat the client secret
+like a password; it should not become available to your users.</p>
+</section>
+<section id="obtaining-an-authorization-grant">
+<h2>Obtaining an authorization grant<a class="headerlink" href="#obtaining-an-authorization-grant" title="Permalink to this heading">¶</a></h2>
+<p>To authorize a new user, link or redirect them to the <code class="docutils literal notranslate"><span class="pre">authorize</span></code> endpoint, passing your client ID as a query
+parameter. Additionally, you can pass a scope (currently either <code class="docutils literal notranslate"><span class="pre">read</span></code>, <code class="docutils literal notranslate"><span class="pre">write</span></code>, <code class="docutils literal notranslate"><span class="pre">read</span> <span class="pre">write</span></code> or <code class="docutils literal notranslate"><span class="pre">profile</span></code>)
+and an URL the user should be redirected to after successful or failed authorization. You also need to pass the
+<code class="docutils literal notranslate"><span class="pre">response_type</span></code> parameter with a value of <code class="docutils literal notranslate"><span class="pre">code</span></code>. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://eventyay.com/api/v1/oauth/authorize?client_id=lsLi0hNL0vk53mEdYjNJxHUn1PcO1R6wVg81dLNT&amp;response_type=code&amp;scope=read+write&amp;redirect_uri=https://eventyay.com
+</pre></div>
+</div>
+<p>To prevent CSRF attacks, you can also optionally pass a <code class="docutils literal notranslate"><span class="pre">state</span></code> parameter with a random string. Later, when
+redirecting back to your application, we will pass the same <code class="docutils literal notranslate"><span class="pre">state</span></code> parameter back to you, so you can compare if they
+match.</p>
+<p>After the user granted or denied access, they will be redirected back either to the <code class="docutils literal notranslate"><span class="pre">redirect_url</span></code> you passed in the
+query or to the first redirect URL configured in your application settings.</p>
+<p>On successful registration, we will append the query parameter <code class="docutils literal notranslate"><span class="pre">code</span></code> to the URL containing an authorization code.
+For example, we might redirect the user to this URL:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://pretalx.com/?code=eYBBf8gmeD4E01HLoj0XflqO4Lg3Cw&amp;state=e3KCh9mfx07qxU4bRpXk
+</pre></div>
+</div>
+<p>You will need this <code class="docutils literal notranslate"><span class="pre">code</span></code> parameter to perform the next step.</p>
+<p>On a failed registration, a query string like <code class="docutils literal notranslate"><span class="pre">?error=access_denied</span></code> will be appended to the redirection URL.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the user is asked to give permission on every call to this URL. If you <strong>only</strong> request the
+<code class="docutils literal notranslate"><span class="pre">profile</span></code> scope, i.e. no access to organizer data, you can pass the <code class="docutils literal notranslate"><span class="pre">approval_prompt=auto</span></code> parameter
+to skip user interaction on subsequent calls.</p>
+</div>
+</section>
+<section id="getting-an-access-token">
+<h2>Getting an access token<a class="headerlink" href="#getting-an-access-token" title="Permalink to this heading">¶</a></h2>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">code</span></code> value you obtained above and your client ID, you can now request an access token that actually gives
+access to the API. The <code class="docutils literal notranslate"><span class="pre">token</span></code> endpoint expects you to authenticate using <a class="reference external" href="https://en.wikipedia.org/wiki/Basic_access_authentication">HTTP Basic authentication</a> using your client
+ID as a username and your client secret as a password. You are also required to again supply the same <code class="docutils literal notranslate"><span class="pre">redirect_uri</span></code>
+parameter that you used for the authorization.</p>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-v1-oauth-token">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/oauth/token</span></span><a class="headerlink" href="#post--api-v1-oauth-token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request a new access token</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/oauth/token</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+<span class="na">Authorization</span><span class="o">:</span> <span class="l">Basic bHNMaTBoTkwwdms1M21FZFlqTkp4SFVuMVBjTzFSNndWZzgxZExOVDplSmpzZVA0UjJMN0hMcjBiS0p1b3BmbnJtT2cyY3NDeTdYaFVVZ0FoalhUU0NhZHhRTjk3cVNvMkpPaXlWTFpQOEozaTVQd1FVdFIwNUNycG5ac2Z0bXJjdmNTbkZ1SkFmb2ZsUTdZUDRpSjZNTWFYTHIwQ0FpNlhIRFJjV1Awcg==</span>
+
+grant_type=authorization_code&amp;code=eYBBf8gmeD4E01HLoj0XflqO4Lg3Cw&amp;redirect_uri=https://pretalx.com
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;access_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;i3ytqTSRWsKp16fqjekHXa4tdM4qNC&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expires_in&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">86400</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;token_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bearer&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;scope&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;read write&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;refresh_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XBK0r8z4A4TTeR9LyMUyU2AM5rqpXp&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>As you can see, you receive two types of tokens: One “access token”, and one “refresh token”. The access token is valid
+for a day and can be used to actually access the API. The refresh token does not have an expiration date and can be used
+to obtain a new access_token after a day, so you should make sure to store the access token safely if you need long-term
+access.</p>
+</section>
+<section id="using-the-api-with-an-access-token">
+<h2>Using the API with an access token<a class="headerlink" href="#using-the-api-with-an-access-token" title="Permalink to this heading">¶</a></h2>
+<p>You can supply a valid access token as a <code class="docutils literal notranslate"><span class="pre">Bearer</span></code>-type token in the <code class="docutils literal notranslate"><span class="pre">Authorization</span></code> header to get API access.</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span>    GET /api/v1/organizers/ HTTP/1.1
+    Host: eventyay.com
+<span class="hll">    Authorization: Bearer i3ytqTSRWsKp16fqjekHXa4tdM4qNC
+</span></pre></div>
+</div>
+</section>
+<section id="refreshing-an-access-token">
+<h2>Refreshing an access token<a class="headerlink" href="#refreshing-an-access-token" title="Permalink to this heading">¶</a></h2>
+<p>You can obtain a new access token using your refresh token any time. This can be done using the same <code class="docutils literal notranslate"><span class="pre">token</span></code> endpoint
+used to obtain the first access token above, but with a different set of parameters:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/oauth/token</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+<span class="na">Authorization</span><span class="o">:</span> <span class="l">Basic bHNMaTBoTkwwdms1M21FZFlqTkp4SFVuMVBjTzFSNndWZzgxZExOVDplSmpzZVA0UjJMN0hMcjBiS0p1b3BmbnJtT2cyY3NDeTdYaFVVZ0FoalhUU0NhZHhRTjk3cVNvMkpPaXlWTFpQOEozaTVQd1FVdFIwNUNycG5ac2Z0bXJjdmNTbkZ1SkFmb2ZsUTdZUDRpSjZNTWFYTHIwQ0FpNlhIRFJjV1Awcg==</span>
+
+grant_type=refresh_token&amp;refresh_token=XBK0r8z4A4TTeR9LyMUyU2AM5rqpXp
+</pre></div>
+</div>
+<p>The previous access token will instantly become invalid.</p>
+</section>
+<section id="revoking-a-token">
+<h2>Revoking a token<a class="headerlink" href="#revoking-a-token" title="Permalink to this heading">¶</a></h2>
+<p>If you don’t need a token any more or if you believe it may have been compromised, you can use the <code class="docutils literal notranslate"><span class="pre">revoke_token</span></code>
+endpoint to revoke it.</p>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-oauth-revoke_token">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/oauth/revoke_token</span></span><a class="headerlink" href="#get--api-v1-oauth-revoke_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Revoke an access or refresh token. If you revoke an access token, you can still create a new one using the refresh token. If you
+revoke a refresh token, the connected access token  will also be revoked.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/oauth/revoke_token</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+<span class="na">Authorization</span><span class="o">:</span> <span class="l">Basic bHNMaTBoTkwwdms1M21FZFlqTkp4SFVuMVBjTzFSNndWZzgxZExOVDplSmpzZVA0UjJMN0hMcjBiS0p1b3BmbnJtT2cyY3NDeTdYaFVVZ0FoalhUU0NhZHhRTjk3cVNvMkpPaXlWTFpQOEozaTVQd1FVdFIwNUNycG5ac2Z0bXJjdmNTbkZ1SkFmb2ZsUTdZUDRpSjZNTWFYTHIwQ0FpNlhIRFJjV1Awcg==</span>
+
+token=XBK0r8z4A4TTeR9LyMUyU2AM5rqpXp
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<p>If you want to revoke your client secret, you can generate a new one in the list of your managed applications in the
+eventyay-ticket user interface.</p>
+</section>
+<section id="fetching-the-user-profile">
+<h2>Fetching the user profile<a class="headerlink" href="#fetching-the-user-profile" title="Permalink to this heading">¶</a></h2>
+<p>If you need the user’s meta data, you can fetch it here:</p>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-me">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/me</span></span><a class="headerlink" href="#get--api-v1-me" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the profile of the authenticated user</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/me</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+<span class="na">Authorization</span><span class="o">:</span> <span class="l">Bearer i3ytqTSRWsKp16fqjekHXa4tdM4qNC</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin@localhost&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fullname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;locale&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;de&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;is_staff&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timezone&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Europe/Berlin&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="deviceauth.html" class="btn btn-neutral float-right" title="Device authentication" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tokenauth.html" class="btn btn-neutral" title="Token-based authentication" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

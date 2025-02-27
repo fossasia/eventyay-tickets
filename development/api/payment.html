@@ -1,0 +1,897 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Writing a payment provider plugin &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Plugin development" href="index.html"/>
+        <link rel="next" title="Porting a payment provider from pretix 1.x to pretix 2.x" href="payment_2.0.html"/>
+        <link rel="prev" title="Writing a ticket output plugin" href="ticketoutput.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../implementation/index.html">Implementation and Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Plugin development</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Creating a plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporter.html">Writing an exporter plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ticketoutput.html">Writing a ticket output plugin</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Writing a payment provider plugin</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#provider-registration">Provider registration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-provider-class">The provider class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#additional-views">Additional views</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="payment_2.0.html">Porting a payment provider from pretix 1.x to pretix 2.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">Writing an HTML e-mail renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="placeholder.html">Writing an e-mail placeholder plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="invoice.html">Writing an invoice renderer plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shredder.html">Writing a data shredder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="import.html">Extending the order import process</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customview.html">Creating custom views</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auth.html">Pluggable authentication backends</a></li>
+<li class="toctree-l3"><a class="reference internal" href="general.html">General APIs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quality.html">Plugin quality checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Plugin development</a> &raquo;</li>
+        
+      <li>Writing a payment provider plugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/api/payment.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="writing-a-payment-provider-plugin">
+<h1>Writing a payment provider plugin<a class="headerlink" href="#writing-a-payment-provider-plugin" title="Permalink to this heading">¶</a></h1>
+<p>In this document, we will walk through the creation of a payment provider plugin. This
+is very similar to creating an export output.</p>
+<p>Please read <a class="reference internal" href="plugins.html#pluginsetup"><span class="std std-ref">Creating a plugin</span></a> first, if you haven’t already.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>We changed our payment provider API a lot in pretix 2.x. Our documentation page on <a class="reference internal" href="payment_2.0.html#payment2-0"><span class="std std-ref">Porting a payment provider from pretix 1.x to pretix 2.x</span></a>
+might be insightful even if you do not have a payment provider to port, as it outlines the rationale
+behind the current design.</p>
+</div>
+<section id="provider-registration">
+<h2>Provider registration<a class="headerlink" href="#provider-registration" title="Permalink to this heading">¶</a></h2>
+<p>The payment provider API does not make a lot of usage from signals, however, it
+does use a signal to get a list of all available payment providers. Your plugin
+should listen for this signal and return the subclass of <code class="docutils literal notranslate"><span class="pre">pretix.base.payment.BasePaymentProvider</span></code>
+that the plugin will provide:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">django.dispatch</span><span class="w"> </span><span class="kn">import</span> <span class="n">receiver</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="kn">from</span><span class="w"> </span><span class="nn">pretix.base.signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_payment_providers</span>
+<span class="linenos">4</span>
+<span class="linenos">5</span>
+<span class="linenos">6</span><span class="nd">@receiver</span><span class="p">(</span><span class="n">register_payment_providers</span><span class="p">,</span> <span class="n">dispatch_uid</span><span class="o">=</span><span class="s2">&quot;payment_paypal&quot;</span><span class="p">)</span>
+<span class="linenos">7</span><span class="k">def</span><span class="w"> </span><span class="nf">register_payment_provider</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos">8</span>    <span class="kn">from</span><span class="w"> </span><span class="nn">.payment</span><span class="w"> </span><span class="kn">import</span> <span class="n">Paypal</span>
+<span class="linenos">9</span>    <span class="k">return</span> <span class="n">Paypal</span>
+</pre></div>
+</div>
+</section>
+<section id="the-provider-class">
+<h2>The provider class<a class="headerlink" href="#the-provider-class" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pretix.base.payment.BasePaymentProvider">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pretix.base.payment.</span></span><span class="sig-name descname"><span class="pre">BasePaymentProvider</span></span><a class="headerlink" href="#pretix.base.payment.BasePaymentProvider" title="Permalink to this definition">¶</a></dt>
+<dd><p>The central object of each payment provider is the subclass of <code class="docutils literal notranslate"><span class="pre">BasePaymentProvider</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.BasePaymentProvider.BasePaymentProvider.event">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">event</span></span><a class="headerlink" href="#pretix.base.payment.BasePaymentProvider.BasePaymentProvider.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default constructor sets this property to the event we are currently
+working for.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.BasePaymentProvider.BasePaymentProvider.settings">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">settings</span></span><a class="headerlink" href="#pretix.base.payment.BasePaymentProvider.BasePaymentProvider.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>The default constructor sets this property to a <code class="docutils literal notranslate"><span class="pre">SettingsSandbox</span></code> object. You can
+use this object to store settings using its <code class="docutils literal notranslate"><span class="pre">get</span></code> and <code class="docutils literal notranslate"><span class="pre">set</span></code> methods. All settings
+you store are transparently prefixed, so you get your very own settings namespace.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.identifier">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">identifier</span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.identifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>A short and unique identifier for this payment provider.
+This should only contain lowercase letters and in most
+cases will be the same as your package name.</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.verbose_name">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">verbose_name</span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.verbose_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A human-readable name for this payment provider. This should
+be short but self-explaining. Good examples include ‘Bank transfer’
+and ‘Credit card via Stripe’.</p>
+<p>This is an abstract attribute, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.public_name">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">public_name</span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.public_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A human-readable name for this payment provider to be shown to the public.
+This should be short but self-explaining. Good examples include ‘Bank transfer’
+and ‘Credit card’, but ‘Credit card via Stripe’ might be to explicit. By default,
+this is the same as <code class="docutils literal notranslate"><span class="pre">verbose_name</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.is_enabled">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">is_enabled</span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.is_enabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether or whether not this payment provider is enabled.
+By default, this is determined by the value of the <code class="docutils literal notranslate"><span class="pre">_enabled</span></code> setting.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.priority">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">priority</span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.priority" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a priority that is used for sorting payment providers. Higher priority means higher up in the list.
+Default to 100. Providers with same priority are sorted alphabetically.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.settings_form_fields">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">settings_form_fields</span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.settings_form_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>When the event’s administrator visits the event configuration
+page, this method is called to return the configuration fields available.</p>
+<p>It should therefore return a dictionary where the keys should be (unprefixed)
+settings keys and the values should be corresponding Django form fields.</p>
+<p>The default implementation returns the appropriate fields for the <code class="docutils literal notranslate"><span class="pre">_enabled</span></code>,
+<code class="docutils literal notranslate"><span class="pre">_fee_abs</span></code>, <code class="docutils literal notranslate"><span class="pre">_fee_percent</span></code> and <code class="docutils literal notranslate"><span class="pre">_availability_date</span></code> settings mentioned above.</p>
+<p>We suggest that you return an <code class="docutils literal notranslate"><span class="pre">OrderedDict</span></code> object instead of a dictionary
+and make use of the default implementation. Your implementation could look
+like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@property</span>
+<span class="linenos"> 2</span><span class="k">def</span><span class="w"> </span><span class="nf">settings_form_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 3</span>    <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">(</span>
+<span class="linenos"> 4</span>        <span class="nb">list</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">settings_form_fields</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="o">+</span> <span class="p">[</span>
+<span class="linenos"> 5</span>            <span class="p">(</span><span class="s1">&#39;bank_details&#39;</span><span class="p">,</span>
+<span class="linenos"> 6</span>             <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span>
+<span class="linenos"> 7</span>                 <span class="n">widget</span><span class="o">=</span><span class="n">forms</span><span class="o">.</span><span class="n">Textarea</span><span class="p">,</span>
+<span class="linenos"> 8</span>                 <span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Bank account details&#39;</span><span class="p">),</span>
+<span class="linenos"> 9</span>                 <span class="n">required</span><span class="o">=</span><span class="kc">False</span>
+<span class="linenos">10</span>             <span class="p">))</span>
+<span class="linenos">11</span>        <span class="p">]</span>
+<span class="linenos">12</span>    <span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is highly discouraged to alter the <code class="docutils literal notranslate"><span class="pre">_enabled</span></code> field of the default
+implementation.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.settings_form_clean">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">settings_form_clean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cleaned_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.settings_form_clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overriding this method allows you to inject custom validation into the settings form.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cleaned_data</strong> – Form data as per previous validations.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Please return the modified cleaned_data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.settings_content_render">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">settings_content_render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.settings_content_render" title="Permalink to this definition">¶</a></dt>
+<dd><p>When the event’s administrator visits the event configuration
+page, this method is called. It may return HTML containing additional information
+that is displayed below the form fields configured in <code class="docutils literal notranslate"><span class="pre">settings_form_fields</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.is_allowed">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">is_allowed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Decimal</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.is_allowed" title="Permalink to this definition">¶</a></dt>
+<dd><p>You can use this method to disable this payment provider for certain groups
+of users, products or other criteria. If this method returns <code class="docutils literal notranslate"><span class="pre">False</span></code>, the
+user will not be able to select this payment method. This will only be called
+during checkout, not on retrying.</p>
+<p>The default implementation checks for the _availability_date setting to be either unset or in the future
+and for the _total_max and _total_min requirements to be met. It also checks the <code class="docutils literal notranslate"><span class="pre">_restrict_countries</span></code>
+and <code class="docutils literal notranslate"><span class="pre">_restrict_to_sales_channels</span></code> setting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>total</strong> – The total value without the payment method fee, after taxes.</p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.17.0: </span>The <code class="docutils literal notranslate"><span class="pre">total</span></code> parameter has been added. For backwards compatibility, this method is called again
+without this parameter if it raises a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> on first try.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_form_render">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">payment_form_render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Decimal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.Order" title="pretix.base.models.orders.Order"><span class="pre">Order</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_form_render" title="Permalink to this definition">¶</a></dt>
+<dd><p>When the user selects this provider as their preferred payment method,
+they will be shown the HTML you return from this method.</p>
+<p>The default implementation will call <code class="xref py py-meth docutils literal notranslate"><span class="pre">payment_form()</span></code>
+and render the returned form. If your payment method doesn’t require
+the user to fill out form fields, you should just return a paragraph
+of explanatory text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>order</strong> – Only set when this is a change to a new payment method for an existing order.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_form">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">payment_form</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Form</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_form" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is called by the default implementation of <code class="xref py py-meth docutils literal notranslate"><span class="pre">payment_form_render()</span></code>
+to obtain the form that is displayed to the user during the checkout
+process. The default implementation constructs the form using
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">payment_form_fields</span></code> and sets appropriate prefixes for the form
+and all fields and fills the form with data form the user’s session.</p>
+<p>If you overwrite this, we strongly suggest that you inherit from
+<code class="docutils literal notranslate"><span class="pre">PaymentProviderForm</span></code> (from this module) that handles some nasty issues about
+required fields for you.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_form_fields">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">payment_form_fields</span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_form_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is used by the default implementation of <code class="xref py py-meth docutils literal notranslate"><span class="pre">payment_form()</span></code>.
+It should return an object similar to <code class="xref py py-attr docutils literal notranslate"><span class="pre">settings_form_fields</span></code>.</p>
+<p>The default implementation returns an empty dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_is_valid_session">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">payment_is_valid_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_is_valid_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is called at the time the user tries to place the order. It should return
+<code class="docutils literal notranslate"><span class="pre">True</span></code> if the user’s session is valid and all data your payment provider requires
+in future steps is present.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.checkout_prepare">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">checkout_prepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cart</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.checkout_prepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called after the user selects this provider as their payment method.
+If you provided a form to the user to enter payment data, this method should
+at least store the user’s input into their session.</p>
+<p>This method should return <code class="docutils literal notranslate"><span class="pre">False</span></code> if the user’s input was invalid, <code class="docutils literal notranslate"><span class="pre">True</span></code>
+if the input was valid and the frontend should continue with default behavior
+or a string containing a URL if the user should be redirected somewhere else.</p>
+<p>On errors, you should use Django’s message framework to display an error message
+to the user (or the normal form validation error messages).</p>
+<p>The default implementation stores the input into the form returned by
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">payment_form()</span></code> in the user’s session.</p>
+<p>If your payment method requires you to redirect the user to an external provider,
+this might be the place to do so.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>If this is called, the user has not yet confirmed their order.
+You may NOT do anything which actually moves money.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cart</strong> – <p>This dictionary contains at least the following keys:</p>
+<dl class="simple">
+<dt>positions:</dt><dd><p>A list of <code class="docutils literal notranslate"><span class="pre">CartPosition</span></code> objects that are annotated with the special
+attributes <code class="docutils literal notranslate"><span class="pre">count</span></code> and <code class="docutils literal notranslate"><span class="pre">total</span></code> because multiple objects of the
+same content are grouped into one.</p>
+</dd>
+<dt>raw:</dt><dd><p>The raw list of <code class="docutils literal notranslate"><span class="pre">CartPosition</span></code> objects in the users cart</p>
+</dd>
+<dt>total:</dt><dd><p>The overall total <em>including</em> the fee for the payment method.</p>
+</dd>
+<dt>payment_fee:</dt><dd><p>The fee for the payment method.</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.checkout_confirm_render">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">checkout_confirm_render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.Order" title="pretix.base.models.orders.Order"><span class="pre">Order</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.checkout_confirm_render" title="Permalink to this definition">¶</a></dt>
+<dd><p>If the user has successfully filled in their payment data, they will be redirected
+to a confirmation page which lists all details of their order for a final review.
+This method should return the HTML which should be displayed inside the
+‘Payment’ box on this page.</p>
+<p>In most cases, this should include a short summary of the user’s input and
+a short explanation on how the payment process will continue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>order</strong> – Only set when this is a change to a new payment method for an existing order.</p>
+</dd>
+</dl>
+<p>This is an abstract method, you <strong>must</strong> override this!</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.execute_payment">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">execute_payment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.execute_payment" title="Permalink to this definition">¶</a></dt>
+<dd><p>After the user has confirmed their purchase, this method will be called to complete
+the payment process. This is the place to actually move the money if applicable.
+You will be passed an <a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.OrderPayment"><code class="xref py py-class docutils literal notranslate"><span class="pre">pretix.base.models.OrderPayment</span></code></a> object that contains
+the amount of money that should be paid.</p>
+<p>If you need any special behavior, you can return a string
+containing the URL the user will be redirected to. If you are done with your process
+you should return the user to the order’s detail page.</p>
+<p>If the payment is completed, you should call <code class="docutils literal notranslate"><span class="pre">payment.confirm()</span></code>. Please note that this might
+raise a <code class="docutils literal notranslate"><span class="pre">Quota.QuotaExceededException</span></code> if (and only if) the payment term of this order is over and
+some of the items are sold out. You should use the exception message to display a meaningful error
+to the user.</p>
+<p>The default implementation just returns <code class="docutils literal notranslate"><span class="pre">None</span></code> and therefore leaves the
+order unpaid. The user will be redirected to the order’s detail page by default.</p>
+<p>On errors, you should raise a <code class="docutils literal notranslate"><span class="pre">PaymentException</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> – The order object</p></li>
+<li><p><strong>payment</strong> – An <code class="docutils literal notranslate"><span class="pre">OrderPayment</span></code> instance</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.calculate_fee">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">calculate_fee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Decimal</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Decimal</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.calculate_fee" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the fee for this payment provider which will be added to
+final price before fees (but after taxes). It should include any taxes.
+The default implementation makes use of the setting <code class="docutils literal notranslate"><span class="pre">_fee_abs</span></code> for an
+absolute fee and <code class="docutils literal notranslate"><span class="pre">_fee_percent</span></code> for a percentage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>price</strong> – The total value without the payment method fee, after taxes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.order_pending_mail_render">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">order_pending_mail_render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.Order" title="pretix.base.models.orders.Order"><span class="pre">Order</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">payment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.order_pending_mail_render" title="Permalink to this definition">¶</a></dt>
+<dd><p>After the user has submitted their order, they will receive a confirmation
+email. You can return a string from this method if you want to add additional
+information to this email.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> – The order object</p></li>
+<li><p><strong>payment</strong> – The payment object</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_pending_render">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">payment_pending_render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_pending_render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render customer-facing instructions on how to proceed with a pending payment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>HTML</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.abort_pending_allowed">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">abort_pending_allowed</span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.abort_pending_allowed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not a user can abort a payment in pending state to switch to another
+payment method. This returns <code class="docutils literal notranslate"><span class="pre">False</span></code> by default which is no guarantee that
+aborting a pending payment can never happen, it just hides the frontend button
+to avoid users accidentally committing double payments.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.render_invoice_text">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">render_invoice_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.Order" title="pretix.base.models.orders.Order"><span class="pre">Order</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">payment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.render_invoice_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is called when an invoice for an order with this payment provider is generated.
+The default implementation returns the content of the _invoice_text configuration
+variable (an I18nString), or an empty string if unconfigured. For paid orders, the
+default implementation always renders a string stating that the invoice is already paid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.order_change_allowed">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">order_change_allowed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.Order" title="pretix.base.models.orders.Order"><span class="pre">Order</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.order_change_allowed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called to check whether it is allowed to change the payment method of
+an order to this one.</p>
+<p>The default implementation checks for the _availability_date setting to be either unset or in the future,
+as well as for the _total_max, _total_min and _restricted_countries settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>order</strong> – The order object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_prepare">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">payment_prepare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_prepare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called if the user retries to pay an unpaid order (after the user filled in
+e.g. the form returned by <code class="xref py py-meth docutils literal notranslate"><span class="pre">payment_form()</span></code>) or if the user changes the payment
+method.</p>
+<p>It should return and report errors the same way as <code class="xref py py-meth docutils literal notranslate"><span class="pre">checkout_prepare()</span></code>, but
+receives an <code class="docutils literal notranslate"><span class="pre">Order</span></code> object instead of a cart object.</p>
+<p>Note: The <code class="docutils literal notranslate"><span class="pre">Order</span></code> object given to this method might be different from the version
+stored in the database as it’s total will already contain the payment fee for the
+new payment method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_control_render">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">payment_control_render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">payment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_control_render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called if the <em>event administrator</em> views the details of a payment.</p>
+<p>It should return HTML code containing information regarding the current payment
+status and, if applicable, next steps.</p>
+<p>The default implementation returns an empty string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>order</strong> – The order object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_control_render_short">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">payment_control_render_short</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_control_render_short" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called if the <em>event administrator</em> performs an action on the payment. Should
+return a very short version of the payment method. Usually, this should return e.g.
+a transaction ID or account identifier, but no information on status, dates, etc.</p>
+<p>The default implementation falls back to <code class="docutils literal notranslate"><span class="pre">payment_presale_render</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>order</strong> – The order object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_refund_supported">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">payment_refund_supported</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_refund_supported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called to check if the provider supports automatic refunding for this
+payment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_partial_refund_supported">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">payment_partial_refund_supported</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_partial_refund_supported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called to check if the provider supports automatic partial refunding for this
+payment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_presale_render">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">payment_presale_render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.payment_presale_render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called if the <em>ticket customer</em> views the details of a payment. This is
+currently used e.g. when the customer requests a refund to show which payment
+method is used for the refund. This should only include very basic information
+about the payment, such as “VISA card <a href="#id1"><span class="problematic" id="id2">**</span></a><a href="#id3"><span class="problematic" id="id4">**</span></a>9999”, and never raw payment information.</p>
+<p>The default implementation returns the public name of the payment provider.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>order</strong> – The order object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.execute_refund">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">execute_refund</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">refund</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderRefund" title="pretix.base.models.orders.OrderRefund"><span class="pre">OrderRefund</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.execute_refund" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called to execute an refund. Note that refunds have an amount property and can be partial.</p>
+<p>This should transfer the money back (if possible).
+On success, you should call <code class="docutils literal notranslate"><span class="pre">refund.done()</span></code>.
+On failure, you should raise a PaymentException.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.refund_control_render">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">refund_control_render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refund</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderRefund" title="pretix.base.models.orders.OrderRefund"><span class="pre">OrderRefund</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.refund_control_render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called if the <em>event administrator</em> views the details of a refund.</p>
+<p>It should return HTML code containing information regarding the current refund
+status and, if applicable, next steps.</p>
+<p>The default implementation returns an empty string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>refund</strong> – The refund object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.new_refund_control_form_render">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">new_refund_control_form_render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.Order" title="pretix.base.models.orders.Order"><span class="pre">Order</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.new_refund_control_form_render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render a form that will be shown to backend users when trying to create a new refund.</p>
+<p>Usually, refunds are created from an existing payment object, e.g. if there is a credit card
+payment and the credit card provider returns <code class="docutils literal notranslate"><span class="pre">True</span></code> from <code class="docutils literal notranslate"><span class="pre">payment_refund_supported</span></code>, the system
+will automatically create an <code class="docutils literal notranslate"><span class="pre">OrderRefund</span></code> and call <code class="docutils literal notranslate"><span class="pre">execute_refund</span></code> on that payment. This method
+can and should not be used in that situation! Instead, by implementing this method you can add a refund
+flow for this payment provider that starts without an existing payment. For example, even though an order
+was paid by credit card, it could easily be refunded by SEPA bank transfer. In that case, the SEPA bank
+transfer provider would implement this method and return a form that asks for the IBAN.</p>
+<p>This method should return HTML or <code class="docutils literal notranslate"><span class="pre">None</span></code>. All form fields should have a globally unique name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.new_refund_control_form_process">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">new_refund_control_form_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HttpRequest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Decimal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.Order" title="pretix.base.models.orders.Order"><span class="pre">Order</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderRefund" title="pretix.base.models.orders.OrderRefund"><span class="pre">OrderRefund</span></a></span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.new_refund_control_form_process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process a backend user’s request to initiate a new refund with an amount of <code class="docutils literal notranslate"><span class="pre">amount</span></code> for <code class="docutils literal notranslate"><span class="pre">order</span></code>.</p>
+<p>This method should parse the input provided to the form created and either raise <code class="docutils literal notranslate"><span class="pre">ValidationError</span></code>
+or return an <code class="docutils literal notranslate"><span class="pre">OrderRefund</span></code> object in <code class="docutils literal notranslate"><span class="pre">created</span></code> state that has not yet been saved to the database.
+The system will then call <code class="docutils literal notranslate"><span class="pre">execute_refund</span></code> on that object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.api_payment_details">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">api_payment_details</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.api_payment_details" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called to populate the <code class="docutils literal notranslate"><span class="pre">details</span></code> parameter of the payment in the REST API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>payment</strong> – The payment in question.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A serializable dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.matching_id">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">matching_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.matching_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called to get an ID for matching this payment when comparing pretix records with records of an external
+source. This should return the main transaction ID for your API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>payment</strong> – The payment in question.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A string or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.shred_payment_info">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">shred_payment_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderRefund" title="pretix.base.models.orders.OrderRefund"><span class="pre">OrderRefund</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.shred_payment_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>When personal data is removed from an event, this method is called to scrub payment-related data
+from a payment or refund. By default, it removes all info from the <code class="docutils literal notranslate"><span class="pre">info</span></code> attribute. You can override
+this behavior if you want to retain attributes that are not personal data on their own, i.e. a
+reference to a transaction in an external system. You can also override this to scrub more data, e.g.
+data from external sources that is saved in LogEntry objects or other places.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>order</strong> – An order</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.cancel_payment">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">cancel_payment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../implementation/models.html#pretix.base.models.OrderPayment" title="pretix.base.models.orders.OrderPayment"><span class="pre">OrderPayment</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.cancel_payment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be called to cancel a payment. The default implementation just sets the payment state to canceled,
+but in some cases you might want to notify an external provider.</p>
+<p>On success, you should set <code class="docutils literal notranslate"><span class="pre">payment.state</span> <span class="pre">=</span> <span class="pre">OrderPayment.PAYMENT_STATE_CANCELED</span></code> (or call the super method).
+On failure, you should raise a PaymentException.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.is_implicit">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">is_implicit</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;function</span> <span class="pre">BasePaymentProvider.is_implicit&gt;</span></em><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.is_implicit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.is_meta">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">is_meta</span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.is_meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether or whether not this payment provider is a “meta” payment provider that only
+works as a settings holder for other payment providers and should never be used directly. This
+is a trick to implement payment gateways with multiple payment methods but unified payment settings.
+Take a look at the built-in stripe provider to see how this might be used.
+By default, this returns <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.test_mode_message">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">test_mode_message</span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.test_mode_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>If this property is set to a string, this will be displayed when this payment provider is selected
+while the event is in test mode. You should use it to explain to your user how your plugin behaves,
+e.g. if it falls back to a test mode automatically as well or if actual payments will be performed.</p>
+<p>If you do not set this (or, return <code class="docutils literal notranslate"><span class="pre">None</span></code>), pretix will show a default message warning the user
+that this plugin does not support test mode payments.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.requires_invoice_immediately">
+<span class="sig-prename descclassname"><span class="pre">BasePaymentProvider.</span></span><span class="sig-name descname"><span class="pre">requires_invoice_immediately</span></span><a class="headerlink" href="#pretix.base.payment.pretix.base.payment.BasePaymentProvider.BasePaymentProvider.requires_invoice_immediately" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether this payment method requires an invoice to exist for an order, even though the event
+is configured to only create invoices for paid orders.
+By default this is False, but it might be overwritten for e.g. bank transfer.
+<cite>execute_payment</cite> is called after the invoice is created.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="additional-views">
+<h2>Additional views<a class="headerlink" href="#additional-views" title="Permalink to this heading">¶</a></h2>
+<p>See also: <a class="reference internal" href="customview.html#customview"><span class="std std-ref">Creating custom views</span></a>.</p>
+<p>For most simple payment providers it is more than sufficient to implement
+some of the <code class="xref py py-class docutils literal notranslate"><span class="pre">BasePaymentProvider</span></code> methods. However, in some cases
+it is necessary to introduce additional views. One example is the PayPal
+provider. It redirects the user to a PayPal website in the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">BasePaymentProvider.checkout_prepare()</span></code> step of the checkout process
+and provides PayPal with a URL to redirect back to. This URL points to a
+view which looks roughly like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@login_required</span>
+<span class="linenos"> 2</span><span class="k">def</span><span class="w"> </span><span class="nf">success</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+<span class="linenos"> 3</span>    <span class="n">pid</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;paymentId&#39;</span><span class="p">)</span>
+<span class="linenos"> 4</span>    <span class="n">payer</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;PayerID&#39;</span><span class="p">)</span>
+<span class="linenos"> 5</span>    <span class="c1"># We stored some information in the session in checkout_prepare(),</span>
+<span class="linenos"> 6</span>    <span class="c1"># let&#39;s compare the new information to double-check that this is about</span>
+<span class="linenos"> 7</span>    <span class="c1"># the same payment</span>
+<span class="linenos"> 8</span>    <span class="k">if</span> <span class="n">pid</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;payment_paypal_id&#39;</span><span class="p">]:</span>
+<span class="linenos"> 9</span>        <span class="c1"># Save the new information to the user&#39;s session</span>
+<span class="linenos">10</span>        <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;payment_paypal_payer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">payer</span>
+<span class="linenos">11</span>        <span class="k">try</span><span class="p">:</span>
+<span class="linenos">12</span>            <span class="c1"># Redirect back to the confirm page. We chose to save the</span>
+<span class="linenos">13</span>            <span class="c1"># event ID in the user&#39;s session. We could also put this</span>
+<span class="linenos">14</span>            <span class="c1"># information into a URL parameter.</span>
+<span class="linenos">15</span>            <span class="n">event</span> <span class="o">=</span> <span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">current</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">identity</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s1">&#39;payment_paypal_event&#39;</span><span class="p">])</span>
+<span class="linenos">16</span>            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">reverse</span><span class="p">(</span><span class="s1">&#39;presale:event.checkout.confirm&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span>
+<span class="linenos">17</span>                <span class="s1">&#39;event&#39;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span>
+<span class="linenos">18</span>                <span class="s1">&#39;organizer&#39;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">organizer</span><span class="o">.</span><span class="n">slug</span><span class="p">,</span>
+<span class="linenos">19</span>            <span class="p">}))</span>
+<span class="linenos">20</span>        <span class="k">except</span> <span class="n">Event</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+<span class="linenos">21</span>            <span class="k">pass</span>  <span class="c1"># TODO: Display error message</span>
+<span class="linenos">22</span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">23</span>        <span class="k">pass</span>  <span class="c1"># TODO: Display error message</span>
+</pre></div>
+</div>
+<p>If you do not want to provide a view of your own, you could even let PayPal
+redirect directly back to the confirm page and handle the query parameters
+inside <code class="xref py py-meth docutils literal notranslate"><span class="pre">BasePaymentProvider.checkout_is_valid_session()</span></code>. However,
+because some external providers (not PayPal) force you to have a <em>constant</em>
+redirect URL, it might be necessary to define custom views.</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="payment_2.0.html" class="btn btn-neutral float-right" title="Porting a payment provider from pretix 1.x to pretix 2.x" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ticketoutput.html" class="btn btn-neutral" title="Writing a ticket output plugin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

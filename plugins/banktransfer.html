@@ -1,0 +1,545 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Bank transfer HTTP API &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="up" title="Plugin documentation" href="index.html"/>
+        <link rel="next" title="PDF ticket output" href="ticketoutputpdf.html"/>
+        <link rel="prev" title="pretixdroid HTTP API" href="pretixdroid.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Plugin documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="list.html">List of plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pretixdroid.html">pretixdroid HTTP API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Bank transfer HTTP API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bank-import-job-resource">Bank import job resource</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#resource-description">Resource description</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#endpoints">Endpoints</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ticketoutputpdf.html">PDF ticket output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="badges.html">Badges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html">Campaigns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="digital.html">Digital content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webinar.html">eventyay Webinar</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Plugin documentation</a> &raquo;</li>
+        
+      <li>Bank transfer HTTP API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/plugins/banktransfer.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="bank-transfer-http-api">
+<h1>Bank transfer HTTP API<a class="headerlink" href="#bank-transfer-http-api" title="Permalink to this heading">¶</a></h1>
+<p>The banktransfer plugin provides a HTTP API that <a class="reference external" href="https://github.com/pretix/pretix-banktool">pretix-banktool</a> uses to send bank
+transactions to the pretix server. This API is integrated with the regular <a class="reference internal" href="../api/index.html#rest-api"><span class="std std-ref">REST API</span></a>
+and therefore follows the conventions listed there.</p>
+<section id="bank-import-job-resource">
+<h2>Bank import job resource<a class="headerlink" href="#bank-import-job-resource" title="Permalink to this heading">¶</a></h2>
+<section id="resource-description">
+<h3>Resource description<a class="headerlink" href="#resource-description" title="Permalink to this heading">¶</a></h3>
+<p>The bank import job resource contains the following public fields:</p>
+<table class="rest-resource-table docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>id</p></td>
+<td><p>integer</p></td>
+<td><p>Internal job ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>event</p></td>
+<td><p>string</p></td>
+<td><p>Slug of the event this job was uploaded for or <code class="docutils literal notranslate"><span class="pre">null</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>created</p></td>
+<td><p>datetime</p></td>
+<td><p>Job creation time</p></td>
+</tr>
+<tr class="row-odd"><td><p>state</p></td>
+<td><p>string</p></td>
+<td><p>Job state, one of <code class="docutils literal notranslate"><span class="pre">pending</span></code>, <code class="docutils literal notranslate"><span class="pre">running</span></code>,
+<code class="docutils literal notranslate"><span class="pre">error</span></code> or <code class="docutils literal notranslate"><span class="pre">completed</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>transactions</p></td>
+<td><p>list of objects</p></td>
+<td><p>Transactions included in this job (will only appear
+after the job has started processing).</p></td>
+</tr>
+<tr class="row-odd"><td><p>├ state</p></td>
+<td><p>string</p></td>
+<td><p>Transaction state, one of <code class="docutils literal notranslate"><span class="pre">imported</span></code>, <code class="docutils literal notranslate"><span class="pre">nomatch</span></code>,
+<code class="docutils literal notranslate"><span class="pre">invalid</span></code>, <code class="docutils literal notranslate"><span class="pre">error</span></code>, <code class="docutils literal notranslate"><span class="pre">valid</span></code>, <code class="docutils literal notranslate"><span class="pre">discarded</span></code>,
+<code class="docutils literal notranslate"><span class="pre">already</span></code> (already paid)</p></td>
+</tr>
+<tr class="row-even"><td><p>├ message</p></td>
+<td><p>string</p></td>
+<td><p>Error message (if any)</p></td>
+</tr>
+<tr class="row-odd"><td><p>├ checksum</p></td>
+<td><p>string</p></td>
+<td><p>Checksum computed from payer, reference, amount and
+date</p></td>
+</tr>
+<tr class="row-even"><td><p>├ payer</p></td>
+<td><p>string</p></td>
+<td><p>Payment source</p></td>
+</tr>
+<tr class="row-odd"><td><p>├ reference</p></td>
+<td><p>string</p></td>
+<td><p>Payment reference</p></td>
+</tr>
+<tr class="row-even"><td><p>├ amount</p></td>
+<td><p>string</p></td>
+<td><p>Payment amount</p></td>
+</tr>
+<tr class="row-odd"><td><p>├ iban</p></td>
+<td><p>string</p></td>
+<td><p>Payment IBAN</p></td>
+</tr>
+<tr class="row-even"><td><p>├ bic</p></td>
+<td><p>string</p></td>
+<td><p>Payment BIC</p></td>
+</tr>
+<tr class="row-odd"><td><p>├ date</p></td>
+<td><p>string</p></td>
+<td><p>Payment date (in <strong>user-inputted</strong> format)</p></td>
+</tr>
+<tr class="row-even"><td><p>├ order</p></td>
+<td><p>string</p></td>
+<td><p>Associated order code (or <code class="docutils literal notranslate"><span class="pre">null</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>└ comment</p></td>
+<td><p>string</p></td>
+<td><p>Internal comment</p></td>
+</tr>
+</tbody>
+</table>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">payer</span></code> and <code class="docutils literal notranslate"><span class="pre">reference</span></code> fields are set to empty as soon as the payment is matched to an order or
+discarded to avoid storing sensitive data when not necessary. The <code class="docutils literal notranslate"><span class="pre">checksum</span></code> persists to implement deduplication.</p>
+</section>
+<section id="endpoints">
+<h3>Endpoints<a class="headerlink" href="#endpoints" title="Permalink to this heading">¶</a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-bankimportjobs-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/bankimportjobs/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-bankimportjobs-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all bank import jobs within a given organizer the authenticated user/token has access to.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/bankimportjobs/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/javascript</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;count&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;next&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;previous&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;results&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;state&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;completed&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;created&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2017-06-27T08:00:29Z&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;event&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;sampleconf&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;transactions&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="s2">&quot;amount&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;57.00&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;comment&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;date&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;26.06.2017&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;payer&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;order&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;iban&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;bic&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;checksum&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;5de03a601644dfa63420dacfd285565f8375a8f2&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;reference&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;GUTSCHRIFT\r\nSAMPLECONF-NAB12 EREF: SAMPLECONF-NAB12\r\nIBAN: DE1234556…&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;state&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;nomatch&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="s2">&quot;message&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">       </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Query Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>page</strong> – The page number in case of a multi-page result set, default is 1</p></li>
+<li><p><strong>event</strong> – Return only jobs for the event with the given slug</p></li>
+<li><p><strong>state</strong> – Return only jobs with the given state</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of a valid organizer</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer does not exist <strong>or</strong> you have no permission to view it.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-bankimportjobs-(id)-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/bankimportjobs/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-bankimportjobs-(id)-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns information on one job, identified by its ID.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/bankimportjobs/1/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/javascript</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;state&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;completed&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;created&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2017-06-27T08:00:29Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;event&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;sampleconf&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;transactions&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="s2">&quot;amount&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;57.00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;comment&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;date&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;26.06.2017&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;payer&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;iban&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;bic&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;order&quot;</span><span class="o">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;checksum&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;5de03a601644dfa63420dacfd285565f8375a8f2&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;reference&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;GUTSCHRIFT\r\nSAMPLECONF-NAB12 EREF: SAMPLECONF-NAB12\r\nIBAN: DE1234556…&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;state&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;nomatch&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s2">&quot;message&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">   </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view it.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-v1-organizers-(organizer)-bankimportjobs-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/bankimportjobs/</span></span><a class="headerlink" href="#post--api-v1-organizers-(organizer)-bankimportjobs-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload a new job and execute it.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/organizers/bigevents/bankimportjobs/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sampleconf&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;transactions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;payer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Foo&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;reference&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SAMPLECONF-173AS&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;23.00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2017-06-26&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">Created</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/javascript</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="s2">&quot;id&quot;</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;state&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;pending&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;created&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;2017-06-27T08:00:29Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;event&quot;</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;sampleconf&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="s2">&quot;transactions&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Depending on the server configuration, the job might be executed immediately, leading to a longer API
+response time but a response with state <code class="docutils literal notranslate"><span class="pre">completed</span></code> or <code class="docutils literal notranslate"><span class="pre">error</span></code>, or the job might be put into a
+background queue, leading to an immediate response of state <code class="docutils literal notranslate"><span class="pre">pending</span></code> with an empty list of
+transactions.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of a valid organizer</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – Invalid input</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer does not exist <strong>or</strong> you have no permission to perform this action.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ticketoutputpdf.html" class="btn btn-neutral float-right" title="PDF ticket output" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pretixdroid.html" class="btn btn-neutral" title="pretixdroid HTTP API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

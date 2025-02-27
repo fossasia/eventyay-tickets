@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Understanding the life cycle of orders &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="API Usage Guides" href="index.html"/>
+        <link rel="next" title="Creating an external checkout process" href="custom_checkout.html"/>
+        <link rel="prev" title="API Usage Guides" href="index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">REST API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../fundamentals.html">Basic concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../auth.html">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources and endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ratelimit.html">Rate limiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../webhooks.html">Webhooks</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">API Usage Guides</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Understanding the life cycle of orders</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#order-states">Order states</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#object-types">Object types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="custom_checkout.html">Creating an external checkout process</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">REST API</a> &raquo;</li>
+        
+          <li><a href="index.html">API Usage Guides</a> &raquo;</li>
+        
+      <li>Understanding the life cycle of orders</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api/guides/order_lifecycle.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="understanding-the-life-cycle-of-orders">
+<h1>Understanding the life cycle of orders<a class="headerlink" href="#understanding-the-life-cycle-of-orders" title="Permalink to this heading">¶</a></h1>
+<p>When integrating pretix with other systems, it is important that you understand how orders and related objects
+such as order positions, fees, payments, refunds, and invoices work together, in order to react to their changes
+properly and map them to processes in your system.</p>
+<section id="order-states">
+<h2>Order states<a class="headerlink" href="#order-states" title="Permalink to this heading">¶</a></h2>
+<p>Generally, an order can be in six states. For compatibility reasons, the <code class="docutils literal notranslate"><span class="pre">status</span></code> field only allows four values
+and the two remaining states are modeled through the <code class="docutils literal notranslate"><span class="pre">require_approval</span></code> field and the number of positions within
+an order. The states and their allowed changes are shown in the following graph:</p>
+<img alt="../../_images/order_states.png" src="../../_images/order_states.png" />
+</section>
+<section id="object-types">
+<h2>Object types<a class="headerlink" href="#object-types" title="Permalink to this heading">¶</a></h2>
+<dl class="simple">
+<dt>Order</dt><dd><p>One order represents one purchase. It’s the main object you interact with and bundles all the other objects
+together. Orders can change in many ways during their lifetime, but will never be deleted (unless <code class="docutils literal notranslate"><span class="pre">testmode</span></code>
+is set to <code class="docutils literal notranslate"><span class="pre">true</span></code>).</p>
+</dd>
+<dt>Order position</dt><dd><p>An order position represents one product contained in the order. Orders can usually have multiple positions.
+There might be a parent-child relation between order positions if one position is an add-on to another position.
+Order positions can change in many ways during their lifetime, and can also be removed or added to an order.</p>
+</dd>
+<dt>Order fees</dt><dd><p>A fee represents a charge that is not related to a product. Examples include shipping fees, service fees, and
+cancellation fees.
+Order fees can change in many ways during their lifetime, and can also be removed or added to an order.</p>
+</dd>
+<dt>Order payment</dt><dd><p>An order payment represents one payment attempt with a specific payment method and amount. An order can have
+multiple payments attached.
+Order payments have their own state diagram. Apart from their state and their meta information (e.g. used
+credit card, …) they usually don’t change. They may be added at any time, but will never be deleted.</p>
+</dd>
+<dt>Order refund</dt><dd><p>An order payment represents one refund attempt with a specific payment method and amount. An order can have
+multiple refunds attached.
+Order refunds have their own state diagram. Apart from their state and their meta information (e.g. used
+credit card, …) they usually don’t change. They may be added at any time, but will never be deleted.</p>
+</dd>
+<dt>Invoice</dt><dd><p>An invoice represents a legal document stating the contents of an order. While the backend technically allows
+to update an invoice in some situations, invoices are generally considered immutable. Once they are issued,
+they no longer change. If the order changes substantially (e.g. prices change), an invoice is canceled through
+creation of a new invoice with the opposite amount, plus the issuance of a new invoice.</p>
+</dd>
+</dl>
+<p>Here’s an example of how they all play together:</p>
+<img alt="../../_images/order_objects.png" src="../../_images/order_objects.png" />
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="custom_checkout.html" class="btn btn-neutral float-right" title="Creating an external checkout process" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="API Usage Guides" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

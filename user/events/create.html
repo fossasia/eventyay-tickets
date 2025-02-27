@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Creating an event &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="User Guide" href="../index.html"/>
+        <link rel="next" title="Configuring an event" href="settings.html"/>
+        <link rel="prev" title="Using a custom domain" href="../organizers/domain.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Creating an event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html">Configuring an event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structureguide.html">Product structure guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widget.html">Embeddable Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../markdown.html">Markdown Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+      <li>Creating an event</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user/events/create.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="creating-an-event">
+<span id="event-create"></span><h1>Creating an event<a class="headerlink" href="#creating-an-event" title="Permalink to this heading">¶</a></h1>
+<p>After you have created an organizer account, the next step is to create your event. An event is the basic object in
+eventyay that everything is organized around. One event corresponds to one ticket shop with all its products, quotas,
+orders and settings.</p>
+<p>To create an event, you can click the “Create a new event” tile on your dashboard or the button above the list of
+events. You will then be presented with the first step of event creation:</p>
+<a class="screenshot"
+               data-lightbox="group-0cd6b81e-b464-49c9-b554-1a64fb5f4357"
+               href="../../_images/create_step11.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../_images/create_step11.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>Here, you first need to decide for the organizer the event belongs to. You will not be able to change this
+association later. This will determine default settings for the event, as well as access control to the event’s
+settings.</p>
+<p>Second, you need to select the languages that the ticket shop should be available in. You can change this setting
+later, but if you select it correctly now, it will automatically ask you for all descriptions in the respective
+languages starting from the next step.</p>
+<p>Last on this page, you can decide if this event represents an event series. In this cases, the event will turn into
+multiple events included in once, meaning that you will get one combined ticket shop for multiple actual events. This
+is useful if you have a large number of events that are very similar to each other and that should be sold together
+(i.e. users should be able to buy tickets for multiple events at the same time). Those single events can differ in
+available products, quotas, prices and some meta information, but most settings need to be the same for all of them.
+We recommend to use this feature only if you really know that you need it and if you really run a lot of events, not if
+you run e.g. a yearly conference. You can read more on this feature <a class="reference internal" href="subevents.html#subevents"><span class="std std-ref">here</span></a>.</p>
+<p>Once you set these values, you can proceed to the next step:</p>
+<a class="screenshot"
+               data-lightbox="group-7b80aedf-d47c-4086-8a78-956868831acb"
+               href="../../_images/create_step21.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../_images/create_step21.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>In this step, you will be asked more detailed questions about your event. In particular, you can fill in the
+following fields:</p>
+<dl class="simple">
+<dt>Name</dt><dd><p>This is the public name of your event. It should be descriptive and tell both you and the user which event you are
+dealing with, but should still be concise. You probably know how your event is named already ;)</p>
+</dd>
+<dt>Short form</dt><dd><p>This will be used in multiple places. For example, the URL of your ticket shop will include this short form of
+your event name, but it will also be the default prefix e.g. for invoice numbers. We recommend to use some natural
+abbreviation of your event name, maybe together with a date, of no more than 10 characters. This is the only value
+on this page that can’t be changed later.</p>
+</dd>
+<dt>Event start time</dt><dd><p>The date and time that your event starts at. You can later configure settings to hide the time, if you don’t want
+to show that.</p>
+</dd>
+<dt>Event end time</dt><dd><p>The date and time your event ends at. You can later configure settings to hide this value completely – or you can
+just leave it empty. It’s optional!</p>
+</dd>
+<dt>Location</dt><dd><p>This is the location of your event in a human-readable format. We will show this on the ticket shop frontpage, but
+it might also be used e.g. in Wallet tickets.</p>
+</dd>
+<dt>Event currency</dt><dd><p>This is the currency all prices and payments in your shop will be handled in.</p>
+</dd>
+<dt>Sales tax rate</dt><dd><p>If you need to pay a form of sales tax (also known as VAT in many countries) on your products, you can set a tax rate
+in percent here that will be used as a default later. After creating your event, you can also create multiple tax
+rates or fine-tune the tax settings.</p>
+</dd>
+<dt>Default language</dt><dd><p>If you selected multiple supported languages in the previous step, you can now decide which one should be
+displayed by default.</p>
+</dd>
+<dt>Start of presale</dt><dd><p>If you set this date, no ticket will be sold before this date. We normally recommend not to set this date during
+event creation because it will make testing your shop harder.</p>
+</dd>
+<dt>End of presale</dt><dd><p>If you set this date, no ticket will be sold after this date.</p>
+</dd>
+</dl>
+<p>If all of this is set, you can proceed to the next step. If this is your first event, there will not be a next step
+and you are done! If you have already created events before, you will be asked if you want to copy settings from one
+of them:</p>
+<a class="screenshot"
+               data-lightbox="group-f48a0afc-615e-4b47-9d4e-13159d326a60"
+               href="../../_images/create_step31.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../_images/create_step31.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>If you do so, all products, categories, quotas and most settings of the other event will be taken over. You should
+still review them if they make sense for your new event, but it could save you a lot of work. After this step, your
+event is created successfully:</p>
+<a class="screenshot"
+               data-lightbox="group-28f4f4af-e117-4436-aac3-218551a2b200"
+               href="../../_images/create_step41.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../_images/create_step41.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>You can now fine-tune all settings to your liking, publish your event and start selling tickets!</p>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="settings.html" class="btn btn-neutral float-right" title="Configuring an event" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../organizers/domain.html" class="btn btn-neutral" title="Using a custom domain" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

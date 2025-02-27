@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Payment method fees &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Payment settings" href="index.html"/>
+        <link rel="next" title="PayPal" href="paypal.html"/>
+        <link rel="prev" title="Payment method overview" href="overview.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/create.html">Creating an event</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../events/settings.html">Configuring an event</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../events/subevents.html">Event series</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Payment settings</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="settings.html">General settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="overview.html">Payment method overview</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Payment method fees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="paypal.html">PayPal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stripe.html">Stripe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="banktransfer.html">Bank transfer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../events/plugins.html">Configuring plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/display.html">Display settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/tickets.html">Ticket settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/email.html">E-mail settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/taxes.html">Configuring taxes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/invoicing.html">Invoice settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../events/structureguide.html">Product structure guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/widget.html">Embeddable Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../markdown.html">Markdown Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="../events/settings.html">Configuring an event</a> &raquo;</li>
+        
+          <li><a href="index.html">Payment settings</a> &raquo;</li>
+        
+      <li>Payment method fees</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user/payments/fees.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="payment-method-fees">
+<span id="payment-fees"></span><h1>Payment method fees<a class="headerlink" href="#payment-method-fees" title="Permalink to this heading">¶</a></h1>
+<p>Most external payment providers like PayPal or Stripe charge substantial fees for your service. In general, you have
+two options to deal with this:</p>
+<ol class="arabic simple">
+<li><p>Pay the fees yourself</p></li>
+<li><p>Add the fees to your customer’s total</p></li>
+</ol>
+<p>The choice totally depends on you and what your customers expect from you. Option two might be appropriate if you
+offer different payment methods and want to encourage your customers to use the ones that come you cheaper, but you
+might also decide to go for option one to make it easier for customers who don’t have the option.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Please note that EU Directive 2015/2366 bans surcharging payment fees for most common payment
+methods within the European Union. Depending on the payment method, this might affect
+selling to consumers only or to business customers as well. Depending on your country, this
+legislation might already be in place or become relevant from January 2018 the latest. This is not
+legal advice. If in doubt, consult a lawyer or refrain from charging payment fees.</p>
+</div>
+<p>If you go for the first option (as you should in the EU), you can just leave the payment fee fields in eventyay’ settings
+empty.</p>
+<p>If you go for the second option, you can configure eventyay to charge the payment method fees to your user. You can
+define both an absolute fee as well as a percental fee based on the order total. If you do so, there are two
+different ways in which eventyay can calculate the fee. Normally, it is fine to just go with the default setting, but
+in case you are interested, here are all the details:</p>
+<section id="payment-fee-calculation">
+<h2>Payment fee calculation<a class="headerlink" href="#payment-fee-calculation" title="Permalink to this heading">¶</a></h2>
+<p>If you configure a fee for a payment method, there are two possible ways for us to calculate this. Let’s
+assume that your payment provider, e.g. PayPal, charges you 5 % fees and you want to charge your users the
+same 5 %, such that for a ticket with a list price of 100 € you will get your full 100 €.</p>
+<p><strong>Method A: Calculate the fee from the subtotal and add it to the bill.</strong></p>
+<blockquote>
+<div><p>For a ticket price of 100 €, this will lead to the following calculation:</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>Ticket price</p></td>
+<td><p>100.00 €</p></td>
+</tr>
+<tr class="row-even"><td><p>eventyay calculates the fee as 5 % of 100 €</p></td>
+<td><p>+5.00 €</p></td>
+</tr>
+<tr class="row-odd"><td><p>Subtotal that will be paid by the customer</p></td>
+<td><p>105.00 €</p></td>
+</tr>
+<tr class="row-even"><td><p>PayPal calculates its fee as 5 % of 105 €</p></td>
+<td><p>-5.25 €</p></td>
+</tr>
+<tr class="row-odd"><td><p>End total that is on your bank account</p></td>
+<td><p><strong>99.75 €</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><strong>Method B (default): Calculate the fee from the total value including the fee.</strong></p>
+<blockquote>
+<div><p>For a ticket price of 100 €, this will lead to the following calculation:</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>Ticket price</p></td>
+<td><p>100.00 €</p></td>
+</tr>
+<tr class="row-even"><td><p>eventyay calculates the fee as 100/(100 - 5) % of 100</p></td>
+<td><p>€       +5.26 €</p></td>
+</tr>
+<tr class="row-odd"><td><p>Subtotal that will be paid by the customer</p></td>
+<td><p>105.26 €</p></td>
+</tr>
+<tr class="row-even"><td><p>PayPal calculates its fee as 5 % of 105 €</p></td>
+<td><p>-5.26 €</p></td>
+</tr>
+<tr class="row-odd"><td><p>End total that is on your bank account</p></td>
+<td><p><strong>100.00 €</strong></p></td>
+</tr>
+</tbody>
+</table>
+<p>Due to the various rounding steps performed by eventyay and by the payment provider, the end total on
+your bank account might still vary by one cent.</p>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="paypal.html" class="btn btn-neutral float-right" title="PayPal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="overview.html" class="btn btn-neutral" title="Payment method overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

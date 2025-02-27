@@ -1,0 +1,451 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Resources and endpoints &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="REST API" href="../index.html"/>
+        <link rel="next" title="Organizers" href="organizers.html"/>
+        <link rel="prev" title="Device authentication" href="../deviceauth.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">REST API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../fundamentals.html">Basic concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../auth.html">Authentication</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Resources and endpoints</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="organizers.html">Organizers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subevents.html">Event series dates / Sub-events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="taxrules.html">Tax rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="categories.html">Item categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="items.html">Items</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_variations.html">Item variations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_bundles.html">Item bundles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_add-ons.html">Item add-ons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="questions.html">Questions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="question_options.html">Question options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quotas.html">Quotas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orders.html">Orders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="invoices.html">Invoices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vouchers.html">Vouchers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkinlists.html">Check-in lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="waitinglist.html">Waiting list entries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="giftcards.html">Gift cards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="carts.html">Cart positions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webhooks.html">Webhooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seatingplans.html">Seating plans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporters.html">Data exporters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="billing_invoices.html">pretix Hosted billing invoices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="billing_var.html">pretix Hosted reseller API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ratelimit.html">Rate limiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../webhooks.html">Webhooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/index.html">API Usage Guides</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">REST API</a> &raquo;</li>
+        
+      <li>Resources and endpoints</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api/resources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="resources-and-endpoints">
+<h1>Resources and endpoints<a class="headerlink" href="#resources-and-endpoints" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="organizers.html">Organizers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="organizers.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="organizers.html#endpoints">Endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="organizers.html#organizer-settings">Organizer settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="events.html">Events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="events.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html#endpoints">Endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html#event-settings">Event settings</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="subevents.html">Event series dates / Sub-events</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="subevents.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subevents.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="taxrules.html">Tax rules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="taxrules.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="taxrules.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="categories.html">Item categories</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="categories.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="categories.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="items.html">Items</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="items.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="items.html#notes">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="items.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="item_variations.html">Item variations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="item_variations.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="item_variations.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="item_bundles.html">Item bundles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="item_bundles.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="item_bundles.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="item_add-ons.html">Item add-ons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="item_add-ons.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="item_add-ons.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="questions.html">Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="questions.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="questions.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="question_options.html">Question options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="question_options.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="question_options.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quotas.html">Quotas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quotas.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quotas.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="orders.html">Orders</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#order-resource">Order resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#order-position-resource">Order position resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#order-payment-resource">Order payment resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#order-refund-resource">Order refund resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#list-of-all-orders">List of all orders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#fetching-individual-orders">Fetching individual orders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#order-ticket-download">Order ticket download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#updating-order-fields">Updating order fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#generating-new-secrets">Generating new secrets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#deleting-orders">Deleting orders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#creating-orders">Creating orders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#order-state-operations">Order state operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#generating-invoices">Generating invoices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#sending-e-mails">Sending e-mails</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#list-of-all-order-positions">List of all order positions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#fetching-individual-positions">Fetching individual positions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#order-position-ticket-download">Order position ticket download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#manipulating-individual-positions">Manipulating individual positions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#order-payment-endpoints">Order payment endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#order-refund-endpoints">Order refund endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orders.html#revoked-ticket-secrets">Revoked ticket secrets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="invoices.html">Invoices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="invoices.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="invoices.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vouchers.html">Vouchers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vouchers.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vouchers.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="checkinlists.html">Check-in lists</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="checkinlists.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checkinlists.html#endpoints">Endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="checkinlists.html#order-position-endpoints">Order position endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="waitinglist.html">Waiting list entries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="waitinglist.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="waitinglist.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="giftcards.html">Gift cards</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="giftcards.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="giftcards.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="carts.html">Cart positions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="carts.html#cart-position-resource">Cart position resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="carts.html#cart-position-endpoints">Cart position endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="teams.html">Teams</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="teams.html#team-resource">Team resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html#team-member-resource">Team member resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html#team-invite-resource">Team invite resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html#team-api-token-resource">Team API token resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html#team-endpoints">Team endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html#team-member-endpoints">Team member endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html#team-invite-endpoints">Team invite endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teams.html#team-api-token-endpoints">Team API token endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="devices.html">Devices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="devices.html#device-resource">Device resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devices.html#device-endpoints">Device endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="webhooks.html">Webhooks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="webhooks.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webhooks.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="seatingplans.html">Seating plans</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="seatingplans.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seatingplans.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="exporters.html">Data exporters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="exporters.html#listing-available-exporters">Listing available exporters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporters.html#running-an-export">Running an export</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exporters.html#downloading-the-result">Downloading the result</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="billing_invoices.html">pretix Hosted billing invoices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="billing_invoices.html#resource-description">Resource description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="billing_invoices.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="billing_var.html">pretix Hosted reseller API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="billing_var.html#reseller-account-resource">Reseller account resource</a></li>
+<li class="toctree-l2"><a class="reference internal" href="billing_var.html#endpoints">Endpoints</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="organizers.html" class="btn btn-neutral float-right" title="Organizers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../deviceauth.html" class="btn btn-neutral" title="Device authentication" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

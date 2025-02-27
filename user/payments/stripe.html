@@ -1,0 +1,305 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Stripe &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Payment settings" href="index.html"/>
+        <link rel="next" title="Bank transfer" href="banktransfer.html"/>
+        <link rel="prev" title="PayPal" href="paypal.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/create.html">Creating an event</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../events/settings.html">Configuring an event</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../events/subevents.html">Event series</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Payment settings</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="settings.html">General settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="overview.html">Payment method overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fees.html">Payment method fees</a></li>
+<li class="toctree-l4"><a class="reference internal" href="paypal.html">PayPal</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Stripe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="banktransfer.html">Bank transfer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../events/plugins.html">Configuring plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/display.html">Display settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/tickets.html">Ticket settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/email.html">E-mail settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/taxes.html">Configuring taxes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/invoicing.html">Invoice settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../events/structureguide.html">Product structure guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/widget.html">Embeddable Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../markdown.html">Markdown Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="../events/settings.html">Configuring an event</a> &raquo;</li>
+        
+          <li><a href="index.html">Payment settings</a> &raquo;</li>
+        
+      <li>Stripe</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user/payments/stripe.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="stripe">
+<span id="id1"></span><h1>Stripe<a class="headerlink" href="#stripe" title="Permalink to this heading">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you use the Hosted version of pretix at eventyay.com, you do not need to copy API keys and create webhooks
+any more. Instead, you can just click “Connect with Stripe” in pretix and everything will connect
+automatically.</p>
+</div>
+<p>To integrate Stripe with eventyay, you first need to have an active Stripe merchant account. If you do not already have a
+Stripe account, you can create one on <a class="reference external" href="https://dashboard.stripe.com/register">stripe.com</a>. Then, click on “API” in the left navigation of the Stripe
+Dashboard. As you can see in the following screenshot, you will be presented with two sets of API keys, one for test
+and one for live payments. In each set, there is a secret and a publishable keys.</p>
+<img alt="../../_images/stripe1.png" class="screenshot" src="../../_images/stripe1.png" />
+<p>Choose one of the two sets and copy the two keys to the appropriate fields in eventyay’ settings. To perform actual
+payments, you will need to use the live keys, but you can use the test keys to test the payment flow before you go live.
+In test mode, you cannot use your real credit card, but only <a class="reference external" href="https://stripe.com/docs/testing#cards">test cards</a> like <code class="docutils literal notranslate"><span class="pre">4242424242424242</span></code> that you can
+find in Stripe’s documentation.</p>
+<p>If you want Stripe to notify eventyay automatically once a payment gets cancelled, so eventyay can cancel the ticket as
+well, you need to create a so-called webhook. To do so, click “Webhooks” on top of the page in the Stripe dashboard
+that you are currently on. Then, click “Add endpoint” and enter the URL that you find directly below the key
+configuration in eventyay’ settings.</p>
+<img alt="../../_images/stripe2.png" class="screenshot" src="../../_images/stripe2.png" />
+<p>Again, you can choose between live mode and test mode here.</p>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="banktransfer.html" class="btn btn-neutral float-right" title="Bank transfer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="paypal.html" class="btn btn-neutral" title="PayPal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

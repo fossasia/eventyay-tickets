@@ -1,0 +1,638 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pretixdroid HTTP API &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="up" title="Plugin documentation" href="index.html"/>
+        <link rel="next" title="Bank transfer HTTP API" href="banktransfer.html"/>
+        <link rel="prev" title="List of plugins" href="list.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Plugin documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="list.html">List of plugins</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pretixdroid HTTP API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="banktransfer.html">Bank transfer HTTP API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ticketoutputpdf.html">PDF ticket output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="badges.html">Badges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html">Campaigns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="digital.html">Digital content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webinar.html">eventyay Webinar</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Plugin documentation</a> &raquo;</li>
+        
+      <li>pretixdroid HTTP API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/plugins/pretixdroid.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="pretixdroid-http-api">
+<h1>pretixdroid HTTP API<a class="headerlink" href="#pretixdroid-http-api" title="Permalink to this heading">¶</a></h1>
+<p>The pretixdroid plugin provides a HTTP API that the <a class="reference external" href="https://github.com/pretix/pretixdroid">pretixdroid Android app</a>
+uses to communicate with the pretix server.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This API is <strong>DEPRECATED</strong> and will probably go away soon. It is used <strong>only</strong> to serve the pretixdroid
+Android app. There are no backwards compatibility guarantees on this API. We will not add features that
+are not required for the  Android App. There is a general-purpose <a class="reference internal" href="../api/index.html#rest-api"><span class="std std-ref">REST API</span></a> that provides all
+features that you need to check in.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.12: </span>Support for check-in-time questions has been added. The new API features are fully backwards-compatible and
+negotiated live, so clients which do not need this feature can ignore the change. For this reason, the API version
+has not been increased and is still set to 3.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.13: </span>Support for checking in unpaid tickets has been added.</p>
+</div>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--pretixdroid-api-(organizer)-(event)-redeem-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/pretixdroid/api/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/redeem/</span></span><a class="headerlink" href="#post--pretixdroid-api-(organizer)-(event)-redeem-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redeems a ticket, i.e. checks the user in.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/pretixdroid/api/demoorga/democon/redeem/?key=ABCDEF</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">demo.eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/x-www-form-urlencoded</span>
+
+<span class="nt">secret</span><span class="o">=</span><span class="s">az9u4mymhqktrbupmwkvv6xmgds5dk3</span><span class="p">&amp;</span><span class="nt">questions_supported</span><span class="o">=</span><span class="s">true</span>
+</pre></div>
+</div>
+<p>You <strong>must</strong> set the parameter secret.</p>
+<p>You <strong>must</strong> set the parameter <code class="docutils literal notranslate"><span class="pre">questions_supported</span></code> to <code class="docutils literal notranslate"><span class="pre">true</span></code> <strong>if</strong> you support asking questions
+back to the app operator. You <strong>must not</strong> set it if you do not support this feature. In that case, questions
+will just be ignored.</p>
+<p>You <strong>may</strong> set the additional parameter <code class="docutils literal notranslate"><span class="pre">datetime</span></code> in the body containing an ISO8601-encoded
+datetime of the entry attempt. If you don”t, the current date and time will be used.</p>
+<p>You <strong>may</strong> set the additional parameter <code class="docutils literal notranslate"><span class="pre">force</span></code> to indicate that the request should be logged
+regardless of previous check-ins for the same ticket. This might be useful if you made the entry decision offline.
+Questions will also always be ignored in this case (i.e. supplied answers will be saved, but no error will be
+thrown if they are missing or invalid).</p>
+<p>You <strong>may</strong> set the additional parameter <code class="docutils literal notranslate"><span class="pre">nonce</span></code> with a globally unique random value to identify this
+check-in. This is meant to be used to prevent duplicate check-ins when you are just retrying after a connection
+failure.</p>
+<p>You <strong>may</strong> set the additional parameter <code class="docutils literal notranslate"><span class="pre">ignore_unpaid</span></code> to indicate that the check-in should be performed even
+if the order is in pending state.</p>
+<p>If questions are supported and required, you will receive a dictionary <code class="docutils literal notranslate"><span class="pre">questions</span></code> containing details on the
+particular questions to ask. To answer them, just re-send your redemption request with additional parameters of
+the form <code class="docutils literal notranslate"><span class="pre">answer_&lt;question&gt;=&lt;answer&gt;</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">answer_12=24</span></code>.</p>
+<p><strong>Example successful response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/json</span>
+
+{
+  &quot;status&quot;: &quot;ok&quot;
+  &quot;version&quot;: 3,
+  &quot;data&quot;: {
+    &quot;secret&quot;: &quot;az9u4mymhqktrbupmwkvv6xmgds5dk3&quot;,
+    &quot;order&quot;: &quot;ABCDE&quot;,
+    &quot;item&quot;: &quot;Standard ticket&quot;,
+    &quot;item_id&quot;: 1,
+    &quot;variation&quot;: null,
+    &quot;variation_id&quot;: null,
+    &quot;attendee_name&quot;: &quot;Peter Higgs&quot;,
+    &quot;attention&quot;: false,
+    &quot;redeemed&quot;: true,
+    &quot;checkin_allowed&quot;: true,
+    &quot;addons_text&quot;: &quot;Parking spot&quot;,
+    &quot;paid&quot;: true
+  }
+}
+</pre></div>
+</div>
+<p><strong>Example response with required questions</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/json</span>
+
+{
+  &quot;status&quot;: &quot;incomplete&quot;
+  &quot;version&quot;: 3
+  &quot;data&quot;: {
+    &quot;secret&quot;: &quot;az9u4mymhqktrbupmwkvv6xmgds5dk3&quot;,
+    &quot;order&quot;: &quot;ABCDE&quot;,
+    &quot;item&quot;: &quot;Standard ticket&quot;,
+    &quot;item_id&quot;: 1,
+    &quot;variation&quot;: null,
+    &quot;variation_id&quot;: null,
+    &quot;attendee_name&quot;: &quot;Peter Higgs&quot;,
+    &quot;attention&quot;: false,
+    &quot;redeemed&quot;: true,
+    &quot;checkin_allowed&quot;: true,
+    &quot;addons_text&quot;: &quot;Parking spot&quot;,
+    &quot;paid&quot;: true
+  },
+  &quot;questions&quot;: [
+    {
+      &quot;id&quot;: 12,
+      &quot;type&quot;: &quot;C&quot;,
+      &quot;question&quot;: &quot;Choose a shirt size&quot;,
+      &quot;required&quot;: true,
+      &quot;position&quot;: 2,
+      &quot;items&quot;: [1],
+      &quot;options&quot;: [
+        {
+          &quot;id&quot;: 24,
+          &quot;answer&quot;: &quot;M&quot;
+        },
+        {
+          &quot;id&quot;: 25,
+          &quot;answer&quot;: &quot;L&quot;
+        }
+      ]
+    }
+  ]
+}
+</pre></div>
+</div>
+<p><strong>Example error response with data</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/json</span>
+
+{
+  &quot;status&quot;: &quot;error&quot;,
+  &quot;reason&quot;: &quot;already_redeemed&quot;,
+  &quot;version&quot;: 3,
+  &quot;data&quot;: {
+    &quot;secret&quot;: &quot;az9u4mymhqktrbupmwkvv6xmgds5dk3&quot;,
+    &quot;order&quot;: &quot;ABCDE&quot;,
+    &quot;item&quot;: &quot;Standard ticket&quot;,
+    &quot;item_id&quot;: 1,
+    &quot;variation&quot;: null,
+    &quot;variation_id&quot;: null,
+    &quot;attendee_name&quot;: &quot;Peter Higgs&quot;,
+    &quot;attention&quot;: false,
+    &quot;redeemed&quot;: true,
+    &quot;checkin_allowed&quot;: true,
+    &quot;addons_text&quot;: &quot;Parking spot&quot;,
+    &quot;paid&quot;: true
+  }
+}
+</pre></div>
+</div>
+<p><strong>Example error response without data</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/json</span>
+
+{
+  &quot;status&quot;: &quot;error&quot;,
+  &quot;reason&quot;: &quot;unkown_ticket&quot;,
+  &quot;version&quot;: 3
+}
+</pre></div>
+</div>
+<p>Possible error reasons:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unpaid</span></code> - Ticket is not paid for or has been refunded</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">already_redeemed</span></code> - Ticket already has been redeemed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">product</span></code> - Tickets with this product may not be scanned at this device</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unknown_ticket</span></code> - Secret does not match a ticket in the database</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Query Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – Secret API key</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – Valid request</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – Unknown organizer or event</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – Invalid authorization key</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--pretixdroid-api-(organizer)-(event)-search-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/pretixdroid/api/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/search/</span></span><a class="headerlink" href="#get--pretixdroid-api-(organizer)-(event)-search-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searches for a ticket.
+At most 25 results will be returned. <strong>Queries with less than 4 characters will always return an empty result set.</strong></p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/pretixdroid/api/demoorga/democon/search/?key=ABCDEF&amp;query=Peter</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">demo.eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/json</span>
+
+{
+  &quot;results&quot;: [
+    {
+      &quot;secret&quot;: &quot;az9u4mymhqktrbupmwkvv6xmgds5dk3&quot;,
+      &quot;order&quot;: &quot;ABCE6&quot;,
+      &quot;item&quot;: &quot;Standard ticket&quot;,
+      &quot;variation&quot;: null,
+      &quot;attendee_name&quot;: &quot;Peter Higgs&quot;,
+      &quot;redeemed&quot;: false,
+      &quot;attention&quot;: false,
+      &quot;checkin_allowed&quot;: true,
+      &quot;addons_text&quot;: &quot;Parking spot&quot;,
+      &quot;paid&quot;: true
+    },
+    ...
+  ],
+  &quot;version&quot;: 3
+}
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Query Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> – Search query</p></li>
+<li><p><strong>key</strong> – Secret API key</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – Valid request</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – Unknown organizer or event</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – Invalid authorization key</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--pretixdroid-api-(organizer)-(event)-download-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/pretixdroid/api/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/download/</span></span><a class="headerlink" href="#get--pretixdroid-api-(organizer)-(event)-download-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download data for all tickets.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/pretixdroid/api/demoorga/democon/download/?key=ABCDEF</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">demo.eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/json</span>
+
+{
+  &quot;version&quot;: 3,
+  &quot;results&quot;: [
+    {
+      &quot;secret&quot;: &quot;az9u4mymhqktrbupmwkvv6xmgds5dk3&quot;,
+      &quot;order&quot;: &quot;ABCE6&quot;,
+      &quot;item&quot;: &quot;Standard ticket&quot;,
+      &quot;variation&quot;: null,
+      &quot;attendee_name&quot;: &quot;Peter Higgs&quot;,
+      &quot;redeemed&quot;: false,
+      &quot;attention&quot;: false,
+      &quot;checkin_allowed&quot;: true,
+      &quot;paid&quot;: true
+    },
+    ...
+  ],
+  &quot;questions&quot;: [
+    {
+      &quot;id&quot;: 12,
+      &quot;type&quot;: &quot;C&quot;,
+      &quot;question&quot;: &quot;Choose a shirt size&quot;,
+      &quot;required&quot;: true,
+      &quot;position&quot;: 2,
+      &quot;items&quot;: [1],
+      &quot;options&quot;: [
+        {
+          &quot;id&quot;: 24,
+          &quot;answer&quot;: &quot;M&quot;
+        },
+        {
+          &quot;id&quot;: 25,
+          &quot;answer&quot;: &quot;L&quot;
+        }
+      ]
+    }
+  ]
+}
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Query Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – Secret API key</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – Valid request</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – Unknown organizer or event</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – Invalid authorization key</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--pretixdroid-api-(organizer)-(event)-status-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/pretixdroid/api/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/status/</span></span><a class="headerlink" href="#get--pretixdroid-api-(organizer)-(event)-status-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns status information, such as the total number of tickets and the
+number of performed check-ins.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/pretixdroid/api/demoorga/democon/status/?key=ABCDEF</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">demo.eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">text/json</span>
+
+{
+  &quot;checkins&quot;: 17,
+  &quot;total&quot;: 42,
+  &quot;version&quot;: 3,
+  &quot;event&quot;: {
+    &quot;name&quot;: &quot;Demo Conference&quot;,
+    &quot;slug&quot;: &quot;democon&quot;,
+    &quot;date_from&quot;: &quot;2016-12-27T17:00:00Z&quot;,
+    &quot;date_to&quot;: &quot;2016-12-30T18:00:00Z&quot;,
+    &quot;timezone&quot;: &quot;UTC&quot;,
+    &quot;url&quot;: &quot;https://demo.eventyay.com/demoorga/democon/&quot;,
+    &quot;organizer&quot;: {
+      &quot;name&quot;: &quot;Demo Organizer&quot;,
+      &quot;slug&quot;: &quot;demoorga&quot;
+    },
+  },
+  &quot;items&quot;: [
+    {
+      &quot;name&quot;: &quot;T-Shirt&quot;,
+      &quot;id&quot;: 1,
+      &quot;checkins&quot;: 1,
+      &quot;admission&quot;: False,
+      &quot;total&quot;: 1,
+      &quot;variations&quot;: [
+        {
+          &quot;name&quot;: &quot;Red&quot;,
+          &quot;id&quot;: 1,
+          &quot;checkins&quot;: 1,
+          &quot;total&quot;: 12
+        },
+        {
+         &quot;name&quot;: &quot;Blue&quot;,
+          &quot;id&quot;: 2,
+          &quot;checkins&quot;: 4,
+          &quot;total&quot;: 8
+        }
+      ]
+    },
+    {
+      &quot;name&quot;: &quot;Ticket&quot;,
+      &quot;id&quot;: 2,
+      &quot;checkins&quot;: 15,
+      &quot;admission&quot;: True,
+      &quot;total&quot;: 22,
+      &quot;variations&quot;: []
+    }
+  ]
+}
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Query Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – Secret API key</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – Valid request</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – Unknown organizer or event</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – Invalid authorization key</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="banktransfer.html" class="btn btn-neutral float-right" title="Bank transfer HTTP API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="list.html" class="btn btn-neutral" title="List of plugins" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

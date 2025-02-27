@@ -1,0 +1,360 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Background tasks &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Implementation and Utilities" href="index.html"/>
+        <link rel="next" title="Sending Email" href="email.html"/>
+        <link rel="prev" title="Settings storage" href="settings.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../concepts.html">Concepts and Terminology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../setup.html">Development setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contribution/index.html">Contributing to pretix</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Implementation and Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="models.html">Data model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="urlconfig.html">Working with URLs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="i18n.html">Internationalization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="settings.html">Settings storage</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Background tasks</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#implementing-a-task">Implementing a task</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tasks-in-the-request-response-flow">Tasks in the request-response flow</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">Sending Email</a></li>
+<li class="toctree-l3"><a class="reference internal" href="permissions.html">Permissions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html">Logging and notifications</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../translation/index.html">Translating pretix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/index.html">Plugin development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../structure.html">Directory structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Implementation and Utilities</a> &raquo;</li>
+        
+      <li>Background tasks</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/development/implementation/background.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="background-tasks">
+<h1>Background tasks<a class="headerlink" href="#background-tasks" title="Permalink to this heading">¶</a></h1>
+<p>pretix provides the ability to run all longer-running tasks like generating ticket files or sending emails
+in a background thread instead of the web server process. We use the well-established <a class="reference external" href="http://www.celeryproject.org/">Celery</a> project to
+implement this. However, as celery requires running a task queue like RabbitMQ and a result storage such as
+Redis to work efficiently, we don’t like to <em>depend</em> on celery being available to make small-scale installations
+of pretix more straightforward. For this reason, the “background” in “background task” is always optional. If
+no celery broker is configured, celery will be configured to run tasks synchronously.</p>
+<section id="implementing-a-task">
+<h2>Implementing a task<a class="headerlink" href="#implementing-a-task" title="Permalink to this heading">¶</a></h2>
+<p>A common pattern for implementing asynchronous tasks can be seen a lot in <code class="docutils literal notranslate"><span class="pre">pretix.base.services</span></code>
+and looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pretix.celery_app</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_task</span><span class="p">(</span><span class="n">argument1</span><span class="p">,</span> <span class="n">argument2</span><span class="p">):</span>
+    <span class="c1"># Important: All arguments and return values need to be serializable into JSON.</span>
+    <span class="c1"># Do not use model instances, use their primary keys instead!</span>
+    <span class="k">pass</span>  <span class="c1"># do your work here</span>
+
+
+<span class="c1"># Call the task like this:</span>
+<span class="c1"># my_task.apply_async(args=(…,), kwargs={…})</span>
+</pre></div>
+</div>
+</section>
+<section id="tasks-in-the-request-response-flow">
+<h2>Tasks in the request-response flow<a class="headerlink" href="#tasks-in-the-request-response-flow" title="Permalink to this heading">¶</a></h2>
+<p>If your user needs to wait for the response of the asynchronous task, there are helpers available in <code class="docutils literal notranslate"><span class="pre">pretix.presale</span></code>
+that will probably move to <code class="docutils literal notranslate"><span class="pre">pretix.base</span></code> at some point. They consist of the view mixin <code class="docutils literal notranslate"><span class="pre">AsyncAction</span></code> that allows
+you to easily write a view that kicks off and waits for an asynchronous task. <code class="docutils literal notranslate"><span class="pre">AsyncAction</span></code> will determine whether
+to run the task asynchronously or not and will do some magic to look nice for users with and without JavaScript support.
+A usage example taken directly from the code is:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">OrderCancelDo</span><span class="p">(</span><span class="n">EventViewMixin</span><span class="p">,</span> <span class="n">OrderDetailMixin</span><span class="p">,</span> <span class="n">AsyncAction</span><span class="p">,</span> <span class="n">View</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A view that executes a task asynchronously. A POST request will kick off the</span>
+<span class="sd">    task into the background or run it in the foreground if celery is not installed.</span>
+<span class="sd">    In the former case, subsequent GET calls can be used to determine the current</span>
+<span class="sd">    status of the task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">task</span> <span class="o">=</span> <span class="n">cancel_order</span>  <span class="c1"># The task to be used, defined like above</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_success_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the URL the user will be redirected to if the task succeeded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_order_url</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_error_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the URL the user will be redirected to if the task failed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_order_url</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Will be called while handling a POST request. This should process the</span>
+<span class="sd">        request arguments in some way and call ``self.do`` with the task arguments</span>
+<span class="sd">        to kick of the task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Http404</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s1">&#39;Unknown order code or not authorized to access this order.&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">pk</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_error_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the message that will be shown to the user if the task has failed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exception</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">exception</span><span class="p">[</span><span class="s1">&#39;exc_type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;OrderError&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">gettext</span><span class="p">(</span><span class="n">exception</span><span class="p">[</span><span class="s1">&#39;exc_message&#39;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exception</span><span class="p">,</span> <span class="n">OrderError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_error_message</span><span class="p">(</span><span class="n">exception</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>On the client side, this can be used by simply adding a <code class="docutils literal notranslate"><span class="pre">data-asynctask</span></code> attribute to an HTML form. This will enable
+AJAX sending of the form and display a loading indicator:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>&lt;form method=&quot;post&quot; data-asynctask
+      action=&quot;{% eventurl request.event &quot;presale:event.order.cancel.do&quot; … %}&quot;&gt;
+    {% csrf_token %}
+    ...
+&lt;/form&gt;
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="email.html" class="btn btn-neutral float-right" title="Sending Email" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="settings.html" class="btn btn-neutral" title="Settings storage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

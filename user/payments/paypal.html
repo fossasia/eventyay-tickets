@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PayPal &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Payment settings" href="index.html"/>
+        <link rel="next" title="Stripe" href="stripe.html"/>
+        <link rel="prev" title="Payment method fees" href="fees.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/create.html">Creating an event</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../events/settings.html">Configuring an event</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../events/subevents.html">Event series</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Payment settings</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="settings.html">General settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="overview.html">Payment method overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fees.html">Payment method fees</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">PayPal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stripe.html">Stripe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="banktransfer.html">Bank transfer</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../events/plugins.html">Configuring plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/display.html">Display settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/tickets.html">Ticket settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/email.html">E-mail settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/taxes.html">Configuring taxes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../events/invoicing.html">Invoice settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../events/structureguide.html">Product structure guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/widget.html">Embeddable Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../events/giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../markdown.html">Markdown Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="../events/settings.html">Configuring an event</a> &raquo;</li>
+        
+          <li><a href="index.html">Payment settings</a> &raquo;</li>
+        
+      <li>PayPal</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user/payments/paypal.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="paypal">
+<span id="id1"></span><h1>PayPal<a class="headerlink" href="#paypal" title="Permalink to this heading">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you use eventyay Hosted, you do not longer need to go through this tedious process! You can
+just open the PayPal settings in the payment section of your event, click “Connect to PayPal”
+and log in to your PayPal account. The following guide is only required for self-hosted
+versions of eventyay.</p>
+</div>
+<p>To integrate PayPal with eventyay, you first need to have an active PayPal merchant account. If you do not already have a
+PayPal account, you can create one on <a class="reference external" href="https://www.paypal.com/webapps/mpp/account-selection">paypal.com</a>.
+If you look into eventyay’ settings, you are required to fill in two keys:</p>
+<img alt="../../_images/paypal_pretix.png" class="screenshot" src="../../_images/paypal_pretix.png" />
+<p>Unfortunately, it is not straightforward how to get those keys from PayPal’s website. In order to do so, you
+need to go to <a class="reference external" href="https://developer.paypal.com/">developer.paypal.com</a> to link the account to your eventyay event.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unfortunately, PayPal tries to confuse you by having multiple APIs with different keys. You really need to
+go to <a class="reference external" href="https://developer.paypal.com">https://developer.paypal.com</a> for the API we use, not to your normal account settings!</p>
+</div>
+<p>Click on “Log In” in the top-right corner and log in with your PayPal account.</p>
+<img alt="../../_images/paypal2.png" class="screenshot" src="../../_images/paypal2.png" />
+<p>Then, click on “Dashboard” in the top-right corner.</p>
+<img alt="../../_images/paypal3.png" class="screenshot" src="../../_images/paypal3.png" />
+<p>In the dashboard, scroll down until you see the headline “REST API Apps”. Click “Create App”.</p>
+<img alt="../../_images/paypal4.png" class="screenshot" src="../../_images/paypal4.png" />
+<p>Enter any name for the application that helps you to identify it later. Then confirm with “Create App”.</p>
+<img alt="../../_images/paypal5.png" class="screenshot" src="../../_images/paypal5.png" />
+<p>On the next page, before you do anything else, switch the mode on the right to “Live” to get the correct keys.
+Then, copy the “Client ID” and the “Secret” and enter them into the appropriate fields in the payment settings in
+eventyay.</p>
+<img alt="../../_images/paypal6.png" class="screenshot" src="../../_images/paypal6.png" />
+<p>Finally, we need to create a webhook. The webhook tells PayPal to notify eventyay e.g. if a payment gets cancelled so
+eventyay can cancel the ticket as well. If you have multiple events connected to your PayPal account, you need multiple
+webhooks. To create one, scroll a bit down and click “Add Webhook”.</p>
+<img alt="../../_images/paypal7.png" class="screenshot" src="../../_images/paypal7.png" />
+<p>Then, enter the webhook URL that you find on the eventyay settings page. If you use eventyay Hosted, this is always <code class="docutils literal notranslate"><span class="pre">https://eventyay.com/_paypal/webhook/</span></code>.
+Tick the box “All events” and save.</p>
+<img alt="../../_images/paypal8.png" class="screenshot" src="../../_images/paypal8.png" />
+<p>That’s it, you are ready to go!</p>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="stripe.html" class="btn btn-neutral float-right" title="Stripe" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="fees.html" class="btn btn-neutral" title="Payment method fees" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

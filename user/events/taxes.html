@@ -1,0 +1,399 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Configuring taxes &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Configuring an event" href="settings.html"/>
+        <link rel="next" title="Invoice settings" href="invoicing.html"/>
+        <link rel="prev" title="E-mail settings" href="email.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create.html">Creating an event</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="settings.html">Configuring an event</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="subevents.html">Event series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../payments/index.html">Payment settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins.html">Configuring plugins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="display.html">Display settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tickets.html">Ticket settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="email.html">E-mail settings</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Configuring taxes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#eu-reverse-charge">EU reverse charge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-tax-rules">Custom tax rules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#taxation-of-payment-fees">Taxation of payment fees</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="invoicing.html">Invoice settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="structureguide.html">Product structure guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widget.html">Embeddable Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../markdown.html">Markdown Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="settings.html">Configuring an event</a> &raquo;</li>
+        
+      <li>Configuring taxes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user/events/taxes.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="configuring-taxes">
+<span id="taxes"></span><h1>Configuring taxes<a class="headerlink" href="#configuring-taxes" title="Permalink to this heading">¶</a></h1>
+<p>In most countries, you will be required to pay some form of sales tax for your event tickets. If you don’t know about
+the exact rules, you should consult a professional tax consultant right now.</p>
+<p>To implement those taxes in eventyay, you can create one or multiple “tax rules”. A tax rule specifies when and at what
+rate should be calculated on a product price. Taxes will then be correctly displayed in the product list, order
+details and on invoices.</p>
+<p>At the time of this writing, every product can be assigned exactly one tax rule. To view and change the tax rules of
+your event, go to the respective section in your event’s settings:</p>
+<a class="screenshot"
+               data-lightbox="group-0d89ca63-a252-4bb5-9b1f-b9476c7f60bc"
+               href="../../_images/tax_list1.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../_images/tax_list1.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>On this page, you can create, edit and delete your tax rules. Clicking on the name of a tax rule will take you to its
+detailed settings:</p>
+<a class="screenshot"
+               data-lightbox="group-abfebcdf-b538-4a79-b24c-e13c50e370ba"
+               href="../../_images/tax_detail1.png"
+               title=""
+               data-title=""
+               
+               ><img src="../../_images/tax_detail1.png"
+                     class="align-center"
+                     width="250px"
+                     height="auto"
+                     alt=""/>
+                </a><p>Here, you can tune the following parameters:</p>
+<dl class="simple">
+<dt>Name</dt><dd><p>What is the (short) name of this tax? This is probably “VAT” in English and should be very short as it will be
+displayed in lots of places.</p>
+</dd>
+<dt>Rate</dt><dd><p>This is the tax rate in percent.</p>
+</dd>
+<dt>The configured product prices include the tax amount</dt><dd><p>If this setting is enabled (the default), then a product configured to a price of 10.00 EUR will, at a tax rate of
+19.00 %, be interpreted as a product with a total gross price of 10.00 EUR including 1.60 EUR taxes, leading to a
+net price of 8.40 EUR. If you disable this setting, the price will be interpreted as a net price of 10.00 EUR,
+leading to a total price to pay of 11.90 EUR.</p>
+</dd>
+<dt>Use EU reverse charge taxation rules</dt><dd><p>This enables reverse charge taxation (see section below).</p>
+</dd>
+<dt>Merchant country</dt><dd><p>This is probably your country of residence, but in some cases it could also be the country your event is
+located in. This is the place of taxation in the sense of EU reverse charge rules (see section below).</p>
+</dd>
+</dl>
+<section id="eu-reverse-charge">
+<h2>EU reverse charge<a class="headerlink" href="#eu-reverse-charge" title="Permalink to this heading">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Everything contained in this section is not legal advice. Please consult a tax consultant
+before making decisions. We are not responsible for the correct handling of taxes in your
+ticket shop.</p>
+</div>
+<p>“Reverse charge” is a rule in European VAT legislation that specifies how taxes are paid
+if you provide goods to a buyer in a different European country than you reside in yourself.
+If the buyer is a VAT-paying business in their country, you charge them only the net price without
+taxes and state that the buyer is responsible for paying the correct taxes themselves.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>We firmly believe that reverse charge rules are <strong>not applicable</strong> for most events handled
+with eventyay and therefore <strong>strongly recommend not to enable this feature</strong> if you do not have
+a specific reason to do so. The reasoning behind this is that according to article 52 of the
+<a class="reference external" href="http://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32006L0112&amp;from=EN">VAT directive</a> (page 17), the place of supply is always the location of your event and
+therefore the tax rate of the event country always has to be paid regardless of the location
+of the visitor.</p>
+</div>
+<p>If you enable the reverse charge feature and specify your merchant country, then the following process
+will be performed during order creation:</p>
+<ul class="simple">
+<li><p>The user will first be presented with the “normal” prices (net or gross, as configured).</p></li>
+<li><p>The user adds a product to their cart. The cart will at this point always show gross prices <em>with</em>
+taxes.</p></li>
+<li><p>In the next step, the user can enter an invoice address. Tax will be removed from the price if one of the
+following statements is true:</p>
+<ul>
+<li><p>The invoice address is in a non-EU country.</p></li>
+<li><p>The invoice address is a business address in an EU-country different from the merchant country and has a valid VAT ID.</p></li>
+</ul>
+</li>
+<li><p>In the second case, a reverse charge note will be added to the invoice.</p></li>
+</ul>
+<p>VAT IDs are validated against the EUs validation web service. Should that service be unavailable, the user
+needs to pay VAT tax and reclaim the taxes at a later point in time with their government.</p>
+<p>If you and the buyer are residing in EU countries that use different currencies, the invoice will show
+the total and VAT amount also in the local currency of the buyer, if the system was able to obtain a
+conversion rate from the European Central Bank’s webservice within the last 7 days.</p>
+<p>For existing orders, a change of the invoice address will not result in a change of taxes automatically.
+You can trigger this manually in the backend by going to the order’s detail view. There, first click
+the “Check” button next to the VAT ID. Then, go to “Change products” and select the option “Recalculate
+taxes” at the end of the page.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the invoicing settings, you should turn the setting “Ask for VAT ID” on for this to work.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>During back-and-forth modification of taxation status, unfortunately there can be rounding
+errors of usually up to one cent from the intended price. This is unavoidable due to the
+flexible nature in which prices are being calculated.</p>
+</div>
+</section>
+<section id="custom-tax-rules">
+<h2>Custom tax rules<a class="headerlink" href="#custom-tax-rules" title="Permalink to this heading">¶</a></h2>
+<p>If you have very special requirements for the conditions in which VAT will or will not be charged, you can use the
+“Custom tax rules” section instead of the options listed above. Here, you can create a set of rules consisting of
+conditions (i.e. a country or a type of customer) and actions (i.e. do or do not charge VAT).</p>
+<p>The rules will then be checked from top to bottom and the first matching rule will be used to decide if VAT will be
+charged to the user.</p>
+</section>
+<section id="taxation-of-payment-fees">
+<h2>Taxation of payment fees<a class="headerlink" href="#taxation-of-payment-fees" title="Permalink to this heading">¶</a></h2>
+<p>In the payment part of your event settings, you can choose the tax rule that needs to be applied for
+payment method fees. This works in the same way as product prices, with the small difference that the
+“configured product prices include the tax amount” settings is ignored and payment fees will always be
+treated as gross values.</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="invoicing.html" class="btn btn-neutral float-right" title="Invoice settings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="email.html" class="btn btn-neutral" title="E-mail settings" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,633 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Product structure guide &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="User Guide" href="../index.html"/>
+        <link rel="next" title="Use case: Time slots" href="guides/timeslots.html"/>
+        <link rel="prev" title="Invoice settings" href="invoicing.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create.html">Creating an event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings.html">Configuring an event</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Product structure guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#terminology">Terminology</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-case-multiple-price-levels">Use case: Multiple price levels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-case-early-bird-tiers-based-on-dates">Use case: Early-bird tiers based on dates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-case-early-bird-tiers-based-on-ticket-numbers">Use case: Early-bird tiers based on ticket numbers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-case-up-selling-of-ticket-extras">Use case: Up-selling of ticket extras</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#use-case-conference-with-workshops">Use case: Conference with workshops</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#option-a-questions">Option A: Questions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#option-b-add-on-products-with-fixed-time-slots">Option B: Add-on products with fixed time slots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#option-c-add-on-products-with-variable-time-slots">Option C: Add-on products with variable time slots</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#use-case-discounted-packages">Use case: Discounted packages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#option-a-combination-products">Option A: Combination products</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#option-b-add-ons-and-bundles">Option B: Add-ons and bundles</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#use-case-group-discounts">Use case: Group discounts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#flexible-group-sizes">Flexible group sizes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fixed-group-sizes">Fixed group sizes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#use-case-restricted-audience">Use case: Restricted audience</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#option-a-required-voucher-codes">Option A: Required voucher codes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#option-b-order-approvals">Option B: Order approvals</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#use-case-mixed-taxation">Use case: Mixed taxation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#more-use-cases">More use cases</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="guides/timeslots.html">Use case: Time slots</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="widget.html">Embeddable Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../markdown.html">Markdown Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+      <li>Product structure guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user/events/structureguide.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="product-structure-guide">
+<h1>Product structure guide<a class="headerlink" href="#product-structure-guide" title="Permalink to this heading">¶</a></h1>
+<p>Between products, categories, variations, add-ons, bundles, and quotas, eventyay provides a wide range of features that allow you to set up your event in the way you want it.
+However, it is easy to get lost in the process or to get started with building your event right.
+Often times, there are multiple ways to do something that come with different advantages and disadvantages.
+This guide will walk you through a number of typical examples of eventyay event structures and will explain how to set them up – feel free to just skip ahead to a section relevant for you.</p>
+<section id="terminology">
+<h2>Terminology<a class="headerlink" href="#terminology" title="Permalink to this heading">¶</a></h2>
+<dl class="simple">
+<dt>Products</dt><dd><p>A product is a basic entity that can be bought. You can think of it as a ticket type, but it can be more things than just a ticket, it can also be a piece of merchandise, a parking slot, etc.
+You might find some places where they are called “items” instead, but we’re trying to get rid of that.</p>
+</dd>
+<dt>Product categories</dt><dd><p>Products can be sorted into categories. Each product can only be in one category. Category are mostly used for grouping related products together to make your event page easier to read for buyers. However, we’ll need categories as well to set up some of the structures outlined below.</p>
+</dd>
+<dt>Product variations</dt><dd><p>During creation of a product, you can decide that your product should have multiple variations. Variations of a product can differ in price, description, and availability, but are otherwise the same. You could use this e.g. for differentiating between a regular ticket and a discounted ticket for students, or when selling merchandise to differentiate the different sizes of a t-shirt.</p>
+</dd>
+<dt>Product add-ons</dt><dd><p>Add-ons are products that are sold together with another product (which we will call the base product in this case). For example, you could have a base product “Conference ticket” and then define multiple workshops that can be chosen as an add-on.</p>
+</dd>
+<dt>Product bundles</dt><dd><p>Bundles work very similarly to add-ons, but are different in the way that they are always automatically included with the base product and cannot be optional. In contrast to add-on products, the same product can be included multiple times in a bundle.</p>
+</dd>
+<dt>Quotas</dt><dd><p>Quotas define the availability of products. A quota has a size (i.e. the number of products in the inventory) and is mapped to one or multiple products or variations.</p>
+</dd>
+<dt>Questions</dt><dd><p>Questions are user-defined form fields that buyers will need to fill out when purchasing a product.</p>
+</dd>
+</dl>
+</section>
+<section id="use-case-multiple-price-levels">
+<h2>Use case: Multiple price levels<a class="headerlink" href="#use-case-multiple-price-levels" title="Permalink to this heading">¶</a></h2>
+<p>Imagine you’re running a concert with general admission that sells a total of 200 tickets for two prices:</p>
+<ul class="simple">
+<li><p>Regular: € 25.00</p></li>
+<li><p>Students: € 19.00</p></li>
+</ul>
+<p>You can either set up two different products called e.g. “Regular ticket” and “Student ticket” with the respective prices, or two variations within the same product. In this simple case, it really doesn’t matter.</p>
+<p>In addition, you will need quotas. If you do not care how many of your tickets are sold to students, you should set up just <strong>one quota</strong> of 200 called e.g. “General admission” that you link to <strong>both products</strong>.</p>
+<p>If you want to limit the number of student tickets to 50 to ensure a certain minimum revenue, but do not want to limit the number of regular tickets artificially, we suggest you to create the same quota of 200 that is linked to both products, and then create a <strong>second quota</strong> of 50 that is only linked to the student ticket. This way, the system will reduce both quotas whenever a student ticket is sold and only the larger quota when a regular ticket is sold.</p>
+</section>
+<section id="use-case-early-bird-tiers-based-on-dates">
+<h2>Use case: Early-bird tiers based on dates<a class="headerlink" href="#use-case-early-bird-tiers-based-on-dates" title="Permalink to this heading">¶</a></h2>
+<p>Let’s say you run a conference that has the following pricing scheme:</p>
+<ul class="simple">
+<li><p>12 to 6 months before the event: € 450</p></li>
+<li><p>6 to 3 months before the event: € 550</p></li>
+<li><p>closer than 3 months to the event: € 650</p></li>
+</ul>
+<p>Of course, you could just set up one product and change its price at the given dates manually, but if you want to set this up automatically, here’s how:</p>
+<p>Create three products (e.g. “super early bird”, “early bird”, “regular ticket”) with the respective prices and one shared quota of your total event capacity. Then, set the <strong>available from</strong> and <strong>available until</strong> configuration fields of the products to automatically turn them on and off based on the current date.</p>
+</section>
+<section id="use-case-early-bird-tiers-based-on-ticket-numbers">
+<h2>Use case: Early-bird tiers based on ticket numbers<a class="headerlink" href="#use-case-early-bird-tiers-based-on-ticket-numbers" title="Permalink to this heading">¶</a></h2>
+<p>Let’s say you run a conference with 400 tickets that has the following pricing scheme:</p>
+<ul class="simple">
+<li><p>First 100 tickets (“super early bird”): € 450</p></li>
+<li><p>Next 100 tickets (“early bird”): € 550</p></li>
+<li><p>Remaining tickets (“regular”): € 650</p></li>
+</ul>
+<p>First of all, create three products:</p>
+<ul class="simple">
+<li><p>“Super early bird ticket”</p></li>
+<li><p>“Early bird ticket”</p></li>
+<li><p>“Regular ticket”</p></li>
+</ul>
+<p>Then, create three quotas:</p>
+<ul class="simple">
+<li><p>“Super early bird” with a <strong>size of 100</strong> and the “Super early bird ticket” product selected. At “Advanced options”,
+select the box “Close this quota permanently once it is sold out”.</p></li>
+<li><p>“Early bird and lower” with a <strong>size of 200</strong> and both of the “Super early bird ticket” and “Early bird ticket”
+products selected. At “Advanced options”, select the box “Close this quota permanently once it is sold out”.</p></li>
+<li><p>“All participants” with a <strong>size of 400</strong>, all three products selected and <strong>no additional options</strong>.</p></li>
+</ul>
+<p>Next, modify the product “Regular ticket”. In the section “Availability”, you should look for the option “Only show
+after sellout of” and select your quota “Early bird and lower”. Do the same for the “Early bird ticket” with the quota
+“Super early bird ticket”.</p>
+<p>This will ensure the following things:</p>
+<ul class="simple">
+<li><p>Each ticket level is only visible after the previous level is sold out.</p></li>
+<li><p>As soon as one level is really sold out, it’s not coming back, because the quota “closes”, i.e. locks in place.</p></li>
+<li><p>By creating a total quota of 400 with all tickets included, you can still make sure to sell the maximum number of
+tickets, even if e.g. early-bird tickets are canceled.</p></li>
+</ul>
+<p>Optionally, if you want to hide the early bird prices once they are sold out, go to “Settings”, then “Display” and
+select “Hide all products that are sold out”. Of course, it might be a nice idea to keep showing the prices to remind
+people to buy earlier next time ;)</p>
+<p>Please note that there might be short time intervals where the prices switch back and forth: When the last early bird
+tickets are in someone’s cart (but not yet sold!), the early bird tickets will show as “Reserved” and the regular
+tickets start showing up. However, if the customers holding the reservations do not complete their order,
+the early bird tickets will become available again. This is not avoidable if we want to prevent malicious users
+from blocking all the cheap tickets without an actual sale happening.</p>
+</section>
+<section id="use-case-up-selling-of-ticket-extras">
+<h2>Use case: Up-selling of ticket extras<a class="headerlink" href="#use-case-up-selling-of-ticket-extras" title="Permalink to this heading">¶</a></h2>
+<p>Let’s assume you’re putting up a great music festival, and to save trouble with handling payments on-site, you want to sell parking spaces together with your ticket. By using our add-on feature, you can prompt all users to book the parking space (to make sure they see it) and ensure that only people with a ticket can book a parking space. You can set it up like this:</p>
+<ul class="simple">
+<li><p>Create a base product “Festival admission”</p></li>
+<li><p>Create a quota for the base product</p></li>
+<li><p>Create a category “Ticket extras” and check “Products in this category are add-on products”</p></li>
+<li><p>Create a product “Parking space” within that category</p></li>
+<li><p>Create a quota for the parking space product</p></li>
+<li><p>Go to the base product and select the tab “Add-Ons” at the top. Click “Add a new add-on” and choose the “Ticket extras” category. You can keep the numbers at 0 and 1.</p></li>
+</ul>
+<p>During checkout, all buyers of the base product will now be prompted if they want to add the parking space.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You can also use add-on products for free things, just to keep tabs on capacity.</p>
+</div>
+</section>
+<section id="use-case-conference-with-workshops">
+<h2>Use case: Conference with workshops<a class="headerlink" href="#use-case-conference-with-workshops" title="Permalink to this heading">¶</a></h2>
+<p>When running a conference, you might also organize a number of workshops with smaller capacity. To be able to plan, it would be great to know which workshops an attendee plans to attend.</p>
+<section id="option-a-questions">
+<h3>Option A: Questions<a class="headerlink" href="#option-a-questions" title="Permalink to this heading">¶</a></h3>
+<p>Your first and simplest option is to just create a multiple-choice question. This has the upside of making it easy for users to change their mind later on, but will not allow you to restrict the number of attendees signing up for a given workshop – or even charge extra for a given workshop.</p>
+</section>
+<section id="option-b-add-on-products-with-fixed-time-slots">
+<h3>Option B: Add-on products with fixed time slots<a class="headerlink" href="#option-b-add-on-products-with-fixed-time-slots" title="Permalink to this heading">¶</a></h3>
+<p>The usually better option is to go with add-on products. Let’s take for example the following conference schedule, in which the lecture can be attended by anyone, but the workshops only have space for 20 persons each:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Time</p></th>
+<th class="head"><p>Room A</p></th>
+<th class="head"><p>Room B</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Wednesday morning</p></td>
+<td><p>Lecture</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Wednesday afternoon</p></td>
+<td><p>Workshop A</p></td>
+<td><p>Workshop B</p></td>
+</tr>
+<tr class="row-even"><td><p>Thursday morning</p></td>
+<td><p>Workshop C</p></td>
+<td><p>Workshop D (20 € extra charge)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Assuming you already created one or more products for your general conference admission, we suggest that you additionally create:</p>
+<ul>
+<li><p>A category called “Workshops” with the checkbox “Products in this category are add-on products” activated</p></li>
+<li><p>A free product called “Wednesday afternoon” within the category “Workshops” and with two variations:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Workshop A</p></li>
+<li><p>Workshop B</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>A free product called “Thursday morning” within the category “Workshops” and with two variations:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Workshop C</p></li>
+<li><p>Workshop D with a price of 20 €</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Four quotas for each of the workshops</p></li>
+<li><p>One add-on configuration on your base product that allows users to choose between 0 and 2 products from the category “Workshops”</p></li>
+</ul>
+</section>
+<section id="option-c-add-on-products-with-variable-time-slots">
+<h3>Option C: Add-on products with variable time slots<a class="headerlink" href="#option-c-add-on-products-with-variable-time-slots" title="Permalink to this heading">¶</a></h3>
+<p>The above option only works if your conference uses fixed time slots and every workshop uses exactly one time slot. If
+your schedule looks like this, it’s not going to work great:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Time</p></th>
+<th class="head"><p>Room A</p></th>
+<th class="head"><p>Room B</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>09:00-11:00</p></td>
+<td><p>Talk 1</p></td>
+<td rowspan="2"><p>Long
+Workshop 1</p></td>
+</tr>
+<tr class="row-odd"><td><p>11:00-13:00</p></td>
+<td><p>Talk 2</p></td>
+</tr>
+<tr class="row-even"><td><p>14:00-16:00</p></td>
+<td rowspan="2"><p>Long
+workshop 2</p></td>
+<td><p>Talk 3</p></td>
+</tr>
+<tr class="row-odd"><td><p>16:00-18:00</p></td>
+<td><p>Talk 4</p></td>
+</tr>
+</tbody>
+</table>
+<p>In this case, we recommend that you go to <em>Settings</em>, then <em>Plugins</em> and activate the plugin <strong>Agenda constraints</strong>.</p>
+<p>Then, create a product (without variations) for every single part that should be bookable (talks 1-4 and long workshops
+1 and 2) as well as appropriate quotas for each of them.</p>
+<p>All of these products should be part of the same category. In your base product (e.g. your conference ticket), you
+can then create an add-on product configuration allowing users to add products from this category.</p>
+<p>If you edit these products, you will be able to enter the “Start date” and “End date” of the talk or workshop close
+to the bottom of the page. If you fill in these values, eventyay will automatically ensure no overlapping talks are
+booked.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This option is currently only available on eventyay Hosted. If you are interested in using it with eventyay Enterprise,
+please contact <a class="reference external" href="mailto:sales&#37;&#52;&#48;eventyay&#46;com">sales<span>&#64;</span>eventyay<span>&#46;</span>com</a>.</p>
+</div>
+</section>
+</section>
+<section id="use-case-discounted-packages">
+<h2>Use case: Discounted packages<a class="headerlink" href="#use-case-discounted-packages" title="Permalink to this heading">¶</a></h2>
+<p>Imagine you run a trade show that opens on three consecutive days and you want to have the following pricing:</p>
+<ul class="simple">
+<li><p>Single day: € 10</p></li>
+<li><p>Any two days: € 17</p></li>
+<li><p>All three days:  € 25</p></li>
+</ul>
+<p>In this case, there are multiple different ways you could set this up with eventyay.</p>
+<section id="option-a-combination-products">
+<h3>Option A: Combination products<a class="headerlink" href="#option-a-combination-products" title="Permalink to this heading">¶</a></h3>
+<p>With this option, you just set up all the different combinations someone could by as a separate product. In this case, you would need 7 products:</p>
+<ul class="simple">
+<li><p>Day 1 pass</p></li>
+<li><p>Day 2 pass</p></li>
+<li><p>Day 3 pass</p></li>
+<li><p>Day 1+2 pass</p></li>
+<li><p>Day 2+3 pass</p></li>
+<li><p>Day 1+3 pass</p></li>
+<li><p>All-day pass</p></li>
+</ul>
+<p>Then, you create three quotas, each one with the maximum capacity of your venue on any given day:</p>
+<ul class="simple">
+<li><p>Day 1 quota, linked to “Day 1 pass”, “Day 1+2 pass”, “Day 1+3 pass”, and “All-day pass”</p></li>
+<li><p>Day 2 quota, linked to “Day 2 pass”, “Day 1+2 pass”, “Day 2+3 pass”, and “All-day pass”</p></li>
+<li><p>Day 3 quota, linked to “Day 3 pass”, “Day 2+3 pass”, “Day 1+3 pass”, and “All-day pass”</p></li>
+</ul>
+<p>This way, every person gets exactly one ticket that they can use for all days that they attend. You can later set up check-in lists appropriately to make sure only tickets valid for a certain day can be scanned on that day.</p>
+<p>The benefit of this option is that your product structure and order structure stays very simple. However, the two-day packages scale badly when you need many products.</p>
+<p>We recommend this setup for most setups in which the number of possible combinations does not exceed the number of parts (here: number of days) by much.</p>
+</section>
+<section id="option-b-add-ons-and-bundles">
+<h3>Option B: Add-ons and bundles<a class="headerlink" href="#option-b-add-ons-and-bundles" title="Permalink to this heading">¶</a></h3>
+<p>We can combine the two features “product add-ons” and “product bundles” to set this up in a different way. Here, you would create the following five products:</p>
+<ul class="simple">
+<li><p>Day 1 pass in a category called “Day passes”</p></li>
+<li><p>Day 2 pass in a category called “Day passes”</p></li>
+<li><p>Day 3 pass in a category called “Day passes”</p></li>
+<li><p>Two-day pass</p></li>
+<li><p>All-day pass</p></li>
+</ul>
+<p>This time, you will need five quotas:</p>
+<ul class="simple">
+<li><p>Day 1 quota, linked to “Day 1 pass”</p></li>
+<li><p>Day 2 quota, linked to “Day 2 pass”</p></li>
+<li><p>Day 3 quota, linked to “Day 3 pass”</p></li>
+<li><p>Two-day pass quota, linked to “Two-day pass” (can be unlimited)</p></li>
+<li><p>All-day pass quota, linked to “All-day pass” (can be unlimited)</p></li>
+</ul>
+<p>Then, you open the “Add-On” tab in the settings of the <strong>Two-day pass</strong> product and create a new add-on configuration specifying the following options:</p>
+<ul class="simple">
+<li><p>Category: “Day passes”</p></li>
+<li><p>Minimum number: 2</p></li>
+<li><p>Maximum number: 2</p></li>
+<li><p>Add-Ons are included in the price: Yes</p></li>
+</ul>
+<p>This way, when buying a two-day pass, the user will be able to select <em>exactly</em> two days for free, which will then be added to the cart. Depending on your specific configuration, the user will now receive <em>two separate</em> tickets, one for each day.</p>
+<p>For the all-day pass, you open the “Bundled products” tab in the settings of the <strong>All-day pass</strong> product and add <strong>three</strong> new bundled items with the following options:</p>
+<ul class="simple">
+<li><p>Bundled product: “Day 1/2/3”</p></li>
+<li><p>Bundled variation: None</p></li>
+<li><p>Count: 1</p></li>
+<li><p>Designated price: 0</p></li>
+</ul>
+<p>This way, when buying an all-day pass, three free day passes will <em>automatically</em> be added to the cart. Depending on your specific configuration, the user will now receive <em>three separate</em> tickets, one for each day.</p>
+<p>This approach makes your order data more complicated, since e.g. someone who buys an all-day pass now technically bought <strong>four products</strong>. However, this option allows for more flexibility when you have lots of options to choose from.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Depending on the packages you offer, you <strong>might not need both the add-on and the bundle feature</strong>, i.e. you only need the add-on feature for the two-day pass and only the bundle feature for the all-day pass. You could also set up the two-day pass like we showed here, but the all-day pass like in option A!</p>
+</div>
+</section>
+</section>
+<section id="use-case-group-discounts">
+<h2>Use case: Group discounts<a class="headerlink" href="#use-case-group-discounts" title="Permalink to this heading">¶</a></h2>
+<p>Often times, you want to give discounts for whole groups attending your event. eventyay can’t automatically discount based on volume, but there’s still some ways you can set up group tickets.</p>
+<section id="flexible-group-sizes">
+<h3>Flexible group sizes<a class="headerlink" href="#flexible-group-sizes" title="Permalink to this heading">¶</a></h3>
+<p>If you want to give out discounted tickets to groups starting at a given size, but still billed per person, you can do so by creating a special <strong>Group ticket</strong> at the per-person price and set the <strong>Minimum amount per order</strong> option of the ticket to the minimal group size.</p>
+<p>For more complex use cases, you can also use add-on products that can be chosen multiple times.</p>
+<p>This way, your ticket can be bought an arbitrary number of times – but no less than the given minimal amount per order.</p>
+</section>
+<section id="fixed-group-sizes">
+<h3>Fixed group sizes<a class="headerlink" href="#fixed-group-sizes" title="Permalink to this heading">¶</a></h3>
+<p>If you want to sell group tickets in fixed sizes, e.g. a table of eight at your gala dinner, you can use product bundles. Assuming you already set up a ticket for admission of single persons, you then set up a second product <strong>Table (8 persons)</strong> with a discounted full price. Then, head to the <strong>Bundled products</strong> tab of that product and add one bundle configuration to include the single admission product <strong>eight times</strong>. Next, create an unlimited quota mapped to the new product.</p>
+<p>This way, the purchase of a table will automatically create eight tickets, leading to a correct calculation of your total quota and, as expected, eight persons on your check-in list. You can even ask for the individual names of the persons during checkout.</p>
+</section>
+</section>
+<section id="use-case-restricted-audience">
+<h2>Use case: Restricted audience<a class="headerlink" href="#use-case-restricted-audience" title="Permalink to this heading">¶</a></h2>
+<p>Not all events are for everyone. Sometimes, there is a good reason to restrict access to your event or parts of your event only to a specific, invited group. There’s two ways to implement this with eventyay:</p>
+<section id="option-a-required-voucher-codes">
+<h3>Option A: Required voucher codes<a class="headerlink" href="#option-a-required-voucher-codes" title="Permalink to this heading">¶</a></h3>
+<p>If you check the option “<strong>This product can only be bought using a voucher</strong>” of one or multiple products, only people holding an applicable voucher code will be able to buy the product.</p>
+<p>You can then generate voucher codes for the respective product and send them out to the group of possible attendees. If the recipients should still be able to choose between different products, you can create an additional quota and map the voucher to that quota instead of the products themselves.</p>
+<p>There’s also the second option “<strong>This product will only be shown if a voucher matching the product is redeemed</strong>”. In this case, the existence of the product won’t even be shown before a voucher code is entered – useful for a VIP option in a shop where you also sell other products to the general public. Please note that this option does <strong>not</strong> work with vouchers assigned to a quota, only with vouchers assigned directly to the product.</p>
+<p>This option is appropriate if you know the group of people beforehand, e.g. members of a club, and you can mail them their access codes.</p>
+</section>
+<section id="option-b-order-approvals">
+<h3>Option B: Order approvals<a class="headerlink" href="#option-b-order-approvals" title="Permalink to this heading">¶</a></h3>
+<p>If you do not know your audience already, but still want to restrict it to a certain group, e.g. people with a given profession, you can check the “<strong>Buying this product requires approval</strong>” in the settings of your product. If a customer tries to buy such a product, they will be able to place their order but can not proceed to payment. Instead, you will be asked to approve or deny the order and only if you approve it, we will send a payment link to the customer.</p>
+<p>This requires the customer to interact with the ticket shop twice (once for the order, once for the payment) which adds a little more friction, but gives you full control over who attends the event.</p>
+</section>
+</section>
+<section id="use-case-mixed-taxation">
+<h2>Use case: Mixed taxation<a class="headerlink" href="#use-case-mixed-taxation" title="Permalink to this heading">¶</a></h2>
+<p>Let’s say you are a charitable organization in Germany and are allowed to charge a reduced tax rate of 7% for your educational event. However, your event includes a significant amount of food, you might need to charge a 19% tax rate on that portion. For example, your desired tax structure might then look like this:</p>
+<ul>
+<li><p>Conference ticket price: € 450 (incl. € 150 for food)</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>incl. € 19.63 VAT at 7%</p></li>
+<li><p>incl. € 23.95 VAT at 19%</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>You can implement this in eventyay using product bundles. In order to do so, you should create the following two products:</p>
+<ul class="simple">
+<li><p>Conference ticket at € 450 with a 7% tax rule</p></li>
+<li><p>Conference food at € 150 with a 19% tax rule and the option “<strong>Only sell this product as part of a bundle</strong>” set</p></li>
+</ul>
+<p>In addition to your normal conference quota, you need to create an unlimited quota for the food product.</p>
+<p>Then, head to the <strong>Bundled products</strong> tab of the “conference ticket” and add the “conference food” as a bundled product with a <strong>designated price</strong> of € 150.</p>
+<p>Once a customer tries to buy the € 450 conference ticket, a sub-product will be added and the price will automatically be split into the two components, leading to a correct computation of taxes.</p>
+<p>You can find more use cases in these specialized guides:</p>
+</section>
+<section id="more-use-cases">
+<h2>More use cases<a class="headerlink" href="#more-use-cases" title="Permalink to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guides/timeslots.html">Use case: Time slots</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="guides/timeslots.html" class="btn btn-neutral float-right" title="Use case: Time slots" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="invoicing.html" class="btn btn-neutral" title="Invoice settings" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

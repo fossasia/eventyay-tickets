@@ -1,0 +1,323 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>REST API &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="next" title="Basic concepts" href="fundamentals.html"/>
+        <link rel="prev" title="Additional database indices" href="../admin/indexes.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">REST API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html">Basic concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="auth.html">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources and endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ratelimit.html">Rate limiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webhooks.html">Webhooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/index.html">API Usage Guides</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>REST API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="rest-api">
+<span id="id1"></span><h1>REST API<a class="headerlink" href="#rest-api" title="Permalink to this heading">¶</a></h1>
+<p>This part of the documentation contains information about the REST-style API
+exposed by pretix since version 1.5 that can be used by third-party programs
+to interact with pretix and its data structures.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="fundamentals.html">Basic concepts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html#authentication">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html#permissions">Permissions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html#compatibility">Compatibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html#pagination">Pagination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html#conditional-fetching">Conditional fetching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html#errors">Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html#data-types">Data types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html#idempotency">Idempotency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fundamentals.html#file-upload">File upload</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="auth.html">Authentication</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tokenauth.html">Token-based authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oauth.html">OAuth authentication / “Connect with eventyay-ticket”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deviceauth.html">Device authentication</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="resources/index.html">Resources and endpoints</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="resources/organizers.html">Organizers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/subevents.html">Event series dates / Sub-events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/taxrules.html">Tax rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/categories.html">Item categories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/items.html">Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/item_variations.html">Item variations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/item_bundles.html">Item bundles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/item_add-ons.html">Item add-ons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/questions.html">Questions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/question_options.html">Question options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/quotas.html">Quotas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/orders.html">Orders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/invoices.html">Invoices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/vouchers.html">Vouchers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/checkinlists.html">Check-in lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/waitinglist.html">Waiting list entries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/carts.html">Cart positions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/teams.html">Teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/devices.html">Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/webhooks.html">Webhooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/seatingplans.html">Seating plans</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/exporters.html">Data exporters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/billing_invoices.html">pretix Hosted billing invoices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/billing_var.html">pretix Hosted reseller API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ratelimit.html">Rate limiting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="webhooks.html">Webhooks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="webhooks.html#configuring-webhooks">Configuring webhooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webhooks.html#receiving-webhooks">Receiving webhooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webhooks.html#responding-to-a-webhook">Responding to a webhook</a></li>
+<li class="toctree-l2"><a class="reference internal" href="webhooks.html#debugging-webhooks">Debugging webhooks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="guides/index.html">API Usage Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/order_lifecycle.html">Understanding the life cycle of orders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/custom_checkout.html">Creating an external checkout process</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="fundamentals.html" class="btn btn-neutral float-right" title="Basic concepts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../admin/indexes.html" class="btn btn-neutral" title="Additional database indices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

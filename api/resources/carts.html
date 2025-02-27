@@ -1,0 +1,657 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Cart positions &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../../index.html"/>
+        <link rel="up" title="Resources and endpoints" href="index.html"/>
+        <link rel="next" title="Teams" href="teams.html"/>
+        <link rel="prev" title="Gift cards" href="giftcards.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">REST API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../fundamentals.html">Basic concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../auth.html">Authentication</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Resources and endpoints</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="organizers.html">Organizers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subevents.html">Event series dates / Sub-events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="taxrules.html">Tax rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="categories.html">Item categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="items.html">Items</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_variations.html">Item variations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_bundles.html">Item bundles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="item_add-ons.html">Item add-ons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="questions.html">Questions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="question_options.html">Question options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quotas.html">Quotas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="orders.html">Orders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="invoices.html">Invoices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vouchers.html">Vouchers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="checkinlists.html">Check-in lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="waitinglist.html">Waiting list entries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="giftcards.html">Gift cards</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Cart positions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#cart-position-resource">Cart position resource</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cart-position-endpoints">Cart position endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="teams.html">Teams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="devices.html">Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="webhooks.html">Webhooks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="seatingplans.html">Seating plans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="exporters.html">Data exporters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="billing_invoices.html">pretix Hosted billing invoices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="billing_var.html">pretix Hosted reseller API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../ratelimit.html">Rate limiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../webhooks.html">Webhooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/index.html">API Usage Guides</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">REST API</a> &raquo;</li>
+        
+          <li><a href="index.html">Resources and endpoints</a> &raquo;</li>
+        
+      <li>Cart positions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/api/resources/carts.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="cart-positions">
+<span id="rest-carts"></span><h1>Cart positions<a class="headerlink" href="#cart-positions" title="Permalink to this heading">¶</a></h1>
+<p>The API provides limited access to the cart position data model. This API currently only allows creating and deleting
+cart positions to reserve quota.</p>
+<section id="cart-position-resource">
+<h2>Cart position resource<a class="headerlink" href="#cart-position-resource" title="Permalink to this heading">¶</a></h2>
+<p>The cart position resource contains the following public fields:</p>
+<table class="rest-resource-table docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>id</p></td>
+<td><p>integer</p></td>
+<td><p>Internal ID of the cart position</p></td>
+</tr>
+<tr class="row-odd"><td><p>cart_id</p></td>
+<td><p>string</p></td>
+<td><p>Identifier of the cart this belongs to. Needs to end
+in “&#64;api” for API-created positions.</p></td>
+</tr>
+<tr class="row-even"><td><p>datetime</p></td>
+<td><p>datetime</p></td>
+<td><p>Time of creation</p></td>
+</tr>
+<tr class="row-odd"><td><p>expires</p></td>
+<td><p>datetime</p></td>
+<td><p>The cart position will expire at this time and no longer block quota</p></td>
+</tr>
+<tr class="row-even"><td><p>item</p></td>
+<td><p>integer</p></td>
+<td><p>ID of the item</p></td>
+</tr>
+<tr class="row-odd"><td><p>variation</p></td>
+<td><p>integer</p></td>
+<td><p>ID of the variation (or <code class="docutils literal notranslate"><span class="pre">null</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p>price</p></td>
+<td><p>money (string)</p></td>
+<td><p>Price of this position</p></td>
+</tr>
+<tr class="row-odd"><td><p>attendee_name</p></td>
+<td><p>string</p></td>
+<td><p>Specified attendee name for this position (or <code class="docutils literal notranslate"><span class="pre">null</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p>attendee_name_parts</p></td>
+<td><p>object of strings</p></td>
+<td><p>Composition of attendee name (i.e. first name, last name, …)</p></td>
+</tr>
+<tr class="row-odd"><td><p>attendee_email</p></td>
+<td><p>string</p></td>
+<td><p>Specified attendee email address for this position (or <code class="docutils literal notranslate"><span class="pre">null</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p>voucher</p></td>
+<td><p>integer</p></td>
+<td><p>Internal ID of the voucher used for this position (or <code class="docutils literal notranslate"><span class="pre">null</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>addon_to</p></td>
+<td><p>integer</p></td>
+<td><p>Internal ID of the position this position is an add-on for (or <code class="docutils literal notranslate"><span class="pre">null</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p>subevent</p></td>
+<td><p>integer</p></td>
+<td><p>ID of the date inside an event series this position belongs to (or <code class="docutils literal notranslate"><span class="pre">null</span></code>).</p></td>
+</tr>
+<tr class="row-odd"><td><p>answers</p></td>
+<td><p>list of objects</p></td>
+<td><p>Answers to user-defined questions</p></td>
+</tr>
+<tr class="row-even"><td><p>├ question</p></td>
+<td><p>integer</p></td>
+<td><p>Internal ID of the answered question</p></td>
+</tr>
+<tr class="row-odd"><td><p>├ answer</p></td>
+<td><p>string</p></td>
+<td><p>Text representation of the answer</p></td>
+</tr>
+<tr class="row-even"><td><p>├ question_identifier</p></td>
+<td><p>string</p></td>
+<td><p>The question’s <code class="docutils literal notranslate"><span class="pre">identifier</span></code> field</p></td>
+</tr>
+<tr class="row-odd"><td><p>├ options</p></td>
+<td><p>list of integers</p></td>
+<td><p>Internal IDs of selected option(s)s (only for choice types)</p></td>
+</tr>
+<tr class="row-even"><td><p>└ option_identifiers</p></td>
+<td><p>list of strings</p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">identifier</span></code> fields of the selected option(s)s</p></td>
+</tr>
+<tr class="row-odd"><td><p>seat</p></td>
+<td><p>objects</p></td>
+<td><p>The assigned seat. Can be <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>├ id</p></td>
+<td><p>integer</p></td>
+<td><p>Internal ID of the seat instance</p></td>
+</tr>
+<tr class="row-odd"><td><p>├ name</p></td>
+<td><p>string</p></td>
+<td><p>Human-readable seat name</p></td>
+</tr>
+<tr class="row-even"><td><p>└ seat_guid</p></td>
+<td><p>string</p></td>
+<td><p>Identifier of the seat within the seating plan</p></td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 3.0: </span>This <code class="docutils literal notranslate"><span class="pre">seat</span></code> attribute has been added.</p>
+</div>
+</section>
+<section id="cart-position-endpoints">
+<h2>Cart position endpoints<a class="headerlink" href="#cart-position-endpoints" title="Permalink to this heading">¶</a></h2>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-events-(event)-cartpositions-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/cartpositions/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-events-(event)-cartpositions-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of API-created cart positions.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/cartpositions/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+<span class="na">X-Page-Generated</span><span class="o">:</span> <span class="l">2017-12-01T10:00:00Z</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;next&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;previous&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;results&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;cart_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XwokV8FojQviD9jhtDzKvHFdlLRNMhlfo3cNjGbuK6MUTQDT@api&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;item&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;variation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;23.00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;attendee_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;attendee_name_parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">      </span><span class="nt">&quot;attendee_email&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;voucher&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;addon_to&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;subevent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;datetime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2018-06-11T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;expires&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2018-06-11T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;includes_tax&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;seat&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;answers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Query Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>page</strong> (<em>integer</em>) – The page number in case of a multi-page result set, default is 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-organizers-(organizer)-events-(event)-cartpositions-(id)-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/cartpositions/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#get--api-v1-organizers-(organizer)-events-(event)-cartpositions-(id)-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns information on one cart position, identified by its internal ID.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/cartpositions/1/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;cart_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XwokV8FojQviD9jhtDzKvHFdlLRNMhlfo3cNjGbuK6MUTQDT@api&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;item&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;variation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;23.00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;attendee_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;attendee_name_parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span>
+<span class="w">  </span><span class="nt">&quot;attendee_email&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;voucher&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;addon_to&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;subevent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;datetime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2018-06-11T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expires&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2018-06-11T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;includes_tax&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;seat&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;answers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+<li><p><strong>id</strong> – The <code class="docutils literal notranslate"><span class="pre">id</span></code> field of the position to fetch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – The requested cart position does not exist.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-v1-organizers-(organizer)-events-(event)-cartpositions-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/cartpositions/</span></span><a class="headerlink" href="#post--api-v1-organizers-(organizer)-events-(event)-cartpositions-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new cart position.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This endpoint is considered <strong>experimental</strong>. It might change at any time without prior notice.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This endpoint is intended for advanced users. It is not designed to be used to build your own shop frontend.
+There is a lot that it does not or can not do, and you will need to be careful using it.
+It allows to bypass many of the restrictions imposed when creating a cart through the
+regular shop.</p>
+<p>Specifically, this endpoint currently</p>
+<ul class="simple">
+<li><p>does not validate if products are only to be sold in a specific time frame</p></li>
+<li><p>does not validate if the event’s ticket sales are already over or haven’t started</p></li>
+<li><p>does not support add-on products at the moment</p></li>
+<li><p>does not check or calculate prices but believes any prices you send</p></li>
+<li><p>does not support the redemption of vouchers</p></li>
+<li><p>does not prevent you from buying items that can only be bought with a voucher</p></li>
+<li><p>does not support file upload questions</p></li>
+</ul>
+</div>
+<p>You can supply the following fields of the resource:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">cart_id</span></code> (optional, needs to end in <code class="docutils literal notranslate"><span class="pre">&#64;api</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">item</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">variation</span></code> (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">price</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seat</span></code> (The <code class="docutils literal notranslate"><span class="pre">seat_guid</span></code> attribute of a seat. Required when the specified <code class="docutils literal notranslate"><span class="pre">item</span></code> requires a seat, otherwise must be <code class="docutils literal notranslate"><span class="pre">null</span></code>.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">attendee_name</span></code> <strong>or</strong> <code class="docutils literal notranslate"><span class="pre">attendee_name_parts</span></code> (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">attendee_email</span></code> (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">subevent</span></code> (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">expires</span></code> (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">includes_tax</span></code> (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sales_channel</span></code> (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">answers</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">question</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">answer</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">options</span></code></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/cartpositions/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;item&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;variation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;price&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;23.00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;attendee_name_parts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;given_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Peter&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;family_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Miller&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;attendee_email&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;answers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;question&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;answer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;23&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;options&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;subevent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span>HTTP/1.1 201 Created
+Vary: Accept
+Content-Type: application/json
+
+(Full cart position resource, see above.)
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer of the event to create a position for</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to create a position for</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – The item could not be created due to invalid submitted data or lack of quota.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to create this
+order.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http delete">
+<dt class="sig sig-object http" id="delete--api-v1-organizers-(organizer)-events-(event)-cartpositions-(id)-">
+<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/v1/organizers/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">organizer</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/events/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">event</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/cartpositions/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#delete--api-v1-organizers-(organizer)-events-(event)-cartpositions-(id)-" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a cart position, identified by its internal ID.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/v1/organizers/bigevents/events/sampleconf/cartpositions/1/</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">eventyay.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json, text/javascript</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">No Content</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>organizer</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the organizer to fetch</p></li>
+<li><p><strong>event</strong> – The <code class="docutils literal notranslate"><span class="pre">slug</span></code> field of the event to fetch</p></li>
+<li><p><strong>id</strong> – The <code class="docutils literal notranslate"><span class="pre">id</span></code> field of the position to delete</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – no error</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – Authentication failure</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – The requested organizer/event does not exist <strong>or</strong> you have no permission to view this resource.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – The requested cart position does not exist.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="teams.html" class="btn btn-neutral float-right" title="Teams" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="giftcards.html" class="btn btn-neutral" title="Gift cards" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

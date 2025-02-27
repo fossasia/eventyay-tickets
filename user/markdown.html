@@ -1,0 +1,408 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Markdown Guide &mdash; pretix 3.18.0.dev0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+
+  
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/pretix.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/css/lightbox.css" type="text/css" />
+  
+
+  
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="pretix 3.18.0.dev0 documentation" href="../index.html"/>
+        <link rel="up" title="User Guide" href="index.html"/>
+        <link rel="next" title="Glossary" href="glossary.html"/>
+        <link rel="prev" title="FAQ and Troubleshooting" href="faq.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo-white.svg" class="logo" />
+          
+          </a>
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="organizers/index.html">Organizer accounts and teams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events/create.html">Creating an event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events/settings.html">Configuring an event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events/structureguide.html">Product structure guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events/widget.html">Embeddable Widget</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events/giftcards.html">Gift cards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Markdown Guide</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-markdown">What is markdown?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formatting-rules">Formatting rules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#simple-text-formatting">Simple text formatting</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#links">Links</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lists">Lists</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#headlines">Headlines</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#using-html">Using HTML</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="glossary.html">Glossary</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../admin/index.html">Administrator documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development/index.html">Developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins/index.html">Plugin documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+
+          
+              
+              
+                  <div class="version">
+                      3.18
+                  </div>
+              
+          
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pretix</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">User Guide</a> &raquo;</li>
+        
+      <li>Markdown Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/user/markdown.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="markdown-guide">
+<span id="id1"></span><h1>Markdown Guide<a class="headerlink" href="#markdown-guide" title="Permalink to this heading">¶</a></h1>
+<section id="what-is-markdown">
+<h2>What is markdown?<a class="headerlink" href="#what-is-markdown" title="Permalink to this heading">¶</a></h2>
+<p>In many places of your shop, like frontpage texts, product descriptions and email texts, you can use
+<a class="reference external" href="https://en.wikipedia.org/wiki/Markdown">Markdown</a> to create links, bold text, and other formatted content. Markdown is a good middle-ground
+since it is way easier to learn than languages like HTML but allows all basic formatting options required
+for text in those places.</p>
+</section>
+<section id="formatting-rules">
+<h2>Formatting rules<a class="headerlink" href="#formatting-rules" title="Permalink to this heading">¶</a></h2>
+<section id="simple-text-formatting">
+<h3>Simple text formatting<a class="headerlink" href="#simple-text-formatting" title="Permalink to this heading">¶</a></h3>
+<p>To set a text in italics, you can put it in asterisks or underscores. For example,</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>Please <span class="ge">*really*</span> pay your <span class="ge">_ticket_</span>.
+</pre></div>
+</div>
+<p>will become:</p>
+<blockquote>
+<div><p>Please <em>really</em> pay your <em>ticket</em>.</p>
+</div></blockquote>
+<p>If you set double asterisks or underscores, the text will be printed in bold. For example,</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>This is <span class="gs">**important**</span>.
+</pre></div>
+</div>
+<p>will become:</p>
+<blockquote>
+<div><p>This is <strong>important</strong>.</p>
+</div></blockquote>
+<p>You can also display, for example:</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>Input this <span class="sb">`exactly like this`</span>.
+</pre></div>
+</div>
+<p>You will get:</p>
+<blockquote>
+<div><p>Input this <code class="docutils literal notranslate"><span class="pre">exactly</span> <span class="pre">like</span> <span class="pre">this</span></code>.</p>
+</div></blockquote>
+</section>
+<section id="links">
+<h3>Links<a class="headerlink" href="#links" title="Permalink to this heading">¶</a></h3>
+<p>You can create a link by just pasting it in, e.g.</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>Check this on https://en.wikipedia.org
+</pre></div>
+</div>
+<p>will become:</p>
+<blockquote>
+<div><p>Check this on <a class="reference external" href="https://en.wikipedia.org">https://en.wikipedia.org</a></p>
+</div></blockquote>
+<p>However, if you want to control the text of the link, you can put the text of the link in <code class="docutils literal notranslate"><span class="pre">[]</span></code> brackets and the
+link target in <code class="docutils literal notranslate"><span class="pre">()</span></code> parentheses, like this:</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>Check this on [<span class="nt">Wikipedia</span>](<span class="na">https://en.wikipedia.org</span>).
+</pre></div>
+</div>
+<p>This will yield:</p>
+<blockquote>
+<div><p>Check this on <a class="reference external" href="https://en.wikipedia.org">Wikipedia</a></p>
+</div></blockquote>
+<p>All links created with eventyay Markdown syntax will open in a new tab.</p>
+</section>
+<section id="lists">
+<h3>Lists<a class="headerlink" href="#lists" title="Permalink to this heading">¶</a></h3>
+<p>You can create un-numbered lists by prepending the lines with asterisks.</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="k">*</span><span class="w"> </span>First item
+<span class="k">*</span><span class="w"> </span>Second item with a text that is too long to
+  fit in a line
+<span class="k">*</span><span class="w"> </span>Third item
+</pre></div>
+</div>
+<p>will become:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>First item</p></li>
+<li><p>Second item with a text that is too long to
+fit in a line</p></li>
+<li><p>Third item</p></li>
+</ul>
+</div></blockquote>
+<p>You can also use numbers as list items</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="k">1.</span>  Red
+<span class="k">2.</span>  Green
+<span class="k">3.</span>  Blue
+</pre></div>
+</div>
+<p>to get</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Red</p></li>
+<li><p>Green</p></li>
+<li><p>Blue</p></li>
+</ol>
+</div></blockquote>
+</section>
+<section id="headlines">
+<h3>Headlines<a class="headerlink" href="#headlines" title="Permalink to this heading">¶</a></h3>
+<p>To create a headline, prepend it with <code class="docutils literal notranslate"><span class="pre">#</span></code> for the main headline, <code class="docutils literal notranslate"><span class="pre">##</span></code> for a headline of the second level,
+and so on. For example:</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="gh"># Headline 1</span>
+<span class="gu">## Headline 2</span>
+<span class="gu">### Headline 3</span>
+<span class="gu">#### Headline 4</span>
+<span class="gu">##### Headline 5</span>
+<span class="gu">###### Headline 6</span>
+</pre></div>
+</div>
+<p>We do not recommend using headlines of the first level, as eventyay will already set the name of your event as a level-1
+headline of the page and HTML pages should have only one headline on the first level.</p>
+<p>You can also use</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span>*****
+</pre></div>
+</div>
+<p>to create a horizontal line, like the following:</p>
+<hr></section>
+</section>
+<section id="using-html">
+<h2>Using HTML<a class="headerlink" href="#using-html" title="Permalink to this heading">¶</a></h2>
+<p>You can also directly embed HTML code, if you want, although we recommend
+using Markdown, as it enables e.g. people using text-based email clients
+to get a better plain text representation of your text. Note however, that for
+security reasons you can only use the following HTML elements:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="p">,</span> <span class="n">abbr</span><span class="p">,</span> <span class="n">acronym</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">br</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">div</span><span class="p">,</span> <span class="n">em</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span>
+<span class="n">h3</span><span class="p">,</span> <span class="n">h4</span><span class="p">,</span> <span class="n">h5</span><span class="p">,</span> <span class="n">h6</span><span class="p">,</span> <span class="n">hr</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">li</span><span class="p">,</span> <span class="n">ol</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">pre</span><span class="p">,</span> <span class="n">span</span><span class="p">,</span> <span class="n">strong</span><span class="p">,</span>
+<span class="n">table</span><span class="p">,</span> <span class="n">tbody</span><span class="p">,</span> <span class="n">td</span><span class="p">,</span> <span class="n">thead</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="n">ul</span>
+</pre></div>
+</div>
+<p>Additionally, only the following attributes are allowed on them:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;…&quot;</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;…&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">abbr</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;…&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">acronym</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;…&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">table</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;…&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">td</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;…&quot;</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;…&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;…&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">p</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;…&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;…&quot;</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>All other elements and attributes will be stripped during parsing.</p>
+</section>
+</section>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="glossary.html" class="btn btn-neutral float-right" title="Glossary" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="faq.html" class="btn btn-neutral" title="FAQ and Troubleshooting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014-2025, Raphael Michel.
+
+    </p>
+  </div>
+    <small>Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a theme that is based on a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.</small> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'3.18.0.dev0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2/dist/js/lightbox-plus-jquery.min.js"></script>
+      <script type="text/javascript" src="../_static/sphinxcontrib-images/LightBox2/lightbox2-customize/jquery-noconflict.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
