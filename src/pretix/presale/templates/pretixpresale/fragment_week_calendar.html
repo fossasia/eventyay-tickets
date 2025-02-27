@@ -75,9 +75,9 @@
                                     <span class="fa fa-ticket" aria-hidden="true"></span> {% trans "Sale over" %}
                                 {% elif event.event.settings.presale_start_show_date and event.event.presale_start %}
                                     <span class="fa fa-ticket" aria-hidden="true"></span>
-                                    {% blocktrans with start_date=event.event.presale_start|date:"SHORT_DATE_FORMAT" %}
+                                    {% blocktranslate with start_date=event.event.presale_start|date:"SHORT_DATE_FORMAT" trimmed %}
                                         from {{ start_date }}
-                                    {% endblocktrans %}
+                                    {% endblocktranslate %}
                                 {% else %}
                                     <span class="fa fa-ticket" aria-hidden="true"></span> {% trans "Soon" %}
                                 {% endif %}

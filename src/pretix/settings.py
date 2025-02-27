@@ -478,6 +478,7 @@ ALL_LANGUAGES = [
     ('pt-br', _('Portuguese (Brazil)')),
     ('ru', _('Russian')),
     ('es', _('Spanish')),
+    ('sw', _('Swahili')),
     ('tr', _('Turkish')),
     ('uk', _('Ukrainian')),
 ]
@@ -529,6 +530,12 @@ EXTRA_LANG_INFO = {
         'code': 'pt-pt',
         'name': 'Portuguese',
         'name_local': 'Português',
+    },
+    'sw': {
+        'bid': False,
+        'code': 'sw',
+        'name': _('Swahili'),
+        'name_local': 'Kiswahili',
     },
 }
 
