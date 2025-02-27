@@ -1133,7 +1133,7 @@ class MailSettingsForm(SettingsForm):
     smtp_select = [("sendgrid", _("SendGrid")), ("smtp", _("SMTP"))]
 
     email_vendor = forms.ChoiceField(
-        label=_(""), required=True, widget=forms.RadioSelect, choices=smtp_select
+        label=_("Email vendor"), required=True, widget=forms.RadioSelect, choices=smtp_select
     )
     smtp_host = forms.CharField(
         label=_("Hostname"),
