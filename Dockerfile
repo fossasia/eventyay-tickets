@@ -7,6 +7,7 @@ RUN apt-get update && \
             supervisor \
             sudo \
             locales \
+            less \
             --no-install-recommends && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
@@ -18,7 +19,7 @@ RUN apt-get update && \
     mkdir /public && \
     groupadd -g $GID pretalxuser && \
     useradd -r -u $UID -g pretalxuser -d /pretalx -ms /bin/bash pretalxuser && \
-    echo 'pretalxuser ALL=(ALL) NOPASSWD:SETENV: /usr/bin/supervisord' >> /etc/sudoers
+    echo 'pretalxuser ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 ENV LC_ALL=C.UTF-8
 ENV BASE_PATH=/talk
