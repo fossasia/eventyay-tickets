@@ -52,7 +52,7 @@ class LocaleSet(View):
                     str(
                         _(
                             "Your locale preferences have been saved. We like to think that we have excellent support "
-                            "for English in pretalx, but if you encounter issues or errors, please contact us!"
+                            "for English, but if you encounter issues or errors, please contact us!"
                         )
                     ),
                 )
