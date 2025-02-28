@@ -1,4 +1,5 @@
 import json
+import logging
 from collections import defaultdict
 
 from csp.decorators import csp_update
@@ -53,6 +54,8 @@ from pretalx.submission.models import (
     SubmitterAccessCode,
     Track,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class CfPTextDetail(PermissionRequired, ActionFromUrl, UpdateView):
@@ -802,9 +805,11 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
         return ctx
 
     def post(self, request, *args, **kwargs):
+        # TODO: Improve validation
         try:
             data = json.loads(request.body.decode())
-        except Exception:
+        except json.JSONDecodeError as e:
+            logger.warning("Request body is not JSON: %s", e)
             return JsonResponse({"error": "Invalid data"}, status=400)
 
         flow = CfPFlow(self.request.event)

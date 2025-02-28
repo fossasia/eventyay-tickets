@@ -214,6 +214,8 @@ class SpeakerProfileForm(
 
         if not self.event.cfp.request_avatar:
             self.fields.pop("avatar", None)
+            self.fields.pop("avatar_source", None)
+            self.fields.pop("avatar_license", None)
             self.fields.pop("get_gravatar", None)
         elif "avatar" in self.fields:
             self.fields["avatar"].required = False
