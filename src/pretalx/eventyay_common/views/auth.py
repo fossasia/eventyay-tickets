@@ -136,7 +136,10 @@ def oauth2_callback(request):
     user, created = User.objects.get_or_create(email=user_info["email"])
     if created:
         user.set_unusable_password()
-    user.name = user_info.get("name", "")
+    upstream_name = user_info.get("name", "")
+    # Only update user's name if it's not set.
+    if not user.name and upstream_name:
+        user.name = user_info.get("name", "")
     user.is_active = True
     user.is_staff = user_info.get("is_staff", False)
     user.locale = user_info.get("locale", None)
