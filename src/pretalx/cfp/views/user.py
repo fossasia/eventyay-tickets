@@ -63,14 +63,19 @@ class ProfileView(LoggedInEventPageMixin, TemplateView):
     @cached_property
     def profile_form(self):
         bind = is_form_bound(self.request, "profile")
+        cfp_flow_config = self.request.event.cfp_flow.config
+        try:
+            # TODO: There may be a mismatch somewhere else between how the config was saved and how it is loaded.
+            # We should use Pydantic model for saving and loading, to make sure the data is consistent.
+            field_configuration = cfp_flow_config["steps"]["profile"]["fields"]
+        except KeyError:
+            field_configuration = None
         return SpeakerProfileForm(
             user=self.request.user,
             event=self.request.event,
             read_only=False,
             with_email=False,
-            field_configuration=self.request.event.cfp_flow.config.get(
-                "profile", {}
-            ).get("fields"),
+            field_configuration=field_configuration,
             data=self.request.POST if bind else None,
             files=self.request.FILES if bind else None,
         )

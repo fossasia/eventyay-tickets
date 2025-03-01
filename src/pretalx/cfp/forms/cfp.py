@@ -1,3 +1,8 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 class CfPFormMixin:
     """All forms used in the CfP step process should use this mixin.
 

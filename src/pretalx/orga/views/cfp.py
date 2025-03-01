@@ -816,5 +816,6 @@ class CfPFlowEditor(EventPermissionRequired, TemplateView):
         if "action" in data and data["action"] == "reset":
             flow.reset()
         else:
+            logger.debug("Saving new CfP flow configuration: %s", data)
             flow.save_config(data)
         return JsonResponse({"success": True})
