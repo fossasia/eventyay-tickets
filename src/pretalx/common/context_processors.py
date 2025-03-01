@@ -1,5 +1,7 @@
+import logging
 import sys
 import warnings
+from pathlib import Path
 
 from django.conf import settings
 from django.http import Http404
@@ -11,6 +13,8 @@ from pretalx.cfp.signals import footer_link, html_head
 from pretalx.common.models.settings import GlobalSettings
 from pretalx.common.text.phrases import phrases
 from pretalx.orga.utils.i18n import get_javascript_format, get_moment_locale
+
+logger = logging.getLogger(__name__)
 
 
 def add_events(request):
@@ -35,6 +39,13 @@ def get_day_month_date_format():
 
 
 def locale_context(request):
+    cal_static_dir = Path(__file__).parent.parent.joinpath(
+        "static", "vendored", "fullcalendar", "locales"
+    )
+    AVAILABLE_CALENDAR_LOCALES = tuple(
+        f.name.removesuffix(".global.min.js")
+        for f in cal_static_dir.rglob("*.global.min.js")
+    )
     context = {
         "js_date_format": get_javascript_format("DATE_INPUT_FORMATS"),
         "js_datetime_format": get_javascript_format("DATETIME_INPUT_FORMATS"),
@@ -43,6 +54,7 @@ def locale_context(request):
         "quotation_close": phrases.base.quotation_close,
         "DAY_MONTH_DATE_FORMAT": get_day_month_date_format(),
         "rtl": getattr(request, "LANGUAGE_CODE", "en") in settings.LANGUAGES_RTL,
+        "AVAILABLE_CALENDAR_LOCALES": AVAILABLE_CALENDAR_LOCALES,
     }
 
     lang = translation.get_language()
