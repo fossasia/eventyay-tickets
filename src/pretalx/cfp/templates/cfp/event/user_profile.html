@@ -33,6 +33,8 @@
         {% if request.event.cfp.request_avatar %}
             {% include "common/avatar.html" with user=request.user form=profile_form %}
         {% endif %}
+        {% if profile_form.avatar_source %}{{ profile_form.avatar_source.as_field_group }}{% endif %}
+        {% if profile_form.avatar_license %}{{ profile_form.avatar_license.as_field_group }}{% endif %}
         {% if profile_form.availabilities %}
             {% include "common/availabilities.html" %}
             {{ profile_form.availabilities.as_field_group }}

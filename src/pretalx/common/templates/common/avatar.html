@@ -26,18 +26,6 @@
         </div>
     </div>
 </div>
-<div class="avatar-form form-group row">
-    <label class="col-md-3 col-form-label">{{ form.avatar_source.field.label }}</label>
-    <div class="col-md-9">
-        {{ form.avatar_source.as_widget }}
-    </div>
-</div>
-<div class="avatar-form form-group row">
-    <label class="col-md-3 col-form-label">{{ form.avatar_license.field.label }}</label>
-    <div class="col-md-9">
-        {{ form.avatar_license.as_widget }}
-    </div>
-</div>
 
 {% compress css %}
     <link rel="stylesheet" href="{% static "common/css/avatar.css" %}">

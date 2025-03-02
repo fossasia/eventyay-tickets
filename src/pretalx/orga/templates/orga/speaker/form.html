@@ -77,6 +77,8 @@
         {% if form.avatar %}
             {% include "common/avatar.html" with user=form.instance.user form=form %}
         {% endif %}
+        {% if form.avatar_source %}{{ form.avatar_source.as_field_group }}{% endif %}
+        {% if form.avatar_license %}{{ form.avatar_license.as_field_group }}{% endif %}
 
         {% if form.biography %}
             {{ form.biography.as_field_group }}
