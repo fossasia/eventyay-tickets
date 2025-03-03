@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-27 03:50+0000\n"
-"PO-Revision-Date: 2025-03-03 17:04+0000\n"
+"PO-Revision-Date: 2025-03-03 21:38+0000\n"
 "Last-Translator: Antoni Mtavangu <antonicmtavangu@gmail.com>\n"
 "Language-Team: Swahili <https://hosted.weblate.org/projects/open-event/"
 "eventyay-tickets/sw/>\n"
@@ -2264,7 +2264,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/items/questions.html:3
 #: pretix/control/templates/pretixcontrol/items/questions.html:8
 msgid "Questions"
-msgstr ""
+msgstr "Maswali"
 
 #: pretix/base/exporters/dekodi.py:82
 #, python-brace-format
