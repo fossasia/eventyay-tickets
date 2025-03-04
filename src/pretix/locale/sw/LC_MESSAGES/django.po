@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-27 03:50+0000\n"
-"PO-Revision-Date: 2025-03-03 21:38+0000\n"
+"PO-Revision-Date: 2025-03-04 10:20+0000\n"
 "Last-Translator: Antoni Mtavangu <antonicmtavangu@gmail.com>\n"
 "Language-Team: Swahili <https://hosted.weblate.org/projects/open-event/"
 "eventyay-tickets/sw/>\n"
@@ -2610,7 +2610,7 @@ msgstr ""
 #: pretix/plugins/checkinlists/exporters.py:618
 #: pretix/presale/checkoutflowstep/confirm_step.py:79
 msgid "No"
-msgstr ""
+msgstr "Hapana"
 
 #: pretix/base/exporters/invoices.py:285
 msgid "Line number"
@@ -3816,7 +3816,7 @@ msgstr ""
 
 #: pretix/base/models/billing.py:23 pretix/base/models/orders.py:160
 msgid "canceled"
-msgstr ""
+msgstr "imeahirishwa"
 
 #: pretix/base/models/checkin.py:16
 msgid "All products (including newly created ones)"
@@ -11305,7 +11305,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/auth/invite.html:23
 #: pretix/control/templates/pretixcontrol/auth/register.html:29
 msgid "Login"
-msgstr ""
+msgstr "Ingia"
 
 #: pretix/control/templates/pretixcontrol/auth/invite.html:27
 #: pretix/control/templates/pretixcontrol/auth/login.html:45
@@ -11335,7 +11335,7 @@ msgstr ""
 #: pretix/control/templates/pretixcontrol/auth/login_2fa.html:9
 #: pretix/control/templates/pretixcontrol/user/reauth.html:9
 msgid "Welcome back!"
-msgstr ""
+msgstr "Karibu tena!"
 
 #: pretix/control/templates/pretixcontrol/auth/login_2fa.html:11
 msgid ""
@@ -11377,7 +11377,7 @@ msgstr ""
 #: pretix/presale/templates/pretixpresale/event/order_pay.html:27
 #: pretix/presale/templates/pretixpresale/event/order_pay_change.html:60
 msgid "Continue"
-msgstr ""
+msgstr "Endelea"
 
 #: pretix/control/templates/pretixcontrol/auth/oauth_authorization.html:8
 msgid "Authorize an application"
