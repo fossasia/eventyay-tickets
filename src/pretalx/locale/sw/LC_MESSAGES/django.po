@@ -3,20 +3,21 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-26 05:28+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2025-03-04 10:20+0000\n"
+"Last-Translator: Antoni Mtavangu <antonicmtavangu@gmail.com>\n"
+"Language-Team: Swahili <https://hosted.weblate.org/projects/open-event/"
+"eventyay-talk/sw/>\n"
+"Language: sw\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.10.3-dev\n"
 
 #: tests/screenshots/conftest.py:42 pretalx/mail/context.py:247
 msgid "Jane Doe"
@@ -274,6 +275,8 @@ msgstr ""
 msgid ""
 "Your draft was saved. You can continue to edit it as long as the CfP is open."
 msgstr ""
+"Rasimu yako ilihifadhiwa. Unaweza kuendelea kuihariri kwa kipindi ambacho "
+"CfP imefunguliwa."
 
 #: pretalx/cfp/flow.py:358
 msgid ""
@@ -281,38 +284,47 @@ msgid ""
 "changes to it up to the submission deadline, and you will be notified of any "
 "changes or questions."
 msgstr ""
+"Hongera, umewasilisha pendekezo lako! Unaweza kuendelea kulifanyia "
+"mabadiliko hadi tarehe ya mwisho ya kuwasilisha, na utaarifiwa kuhusu "
+"mabadiliko au maswali yoyote."
 
 #: pretalx/cfp/flow.py:388
 msgid "Hey, nice to meet you!"
-msgstr ""
+msgstr "Habari, nimefurahi kukutana nawe!"
 
 #: pretalx/cfp/flow.py:393
 msgid ""
 "We’re glad that you want to contribute to our event with your proposal. "
 "Let’s get started, this won’t take long."
 msgstr ""
+"Tunafurahi kuwa ungependa kuchangia katika tukio letu kwa pendekezo lako. Na "
+"tuanze, hii haitachukua muda mrefu."
 
 #: pretalx/cfp/flow.py:452
 msgid "Tell us more!"
-msgstr ""
+msgstr "Tuambie zaidi!"
 
 #: pretalx/cfp/flow.py:457
 msgid "Before we can save your proposal, we have some more questions for you."
-msgstr ""
+msgstr "Kabla ya kuhifadhi pendekezo lako, tuna maswali zaidi kwako."
 
 #: pretalx/cfp/flow.py:481
 msgid ""
 "There was an error when logging in. Please contact the organiser for further "
 "help."
 msgstr ""
+"Kulikuwa na hitilafu wakati wa kuingia. Tafadhali wasiliana na mwandaaji kwa "
+"usaidizi zaidi."
 
 #: pretalx/cfp/flow.py:490
 msgid "Account"
-msgstr ""
+msgstr "Akaunti"
 
 #: pretalx/cfp/flow.py:495
 msgid "That’s it about your proposal! We now just need a way to contact you."
 msgstr ""
+"Ni hayo tu kuhusu pendekezo lako! Sasa tunahitaji tu njia ya kuwasiliana "
+"nawe."
 
 #: pretalx/cfp/flow.py:501
 msgid ""
@@ -320,24 +332,29 @@ msgid ""
 "gives us a way to contact you, it also gives you the possibility to edit "
 "your proposal or to view its current state."
 msgstr ""
+"Ili kuunda pendekezo lako, unahitaji akaunti kwenye ukurasa huu. Hii si "
+"kwamba inatupatia tu njia ya kuwasiliana nawe, lakini pia inakupa uwezekano "
+"wa kuhariri pendekezo lako au kutazama hali yake ya sasa."
 
 #: pretalx/cfp/flow.py:543
 msgid "Profile"
-msgstr ""
+msgstr "Wasifu"
 
 #: pretalx/cfp/flow.py:547
 msgid "Tell us something about yourself!"
-msgstr ""
+msgstr "Tuambie kitu kuhusu wewe!"
 
 #: pretalx/cfp/flow.py:552
 msgid ""
 "This information will be publicly displayed next to your session - you can "
 "always edit for as long as proposals are still open."
 msgstr ""
+"Taarifa hii itaoneshwa hadharani kando ya kipindi chako - unaweza kuhariri "
+"muda wowote ili mradi muda mapendekezo uwe bado wazi."
 
 #: pretalx/cfp/phrases.py:7
 msgid "Go to CfP"
-msgstr ""
+msgstr "Nenda kwenye CfP"
 
 #: pretalx/cfp/phrases.py:10
 msgid ""
@@ -346,61 +363,72 @@ msgid ""
 "instructions. If you don’t see the email within the next minutes, check your "
 "spam inbox!"
 msgstr ""
+"Ikiwa tunamjua mtumiaji kwa barua pepe hii (ambaye hajaomba kuweka upya "
+"nenosiri ndani ya saa 24 zilizopita), tutakutumia barua pepe iliyo na "
+"maelekezo zaidi. Ikiwa huoni barua pepe ndani ya dakika chache zijazo, "
+"angalia kisanduku pokezi chako cha barua taka!"
 
 #: pretalx/cfp/phrases.py:14
 msgid ""
 "This link was not valid. Make sure you copied the complete URL from the "
 "email and that the email is no more than 24 hours old."
 msgstr ""
+"Kiungo hiki hakikuwa halali. Hakikisha kuwa umenakili URL kamili kutoka kwa "
+"barua pepe hiyo na kwamba barua pepe hiyo haina zaidi ya saa 24."
 
 #: pretalx/cfp/phrases.py:17
 msgid "Awesome! You can now log in using your new password."
-msgstr ""
+msgstr "Safi sana! Sasa unaweza kuingia kwa kutumia nenosiri lako jipya."
 
 #: pretalx/cfp/phrases.py:19
 msgid ""
 "Your API token has been regenerated. The previous token will not be usable "
 "any longer."
 msgstr ""
+"Tokeni yako ya API imeundwa upya. Tokeni iliyotangulia haitatumika tena."
 
 #: pretalx/cfp/phrases.py:23
 msgid "Your proposal has been withdrawn."
-msgstr ""
+msgstr "Pendekezo lako limeondolewa."
 
 #: pretalx/cfp/phrases.py:25
 msgid ""
 "Your proposal can’t be withdrawn at this time – please contact us if you "
 "need to withdraw your proposal!"
 msgstr ""
+"Pendekezo lako haliwezi kuondolewa kwa wakati huu - tafadhali wasiliana nasi "
+"ikiwa unahitaji kuondoa pendekezo lako!"
 
 #: pretalx/cfp/phrases.py:28
 msgid "Your session has been confirmed – we’re looking forward to seeing you!"
-msgstr ""
+msgstr "Kipindi chako kimethibitishwa - tunatazamia kukuona!"
 
 #: pretalx/cfp/phrases.py:31
 msgid ""
 "This proposal has already been confirmed – we’re looking forward to seeing "
 "you!"
-msgstr ""
+msgstr "Pendekezo hili tayari limethibitishwa - tunatazamia kukuona!"
 
 #: pretalx/cfp/phrases.py:34
 msgid ""
 "This proposal cannot be confirmed at this time – please contact us if you "
 "think this is an error."
 msgstr ""
+"Pendekezo hili haliwezi kuthibitishwa kwa wakati huu - tafadhali wasiliana "
+"nasi ikiwa unafikiri hii ni hitilafu."
 
 #: pretalx/cfp/phrases.py:36
 msgid "This proposal cannot be edited anymore."
-msgstr ""
+msgstr "Pendekezo hili haliwezi kuhaririwa tena."
 
 #: pretalx/cfp/phrases.py:38 pretalx/cfp/phrases.py:63
 msgid "Speaker email"
-msgstr ""
+msgstr "Barua pepe ya msemaji"
 
 #: pretalx/cfp/phrases.py:39 pretalx/cfp/phrases.py:64
 #, python-brace-format
 msgid "{speaker} invites you to join their session!"
-msgstr ""
+msgstr "{speaker} anakualika kujiunga na kipindi chake!"
 
 #: pretalx/cfp/phrases.py:41 pretalx/cfp/phrases.py:66
 #, python-brace-format
@@ -418,31 +446,55 @@ msgid ""
 "I’m looking forward to it!\n"
 "{speaker}"
 msgstr ""
+"Habari!\n"
+"\n"
+"\n"
+"\n"
+"Ningependa kukualika uwe mzungumzaji katika kipindi\n"
+"\n"
+"\n"
+"  “{title}”\n"
+"\n"
+"\n"
+"\n"
+"kwenye{event}. Tafadhali fuata kiungo hiki ili kujiunga:\n"
+"\n"
+"\n"
+"  {url}\n"
+"\n"
+"\n"
+"\n"
+"Nakusubiri kwa hamu!!\n"
+"\n"
+"{speaker}"
 
 #: pretalx/cfp/phrases.py:54
 msgid "Please provide a valid email address."
-msgstr ""
+msgstr "Tafadhali toa barua pepe halali."
 
 #: pretalx/cfp/phrases.py:55
 msgid "The invitation was sent!"
-msgstr ""
+msgstr "Mwaliko umetumwa!"
 
 #: pretalx/cfp/phrases.py:57
 msgid "You are now part of this proposal! Please fill in your profile below."
 msgstr ""
+"Sasa wewe ni sehemu ya pendekezo hili! Tafadhali jaza wasifu wako hapa chini."
 
 #: pretalx/cfp/phrases.py:61
 msgid ""
 "We are experiencing difficulties when sending mails, but your session was "
 "submitted successfully!"
 msgstr ""
+"Tunakumbana na matatizo wakati wa kutuma barua, lakini kipindi chako "
+"kiliwasilishwa kwa ufanisi!"
 
 #: pretalx/cfp/phrases.py:79
 #: pretalx/orga/templates/orga/cfp/question_view.html:7
 #: pretalx/orga/templates/orga/cfp/question_view.html:26
 #: pretalx/orga/templates/orga/submission/content.html:88
 msgid "Questions"
-msgstr ""
+msgstr "Maswali"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:24
 #, python-format
@@ -450,52 +502,54 @@ msgid ""
 "You can enter proposals until %(deadline)s (%(timezone)s), %(until_string)s "
 "from now."
 msgstr ""
+"Unaweza kuweka mapendekezo hadi %(deadline)s (%(timezone)s), %(until_string)"
+"s kuanzia sasa."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:28
 #, python-format
 msgid "This Call for Papers closed on %(deadline)s (%(timezone)s)."
-msgstr ""
+msgstr "Wito wa kutuma mapendekezo itakuwa mnamo %(deadline)s (%(timezone)s)."
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:54
 msgid "View or edit speaker profile"
-msgstr ""
+msgstr "Tazama au uhariri wasifu wa mzungumzaji"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:62
 msgid "Submit a proposal"
-msgstr ""
+msgstr "Wasilisha pendekezo"
 
 #: pretalx/cfp/templates/cfp/event/cfp.html:64 pretalx/cfp/views/wizard.py:45
 msgid "Proposals are closed"
-msgstr ""
+msgstr "Mapendekezo yamefungwa"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:11
 #: pretalx/submission/models/submission.py:55
 msgid "accepted"
-msgstr ""
+msgstr "limekubalika"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:13
 #: pretalx/submission/models/submission.py:56
 msgid "confirmed"
-msgstr ""
+msgstr "imethibitishwa"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:15
 #: pretalx/submission/models/submission.py:58
 msgid "canceled"
-msgstr ""
+msgstr "imeahirishwa"
 
 #: pretalx/cfp/templates/cfp/event/fragment_state.html:17
 #: pretalx/submission/models/submission.py:59
 msgid "withdrawn"
-msgstr ""
+msgstr "imeondolewa"
 
 #: pretalx/cfp/templates/cfp/event/index.html:36
 msgid "Go To Organiser Area"
-msgstr ""
+msgstr "Nenda kwenye Eneo la Mratibu"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:6
 #: pretalx/cfp/templates/cfp/event/invitation.html:9
 msgid "Accept invitation?"
-msgstr ""
+msgstr "Je, ukubali mwaliko?"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:13
 msgid ""
@@ -503,10 +557,13 @@ msgid ""
 "because the invitation has expired, or because the proposal cannot be edited "
 "any more."
 msgstr ""
+"Kwa bahati mbaya, huwezi kukubali mwaliko huu kwa sasa. Hii inaweza kuwa ni "
+"kwa sababu muda wa mwaliko umeisha, au kwa sababu pendekezo haliwezi "
+"kuhaririwa tena."
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:20
 msgid "Please contact the conference organizers for more information."
-msgstr ""
+msgstr "Tafadhali wasiliana na waandaaji wa mkutano kwa maelezo zaidi."
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:26
 #, python-format
@@ -514,35 +571,39 @@ msgid ""
 "You, %(name)s, have been invited to be a speaker for the session “%(talk)s”. "
 "Do you accept the invitation?"
 msgstr ""
+"Wewe, %(name)s, umealikwa kuwa mzungumzaji wa kipindi cha \"%(talk)s\". Je, "
+"unakubali mwaliko huo?"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:34
 msgid "Abstract:"
-msgstr ""
+msgstr "Muhtasari:"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:43
 #: pretalx/event/models/event.py:588 pretalx/submission/models/question.py:424
 #: pretalx/submission/models/submission.py:949
 msgid "No"
-msgstr ""
+msgstr "Hapana"
 
 #: pretalx/cfp/templates/cfp/event/invitation.html:44
 msgid "Accept invitation"
-msgstr ""
+msgstr "Kubali mwaliko"
 
 #: pretalx/cfp/templates/cfp/event/login.html:5
 #: pretalx/common/text/phrases.py:111
 msgid "Login"
-msgstr ""
+msgstr "Ingia"
 
 #: pretalx/cfp/templates/cfp/event/login.html:8
 msgid "Welcome back!"
-msgstr ""
+msgstr "Karibu tena!"
 
 #: pretalx/cfp/templates/cfp/event/login.html:10
 msgid ""
 "If you already created a proposal for a different event on this server, you "
 "can re-use your account to log in for this event."
 msgstr ""
+"Ikiwa tayari umeunda pendekezo la tukio tofauti kwenye seva hii, unaweza "
+"kutumia tena akaunti yako kuingia kwa tukio hili."
 
 #: pretalx/cfp/templates/cfp/event/login.html:15
 msgid ""
@@ -551,35 +612,38 @@ msgid ""
 "own personalized schedule, or if you are participating in the event as a "
 "speaker or organizer."
 msgstr ""
+"Huhitaji akaunti ili kutazama tukio, kuwasilisha maoni au kupokea masasisho "
+"ya ratiba. Akaunti inahitajika tu ikiwa unataka kuunda ratiba yako ya "
+"kibinafsi, au ikiwa unashiriki katika tukio kama Mzungumzaji au mratibu."
 
 #: pretalx/cfp/templates/cfp/event/recover.html:25
 msgid "Set your password to access your profile and proposals"
-msgstr ""
+msgstr "Weka nenosiri lako ili kufikia wasifu wako na mapendekezo"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:10
 #: pretalx/orga/templates/orga/submission/content.html:27
 msgid "Create proposal"
-msgstr ""
+msgstr "Tengeneza pendekezo"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:36
 msgid "Done!"
-msgstr ""
+msgstr "Tayari!"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:58
 msgid "Save as draft"
-msgstr ""
+msgstr "Hifadhi kama rasimu"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:63
 msgid "Continue"
-msgstr ""
+msgstr "Endelea"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:65
 msgid "Submit proposal!"
-msgstr ""
+msgstr "Wasilisha pendekezo!"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:69
 msgid "or save as draft for now"
-msgstr ""
+msgstr "au uhifadhi kama rasimu kwa sasa"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:70
 msgid ""
@@ -587,10 +651,13 @@ msgid ""
 "not be able to see your proposal, though they will be able to send you "
 "reminder emails about the upcoming deadline."
 msgstr ""
+"Unaweza kuhifadhi pendekezo lako kama rasimu na uwasilishe baadaye. "
+"Waandaaji hawataweza kuona pendekezo lako, ingawa wataweza kukutumia barua "
+"pepe za ukumbusho kuhusu tarehe ya mwisho inapokaribia."
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:85
 msgid "You need to be logged in to submit a proposal"
-msgstr ""
+msgstr "Unahitaji kuingia ili kuwasilisha pendekezo"
 
 #: pretalx/cfp/templates/cfp/event/submission_base.html:86
 msgid ""
@@ -598,18 +665,21 @@ msgid ""
 "contact you and allows you to edit your proposal or check its status at any "
 "time."
 msgstr ""
+"Tafadhali ingia au ufungue akaunti ili kuwasilisha pendekezo. Hii "
+"hutuwezesha kuwasiliana nawe na kukuruhusu kuhariri pendekezo lako au "
+"kuangalia hali yake wakati wowote."
 
 #: pretalx/cfp/templates/cfp/event/submission_questions.html:13
 msgid "… about your proposal:"
-msgstr ""
+msgstr "... kuhusu pendekezo lako:"
 
 #: pretalx/cfp/templates/cfp/event/submission_questions.html:21
 msgid "… about yourself:"
-msgstr ""
+msgstr "... kuhusu wewe mwenyewe:"
 
 #: pretalx/cfp/templates/cfp/event/submission_user.html:8
 msgid "Sign in or register to save your draft"
-msgstr ""
+msgstr "Ingia au ujiandikishe ili kuhifadhi rasimu yako"
 
 #: pretalx/cfp/templates/cfp/event/submission_user.html:17
 msgid ""
@@ -617,11 +687,14 @@ msgid ""
 "will be able to send you reminders about your pending proposal draft closer "
 "to the deadline."
 msgstr ""
+"Waandaaji hawataweza kuona rasimu yako au anwani yako ya barua pepe. "
+"Wataweza kukutumia vikumbusho kuhusu rasimu ya pendekezo lako linalosubiri "
+"kukaribia tarehe ya mwisho."
 
 #: pretalx/cfp/templates/cfp/event/user_mails.html:4
 #: pretalx/cfp/templates/cfp/event/user_mails.html:7
 msgid "Your Emails"
-msgstr ""
+msgstr "Barua pepe zako"
 
 #: pretalx/cfp/templates/cfp/event/user_mails.html:9
 msgid ""
@@ -629,21 +702,27 @@ msgid ""
 "in your email inbox, but this page serves as a helper in case your email "
 "address was unavailable or the emails got lost in some way."
 msgstr ""
+"Hizi ni barua pepe ambazo waandaaji walikutumia, kwa hivyo unapaswa kuzipata "
+"kwenye kikasha chako cha barua pepe, lakini ukurasa huu unatumika kama "
+"msaidizi iwapo barua pepe yako haikupatikana au barua pepe zilipotea kwa "
+"njia fulani."
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:7
 #: pretalx/cfp/templates/cfp/event/user_profile.html:21
 msgid "Your Profile"
-msgstr ""
+msgstr "Wasifu wako"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:23
 msgid ""
 "This data will be displayed publicly if your proposal is accepted. It is "
 "also visible to reviewers."
 msgstr ""
+"Data hii itaonyeshwa hadharani ikiwa pendekezo lako litakubaliwa. Pia "
+"inaonekana kwa wakaguzi."
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:51
 msgid "We have some questions"
-msgstr ""
+msgstr "Tuna baadhi ya maswali"
 
 #: pretalx/cfp/templates/cfp/event/user_profile.html:66
 msgid "Your Account"
