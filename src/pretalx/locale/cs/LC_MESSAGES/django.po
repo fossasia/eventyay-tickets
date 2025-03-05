@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-26 05:28+0000\n"
+"POT-Creation-Date: 2025-03-04 11:07+0000\n"
 "PO-Revision-Date: 2024-11-24 04:58+0000\n"
 "Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
@@ -530,7 +530,7 @@ msgstr ""
 msgid "Submit a proposal"
 msgstr "Odeslat přihlášku"
 
-#: pretalx/cfp/templates/cfp/event/cfp.html:64 pretalx/cfp/views/wizard.py:45
+#: pretalx/cfp/templates/cfp/event/cfp.html:64 pretalx/cfp/views/wizard.py:47
 msgid "Proposals are closed"
 msgstr "Příspěvky byly uzavřeny"
 
@@ -743,23 +743,23 @@ msgstr ""
 "Tyto informace budou zobrazeny veřejně, pokud bude vaše přihláška přijata. "
 "Budou také dostupné během kontroly."
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:51
+#: pretalx/cfp/templates/cfp/event/user_profile.html:53
 msgid "We have some questions"
 msgstr "Máme pár otázek"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:66
+#: pretalx/cfp/templates/cfp/event/user_profile.html:68
 msgid "Your Account"
 msgstr "Váš účet"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:67
+#: pretalx/cfp/templates/cfp/event/user_profile.html:69
 msgid "You can change your log in data here."
 msgstr "Zde můžete změnit své přihlašovací údaje."
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:88
+#: pretalx/cfp/templates/cfp/event/user_profile.html:90
 msgid "Account deletion"
 msgstr "Smazání účtu"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:93
+#: pretalx/cfp/templates/cfp/event/user_profile.html:95
 msgid ""
 "You can delete your account here – all names, emails, and other personal "
 "information will be overwritten. <strong>This action is irreversible.</"
@@ -768,7 +768,7 @@ msgstr ""
 "Tady můžete smazat svůj účet - všechna jména, e-maily a ostatní osobní údaje "
 "budou smazány. <strong>Tato akce je nevratná.</strong>"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:99
+#: pretalx/cfp/templates/cfp/event/user_profile.html:101
 msgid ""
 "I really do want to delete my account, losing access to my proposals and "
 "sessions, and overriding my public and private data."
@@ -776,7 +776,7 @@ msgstr ""
 "Opravdu chci smazat svůj účet, ztratit přístup k mým přihláškám a přednáškám "
 "a přepsat mé veřejné a soukromé informace přiřazené k tomuto účtu."
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:106
+#: pretalx/cfp/templates/cfp/event/user_profile.html:108
 msgid "Delete my account"
 msgstr "Smazat můj účet"
 
@@ -1082,7 +1082,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:48
 #: pretalx/orga/templates/orga/review/dashboard.html:97
 #: pretalx/orga/templates/orga/submission/review.html:62
-#: pretalx/orga/views/cfp.py:537 pretalx/submission/models/submission.py:150
+#: pretalx/orga/views/cfp.py:540 pretalx/submission/models/submission.py:150
 msgid "Session type"
 msgstr "Typ přednášky"
 
@@ -1094,7 +1094,7 @@ msgstr "Typ přednášky"
 #: pretalx/orga/templates/orga/review/dashboard.html:89
 #: pretalx/orga/templates/orga/review/dashboard.html:195
 #: pretalx/orga/templates/orga/submission/review.html:67
-#: pretalx/orga/views/cfp.py:636 pretalx/submission/models/access_code.py:28
+#: pretalx/orga/views/cfp.py:639 pretalx/submission/models/access_code.py:28
 #: pretalx/submission/models/submission.py:156
 msgid "Track"
 msgstr "Místnost (track)"
@@ -1127,32 +1127,32 @@ msgstr "Nadcházející události"
 msgid "Past events"
 msgstr "Minulé události"
 
-#: pretalx/cfp/views/locale.py:54
+#: pretalx/cfp/views/locale.py:48
 msgid ""
 "Your locale preferences have been saved. We like to think that we have "
-"excellent support for English in pretalx, but if you encounter issues or "
-"errors, please contact us!"
+"excellent support for English, but if you encounter issues or errors, please "
+"contact us!"
 msgstr ""
 "Vaše jazykové nastavení bylo uloženo. Česká lokalizace je stále ve vývoji, "
 "pokud narazíte na chyby, neváhejte nás kontaktovat!"
 
-#: pretalx/cfp/views/user.py:274
+#: pretalx/cfp/views/user.py:279
 msgid "Your draft was discarded."
 msgstr "Váš koncept byl zahozen."
 
-#: pretalx/cfp/views/user.py:434
+#: pretalx/cfp/views/user.py:439
 msgid "Your proposal has been submitted."
 msgstr "Vaše přihláška byla odeslána."
 
-#: pretalx/cfp/views/user.py:449
+#: pretalx/cfp/views/user.py:454
 msgid "Your account has now been deleted."
 msgstr "Váš účet byl smazán."
 
-#: pretalx/cfp/views/user.py:451
+#: pretalx/cfp/views/user.py:456
 msgid "Are you really sure? Please tick the box"
 msgstr "Opravdu? Potvrďte zaškrtnutím"
 
-#: pretalx/cfp/views/user.py:508
+#: pretalx/cfp/views/user.py:513
 msgid "You cannot accept this invitation."
 msgstr "Tuto pozvánku nelze přijmout."
 
@@ -1508,7 +1508,7 @@ msgstr "Profil byl upraven."
 #: pretalx/orga/templates/orga/cfp/question_form.html:29
 #: pretalx/orga/templates/orga/cfp/question_view.html:58
 #: pretalx/orga/templates/orga/review/dashboard.html:84
-#: pretalx/orga/views/cfp.py:354
+#: pretalx/orga/views/cfp.py:357
 msgid "Question"
 msgstr "Otázka"
 
@@ -6670,11 +6670,11 @@ msgstr ""
 msgid "Send email"
 msgstr "Odeslat e-mail"
 
-#: pretalx/orga/templates/orga/speaker/form.html:96
+#: pretalx/orga/templates/orga/speaker/form.html:98
 msgid "Emails"
 msgstr "E-maily"
 
-#: pretalx/orga/templates/orga/speaker/form.html:102
+#: pretalx/orga/templates/orga/speaker/form.html:104
 msgid "No mails were sent to this speaker yet."
 msgstr "Tomuto přednášejícímu zatím nebyly poslány žádné e-maily."
 
@@ -7005,16 +7005,16 @@ msgstr "Uživatel byl smazán."
 msgid "{} minutes, #{}, {}, {}"
 msgstr "{} minut, #{}, {}, {}"
 
-#: pretalx/orga/views/cfp.py:68 pretalx/orga/views/event.py:112
+#: pretalx/orga/views/cfp.py:71 pretalx/orga/views/event.py:112
 #: pretalx/orga/views/event.py:272
 msgid "General information"
 msgstr "Obecné informace"
 
-#: pretalx/orga/views/cfp.py:69
+#: pretalx/orga/views/cfp.py:72
 msgid "Fields"
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:310
+#: pretalx/orga/views/cfp.py:313
 msgid ""
 "You cannot change the question options and upload a question option file at "
 "the same time."
@@ -7022,11 +7022,11 @@ msgstr ""
 "Změnit možnosti odpovědí a zároveň nahrát soubor s možnostmi odpovědí není "
 "možné."
 
-#: pretalx/orga/views/cfp.py:371
+#: pretalx/orga/views/cfp.py:374
 msgid "The question has been deleted."
 msgstr "Otázka byla smazána."
 
-#: pretalx/orga/views/cfp.py:378
+#: pretalx/orga/views/cfp.py:381
 msgid ""
 "You cannot delete a question that has already been answered. We have "
 "deactivated the question instead."
@@ -7034,55 +7034,55 @@ msgstr ""
 "Nemůžete smazat otázku, která byla odpovězena. Otázku jsme místo toho "
 "deaktivovali."
 
-#: pretalx/orga/views/cfp.py:432
+#: pretalx/orga/views/cfp.py:435
 msgid "Could not send mails, error in configuration."
 msgstr "E-maily nelze odeslat kvůli chybě v konfiguraci."
 
-#: pretalx/orga/views/cfp.py:524
+#: pretalx/orga/views/cfp.py:527
 msgid "The Session Type has been made default."
 msgstr "Typ přednášky byl nastaven jako výchozí."
 
-#: pretalx/orga/views/cfp.py:550
+#: pretalx/orga/views/cfp.py:553
 msgid ""
 "You cannot delete the only session type. Try creating another one first!"
 msgstr "Nemůžete smazat jediný typ přednášek. Zkuste nejdříve vytvořit nový!"
 
-#: pretalx/orga/views/cfp.py:557
+#: pretalx/orga/views/cfp.py:560
 msgid ""
 "You cannot delete the default session type. Make another type default first!"
 msgstr ""
 "Nemůžete smazat výchozí typ přednášek. Nejdříve nastavte jako výchozí jiný "
 "typ!"
 
-#: pretalx/orga/views/cfp.py:568
+#: pretalx/orga/views/cfp.py:571
 msgid "The Session Type has been deleted."
 msgstr "Typ přednášky byl smazán."
 
-#: pretalx/orga/views/cfp.py:573
+#: pretalx/orga/views/cfp.py:576
 msgid "This Session Type is in use in a proposal and cannot be deleted."
 msgstr "Tento typ přednášky byl použit v přihlášce a nelze ho smazat."
 
-#: pretalx/orga/views/cfp.py:650
+#: pretalx/orga/views/cfp.py:653
 msgid "The track has been deleted."
 msgstr "Track byl smazán."
 
-#: pretalx/orga/views/cfp.py:654
+#: pretalx/orga/views/cfp.py:657
 msgid "This track is in use in a proposal and cannot be deleted."
 msgstr "Tento track je použit v přihlášce a nemůže být smazán."
 
-#: pretalx/orga/views/cfp.py:732
+#: pretalx/orga/views/cfp.py:735
 msgid "The access code has been sent."
 msgstr "Přístupový kód byl odeslán."
 
-#: pretalx/orga/views/cfp.py:753 pretalx/submission/models/access_code.py:20
+#: pretalx/orga/views/cfp.py:756 pretalx/submission/models/access_code.py:20
 msgid "Access code"
 msgstr "Přístupový kód"
 
-#: pretalx/orga/views/cfp.py:767
+#: pretalx/orga/views/cfp.py:770
 msgid "The access code has been deleted."
 msgstr "Přístupový kód byl smazán."
 
-#: pretalx/orga/views/cfp.py:772
+#: pretalx/orga/views/cfp.py:775
 msgid ""
 "This access code has been used for a proposal and cannot be deleted. To "
 "disable it, you can set its validity date to the past."
@@ -7694,7 +7694,7 @@ msgstr ""
 "Uživatel s touto e-mailovou adresou už existuje. Registrovali jste se dříve "
 "a chcete se nyní přihlásit?"
 
-#: pretalx/person/forms.py:263
+#: pretalx/person/forms.py:265
 msgid ""
 "Please provide a profile picture or allow us to load your picture from "
 "gravatar!"
@@ -7702,15 +7702,15 @@ msgstr ""
 "Prosím nahrajte profilový obrázek nebo si ho nechte stáhnout ze služby "
 "gravatar!"
 
-#: pretalx/person/forms.py:314
+#: pretalx/person/forms.py:316
 msgid "The current password you entered was not correct."
 msgstr "Vložené aktuální heslo není správné."
 
-#: pretalx/person/forms.py:318
+#: pretalx/person/forms.py:320
 msgid "Password (current)"
 msgstr "Heslo (aktuální)"
 
-#: pretalx/person/forms.py:406 pretalx/person/forms.py:442
+#: pretalx/person/forms.py:408 pretalx/person/forms.py:444
 msgid "Non-accepted submitters"
 msgstr "Nepřijatí odesilatelé přihlášek"
 

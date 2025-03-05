@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-26 05:28+0000\n"
+"POT-Creation-Date: 2025-03-04 11:07+0000\n"
 "PO-Revision-Date: 2020-09-28 02:42+0000\n"
 "Last-Translator: Satoshi IIDA <nyampire@gmail.com>\n"
 "Language-Team: \n"
@@ -537,7 +537,7 @@ msgstr ""
 msgid "Submit a proposal"
 msgstr "提案を送信する"
 
-#: pretalx/cfp/templates/cfp/event/cfp.html:64 pretalx/cfp/views/wizard.py:45
+#: pretalx/cfp/templates/cfp/event/cfp.html:64 pretalx/cfp/views/wizard.py:47
 msgid "Proposals are closed"
 msgstr "提案期間は終了しました"
 
@@ -749,23 +749,23 @@ msgstr ""
 "あなたの講演が受理されればこのデータは一般に公開されます。レビュアーも閲覧可"
 "能です。"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:51
+#: pretalx/cfp/templates/cfp/event/user_profile.html:53
 msgid "We have some questions"
 msgstr "いくつかの質問があります。"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:66
+#: pretalx/cfp/templates/cfp/event/user_profile.html:68
 msgid "Your Account"
 msgstr "あなたのアカウント"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:67
+#: pretalx/cfp/templates/cfp/event/user_profile.html:69
 msgid "You can change your log in data here."
 msgstr "ログイン情報をこちらから変更できます"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:88
+#: pretalx/cfp/templates/cfp/event/user_profile.html:90
 msgid "Account deletion"
 msgstr "アカウント削除"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:93
+#: pretalx/cfp/templates/cfp/event/user_profile.html:95
 msgid ""
 "You can delete your account here – all names, emails, and other personal "
 "information will be overwritten. <strong>This action is irreversible.</"
@@ -774,7 +774,7 @@ msgstr ""
 "アカウント情報もこちらから削除できます。 - 全ての名前, emailその他の情報は上"
 "書きされます。<strong>これを実行すると元に戻せません。</strong>"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:99
+#: pretalx/cfp/templates/cfp/event/user_profile.html:101
 msgid ""
 "I really do want to delete my account, losing access to my proposals and "
 "sessions, and overriding my public and private data."
@@ -783,7 +783,7 @@ msgstr ""
 "スやプロフィールページ、その他のプライベートなデータへのアクセスが失われても"
 "かまいません。"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:106
+#: pretalx/cfp/templates/cfp/event/user_profile.html:108
 msgid "Delete my account"
 msgstr "アカウント削除"
 
@@ -1106,7 +1106,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:48
 #: pretalx/orga/templates/orga/review/dashboard.html:97
 #: pretalx/orga/templates/orga/submission/review.html:62
-#: pretalx/orga/views/cfp.py:537 pretalx/submission/models/submission.py:150
+#: pretalx/orga/views/cfp.py:540 pretalx/submission/models/submission.py:150
 msgid "Session type"
 msgstr "提案のタイプ"
 
@@ -1118,7 +1118,7 @@ msgstr "提案のタイプ"
 #: pretalx/orga/templates/orga/review/dashboard.html:89
 #: pretalx/orga/templates/orga/review/dashboard.html:195
 #: pretalx/orga/templates/orga/submission/review.html:67
-#: pretalx/orga/views/cfp.py:636 pretalx/submission/models/access_code.py:28
+#: pretalx/orga/views/cfp.py:639 pretalx/submission/models/access_code.py:28
 #: pretalx/submission/models/submission.py:156
 msgid "Track"
 msgstr "トラック"
@@ -1151,36 +1151,36 @@ msgstr "直近のイベント"
 msgid "Past events"
 msgstr "過去のイベント"
 
-#: pretalx/cfp/views/locale.py:54
+#: pretalx/cfp/views/locale.py:48
 msgid ""
 "Your locale preferences have been saved. We like to think that we have "
-"excellent support for English in pretalx, but if you encounter issues or "
-"errors, please contact us!"
+"excellent support for English, but if you encounter issues or errors, please "
+"contact us!"
 msgstr ""
-"ロケール設定が保存されました。pretalxでは英語のサポートが充実していると思って"
+"ロケール設定が保存されました。私たちは日本語のサポートが優れていると考えて"
 "いますが、問題やエラーが発生した場合は、ぜひご連絡ください。"
 
-#: pretalx/cfp/views/user.py:274
+#: pretalx/cfp/views/user.py:279
 #, fuzzy
 #| msgid "Current draft"
 msgid "Your draft was discarded."
 msgstr "現状のドラフト"
 
-#: pretalx/cfp/views/user.py:434
+#: pretalx/cfp/views/user.py:439
 #, fuzzy
 #| msgid "Your proposal has been withdrawn."
 msgid "Your proposal has been submitted."
 msgstr "あなたの投稿は取り下げられました。"
 
-#: pretalx/cfp/views/user.py:449
+#: pretalx/cfp/views/user.py:454
 msgid "Your account has now been deleted."
 msgstr "あなたのアカウントは削除されました。"
 
-#: pretalx/cfp/views/user.py:451
+#: pretalx/cfp/views/user.py:456
 msgid "Are you really sure? Please tick the box"
 msgstr "本当にいいんですか？チェックしてください"
 
-#: pretalx/cfp/views/user.py:508
+#: pretalx/cfp/views/user.py:513
 #, fuzzy
 #| msgid "You cannot choose the base domain of this installation."
 msgid "You cannot accept this invitation."
@@ -1546,7 +1546,7 @@ msgstr "プロフィールが修正されました。"
 #: pretalx/orga/templates/orga/cfp/question_form.html:29
 #: pretalx/orga/templates/orga/cfp/question_view.html:58
 #: pretalx/orga/templates/orga/review/dashboard.html:84
-#: pretalx/orga/views/cfp.py:354
+#: pretalx/orga/views/cfp.py:357
 msgid "Question"
 msgstr "質問"
 
@@ -6965,11 +6965,11 @@ msgstr ""
 msgid "Send email"
 msgstr "メールを送信"
 
-#: pretalx/orga/templates/orga/speaker/form.html:96
+#: pretalx/orga/templates/orga/speaker/form.html:98
 msgid "Emails"
 msgstr "メール"
 
-#: pretalx/orga/templates/orga/speaker/form.html:102
+#: pretalx/orga/templates/orga/speaker/form.html:104
 msgid "No mails were sent to this speaker yet."
 msgstr "この講演者へのメール送信履歴はありません。"
 
@@ -7318,26 +7318,26 @@ msgstr "トラックが削除されました。"
 msgid "{} minutes, #{}, {}, {}"
 msgstr "{} 分, #{}, {}, {}"
 
-#: pretalx/orga/views/cfp.py:68 pretalx/orga/views/event.py:112
+#: pretalx/orga/views/cfp.py:71 pretalx/orga/views/event.py:112
 #: pretalx/orga/views/event.py:272
 msgid "General information"
 msgstr "全体情報"
 
-#: pretalx/orga/views/cfp.py:69
+#: pretalx/orga/views/cfp.py:72
 msgid "Fields"
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:310
+#: pretalx/orga/views/cfp.py:313
 msgid ""
 "You cannot change the question options and upload a question option file at "
 "the same time."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:371
+#: pretalx/orga/views/cfp.py:374
 msgid "The question has been deleted."
 msgstr "質問が削除されました。"
 
-#: pretalx/orga/views/cfp.py:378
+#: pretalx/orga/views/cfp.py:381
 msgid ""
 "You cannot delete a question that has already been answered. We have "
 "deactivated the question instead."
@@ -7345,57 +7345,57 @@ msgstr ""
 "回答が行われた質問を削除することはできません。ただし、無効化することは可能で"
 "す。"
 
-#: pretalx/orga/views/cfp.py:432
+#: pretalx/orga/views/cfp.py:435
 msgid "Could not send mails, error in configuration."
 msgstr "メールを送信できません。設定にエラーがあるようです。"
 
-#: pretalx/orga/views/cfp.py:524
+#: pretalx/orga/views/cfp.py:527
 msgid "The Session Type has been made default."
 msgstr "この投稿タイプがデフォルトに設定されました。"
 
-#: pretalx/orga/views/cfp.py:550
+#: pretalx/orga/views/cfp.py:553
 msgid ""
 "You cannot delete the only session type. Try creating another one first!"
 msgstr ""
 "1つしかない投稿タイプを削除することはできません。もうひとつ投稿タイプを作って"
 "から再度実施してください！"
 
-#: pretalx/orga/views/cfp.py:557
+#: pretalx/orga/views/cfp.py:560
 msgid ""
 "You cannot delete the default session type. Make another type default first!"
 msgstr ""
 "デフォルトの投稿タイプを削除することはできません。まずは他のタイプをデフォル"
 "トにしてください！"
 
-#: pretalx/orga/views/cfp.py:568
+#: pretalx/orga/views/cfp.py:571
 msgid "The Session Type has been deleted."
 msgstr "投稿タイプが削除されました。"
 
-#: pretalx/orga/views/cfp.py:573
+#: pretalx/orga/views/cfp.py:576
 msgid "This Session Type is in use in a proposal and cannot be deleted."
 msgstr "投稿タイプは投稿に割り当てられており、削除できません。"
 
-#: pretalx/orga/views/cfp.py:650
+#: pretalx/orga/views/cfp.py:653
 msgid "The track has been deleted."
 msgstr "トラックが削除されました。"
 
-#: pretalx/orga/views/cfp.py:654
+#: pretalx/orga/views/cfp.py:657
 msgid "This track is in use in a proposal and cannot be deleted."
 msgstr "トラックは投稿に割り当てられており、削除できません。"
 
-#: pretalx/orga/views/cfp.py:732
+#: pretalx/orga/views/cfp.py:735
 msgid "The access code has been sent."
 msgstr "アクセスコードは送付されています。"
 
-#: pretalx/orga/views/cfp.py:753 pretalx/submission/models/access_code.py:20
+#: pretalx/orga/views/cfp.py:756 pretalx/submission/models/access_code.py:20
 msgid "Access code"
 msgstr "アクセスコード"
 
-#: pretalx/orga/views/cfp.py:767
+#: pretalx/orga/views/cfp.py:770
 msgid "The access code has been deleted."
 msgstr "アクセスコードは削除されています。"
 
-#: pretalx/orga/views/cfp.py:772
+#: pretalx/orga/views/cfp.py:775
 msgid ""
 "This access code has been used for a proposal and cannot be deleted. To "
 "disable it, you can set its validity date to the past."
@@ -8039,22 +8039,22 @@ msgid ""
 msgstr ""
 "すでにこのメールアドレスは使われています。以前に登録した記憶はありませんか？"
 
-#: pretalx/person/forms.py:263
+#: pretalx/person/forms.py:265
 msgid ""
 "Please provide a profile picture or allow us to load your picture from "
 "gravatar!"
 msgstr ""
 "プロフィール写真を登録するか、gravatar から写真を読み込ませてください！"
 
-#: pretalx/person/forms.py:314
+#: pretalx/person/forms.py:316
 msgid "The current password you entered was not correct."
 msgstr "入力した現在のパスワードが間違っています。"
 
-#: pretalx/person/forms.py:318
+#: pretalx/person/forms.py:320
 msgid "Password (current)"
 msgstr "パスワード（現在）"
 
-#: pretalx/person/forms.py:406 pretalx/person/forms.py:442
+#: pretalx/person/forms.py:408 pretalx/person/forms.py:444
 msgid "Non-accepted submitters"
 msgstr "承認されていない投稿者"
 

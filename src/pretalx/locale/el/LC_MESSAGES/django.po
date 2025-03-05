@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-26 05:28+0000\n"
+"POT-Creation-Date: 2025-03-04 11:07+0000\n"
 "PO-Revision-Date: 2023-10-14 10:38+0000\n"
 "Last-Translator: Vangelis Zacharioudakis <sugarvag@gmail.com>\n"
 "Language-Team: none\n"
@@ -551,7 +551,7 @@ msgstr ""
 msgid "Submit a proposal"
 msgstr "Υποβολή πρότασης"
 
-#: pretalx/cfp/templates/cfp/event/cfp.html:64 pretalx/cfp/views/wizard.py:45
+#: pretalx/cfp/templates/cfp/event/cfp.html:64 pretalx/cfp/views/wizard.py:47
 msgid "Proposals are closed"
 msgstr "Οι προτάσεις έχουν κλείσει"
 
@@ -775,23 +775,23 @@ msgstr ""
 "Αυτά τα δεδομένα θα εμφανίζονται δημόσια εάν η πρότασή σας γίνει αποδεκτή. "
 "Είναι επίσης ορατό στους κριτικούς."
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:51
+#: pretalx/cfp/templates/cfp/event/user_profile.html:53
 msgid "We have some questions"
 msgstr "Έχουμε μερικές ερωτήσεις"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:66
+#: pretalx/cfp/templates/cfp/event/user_profile.html:68
 msgid "Your Account"
 msgstr "Ο λογαριασμός σας"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:67
+#: pretalx/cfp/templates/cfp/event/user_profile.html:69
 msgid "You can change your log in data here."
 msgstr "Μπορείτε να αλλάξετε τα στοιχεία σύνδεσής σας εδώ."
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:88
+#: pretalx/cfp/templates/cfp/event/user_profile.html:90
 msgid "Account deletion"
 msgstr "Διαγραφή λογαριασμού"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:93
+#: pretalx/cfp/templates/cfp/event/user_profile.html:95
 msgid ""
 "You can delete your account here – all names, emails, and other personal "
 "information will be overwritten. <strong>This action is irreversible.</"
@@ -801,7 +801,7 @@ msgstr ""
 "λοιπές προσωπικές ελευθερίες θα αντικασταθούν. <strong>Αυτή η ενέργεια είναι "
 "μη \" \"αναστρέψιμη.</strong>"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:99
+#: pretalx/cfp/templates/cfp/event/user_profile.html:101
 msgid ""
 "I really do want to delete my account, losing access to my proposals and "
 "sessions, and overriding my public and private data."
@@ -810,7 +810,7 @@ msgstr ""
 "προτάσεις και τις συνεδρίες μου και παρακάμπτοντας τα δημόσια και ιδιωτικά "
 "δεδομένα μου."
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:106
+#: pretalx/cfp/templates/cfp/event/user_profile.html:108
 msgid "Delete my account"
 msgstr "Διαγραφή του λογαριασμού μου"
 
@@ -1126,7 +1126,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:48
 #: pretalx/orga/templates/orga/review/dashboard.html:97
 #: pretalx/orga/templates/orga/submission/review.html:62
-#: pretalx/orga/views/cfp.py:537 pretalx/submission/models/submission.py:150
+#: pretalx/orga/views/cfp.py:540 pretalx/submission/models/submission.py:150
 msgid "Session type"
 msgstr "Τύπος συνεδρίας"
 
@@ -1138,7 +1138,7 @@ msgstr "Τύπος συνεδρίας"
 #: pretalx/orga/templates/orga/review/dashboard.html:89
 #: pretalx/orga/templates/orga/review/dashboard.html:195
 #: pretalx/orga/templates/orga/submission/review.html:67
-#: pretalx/orga/views/cfp.py:636 pretalx/submission/models/access_code.py:28
+#: pretalx/orga/views/cfp.py:639 pretalx/submission/models/access_code.py:28
 #: pretalx/submission/models/submission.py:156
 msgid "Track"
 msgstr "Πίστα"
@@ -1171,33 +1171,33 @@ msgstr "Επερχόμενα γεγονότα"
 msgid "Past events"
 msgstr "Παρελθοντικά γεγονότα"
 
-#: pretalx/cfp/views/locale.py:54
+#: pretalx/cfp/views/locale.py:48
 msgid ""
 "Your locale preferences have been saved. We like to think that we have "
-"excellent support for English in pretalx, but if you encounter issues or "
-"errors, please contact us!"
+"excellent support for English, but if you encounter issues or errors, please "
+"contact us!"
 msgstr ""
 "Οι γλωσσικές σας προτιμήσεις ενημερώθηκαν. Θέλουμε να πιστεύουμε πως έχουμε "
 "εξαιρετική υποστήριξη στα Ελληνικά στο pretalx, αλλά αν αντιμετωπίσετε "
 "θέματα ή λάθη, παρακαλούμε επικοινωνήστε μαζί μας!"
 
-#: pretalx/cfp/views/user.py:274
+#: pretalx/cfp/views/user.py:279
 msgid "Your draft was discarded."
 msgstr "Η πρόταση σας απορρίφθηκε."
 
-#: pretalx/cfp/views/user.py:434
+#: pretalx/cfp/views/user.py:439
 msgid "Your proposal has been submitted."
 msgstr "Η πρόταση σας έχει υποβληθεί."
 
-#: pretalx/cfp/views/user.py:449
+#: pretalx/cfp/views/user.py:454
 msgid "Your account has now been deleted."
 msgstr "Ο λογαριασμός σας έχει πλέον διαγραφεί."
 
-#: pretalx/cfp/views/user.py:451
+#: pretalx/cfp/views/user.py:456
 msgid "Are you really sure? Please tick the box"
 msgstr "Είστε πραγματικά σίγουρος/η; Παρακαλώ τσεκάρετε το κουτάκι"
 
-#: pretalx/cfp/views/user.py:508
+#: pretalx/cfp/views/user.py:513
 msgid "You cannot accept this invitation."
 msgstr "Δεν μπορείτε να δεχθείτε αυτή την πρόσκληση."
 
@@ -1557,7 +1557,7 @@ msgstr "Τροποιήθηκε το προφίλ σας."
 #: pretalx/orga/templates/orga/cfp/question_form.html:29
 #: pretalx/orga/templates/orga/cfp/question_view.html:58
 #: pretalx/orga/templates/orga/review/dashboard.html:84
-#: pretalx/orga/views/cfp.py:354
+#: pretalx/orga/views/cfp.py:357
 msgid "Question"
 msgstr "ερώτηση"
 
@@ -6924,11 +6924,11 @@ msgstr ""
 msgid "Send email"
 msgstr "Στείλτε mail"
 
-#: pretalx/orga/templates/orga/speaker/form.html:96
+#: pretalx/orga/templates/orga/speaker/form.html:98
 msgid "Emails"
 msgstr "Email"
 
-#: pretalx/orga/templates/orga/speaker/form.html:102
+#: pretalx/orga/templates/orga/speaker/form.html:104
 msgid "No mails were sent to this speaker yet."
 msgstr ""
 "Δεν έχουν σταλεί μηνύματα ηλεκτρονικού ταχυδρομείου σε αυτόν τον ομιλητή "
@@ -7275,26 +7275,26 @@ msgstr "Η σελίδα έχει διαγραφεί."
 msgid "{} minutes, #{}, {}, {}"
 msgstr "{} λεπτά, #{}, {}, {}"
 
-#: pretalx/orga/views/cfp.py:68 pretalx/orga/views/event.py:112
+#: pretalx/orga/views/cfp.py:71 pretalx/orga/views/event.py:112
 #: pretalx/orga/views/event.py:272
 msgid "General information"
 msgstr "Γενικές πληροφορίες"
 
-#: pretalx/orga/views/cfp.py:69
+#: pretalx/orga/views/cfp.py:72
 msgid "Fields"
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:310
+#: pretalx/orga/views/cfp.py:313
 msgid ""
 "You cannot change the question options and upload a question option file at "
 "the same time."
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:371
+#: pretalx/orga/views/cfp.py:374
 msgid "The question has been deleted."
 msgstr "Η ερώτηση έχει διαγραφεί."
 
-#: pretalx/orga/views/cfp.py:378
+#: pretalx/orga/views/cfp.py:381
 msgid ""
 "You cannot delete a question that has already been answered. We have "
 "deactivated the question instead."
@@ -7302,60 +7302,60 @@ msgstr ""
 "Δε μπορείτε να διαγράψετε μια ερώτηση που έχει ήδη απαντηθεί. Αντί αυτού, "
 "έχουμε απενεργοποιήσει την ερώτηση."
 
-#: pretalx/orga/views/cfp.py:432
+#: pretalx/orga/views/cfp.py:435
 msgid "Could not send mails, error in configuration."
 msgstr "Δεν καταφέραμε να στείλουμε τα mails, λάθος κατά τη σύνθεση."
 
-#: pretalx/orga/views/cfp.py:524
+#: pretalx/orga/views/cfp.py:527
 msgid "The Session Type has been made default."
 msgstr "Ο τύπος περιόδου λειτουργίας έχει οριστεί ως προεπιλογή."
 
-#: pretalx/orga/views/cfp.py:550
+#: pretalx/orga/views/cfp.py:553
 msgid ""
 "You cannot delete the only session type. Try creating another one first!"
 msgstr ""
 "Δεν μπορείτε να διαγράψετε τον μοναδικό τύπο συνεδρίας. Δοκιμάστε να "
 "δημιουργήσετε ένα άλλο πρώτα!"
 
-#: pretalx/orga/views/cfp.py:557
+#: pretalx/orga/views/cfp.py:560
 msgid ""
 "You cannot delete the default session type. Make another type default first!"
 msgstr ""
 "Δεν μπορείτε να διαγράψετε τον προεπιλεγμένο τύπο συνεδρίας. Ορίστε πρώτα "
 "έναν άλλο τύπο προεπιλογής!"
 
-#: pretalx/orga/views/cfp.py:568
+#: pretalx/orga/views/cfp.py:571
 msgid "The Session Type has been deleted."
 msgstr "Ο τύπος συνεδρίας έχει διαγραφεί."
 
-#: pretalx/orga/views/cfp.py:573
+#: pretalx/orga/views/cfp.py:576
 msgid "This Session Type is in use in a proposal and cannot be deleted."
 msgstr ""
 "Αυτός ο τύπος περιόδου λειτουργίας χρησιμοποιείται σε μια πρόταση και δεν "
 "μπορεί να διαγραφεί."
 
-#: pretalx/orga/views/cfp.py:650
+#: pretalx/orga/views/cfp.py:653
 msgid "The track has been deleted."
 msgstr "Το κομμάτι έχει διαγραφεί."
 
-#: pretalx/orga/views/cfp.py:654
+#: pretalx/orga/views/cfp.py:657
 msgid "This track is in use in a proposal and cannot be deleted."
 msgstr ""
 "Αυτό το κομμάτι χρησιμοποιείται σε μια πρόταση και δεν μπορεί να διαγραφεί."
 
-#: pretalx/orga/views/cfp.py:732
+#: pretalx/orga/views/cfp.py:735
 msgid "The access code has been sent."
 msgstr "Ο κωδικός πρόσβασης έχει σταλεί."
 
-#: pretalx/orga/views/cfp.py:753 pretalx/submission/models/access_code.py:20
+#: pretalx/orga/views/cfp.py:756 pretalx/submission/models/access_code.py:20
 msgid "Access code"
 msgstr "Κωδικός πρόσβασης"
 
-#: pretalx/orga/views/cfp.py:767
+#: pretalx/orga/views/cfp.py:770
 msgid "The access code has been deleted."
 msgstr "Ο κωδικός πρόσβασης έχει διαγραφεί."
 
-#: pretalx/orga/views/cfp.py:772
+#: pretalx/orga/views/cfp.py:775
 msgid ""
 "This access code has been used for a proposal and cannot be deleted. To "
 "disable it, you can set its validity date to the past."
@@ -7996,7 +7996,7 @@ msgstr ""
 "Έχουμε ήδη ένα χρήστη με αυτή την διεύθυνση email. Εγγραφήκατε ήδη πριν και "
 "θέλετε απλά να συνδεθείτε;"
 
-#: pretalx/person/forms.py:263
+#: pretalx/person/forms.py:265
 msgid ""
 "Please provide a profile picture or allow us to load your picture from "
 "gravatar!"
@@ -8004,15 +8004,15 @@ msgstr ""
 "Δώστε μια φωτογραφία προφίλ ή επιτρέψτε μας να φορτώσουμε την εικόνα σας από "
 "το gravatar!"
 
-#: pretalx/person/forms.py:314
+#: pretalx/person/forms.py:316
 msgid "The current password you entered was not correct."
 msgstr "Ο κωδικός που μόλις εισήγατε δεν ήταν σωστός."
 
-#: pretalx/person/forms.py:318
+#: pretalx/person/forms.py:320
 msgid "Password (current)"
 msgstr "Κωδικός πρόσβασης (τρέχων)"
 
-#: pretalx/person/forms.py:406 pretalx/person/forms.py:442
+#: pretalx/person/forms.py:408 pretalx/person/forms.py:444
 msgid "Non-accepted submitters"
 msgstr "Μη-αποδεκτοί αιτούντες"
 

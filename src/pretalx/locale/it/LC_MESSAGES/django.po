@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-26 05:28+0000\n"
+"POT-Creation-Date: 2025-03-04 11:07+0000\n"
 "PO-Revision-Date: 2024-04-07 16:33+0000\n"
 "Last-Translator: Luca Delucchi <lucadeluge@gmail.com>\n"
 "Language-Team: none\n"
@@ -541,7 +541,7 @@ msgstr ""
 msgid "Submit a proposal"
 msgstr "Manda una proposta"
 
-#: pretalx/cfp/templates/cfp/event/cfp.html:64 pretalx/cfp/views/wizard.py:45
+#: pretalx/cfp/templates/cfp/event/cfp.html:64 pretalx/cfp/views/wizard.py:47
 msgid "Proposals are closed"
 msgstr "Le proposte sono chiuse"
 
@@ -759,23 +759,23 @@ msgstr ""
 "Questi dati saranno visualizzati pubblicamente se la tua proposta viene "
 "accettata. Sono visibili anche ai revisori."
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:51
+#: pretalx/cfp/templates/cfp/event/user_profile.html:53
 msgid "We have some questions"
 msgstr "Abbiamo alcune domande"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:66
+#: pretalx/cfp/templates/cfp/event/user_profile.html:68
 msgid "Your Account"
 msgstr "Il tuo account"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:67
+#: pretalx/cfp/templates/cfp/event/user_profile.html:69
 msgid "You can change your log in data here."
 msgstr "Puoi cambiare i tuoi dati di accesso qui."
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:88
+#: pretalx/cfp/templates/cfp/event/user_profile.html:90
 msgid "Account deletion"
 msgstr "Elimina account"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:93
+#: pretalx/cfp/templates/cfp/event/user_profile.html:95
 msgid ""
 "You can delete your account here – all names, emails, and other personal "
 "information will be overwritten. <strong>This action is irreversible.</"
@@ -785,7 +785,7 @@ msgstr ""
 "informazioni personali saranno sovrascritte. <strong>Questa azione è "
 "irreversibile.</strong>"
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:99
+#: pretalx/cfp/templates/cfp/event/user_profile.html:101
 msgid ""
 "I really do want to delete my account, losing access to my proposals and "
 "sessions, and overriding my public and private data."
@@ -793,7 +793,7 @@ msgstr ""
 "Voglio davvero cancellare il mio account, perdendo l'accesso alle mie "
 "proposte e sessioni, e annullando i miei dati pubblici e privati."
 
-#: pretalx/cfp/templates/cfp/event/user_profile.html:106
+#: pretalx/cfp/templates/cfp/event/user_profile.html:108
 msgid "Delete my account"
 msgstr "Elimina il mio account"
 
@@ -1098,7 +1098,7 @@ msgstr ""
 #: pretalx/orga/templates/orga/cfp/submission_type_view.html:48
 #: pretalx/orga/templates/orga/review/dashboard.html:97
 #: pretalx/orga/templates/orga/submission/review.html:62
-#: pretalx/orga/views/cfp.py:537 pretalx/submission/models/submission.py:150
+#: pretalx/orga/views/cfp.py:540 pretalx/submission/models/submission.py:150
 msgid "Session type"
 msgstr "Tipologia di sessione"
 
@@ -1110,7 +1110,7 @@ msgstr "Tipologia di sessione"
 #: pretalx/orga/templates/orga/review/dashboard.html:89
 #: pretalx/orga/templates/orga/review/dashboard.html:195
 #: pretalx/orga/templates/orga/submission/review.html:67
-#: pretalx/orga/views/cfp.py:636 pretalx/submission/models/access_code.py:28
+#: pretalx/orga/views/cfp.py:639 pretalx/submission/models/access_code.py:28
 #: pretalx/submission/models/submission.py:156
 msgid "Track"
 msgstr "Tema"
@@ -1143,33 +1143,33 @@ msgstr "Prossimi eventi"
 msgid "Past events"
 msgstr "Eventi passati"
 
-#: pretalx/cfp/views/locale.py:54
+#: pretalx/cfp/views/locale.py:48
 msgid ""
 "Your locale preferences have been saved. We like to think that we have "
-"excellent support for English in pretalx, but if you encounter issues or "
-"errors, please contact us!"
+"excellent support for English, but if you encounter issues or errors, please "
+"contact us!"
 msgstr ""
 "Le tue preferenze di localizzazione sono state salvate. Ci piace pensare che "
-"abbiamo un eccellente supporto per l'inglese in pretalx, ma se incontri "
+"abbiamo un eccellente supporto per l'italiano, ma se incontri "
 "problemi o errori, per favore contattaci!"
 
-#: pretalx/cfp/views/user.py:274
+#: pretalx/cfp/views/user.py:279
 msgid "Your draft was discarded."
 msgstr "La tua bozza è stata scartata."
 
-#: pretalx/cfp/views/user.py:434
+#: pretalx/cfp/views/user.py:439
 msgid "Your proposal has been submitted."
 msgstr "La tua proposta è stata inviata.."
 
-#: pretalx/cfp/views/user.py:449
+#: pretalx/cfp/views/user.py:454
 msgid "Your account has now been deleted."
 msgstr "Il tuo account è stato eliminato."
 
-#: pretalx/cfp/views/user.py:451
+#: pretalx/cfp/views/user.py:456
 msgid "Are you really sure? Please tick the box"
 msgstr "Sei davvero sicuro? Per favore, spunta la casella"
 
-#: pretalx/cfp/views/user.py:508
+#: pretalx/cfp/views/user.py:513
 msgid "You cannot accept this invitation."
 msgstr "Non puoi accettare questo invito."
 
@@ -1529,7 +1529,7 @@ msgstr "Il profilo è stato modificato."
 #: pretalx/orga/templates/orga/cfp/question_form.html:29
 #: pretalx/orga/templates/orga/cfp/question_view.html:58
 #: pretalx/orga/templates/orga/review/dashboard.html:84
-#: pretalx/orga/views/cfp.py:354
+#: pretalx/orga/views/cfp.py:357
 msgid "Question"
 msgstr "Domanda"
 
@@ -6762,11 +6762,11 @@ msgstr ""
 msgid "Send email"
 msgstr "Inviare email"
 
-#: pretalx/orga/templates/orga/speaker/form.html:96
+#: pretalx/orga/templates/orga/speaker/form.html:98
 msgid "Emails"
 msgstr "Email"
 
-#: pretalx/orga/templates/orga/speaker/form.html:102
+#: pretalx/orga/templates/orga/speaker/form.html:104
 msgid "No mails were sent to this speaker yet."
 msgstr "Non sono ancora state inviate mail al relatore."
 
@@ -7095,16 +7095,16 @@ msgstr "L'evento è stato aggiunto."
 msgid "{} minutes, #{}, {}, {}"
 msgstr "{} minuti, #{}, {}, {}"
 
-#: pretalx/orga/views/cfp.py:68 pretalx/orga/views/event.py:112
+#: pretalx/orga/views/cfp.py:71 pretalx/orga/views/event.py:112
 #: pretalx/orga/views/event.py:272
 msgid "General information"
 msgstr "Informazioni generali"
 
-#: pretalx/orga/views/cfp.py:69
+#: pretalx/orga/views/cfp.py:72
 msgid "Fields"
 msgstr ""
 
-#: pretalx/orga/views/cfp.py:310
+#: pretalx/orga/views/cfp.py:313
 msgid ""
 "You cannot change the question options and upload a question option file at "
 "the same time."
@@ -7112,11 +7112,11 @@ msgstr ""
 "Non è possibile modificare le opzioni della domanda e caricare "
 "contemporaneamente un file di opzioni della domanda."
 
-#: pretalx/orga/views/cfp.py:371
+#: pretalx/orga/views/cfp.py:374
 msgid "The question has been deleted."
 msgstr "La domanda è stata cancellata."
 
-#: pretalx/orga/views/cfp.py:378
+#: pretalx/orga/views/cfp.py:381
 msgid ""
 "You cannot delete a question that has already been answered. We have "
 "deactivated the question instead."
@@ -7124,59 +7124,59 @@ msgstr ""
 "Non puoi cancellare una domanda che ha già ricevuto risposte. Abbiamo "
 "comunque disattivato la domanda."
 
-#: pretalx/orga/views/cfp.py:432
+#: pretalx/orga/views/cfp.py:435
 msgid "Could not send mails, error in configuration."
 msgstr "Non è stato possibile inviare mail, errore nella configurazione."
 
-#: pretalx/orga/views/cfp.py:524
+#: pretalx/orga/views/cfp.py:527
 msgid "The Session Type has been made default."
 msgstr "Il tipo di presentazione è stato impostato su quello di default."
 
-#: pretalx/orga/views/cfp.py:550
+#: pretalx/orga/views/cfp.py:553
 msgid ""
 "You cannot delete the only session type. Try creating another one first!"
 msgstr ""
 "Non puoi cancellare l'unico tipo di presentazione. Prova a crearne prima un "
 "altro!"
 
-#: pretalx/orga/views/cfp.py:557
+#: pretalx/orga/views/cfp.py:560
 msgid ""
 "You cannot delete the default session type. Make another type default first!"
 msgstr ""
 "Non puoi cancellare il tipo di presentazione di default. Prova a crearne "
 "prima un altro di default!"
 
-#: pretalx/orga/views/cfp.py:568
+#: pretalx/orga/views/cfp.py:571
 msgid "The Session Type has been deleted."
 msgstr "Il tipo di presentazione è stato cancellato."
 
-#: pretalx/orga/views/cfp.py:573
+#: pretalx/orga/views/cfp.py:576
 msgid "This Session Type is in use in a proposal and cannot be deleted."
 msgstr ""
 "Questo tipo di presentazione è già usato da una proposta e non può essere "
 "cancellato."
 
-#: pretalx/orga/views/cfp.py:650
+#: pretalx/orga/views/cfp.py:653
 msgid "The track has been deleted."
 msgstr "Il tema è stato cancellato."
 
-#: pretalx/orga/views/cfp.py:654
+#: pretalx/orga/views/cfp.py:657
 msgid "This track is in use in a proposal and cannot be deleted."
 msgstr "Il tema è già in uso da una proposta e non può essere cancellato."
 
-#: pretalx/orga/views/cfp.py:732
+#: pretalx/orga/views/cfp.py:735
 msgid "The access code has been sent."
 msgstr "Il codice di accesso è stato inviato."
 
-#: pretalx/orga/views/cfp.py:753 pretalx/submission/models/access_code.py:20
+#: pretalx/orga/views/cfp.py:756 pretalx/submission/models/access_code.py:20
 msgid "Access code"
 msgstr "Codice di accesso"
 
-#: pretalx/orga/views/cfp.py:767
+#: pretalx/orga/views/cfp.py:770
 msgid "The access code has been deleted."
 msgstr "Il codice di accesso è stato cancellato."
 
-#: pretalx/orga/views/cfp.py:772
+#: pretalx/orga/views/cfp.py:775
 msgid ""
 "This access code has been used for a proposal and cannot be deleted. To "
 "disable it, you can set its validity date to the past."
@@ -7801,7 +7801,7 @@ msgstr ""
 "Esiste già un utente con lo stesso indirizzo mail. Forse ti sei già "
 "registrato prima ed è necessario fare il log in?"
 
-#: pretalx/person/forms.py:263
+#: pretalx/person/forms.py:265
 msgid ""
 "Please provide a profile picture or allow us to load your picture from "
 "gravatar!"
@@ -7809,15 +7809,15 @@ msgstr ""
 "Aggiungi un'immagine del profilo o dacci il permesso di recuperarla da "
 "gravatar!"
 
-#: pretalx/person/forms.py:314
+#: pretalx/person/forms.py:316
 msgid "The current password you entered was not correct."
 msgstr "La password che hai inserito non è corretta."
 
-#: pretalx/person/forms.py:318
+#: pretalx/person/forms.py:320
 msgid "Password (current)"
 msgstr "Password (attuale)"
 
-#: pretalx/person/forms.py:406 pretalx/person/forms.py:442
+#: pretalx/person/forms.py:408 pretalx/person/forms.py:444
 msgid "Non-accepted submitters"
 msgstr "Contributori non accettati"
 
