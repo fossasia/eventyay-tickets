@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-04 11:07+0000\n"
+"POT-Creation-Date: 2025-03-05 10:10+0000\n"
 "PO-Revision-Date: 2024-06-13 06:39+0000\n"
 "Last-Translator: Francisco <francisco.joao.2003@outlook.com>\n"
 "Language-Team: none\n"
@@ -1137,15 +1137,9 @@ msgstr "Próximos eventos"
 msgid "Past events"
 msgstr "Eventos passados"
 
-#: pretalx/cfp/views/locale.py:48
-msgid ""
-"Your locale preferences have been saved. We like to think that we have "
-"excellent support for English, but if you encounter issues or errors, please "
-"contact us!"
-msgstr ""
-"As suas preferências de localidade foram salvas. Gostamos de pensar que "
-"temos um excelente suporte para o português, mas se encontrar "
-"problemas ou erros, entre em contato connosco!"
+#: pretalx/cfp/views/locale.py:47
+msgid "Your locale preferences have been saved."
+msgstr "As suas preferências de localidade foram salvas."
 
 #: pretalx/cfp/views/user.py:279
 msgid "Your draft was discarded."
@@ -8918,6 +8912,15 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#~ msgid ""
+#~ "Your locale preferences have been saved. We like to think that we have "
+#~ "excellent support for English, but if you encounter issues or errors, "
+#~ "please contact us!"
+#~ msgstr ""
+#~ "As suas preferências de localidade foram salvas. Gostamos de pensar que "
+#~ "temos um excelente suporte para o português, mas se encontrar problemas "
+#~ "ou erros, entre em contato connosco!"
 
 #~ msgid "The pretalx logo"
 #~ msgstr "O logotipo do pretalx"

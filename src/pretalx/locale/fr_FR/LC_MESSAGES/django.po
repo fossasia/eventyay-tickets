@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-04 11:07+0000\n"
+"POT-Creation-Date: 2025-03-05 10:10+0000\n"
 "PO-Revision-Date: 2024-10-01 09:55+0000\n"
 "Last-Translator: Harrissou Sant-anna <delazj@gmail.com>\n"
 "Language-Team: \n"
@@ -1158,15 +1158,9 @@ msgstr "Évènements à venir"
 msgid "Past events"
 msgstr "Évènements passés"
 
-#: pretalx/cfp/views/locale.py:48
-msgid ""
-"Your locale preferences have been saved. We like to think that we have "
-"excellent support for English, but if you encounter issues or errors, please "
-"contact us!"
-msgstr ""
-"Vos préférences linguistiques ont été sauvées. Nous pensons que nous avons "
-"une bonne traduction française, mais si vous rencontrez des problèmes ou des "
-"erreurs, veuillez nous contacter !"
+#: pretalx/cfp/views/locale.py:47
+msgid "Your locale preferences have been saved."
+msgstr "Vos préférences linguistiques ont été sauvées."
 
 #: pretalx/cfp/views/user.py:279
 msgid "Your draft was discarded."
@@ -8948,6 +8942,15 @@ msgstr ""
 
 msgid "Drag the box to the schedule to create a new break"
 msgstr ""
+
+#~ msgid ""
+#~ "Your locale preferences have been saved. We like to think that we have "
+#~ "excellent support for English, but if you encounter issues or errors, "
+#~ "please contact us!"
+#~ msgstr ""
+#~ "Vos préférences linguistiques ont été sauvées. Nous pensons que nous "
+#~ "avons une bonne traduction française, mais si vous rencontrez des "
+#~ "problèmes ou des erreurs, veuillez nous contacter !"
 
 #~ msgid "The pretalx logo"
 #~ msgstr "Le logo pretalx"

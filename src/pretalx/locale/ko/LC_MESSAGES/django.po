@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-04 11:07+0000\n"
+"POT-Creation-Date: 2025-03-05 10:10+0000\n"
 "PO-Revision-Date: 2024-04-25 21:24+0000\n"
 "Last-Translator: Han Lee | 이한결 <wyatt0216@gmail.com>\n"
 "Language-Team: none\n"
@@ -1100,14 +1100,9 @@ msgstr "다가오는 이벤트"
 msgid "Past events"
 msgstr "지난 이벤트"
 
-#: pretalx/cfp/views/locale.py:48
-msgid ""
-"Your locale preferences have been saved. We like to think that we have "
-"excellent support for English, but if you encounter issues or errors, please "
-"contact us!"
-msgstr ""
-"로캘 기본 설정이 저장되었습니다. 저희는 프리탈엑스에서 한글을 훌륭하게 지원하"
-"고 있다고 생각하지만, 문제나 오류가 발생하면 저희에게 연락해 주세요!"
+#: pretalx/cfp/views/locale.py:47
+msgid "Your locale preferences have been saved."
+msgstr "로캘 기본 설정이 저장되었습니다."
 
 #: pretalx/cfp/views/user.py:279
 msgid "Your draft was discarded."
@@ -8092,6 +8087,14 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#~ msgid ""
+#~ "Your locale preferences have been saved. We like to think that we have "
+#~ "excellent support for English, but if you encounter issues or errors, "
+#~ "please contact us!"
+#~ msgstr ""
+#~ "로캘 기본 설정이 저장되었습니다. 저희는 프리탈엑스에서 한글을 훌륭하게 지"
+#~ "원하고 있다고 생각하지만, 문제나 오류가 발생하면 저희에게 연락해 주세요!"
 
 #, python-format
 #~ msgid ""

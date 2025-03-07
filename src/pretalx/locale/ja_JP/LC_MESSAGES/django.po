@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-04 11:07+0000\n"
+"POT-Creation-Date: 2025-03-05 10:10+0000\n"
 "PO-Revision-Date: 2020-09-28 02:42+0000\n"
 "Last-Translator: Satoshi IIDA <nyampire@gmail.com>\n"
 "Language-Team: \n"
@@ -1151,14 +1151,9 @@ msgstr "直近のイベント"
 msgid "Past events"
 msgstr "過去のイベント"
 
-#: pretalx/cfp/views/locale.py:48
-msgid ""
-"Your locale preferences have been saved. We like to think that we have "
-"excellent support for English, but if you encounter issues or errors, please "
-"contact us!"
-msgstr ""
-"ロケール設定が保存されました。私たちは日本語のサポートが優れていると考えて"
-"いますが、問題やエラーが発生した場合は、ぜひご連絡ください。"
+#: pretalx/cfp/views/locale.py:47
+msgid "Your locale preferences have been saved."
+msgstr "ロケール設定が保存されました。"
 
 #: pretalx/cfp/views/user.py:279
 #, fuzzy
@@ -9116,6 +9111,14 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#~ msgid ""
+#~ "Your locale preferences have been saved. We like to think that we have "
+#~ "excellent support for English, but if you encounter issues or errors, "
+#~ "please contact us!"
+#~ msgstr ""
+#~ "ロケール設定が保存されました。私たちは日本語のサポートが優れていると考えて"
+#~ "いますが、問題やエラーが発生した場合は、ぜひご連絡ください。"
 
 #~ msgid "The pretalx logo"
 #~ msgstr "The pretalx logo"

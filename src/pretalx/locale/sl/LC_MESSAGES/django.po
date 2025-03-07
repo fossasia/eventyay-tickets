@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-04 11:07+0000\n"
+"POT-Creation-Date: 2025-03-05 10:10+0000\n"
 "PO-Revision-Date: 2024-04-08 12:39+0000\n"
 "Last-Translator: Tobias Kunze <r@rixx.de>\n"
 "Language-Team: none\n"
@@ -1125,15 +1125,9 @@ msgstr ""
 msgid "Past events"
 msgstr ""
 
-#: pretalx/cfp/views/locale.py:48
-msgid ""
-"Your locale preferences have been saved. We like to think that we have "
-"excellent support for English, but if you encounter issues or errors, please "
-"contact us!"
-msgstr ""
-"Vaše krajevne nastavitve so shranjene. Menimo, da imamo odlično podprto "
-"slovenščino, vendar če pride do težave ali napake, nas prosimo "
-"kontaktirajte!"
+#: pretalx/cfp/views/locale.py:47
+msgid "Your locale preferences have been saved."
+msgstr "Vaše krajevne nastavitve so shranjene."
 
 #: pretalx/cfp/views/user.py:279
 msgid "Your draft was discarded."
@@ -7933,6 +7927,15 @@ msgstr ""
 
 msgid "Hidden rooms"
 msgstr ""
+
+#~ msgid ""
+#~ "Your locale preferences have been saved. We like to think that we have "
+#~ "excellent support for English, but if you encounter issues or errors, "
+#~ "please contact us!"
+#~ msgstr ""
+#~ "Vaše krajevne nastavitve so shranjene. Menimo, da imamo odlično podprto "
+#~ "slovenščino, vendar če pride do težave ali napake, nas prosimo "
+#~ "kontaktirajte!"
 
 #, fuzzy
 #~| msgid "Your account has now been deleted."

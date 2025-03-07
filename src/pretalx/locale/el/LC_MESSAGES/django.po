@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-04 11:07+0000\n"
+"POT-Creation-Date: 2025-03-05 10:10+0000\n"
 "PO-Revision-Date: 2023-10-14 10:38+0000\n"
 "Last-Translator: Vangelis Zacharioudakis <sugarvag@gmail.com>\n"
 "Language-Team: none\n"
@@ -1171,15 +1171,9 @@ msgstr "Επερχόμενα γεγονότα"
 msgid "Past events"
 msgstr "Παρελθοντικά γεγονότα"
 
-#: pretalx/cfp/views/locale.py:48
-msgid ""
-"Your locale preferences have been saved. We like to think that we have "
-"excellent support for English, but if you encounter issues or errors, please "
-"contact us!"
-msgstr ""
-"Οι γλωσσικές σας προτιμήσεις ενημερώθηκαν. Θέλουμε να πιστεύουμε πως έχουμε "
-"εξαιρετική υποστήριξη στα Ελληνικά στο pretalx, αλλά αν αντιμετωπίσετε "
-"θέματα ή λάθη, παρακαλούμε επικοινωνήστε μαζί μας!"
+#: pretalx/cfp/views/locale.py:47
+msgid "Your locale preferences have been saved."
+msgstr "Οι γλωσσικές σας προτιμήσεις ενημερώθηκαν."
 
 #: pretalx/cfp/views/user.py:279
 msgid "Your draft was discarded."
@@ -9065,6 +9059,15 @@ msgstr ""
 
 msgid "Drag the box to the schedule to create a new break"
 msgstr ""
+
+#~ msgid ""
+#~ "Your locale preferences have been saved. We like to think that we have "
+#~ "excellent support for English, but if you encounter issues or errors, "
+#~ "please contact us!"
+#~ msgstr ""
+#~ "Οι γλωσσικές σας προτιμήσεις ενημερώθηκαν. Θέλουμε να πιστεύουμε πως "
+#~ "έχουμε εξαιρετική υποστήριξη στα Ελληνικά στο pretalx, αλλά αν "
+#~ "αντιμετωπίσετε θέματα ή λάθη, παρακαλούμε επικοινωνήστε μαζί μας!"
 
 #~ msgid "The pretalx logo"
 #~ msgstr "Το λογότυπο του pretalx"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-04 11:07+0000\n"
+"POT-Creation-Date: 2025-03-05 10:10+0000\n"
 "PO-Revision-Date: 2021-02-03 16:17+0000\n"
 "Last-Translator: Bryan Hernandez <bryan27hr@protonmail.ch>\n"
 "Language-Team: none\n"
@@ -1134,14 +1134,9 @@ msgstr "Eventos próximos"
 msgid "Past events"
 msgstr "Eventos anteriores"
 
-#: pretalx/cfp/views/locale.py:48
-msgid ""
-"Your locale preferences have been saved. We like to think that we have "
-"excellent support for English, but if you encounter issues or errors, please "
-"contact us!"
-msgstr ""
-"Tus preferencias de idioma han sido guardadas. Si tienes algún comentario o "
-"sugerencia sobre la traducción, por favor háznoslo saber."
+#: pretalx/cfp/views/locale.py:47
+msgid "Your locale preferences have been saved."
+msgstr "Tus preferencias de idioma han sido guardadas."
 
 #: pretalx/cfp/views/user.py:279
 #, fuzzy
@@ -8200,6 +8195,14 @@ msgstr ""
 msgid "Hidden rooms"
 msgstr ""
 
+#~ msgid ""
+#~ "Your locale preferences have been saved. We like to think that we have "
+#~ "excellent support for English, but if you encounter issues or errors, "
+#~ "please contact us!"
+#~ msgstr ""
+#~ "Tus preferencias de idioma han sido guardadas. Si tienes algún comentario "
+#~ "o sugerencia sobre la traducción, por favor háznoslo saber."
+
 #, fuzzy
 #~| msgid "The tag has been deleted."
 #~ msgid "The user has been deactivated."
@@ -8222,10 +8225,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "The order has been updated."
 #~ msgstr "Esta etiqueta ha sido eliminada."
-
-#, fuzzy
-#~ msgid "Your reviews have been saved."
-#~ msgstr "Un correo fue enviado."
 
 #~ msgid "The tag has been saved."
 #~ msgstr "Esta etiqueta ha sido agregada."

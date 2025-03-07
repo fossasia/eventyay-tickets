@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-04 11:07+0000\n"
+"POT-Creation-Date: 2025-03-05 10:10+0000\n"
 "PO-Revision-Date: 2024-11-24 04:58+0000\n"
 "Last-Translator: Michal Stanke <michal@stanke.cz>\n"
 "Language-Team: none\n"
@@ -1127,14 +1127,9 @@ msgstr "Nadcházející události"
 msgid "Past events"
 msgstr "Minulé události"
 
-#: pretalx/cfp/views/locale.py:48
-msgid ""
-"Your locale preferences have been saved. We like to think that we have "
-"excellent support for English, but if you encounter issues or errors, please "
-"contact us!"
-msgstr ""
-"Vaše jazykové nastavení bylo uloženo. Česká lokalizace je stále ve vývoji, "
-"pokud narazíte na chyby, neváhejte nás kontaktovat!"
+#: pretalx/cfp/views/locale.py:47
+msgid "Your locale preferences have been saved."
+msgstr "Vaše jazykové nastavení bylo uloženo."
 
 #: pretalx/cfp/views/user.py:279
 msgid "Your draft was discarded."
@@ -8725,6 +8720,14 @@ msgstr ""
 
 msgid "Drag the box to the schedule to create a new break"
 msgstr ""
+
+#~ msgid ""
+#~ "Your locale preferences have been saved. We like to think that we have "
+#~ "excellent support for English, but if you encounter issues or errors, "
+#~ "please contact us!"
+#~ msgstr ""
+#~ "Vaše jazykové nastavení bylo uloženo. Česká lokalizace je stále ve "
+#~ "vývoji, pokud narazíte na chyby, neváhejte nás kontaktovat!"
 
 #~ msgid "The pretalx logo"
 #~ msgstr "Logo pretalxu"

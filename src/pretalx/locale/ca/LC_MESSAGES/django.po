@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-04 11:07+0000\n"
+"POT-Creation-Date: 2025-03-05 10:10+0000\n"
 "PO-Revision-Date: 2022-05-09 09:22+0000\n"
 "Last-Translator: Víctor <vfc@uber.space>\n"
 "Language-Team: none\n"
@@ -1003,12 +1003,9 @@ msgstr ""
 msgid "Past events"
 msgstr "Esdeveniments passats"
 
-#: pretalx/cfp/views/locale.py:48
-msgid ""
-"Your locale preferences have been saved. We like to think that we have "
-"excellent support for English, but if you encounter issues or errors, please "
-"contact us!"
-msgstr ""
+#: pretalx/cfp/views/locale.py:47
+msgid "Your locale preferences have been saved."
+msgstr "Vos préférences locales ont été enregistrées."
 
 #: pretalx/cfp/views/user.py:279
 #, fuzzy
@@ -7846,10 +7843,6 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "The order has been updated."
-#~ msgstr "La vostra proposta ha estat cancel·lada."
-
-#, fuzzy
-#~ msgid "Your reviews have been saved."
 #~ msgstr "La vostra proposta ha estat cancel·lada."
 
 #, fuzzy
