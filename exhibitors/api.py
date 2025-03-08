@@ -81,7 +81,7 @@ class LeadCreateView(views.APIView):
         attendee_data = {
             'name': order_position.attendee_name,  # Always included
             'email': order_position.attendee_email,  # Always included
-            'company': order_position.company if 'attendee_company' in allowed_fields else None,
+            'company': order_position.company, # Always included
             'city': order_position.city if 'attendee_city' in allowed_fields else None,
             'country': str(order_position.country) if 'attendee_country' in allowed_fields else None,
             'note': '',
