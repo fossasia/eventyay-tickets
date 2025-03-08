@@ -2,8 +2,8 @@ from django.apps import AppConfig
 
 
 class PretixBaseConfig(AppConfig):
-    name = 'pretix.base'
-    label = 'pretixbase'
+    name = "pretix.base"
+    label = "pretixbase"
 
     def ready(self):
         from . import exporter  # NOQA
@@ -12,7 +12,22 @@ class PretixBaseConfig(AppConfig):
         from . import invoice  # NOQA
         from . import notifications  # NOQA
         from . import email  # NOQA
-        from .services import auth, checkin, export, mail, tickets, cart, orderimport, orders, invoices, cleanup, update_check, quotas, notifications, vouchers  # NOQA
+        from .services import (
+            auth,
+            checkin,
+            export,
+            mail,
+            tickets,
+            cart,
+            orderimport,
+            orders,
+            invoices,
+            cleanup,
+            update_check,
+            quotas,
+            notifications,
+            vouchers,
+        )  # NOQA
         from django.conf import settings
 
         try:
@@ -20,12 +35,13 @@ class PretixBaseConfig(AppConfig):
         except ImportError:
             pass
 
-        if hasattr(settings, 'RAVEN_CONFIG'):
+        if hasattr(settings, "RAVEN_CONFIG"):
             from ..sentry import initialize
+
             initialize()
 
 
-default_app_config = 'pretix.base.PretixBaseConfig'
+default_app_config = "pretix.base.PretixBaseConfig"
 try:
     import pretix.celery_app as celery  # NOQA
 except ImportError:

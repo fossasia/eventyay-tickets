@@ -3,22 +3,26 @@ import sys
 
 from django.forms import Form
 from django.views.generic.detail import (
-    BaseDetailView, SingleObjectTemplateResponseMixin,
+    BaseDetailView,
+    SingleObjectTemplateResponseMixin,
 )
 from django.views.generic.edit import DeletionMixin, FormMixin
 
 
 def date_fromisocalendar(isoyear, isoweek, isoday):
     if sys.version_info < (3, 8):
-        return datetime.datetime.strptime(f'{isoyear}-W{isoweek}-{isoday}', "%G-W%V-%u")
+        return datetime.datetime.strptime(f"{isoyear}-W{isoweek}-{isoday}", "%G-W%V-%u")
     else:
         return datetime.datetime.fromisocalendar(isoyear, isoweek, isoday)
 
 
-class CompatDeleteView(SingleObjectTemplateResponseMixin, DeletionMixin, FormMixin, BaseDetailView):
+class CompatDeleteView(
+    SingleObjectTemplateResponseMixin, DeletionMixin, FormMixin, BaseDetailView
+):
     """
     This view integrates the ability to show a confirmation template, manage form validation, and delete the object when the form is submitted.
     """
+
     form_class = Form
     template_name_suffix = "_confirm_delete"
 

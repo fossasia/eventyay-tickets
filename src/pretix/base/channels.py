@@ -12,7 +12,7 @@ _ALL_CHANNELS = None
 
 class SalesChannel:
     def __repr__(self):
-        return '<SalesChannel: {}>'.format(self.identifier)
+        return "<SalesChannel: {}>".format(self.identifier)
 
     @property
     def identifier(self) -> str:
@@ -81,12 +81,10 @@ def get_all_sales_channels():
 
 class WebshopSalesChannel(SalesChannel):
     identifier = "web"
-    verbose_name = _('Online shop')
+    verbose_name = _("Online shop")
     icon = "globe"
 
 
 @receiver(register_sales_channels, dispatch_uid="base_register_default_sales_channels")
 def base_sales_channels(sender, **kwargs):
-    return (
-        WebshopSalesChannel(),
-    )
+    return (WebshopSalesChannel(),)

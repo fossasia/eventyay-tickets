@@ -17,13 +17,13 @@ from .models import BadgeItem, BadgeLayout
 class BadgeItemAssignmentSerializer(I18nAwareModelSerializer):
     class Meta:
         model = BadgeItem
-        fields = ('id', 'item', 'layout')
+        fields = ("id", "item", "layout")
 
 
 class NestedItemAssignmentSerializer(I18nAwareModelSerializer):
     class Meta:
         model = BadgeItem
-        fields = ('item',)
+        fields = ("item",)
 
 
 class BadgeLayoutSerializer(I18nAwareModelSerializer):
@@ -33,13 +33,21 @@ class BadgeLayoutSerializer(I18nAwareModelSerializer):
 
     class Meta:
         model = BadgeLayout
-        fields = ('id', 'name', 'default', 'layout', 'size', 'background', 'item_assignments')
+        fields = (
+            "id",
+            "name",
+            "default",
+            "layout",
+            "size",
+            "background",
+            "item_assignments",
+        )
 
 
 class BadgeLayoutViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = BadgeLayoutSerializer
     queryset = BadgeLayout.objects.none()
-    lookup_field = 'id'
+    lookup_field = "id"
 
     def get_queryset(self):
         return self.request.event.badge_layouts.all()
@@ -48,7 +56,7 @@ class BadgeLayoutViewSet(viewsets.ReadOnlyModelViewSet):
 class BadgeItemViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = BadgeItemAssignmentSerializer
     queryset = BadgeItem.objects.none()
-    lookup_field = 'id'
+    lookup_field = "id"
 
     def get_queryset(self):
         return BadgeItem.objects.filter(item__event=self.request.event)
@@ -62,28 +70,31 @@ class BadgePreviewView(APIView):
             OrderPosition,
             order__event__slug=event,
             order__event__organizer__slug=organizer,
-            pk=position
+            pk=position,
         )
 
         # Check if badges plugin is enabled
-        if 'pretix.plugins.badges' not in op.order.event.plugins:
+        if "pretix.plugins.badges" not in op.order.event.plugins:
             return Response(
                 {"error": "Badges plugin is not enabled for this event"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         # Generate the badge preview
         from .providers import BadgeOutputProvider
+
         provider = BadgeOutputProvider(op.order.event)
 
         try:
             _, _, pdf_content = provider.generate(op)
-            base64_pdf = base64.b64encode(pdf_content).decode('utf-8')
-            response = Response({'pdf_base64': base64_pdf}, status=status.HTTP_200_OK)
-            response['Access-Control-Allow-Credentials'] = 'true'
+            base64_pdf = base64.b64encode(pdf_content).decode("utf-8")
+            response = Response({"pdf_base64": base64_pdf}, status=status.HTTP_200_OK)
+            response["Access-Control-Allow-Credentials"] = "true"
             return response
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class BadgeDownloadView(APIView):
@@ -95,32 +106,34 @@ class BadgeDownloadView(APIView):
                 OrderPosition,
                 order__event__slug=event,
                 order__event__organizer__slug=organizer,
-                pk=position
+                pk=position,
             )
 
             # Check if badges plugin is enabled
-            if 'pretix.plugins.badges' not in op.order.event.plugins:
+            if "pretix.plugins.badges" not in op.order.event.plugins:
                 return Response(
                     {"error": "Badges plugin is not enabled for this event"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             # Check if there's already a cached file
             cached_file = CachedFile.objects.filter(
-                filename__startswith=f'badge_{position}_',
-                expires__isnull=True
+                filename__startswith=f"badge_{position}_", expires__isnull=True
             ).last()
 
             if cached_file and cached_file.file:
-                base64_pdf = base64.b64encode(cached_file.file.read()).decode('utf-8')
-                return Response({
-                    'filename': cached_file.filename,
-                    'type': 'application/pdf',
-                    'base64_pdf': base64_pdf
-                })
+                base64_pdf = base64.b64encode(cached_file.file.read()).decode("utf-8")
+                return Response(
+                    {
+                        "filename": cached_file.filename,
+                        "type": "application/pdf",
+                        "base64_pdf": base64_pdf,
+                    }
+                )
 
             # If no cached file exists, generate one
             from .providers import BadgeOutputProvider
+
             provider = BadgeOutputProvider(op.order.event)
 
             try:
@@ -128,27 +141,28 @@ class BadgeDownloadView(APIView):
                 filename, mimetype, pdf_content = provider.generate(op)
 
                 # Cache the generated file
-                base64_pdf = base64.b64encode(pdf_content).decode('utf-8')
+                base64_pdf = base64.b64encode(pdf_content).decode("utf-8")
 
-                return Response({
-                    'filename': filename,
-                    'mimetype': mimetype,
-                    'pdf_base64': base64_pdf
-                })
+                return Response(
+                    {
+                        "filename": filename,
+                        "mimetype": mimetype,
+                        "pdf_base64": base64_pdf,
+                    }
+                )
 
             except Exception:
                 # If immediate generation fails, fall back to async generation
-                generate_orderposition.apply_async(args=(op.pk, 'badge'))
+                generate_orderposition.apply_async(args=(op.pk, "badge"))
                 return Response(
                     {
                         "status": "generating",
-                        "message": "Badge generation has been started. Please retry in a few seconds."
+                        "message": "Badge generation has been started. Please retry in a few seconds.",
                     },
-                    status=status.HTTP_202_ACCEPTED
+                    status=status.HTTP_202_ACCEPTED,
                 )
 
         except Exception as e:
             return Response(
-                {"error": str(e)},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )

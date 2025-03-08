@@ -11,7 +11,10 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import default_storage
 from django.core.mail import get_connection
 from django.core.validators import (
-    MaxValueValidator, MinLengthValidator, MinValueValidator, RegexValidator,
+    MaxValueValidator,
+    MinLengthValidator,
+    MinValueValidator,
+    RegexValidator,
 )
 from django.db import models
 from django.db.models import Exists, OuterRef, Prefetch, Q, Subquery, Value
@@ -707,7 +710,12 @@ class Event(EventMixin, LoggedModel):
     def copy_data_from(self, other):
         from ..signals import event_copy_data
         from . import (
-            Item, ItemAddOn, ItemBundle, ItemCategory, ItemMetaValue, Question,
+            Item,
+            ItemAddOn,
+            ItemBundle,
+            ItemCategory,
+            ItemMetaValue,
+            Question,
             Quota,
         )
 
@@ -1208,16 +1216,18 @@ class Event(EventMixin, LoggedModel):
 
         gs = GlobalSettingsObject()
         if gs.settings.get("billing_validation", True) is True:
-            billing_obj = OrganizerBillingModel.objects.filter(organizer=self.organizer).first()
+            billing_obj = OrganizerBillingModel.objects.filter(
+                organizer=self.organizer
+            ).first()
             if not billing_obj or not billing_obj.stripe_payment_method_id:
                 url = reverse(
                     "control:organizer.settings.billing",
-                    kwargs={"organizer": self.organizer.slug}
+                    kwargs={"organizer": self.organizer.slug},
                 )
                 issue = format_html(
                     '<a href="{}#tab-0-1-open">{}</a>',
                     url,
-                    gettext("You need to fill the billing information.")
+                    gettext("You need to fill the billing information."),
                 )
                 issues.append(issue)
 

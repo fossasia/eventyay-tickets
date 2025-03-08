@@ -15,21 +15,28 @@ from pretix.helpers.json import CustomJSONEncoder
 
 def cachedfile_name(instance, filename: str) -> str:
     secret = get_random_string(length=12)
-    return 'cachedfiles/%s.%s.%s' % (instance.id, secret, filename.split('.')[-1])
+    return "cachedfiles/%s.%s.%s" % (instance.id, secret, filename.split(".")[-1])
 
 
 class CachedFile(models.Model):
     """
     An uploaded file, with an optional expiry date.
     """
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     expires = models.DateTimeField(null=True, blank=True)
     date = models.DateTimeField(null=True, blank=True)
     filename = models.CharField(max_length=255)
     type = models.CharField(max_length=255)
-    file = models.FileField(null=True, blank=True, upload_to=cachedfile_name, max_length=255)
-    web_download = models.BooleanField(default=True)  # allow web download, True for backwards compatibility in plugins
-    session_key = models.TextField(null=True, blank=True)  # only allow download in this session
+    file = models.FileField(
+        null=True, blank=True, upload_to=cachedfile_name, max_length=255
+    )
+    web_download = models.BooleanField(
+        default=True
+    )  # allow web download, True for backwards compatibility in plugins
+    session_key = models.TextField(
+        null=True, blank=True
+    )  # only allow download in this session
 
 
 @receiver(post_delete, sender=CachedFile)
@@ -41,7 +48,9 @@ def cached_file_delete(sender, instance, **kwargs):
 
 class LoggingMixin:
 
-    def log_action(self, action, data=None, user=None, api_token=None, auth=None, save=True):
+    def log_action(
+        self, action, data=None, user=None, api_token=None, auth=None, save=True
+    ):
         """
         Create a LogEntry object that is related to this object.
         See the LogEntry documentation for details.
@@ -62,26 +71,28 @@ class LoggingMixin:
         event = None
         if isinstance(self, Event):
             event = self
-        elif hasattr(self, 'event'):
+        elif hasattr(self, "event"):
             event = self.event
         if user and not user.is_authenticated:
             user = None
 
         kwargs = {}
         if isinstance(auth, OAuthAccessToken):
-            kwargs['oauth_application'] = auth.application
+            kwargs["oauth_application"] = auth.application
         elif isinstance(auth, OAuthApplication):
-            kwargs['oauth_application'] = auth
+            kwargs["oauth_application"] = auth
         elif isinstance(auth, TeamAPIToken):
-            kwargs['api_token'] = auth
+            kwargs["api_token"] = auth
         elif isinstance(auth, Device):
-            kwargs['device'] = auth
+            kwargs["device"] = auth
         elif isinstance(api_token, TeamAPIToken):
-            kwargs['api_token'] = api_token
+            kwargs["api_token"] = api_token
 
-        logentry = LogEntry(content_object=self, user=user, action_type=action, event=event, **kwargs)
+        logentry = LogEntry(
+            content_object=self, user=user, action_type=action, event=event, **kwargs
+        )
         if isinstance(data, dict):
-            sensitivekeys = ['password', 'secret', 'api_key']
+            sensitivekeys = ["password", "secret", "api_key"]
 
             for sensitivekey in sensitivekeys:
                 for k, v in data.items():
@@ -117,20 +128,17 @@ class LoggedModel(models.Model, LoggingMixin):
 
         if isinstance(self, Event):
             event = self
-        elif hasattr(self, 'event'):
+        elif hasattr(self, "event"):
             event = self.event
         else:
             return None
         return reverse(
-            'control:event.log',
+            "control:event.log",
             kwargs={
-                'event': event.slug,
-                'organizer': event.organizer.slug,
-            }
-        ) + '?content_type={}&object={}'.format(
-            self.logs_content_type.pk,
-            self.pk
-        )
+                "event": event.slug,
+                "organizer": event.organizer.slug,
+            },
+        ) + "?content_type={}&object={}".format(self.logs_content_type.pk, self.pk)
 
     def top_logentries(self):
         qs = self.all_logentries()
@@ -151,7 +159,7 @@ class LoggedModel(models.Model, LoggingMixin):
 
         return LogEntry.objects.filter(
             content_type=self.logs_content_type, object_id=self.pk
-        ).select_related('user', 'event', 'oauth_application', 'api_token', 'device')
+        ).select_related("user", "event", "oauth_application", "api_token", "device")
 
 
 class LockModel:
@@ -166,10 +174,15 @@ class LockModel:
             if any(LOOKUP_SEP in f for f in fields):
                 raise ValueError(
                     'Found "%s" in fields argument. Relations and transforms '
-                    'are not allowed in fields.' % LOOKUP_SEP)
+                    "are not allowed in fields." % LOOKUP_SEP
+                )
 
-        hints = {'instance': self}
-        db_instance_qs = self.__class__._base_manager.db_manager(using, hints=hints).filter(pk=self.pk).select_for_update(**kwargs)
+        hints = {"instance": self}
+        db_instance_qs = (
+            self.__class__._base_manager.db_manager(using, hints=hints)
+            .filter(pk=self.pk)
+            .select_for_update(**kwargs)
+        )
 
         # Use provided fields, if not set then reload all non-deferred fields.
         deferred_fields = self.get_deferred_fields()
@@ -177,8 +190,11 @@ class LockModel:
             fields = list(fields)
             db_instance_qs = db_instance_qs.only(*fields)
         elif deferred_fields:
-            fields = [f.attname for f in self._meta.concrete_fields
-                      if f.attname not in deferred_fields]
+            fields = [
+                f.attname
+                for f in self._meta.concrete_fields
+                if f.attname not in deferred_fields
+            ]
             db_instance_qs = db_instance_qs.only(*fields)
 
         db_instance = db_instance_qs.get()

@@ -10,6 +10,7 @@ not creating a migration for certain changes will save us some performance while
 
 Only caveat is that we need to do some dirty monkeypatching to achieve it...
 """
+
 from django.core.management.commands.makemigrations import Command as Parent
 from django.db import models
 from django.db.migrations.operations import models as modelops
@@ -24,13 +25,26 @@ modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove("permissions")
 modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove("default_permissions")
 IGNORED_ATTRS = [
     # (field type, attribute name, banlist of field sub-types)
-    (models.Field, 'verbose_name', []),
-    (models.Field, 'help_text', []),
-    (models.Field, 'validators', []),
-    (models.Field, 'editable', [models.DateField, models.DateTimeField, models.DateField, models.BinaryField]),
-    (models.Field, 'blank', [models.DateField, models.DateTimeField, models.AutoField, models.NullBooleanField,
-                             models.TimeField]),
-    (models.CharField, 'choices', [CountryField])
+    (models.Field, "verbose_name", []),
+    (models.Field, "help_text", []),
+    (models.Field, "validators", []),
+    (
+        models.Field,
+        "editable",
+        [models.DateField, models.DateTimeField, models.DateField, models.BinaryField],
+    ),
+    (
+        models.Field,
+        "blank",
+        [
+            models.DateField,
+            models.DateTimeField,
+            models.AutoField,
+            models.NullBooleanField,
+            models.TimeField,
+        ],
+    ),
+    (models.CharField, "choices", [CountryField]),
 ]
 
 original_deconstruct = models.Field.deconstruct

@@ -5,13 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('pretixapi', '0002_initial'),
+        ("pretixapi", "0002_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='oauthapplication',
-            name='post_logout_redirect_uris',
-            field=models.TextField(default=''),
+            model_name="oauthapplication",
+            name="post_logout_redirect_uris",
+            field=models.TextField(default=""),
         ),
     ]

@@ -14,11 +14,12 @@ class _AssertNumQueriesContext(CaptureQueriesContext):
         if exc_type is not None:
             return
         executed = len(self)
-        assert executed == self.num, "%d queries executed, %d expected\nCaptured queries were:\n%s" % (
-            executed, self.num,
-            '\n'.join(
-                query['sql'] for query in self.captured_queries
-            )
+        assert (
+            executed == self.num
+        ), "%d queries executed, %d expected\nCaptured queries were:\n%s" % (
+            executed,
+            self.num,
+            "\n".join(query["sql"] for query in self.captured_queries),
         )
 
 

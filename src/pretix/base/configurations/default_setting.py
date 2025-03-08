@@ -7,18 +7,24 @@ from django import forms
 from django.conf import settings
 from django.core.files import File
 from django.core.validators import (
-    MaxValueValidator, MinValueValidator, RegexValidator,
+    MaxValueValidator,
+    MinValueValidator,
+    RegexValidator,
 )
 from django.utils.text import format_lazy
 from django.utils.translation import (
-    gettext_lazy as _, gettext_noop, pgettext, pgettext_lazy,
+    gettext_lazy as _,
+    gettext_noop,
+    pgettext,
+    pgettext_lazy,
 )
 from i18nfield.forms import I18nFormField, I18nTextarea, I18nTextInput
 from i18nfield.strings import LazyI18nString
 from rest_framework import serializers
 
 from pretix.api.serializers.fields import (
-    ListMultipleChoiceField, UploadedFileField,
+    ListMultipleChoiceField,
+    UploadedFileField,
 )
 from pretix.api.serializers.i18n import I18nField, I18nURLField
 from pretix.base.configurations.lazy_i18n_string_list_base import (
@@ -27,11 +33,17 @@ from pretix.base.configurations.lazy_i18n_string_list_base import (
 from pretix.base.forms import I18nURLFormField
 from pretix.base.models.tax import TaxRule
 from pretix.base.reldate import (
-    RelativeDateField, RelativeDateTimeField, RelativeDateWrapper,
-    SerializerRelativeDateField, SerializerRelativeDateTimeField,
+    RelativeDateField,
+    RelativeDateTimeField,
+    RelativeDateWrapper,
+    SerializerRelativeDateField,
+    SerializerRelativeDateTimeField,
 )
 from pretix.control.forms import (
-    ExtFileField, FontSelect, MultipleLanguagesWidget, SingleLanguageWidget,
+    ExtFileField,
+    FontSelect,
+    MultipleLanguagesWidget,
+    SingleLanguageWidget,
 )
 from pretix.helpers.countries import CachedCountries
 
@@ -2525,11 +2537,11 @@ Your {event} team"""
         ),
         "serializer_class": I18nURLField,
     },
-    'seating_choice': {
-        'default': 'True',
-        'form_class': forms.BooleanField,
-        'serializer_class': serializers.BooleanField,
-        'form_kwargs': dict(
+    "seating_choice": {
+        "default": "True",
+        "form_class": forms.BooleanField,
+        "serializer_class": serializers.BooleanField,
+        "form_kwargs": dict(
             label=_("Customers can choose their own seats"),
             help_text=_(
                 "If disabled, you will need to manually assign seats in the backend. Note that this can mean "

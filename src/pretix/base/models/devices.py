@@ -13,47 +13,60 @@ from pretix.base.models import LoggedModel
 
 @scopes_disabled()
 def generate_serial():
-    serial = get_random_string(allowed_chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', length=16)
+    serial = get_random_string(
+        allowed_chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", length=16
+    )
     while Device.objects.filter(unique_serial=serial).exists():
-        serial = get_random_string(allowed_chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', length=16)
+        serial = get_random_string(
+            allowed_chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", length=16
+        )
     return serial
 
 
 @scopes_disabled()
 def generate_initialization_token():
-    token = get_random_string(length=16, allowed_chars=string.ascii_lowercase + string.digits)
+    token = get_random_string(
+        length=16, allowed_chars=string.ascii_lowercase + string.digits
+    )
     while Device.objects.filter(initialization_token=token).exists():
-        token = get_random_string(length=16, allowed_chars=string.ascii_lowercase + string.digits)
+        token = get_random_string(
+            length=16, allowed_chars=string.ascii_lowercase + string.digits
+        )
     return token
 
 
 @scopes_disabled()
 def generate_api_token():
-    token = get_random_string(length=64, allowed_chars=string.ascii_lowercase + string.digits)
+    token = get_random_string(
+        length=64, allowed_chars=string.ascii_lowercase + string.digits
+    )
     while Device.objects.filter(api_token=token).exists():
-        token = get_random_string(length=64, allowed_chars=string.ascii_lowercase + string.digits)
+        token = get_random_string(
+            length=64, allowed_chars=string.ascii_lowercase + string.digits
+        )
     return token
 
 
 class Gate(LoggedModel):
     organizer = models.ForeignKey(
-        'pretixbase.Organizer',
-        on_delete=models.PROTECT,
-        related_name='gates'
+        "pretixbase.Organizer", on_delete=models.PROTECT, related_name="gates"
     )
     name = models.CharField(
         verbose_name=_("Name"),
         max_length=190,
     )
     identifier = models.CharField(
-        max_length=190, blank=True,
+        max_length=190,
+        blank=True,
         verbose_name=_("Internal identifier"),
-        help_text=_('You can enter any value here to make it easier to match the data with other sources. If you do '
-                    'not input one, we will generate one automatically.')
+        help_text=_(
+            "You can enter any value here to make it easier to match the data with other sources. If you do "
+            "not input one, we will generate one automatically."
+        ),
     )
 
     class Meta:
-        ordering = ('name',)
+        ordering = ("name",)
 
     def __str__(self):
         return self.name
@@ -67,14 +80,18 @@ class Gate(LoggedModel):
         if instance:
             qs = qs.exclude(pk=instance.pk)
         if qs.exists():
-            raise ValidationError(_('This identifier is already used for a different question.'))
+            raise ValidationError(
+                _("This identifier is already used for a different question.")
+            )
 
     def save(self, *args, **kwargs):
         if not self.identifier:
-            charset = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
+            charset = list("ABCDEFGHJKLMNPQRSTUVWXYZ3789")
             while True:
                 code = get_random_string(length=8, allowed_chars=charset)
-                if not Gate.objects.filter(organizer=self.organizer, identifier=code).exists():
+                if not Gate.objects.filter(
+                    organizer=self.organizer, identifier=code
+                ).exists():
                     self.identifier = code
                     break
         return super().save(*args, **kwargs)
@@ -82,81 +99,68 @@ class Gate(LoggedModel):
 
 class Device(LoggedModel):
     organizer = models.ForeignKey(
-        'pretixbase.Organizer',
-        on_delete=models.PROTECT,
-        related_name='devices'
+        "pretixbase.Organizer", on_delete=models.PROTECT, related_name="devices"
     )
     gate = models.ForeignKey(
-        'pretixbase.Gate',
-        verbose_name=_('Gate'),
+        "pretixbase.Gate",
+        verbose_name=_("Gate"),
         on_delete=models.SET_NULL,
-        null=True, blank=True,
-        related_name='devices'
+        null=True,
+        blank=True,
+        related_name="devices",
     )
     device_id = models.PositiveIntegerField()
-    unique_serial = models.CharField(max_length=190, default=generate_serial, unique=True)
-    initialization_token = models.CharField(max_length=190, default=generate_initialization_token, unique=True)
+    unique_serial = models.CharField(
+        max_length=190, default=generate_serial, unique=True
+    )
+    initialization_token = models.CharField(
+        max_length=190, default=generate_initialization_token, unique=True
+    )
     api_token = models.CharField(max_length=190, unique=True, null=True)
-    all_events = models.BooleanField(default=False, verbose_name=_("All events (including newly created ones)"))
-    limit_events = models.ManyToManyField('Event', verbose_name=_("Limit to events"), blank=True)
+    all_events = models.BooleanField(
+        default=False, verbose_name=_("All events (including newly created ones)")
+    )
+    limit_events = models.ManyToManyField(
+        "Event", verbose_name=_("Limit to events"), blank=True
+    )
     revoked = models.BooleanField(default=False)
-    name = models.CharField(
-        max_length=190,
-        verbose_name=_('Name')
-    )
-    created = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name=_('Setup date')
-    )
+    name = models.CharField(max_length=190, verbose_name=_("Name"))
+    created = models.DateTimeField(auto_now_add=True, verbose_name=_("Setup date"))
     initialized = models.DateTimeField(
-        verbose_name=_('Initialization date'),
+        verbose_name=_("Initialization date"),
         null=True,
     )
-    hardware_brand = models.CharField(
-        max_length=190,
-        null=True, blank=True
-    )
-    hardware_model = models.CharField(
-        max_length=190,
-        null=True, blank=True
-    )
-    software_brand = models.CharField(
-        max_length=190,
-        null=True, blank=True
-    )
-    software_version = models.CharField(
-        max_length=190,
-        null=True, blank=True
-    )
+    hardware_brand = models.CharField(max_length=190, null=True, blank=True)
+    hardware_model = models.CharField(max_length=190, null=True, blank=True)
+    software_brand = models.CharField(max_length=190, null=True, blank=True)
+    software_version = models.CharField(max_length=190, null=True, blank=True)
     security_profile = models.CharField(
         max_length=190,
         choices=[(k, v.verbose_name) for k, v in DEVICE_SECURITY_PROFILES.items()],
-        default='full',
+        default="full",
         null=True,
-        blank=False
+        blank=False,
     )
 
-    objects = ScopedManager(organizer='organizer')
+    objects = ScopedManager(organizer="organizer")
 
     class Meta:
-        unique_together = (('organizer', 'device_id'),)
+        unique_together = (("organizer", "device_id"),)
 
     def __str__(self):
-        return '#{}: {} ({} {})'.format(
+        return "#{}: {} ({} {})".format(
             self.device_id, self.name, self.hardware_brand, self.hardware_model
         )
 
     def save(self, *args, **kwargs):
         if not self.device_id:
-            self.device_id = (self.organizer.devices.aggregate(m=Max('device_id'))['m'] or 0) + 1
+            self.device_id = (
+                self.organizer.devices.aggregate(m=Max("device_id"))["m"] or 0
+            ) + 1
         super().save(*args, **kwargs)
 
     def permission_set(self) -> set:
-        return {
-            'can_view_orders',
-            'can_change_orders',
-            'can_manage_gift_cards'
-        }
+        return {"can_view_orders", "can_change_orders", "can_manage_gift_cards"}
 
     def get_event_permission_set(self, organizer, event) -> set:
         """
@@ -180,7 +184,9 @@ class Device(LoggedModel):
         """
         return self.permission_set() if self.organizer == organizer else set()
 
-    def has_event_permission(self, organizer, event, perm_name=None, request=None) -> bool:
+    def has_event_permission(
+        self, organizer, event, perm_name=None, request=None
+    ) -> bool:
         """
         Checks if this token is part of a team that grants access of type ``perm_name``
         to the event ``event``.
@@ -195,8 +201,12 @@ class Device(LoggedModel):
             event in self.limit_events.all()
         )
         if isinstance(perm_name, (tuple, list)):
-            return has_event_access and any(p in self.permission_set() for p in perm_name)
-        return has_event_access and (not perm_name or perm_name in self.permission_set())
+            return has_event_access and any(
+                p in self.permission_set() for p in perm_name
+            )
+        return has_event_access and (
+            not perm_name or perm_name in self.permission_set()
+        )
 
     def has_organizer_permission(self, organizer, perm_name=None, request=None):
         """
@@ -209,8 +219,12 @@ class Device(LoggedModel):
         :return: bool
         """
         if isinstance(perm_name, (tuple, list)):
-            return organizer == self.organizer and any(p in self.permission_set() for p in perm_name)
-        return organizer == self.organizer and (not perm_name or perm_name in self.permission_set())
+            return organizer == self.organizer and any(
+                p in self.permission_set() for p in perm_name
+            )
+        return organizer == self.organizer and (
+            not perm_name or perm_name in self.permission_set()
+        )
 
     def get_events_with_any_permission(self):
         """
@@ -233,9 +247,7 @@ class Device(LoggedModel):
         if (
             isinstance(permission, (list, tuple))
             and any(p in self.permission_set() for p in permission)
-        ) or (
-            isinstance(permission, str) and permission in self.permission_set()
-        ):
+        ) or (isinstance(permission, str) and permission in self.permission_set()):
             return self.get_events_with_any_permission()
         else:
             return self.organizer.events.none()

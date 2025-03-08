@@ -8,25 +8,28 @@ from pretix.base.models.organizer import Organizer, OrganizerBillingModel
 from pretix.base.models.vouchers import InvoiceVoucher
 from pretix.helpers.countries import CachedCountries, get_country_name
 from pretix.helpers.stripe_utils import (
-    create_stripe_customer, update_customer_info,
+    create_stripe_customer,
+    update_customer_info,
 )
 
 
 class OrganizerForm(I18nModelForm):
     error_messages = {
-        'duplicate_slug': _("This slug is already in use. Please choose a different one."),
+        "duplicate_slug": _(
+            "This slug is already in use. Please choose a different one."
+        ),
     }
 
     class Meta:
         model = Organizer
-        fields = ['name', 'slug']
+        fields = ["name", "slug"]
 
     def clean_slug(self):
-        slug = self.cleaned_data['slug']
+        slug = self.cleaned_data["slug"]
         if Organizer.objects.filter(slug__iexact=slug).exists():
             raise forms.ValidationError(
-                self.error_messages['duplicate_slug'],
-                code='duplicate_slug',
+                self.error_messages["duplicate_slug"],
+                code="duplicate_slug",
             )
         return slug
 
@@ -45,7 +48,7 @@ class BillingSettingsForm(forms.ModelForm):
             "country",
             "preferred_language",
             "tax_id",
-            "invoice_voucher"
+            "invoice_voucher",
         ]
 
     primary_contact_name = forms.CharField(
@@ -167,13 +170,15 @@ class BillingSettingsForm(forms.ModelForm):
     def validate_vat_number(self, country_code, vat_number):
         if country_code not in pyvat.VAT_REGISTRIES:
             country_name = get_country_name(country_code)
-            self.warning_message = _("VAT number validation is not supported for {}".format(country_name))
+            self.warning_message = _(
+                "VAT number validation is not supported for {}".format(country_name)
+            )
             return True
         result = pyvat.is_vat_number_format_valid(vat_number, country_code)
         return result
 
     def clean_invoice_voucher(self):
-        voucher_code = self.cleaned_data['invoice_voucher']
+        voucher_code = self.cleaned_data["invoice_voucher"]
         if not voucher_code:
             return None
 
@@ -182,12 +187,18 @@ class BillingSettingsForm(forms.ModelForm):
             raise forms.ValidationError("Voucher code not found!")
 
         if not voucher_instance.is_active():
-            raise forms.ValidationError("The voucher code has either expired or reached its usage limit.")
+            raise forms.ValidationError(
+                "The voucher code has either expired or reached its usage limit."
+            )
 
         if voucher_instance.limit_organizer.exists():
-            limit_organizer = voucher_instance.limit_organizer.values_list("id", flat=True)
+            limit_organizer = voucher_instance.limit_organizer.values_list(
+                "id", flat=True
+            )
             if self.organizer.id not in limit_organizer:
-                raise forms.ValidationError("Voucher code is not valid for this organizer!")
+                raise forms.ValidationError(
+                    "Voucher code is not valid for this organizer!"
+                )
 
         return voucher_instance
 
@@ -200,7 +211,9 @@ class BillingSettingsForm(forms.ModelForm):
             country_name = get_country_name(country_code)
             is_valid_vat_number = self.validate_vat_number(country_code, vat_number)
             if not is_valid_vat_number:
-                self.add_error("tax_id", _("Invalid VAT number for {}".format(country_name)))
+                self.add_error(
+                    "tax_id", _("Invalid VAT number for {}".format(country_name))
+                )
 
     def save(self, commit=True):
         def set_attribute(instance):
@@ -226,7 +239,7 @@ class BillingSettingsForm(forms.ModelForm):
             if commit:
                 stripe_customer = create_stripe_customer(
                     email=self.cleaned_data.get("primary_contact_email"),
-                    name=self.cleaned_data.get("primary_contact_name")
+                    name=self.cleaned_data.get("primary_contact_name"),
                 )
                 instance.stripe_customer_id = stripe_customer.id
                 instance.save()

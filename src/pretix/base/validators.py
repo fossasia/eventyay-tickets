@@ -12,9 +12,9 @@ class BanlistValidator:
         # Validation logic
         if value in self.banlist:
             raise ValidationError(
-                _('This field has an invalid value: %(value)s.'),
-                code='invalid',
-                params={'value': value},
+                _("This field has an invalid value: %(value)s."),
+                code="invalid",
+                params={"value": value},
             )
 
 
@@ -22,19 +22,19 @@ class BanlistValidator:
 class EventSlugBanlistValidator(BanlistValidator):
 
     banlist = [
-        'download',
-        'healthcheck',
-        'locale',
-        'control',
-        'redirect',
-        'jsi18n',
-        'metrics',
-        '_global',
-        '__debug__',
-        'api',
-        'events',
-        'csp_report',
-        'widget',
+        "download",
+        "healthcheck",
+        "locale",
+        "control",
+        "redirect",
+        "jsi18n",
+        "metrics",
+        "_global",
+        "__debug__",
+        "api",
+        "events",
+        "csp_report",
+        "widget",
     ]
 
 
@@ -42,20 +42,20 @@ class EventSlugBanlistValidator(BanlistValidator):
 class OrganizerSlugBanlistValidator(BanlistValidator):
 
     banlist = [
-        'download',
-        'healthcheck',
-        'locale',
-        'control',
-        'pretixdroid',
-        'redirect',
-        'jsi18n',
-        'metrics',
-        '_global',
-        '__debug__',
-        'about',
-        'api',
-        'csp_report',
-        'widget',
+        "download",
+        "healthcheck",
+        "locale",
+        "control",
+        "pretixdroid",
+        "redirect",
+        "jsi18n",
+        "metrics",
+        "_global",
+        "__debug__",
+        "about",
+        "api",
+        "csp_report",
+        "widget",
     ]
 
 

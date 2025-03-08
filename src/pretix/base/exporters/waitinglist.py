@@ -11,56 +11,55 @@ from pretix.base.models.waitinglist import WaitingListEntry
 
 from ..exporter import ListExporter
 from ..signals import (
-    register_data_exporters, register_multievent_data_exporters,
+    register_data_exporters,
+    register_multievent_data_exporters,
 )
 
 
 class WaitingListExporter(ListExporter):
-    identifier = 'waitinglist'
-    verbose_name = _('Waiting list')
+    identifier = "waitinglist"
+    verbose_name = _("Waiting list")
 
     # map selected status to label and queryset-filter
     status_filters = [
+        ("", _("All entries"), lambda qs: qs),
         (
-            '',
-            _('All entries'),
-            lambda qs: qs
+            "awaiting-voucher",
+            _("Waiting for a voucher"),
+            lambda qs: qs.filter(voucher__isnull=True),
         ),
         (
-            'awaiting-voucher',
-            _('Waiting for a voucher'),
-            lambda qs: qs.filter(voucher__isnull=True)
+            "voucher-assigned",
+            _("Voucher assigned"),
+            lambda qs: qs.filter(voucher__isnull=False),
         ),
         (
-            'voucher-assigned',
-            _('Voucher assigned'),
-            lambda qs: qs.filter(voucher__isnull=False)
-        ),
-        (
-            'awaiting-redemption',
-            _('Waiting for redemption'),
+            "awaiting-redemption",
+            _("Waiting for redemption"),
             lambda qs: qs.filter(
                 voucher__isnull=False,
-                voucher__redeemed__lt=F('voucher__max_usages'),
-            ).filter(Q(voucher__valid_until__isnull=True) | Q(voucher__valid_until__gt=now()))
+                voucher__redeemed__lt=F("voucher__max_usages"),
+            ).filter(
+                Q(voucher__valid_until__isnull=True) | Q(voucher__valid_until__gt=now())
+            ),
         ),
         (
-            'voucher-redeemed',
-            _('Voucher redeemed'),
+            "voucher-redeemed",
+            _("Voucher redeemed"),
             lambda qs: qs.filter(
                 voucher__isnull=False,
-                voucher__redeemed__gte=F('voucher__max_usages'),
-            )
+                voucher__redeemed__gte=F("voucher__max_usages"),
+            ),
         ),
         (
-            'voucher-expired',
-            _('Voucher expired'),
+            "voucher-expired",
+            _("Voucher expired"),
             lambda qs: qs.filter(
                 voucher__isnull=False,
-                voucher__redeemed__lt=F('voucher__max_usages'),
+                voucher__redeemed__lt=F("voucher__max_usages"),
                 voucher__valid_until__isnull=False,
-                voucher__valid_until__lte=now()
-            )
+                voucher__valid_until__lte=now(),
+            ),
         ),
     ]
 
@@ -69,11 +68,13 @@ class WaitingListExporter(ListExporter):
         status_labels = {k: v for k, v, c in self.status_filters}
         queryset_mutators = {k: c for k, v, c in self.status_filters}
 
-        entries = WaitingListEntry.objects.filter(
-            event__in=self.events,
-        ).select_related(
-            'item', 'variation', 'voucher', 'subevent'
-        ).order_by('created')
+        entries = (
+            WaitingListEntry.objects.filter(
+                event__in=self.events,
+            )
+            .select_related("item", "variation", "voucher", "subevent")
+            .order_by("created")
+        )
 
         # apply filter to queryset/entries according to status
         # if unknown status-filter is given, django will handle the error
@@ -81,21 +82,21 @@ class WaitingListExporter(ListExporter):
         entries = queryset_mutators[status_filter](entries)
 
         headers = [
-            _('Date'),
-            _('Name'),
-            _('Email'),
-            _('Phone number'),
-            _('Product name'),
-            _('Variation'),
-            _('Event slug'),
-            _('Event name'),
-            pgettext_lazy('subevents', 'Date'),  # Name of subevent
-            _('Start date'),  # Start date of subevent or event
-            _('End date'),  # End date of subevent or event
-            _('Language'),
-            _('Priority'),
-            _('Status'),
-            _('Voucher code'),
+            _("Date"),
+            _("Name"),
+            _("Email"),
+            _("Phone number"),
+            _("Product name"),
+            _("Variation"),
+            _("Event slug"),
+            _("Event name"),
+            pgettext_lazy("subevents", "Date"),  # Name of subevent
+            _("Start date"),  # Start date of subevent or event
+            _("End date"),  # End date of subevent or event
+            _("Language"),
+            _("Priority"),
+            _("Status"),
+            _("Voucher code"),
         ]
 
         yield headers
@@ -104,21 +105,23 @@ class WaitingListExporter(ListExporter):
         for entry in entries:
             if entry.voucher:
                 if entry.voucher.redeemed >= entry.voucher.max_usages:
-                    status_label = status_labels['voucher-redeemed']
+                    status_label = status_labels["voucher-redeemed"]
                 elif not entry.voucher.is_active():
-                    status_label = status_labels['voucher-expired']
+                    status_label = status_labels["voucher-expired"]
                 else:
-                    status_label = status_labels['voucher-assigned']
+                    status_label = status_labels["voucher-assigned"]
             else:
-                status_label = status_labels['awaiting-voucher']
+                status_label = status_labels["awaiting-voucher"]
 
             # which event should be used to output dates in columns "Start date" and "End date"
             event_for_date_columns = entry.subevent if entry.subevent else entry.event
             tz = pytz.timezone(entry.event.settings.timezone)
-            datetime_format = '%Y-%m-%d %H:%M:%S'
+            datetime_format = "%Y-%m-%d %H:%M:%S"
 
             row = [
-                entry.created.astimezone(tz).strftime(datetime_format),  # alternative: .isoformat(),
+                entry.created.astimezone(tz).strftime(
+                    datetime_format
+                ),  # alternative: .isoformat(),
                 entry.name,
                 entry.email,
                 entry.phone,
@@ -127,12 +130,20 @@ class WaitingListExporter(ListExporter):
                 entry.event.slug,
                 entry.event.name,
                 entry.subevent.name if entry.subevent else "",
-                event_for_date_columns.date_from.astimezone(tz).strftime(datetime_format),
-                event_for_date_columns.date_to.astimezone(tz).strftime(datetime_format) if event_for_date_columns.date_to else "",
+                event_for_date_columns.date_from.astimezone(tz).strftime(
+                    datetime_format
+                ),
+                (
+                    event_for_date_columns.date_to.astimezone(tz).strftime(
+                        datetime_format
+                    )
+                    if event_for_date_columns.date_to
+                    else ""
+                ),
                 entry.locale,
                 str(entry.priority),
                 status_label,
-                entry.voucher.code if entry.voucher else '',
+                entry.voucher.code if entry.voucher else "",
             ]
             yield row
 
@@ -140,13 +151,15 @@ class WaitingListExporter(ListExporter):
     def additional_form_fields(self):
         return OrderedDict(
             [
-                ('status',
-                 forms.ChoiceField(
-                     label=_('Status'),
-                     initial=['awaiting-voucher'],
-                     required=False,
-                     choices=[(k, v) for (k, v, c) in self.status_filters]
-                 )),
+                (
+                    "status",
+                    forms.ChoiceField(
+                        label=_("Status"),
+                        initial=["awaiting-voucher"],
+                        required=False,
+                        choices=[(k, v) for (k, v, c) in self.status_filters],
+                    ),
+                ),
             ]
         )
 
@@ -156,7 +169,7 @@ class WaitingListExporter(ListExporter):
             slug = event.organizer.slug if len(self.events) > 1 else event.slug
         else:
             slug = self.event.slug
-        return '{}_waitinglist'.format(slug)
+        return "{}_waitinglist".format(slug)
 
 
 @receiver(register_data_exporters, dispatch_uid="exporter_waitinglist")

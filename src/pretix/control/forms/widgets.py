@@ -2,7 +2,7 @@ from django import forms
 
 
 class Select2Mixin:
-    template_name = 'pretixcontrol/select2_widget.html'
+    template_name = "pretixcontrol/select2_widget.html"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -17,15 +17,14 @@ class Select2Mixin:
                     True,
                     i,
                     subindex=None,
-                    attrs=attrs
+                    attrs=attrs,
                 )
         return
 
     def optgroups(self, name, value, attrs=None):
         if value:
             return [
-                (None, [c], i)
-                for i, c in enumerate(self.options(name, value, attrs))
+                (None, [c], i) for i, c in enumerate(self.options(name, value, attrs))
             ]
         return
 
@@ -49,7 +48,7 @@ class Select2ItemVarQuotaMixin(Select2Mixin):
                 True,
                 0,
                 subindex=None,
-                attrs=attrs
+                attrs=attrs,
             )
         return
 

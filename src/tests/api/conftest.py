@@ -19,7 +19,7 @@ def client():
 @pytest.fixture
 @scopes_disabled()
 def organizer():
-    return Organizer.objects.create(name='Dummy', slug='dummy')
+    return Organizer.objects.create(name="Dummy", slug="dummy")
 
 
 @pytest.fixture
@@ -38,7 +38,7 @@ def organizer_billing(organizer):
         tax_id="123456789",
         stripe_customer_id="cus_123456789",
         stripe_payment_method_id="pm_123456789",
-        stripe_setup_intent_id="seti_123456789"
+        stripe_setup_intent_id="seti_123456789",
     )
 
 
@@ -52,14 +52,16 @@ def meta_prop(organizer):
 @scopes_disabled()
 def event(organizer, meta_prop):
     e = Event.objects.create(
-        organizer=organizer, name='Dummy', slug='dummy',
+        organizer=organizer,
+        name="Dummy",
+        slug="dummy",
         date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc),
-        plugins='pretix.plugins.banktransfer,pretix.plugins.ticketoutputpdf',
-        is_public=True
+        plugins="pretix.plugins.banktransfer,pretix.plugins.ticketoutputpdf",
+        is_public=True,
     )
     e.meta_values.create(property=meta_prop, value="Conference")
     e.item_meta_properties.create(name="day", default="Monday")
-    e.settings.timezone = 'Europe/Berlin'
+    e.settings.timezone = "Europe/Berlin"
     return e
 
 
@@ -67,9 +69,11 @@ def event(organizer, meta_prop):
 @scopes_disabled()
 def event2(organizer, meta_prop):
     e = Event.objects.create(
-        organizer=organizer, name='Dummy2', slug='dummy2',
+        organizer=organizer,
+        name="Dummy2",
+        slug="dummy2",
         date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc),
-        plugins='pretix.plugins.banktransfer,pretix.plugins.ticketoutputpdf'
+        plugins="pretix.plugins.banktransfer,pretix.plugins.ticketoutputpdf",
     )
     e.meta_values.create(property=meta_prop, value="Conference")
     return e
@@ -79,9 +83,11 @@ def event2(organizer, meta_prop):
 @scopes_disabled()
 def event3(organizer, meta_prop):
     e = Event.objects.create(
-        organizer=organizer, name='Dummy3', slug='dummy3',
+        organizer=organizer,
+        name="Dummy3",
+        slug="dummy3",
         date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc),
-        plugins='pretix.plugins.banktransfer,pretix.plugins.ticketoutputpdf'
+        plugins="pretix.plugins.banktransfer,pretix.plugins.ticketoutputpdf",
     )
     e.meta_values.create(property=meta_prop, value="Conference")
     return e
@@ -101,7 +107,7 @@ def team(organizer):
         can_change_vouchers=True,
         can_view_vouchers=True,
         can_change_orders=True,
-        can_change_organizer_settings=True
+        can_change_organizer_settings=True,
     )
 
 
@@ -111,15 +117,15 @@ def device(organizer):
     return Device.objects.create(
         organizer=organizer,
         all_events=True,
-        name='Foo',
+        name="Foo",
         initialized=now(),
-        api_token=generate_api_token()
+        api_token=generate_api_token(),
     )
 
 
 @pytest.fixture
 def user():
-    return User.objects.create_user('dummy@dummy.dummy', 'dummy')
+    return User.objects.create_user("dummy@dummy.dummy", "dummy")
 
 
 @pytest.fixture
@@ -141,14 +147,14 @@ def token_client(client, team):
     team.can_view_vouchers = True
     team.all_events = True
     team.save()
-    t = team.tokens.create(name='Foo')
-    client.credentials(HTTP_AUTHORIZATION='Token ' + t.token)
+    t = team.tokens.create(name="Foo")
+    client.credentials(HTTP_AUTHORIZATION="Token " + t.token)
     return client
 
 
 @pytest.fixture
 def device_client(client, device):
-    client.credentials(HTTP_AUTHORIZATION='Device ' + device.api_token)
+    client.credentials(HTTP_AUTHORIZATION="Device " + device.api_token)
     return client
 
 
@@ -157,7 +163,9 @@ def device_client(client, device):
 def subevent(event, meta_prop):
     event.has_subevents = True
     event.save()
-    se = event.subevents.create(name="Foobar", date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc))
+    se = event.subevents.create(
+        name="Foobar", date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc)
+    )
 
     se.meta_values.create(property=meta_prop, value="Workshop")
     return se
@@ -168,7 +176,9 @@ def subevent(event, meta_prop):
 def subevent2(event2, meta_prop):
     event2.has_subevents = True
     event2.save()
-    se = event2.subevents.create(name="Foobar", date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc))
+    se = event2.subevents.create(
+        name="Foobar", date_from=datetime(2017, 12, 27, 10, 0, 0, tzinfo=timezone.utc)
+    )
 
     se.meta_values.create(property=meta_prop, value="Workshop")
     return se

@@ -19,8 +19,10 @@ def get_event_domain(event, fallback=False, return_info=False):
     if event.pk is None:
         # Handle case where event is deleted
         return (None, None) if return_info else None
-    suffix = ('_fallback' if fallback else '') + ('_info' if return_info else '')
-    domain = getattr(event, '_cached_domain' + suffix, None) or event.cache.get('domain' + suffix)
+    suffix = ("_fallback" if fallback else "") + ("_info" if return_info else "")
+    domain = getattr(event, "_cached_domain" + suffix, None) or event.cache.get(
+        "domain" + suffix
+    )
     if domain is None:
         domain = None, None
         if fallback:
@@ -36,26 +38,26 @@ def get_event_domain(event, fallback=False, return_info=False):
         else:
             domains = event.domains.all()
             domain = domains[0].domainname if domains else None, "event"
-        event.cache.set('domain' + suffix, domain or 'none')
-        setattr(event, '_cached_domain' + suffix, domain or 'none')
-    elif domain == 'none':
-        setattr(event, '_cached_domain' + suffix, 'none')
+        event.cache.set("domain" + suffix, domain or "none")
+        setattr(event, "_cached_domain" + suffix, domain or "none")
+    elif domain == "none":
+        setattr(event, "_cached_domain" + suffix, "none")
         domain = None, None
     else:
-        setattr(event, '_cached_domain' + suffix, domain)
+        setattr(event, "_cached_domain" + suffix, domain)
     return domain if return_info or not isinstance(domain, tuple) else domain[0]
 
 
 def get_organizer_domain(organizer):
     assert isinstance(organizer, Organizer)
-    domain = getattr(organizer, '_cached_domain', None) or organizer.cache.get('domain')
+    domain = getattr(organizer, "_cached_domain", None) or organizer.cache.get("domain")
     if domain is None:
         domains = organizer.domains.filter(event__isnull=True)
         domain = domains[0].domainname if domains else None
-        organizer.cache.set('domain', domain or 'none')
-        organizer._cached_domain = domain or 'none'
-    elif domain == 'none':
-        organizer._cached_domain = 'none'
+        organizer.cache.set("domain", domain or "none")
+        organizer._cached_domain = domain or "none"
+    elif domain == "none":
+        organizer._cached_domain = "none"
         return None
     else:
         organizer._cached_domain = domain
@@ -100,13 +102,15 @@ def eventreverse(obj, name, kwargs=None):
     :returns: An absolute URL (including scheme and host) as a string
     """
     from pretix.multidomain import (
-        event_domain_urlconf, maindomain_urlconf, organizer_domain_urlconf,
+        event_domain_urlconf,
+        maindomain_urlconf,
+        organizer_domain_urlconf,
     )
 
     c = None
     if not kwargs:
         c = obj.cache
-        url = c.get('urlrev_{}'.format(name))
+        url = c.get("urlrev_{}".format(name))
         if url:
             return url
 
@@ -114,12 +118,12 @@ def eventreverse(obj, name, kwargs=None):
     if isinstance(obj, Event):
         organizer = obj.organizer
         event = obj
-        kwargs['event'] = obj.slug
+        kwargs["event"] = obj.slug
     elif isinstance(obj, Organizer):
         organizer = obj
         event = None
     else:
-        raise TypeError('obj should be Event or Organizer')
+        raise TypeError("obj should be Event or Organizer")
 
     if event:
         domain, domaintype = get_event_domain(obj, fallback=True, return_info=True)
@@ -127,27 +131,35 @@ def eventreverse(obj, name, kwargs=None):
         domain, domaintype = get_organizer_domain(organizer), "organizer"
 
     if domain:
-        if domaintype == "event" and 'event' in kwargs:
-            del kwargs['event']
-        if 'organizer' in kwargs:
-            del kwargs['organizer']
+        if domaintype == "event" and "event" in kwargs:
+            del kwargs["event"]
+        if "organizer" in kwargs:
+            del kwargs["organizer"]
 
-        path = reverse(name, kwargs=kwargs, urlconf=event_domain_urlconf if domaintype == "event" else organizer_domain_urlconf)
+        path = reverse(
+            name,
+            kwargs=kwargs,
+            urlconf=(
+                event_domain_urlconf
+                if domaintype == "event"
+                else organizer_domain_urlconf
+            ),
+        )
         siteurlsplit = urlsplit(settings.SITE_URL)
         if siteurlsplit.port and siteurlsplit.port not in (80, 443):
-            domain = '%s:%d' % (domain, siteurlsplit.port)
-        return urljoin('%s://%s' % (siteurlsplit.scheme, domain), path)
+            domain = "%s:%d" % (domain, siteurlsplit.port)
+        return urljoin("%s://%s" % (siteurlsplit.scheme, domain), path)
 
-    kwargs['organizer'] = organizer.slug
+    kwargs["organizer"] = organizer.slug
     url = reverse(name, kwargs=kwargs, urlconf=maindomain_urlconf)
     if not kwargs and c:
-        c.set('urlrev_{}'.format(url), url)
+        c.set("urlrev_{}".format(url), url)
     return url
 
 
 def build_absolute_uri(obj, urlname, kwargs=None):
     reversedurl = eventreverse(obj, urlname, kwargs)
-    if '://' in reversedurl:
+    if "://" in reversedurl:
         return reversedurl
     return urljoin(settings.SITE_URL, reversedurl)
 
@@ -160,20 +172,26 @@ def build_join_video_url(event, order):
         position = order.positions.first()
         return generate_token_url(event, order, position)
     else:
-        common_item_id = next((item for item in order_item_ids if item in event.settings.venueless_items), None)
+        common_item_id = next(
+            (item for item in order_item_ids if item in event.settings.venueless_items),
+            None,
+        )
         # Get position object
         position = order.positions.filter(item_id=common_item_id).first()
         # Check if any item in order item is allowed to join
         if any(item in event.settings.venueless_items for item in order_item_ids):
             return generate_token_url(event, order, position)
         else:
-            logger.error('order %s does not have any item that is allowed to join the event' % order.code)
-            return ''
+            logger.error(
+                "order %s does not have any item that is allowed to join the event"
+                % order.code
+            )
+            return ""
 
 
 def generate_token_url(event, order, position):
     # If customer has account, use customer code to generate token
-    if hasattr(order, 'customer') and order.customer:
+    if hasattr(order, "customer") and order.customer:
         video_url = generate_token(event, order.customer.identifier, position)
     else:
         # else user position Id to generate token
@@ -184,17 +202,16 @@ def generate_token_url(event, order, position):
 def generate_token(event, customer_code, position):
     iat = datetime.datetime.utcnow()
     exp = iat + datetime.timedelta(days=30)
-    profile = {
-        'fields': {}
-    }
+    profile = {"fields": {}}
     if position.attendee_name:
-        profile['display_name'] = position.attendee_name
+        profile["display_name"] = position.attendee_name
     if position.company:
-        profile['fields']['company'] = position.company
+        profile["fields"]["company"] = position.company
 
-    for a in position.answers.filter(question_id__in=event.settings.venueless_questions).select_related(
-            'question'):
-        profile['fields'][a.question.identifier] = a.answer
+    for a in position.answers.filter(
+        question_id__in=event.settings.venueless_questions
+    ).select_related("question"):
+        profile["fields"][a.question.identifier] = a.answer
     payload = {
         "iss": event.settings.venueless_issuer,
         "aud": event.settings.venueless_audience,
@@ -204,24 +221,29 @@ def generate_token(event, customer_code, position):
         "profile": profile,
         "traits": list(
             {
-                'eventyay-video-event-{}'.format(event.slug),
-                'eventyay-video-subevent-{}'.format(position.subevent_id),
-                'eventyay-video-item-{}'.format(position.item_id),
-                'eventyay-video-variation-{}'.format(position.variation_id),
-                'eventyay-video-category-{}'.format(position.item.category_id),
-            } | {
-                'eventyay-video-item-{}'.format(p.item_id)
-                for p in position.addons.all()
-            } | {
-                'eventyay-video-variation-{}'.format(p.variation_id)
-                for p in position.addons.all() if p.variation_id
-            } | {
-                'eventyay-video-category-{}'.format(p.item.category_id)
-                for p in position.addons.all() if p.item.category_id
+                "eventyay-video-event-{}".format(event.slug),
+                "eventyay-video-subevent-{}".format(position.subevent_id),
+                "eventyay-video-item-{}".format(position.item_id),
+                "eventyay-video-variation-{}".format(position.variation_id),
+                "eventyay-video-category-{}".format(position.item.category_id),
             }
-        )
+            | {
+                "eventyay-video-item-{}".format(p.item_id)
+                for p in position.addons.all()
+            }
+            | {
+                "eventyay-video-variation-{}".format(p.variation_id)
+                for p in position.addons.all()
+                if p.variation_id
+            }
+            | {
+                "eventyay-video-category-{}".format(p.item.category_id)
+                for p in position.addons.all()
+                if p.item.category_id
+            }
+        ),
     }
-    token = jwt.encode(
-        payload, event.settings.venueless_secret, algorithm="HS256"
+    token = jwt.encode(payload, event.settings.venueless_secret, algorithm="HS256")
+    return "{}/#token={}".format(event.settings.venueless_url, token).replace(
+        "//#", "/#"
     )
-    return '{}/#token={}'.format(event.settings.venueless_url, token).replace("//#", "/#")

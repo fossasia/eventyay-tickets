@@ -15,38 +15,47 @@ class InvoiceVoucherForm(I18nModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=False,
         label=_("Event effect"),
-        help_text=_("The voucher will only be valid for the selected events.")
+        help_text=_("The voucher will only be valid for the selected events."),
     )
     organizer_effect = forms.ModelMultipleChoiceField(
         queryset=Organizer.objects.none(),
         widget=forms.CheckboxSelectMultiple,
         required=False,
         label=_("Organizer effect"),
-        help_text=_("The voucher will be valid for all events under the selected organizers.")
+        help_text=_(
+            "The voucher will be valid for all events under the selected organizers."
+        ),
     )
 
     class Meta:
         model = InvoiceVoucher
-        localized_fields = '__all__'
+        localized_fields = "__all__"
         fields = [
-            'code', 'valid_until', 'value', 'max_usages', 'price_mode', 'budget', 'event_effect', 'organizer_effect'
+            "code",
+            "valid_until",
+            "value",
+            "max_usages",
+            "price_mode",
+            "budget",
+            "event_effect",
+            "organizer_effect",
         ]
         field_classes = {
-            'valid_until': SplitDateTimeField,
+            "valid_until": SplitDateTimeField,
         }
         widgets = {
-            'valid_until': SplitDateTimePickerWidget(),
+            "valid_until": SplitDateTimePickerWidget(),
         }
 
     def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance')
+        instance = kwargs.get("instance")
         super().__init__(*args, **kwargs)
         if instance:
-            self.fields['event_effect'].initial = instance.limit_events.all()
-            self.fields['organizer_effect'].initial = instance.limit_organizer.all()
+            self.fields["event_effect"].initial = instance.limit_events.all()
+            self.fields["organizer_effect"].initial = instance.limit_organizer.all()
         with scopes_disabled():
-            self.fields['event_effect'].queryset = Event.objects.all()
-            self.fields['organizer_effect'].queryset = Organizer.objects.all()
+            self.fields["event_effect"].queryset = Event.objects.all()
+            self.fields["organizer_effect"].queryset = Organizer.objects.all()
 
     def clean(self):
         data = super().clean()
@@ -58,8 +67,8 @@ class InvoiceVoucherForm(I18nModelForm):
         if commit:
             instance.save()
 
-        instance.limit_events.set(self.cleaned_data.get('event_effect', []))
-        instance.limit_organizer.set(self.cleaned_data.get('organizer_effect', []))
+        instance.limit_events.set(self.cleaned_data.get("event_effect", []))
+        instance.limit_organizer.set(self.cleaned_data.get("organizer_effect", []))
 
         if commit:
             self.save_m2m()

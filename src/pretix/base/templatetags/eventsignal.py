@@ -17,7 +17,7 @@ def eventsignal(event: Event, signame: str, **kwargs):
 
         {% eventsignal event "path.to.signal" argument="value" ... %}
     """
-    sigstr = signame.rsplit('.', 1)
+    sigstr = signame.rsplit(".", 1)
     sigmod = importlib.import_module(sigstr[0])
     signal = getattr(sigmod, sigstr[1])
     _html = []
@@ -36,7 +36,7 @@ def signal(signame: str, request, **kwargs):
 
         {% signal request "path.to.signal" argument="value" ... %}
     """
-    sigstr = signame.rsplit('.', 1)
+    sigstr = signame.rsplit(".", 1)
     sigmod = importlib.import_module(sigstr[0])
     signal = getattr(sigmod, sigstr[1])
     _html = []

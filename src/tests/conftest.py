@@ -22,7 +22,12 @@ def pytest_configure(config):
         msg = "Worker %r crashed while running %r" % (worker.gateway.id, nodeid)
         CRASHED_ITEMS.add(nodeid)
         rep = runner.TestReport(
-            nodeid, (fspath, None, fspath), (), "restarted" if first else "failed", msg, "???"
+            nodeid,
+            (fspath, None, fspath),
+            (),
+            "restarted" if first else "failed",
+            msg,
+            "???",
         )
         rep.node = worker
         self.config.hook.pytest_runtest_logreport(report=rep)

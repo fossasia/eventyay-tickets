@@ -4,25 +4,26 @@ from django.conf import settings
 
 
 def set_cookie_without_samesite(request, response, key, *args, **kwargs):
-    assert 'samesite' not in kwargs
+    assert "samesite" not in kwargs
     response.set_cookie(key, *args, **kwargs)
     is_secure = (
-        kwargs.get('secure', False) or request.scheme == 'https' or
-        settings.SITE_URL.startswith('https://')
+        kwargs.get("secure", False)
+        or request.scheme == "https"
+        or settings.SITE_URL.startswith("https://")
     )
     if not is_secure:
         # https://www.chromestatus.com/feature/5633521622188032
         return
-    if should_send_same_site_none(request.headers.get('User-Agent', '')):
+    if should_send_same_site_none(request.headers.get("User-Agent", "")):
         # Chromium is rolling out SameSite=Lax as a default
         # https://www.chromestatus.com/feature/5088147346030592
         # This however breaks all pretix-in-an-iframe things, such as the pretix Widget.
         # Sadly, this means we need to forcefully set SameSite=None and rely on our other
         # CSRF protections to be working.
-        response.cookies[key]['samesite'] = 'None'
+        response.cookies[key]["samesite"] = "None"
         # This will only work on secure cookies as well
         # https://www.chromestatus.com/feature/5633521622188032
-        response.cookies[key]['secure'] = is_secure
+        response.cookies[key]["secure"] = is_secure
 
 
 # Based on https://www.chromium.org/updates/same-site/incompatible-clients
@@ -32,12 +33,15 @@ def set_cookie_without_samesite(request, response, key, *args, **kwargs):
 
 def should_send_same_site_none(useragent):
     # Don’t send `SameSite=None` to known incompatible clients.
-    return not has_web_kit_same_site_bug(useragent) and not drops_unrecognized_same_site_cookies(useragent)
+    return not has_web_kit_same_site_bug(
+        useragent
+    ) and not drops_unrecognized_same_site_cookies(useragent)
 
 
 def has_web_kit_same_site_bug(useragent):
     return is_ios_version(12, useragent) or (
-        is_macosx_version(10, 14, useragent) and (is_safari(useragent) or is_mac_embedded_browser(useragent))
+        is_macosx_version(10, 14, useragent)
+        and (is_safari(useragent) or is_mac_embedded_browser(useragent))
     )
 
 
@@ -45,8 +49,9 @@ def drops_unrecognized_same_site_cookies(useragent):
     if is_uc_browser(useragent):
         return not is_uc_browser_version_at_least(12, 13, 2, useragent)
     return (
-        is_chromium_based(useragent) and is_chromium_version_at_least(51, useragent) and
-        not is_chromium_version_at_least(67, useragent)
+        is_chromium_based(useragent)
+        and is_chromium_version_at_least(51, useragent)
+        and not is_chromium_version_at_least(67, useragent)
     )
 
 
@@ -55,10 +60,14 @@ RE_CHROMIUM = re.compile(r"Chrom(e|ium)")
 RE_CHROMIUM_VERSION = re.compile(r"Chrom[^ /]+[ /]([0-9]+)[.0-9]*")
 RE_UC_VERSION = re.compile(r"UC[ ]?Browser/([0-9]+)\.([0-9]+)\.([0-9]+)[.0-9]*")
 RE_IOS_VERSION = re.compile(r"\(iP.+; CPU .*OS ([0-9]+)[_0-9]*.*\) AppleWebKit/")
-RE_MAC_VERSION = re.compile(r"\(Macintosh;.*Mac OS X ([0-9]+)_([0-9]+)[_0-9]*.*\) AppleWebKit/")
+RE_MAC_VERSION = re.compile(
+    r"\(Macintosh;.*Mac OS X ([0-9]+)_([0-9]+)[_0-9]*.*\) AppleWebKit/"
+)
 RE_SAFARI = re.compile(r"Version/.* Safari/")
-RE_MAC_EMBEDDED = re.compile(r"^Mozilla/[.0-9]+ \(Macintosh;.*Mac OS X [_0-9]+\) AppleWebKit/[.0-9]+ \(KHTML, "
-                             r"like Gecko\)$")
+RE_MAC_EMBEDDED = re.compile(
+    r"^Mozilla/[.0-9]+ \(Macintosh;.*Mac OS X [_0-9]+\) AppleWebKit/[.0-9]+ \(KHTML, "
+    r"like Gecko\)$"
+)
 
 
 def is_ios_version(major, useragent):
@@ -98,7 +107,7 @@ def is_chromium_version_at_least(major, useragent):
 
 
 def is_uc_browser(useragent):
-    return 'UCBrowser/' in useragent
+    return "UCBrowser/" in useragent
 
 
 def is_uc_browser_version_at_least(major, minor, build, useragent):

@@ -4,24 +4,28 @@ import weakref
 from celery.exceptions import Retry
 from sentry_sdk import Hub
 from sentry_sdk.integrations.django import (
-    DjangoIntegration, _before_get_response, _set_user_info,
+    DjangoIntegration,
+    _before_get_response,
+    _set_user_info,
 )
 from sentry_sdk.integrations.django.asgi import patch_get_response_async
 from sentry_sdk.utils import capture_internal_exceptions
 
-MASK = '*' * 8
-KEYS = frozenset([
-    'password',
-    'secret',
-    'passwd',
-    'authorization',
-    'api_key',
-    'apikey',
-    'sentry_dsn',
-    'access_token',
-    'session',
-])
-VALUES_RE = re.compile(r'^(?:\d[ -]*?){13,16}$')
+MASK = "*" * 8
+KEYS = frozenset(
+    [
+        "password",
+        "secret",
+        "passwd",
+        "authorization",
+        "api_key",
+        "apikey",
+        "sentry_dsn",
+        "access_token",
+        "session",
+    ]
+)
+VALUES_RE = re.compile(r"^(?:\d[ -]*?){13,16}$")
 
 
 def _make_event_processor(weak_request, integration):

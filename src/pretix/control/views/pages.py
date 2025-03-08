@@ -22,14 +22,12 @@ class PageList(AdministratorPermissionRequiredMixin, ListView):
 
 class PageCreate(AdministratorPermissionRequiredMixin, FormView):
     model = Page
-    template_name = 'pretixcontrol/admin/pages/form.html'
+    template_name = "pretixcontrol/admin/pages/form.html"
     form_class = PageSettingsForm
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["locales"] = [
-            (locale[0], locale[1]) for locale in settings.LANGUAGES
-        ]
+        ctx["locales"] = [(locale[0], locale[1]) for locale in settings.LANGUAGES]
         return ctx
 
     def get_success_url(self) -> str:
@@ -39,11 +37,13 @@ class PageCreate(AdministratorPermissionRequiredMixin, FormView):
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, _('Your changes have been saved.'))
+        messages.success(self.request, _("Your changes have been saved."))
         return super().form_valid(form)
 
     def form_invalid(self, form):
-        messages.error(self.request, _('Your changes have not been saved, see below for errors.'))
+        messages.error(
+            self.request, _("Your changes have not been saved, see below for errors.")
+        )
         return super().form_invalid(form)
 
 
@@ -67,9 +67,7 @@ class PageEditForm(PageSettingsForm):
         return self.instance.slug
 
 
-class PageUpdate(
-    AdministratorPermissionRequiredMixin, PageDetailMixin, UpdateView
-):
+class PageUpdate(AdministratorPermissionRequiredMixin, PageDetailMixin, UpdateView):
     model = Page
     form_class = PageEditForm
     template_name = "pretixcontrol/admin/pages/form.html"
@@ -91,7 +89,7 @@ class PageUpdate(
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
         ctx["locales"] = []
-        ctx["url"] = f'{settings.SITE_URL}/{settings.BASE_PATH}page/{self.object.slug}'
+        ctx["url"] = f"{settings.SITE_URL}/{settings.BASE_PATH}page/{self.object.slug}"
 
         for lng_code, lng_name in settings.LANGUAGES:
             ctx["locales"].append((lng_code, lng_name))
@@ -109,7 +107,9 @@ class PageUpdate(
         return super().form_invalid(form)
 
 
-class PageDelete(AdministratorPermissionRequiredMixin, PageDetailMixin, CompatDeleteView):
+class PageDelete(
+    AdministratorPermissionRequiredMixin, PageDetailMixin, CompatDeleteView
+):
     model = Page
     template_name = "pretixcontrol/admin/pages/delete.html"
     context_object_name = "page"
@@ -134,8 +134,12 @@ class ShowPageView(TemplateView):
         ctx = super().get_context_data()
         page = self.get_page()
         ctx["page"] = page
-        ctx['show_link_in_header_for_all_pages'] = Page.objects.filter(link_in_header=True)
-        ctx['show_link_in_footer_for_all_pages'] = Page.objects.filter(link_in_footer=True)
+        ctx["show_link_in_header_for_all_pages"] = Page.objects.filter(
+            link_in_header=True
+        )
+        ctx["show_link_in_footer_for_all_pages"] = Page.objects.filter(
+            link_in_footer=True
+        )
 
         attributes = dict(bleach.ALLOWED_ATTRIBUTES)
         attributes["a"] = ["href", "title", "target"]

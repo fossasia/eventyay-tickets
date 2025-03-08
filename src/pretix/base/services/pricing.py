@@ -2,19 +2,32 @@ from decimal import Decimal
 
 from pretix.base.decimal import round_decimal
 from pretix.base.models import (
-    AbstractPosition, InvoiceAddress, Item, ItemAddOn, ItemVariation, Voucher,
+    AbstractPosition,
+    InvoiceAddress,
+    Item,
+    ItemAddOn,
+    ItemVariation,
+    Voucher,
 )
 from pretix.base.models.event import SubEvent
 from pretix.base.models.tax import TAXED_ZERO, TaxedPrice, TaxRule
 
 
-def get_price(item: Item, variation: ItemVariation = None,
-              voucher: Voucher = None, custom_price: Decimal = None,
-              subevent: SubEvent = None, custom_price_is_net: bool = False,
-              custom_price_is_tax_rate: Decimal=None,
-              addon_to: AbstractPosition = None, invoice_address: InvoiceAddress = None,
-              force_custom_price: bool = False, bundled_sum: Decimal = Decimal('0.00'),
-              max_discount: Decimal = None, tax_rule=None) -> TaxedPrice:
+def get_price(
+    item: Item,
+    variation: ItemVariation = None,
+    voucher: Voucher = None,
+    custom_price: Decimal = None,
+    subevent: SubEvent = None,
+    custom_price_is_net: bool = False,
+    custom_price_is_tax_rate: Decimal = None,
+    addon_to: AbstractPosition = None,
+    invoice_address: InvoiceAddress = None,
+    force_custom_price: bool = False,
+    bundled_sum: Decimal = Decimal("0.00"),
+    max_discount: Decimal = None,
+    tax_rule=None,
+) -> TaxedPrice:
     if addon_to:
         try:
             iao = addon_to.item.addons.get(addon_category_id=item.category_id)
@@ -42,35 +55,54 @@ def get_price(item: Item, variation: ItemVariation = None,
         tax_rule = item.tax_rule
     else:
         tax_rule = TaxRule(
-            name='',
-            rate=Decimal('0.00'),
+            name="",
+            rate=Decimal("0.00"),
             price_includes_tax=True,
             eu_reverse_charge=False,
         )
 
     if force_custom_price and custom_price is not None and custom_price != "":
         if custom_price_is_net:
-            price = tax_rule.tax(custom_price, base_price_is='net', invoice_address=invoice_address,
-                                 subtract_from_gross=bundled_sum)
+            price = tax_rule.tax(
+                custom_price,
+                base_price_is="net",
+                invoice_address=invoice_address,
+                subtract_from_gross=bundled_sum,
+            )
         else:
-            price = tax_rule.tax(custom_price, base_price_is='gross', invoice_address=invoice_address,
-                                 subtract_from_gross=bundled_sum)
+            price = tax_rule.tax(
+                custom_price,
+                base_price_is="gross",
+                invoice_address=invoice_address,
+                subtract_from_gross=bundled_sum,
+            )
     elif item.free_price and custom_price is not None and custom_price != "":
         if not isinstance(custom_price, Decimal):
             custom_price = Decimal(str(custom_price).replace(",", "."))
         if custom_price > 100000000:
-            raise ValueError('price_too_high')
+            raise ValueError("price_too_high")
 
         price = tax_rule.tax(price, invoice_address=invoice_address)
 
         if custom_price_is_net:
-            price = tax_rule.tax(max(custom_price, price.net), base_price_is='net',
-                                 invoice_address=invoice_address, subtract_from_gross=bundled_sum)
+            price = tax_rule.tax(
+                max(custom_price, price.net),
+                base_price_is="net",
+                invoice_address=invoice_address,
+                subtract_from_gross=bundled_sum,
+            )
         else:
-            price = tax_rule.tax(max(custom_price, price.gross), base_price_is='gross', gross_price_is_tax_rate=custom_price_is_tax_rate,
-                                 invoice_address=invoice_address, subtract_from_gross=bundled_sum)
+            price = tax_rule.tax(
+                max(custom_price, price.gross),
+                base_price_is="gross",
+                gross_price_is_tax_rate=custom_price_is_tax_rate,
+                invoice_address=invoice_address,
+                subtract_from_gross=bundled_sum,
+            )
     else:
-        price = tax_rule.tax(price, invoice_address=invoice_address, subtract_from_gross=bundled_sum)
+        price = tax_rule.tax(
+            price, invoice_address=invoice_address, subtract_from_gross=bundled_sum
+        )
 
     price.gross = round_decimal(price.gross, item.event.currency)
     price.net = round_decimal(price.net, item.event.currency)
