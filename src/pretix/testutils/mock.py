@@ -5,7 +5,7 @@ from pytest_mock import MockFixture
 
 class FakePytestConfig:
     def getini(self, *args, **kwargs):
-        return 'False'
+        return "False"
 
 
 @contextmanager

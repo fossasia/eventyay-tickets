@@ -7,9 +7,9 @@ from pretix.base.metrics import pretix_view_duration_seconds
 
 class MetricsMiddleware(object):
     banlist = (
-        '/healthcheck/',
-        '/jsi18n/',
-        '/metrics',
+        "/healthcheck/",
+        "/jsi18n/",
+        "/metrics",
     )
 
     def __init__(self, get_response):
@@ -28,7 +28,11 @@ class MetricsMiddleware(object):
         t0 = time.perf_counter()
         resp = self.get_response(request)
         tdiff = time.perf_counter() - t0
-        pretix_view_duration_seconds.observe(tdiff, status_code=resp.status_code, method=request.method,
-                                             url_name=url.namespace + ':' + url.url_name)
+        pretix_view_duration_seconds.observe(
+            tdiff,
+            status_code=resp.status_code,
+            method=request.method,
+            url_name=url.namespace + ":" + url.url_name,
+        )
 
         return resp

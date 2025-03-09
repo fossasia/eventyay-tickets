@@ -23,9 +23,17 @@ def daterange(df, dt):
         if df.year == dt.year and df.month == dt.month and df.day == dt.day:
             return "{}".format(_date(df, "DATE_FORMAT"))
         elif df.year == dt.year and df.month == dt.month:
-            return "{} - {} de {} de {}".format(_date(df, "j"), _date(dt, "j"), _date(dt, "F"), _date(dt, "Y"))
+            return "{} - {} de {} de {}".format(
+                _date(df, "j"), _date(dt, "j"), _date(dt, "F"), _date(dt, "Y")
+            )
         elif df.year == dt.year:
-            return "{} de {} - {} de {} de {}".format(_date(df, "j"), _date(df, "F"), _date(dt, "j"), _date(dt, "F"), _date(dt, "Y"))
+            return "{} de {} - {} de {} de {}".format(
+                _date(df, "j"),
+                _date(df, "F"),
+                _date(dt, "j"),
+                _date(dt, "F"),
+                _date(dt, "Y"),
+            )
 
     if df.year == dt.year and df.month == dt.month and df.day == dt.day:
         return _date(df, "DATE_FORMAT")

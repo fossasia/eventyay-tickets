@@ -8,48 +8,60 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pretixapi', '0003_oauthapplication_post_logout_redirect_uris_and_more'),
+        ("pretixapi", "0003_oauthapplication_post_logout_redirect_uris_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='oauthapplication',
-            name='allowed_origins',
-            field=models.TextField(default=''),
+            model_name="oauthapplication",
+            name="allowed_origins",
+            field=models.TextField(default=""),
         ),
         migrations.AddField(
-            model_name='oauthapplication',
-            name='hash_client_secret',
+            model_name="oauthapplication",
+            name="hash_client_secret",
             field=models.BooleanField(default=True),
         ),
         migrations.AlterField(
-            model_name='apicall',
-            name='id',
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
+            model_name="apicall",
+            name="id",
+            field=models.BigAutoField(
+                auto_created=True, primary_key=True, serialize=False
+            ),
         ),
         migrations.AlterField(
-            model_name='oauthaccesstoken',
-            name='token',
+            model_name="oauthaccesstoken",
+            name="token",
             field=models.CharField(db_index=True, max_length=255, unique=True),
         ),
         migrations.AlterField(
-            model_name='oauthapplication',
-            name='client_secret',
-            field=oauth2_provider.models.ClientSecretField(db_index=True, default=oauth2_provider.generators.generate_client_secret, max_length=255),
+            model_name="oauthapplication",
+            name="client_secret",
+            field=oauth2_provider.models.ClientSecretField(
+                db_index=True,
+                default=oauth2_provider.generators.generate_client_secret,
+                max_length=255,
+            ),
         ),
         migrations.AlterField(
-            model_name='webhook',
-            name='id',
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
+            model_name="webhook",
+            name="id",
+            field=models.BigAutoField(
+                auto_created=True, primary_key=True, serialize=False
+            ),
         ),
         migrations.AlterField(
-            model_name='webhookcall',
-            name='id',
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
+            model_name="webhookcall",
+            name="id",
+            field=models.BigAutoField(
+                auto_created=True, primary_key=True, serialize=False
+            ),
         ),
         migrations.AlterField(
-            model_name='webhookeventlistener',
-            name='id',
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
+            model_name="webhookeventlistener",
+            name="id",
+            field=models.BigAutoField(
+                auto_created=True, primary_key=True, serialize=False
+            ),
         ),
     ]

@@ -24,7 +24,9 @@ from pretix.base.models import Event, EventMetaValue, Organizer, Quota
 from pretix.base.services import tickets
 from pretix.base.services.quotas import QuotaAvailability
 from pretix.control.forms.event import (
-    EventUpdateForm, EventWizardBasicsForm, EventWizardFoundationForm,
+    EventUpdateForm,
+    EventWizardBasicsForm,
+    EventWizardFoundationForm,
 )
 from pretix.control.forms.filter import EventFilterForm
 from pretix.control.permissions import EventPermissionRequiredMixin
@@ -34,7 +36,10 @@ from pretix.control.views.item import MetaDataEditorMixin
 from pretix.eventyay_common.forms.event import EventCommonSettingsForm
 from pretix.eventyay_common.tasks import create_world, send_event_webhook
 from pretix.eventyay_common.utils import (
-    EventCreatedFor, check_create_permission, encode_email, generate_token,
+    EventCreatedFor,
+    check_create_permission,
+    encode_email,
+    generate_token,
 )
 from pretix.helpers.plugin_enable import is_video_enabled
 
@@ -161,7 +166,9 @@ class EventCreateView(SafeSessionWizardView):
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form, **kwargs)
-        context["create_for"] = self.storage.extra_data.get("create_for", EventCreatedFor.BOTH)
+        context["create_for"] = self.storage.extra_data.get(
+            "create_for", EventCreatedFor.BOTH
+        )
         context["has_organizer"] = self.request.user.teams.filter(
             can_create_events=True
         ).exists()
@@ -169,7 +176,9 @@ class EventCreateView(SafeSessionWizardView):
             context["organizer"] = self.get_cleaned_data_for_step("foundation").get(
                 "organizer"
             )
-        context["event_creation_for_choice"] = {e.name: e.value for e in EventCreatedFor}
+        context["event_creation_for_choice"] = {
+            e.name: e.value for e in EventCreatedFor
+        }
         return context
 
     def render(self, form=None, **kwargs):
@@ -278,13 +287,16 @@ class EventCreateView(SafeSessionWizardView):
             token=generate_token(self.request),
         )
         create_world.delay(
-            is_video_creation=foundation_data.get("is_video_creation"), event_data=event_data
+            is_video_creation=foundation_data.get("is_video_creation"),
+            event_data=event_data,
         )
 
-        return redirect(reverse("eventyay_common:event.index", kwargs={
-            'event': event.slug,
-            'organizer': event.organizer.slug
-        }))
+        return redirect(
+            reverse(
+                "eventyay_common:event.index",
+                kwargs={"event": event.slug, "organizer": event.organizer.slug},
+            )
+        )
 
 
 class EventUpdate(
@@ -321,7 +333,7 @@ class EventUpdate(
     def get_context_data(self, *args, **kwargs) -> dict:
         context = super().get_context_data(*args, **kwargs)
         context["sform"] = self.sform
-        context['is_video_enabled'] = is_video_enabled(self.object)
+        context["is_video_enabled"] = is_video_enabled(self.object)
         context["is_talk_event_created"] = False
         if (
             self.object.settings.create_for == EventCreatedFor.BOTH
@@ -364,7 +376,9 @@ class EventUpdate(
             return False
 
         if not check_create_permission(self.request):
-            messages.error(self.request, _("You do not have permission to perform this action."))
+            messages.error(
+                self.request, _("You do not have permission to perform this action.")
+            )
             return False
 
         send_event_webhook.delay(
@@ -394,7 +408,9 @@ class EventUpdate(
             return False
 
         if not check_create_permission(self.request):
-            messages.error(self.request, _("You do not have permission to perform this action."))
+            messages.error(
+                self.request, _("You do not have permission to perform this action.")
+            )
             return False
 
         create_world.delay(
@@ -405,8 +421,8 @@ class EventUpdate(
                 "timezone": self.request.event.settings.timezone,
                 "locale": self.request.event.settings.locale,
                 "has_permission": True,
-                "token": generate_token(self.request)
-            }
+                "token": generate_token(self.request),
+            },
         )
         return True
 
@@ -425,7 +441,10 @@ class EventUpdate(
                 event = form.instance
                 event.date_from = self.reset_timezone(zone, event.date_from)
                 event.date_to = self.reset_timezone(zone, event.date_to)
-                if event.settings.create_for and event.settings.create_for == EventCreatedFor.BOTH:
+                if (
+                    event.settings.create_for
+                    and event.settings.create_for == EventCreatedFor.BOTH
+                ):
                     event_dict = {
                         "organiser_slug": event.organizer.slug,
                         "name": event.name.data,

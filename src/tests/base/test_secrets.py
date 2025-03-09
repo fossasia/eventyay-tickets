@@ -4,7 +4,8 @@ from django_scopes import scope
 
 from pretix.base.models import Event, Organizer
 from pretix.base.secrets import (
-    RandomTicketSecretGenerator, Sig1TicketSecretGenerator,
+    RandomTicketSecretGenerator,
+    Sig1TicketSecretGenerator,
 )
 
 schemes = (
@@ -13,13 +14,15 @@ schemes = (
 )
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def event():
-    o = Organizer.objects.create(name='Dummy', slug='dummy')
+    o = Organizer.objects.create(name="Dummy", slug="dummy")
     event = Event.objects.create(
-        organizer=o, name='Dummy', slug='dummy',
+        organizer=o,
+        name="Dummy",
+        slug="dummy",
         date_from=now(),
-        plugins='pretix.plugins.banktransfer'
+        plugins="pretix.plugins.banktransfer",
     )
     with scope(organizer=o):
         yield event
@@ -32,9 +35,13 @@ def test_force_invalidate(event, scheme):
     generator, input_dependent = scheme
     g = generator(event)
 
-    first = g.generate_secret(item, None, None, current_secret=None, force_invalidate=False)
+    first = g.generate_secret(
+        item, None, None, current_secret=None, force_invalidate=False
+    )
     assert first
-    second = g.generate_secret(item, None, None, current_secret=first, force_invalidate=True)
+    second = g.generate_secret(
+        item, None, None, current_secret=first, force_invalidate=True
+    )
     assert first != second
 
 
@@ -45,9 +52,13 @@ def test_keep_same(event, scheme):
     generator, input_dependent = scheme
     g = generator(event)
 
-    first = g.generate_secret(item, None, None, current_secret=None, force_invalidate=False)
+    first = g.generate_secret(
+        item, None, None, current_secret=None, force_invalidate=False
+    )
     assert first
-    second = g.generate_secret(item, None, None, current_secret=first, force_invalidate=False)
+    second = g.generate_secret(
+        item, None, None, current_secret=first, force_invalidate=False
+    )
     assert first == second
 
 
@@ -59,9 +70,13 @@ def test_change_if_required(event, scheme):
     generator, input_dependent = scheme
     g = generator(event)
 
-    first = g.generate_secret(item, None, None, current_secret=None, force_invalidate=False)
+    first = g.generate_secret(
+        item, None, None, current_secret=None, force_invalidate=False
+    )
     assert first
-    second = g.generate_secret(item2, None, None, current_secret=first, force_invalidate=False)
+    second = g.generate_secret(
+        item2, None, None, current_secret=first, force_invalidate=False
+    )
     if input_dependent:
         assert first != second
     else:
@@ -76,6 +91,8 @@ def test_change_if_invalid(event, scheme):
     g = generator(event)
 
     first = "blafasel"
-    second = g.generate_secret(item, None, None, current_secret=first, force_invalidate=False)
+    second = g.generate_secret(
+        item, None, None, current_secret=first, force_invalidate=False
+    )
     if input_dependent:
         assert first != second

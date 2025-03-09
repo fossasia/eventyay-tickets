@@ -11,9 +11,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='badgelayout',
-            name='size',
-            field=models.TextField(default='[{"width": 148, "height": 105, "orientation": "portrait"}]'),
+            model_name="badgelayout",
+            name="size",
+            field=models.TextField(
+                default='[{"width": 148, "height": 105, "orientation": "portrait"}]'
+            ),
         ),
         migrations.AlterField(
             model_name="badgeitem",

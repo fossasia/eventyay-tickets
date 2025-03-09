@@ -9,7 +9,12 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.platypus import (
-    Flowable, HRFlowable, Paragraph, SimpleDocTemplate, Spacer, Table,
+    Flowable,
+    HRFlowable,
+    Paragraph,
+    SimpleDocTemplate,
+    Spacer,
+    Table,
     TableStyle,
 )
 
@@ -94,7 +99,7 @@ class InvoicePDFGenerator:
                 fontSize=10,
                 textColor=colors.white,
                 fontName="Helvetica-Bold",
-            )
+            ),
         }
 
         custom_styles["header_style_center"] = ParagraphStyle(

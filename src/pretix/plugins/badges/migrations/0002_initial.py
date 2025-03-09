@@ -9,24 +9,38 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('badges', '0001_initial'),
-        ('pretixbase', '0001_initial'),
+        ("badges", "0001_initial"),
+        ("pretixbase", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='badgelayout',
-            name='event',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='badge_layouts', to='pretixbase.event'),
+            model_name="badgelayout",
+            name="event",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="badge_layouts",
+                to="pretixbase.event",
+            ),
         ),
         migrations.AddField(
-            model_name='badgeitem',
-            name='item',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='badge_assignment', to='pretixbase.item'),
+            model_name="badgeitem",
+            name="item",
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="badge_assignment",
+                to="pretixbase.item",
+            ),
         ),
         migrations.AddField(
-            model_name='badgeitem',
-            name='layout',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='item_assignments', to='badges.badgelayout'),
+            model_name="badgeitem",
+            name="layout",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="item_assignments",
+                to="badges.badgelayout",
+            ),
         ),
     ]

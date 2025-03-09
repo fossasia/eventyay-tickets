@@ -13,13 +13,17 @@ from pretix.celery_app import app
 from pretix.helpers.urls import build_absolute_uri
 
 
-@app.task(base=TransactionAwareTask, acks_late=True, max_retries=9, default_retry_delay=900)
+@app.task(
+    base=TransactionAwareTask, acks_late=True, max_retries=9, default_retry_delay=900
+)
 @scopes_disabled()
 def notify(logentry_ids: list):
     if not isinstance(logentry_ids, list):
         logentry_ids = [logentry_ids]
 
-    qs = LogEntry.all.select_related('event', 'event__organizer').filter(id__in=logentry_ids)
+    qs = LogEntry.all.select_related("event", "event__organizer").filter(
+        id__in=logentry_ids
+    )
 
     _event, _at, notify_specific, notify_global = None, None, None, None
     for logentry in qs:
@@ -31,7 +35,11 @@ def notify(logentry_ids: list):
         if not notification_type:
             break  # No suitable plugin
 
-        if _event != logentry.event or _at != logentry.action_type or notify_global is None:
+        if (
+            _event != logentry.event
+            or _at != logentry.action_type
+            or notify_global is None
+        ):
             _event = logentry.event
             _at = logentry.action_type
             # All users that have the permission to get the notification
@@ -47,7 +55,7 @@ def notify(logentry_ids: list):
                 for ns in NotificationSetting.objects.filter(
                     event=logentry.event,
                     action_type=notification_type.action_type,
-                    user__pk__in=users.values_list('pk', flat=True)
+                    user__pk__in=users.values_list("pk", flat=True),
                 )
             }
             notify_global = {
@@ -55,28 +63,38 @@ def notify(logentry_ids: list):
                 for ns in NotificationSetting.objects.filter(
                     event__isnull=True,
                     action_type=notification_type.action_type,
-                    user__pk__in=users.values_list('pk', flat=True)
+                    user__pk__in=users.values_list("pk", flat=True),
                 )
             }
 
         for um, enabled in notify_specific.items():
             user, method = um
             if enabled:
-                send_notification.apply_async(args=(logentry.id, notification_type.action_type, user.pk, method))
+                send_notification.apply_async(
+                    args=(logentry.id, notification_type.action_type, user.pk, method)
+                )
 
         for um, enabled in notify_global.items():
             user, method = um
             if enabled and um not in notify_specific:
-                send_notification.apply_async(args=(logentry.id, notification_type.action_type, user.pk, method))
+                send_notification.apply_async(
+                    args=(logentry.id, notification_type.action_type, user.pk, method)
+                )
 
 
 @app.task(base=ProfiledTask, acks_late=True, max_retries=9, default_retry_delay=900)
 def send_notification(logentry_id: int, action_type: str, user_id: int, method: str):
     logentry = LogEntry.all.get(id=logentry_id)
     if logentry.event:
-        def sm(): return scope(organizer=logentry.event.organizer)  # noqa
+
+        def sm():
+            return scope(organizer=logentry.event.organizer)  # noqa
+
     else:
-        def sm(): return scopes_disabled()  # noqa
+
+        def sm():
+            return scopes_disabled()  # noqa
+
     with sm():
         user = User.objects.get(id=user_id)
         types = get_all_notification_types(logentry.event)
@@ -84,7 +102,10 @@ def send_notification(logentry_id: int, action_type: str, user_id: int, method: 
         if not notification_type:
             return  # Ignore, e.g. plugin not active for this event
 
-        with language(user.locale), override(logentry.event.timezone if logentry.event else user.timezone):
+        with (
+            language(user.locale),
+            override(logentry.event.timezone if logentry.event else user.timezone),
+        ):
             notification = notification_type.build_notification(logentry)
 
             if method == "mail":
@@ -93,37 +114,37 @@ def send_notification(logentry_id: int, action_type: str, user_id: int, method: 
 
 def send_notification_mail(notification: Notification, user: User):
     ctx = {
-        'site': settings.INSTANCE_NAME,
-        'site_url': settings.SITE_URL,
-        'color': settings.PRETIX_PRIMARY_COLOR,
-        'notification': notification,
-        'settings_url': build_absolute_uri(
-            'control:user.settings.notifications',
+        "site": settings.INSTANCE_NAME,
+        "site_url": settings.SITE_URL,
+        "color": settings.PRETIX_PRIMARY_COLOR,
+        "notification": notification,
+        "settings_url": build_absolute_uri(
+            "control:user.settings.notifications",
         ),
-        'disable_url': build_absolute_uri(
-            'control:user.settings.notifications.off',
-            kwargs={
-                'token': user.notifications_token,
-                'id': user.pk
-            }
-        )
+        "disable_url": build_absolute_uri(
+            "control:user.settings.notifications.off",
+            kwargs={"token": user.notifications_token, "id": user.pk},
+        ),
     }
 
-    tpl_html = get_template('pretixbase/email/notification.html')
+    tpl_html = get_template("pretixbase/email/notification.html")
     body_html = inline_css(tpl_html.render(ctx))
-    tpl_plain = get_template('pretixbase/email/notification.txt')
+    tpl_plain = get_template("pretixbase/email/notification.txt")
     body_plain = tpl_plain.render(ctx)
 
-    mail_send_task.apply_async(kwargs={
-        'to': [user.email],
-        'subject': '[{}] {}: {}'.format(
-            settings.INSTANCE_NAME,
-            notification.event.settings.mail_prefix or notification.event.slug.upper(),
-            notification.title
-        ),
-        'body': body_plain,
-        'html': body_html,
-        'sender': settings.MAIL_FROM,
-        'headers': {},
-        'user': user.pk
-    })
+    mail_send_task.apply_async(
+        kwargs={
+            "to": [user.email],
+            "subject": "[{}] {}: {}".format(
+                settings.INSTANCE_NAME,
+                notification.event.settings.mail_prefix
+                or notification.event.slug.upper(),
+                notification.title,
+            ),
+            "body": body_plain,
+            "html": body_html,
+            "sender": settings.MAIL_FROM,
+            "headers": {},
+            "user": user.pk,
+        }
+    )

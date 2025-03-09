@@ -13,6 +13,7 @@ In particular, we changed:
 * Fully passing tests against shared tests suite at 2020-04-19
 * Option to add custom operations
 """
+
 import logging
 from functools import reduce
 
@@ -60,9 +61,7 @@ def less(a, b, *args):
 
 def less_or_equal(a, b, *args):
     """Implements the '<=' operator with JS-style type coertion."""
-    return (
-        less(a, b) or soft_equals(a, b)
-    ) and (not args or less_or_equal(b, *args))
+    return (less(a, b) or soft_equals(a, b)) and (not args or less_or_equal(b, *args))
 
 
 def to_numeric(arg):
@@ -71,7 +70,7 @@ def to_numeric(arg):
     This is important, because e.g. {"!==": [{"+": "0"}, 0.0]}
     """
     if isinstance(arg, str):
-        if '.' in arg:
+        if "." in arg:
             return float(arg)
         else:
             return int(arg)
@@ -106,7 +105,7 @@ def get_var(data, var_name="", not_found=None):
     if var_name == "" or var_name is None:
         return data
     try:
-        for key in str(var_name).split('.'):
+        for key in str(var_name).split("."):
             try:
                 data = data[key]
             except TypeError:
@@ -177,7 +176,7 @@ operations = {
 }
 
 
-class Logic():
+class Logic:
     def __init__(self):
         self._operations = {}
 
@@ -201,39 +200,40 @@ class Logic():
             values = [values]
 
         # Array-level operations
-        if operator == 'none':
-            return not any(self.apply(values[1], i) for i in self.apply(values[0], data))
-        if operator == 'all':
+        if operator == "none":
+            return not any(
+                self.apply(values[1], i) for i in self.apply(values[0], data)
+            )
+        if operator == "all":
             elements = self.apply(values[0], data)
             if not elements:
                 return False
             return all(self.apply(values[1], i) for i in elements)
-        if operator == 'some':
+        if operator == "some":
             return any(self.apply(values[1], i) for i in self.apply(values[0], data))
-        if operator == 'reduce':
+        if operator == "reduce":
             return reduce(
-                lambda acc, el: self.apply(values[1], {'current': el, 'accumulator': acc}),
+                lambda acc, el: self.apply(
+                    values[1], {"current": el, "accumulator": acc}
+                ),
                 self.apply(values[0], data) or [],
-                self.apply(values[2], data)
+                self.apply(values[2], data),
             )
-        if operator == 'map':
+        if operator == "map":
             return [
                 self.apply(values[1], i) for i in (self.apply(values[0], data) or [])
             ]
-        if operator == 'filter':
-            return [
-                i for i in self.apply(values[0], data)
-                if self.apply(values[1], i)
-            ]
+        if operator == "filter":
+            return [i for i in self.apply(values[0], data) if self.apply(values[1], i)]
 
         # Recursion!
         values = [self.apply(val, data) for val in values]
 
-        if operator == 'var':
+        if operator == "var":
             return get_var(data, *values)
-        if operator == 'missing':
+        if operator == "missing":
             return missing(data, *values)
-        if operator == 'missing_some':
+        if operator == "missing_some":
             return missing_some(data, *values)
 
         if operator in operations:

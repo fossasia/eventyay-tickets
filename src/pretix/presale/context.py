@@ -10,13 +10,20 @@ from i18nfield.strings import LazyI18nString
 from pretix.base.models.page import Page
 from pretix.base.settings import GlobalSettingsObject
 from pretix.helpers.i18n import (
-    get_javascript_format_without_seconds, get_moment_locale,
+    get_javascript_format_without_seconds,
+    get_moment_locale,
 )
 
 from ..base.i18n import get_language_without_region
 from .signals import (
-    footer_link, global_footer_link, global_html_footer, global_html_head,
-    global_html_page_header, html_footer, html_head, html_page_header,
+    footer_link,
+    global_footer_link,
+    global_html_footer,
+    global_html_head,
+    global_html_page_header,
+    html_footer,
+    html_head,
+    html_page_header,
 )
 
 logger = logging.getLogger(__name__)
@@ -150,11 +157,23 @@ def _default_context(request):
     ctx["django_settings"] = settings
 
     # Check to show organizer area
-    ctx['show_organizer_area'] = False
-    if request.user and request.user.is_authenticated and hasattr(request, 'organizer') and request.organizer and hasattr(request, 'event') and request.event:
-        ctx['show_organizer_area'] = request.user.has_event_permission(request.organizer, request.event, 'can_change_event_settings', request=request)
+    ctx["show_organizer_area"] = False
+    if (
+        request.user
+        and request.user.is_authenticated
+        and hasattr(request, "organizer")
+        and request.organizer
+        and hasattr(request, "event")
+        and request.event
+    ):
+        ctx["show_organizer_area"] = request.user.has_event_permission(
+            request.organizer,
+            request.event,
+            "can_change_event_settings",
+            request=request,
+        )
 
-    ctx['show_link_in_header_for_all_pages'] = Page.objects.filter(link_in_header=True)
-    ctx['show_link_in_footer_for_all_pages'] = Page.objects.filter(link_in_footer=True)
+    ctx["show_link_in_header_for_all_pages"] = Page.objects.filter(link_in_header=True)
+    ctx["show_link_in_footer_for_all_pages"] = Page.objects.filter(link_in_footer=True)
 
     return ctx

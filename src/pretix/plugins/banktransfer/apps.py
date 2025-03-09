@@ -6,16 +6,17 @@ from pretix import __version__ as version
 
 
 class BankTransferApp(AppConfig):
-    name = 'pretix.plugins.banktransfer'
+    name = "pretix.plugins.banktransfer"
     verbose_name = _("Bank transfer")
 
     class PretixPluginMeta:
         name = _("Bank transfer")
-        category = 'PAYMENT'
+        category = "PAYMENT"
         featured = True
         version = version
-        description = _("This plugin allows you to receive payments " +
-                        "via bank transfer.")
+        description = _(
+            "This plugin allows you to receive payments " + "via bank transfer."
+        )
 
     def ready(self):
         from . import signals  # NOQA
@@ -28,8 +29,12 @@ class BankTransferApp(AppConfig):
         try:
             import chardet  # NOQA
         except ImportError:
-            errs.append(_("Install the python package 'chardet' for better CSV import capabilities."))
+            errs.append(
+                _(
+                    "Install the python package 'chardet' for better CSV import capabilities."
+                )
+            )
         return errs
 
 
-default_app_config = 'pretix.plugins.banktransfer.BankTransferApp'
+default_app_config = "pretix.plugins.banktransfer.BankTransferApp"

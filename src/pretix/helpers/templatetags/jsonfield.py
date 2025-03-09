@@ -8,19 +8,19 @@ from django.db.models import Expression, JSONField
 
 
 def postgres_compile_json_path(key_transforms):
-    return "{" + ','.join(key_transforms) + "}"
+    return "{" + ",".join(key_transforms) + "}"
 
 
 def sqlite_compile_json_path(key_transforms):
-    path = ['$']
+    path = ["$"]
     for key_transform in key_transforms:
         try:
             num = int(key_transform)
-            path.append('[{}]'.format(num))
+            path.append("[{}]".format(num))
         except ValueError:  # non-integer
-            path.append('.')
+            path.append(".")
             path.append(key_transform)
-    return ''.join(path)
+    return "".join(path)
 
 
 class JSONExtract(Expression):
@@ -30,24 +30,36 @@ class JSONExtract(Expression):
         self.source_expression = self._parse_expressions(expression)[0]
         self.extra = extra
 
-    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
+    def resolve_expression(
+        self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False
+    ):
         c = self.copy()
         c.is_summary = summarize
-        c.source_expression = c.source_expression.resolve_expression(query, allow_joins, reuse, summarize, for_save)
+        c.source_expression = c.source_expression.resolve_expression(
+            query, allow_joins, reuse, summarize, for_save
+        )
         return c
 
-    def as_sql(self, compiler, connection, function=None, template=None, arg_joiner=None, **extra_context):
-        if '.postgresql' in connection.settings_dict['ENGINE']:
+    def as_sql(
+        self,
+        compiler,
+        connection,
+        function=None,
+        template=None,
+        arg_joiner=None,
+        **extra_context,
+    ):
+        if ".postgresql" in connection.settings_dict["ENGINE"]:
             params = []
             arg_sql, arg_params = compiler.compile(self.source_expression)
             params.extend(arg_params)
             json_path = postgres_compile_json_path(self.path)
             params.append(json_path)
-            template = '{} #> %s'.format(arg_sql)
+            template = "{} #> %s".format(arg_sql)
             return template, params
         else:
             raise NotSupportedError(
-                'Functions on JSONFields are only supported on PostgreSQL.'
+                "Functions on JSONFields are only supported on PostgreSQL."
             )
 
     def copy(self):

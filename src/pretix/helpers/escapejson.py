@@ -3,18 +3,18 @@ from django.utils.functional import keep_lazy
 from django.utils.safestring import SafeText, mark_safe
 
 _json_escapes = {
-    ord('>'): '\\u003E',
-    ord('<'): '\\u003C',
-    ord('&'): '\\u0026',
+    ord(">"): "\\u003E",
+    ord("<"): "\\u003C",
+    ord("&"): "\\u0026",
 }
 
 _json_escapes_attr = {
-    ord('>'): '\\u003E',
-    ord('<'): '\\u003C',
-    ord('&'): '\\u0026',
-    ord('"'): '&#34;',
-    ord("'"): '&#39;',
-    ord("="): '&#61;',
+    ord(">"): "\\u003E",
+    ord("<"): "\\u003C",
+    ord("&"): "\\u0026",
+    ord('"'): "&#34;",
+    ord("'"): "&#39;",
+    ord("="): "&#61;",
 }
 
 

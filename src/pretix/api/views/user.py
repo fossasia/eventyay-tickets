@@ -11,10 +11,12 @@ class MeView(APIView):
     permission_classes = (ProfilePermission,)
 
     def get(self, request, format=None):
-        return Response({
-            'email': request.user.email,
-            'fullname': request.user.fullname,
-            'locale': request.user.locale,
-            'is_staff': request.user.is_staff,
-            'timezone': request.user.timezone
-        })
+        return Response(
+            {
+                "email": request.user.email,
+                "fullname": request.user.fullname,
+                "locale": request.user.locale,
+                "is_staff": request.user.is_staff,
+                "timezone": request.user.timezone,
+            }
+        )

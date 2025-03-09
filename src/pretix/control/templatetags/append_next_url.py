@@ -9,4 +9,4 @@ register = template.Library()
 def append_next(next_url=None):
     if next_url and next_url.strip():
         return f'?{urlencode({"next": next_url})}'
-    return ''
+    return ""

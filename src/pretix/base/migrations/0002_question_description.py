@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pretixbase', '0001_initial'),
+        ("pretixbase", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='question',
-            name='description',
-            field=i18nfield.fields.I18nTextField(default='',  null=True),
+            model_name="question",
+            name="description",
+            field=i18nfield.fields.I18nTextField(default="", null=True),
         ),
     ]

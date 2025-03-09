@@ -9,11 +9,17 @@ class Command(BaseCommand):
     help = "Create an OAuth2 Application for the Talk SSO Client"
 
     def handle(self, *args, **options):
-        redirect_uris = input('Enter the redirect URI: ')  # Get redirect URI from user input
+        redirect_uris = input(
+            "Enter the redirect URI: "
+        )  # Get redirect URI from user input
 
         # Check if the application already exists based on redirect_uri
         if OAuthApplication.objects.filter(redirect_uris=redirect_uris).exists():
-            self.stdout.write(self.style.WARNING('OAuth2 Application with this redirect URI already exists.'))
+            self.stdout.write(
+                self.style.WARNING(
+                    "OAuth2 Application with this redirect URI already exists."
+                )
+            )
             return
 
         # Create the OAuth2 Application
@@ -30,6 +36,6 @@ class Command(BaseCommand):
         )
         application.save()
 
-        self.stdout.write(self.style.SUCCESS('Successfully created OAuth2 Application'))
-        self.stdout.write(f'Client ID: {application.client_id}')
-        self.stdout.write(f'Client Secret: {application.client_secret}')
+        self.stdout.write(self.style.SUCCESS("Successfully created OAuth2 Application"))
+        self.stdout.write(f"Client ID: {application.client_id}")
+        self.stdout.write(f"Client Secret: {application.client_secret}")

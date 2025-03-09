@@ -1,5 +1,4 @@
-from .base_organizer_footer_link_form_set import \
-    BaseOrganizerFooterLink  # NOQA: F401
+from .base_organizer_footer_link_form_set import BaseOrganizerFooterLink  # NOQA: F401
 from .device_form import DeviceForm  # NOQA: F401
 from .event_meta_property_form import EventMetaPropertyForm  # NOQA: F401
 from .gate_form import GateForm  # NOQA: F401

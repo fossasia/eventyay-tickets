@@ -11,10 +11,10 @@ def test_crash():
     to deal with random test crashes on Travis CI using SQLite. Usually, this test is
     skipped to avoid causing additional crashes in real runs.
     """
-    if os.path.exists('crashed.tmp'):
+    if os.path.exists("crashed.tmp"):
         assert 1
-        os.remove('crashed.tmp')
+        os.remove("crashed.tmp")
     else:
-        with open('crashed.tmp', 'w') as f:
-            f.write('hi')
+        with open("crashed.tmp", "w") as f:
+            f.write("hi")
         os.kill(os.getpid(), 9)

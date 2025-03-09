@@ -9,16 +9,21 @@ from pretix.base.models import Event, Order, Organizer, Team, User
 
 @pytest.fixture
 def env():
-    o = Organizer.objects.create(name='Dummy', slug='dummy')
+    o = Organizer.objects.create(name="Dummy", slug="dummy")
     event = Event.objects.create(
-        organizer=o, name='Dummy', slug='dummy',
-        date_from=now(), plugins='pretix.plugins.banktransfer'
+        organizer=o,
+        name="Dummy",
+        slug="dummy",
+        date_from=now(),
+        plugins="pretix.plugins.banktransfer",
     )
-    user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
+    user = User.objects.create_user("dummy@dummy.dummy", "dummy")
     Order.objects.create(
-        code='FOO', event=event,
+        code="FOO",
+        event=event,
         status=Order.STATUS_PENDING,
-        datetime=now(), expires=now() + timedelta(days=10),
+        datetime=now(),
+        expires=now() + timedelta(days=10),
         total=0,
     )
     Team.objects.create(pk=1, organizer=o)
@@ -132,86 +137,96 @@ event_urls = [
 ]
 
 organizer_urls = [
-    'organizer/abc/edit',
-    'organizer/abc/',
-    'organizer/abc/teams',
-    'organizer/abc/team/1/',
-    'organizer/abc/team/1/edit',
-    'organizer/abc/team/1/delete',
-    'organizer/abc/team/add',
-    'organizer/abc/devices',
-    'organizer/abc/device/add',
-    'organizer/abc/device/1/edit',
-    'organizer/abc/device/1/connect',
-    'organizer/abc/device/1/revoke',
-    'organizer/abc/gates',
-    'organizer/abc/gate/add',
-    'organizer/abc/gate/1/edit',
-    'organizer/abc/gate/1/delete',
-    'organizer/abc/properties',
-    'organizer/abc/property/add',
-    'organizer/abc/property/1/edit',
-    'organizer/abc/property/1/delete',
-    'organizer/abc/webhooks',
-    'organizer/abc/webhook/add',
-    'organizer/abc/webhook/1/edit',
-    'organizer/abc/webhook/1/logs',
-    'organizer/abc/giftcards',
-    'organizer/abc/giftcard/add',
-    'organizer/abc/giftcard/1/',
-    'organizer/abc/giftcard/1/edit',
+    "organizer/abc/edit",
+    "organizer/abc/",
+    "organizer/abc/teams",
+    "organizer/abc/team/1/",
+    "organizer/abc/team/1/edit",
+    "organizer/abc/team/1/delete",
+    "organizer/abc/team/add",
+    "organizer/abc/devices",
+    "organizer/abc/device/add",
+    "organizer/abc/device/1/edit",
+    "organizer/abc/device/1/connect",
+    "organizer/abc/device/1/revoke",
+    "organizer/abc/gates",
+    "organizer/abc/gate/add",
+    "organizer/abc/gate/1/edit",
+    "organizer/abc/gate/1/delete",
+    "organizer/abc/properties",
+    "organizer/abc/property/add",
+    "organizer/abc/property/1/edit",
+    "organizer/abc/property/1/delete",
+    "organizer/abc/webhooks",
+    "organizer/abc/webhook/add",
+    "organizer/abc/webhook/1/edit",
+    "organizer/abc/webhook/1/logs",
+    "organizer/abc/giftcards",
+    "organizer/abc/giftcard/add",
+    "organizer/abc/giftcard/1/",
+    "organizer/abc/giftcard/1/edit",
 ]
 
 
 @pytest.fixture
 def perf_patch(monkeypatch):
     # Patch out template rendering for performance improvements
-    monkeypatch.setattr("django.template.backends.django.Template.render", lambda *args, **kwargs: "mocked template")
+    monkeypatch.setattr(
+        "django.template.backends.django.Template.render",
+        lambda *args, **kwargs: "mocked template",
+    )
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("url", [
-    "",
-    "settings",
-    "admin/",
-    "organizers/",
-    "organizers/add",
-    "organizers/select2",
-    "events/",
-    "events/add",
-] + ['event/dummy/dummy/' + u for u in event_urls] + organizer_urls)
+@pytest.mark.parametrize(
+    "url",
+    [
+        "",
+        "settings",
+        "admin/",
+        "organizers/",
+        "organizers/add",
+        "organizers/select2",
+        "events/",
+        "events/add",
+    ]
+    + ["event/dummy/dummy/" + u for u in event_urls]
+    + organizer_urls,
+)
 def test_logged_out(client, env, url):
     client.logout()
-    response = client.get('/control/' + url)
+    response = client.get("/control/" + url)
     assert response.status_code == 302
-    assert "/control/login" in response['Location']
+    assert "/control/login" in response["Location"]
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("url", superuser_urls)
 def test_superuser_required(perf_patch, client, env, url):
-    client.login(email='dummy@dummy.dummy', password='dummy')
+    client.login(email="dummy@dummy.dummy", password="dummy")
     env[1].is_staff = True
     env[1].save()
-    response = client.get('/control/' + url)
+    response = client.get("/control/" + url)
     if response.status_code == 302:
-        assert '/sudo/' in response['Location']
+        assert "/sudo/" in response["Location"]
     else:
         assert response.status_code == 403
-    env[1].staffsession_set.create(date_start=now(), session_key=client.session.session_key)
-    response = client.get('/control/' + url)
+    env[1].staffsession_set.create(
+        date_start=now(), session_key=client.session.session_key
+    )
+    response = client.get("/control/" + url)
     assert response.status_code in (200, 302, 404)
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("url", staff_urls)
 def test_staff_required(perf_patch, client, env, url):
-    client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.get('/control/' + url)
+    client.login(email="dummy@dummy.dummy", password="dummy")
+    response = client.get("/control/" + url)
     assert response.status_code == 403
     env[1].is_staff = True
     env[1].save()
-    response = client.get('/control/' + url)
+    response = client.get("/control/" + url)
     assert response.status_code in (200, 302, 404)
 
 
@@ -219,15 +234,18 @@ def test_staff_required(perf_patch, client, env, url):
 @pytest.mark.parametrize("url", event_urls)
 def test_wrong_event(perf_patch, client, env, url):
     event2 = Event.objects.create(
-        organizer=env[2], name='Dummy', slug='dummy2',
-        date_from=now(), plugins='pretix.plugins.banktransfer'
+        organizer=env[2],
+        name="Dummy",
+        slug="dummy2",
+        date_from=now(),
+        plugins="pretix.plugins.banktransfer",
     )
     t = Team.objects.create(organizer=env[2], can_change_event_settings=True)
     t.members.add(env[1])
     t.limit_events.add(event2)
 
-    client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.get('/control/event/dummy/dummy/' + url)
+    client.login(email="dummy@dummy.dummy", password="dummy")
+    response = client.get("/control/event/dummy/dummy/" + url)
     # These permission violations do not yield a 403 error, but
     # a 404 error to prevent information leakage
     assert response.status_code == 404
@@ -316,7 +334,6 @@ event_permission_urls = [
     ("can_change_event_settings", "checkinlists/add", 200),
     ("can_change_event_settings", "checkinlists/1/change", 404),
     ("can_change_event_settings", "checkinlists/1/delete", 404),
-
     # bank transfer
     ("can_change_orders", "banktransfer/import/", 200),
     ("can_change_orders", "banktransfer/job/1/", 404),
@@ -330,48 +347,49 @@ event_permission_urls = [
 @pytest.mark.django_db
 @pytest.mark.parametrize("perm,url,code", event_permission_urls)
 def test_wrong_event_permission(perf_patch, client, env, perm, url, code):
-    t = Team(
-        organizer=env[2], all_events=True
-    )
+    t = Team(organizer=env[2], all_events=True)
     setattr(t, perm, False)
     t.save()
     t.members.add(env[1])
-    client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.get('/control/event/dummy/dummy/' + url)
+    client.login(email="dummy@dummy.dummy", password="dummy")
+    response = client.get("/control/event/dummy/dummy/" + url)
     assert response.status_code == 403
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("perm,url,code", event_permission_urls)
-def test_limited_event_permission_for_other_event(perf_patch, client, env, perm, url, code):
+def test_limited_event_permission_for_other_event(
+    perf_patch, client, env, perm, url, code
+):
     event2 = Event.objects.create(
-        organizer=env[2], name='Dummy', slug='dummy2',
-        date_from=now(), plugins='pretix.plugins.banktransfer'
+        organizer=env[2],
+        name="Dummy",
+        slug="dummy2",
+        date_from=now(),
+        plugins="pretix.plugins.banktransfer",
     )
     t = Team.objects.create(organizer=env[2], can_change_event_settings=True)
     t.members.add(env[1])
     t.limit_events.add(event2)
 
-    client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.get('/control/event/dummy/dummy/' + url)
+    client.login(email="dummy@dummy.dummy", password="dummy")
+    response = client.get("/control/event/dummy/dummy/" + url)
     assert response.status_code == 404
 
 
 @pytest.mark.django_db
 def test_current_permission(client, env):
-    t = Team(
-        organizer=env[2], all_events=True
-    )
-    setattr(t, 'can_change_event_settings', True)
+    t = Team(organizer=env[2], all_events=True)
+    setattr(t, "can_change_event_settings", True)
     t.save()
     t.members.add(env[1])
 
-    client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.get('/control/event/dummy/dummy/settings/')
+    client.login(email="dummy@dummy.dummy", password="dummy")
+    response = client.get("/control/event/dummy/dummy/settings/")
     assert response.status_code == 200
-    setattr(t, 'can_change_event_settings', False)
+    setattr(t, "can_change_event_settings", False)
     t.save()
-    response = client.get('/control/event/dummy/dummy/settings/')
+    response = client.get("/control/event/dummy/dummy/settings/")
     assert response.status_code == 403
 
 
@@ -382,11 +400,11 @@ def test_correct_event_permission_all_events(perf_patch, client, env, perm, url,
     setattr(t, perm, True)
     t.save()
     t.members.add(env[1])
-    client.login(email='dummy@dummy.dummy', password='dummy')
+    client.login(email="dummy@dummy.dummy", password="dummy")
     session = client.session
-    session['pretix_auth_login_time'] = int(time.time())
+    session["pretix_auth_login_time"] = int(time.time())
     session.save()
-    response = client.get('/control/event/dummy/dummy/' + url)
+    response = client.get("/control/event/dummy/dummy/" + url)
     assert response.status_code == code
 
 
@@ -398,19 +416,19 @@ def test_correct_event_permission_limited(perf_patch, client, env, perm, url, co
     t.save()
     t.members.add(env[1])
     t.limit_events.add(env[0])
-    client.login(email='dummy@dummy.dummy', password='dummy')
+    client.login(email="dummy@dummy.dummy", password="dummy")
     session = client.session
-    session['pretix_auth_login_time'] = int(time.time())
+    session["pretix_auth_login_time"] = int(time.time())
     session.save()
-    response = client.get('/control/event/dummy/dummy/' + url)
+    response = client.get("/control/event/dummy/dummy/" + url)
     assert response.status_code == code
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("url", organizer_urls)
 def test_wrong_organizer(perf_patch, client, env, url):
-    client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.get('/control/' + url)
+    client.login(email="dummy@dummy.dummy", password="dummy")
+    response = client.get("/control/" + url)
     # These permission violations do not yield a 403 error, but
     # a 404 error to prevent information leakage
     assert response.status_code == 404
@@ -440,7 +458,6 @@ organizer_permission_urls = [
     ("can_manage_gift_cards", "organizer/dummy/giftcard/add", 200),
     ("can_manage_gift_cards", "organizer/dummy/giftcard/1/", 404),
     ("can_manage_gift_cards", "organizer/dummy/giftcard/1/edit", 404),
-
     # bank transfer
     ("can_change_orders", "organizer/dummy/banktransfer/import/", 200),
     ("can_change_orders", "organizer/dummy/banktransfer/job/1/", 404),
@@ -458,8 +475,8 @@ def test_wrong_organizer_permission(perf_patch, client, env, perm, url, code):
     setattr(t, perm, False)
     t.save()
     t.members.add(env[1])
-    client.login(email='dummy@dummy.dummy', password='dummy')
-    response = client.get('/control/' + url)
+    client.login(email="dummy@dummy.dummy", password="dummy")
+    response = client.get("/control/" + url)
     assert response.status_code == 403
 
 
@@ -470,8 +487,8 @@ def test_correct_organizer_permission(perf_patch, client, env, perm, url, code):
     setattr(t, perm, True)
     t.save()
     t.members.add(env[1])
-    client.login(email='dummy@dummy.dummy', password='dummy')
-    client.session['pretix_auth_login_time'] = int(time.time())
+    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.session["pretix_auth_login_time"] = int(time.time())
     client.session.save()
-    response = client.get('/control/' + url)
+    response = client.get("/control/" + url)
     assert response.status_code == code

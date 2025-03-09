@@ -9,30 +9,38 @@ from pretix.control.signals import nav_event
 @receiver(nav_event, dispatch_uid="statistics_nav")
 def control_nav_import(sender, request=None, **kwargs):
     url = resolve(request.path_info)
-    if not request.user.has_event_permission(request.organizer, request.event, 'can_view_orders', request=request):
+    if not request.user.has_event_permission(
+        request.organizer, request.event, "can_view_orders", request=request
+    ):
         return []
     return [
         {
-            'label': _('Statistics'),
-            'url': reverse('plugins:statistics:index', kwargs={
-                'event': request.event.slug,
-                'organizer': request.event.organizer.slug,
-            }),
-            'parent': reverse('control:event.orders', kwargs={
-                'event': request.event.slug,
-                'organizer': request.event.organizer.slug,
-            }),
-            'active': (url.namespace == 'plugins:statistics'),
-            'icon': 'bar-chart',
+            "label": _("Statistics"),
+            "url": reverse(
+                "plugins:statistics:index",
+                kwargs={
+                    "event": request.event.slug,
+                    "organizer": request.event.organizer.slug,
+                },
+            ),
+            "parent": reverse(
+                "control:event.orders",
+                kwargs={
+                    "event": request.event.slug,
+                    "organizer": request.event.organizer.slug,
+                },
+            ),
+            "active": (url.namespace == "plugins:statistics"),
+            "icon": "bar-chart",
         }
     ]
 
 
 def clear_cache(sender, *args, **kwargs):
     cache = sender.cache
-    cache.delete('statistics_obd_data')
-    cache.delete('statistics_obp_data')
-    cache.delete('statistics_rev_data')
+    cache.delete("statistics_obd_data")
+    cache.delete("statistics_obp_data")
+    cache.delete("statistics_rev_data")
 
 
 order_placed.connect(clear_cache)

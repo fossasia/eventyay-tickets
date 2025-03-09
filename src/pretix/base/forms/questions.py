@@ -33,19 +33,28 @@ from phonenumbers import NumberParseException, national_significant_number
 from phonenumbers.data import _COUNTRY_CODE_TO_REGION_CODE
 
 from pretix.base.forms.widgets import (
-    BusinessBooleanRadio, DatePickerWidget, SplitDateTimePickerWidget,
-    TimePickerWidget, UploadedFileWidget,
+    BusinessBooleanRadio,
+    DatePickerWidget,
+    SplitDateTimePickerWidget,
+    TimePickerWidget,
+    UploadedFileWidget,
 )
 from pretix.base.i18n import (
-    get_babel_locale, get_language_without_region, language,
+    get_babel_locale,
+    get_language_without_region,
+    language,
 )
 from pretix.base.models import InvoiceAddress, Question, QuestionOption
 from pretix.base.models.tax import (
-    EU_COUNTRIES, cc_to_vat_prefix, is_eu_country,
+    EU_COUNTRIES,
+    cc_to_vat_prefix,
+    is_eu_country,
 )
 from pretix.base.settings import (
-    COUNTRIES_WITH_STATE_IN_ADDRESS, PERSON_NAME_SALUTATIONS,
-    PERSON_NAME_SCHEMES, PERSON_NAME_TITLE_GROUPS,
+    COUNTRIES_WITH_STATE_IN_ADDRESS,
+    PERSON_NAME_SALUTATIONS,
+    PERSON_NAME_SCHEMES,
+    PERSON_NAME_TITLE_GROUPS,
 )
 from pretix.base.templatetags.rich_text import rich_text
 from pretix.control.forms import ExtFileField, SplitDateTimeField

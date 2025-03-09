@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 def get_auth_backends():
     backends = {}
     for b in settings.PRETIX_AUTH_BACKENDS:
-        mod, name = b.rsplit('.', 1)
+        mod, name = b.rsplit(".", 1)
         b = getattr(import_module(mod), name)()
         backends[b.identifier] = b
     return backends
@@ -97,11 +97,11 @@ class BaseAuthBackend:
 
 
 class NativeAuthBackend(BaseAuthBackend):
-    identifier = 'native'
+    identifier = "native"
 
     @property
     def verbose_name(self):
-        return _('{system} User').format(system=settings.INSTANCE_NAME)
+        return _("{system} User").format(system=settings.INSTANCE_NAME)
 
     @property
     def login_form_fields(self) -> dict:
@@ -109,14 +109,29 @@ class NativeAuthBackend(BaseAuthBackend):
         This property may return form fields that the user needs to fill in
         to log in.
         """
-        d = OrderedDict([
-            ('email', forms.EmailField(label=_("E-mail"), max_length=254,
-                                       widget=forms.EmailInput(attrs={'autofocus': 'autofocus'}))),
-            ('password', forms.CharField(label=_("Password"), widget=forms.PasswordInput)),
-        ])
+        d = OrderedDict(
+            [
+                (
+                    "email",
+                    forms.EmailField(
+                        label=_("E-mail"),
+                        max_length=254,
+                        widget=forms.EmailInput(attrs={"autofocus": "autofocus"}),
+                    ),
+                ),
+                (
+                    "password",
+                    forms.CharField(label=_("Password"), widget=forms.PasswordInput),
+                ),
+            ]
+        )
         return d
 
     def form_authenticate(self, request, form_data):
-        u = authenticate(request=request, email=form_data['email'].lower(), password=form_data['password'])
+        u = authenticate(
+            request=request,
+            email=form_data["email"].lower(),
+            password=form_data["password"],
+        )
         if u and u.auth_backend == self.identifier:
             return u

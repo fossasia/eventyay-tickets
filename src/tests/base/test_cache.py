@@ -7,21 +7,26 @@ from django.utils.timezone import now
 from pretix.base.models import Event, Organizer
 
 
-@override_settings(CACHES={
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+@override_settings(
+    CACHES={
+        "default": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "unique-snowflake",
+        }
     }
-})
+)
 class CacheTest(TestCase):
     """
     This test case tests the invalidation of the event related
     cache.
     """
+
     def setUp(self):
-        o = Organizer.objects.create(name='Dummy', slug='dummy')
+        o = Organizer.objects.create(name="Dummy", slug="dummy")
         self.event = Event.objects.create(
-            organizer=o, name='Dummy', slug='dummy',
+            organizer=o,
+            name="Dummy",
+            slug="dummy",
             date_from=now(),
         )
         self.cache = self.event.get_cache()
@@ -45,8 +50,8 @@ class CacheTest(TestCase):
 
     def test_many(self):
         inp = {
-            'a': 'foo',
-            'b': 'bar',
+            "a": "foo",
+            "b": "bar",
         }
         self.cache.set_many(inp)
         self.assertEqual(inp, self.cache.get_many(inp.keys()))

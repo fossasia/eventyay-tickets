@@ -10,7 +10,11 @@ from django.utils.formats import date_format
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
-    CreateView, DeleteView, ListView, TemplateView, UpdateView,
+    CreateView,
+    DeleteView,
+    ListView,
+    TemplateView,
+    UpdateView,
 )
 from django_celery_beat.models import PeriodicTask, PeriodicTasks
 
@@ -24,7 +28,7 @@ from pretix.control.views.main import EventList
 
 
 class AdminDashboard(AdministratorPermissionRequiredMixin, TemplateView):
-    template_name = 'pretixcontrol/admin/dashboard.html'
+    template_name = "pretixcontrol/admin/dashboard.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -33,8 +37,8 @@ class AdminDashboard(AdministratorPermissionRequiredMixin, TemplateView):
 
 class OrganizerList(PaginationMixin, ListView):
     model = Organizer
-    context_object_name = 'organizers'
-    template_name = 'pretixcontrol/admin/organizers.html'
+    context_object_name = "organizers"
+    template_name = "pretixcontrol/admin/organizers.html"
 
     def get_queryset(self):
         qs = Organizer.objects.all()
@@ -43,11 +47,13 @@ class OrganizerList(PaginationMixin, ListView):
         if self.request.user.has_active_staff_session(self.request.session.session_key):
             return qs
         else:
-            return qs.filter(pk__in=self.request.user.teams.values_list('organizer', flat=True))
+            return qs.filter(
+                pk__in=self.request.user.teams.values_list("organizer", flat=True)
+            )
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['filter_form'] = self.filter_form
+        ctx["filter_form"] = self.filter_form
         return ctx
 
     @cached_property
@@ -56,13 +62,14 @@ class OrganizerList(PaginationMixin, ListView):
 
 
 class AdminEventList(EventList):
-    """ Inherit from EventList to add a custom template for the admin event list. """
-    template_name = 'pretixcontrol/admin/events/index.html'
+    """Inherit from EventList to add a custom template for the admin event list."""
+
+    template_name = "pretixcontrol/admin/events/index.html"
 
 
 class TaskList(PaginationMixin, ListView):
-    template_name = 'pretixcontrol/admin/task_management/task_management.html'
-    context_object_name = 'tasks'
+    template_name = "pretixcontrol/admin/task_management/task_management.html"
+    context_object_name = "tasks"
     model = PeriodicTask
 
     @cached_property
@@ -73,8 +80,8 @@ class TaskList(PaginationMixin, ListView):
         queryset = (
             super()
             .get_queryset()
-            .exclude(name='celery.backend_cleanup')
-            .select_related('crontab')
+            .exclude(name="celery.backend_cleanup")
+            .select_related("crontab")
         )
 
         if self.filter_form.is_valid():
@@ -84,12 +91,11 @@ class TaskList(PaginationMixin, ListView):
 
     def process_task_data(self, task):
         if task.last_run_at is None:
-            task.formatted_last_run_at = '-'
+            task.formatted_last_run_at = "-"
         else:
             local_timezone = ZoneInfo(settings.TIME_ZONE)
             task.formatted_last_run_at = date_format(
-                task.last_run_at.astimezone(local_timezone),
-                format="M. d, Y, g:i a"
+                task.last_run_at.astimezone(local_timezone), format="M. d, Y, g:i a"
             )
 
         task.name = task.name.replace("_", " ").capitalize()
@@ -106,17 +112,14 @@ class TaskList(PaginationMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['tasks'] = [
-            self.process_task_data(task)
-            for task in context['tasks']
-        ]
+        context["tasks"] = [self.process_task_data(task) for task in context["tasks"]]
 
-        context['filter_form'] = self.filter_form
+        context["filter_form"] = self.filter_form
         return context
 
     def post(self, request, *args, **kwargs):
-        task_id = request.POST.get('task_id')
-        current_enabled = request.POST.get('enabled') == 'true'
+        task_id = request.POST.get("task_id")
+        current_enabled = request.POST.get("enabled") == "true"
 
         if task_id:
             task = get_object_or_404(PeriodicTask, id=task_id)
@@ -125,19 +128,19 @@ class TaskList(PaginationMixin, ListView):
             PeriodicTask.objects.filter(id=task_id).update(enabled=new_status)
             PeriodicTasks.changed(task)
 
-            status_text = 'enabled' if new_status else 'disabled'
+            status_text = "enabled" if new_status else "disabled"
             messages.success(
                 self.request,
-                f'The task {task.name} has been successfully {status_text}.'
+                f"The task {task.name} has been successfully {status_text}.",
             )
 
-            return HttpResponseRedirect(reverse('control:admin.task_management'))
+            return HttpResponseRedirect(reverse("control:admin.task_management"))
 
 
 class VoucherList(PaginationMixin, AdministratorPermissionRequiredMixin, ListView):
     model = InvoiceVoucher
-    context_object_name = 'vouchers'
-    template_name = 'pretixcontrol/admin/vouchers/index.html'
+    context_object_name = "vouchers"
+    template_name = "pretixcontrol/admin/vouchers/index.html"
 
     def get_queryset(self):
         qs = InvoiceVoucher.objects.all()
@@ -153,8 +156,8 @@ class VoucherList(PaginationMixin, AdministratorPermissionRequiredMixin, ListVie
 
 class VoucherCreate(AdministratorPermissionRequiredMixin, CreateView):
     model = InvoiceVoucher
-    template_name = 'pretixcontrol/admin/vouchers/detail.html'
-    context_object_name = 'voucher'
+    template_name = "pretixcontrol/admin/vouchers/detail.html"
+    context_object_name = "voucher"
 
     def get_form_class(self):
         form_class = InvoiceVoucherForm
@@ -162,11 +165,11 @@ class VoucherCreate(AdministratorPermissionRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['currency'] = settings.DEFAULT_CURRENCY
+        ctx["currency"] = settings.DEFAULT_CURRENCY
         return ctx
 
     def get_success_url(self) -> str:
-        return reverse('control:admin.vouchers')
+        return reverse("control:admin.vouchers")
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -182,8 +185,8 @@ class VoucherCreate(AdministratorPermissionRequiredMixin, CreateView):
 
 class VoucherUpdate(AdministratorPermissionRequiredMixin, UpdateView):
     model = InvoiceVoucher
-    template_name = 'pretixcontrol/admin/vouchers/detail.html'
-    context_object_name = 'voucher'
+    template_name = "pretixcontrol/admin/vouchers/detail.html"
+    context_object_name = "voucher"
 
     def get_form_class(self):
         form_class = InvoiceVoucherForm
@@ -191,41 +194,40 @@ class VoucherUpdate(AdministratorPermissionRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None) -> InvoiceVoucherForm:
         try:
-            return InvoiceVoucher.objects.get(
-                id=self.kwargs['voucher']
-            )
+            return InvoiceVoucher.objects.get(id=self.kwargs["voucher"])
         except InvoiceVoucher.DoesNotExist:
             raise Http404(_("The requested voucher does not exist."))
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['currency'] = settings.DEFAULT_CURRENCY
+        ctx["currency"] = settings.DEFAULT_CURRENCY
         return ctx
 
     def form_valid(self, form):
-        messages.success(self.request, _('Your changes have been saved.'))
+        messages.success(self.request, _("Your changes have been saved."))
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
-        return reverse('control:admin.vouchers')
+        return reverse("control:admin.vouchers")
 
 
 class VoucherDelete(AdministratorPermissionRequiredMixin, DeleteView):
     model = InvoiceVoucher
-    template_name = 'pretixcontrol/admin/vouchers/delete.html'
-    context_object_name = 'invoice_voucher'
+    template_name = "pretixcontrol/admin/vouchers/delete.html"
+    context_object_name = "invoice_voucher"
 
     def get_object(self, queryset=None) -> InvoiceVoucher:
         try:
-            return InvoiceVoucher.objects.get(
-                id=self.kwargs['voucher']
-            )
+            return InvoiceVoucher.objects.get(id=self.kwargs["voucher"])
         except InvoiceVoucher.DoesNotExist:
             raise Http404(_("The requested voucher does not exist."))
 
     def get(self, request, *args, **kwargs):
         if self.get_object().redeemed > 0:
-            messages.error(request, _('A voucher can not be deleted if it already has been redeemed.'))
+            messages.error(
+                request,
+                _("A voucher can not be deleted if it already has been redeemed."),
+            )
             return HttpResponseRedirect(self.get_success_url())
         return super().get(request, *args, **kwargs)
 
@@ -234,11 +236,14 @@ class VoucherDelete(AdministratorPermissionRequiredMixin, DeleteView):
         success_url = self.get_success_url()
 
         if self.object.redeemed > 0:
-            messages.error(self.request, _('A voucher can not be deleted if it already has been redeemed.'))
+            messages.error(
+                self.request,
+                _("A voucher can not be deleted if it already has been redeemed."),
+            )
         else:
             self.object.delete()
-            messages.success(self.request, _('The selected voucher has been deleted.'))
+            messages.success(self.request, _("The selected voucher has been deleted."))
         return HttpResponseRedirect(success_url)
 
     def get_success_url(self) -> str:
-        return reverse('control:admin.vouchers')
+        return reverse("control:admin.vouchers")

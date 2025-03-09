@@ -8,8 +8,16 @@ from pretix.base.models import Event, Organizer
 
 class KnownDomain(models.Model):
     domainname = models.CharField(max_length=255, primary_key=True)
-    organizer = models.ForeignKey(Organizer, blank=True, null=True, related_name='domains', on_delete=models.CASCADE)
-    event = models.ForeignKey(Event, blank=True, null=True, related_name='domains', on_delete=models.PROTECT)
+    organizer = models.ForeignKey(
+        Organizer,
+        blank=True,
+        null=True,
+        related_name="domains",
+        on_delete=models.CASCADE,
+    )
+    event = models.ForeignKey(
+        Event, blank=True, null=True, related_name="domains", on_delete=models.PROTECT
+    )
 
     class Meta:
         verbose_name = _("Known domain")
@@ -27,9 +35,9 @@ class KnownDomain(models.Model):
             self.organizer.get_cache().clear()
             for event in self.organizer.events.all():
                 event.get_cache().clear()
-        cache.delete('pretix_multidomain_organizer_{}'.format(self.domainname))
-        cache.delete('pretix_multidomain_instance_{}'.format(self.domainname))
-        cache.delete('pretix_multidomain_event_{}'.format(self.domainname))
+        cache.delete("pretix_multidomain_organizer_{}".format(self.domainname))
+        cache.delete("pretix_multidomain_instance_{}".format(self.domainname))
+        cache.delete("pretix_multidomain_event_{}".format(self.domainname))
 
     @scopes_disabled()
     def delete(self, *args, **kwargs):
@@ -39,7 +47,7 @@ class KnownDomain(models.Model):
             self.organizer.get_cache().clear()
             for event in self.organizer.events.all():
                 event.get_cache().clear()
-        cache.delete('pretix_multidomain_organizer_{}'.format(self.domainname))
-        cache.delete('pretix_multidomain_instance_{}'.format(self.domainname))
-        cache.delete('pretix_multidomain_event_{}'.format(self.domainname))
+        cache.delete("pretix_multidomain_organizer_{}".format(self.domainname))
+        cache.delete("pretix_multidomain_instance_{}".format(self.domainname))
+        cache.delete("pretix_multidomain_event_{}".format(self.domainname))
         super().delete(*args, **kwargs)

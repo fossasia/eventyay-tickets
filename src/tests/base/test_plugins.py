@@ -13,8 +13,8 @@ plugins = get_all_plugins()
 @pytest.mark.django_db
 @pytest.mark.parametrize("plugin", plugins)
 def test_metadata(plugin):
-    assert hasattr(plugin, 'name')
-    assert hasattr(plugin, 'version')
+    assert hasattr(plugin, "name")
+    assert hasattr(plugin, "version")
 
 
 @pytest.mark.django_db
@@ -27,23 +27,26 @@ class PluginSignalTest(TestCase):
     """
     This test case tests the EventPluginSignal handler
     """
+
     def setUp(self):
-        o = Organizer.objects.create(name='Dummy', slug='dummy')
+        o = Organizer.objects.create(name="Dummy", slug="dummy")
         self.event = Event.objects.create(
-            organizer=o, name='Dummy', slug='dummy',
+            organizer=o,
+            name="Dummy",
+            slug="dummy",
             date_from=now(),
         )
 
     def test_no_plugins_active(self):
-        self.event.plugins = ''
+        self.event.plugins = ""
         self.event.save()
         responses = register_ticket_outputs.send(self.event)
         self.assertEqual(len(responses), 0)
 
     def test_one_plugin_active(self):
-        self.event.plugins = 'tests.testdummy'
+        self.event.plugins = "tests.testdummy"
         self.event.save()
-        payload = {'foo': 'bar'}
+        payload = {"foo": "bar"}
         responses = register_ticket_outputs.send(self.event, **payload)
         self.assertEqual(len(responses), 1)
-        self.assertIn('tests.testdummy.signals', [r[0].__module__ for r in responses])
+        self.assertIn("tests.testdummy.signals", [r[0].__module__ for r in responses])

@@ -6,13 +6,13 @@ from pretix import __version__ as version
 
 
 class TicketOutputPdfApp(AppConfig):
-    name = 'pretix.plugins.ticketoutputpdf'
+    name = "pretix.plugins.ticketoutputpdf"
     verbose_name = _("PDF ticket output")
 
     class PretixPluginMeta:
         name = _("PDF ticket output")
         version = version
-        category = 'FORMAT'
+        category = "FORMAT"
         featured = True
         description = _("This plugin allows you to print out tickets as PDF files")
 
@@ -29,4 +29,4 @@ class TicketOutputPdfApp(AppConfig):
         return errs
 
 
-default_app_config = 'pretix.plugins.ticketoutputpdf.TicketOutputPdfApp'
+default_app_config = "pretix.plugins.ticketoutputpdf.TicketOutputPdfApp"

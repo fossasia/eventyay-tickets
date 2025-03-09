@@ -8,7 +8,10 @@ class LazyI18nStringListBase(UserList):
     def __init__(self, init_list=None):
         super().__init__()
         if init_list is not None:
-            self.data = [v if isinstance(v, LazyI18nString) else LazyI18nString(v) for v in init_list]
+            self.data = [
+                v if isinstance(v, LazyI18nString) else LazyI18nString(v)
+                for v in init_list
+            ]
 
     def serialize(self):
         return json.dumps([s.data for s in self.data])

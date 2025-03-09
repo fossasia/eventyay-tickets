@@ -1,5 +1,8 @@
 from pretix.presale.checkoutflowstep import (
-    AddOnsStep, ConfirmStep, PaymentStep, QuestionsStep,
+    AddOnsStep,
+    ConfirmStep,
+    PaymentStep,
+    QuestionsStep,
 )
 from pretix.presale.signals import checkout_flow_steps
 
@@ -9,7 +12,9 @@ def get_checkout_flow(event):
     for receiver, response in checkout_flow_steps.send(event):
         step = response(event=event)
         if step.priority > 1000:
-            raise ValueError('Plugins are not allowed to define a priority greater than 1000')
+            raise ValueError(
+                "Plugins are not allowed to define a priority greater than 1000"
+            )
         flow.append(step)
 
     # Sort by priority
@@ -25,9 +30,4 @@ def get_checkout_flow(event):
     return flow
 
 
-DEFAULT_FLOW = (
-    AddOnsStep,
-    QuestionsStep,
-    PaymentStep,
-    ConfirmStep
-)
+DEFAULT_FLOW = (AddOnsStep, QuestionsStep, PaymentStep, ConfirmStep)
