@@ -412,6 +412,17 @@ class AttendeeCompany(ImportColumn):
         position.company = value or ''
 
 
+class AttendeeJobTitle(ImportColumn):
+    identifier = 'job_title'
+
+    @property
+    def verbose_name(self):
+        return _('Attendee Job Title') + ': ' + _('Job Title')
+
+    def assign(self, value, order, position, invoice_address, **kwargs):
+        position.job_title = value or ''
+
+
 class AttendeeStreet(ImportColumn):
     identifier = 'attendee_street'
 
@@ -725,6 +736,7 @@ def get_all_columns(event):
     default += [
         AttendeeEmail(event),
         AttendeeCompany(event),
+        AttendeeJobTitle(event),
         AttendeeStreet(event),
         AttendeeZip(event),
         AttendeeCity(event),
