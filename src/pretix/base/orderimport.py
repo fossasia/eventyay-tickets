@@ -436,14 +436,14 @@ class AttendeeCompany(ImportColumn):
 
 
 class AttendeeJobTitle(ImportColumn):
-    identifier = 'job_title'
+    identifier = "job_title"
 
     @property
     def verbose_name(self):
-        return _('Attendee Job Title') + ': ' + _('Job Title')
+        return _("Attendee Job Title") + ": " + _("Job Title")
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        position.job_title = value or ''
+        position.job_title = value or ""
 
 
 class AttendeeStreet(ImportColumn):

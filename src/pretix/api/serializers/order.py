@@ -434,10 +434,38 @@ class OrderPositionSerializer(I18nAwareModelSerializer):
 
     class Meta:
         model = OrderPosition
-        fields = ('id', 'order', 'positionid', 'item', 'variation', 'price', 'attendee_name', 'attendee_name_parts',
-                  'job_title','company', 'street', 'zipcode', 'city', 'country', 'state',
-                  'attendee_email', 'voucher', 'tax_rate', 'tax_value', 'secret', 'addon_to', 'subevent', 'checkins',
-                  'downloads', 'answers', 'tax_rule', 'pseudonymization_id', 'pdf_data', 'seat', 'canceled')
+        fields = (
+            "id",
+            "order",
+            "positionid",
+            "item",
+            "variation",
+            "price",
+            "attendee_name",
+            "attendee_name_parts",
+            "job_title",
+            "company",
+            "street",
+            "zipcode",
+            "city",
+            "country",
+            "state",
+            "attendee_email",
+            "voucher",
+            "tax_rate",
+            "tax_value",
+            "secret",
+            "addon_to",
+            "subevent",
+            "checkins",
+            "downloads",
+            "answers",
+            "tax_rule",
+            "pseudonymization_id",
+            "pdf_data",
+            "seat",
+            "canceled",
+        )
         read_only_fields = (
             "id",
             "order",
