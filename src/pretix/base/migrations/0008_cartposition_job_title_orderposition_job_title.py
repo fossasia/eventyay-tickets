@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pretixbase', '0008_alter_cachedcombinedticket_id_alter_cachedticket_id_and_more'),
+        ('pretixbase', '0007_billinginvoice_final_ticket_fee_and_more'),
     ]
 
     operations = [
