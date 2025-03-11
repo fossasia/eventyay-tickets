@@ -1207,7 +1207,7 @@ class Event(EventMixin, LoggedModel):
                 )
 
         gs = GlobalSettingsObject()
-        if gs.settings.get("billing_validation", True) is True:
+        if gs.settings.get("billing_validation", "True") == "True":
             billing_obj = OrganizerBillingModel.objects.filter(organizer=self.organizer).first()
             if not billing_obj or not billing_obj.stripe_payment_method_id:
                 url = reverse(
