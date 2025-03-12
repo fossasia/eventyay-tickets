@@ -15,11 +15,7 @@
   <div role="contentinfo">
     <p>
     {%- if show_copyright %}
-      {%- if hasdoc('copyright') %}
-        {% trans path=pathto('copyright'), copyright=copyright|e %}&copy; <a href="{{ path }}">Copyright</a> {{ copyright }}.{% endtrans %}
-      {%- else %}
-        {% trans copyright=copyright|e %}&copy; Copyright {{ copyright }}.{% endtrans %}
-      {%- endif %}
+      <small class="copyright-notice">© 2025 <a href="https://github.com/fossasia/eventyay-tickets/blob/development/LICENSE">Apache 2.0 License</a> by <a href="https://github.com/fossasia/eventyay-tickets/graphs/contributors">contributors</a></small>
     {%- endif %}
 
     {%- if build_id and build_url %}
@@ -49,4 +45,3 @@
   {%- block extrafooter %} {% endblock %}
 
 </footer>
-
