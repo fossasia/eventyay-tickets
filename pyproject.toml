@@ -109,26 +109,39 @@ dependencies = [
 
 [project.optional-dependencies]
 memcached = ["pylibmc"]
-dev = [
+
+[project.dependency-groups.docs]
+dependencies = [
+            'sphinx==6.2.*',
+            'sphinx_rtd_theme==1.2.*',
+]
+
+[project.dependency-groups.test]
+dependencies = [
             'django-debug-toolbar==4.4.*',
+            'pytest==7.2.*',
+            'pytest-django==4.*',
+            'pytest-xdist==3.6.*',
+            'pytest-mock==3.14.*',
+            'pytest-rerunfailures==14.*',
+            'pytest-cache',
+            'pytest-cov',
+            'pytest-sugar',
+            'coveralls',
+            'coverage',
+            'freezegun',
+]
+
+[project.dependency-groups.lint]
+dependencies = [
             'pycodestyle==2.12.*',
             'pyflakes==3.2.*',
             'flake8==7.1.*',
             'pep8-naming==0.14.*',
-            'coveralls',
-            'coverage',
-            'pytest==7.2.*',
-            'pytest-django==4.*',
-            'pytest-xdist==3.6.*',
             'isort==5.13.*',
-            'pytest-mock==3.14.*',
-            'pytest-rerunfailures==14.*',
-            'responses',
+            'ruff',
             'potypo',
-            'freezegun',
-            'pytest-cache',
-            'pytest-cov',
-            'pytest-sugar',
+            'responses',
 ]
 
 [project.entry-points."distutils.commands"]
@@ -160,3 +173,5 @@ version = {attr = "pretix.__version__"}
 where = ["src"]
 include = ["pretix*"]
 namespaces = false
+
+
