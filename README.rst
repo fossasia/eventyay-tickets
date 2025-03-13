@@ -19,59 +19,61 @@ Contributing
 
 Please look through our issues and start contributing.
 
-### Setting Up Eventyay-Tickets Locally
-Since **Eventyay-Tickets** is a backend-driven project, you need **Docker** to run it properly. If you already have Docker installed, skip to the next step.
+### Docker-based Setup (Temporary)
+Currently, the non-Docker setup is broken. Until it is fixed, please use the Docker-based setup described below.
 
-1. **Install Docker (If Not Installed)**
-   - [Download Docker Desktop](https://www.docker.com/products/docker-desktop/) and install it on your system.
-   - Ensure Docker is running by checking the version:
-     ```sh
-     docker --version
-     ```
+#### Install Docker (if not installed)
+- [Download Docker Desktop](https://www.docker.com/products/docker-desktop/) and install it on your system.
+- Ensure Docker is running by checking the version:
+  ```sh
+  docker --version
+  ```
 
-2. **Clone & Set Up Eventyay-Docker**
-   Eventyay-Tickets runs inside **Eventyay-Docker**, so you need to set that up as well:
-   ```sh
-   cd ..  # Go back to the parent directory
-   git clone https://github.com/fossasia/eventyay-docker.git
-   cd eventyay-docker
-   ```
+#### Clone and set up Eventyay-Docker
+Eventyay-Tickets runs inside **Eventyay-Docker**, so you need to set that up as well:
+```sh
+cd ..  # Go back to the parent directory
+git clone https://github.com/fossasia/eventyay-docker.git
+cd eventyay-docker
+```
 
-3. **Modify Hosts File (Important!)**
-   Add the following lines to your **/etc/hosts** file (Linux/macOS) or `C:\Windows\System32\drivers\etc\hosts` (Windows):
-   ```
-   127.0.0.1       app.eventyay.com
-   127.0.0.1       video.eventyay.com
-   ```
+#### Modify Hosts File (if needed)
+In some cases, you may need to modify the hosts file, but the development environment should work with `localhost`. This will be fixed in the future.
 
-4. **Start Docker Containers**
-   Run:
-   ```sh
-   docker compose up -d
-   ```
-   This will pull the required images and set up all services.
+If required, add the following lines to your **/etc/hosts** file (Linux/macOS) or `C:\Windows\System32\drivers\etc\hosts` (Windows):
+```
+127.0.0.1       app.eventyay.com
+127.0.0.1       video.eventyay.com
+```
 
-5. **Access the Running Application**
-   - **Tickets App**: `http://app.eventyay.com`
-   - **Admin Panel**: `http://app.eventyay.com/control`
+#### Start Docker containers
+Run:
+```sh
+docker compose -f docker-compose.yml up -d
+```
+This explicitly specifies the compose file to ensure the correct services start.
 
-6. **Find & Edit Frontend Files**
-   - **HTML Templates**: Located in `presale/templates/pretixpresale/`
-   - **CSS & JS Files**: Located in `presale/static/pretixpresale/`
+#### Access the Running Application
+- **Tickets App**: `http://app.eventyay.com`
+- **Admin Panel**: `http://app.eventyay.com/control`
 
-   After making changes, restart the service with:
-   ```sh
-   docker compose restart ticket
-   ```
+#### Find and edit frontend files
+- **HTML Templates**: Located in `presale/templates/pretixpresale/`
+- **CSS & JS Files**: Located in `presale/static/pretixpresale/`
 
-7. **Create a Pull Request**
-   Once you're happy with your changes:
-   ```sh
-   git add .
-   git commit -m "Updated documentation for setting up Eventyay-Tickets"
-   git push origin YOUR_BRANCH_NAME
-   ```
-   Then, go to GitHub and create a **Pull Request**!
+After making changes, restart the service with:
+```sh
+docker compose restart ticket
+```
+
+#### Create a Pull Request
+Once you're happy with your changes:
+```sh
+git add .
+git commit -m "Updated documentation for setting up Eventyay-Tickets"
+git push origin YOUR_BRANCH_NAME
+```
+Then, go to GitHub and create a **Pull Request**!
 
 License
 -------
@@ -84,5 +86,4 @@ This project is maintained by **FOSSASIA**. See the AUTHORS file for a list of a
 .. _installation guide: https://docs.eventyay.com/en/latest/admin/installation/index.html
 .. _eventyay.com: https://eventyay.com
 .. _blog: https://blog.eventyay.com
-
 
