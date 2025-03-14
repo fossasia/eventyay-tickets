@@ -7,7 +7,6 @@ import pretix.base.models.vouchers
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("pretixbase", "0005_page_alter_cachedcombinedticket_id_and_more"),
     ]

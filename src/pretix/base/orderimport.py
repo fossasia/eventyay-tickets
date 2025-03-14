@@ -9,7 +9,12 @@ from django.core.validators import EmailValidator
 from django.utils import formats
 from django.utils.functional import cached_property
 from django.utils.translation import (
-    gettext as _, gettext_lazy, pgettext, pgettext_lazy,
+    gettext as _,
+)
+from django.utils.translation import (
+    gettext_lazy,
+    pgettext,
+    pgettext_lazy,
 )
 from django_countries import countries
 from django_countries.fields import Country
@@ -18,12 +23,17 @@ from i18nfield.strings import LazyI18nString
 from pretix.base.channels import get_all_sales_channels
 from pretix.base.forms.questions import guess_country
 from pretix.base.models import (
-    ItemVariation, OrderPosition, Question, QuestionAnswer, QuestionOption,
+    ItemVariation,
+    OrderPosition,
+    Question,
+    QuestionAnswer,
+    QuestionOption,
     Seat,
 )
 from pretix.base.services.pricing import get_price
 from pretix.base.settings import (
-    COUNTRIES_WITH_STATE_IN_ADDRESS, PERSON_NAME_SCHEMES,
+    COUNTRIES_WITH_STATE_IN_ADDRESS,
+    PERSON_NAME_SCHEMES,
 )
 from pretix.base.signals import order_import_columns
 
@@ -56,14 +66,14 @@ class ImportColumn:
         Internal default value for the assignment of this column. Defaults to ``empty``. Return ``None`` to disable this
         option.
         """
-        return 'empty'
+        return "empty"
 
     @property
     def default_label(self):
         """
         Human-readable description of the default assignment of this column, defaults to "Keep empty".
         """
-        return gettext_lazy('Keep empty')
+        return gettext_lazy("Keep empty")
 
     def __init__(self, event):
         self.event = event
@@ -86,11 +96,13 @@ class ImportColumn:
         k = settings.get(self.identifier, self.default_value)
         if k == self.default_value:
             return None
-        elif k.startswith('csv:'):
+        elif k.startswith("csv:"):
             return record.get(k[4:], None) or None
-        elif k.startswith('static:'):
+        elif k.startswith("static:"):
             return k[7:]
-        raise ValidationError(_('Invalid setting for column "{header}".').format(header=self.verbose_name))
+        raise ValidationError(
+            _('Invalid setting for column "{header}".').format(header=self.verbose_name)
+        )
 
     def clean(self, value, previous_values):
         """
@@ -122,8 +134,8 @@ class ImportColumn:
 
 
 class EmailColumn(ImportColumn):
-    identifier = 'email'
-    verbose_name = gettext_lazy('E-mail address')
+    identifier = "email"
+    verbose_name = gettext_lazy("E-mail address")
 
     def clean(self, value, previous_values):
         if value:
@@ -135,31 +147,33 @@ class EmailColumn(ImportColumn):
 
 
 class SubeventColumn(ImportColumn):
-    identifier = 'subevent'
-    verbose_name = pgettext_lazy('subevents', 'Date')
+    identifier = "subevent"
+    verbose_name = pgettext_lazy("subevents", "Date")
     default_value = None
 
     @cached_property
     def subevents(self):
-        return list(self.event.subevents.filter(active=True).order_by('date_from'))
+        return list(self.event.subevents.filter(active=True).order_by("date_from"))
 
     def static_choices(self):
-        return [
-            (str(p.pk), str(p)) for p in self.subevents
-        ]
+        return [(str(p.pk), str(p)) for p in self.subevents]
 
     def clean(self, value, previous_values):
         if not value:
             raise ValidationError(pgettext("subevent", "You need to select a date."))
         matches = [
-            p for p in self.subevents
-            if str(p.pk) == value or any(
-                (v and v == value) for v in i18n_flat(p.name)) or p.date_from.isoformat() == value
+            p
+            for p in self.subevents
+            if str(p.pk) == value
+            or any((v and v == value) for v in i18n_flat(p.name))
+            or p.date_from.isoformat() == value
         ]
         if len(matches) == 0:
             raise ValidationError(pgettext("subevent", "No matching date was found."))
         if len(matches) > 1:
-            raise ValidationError(pgettext("subevent", "Multiple matching dates were found."))
+            raise ValidationError(
+                pgettext("subevent", "Multiple matching dates were found.")
+            )
         return matches[0]
 
     def assign(self, value, order, position, invoice_address, **kwargs):
@@ -173,8 +187,8 @@ def i18n_flat(l):
 
 
 class ItemColumn(ImportColumn):
-    identifier = 'item'
-    verbose_name = gettext_lazy('Product')
+    identifier = "item"
+    verbose_name = gettext_lazy("Product")
     default_value = None
 
     @cached_property
@@ -182,15 +196,15 @@ class ItemColumn(ImportColumn):
         return list(self.event.items.filter(active=True))
 
     def static_choices(self):
-        return [
-            (str(p.pk), str(p)) for p in self.items
-        ]
+        return [(str(p.pk), str(p)) for p in self.items]
 
     def clean(self, value, previous_values):
         matches = [
-            p for p in self.items
-            if str(p.pk) == value or (p.internal_name and p.internal_name == value) or any(
-                (v and v == value) for v in i18n_flat(p.name))
+            p
+            for p in self.items
+            if str(p.pk) == value
+            or (p.internal_name and p.internal_name == value)
+            or any((v and v == value) for v in i18n_flat(p.name))
         ]
         if len(matches) == 0:
             raise ValidationError(_("No matching product was found."))
@@ -203,32 +217,35 @@ class ItemColumn(ImportColumn):
 
 
 class Variation(ImportColumn):
-    identifier = 'variation'
-    verbose_name = gettext_lazy('Product variation')
+    identifier = "variation"
+    verbose_name = gettext_lazy("Product variation")
 
     @cached_property
     def items(self):
-        return list(ItemVariation.objects.filter(
-            active=True, item__active=True, item__event=self.event
-        ).select_related('item'))
+        return list(
+            ItemVariation.objects.filter(
+                active=True, item__active=True, item__event=self.event
+            ).select_related("item")
+        )
 
     def static_choices(self):
-        return [
-            (str(p.pk), '{} – {}'.format(p.item, p.value)) for p in self.items
-        ]
+        return [(str(p.pk), "{} – {}".format(p.item, p.value)) for p in self.items]
 
     def clean(self, value, previous_values):
         if value:
             matches = [
-                p for p in self.items
-                if str(p.pk) == value or any((v and v == value) for v in i18n_flat(p.value)) and p.item_id == previous_values['item'].pk
+                p
+                for p in self.items
+                if str(p.pk) == value
+                or any((v and v == value) for v in i18n_flat(p.value))
+                and p.item_id == previous_values["item"].pk
             ]
             if len(matches) == 0:
                 raise ValidationError(_("No matching variation was found."))
             if len(matches) > 1:
                 raise ValidationError(_("Multiple matching variations were found."))
             return matches[0]
-        elif previous_values['item'].variations.exists():
+        elif previous_values["item"].variations.exists():
             raise ValidationError(_("You need to select a variation for this product."))
         return value
 
@@ -237,14 +254,14 @@ class Variation(ImportColumn):
 
 
 class InvoiceAddressCompany(ImportColumn):
-    identifier = 'invoice_address_company'
+    identifier = "invoice_address_company"
 
     @property
     def verbose_name(self):
-        return _('Invoice address') + ': ' + _('Company')
+        return _("Invoice address") + ": " + _("Company")
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        invoice_address.company = value or ''
+        invoice_address.company = value or ""
         invoice_address.is_business = bool(value)
 
 
@@ -256,60 +273,60 @@ class InvoiceAddressNamePart(ImportColumn):
 
     @property
     def verbose_name(self):
-        return _('Invoice address') + ': ' + str(self.label)
+        return _("Invoice address") + ": " + str(self.label)
 
     @property
     def identifier(self):
-        return 'invoice_address_name_{}'.format(self.key)
+        return "invoice_address_name_{}".format(self.key)
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        invoice_address.name_parts[self.key] = value or ''
+        invoice_address.name_parts[self.key] = value or ""
 
 
 class InvoiceAddressStreet(ImportColumn):
-    identifier = 'invoice_address_street'
+    identifier = "invoice_address_street"
 
     @property
     def verbose_name(self):
-        return _('Invoice address') + ': ' + _('Address')
+        return _("Invoice address") + ": " + _("Address")
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        invoice_address.address = value or ''
+        invoice_address.address = value or ""
 
 
 class InvoiceAddressZip(ImportColumn):
-    identifier = 'invoice_address_zipcode'
+    identifier = "invoice_address_zipcode"
 
     @property
     def verbose_name(self):
-        return _('Invoice address') + ': ' + _('ZIP code')
+        return _("Invoice address") + ": " + _("ZIP code")
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        invoice_address.zipcode = value or ''
+        invoice_address.zipcode = value or ""
 
 
 class InvoiceAddressCity(ImportColumn):
-    identifier = 'invoice_address_city'
+    identifier = "invoice_address_city"
 
     @property
     def verbose_name(self):
-        return _('Invoice address') + ': ' + _('City')
+        return _("Invoice address") + ": " + _("City")
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        invoice_address.city = value or ''
+        invoice_address.city = value or ""
 
 
 class InvoiceAddressCountry(ImportColumn):
-    identifier = 'invoice_address_country'
+    identifier = "invoice_address_country"
     default_value = None
 
     @property
     def initial(self):
-        return 'static:' + str(guess_country(self.event))
+        return "static:" + str(guess_country(self.event))
 
     @property
     def verbose_name(self):
-        return _('Invoice address') + ': ' + _('Country')
+        return _("Invoice address") + ": " + _("Country")
 
     def static_choices(self):
         return list(countries)
@@ -320,24 +337,32 @@ class InvoiceAddressCountry(ImportColumn):
         return value
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        invoice_address.country = value or ''
+        invoice_address.country = value or ""
 
 
 class InvoiceAddressState(ImportColumn):
-    identifier = 'invoice_address_state'
+    identifier = "invoice_address_state"
 
     @property
     def verbose_name(self):
-        return _('Invoice address') + ': ' + pgettext('address', 'State')
+        return _("Invoice address") + ": " + pgettext("address", "State")
 
     def clean(self, value, previous_values):
         if value:
-            if previous_values.get('invoice_address_country') not in COUNTRIES_WITH_STATE_IN_ADDRESS:
+            if (
+                previous_values.get("invoice_address_country")
+                not in COUNTRIES_WITH_STATE_IN_ADDRESS
+            ):
                 raise ValidationError(_("States are not supported for this country."))
 
-            types, form = COUNTRIES_WITH_STATE_IN_ADDRESS[previous_values.get('invoice_address_country')]
+            types, form = COUNTRIES_WITH_STATE_IN_ADDRESS[
+                previous_values.get("invoice_address_country")
+            ]
             match = [
-                s for s in pycountry.subdivisions.get(country_code=previous_values.get('invoice_address_country'))
+                s
+                for s in pycountry.subdivisions.get(
+                    country_code=previous_values.get("invoice_address_country")
+                )
                 if s.type in types and (s.code[3:] == value or s.name == value)
             ]
             if len(match) == 0:
@@ -345,29 +370,29 @@ class InvoiceAddressState(ImportColumn):
             return match[0].code[3:]
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        invoice_address.state = value or ''
+        invoice_address.state = value or ""
 
 
 class InvoiceAddressVATID(ImportColumn):
-    identifier = 'invoice_address_vat_id'
+    identifier = "invoice_address_vat_id"
 
     @property
     def verbose_name(self):
-        return _('Invoice address') + ': ' + _('VAT ID')
+        return _("Invoice address") + ": " + _("VAT ID")
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        invoice_address.vat_id = value or ''
+        invoice_address.vat_id = value or ""
 
 
 class InvoiceAddressReference(ImportColumn):
-    identifier = 'invoice_address_internal_reference'
+    identifier = "invoice_address_internal_reference"
 
     @property
     def verbose_name(self):
-        return _('Invoice address') + ': ' + _('Internal reference')
+        return _("Invoice address") + ": " + _("Internal reference")
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        invoice_address.internal_reference = value or ''
+        invoice_address.internal_reference = value or ""
 
 
 class AttendeeNamePart(ImportColumn):
@@ -378,19 +403,19 @@ class AttendeeNamePart(ImportColumn):
 
     @property
     def verbose_name(self):
-        return _('Attendee name') + ': ' + str(self.label)
+        return _("Attendee name") + ": " + str(self.label)
 
     @property
     def identifier(self):
-        return 'attendee_name_{}'.format(self.key)
+        return "attendee_name_{}".format(self.key)
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        position.attendee_name_parts[self.key] = value or ''
+        position.attendee_name_parts[self.key] = value or ""
 
 
 class AttendeeEmail(ImportColumn):
-    identifier = 'attendee_email'
-    verbose_name = gettext_lazy('Attendee e-mail address')
+    identifier = "attendee_email"
+    verbose_name = gettext_lazy("Attendee e-mail address")
 
     def clean(self, value, previous_values):
         if value:
@@ -402,71 +427,71 @@ class AttendeeEmail(ImportColumn):
 
 
 class AttendeeCompany(ImportColumn):
-    identifier = 'attendee_company'
+    identifier = "attendee_company"
 
     @property
     def verbose_name(self):
-        return _('Attendee address') + ': ' + _('Company')
+        return _("Attendee address") + ": " + _("Company")
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        position.company = value or ''
+        position.company = value or ""
 
 
 class AttendeeJobTitle(ImportColumn):
-    identifier = 'job_title'
+    identifier = "job_title"
 
     @property
     def verbose_name(self):
-        return _('Attendee Job Title') + ': ' + _('Job Title')
+        return _("Attendee Job Title") + ": " + _("Job Title")
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        position.job_title = value or ''
+        position.job_title = value or ""
 
 
 class AttendeeStreet(ImportColumn):
-    identifier = 'attendee_street'
+    identifier = "attendee_street"
 
     @property
     def verbose_name(self):
-        return _('Attendee address') + ': ' + _('Address')
+        return _("Attendee address") + ": " + _("Address")
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        position.street = value or ''
+        position.street = value or ""
 
 
 class AttendeeZip(ImportColumn):
-    identifier = 'attendee_zipcode'
+    identifier = "attendee_zipcode"
 
     @property
     def verbose_name(self):
-        return _('Attendee address') + ': ' + _('ZIP code')
+        return _("Attendee address") + ": " + _("ZIP code")
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        position.zipcode = value or ''
+        position.zipcode = value or ""
 
 
 class AttendeeCity(ImportColumn):
-    identifier = 'attendee_city'
+    identifier = "attendee_city"
 
     @property
     def verbose_name(self):
-        return _('Attendee address') + ': ' + _('City')
+        return _("Attendee address") + ": " + _("City")
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        position.city = value or ''
+        position.city = value or ""
 
 
 class AttendeeCountry(ImportColumn):
-    identifier = 'attendee_country'
+    identifier = "attendee_country"
     default_value = None
 
     @property
     def initial(self):
-        return 'static:' + str(guess_country(self.event))
+        return "static:" + str(guess_country(self.event))
 
     @property
     def verbose_name(self):
-        return _('Attendee address') + ': ' + _('Country')
+        return _("Attendee address") + ": " + _("Country")
 
     def static_choices(self):
         return list(countries)
@@ -477,24 +502,32 @@ class AttendeeCountry(ImportColumn):
         return value
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        position.country = value or ''
+        position.country = value or ""
 
 
 class AttendeeState(ImportColumn):
-    identifier = 'attendee_state'
+    identifier = "attendee_state"
 
     @property
     def verbose_name(self):
-        return _('Attendee address') + ': ' + _('State')
+        return _("Attendee address") + ": " + _("State")
 
     def clean(self, value, previous_values):
         if value:
-            if previous_values.get('attendee_country') not in COUNTRIES_WITH_STATE_IN_ADDRESS:
+            if (
+                previous_values.get("attendee_country")
+                not in COUNTRIES_WITH_STATE_IN_ADDRESS
+            ):
                 raise ValidationError(_("States are not supported for this country."))
 
-            types, form = COUNTRIES_WITH_STATE_IN_ADDRESS[previous_values.get('attendee_country')]
+            types, form = COUNTRIES_WITH_STATE_IN_ADDRESS[
+                previous_values.get("attendee_country")
+            ]
             match = [
-                s for s in pycountry.subdivisions.get(country_code=previous_values.get('attendee_country'))
+                s
+                for s in pycountry.subdivisions.get(
+                    country_code=previous_values.get("attendee_country")
+                )
                 if s.type in types and (s.code[3:] == value or s.name == value)
             ]
             if len(match) == 0:
@@ -502,30 +535,42 @@ class AttendeeState(ImportColumn):
             return match[0].code[3:]
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        position.state = value or ''
+        position.state = value or ""
 
 
 class Price(ImportColumn):
-    identifier = 'price'
-    verbose_name = gettext_lazy('Price')
-    default_label = gettext_lazy('Calculate from product')
+    identifier = "price"
+    verbose_name = gettext_lazy("Price")
+    default_label = gettext_lazy("Calculate from product")
 
     def clean(self, value, previous_values):
-        if value not in (None, ''):
-            value = formats.sanitize_separators(re.sub(r'[^0-9.,-]', '', value))
+        if value not in (None, ""):
+            value = formats.sanitize_separators(re.sub(r"[^0-9.,-]", "", value))
             try:
                 value = Decimal(value)
             except (DecimalException, TypeError):
-                raise ValidationError(_('You entered an invalid number.'))
+                raise ValidationError(_("You entered an invalid number."))
             return value
 
     def assign(self, value, order, position, invoice_address, **kwargs):
         if value is None:
-            p = get_price(position.item, position.variation, position.voucher, subevent=position.subevent,
-                          invoice_address=invoice_address)
+            p = get_price(
+                position.item,
+                position.variation,
+                position.voucher,
+                subevent=position.subevent,
+                invoice_address=invoice_address,
+            )
         else:
-            p = get_price(position.item, position.variation, position.voucher, subevent=position.subevent,
-                          invoice_address=invoice_address, custom_price=value, force_custom_price=True)
+            p = get_price(
+                position.item,
+                position.variation,
+                position.voucher,
+                subevent=position.subevent,
+                invoice_address=invoice_address,
+                custom_price=value,
+                force_custom_price=True,
+            )
         position.price = p.gross
         position.tax_rule = position.item.tax_rule
         position.tax_rate = p.rate
@@ -533,18 +578,23 @@ class Price(ImportColumn):
 
 
 class Secret(ImportColumn):
-    identifier = 'secret'
-    verbose_name = gettext_lazy('Ticket code')
-    default_label = gettext_lazy('Generate automatically')
+    identifier = "secret"
+    verbose_name = gettext_lazy("Ticket code")
+    default_label = gettext_lazy("Generate automatically")
 
     def __init__(self, *args):
         self._cached = set()
         super().__init__(*args)
 
     def clean(self, value, previous_values):
-        if value and (value in self._cached or OrderPosition.all.filter(order__event__organizer=self.event.organizer, secret=value).exists()):
+        if value and (
+            value in self._cached
+            or OrderPosition.all.filter(
+                order__event__organizer=self.event.organizer, secret=value
+            ).exists()
+        ):
             raise ValidationError(
-                _('You cannot assign a position secret that already exists.')
+                _("You cannot assign a position secret that already exists.")
             )
         self._cached.add(value)
         return value
@@ -555,19 +605,17 @@ class Secret(ImportColumn):
 
 
 class Locale(ImportColumn):
-    identifier = 'locale'
-    verbose_name = gettext_lazy('Order locale')
+    identifier = "locale"
+    verbose_name = gettext_lazy("Order locale")
     default_value = None
 
     @property
     def initial(self):
-        return 'static:' + self.event.settings.locale
+        return "static:" + self.event.settings.locale
 
     def static_choices(self):
         locale_names = dict(settings.LANGUAGES)
-        return [
-            (a, locale_names[a]) for a in self.event.settings.locales
-        ]
+        return [(a, locale_names[a]) for a in self.event.settings.locales]
 
     def clean(self, value, previous_values):
         if not value:
@@ -581,8 +629,8 @@ class Locale(ImportColumn):
 
 
 class Saleschannel(ImportColumn):
-    identifier = 'sales_channel'
-    verbose_name = gettext_lazy('Sales channel')
+    identifier = "sales_channel"
+    verbose_name = gettext_lazy("Sales channel")
 
     def static_choices(self):
         return [
@@ -591,7 +639,7 @@ class Saleschannel(ImportColumn):
 
     def clean(self, value, previous_values):
         if not value:
-            value = 'web'
+            value = "web"
         if value not in get_all_sales_channels():
             raise ValidationError(_("Please enter a valid sales channel."))
         return value
@@ -601,8 +649,8 @@ class Saleschannel(ImportColumn):
 
 
 class SeatColumn(ImportColumn):
-    identifier = 'seat'
-    verbose_name = gettext_lazy('Seat ID')
+    identifier = "seat"
+    verbose_name = gettext_lazy("Seat ID")
 
     def __init__(self, *args):
         self._cached = set()
@@ -612,17 +660,23 @@ class SeatColumn(ImportColumn):
         if value:
             try:
                 value = Seat.objects.get(
-                    seat_guid=value,
-                    subevent=previous_values.get('subevent')
+                    seat_guid=value, subevent=previous_values.get("subevent")
                 )
             except Seat.DoesNotExist:
-                raise ValidationError(_('No matching seat was found.'))
+                raise ValidationError(_("No matching seat was found."))
             if not value.is_available() or value in self._cached:
                 raise ValidationError(
-                    _('The seat you selected has already been taken. Please select a different seat.'))
+                    _(
+                        "The seat you selected has already been taken. Please select a different seat."
+                    )
+                )
             self._cached.add(value)
-        elif previous_values['item'].seat_category_mappings.filter(subevent=previous_values.get('subevent')).exists():
-            raise ValidationError(_('You need to select a specific seat.'))
+        elif (
+            previous_values["item"]
+            .seat_category_mappings.filter(subevent=previous_values.get("subevent"))
+            .exists()
+        ):
+            raise ValidationError(_("You need to select a specific seat."))
         return value
 
     def assign(self, value, order, position, invoice_address, **kwargs):
@@ -630,11 +684,11 @@ class SeatColumn(ImportColumn):
 
 
 class Comment(ImportColumn):
-    identifier = 'comment'
-    verbose_name = gettext_lazy('Comment')
+    identifier = "comment"
+    verbose_name = gettext_lazy("Comment")
 
     def assign(self, value, order, position, invoice_address, **kwargs):
-        order.comment = value or ''
+        order.comment = value or ""
 
 
 class QuestionColumn(ImportColumn):
@@ -647,7 +701,6 @@ class QuestionColumn(ImportColumn):
             self.option_resolve_cache[opt.identifier].add(opt)
 
             if isinstance(opt.answer, LazyI18nString):
-
                 if isinstance(opt.answer.data, dict):
                     for v in opt.answer.data.values():
                         self.option_resolve_cache[v.strip()].add(opt)
@@ -660,27 +713,27 @@ class QuestionColumn(ImportColumn):
 
     @property
     def verbose_name(self):
-        return _('Question') + ': ' + str(self.q.question)
+        return _("Question") + ": " + str(self.q.question)
 
     @property
     def identifier(self):
-        return 'question_{}'.format(self.q.pk)
+        return "question_{}".format(self.q.pk)
 
     def clean(self, value, previous_values):
         if value:
             if self.q.type == Question.TYPE_CHOICE:
                 if value not in self.option_resolve_cache:
-                    raise ValidationError(_('Invalid option selected.'))
+                    raise ValidationError(_("Invalid option selected."))
                 if len(self.option_resolve_cache[value]) > 1:
-                    raise ValidationError(_('Ambiguous option selected.'))
+                    raise ValidationError(_("Ambiguous option selected."))
                 return list(self.option_resolve_cache[value])[0]
 
             elif self.q.type == Question.TYPE_CHOICE_MULTIPLE:
-                values = value.split(',')
+                values = value.split(",")
                 if any(v.strip() not in self.option_resolve_cache for v in values):
-                    raise ValidationError(_('Invalid option selected.'))
+                    raise ValidationError(_("Invalid option selected."))
                 if any(len(self.option_resolve_cache[v.strip()]) > 1 for v in values):
-                    raise ValidationError(_('Ambiguous option selected.'))
+                    raise ValidationError(_("Ambiguous option selected."))
                 return [list(self.option_resolve_cache[v.strip()])[0] for v in values]
 
             else:
@@ -688,24 +741,36 @@ class QuestionColumn(ImportColumn):
 
     def assign(self, value, order, position, invoice_address, **kwargs):
         if value:
-            if not hasattr(order, '_answers'):
+            if not hasattr(order, "_answers"):
                 order._answers = []
             if isinstance(value, QuestionOption):
-                a = QuestionAnswer(orderposition=position, question=self.q, answer=str(value))
+                a = QuestionAnswer(
+                    orderposition=position, question=self.q, answer=str(value)
+                )
                 a._options = [value]
                 order._answers.append(a)
             elif isinstance(value, list):
-                a = QuestionAnswer(orderposition=position, question=self.q, answer=', '.join(str(v) for v in value))
+                a = QuestionAnswer(
+                    orderposition=position,
+                    question=self.q,
+                    answer=", ".join(str(v) for v in value),
+                )
                 a._options = value
                 order._answers.append(a)
             else:
-                order._answers.append(QuestionAnswer(question=self.q, answer=str(value), orderposition=position))
+                order._answers.append(
+                    QuestionAnswer(
+                        question=self.q, answer=str(value), orderposition=position
+                    )
+                )
 
     def save(self, order):
-        for a in getattr(order, '_answers', []):
-            a.orderposition = a.orderposition  # This is apparently required after save() again
+        for a in getattr(order, "_answers", []):
+            a.orderposition = (
+                a.orderposition
+            )  # This is apparently required after save() again
             a.save()
-            if hasattr(a, '_options'):
+            if hasattr(a, "_options"):
                 a.options.add(*a._options)
 
 
@@ -720,7 +785,7 @@ def get_all_columns(event):
         InvoiceAddressCompany(event),
     ]
     scheme = PERSON_NAME_SCHEMES.get(event.settings.name_scheme)
-    for n, l, w in scheme['fields']:
+    for n, l, w in scheme["fields"]:
         default.append(InvoiceAddressNamePart(event, n, l))
     default += [
         InvoiceAddressStreet(event),
@@ -731,7 +796,7 @@ def get_all_columns(event):
         InvoiceAddressVATID(event),
         InvoiceAddressReference(event),
     ]
-    for n, l, w in scheme['fields']:
+    for n, l, w in scheme["fields"]:
         default.append(AttendeeNamePart(event, n, l))
     default += [
         AttendeeEmail(event),
@@ -747,9 +812,11 @@ def get_all_columns(event):
         Locale(event),
         Saleschannel(event),
         SeatColumn(event),
-        Comment(event)
+        Comment(event),
     ]
-    for q in event.questions.prefetch_related('options').exclude(type=Question.TYPE_FILE):
+    for q in event.questions.prefetch_related("options").exclude(
+        type=Question.TYPE_FILE
+    ):
         default.append(QuestionColumn(event, q))
 
     for recv, resp in order_import_columns.send(sender=event):

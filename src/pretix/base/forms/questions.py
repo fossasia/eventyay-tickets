@@ -22,7 +22,8 @@ from django.utils import translation
 from django.utils.formats import date_format
 from django.utils.safestring import mark_safe
 from django.utils.timezone import get_current_timezone
-from django.utils.translation import gettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 from django_countries import countries
 from django_countries.fields import Country, CountryField
 from geoip2.errors import AddressNotFoundError
@@ -33,19 +34,28 @@ from phonenumbers import NumberParseException, national_significant_number
 from phonenumbers.data import _COUNTRY_CODE_TO_REGION_CODE
 
 from pretix.base.forms.widgets import (
-    BusinessBooleanRadio, DatePickerWidget, SplitDateTimePickerWidget,
-    TimePickerWidget, UploadedFileWidget,
+    BusinessBooleanRadio,
+    DatePickerWidget,
+    SplitDateTimePickerWidget,
+    TimePickerWidget,
+    UploadedFileWidget,
 )
 from pretix.base.i18n import (
-    get_babel_locale, get_language_without_region, language,
+    get_babel_locale,
+    get_language_without_region,
+    language,
 )
 from pretix.base.models import InvoiceAddress, Question, QuestionOption
 from pretix.base.models.tax import (
-    EU_COUNTRIES, cc_to_vat_prefix, is_eu_country,
+    EU_COUNTRIES,
+    cc_to_vat_prefix,
+    is_eu_country,
 )
 from pretix.base.settings import (
-    COUNTRIES_WITH_STATE_IN_ADDRESS, PERSON_NAME_SALUTATIONS,
-    PERSON_NAME_SCHEMES, PERSON_NAME_TITLE_GROUPS,
+    COUNTRIES_WITH_STATE_IN_ADDRESS,
+    PERSON_NAME_SALUTATIONS,
+    PERSON_NAME_SCHEMES,
+    PERSON_NAME_TITLE_GROUPS,
 )
 from pretix.base.templatetags.rich_text import rich_text
 from pretix.control.forms import ExtFileField, SplitDateTimeField
@@ -280,7 +290,6 @@ class WrappedPhonePrefixSelect(Select):
 
 
 class WrappedPhoneNumberPrefixWidget(PhoneNumberPrefixWidget):
-
     def __init__(self, attrs=None, initial=None):
         attrs = {
             "aria-label": pgettext_lazy(
@@ -378,7 +387,6 @@ class MinDateTimeValidator(MinValueValidator):
 
 
 class MaxDateValidator(MaxValueValidator):
-
     def __call__(self, value):
         try:
             return super().__call__(value)
@@ -1017,21 +1025,21 @@ class BaseInvoiceAddressForm(forms.ModelForm):
             and not self.all_optional
         ):
             if not event.settings.invoice_name_required:
-                self.fields["name_parts"].widget.attrs[
-                    "data-required-if"
-                ] = "#id_is_business_0"
+                self.fields["name_parts"].widget.attrs["data-required-if"] = (
+                    "#id_is_business_0"
+                )
             self.fields["name_parts"].widget.attrs["data-no-required-attr"] = "1"
-            self.fields["company"].widget.attrs[
-                "data-required-if"
-            ] = "#id_is_business_1"
+            self.fields["company"].widget.attrs["data-required-if"] = (
+                "#id_is_business_1"
+            )
 
         if not event.settings.invoice_address_beneficiary:
             del self.fields["beneficiary"]
 
         if event.settings.invoice_address_custom_field:
-            self.fields["custom_field"].label = (
-                event.settings.invoice_address_custom_field
-            )
+            self.fields[
+                "custom_field"
+            ].label = event.settings.invoice_address_custom_field
         else:
             del self.fields["custom_field"]
 

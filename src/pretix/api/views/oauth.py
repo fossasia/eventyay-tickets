@@ -8,7 +8,12 @@ from oauth2_provider.forms import AllowForm
 from oauth2_provider.settings import oauth2_settings
 from oauth2_provider.views import (
     AuthorizationView as BaseAuthorizationView,
-    RevokeTokenView as BaseRevokeTokenView, TokenView as BaseTokenView,
+)
+from oauth2_provider.views import (
+    RevokeTokenView as BaseRevokeTokenView,
+)
+from oauth2_provider.views import (
+    TokenView as BaseTokenView,
 )
 
 from pretix.api.models import OAuthApplication
@@ -19,18 +24,18 @@ logger = logging.getLogger(__name__)
 
 class OAuthAllowForm(AllowForm):
     organizers = forms.ModelMultipleChoiceField(
-        queryset=Organizer.objects.none(),
-        widget=forms.CheckboxSelectMultiple
+        queryset=Organizer.objects.none(), widget=forms.CheckboxSelectMultiple
     )
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user')
-        scope = kwargs.pop('scope')
+        user = kwargs.pop("user")
+        scope = kwargs.pop("scope")
         super().__init__(*args, **kwargs)
-        self.fields['organizers'].queryset = Organizer.objects.filter(
-            pk__in=user.teams.values_list('organizer', flat=True))
-        if scope == 'profile':
-            del self.fields['organizers']
+        self.fields["organizers"].queryset = Organizer.objects.filter(
+            pk__in=user.teams.values_list("organizer", flat=True)
+        )
+        if scope == "profile":
+            del self.fields["organizers"]
 
 
 class AuthorizationView(BaseAuthorizationView):
@@ -39,24 +44,32 @@ class AuthorizationView(BaseAuthorizationView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        kwargs['scope'] = self.request.GET.get('scope')
+        kwargs["user"] = self.request.user
+        kwargs["scope"] = self.request.GET.get("scope")
         return kwargs
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['settings'] = settings
+        ctx["settings"] = settings
         return ctx
 
     def validate_authorization_request(self, request):
-        require_approval = request.GET.get("approval_prompt", oauth2_settings.REQUEST_APPROVAL_PROMPT)
-        if require_approval != 'force' and request.GET.get('scope') != 'profile':
-            raise FatalClientError('Combnination of require_approval and scope values not allowed.')
+        require_approval = request.GET.get(
+            "approval_prompt", oauth2_settings.REQUEST_APPROVAL_PROMPT
+        )
+        if require_approval != "force" and request.GET.get("scope") != "profile":
+            raise FatalClientError(
+                "Combnination of require_approval and scope values not allowed."
+            )
         return super().validate_authorization_request(request)
 
-    def create_authorization_response(self, request, scopes, credentials, allow, organizers=None):
+    def create_authorization_response(
+        self, request, scopes, credentials, allow, organizers=None
+    ):
         credentials["organizers"] = organizers or []
-        return super().create_authorization_response(request, scopes, credentials, allow)
+        return super().create_authorization_response(
+            request, scopes, credentials, allow
+        )
 
     def form_valid(self, form):
         client_id = form.cleaned_data["client_id"]
@@ -72,8 +85,11 @@ class AuthorizationView(BaseAuthorizationView):
 
         try:
             uri, headers, body, status = self.create_authorization_response(
-                request=self.request, scopes=scopes, credentials=credentials, allow=allow,
-                organizers=form.cleaned_data.get("organizers")
+                request=self.request,
+                scopes=scopes,
+                credentials=credentials,
+                allow=allow,
+                organizers=form.cleaned_data.get("organizers"),
             )
         except OAuthToolkitError as error:
             return self.error_response(error, application)
@@ -82,15 +98,19 @@ class AuthorizationView(BaseAuthorizationView):
         logger.debug("Success url for the request: {0}".format(self.success_url))
 
         msgs = [
-            _('The application "{application_name}" has been authorized to access your account.').format(
-                application_name=application.name
-            )
+            _(
+                'The application "{application_name}" has been authorized to access your account.'
+            ).format(application_name=application.name)
         ]
         self.request.user.send_security_notice(msgs)
-        self.request.user.log_action('pretix.user.oauth.authorized', user=self.request.user, data={
-            'application_id': application.pk,
-            'application_name': application.name,
-        })
+        self.request.user.log_action(
+            "pretix.user.oauth.authorized",
+            user=self.request.user,
+            data={
+                "application_id": application.pk,
+                "application_name": application.name,
+            },
+        )
 
         return self.redirect(self.success_url, application)
 

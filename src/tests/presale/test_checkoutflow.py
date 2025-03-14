@@ -11,10 +11,9 @@ from pretix.presale.checkoutflowstep import BaseCheckoutFlowStep
 
 @pytest.fixture
 def event():
-    o = Organizer.objects.create(name='MRMCD', slug='mrmcd')
+    o = Organizer.objects.create(name="MRMCD", slug="mrmcd")
     e = Event.objects.create(
-        organizer=o, name='MRMCD2015', slug='2015',
-        date_from=now(), live=True
+        organizer=o, name="MRMCD2015", slug="2015", date_from=now(), live=True
     )
     with scope(organizer=o):
         yield e
@@ -23,7 +22,7 @@ def event():
 @pytest.fixture
 def req_with_session():
     factory = RequestFactory()
-    r = factory.get('/')
+    r = factory.get("/")
     SessionMiddleware(NotImplementedError).process_request(r)
     r.session.save()
     return r
@@ -33,7 +32,9 @@ def req_with_session():
 def test_flow_order(event):
     orig_flow = checkoutflow.DEFAULT_FLOW
     checkoutflow.DEFAULT_FLOW = (
-        checkoutflow.ConfirmStep, checkoutflow.PaymentStep, checkoutflow.QuestionsStep
+        checkoutflow.ConfirmStep,
+        checkoutflow.PaymentStep,
+        checkoutflow.QuestionsStep,
     )
     flow = checkoutflow.get_checkout_flow(event)
     assert all(flow[i].priority <= flow[i + 1].priority for i in range(len(flow) - 1))
@@ -50,14 +51,16 @@ def test_double_linked_list(event):
 @pytest.mark.django_db
 def test_plugins_called(event, mocker):
     from pretix.presale.signals import checkout_flow_steps
-    mocker.patch('pretix.presale.signals.checkout_flow_steps.send')
+
+    mocker.patch("pretix.presale.signals.checkout_flow_steps.send")
     checkoutflow.get_checkout_flow(event)
     checkout_flow_steps.send.assert_called_once_with(event)
 
 
 def with_mocked_step(mocker, step, event):
     from pretix.presale.signals import checkout_flow_steps
-    mocker.patch('pretix.presale.signals.checkout_flow_steps.send')
+
+    mocker.patch("pretix.presale.signals.checkout_flow_steps.send")
     checkout_flow_steps.send.return_value = [(None, step)]
     return checkoutflow.get_checkout_flow(event)
 
@@ -65,7 +68,7 @@ def with_mocked_step(mocker, step, event):
 @pytest.mark.django_db
 def test_plugins_max_priority(event, mocker):
     class MockingStep(BaseCheckoutFlowStep):
-        identifier = 'mocking'
+        identifier = "mocking"
         priority = 1001
 
     with pytest.raises(ValueError):
@@ -75,7 +78,7 @@ def test_plugins_max_priority(event, mocker):
 @pytest.mark.django_db
 def test_plugin_in_order(event, mocker):
     class MockingStep(BaseCheckoutFlowStep):
-        identifier = 'mocking'
+        identifier = "mocking"
         priority = 100
 
     flow = with_mocked_step(mocker, MockingStep, event)
@@ -89,7 +92,7 @@ def test_plugin_in_order(event, mocker):
 @pytest.mark.django_db
 def test_step_ignored(event, mocker, req_with_session):
     class MockingStep(BaseCheckoutFlowStep):
-        identifier = 'mocking'
+        identifier = "mocking"
         priority = 100
 
         def is_applicable(self, request):

@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.http import (
-    HttpResponsePermanentRedirect, HttpResponseRedirect, StreamingHttpResponse,
+    HttpResponsePermanentRedirect,
+    HttpResponseRedirect,
+    StreamingHttpResponse,
 )
 
 
@@ -11,18 +13,20 @@ class ChunkBasedFileResponse(StreamingHttpResponse):
         filelike = streaming_content
         streaming_content = streaming_content.chunks(self.block_size)
         super().__init__(streaming_content, *args, **kwargs)
-        self['Content-Length'] = filelike.size
+        self["Content-Length"] = filelike.size
 
 
 def get_client_ip(request):
-    ip = request.META.get('REMOTE_ADDR')
+    ip = request.META.get("REMOTE_ADDR")
     if settings.TRUST_X_FORWARDED_FOR:
-        x_forwarded_for = request.headers.get('x-forwarded-for')
+        x_forwarded_for = request.headers.get("x-forwarded-for")
         if x_forwarded_for:
-            ip = x_forwarded_for.split(',')[0]
+            ip = x_forwarded_for.split(",")[0]
     return ip
 
 
 def redirect_to_url(to, permanent=False):
-    redirect_class = HttpResponsePermanentRedirect if permanent else HttpResponseRedirect
+    redirect_class = (
+        HttpResponsePermanentRedirect if permanent else HttpResponseRedirect
+    )
     return redirect_class(to)

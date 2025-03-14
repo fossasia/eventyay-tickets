@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('pretixbase', '0007_billinginvoice_final_ticket_fee_and_more'),
+        ("pretixbase", "0007_billinginvoice_final_ticket_fee_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='cartposition',
-            name='job_title',
+            model_name="cartposition",
+            name="job_title",
             field=models.CharField(max_length=255, null=True),
         ),
         migrations.AddField(
-            model_name='orderposition',
-            name='job_title',
+            model_name="orderposition",
+            name="job_title",
             field=models.CharField(max_length=255, null=True),
         ),
     ]

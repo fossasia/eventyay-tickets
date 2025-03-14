@@ -7,6 +7,7 @@ Usage:
     @task(base=TransactionAwareTask)
     def task_…():
 """
+
 import cProfile
 import os
 import random
@@ -17,7 +18,8 @@ from django.db import transaction
 from django_scopes import scope, scopes_disabled
 
 from pretix.base.metrics import (
-    pretix_task_duration_seconds, pretix_task_runs_total,
+    pretix_task_duration_seconds,
+    pretix_task_runs_total,
 )
 from pretix.base.models import Event, Organizer, User
 from pretix.celery_app import app
@@ -25,17 +27,24 @@ from pretix.celery_app import app
 
 class ProfiledTask(app.Task):
     def __call__(self, *args, **kwargs):
-
-        if settings.PROFILING_RATE > 0 and random.random() < settings.PROFILING_RATE / 100:
+        if (
+            settings.PROFILING_RATE > 0
+            and random.random() < settings.PROFILING_RATE / 100
+        ):
             profiler = cProfile.Profile()
             profiler.enable()
             t0 = time.perf_counter()
             ret = super().__call__(*args, **kwargs)
             tottime = time.perf_counter() - t0
             profiler.disable()
-            profiler.dump_stats(os.path.join(settings.PROFILE_DIR, '{time:.0f}_{tottime:.3f}_celery_{t}.pstat'.format(
-                t=self.name, tottime=tottime, time=time.time()
-            )))
+            profiler.dump_stats(
+                os.path.join(
+                    settings.PROFILE_DIR,
+                    "{time:.0f}_{tottime:.3f}_celery_{t}.pstat".format(
+                        t=self.name, tottime=tottime, time=time.time()
+                    ),
+                )
+            )
         else:
             t0 = time.perf_counter()
             ret = super().__call__(*args, **kwargs)
@@ -52,7 +61,9 @@ class ProfiledTask(app.Task):
                 if isinstance(exc, t):
                     expected = True
                     break
-            pretix_task_runs_total.inc(1, task_name=self.name, status="expected-error" if expected else "error")
+            pretix_task_runs_total.inc(
+                1, task_name=self.name, status="expected-error" if expected else "error"
+            )
 
         return super().on_failure(exc, task_id, args, kwargs, einfo)
 
@@ -65,22 +76,22 @@ class ProfiledTask(app.Task):
 
 class EventTask(app.Task):
     def __call__(self, *args, **kwargs):
-        if 'event_id' in kwargs:
-            event_id = kwargs.get('event_id')
+        if "event_id" in kwargs:
+            event_id = kwargs.get("event_id")
             with scopes_disabled():
-                event = Event.objects.select_related('organizer').get(pk=event_id)
-            del kwargs['event_id']
-            kwargs['event'] = event
-        elif 'event' in kwargs:
-            event_id = kwargs.get('event')
+                event = Event.objects.select_related("organizer").get(pk=event_id)
+            del kwargs["event_id"]
+            kwargs["event"] = event
+        elif "event" in kwargs:
+            event_id = kwargs.get("event")
             with scopes_disabled():
-                event = Event.objects.select_related('organizer').get(pk=event_id)
-            kwargs['event'] = event
+                event = Event.objects.select_related("organizer").get(pk=event_id)
+            kwargs["event"] = event
         else:
             args = list(args)
             event_id = args[0]
             with scopes_disabled():
-                event = Event.objects.select_related('organizer').get(pk=event_id)
+                event = Event.objects.select_related("organizer").get(pk=event_id)
             args[0] = event
 
         with scope(organizer=event.organizer):
@@ -90,15 +101,15 @@ class EventTask(app.Task):
 
 class OrganizerUserTask(app.Task):
     def __call__(self, *args, **kwargs):
-        organizer_id = kwargs['organizer']
+        organizer_id = kwargs["organizer"]
         with scopes_disabled():
             organizer = Organizer.objects.get(pk=organizer_id)
-        kwargs['organizer'] = organizer
+        kwargs["organizer"] = organizer
 
-        user_id = kwargs['user']
+        user_id = kwargs["user"]
         if user_id is not None:
             user = User.objects.get(pk=user_id)
-            kwargs['user'] = user
+            kwargs["user"] = user
 
         with scope(organizer=organizer):
             ret = super().__call__(*args, **kwargs)
@@ -130,12 +141,13 @@ class TransactionAwareTask(ProfiledTask):
 
 
 class TransactionAwareProfiledEventTask(ProfiledEventTask):
-
     def apply_async(self, *args, **kwargs):
         """
         Unlike the default task in celery, this task does not return an async
         result
         """
         transaction.on_commit(
-            lambda: super(TransactionAwareProfiledEventTask, self).apply_async(*args, **kwargs)
+            lambda: super(TransactionAwareProfiledEventTask, self).apply_async(
+                *args, **kwargs
+            )
         )

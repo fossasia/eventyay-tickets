@@ -20,12 +20,12 @@ class PageSettingsForm(forms.ModelForm):
             "link_in_header",
             "link_in_footer",
             "confirmation_required",
-            "text"
+            "text",
         )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['link_on_website_start_page'].widget = forms.HiddenInput()
+        self.fields["link_on_website_start_page"].widget = forms.HiddenInput()
 
     mimes = {
         "image/gif": "gif",
@@ -51,7 +51,9 @@ class PageSettingsForm(forms.ModelForm):
 
     def save(self, commit=True):
         for locale, html in self.cleaned_data["text"].data.items():
-            self.cleaned_data["text"].data[locale] = process_data_images(html, self.mimes)
+            self.cleaned_data["text"].data[locale] = process_data_images(
+                html, self.mimes
+            )
         return super().save(commit)
 
 

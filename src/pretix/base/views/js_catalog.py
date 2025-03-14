@@ -12,14 +12,14 @@ import_date = timezone.now().strftime("%Y%m%d%H%M")
 # This is not a valid Django URL configuration, as the final
 # configuration is done by the pretix.multidomain package.
 js_info_dict = {
-    'packages': ('pretix',),
+    "packages": ("pretix",),
 }
 
 
 @etag(lambda *s, **k: import_date)
-@cache_page(3600, key_prefix='js18n-%s' % import_date)
+@cache_page(3600, key_prefix="js18n-%s" % import_date)
 def js_catalog(request, lang):
     c = JavaScriptCatalog()
-    c.translation = DjangoTranslation(lang, domain='djangojs')
+    c.translation = DjangoTranslation(lang, domain="djangojs")
     context = c.get_context_data()
     return c.render_to_response(context)

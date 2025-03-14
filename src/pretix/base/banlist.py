@@ -70,10 +70,10 @@ banlist = [
     "vagina",
     "wank",
     "whore",
-    "wtf"
+    "wtf",
 ]
 
-banlist_regex = re.compile('(' + '|'.join(banlist) + ')')
+banlist_regex = re.compile("(" + "|".join(banlist) + ")")
 
 
 def banned(string):

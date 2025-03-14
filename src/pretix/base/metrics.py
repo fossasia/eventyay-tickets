@@ -12,6 +12,7 @@ from pretix.celery_app import app
 
 if settings.HAS_REDIS:
     import django_redis
+
     redis = django_redis.get_redis_connection("redis")
 
 REDIS_KEY = "pretix_metrics"
@@ -22,11 +23,11 @@ _MINUS_INF = float("-inf")
 def _float_to_go_string(d):
     # inspired by https://github.com/prometheus/client_python/blob/master/prometheus_client/core.py
     if d == _INF:
-        return '+Inf'
+        return "+Inf"
     elif d == _MINUS_INF:
-        return '-Inf'
+        return "-Inf"
     elif math.isnan(d):
-        return 'NaN'
+        return "NaN"
     else:
         return repr(float(d))
 
@@ -56,7 +57,11 @@ class Metric(object):
 
         # now test if no further labels are required
         if len(labels) != len(self.labelnames):
-            raise ValueError("Unknown labels used: {}".format(", ".join(set(labels) - set(self.labelnames))))
+            raise ValueError(
+                "Unknown labels used: {}".format(
+                    ", ".join(set(labels) - set(self.labelnames))
+                )
+            )
 
     def _construct_metric_identifier(self, metricname, labels=None, labelnames=None):
         """
@@ -66,7 +71,7 @@ class Metric(object):
             return metricname
         else:
             named_labels = []
-            for labelname in (labelnames or self.labelnames):
+            for labelname in labelnames or self.labelnames:
                 named_labels.append('{}="{}"'.format(labelname, labels[labelname]))
 
             return metricname + "{" + ",".join(named_labels) + "}"
@@ -163,18 +168,40 @@ class Histogram(Metric):
     Histogram Metric Object
     """
 
-    def __init__(self, name, helpstring, labelnames=None,
-                 buckets=(.005, .01, .025, .05, .075, .1, .25, .5, .75, 1.0, 2.5, 5.0, 7.5, 10.0, 30.0, _INF)):
+    def __init__(
+        self,
+        name,
+        helpstring,
+        labelnames=None,
+        buckets=(
+            0.005,
+            0.01,
+            0.025,
+            0.05,
+            0.075,
+            0.1,
+            0.25,
+            0.5,
+            0.75,
+            1.0,
+            2.5,
+            5.0,
+            7.5,
+            10.0,
+            30.0,
+            _INF,
+        ),
+    ):
         if list(buckets) != sorted(buckets):
             # This is probably an error on the part of the user,
             # so raise rather than sorting for them.
-            raise ValueError('Buckets not in sorted order')
+            raise ValueError("Buckets not in sorted order")
 
         if buckets and buckets[-1] != _INF:
             buckets.append(_INF)
 
         if len(buckets) < 2:
-            raise ValueError('Must have at least two buckets')
+            raise ValueError("Must have at least two buckets")
 
         self.buckets = buckets
         super().__init__(name, helpstring, labelnames)
@@ -190,18 +217,21 @@ class Histogram(Metric):
 
         pipe = self._get_redis_pipeline()
 
-        countmetric = self._construct_metric_identifier(self.name + '_count', kwargs)
+        countmetric = self._construct_metric_identifier(self.name + "_count", kwargs)
         self._inc_in_redis(countmetric, 1, pipeline=pipe)
 
-        summetric = self._construct_metric_identifier(self.name + '_sum', kwargs)
+        summetric = self._construct_metric_identifier(self.name + "_sum", kwargs)
         self._inc_in_redis(summetric, amount, pipeline=pipe)
 
         kwargs_le = dict(kwargs.items())
         for i, bound in enumerate(self.buckets):
             if amount <= bound:
-                kwargs_le['le'] = _float_to_go_string(bound)
-                bmetric = self._construct_metric_identifier(self.name + '_bucket', kwargs_le,
-                                                            labelnames=self.labelnames + ["le"])
+                kwargs_le["le"] = _float_to_go_string(bound)
+                bmetric = self._construct_metric_identifier(
+                    self.name + "_bucket",
+                    kwargs_le,
+                    labelnames=self.labelnames + ["le"],
+                )
                 self._inc_in_redis(bmetric, 1, pipeline=pipe)
 
         self._execute_redis_pipeline(pipe)
@@ -211,9 +241,11 @@ def estimate_count_fast(type):
     """
     See https://wiki.postgresql.org/wiki/Count_estimate
     """
-    if 'postgres' in settings.DATABASES['default']['ENGINE']:
+    if "postgres" in settings.DATABASES["default"]["ENGINE"]:
         cursor = connection.cursor()
-        cursor.execute("select reltuples from pg_class where relname='%s';" % type._meta.db_table)
+        cursor.execute(
+            "select reltuples from pg_class where relname='%s';" % type._meta.db_table
+        )
         row = cursor.fetchone()
         return int(row[0])
     else:
@@ -235,34 +267,38 @@ def metric_values():
             metrics[splitted[0]]["{" + splitted[1]] = value
 
     # Aliases
-    aliases = {
-        'pretix_view_requests_total': 'pretix_view_duration_seconds_count'
-    }
+    aliases = {"pretix_view_requests_total": "pretix_view_duration_seconds_count"}
     for a, atarget in aliases.items():
         metrics[a] = metrics[atarget]
 
     # Throwaway metrics
-    exact_tables = [
-        Order, OrderPosition, Invoice, Event, Organizer
-    ]
+    exact_tables = [Order, OrderPosition, Invoice, Event, Organizer]
     for m in apps.get_models():  # Count all models
         if any(issubclass(m, p) for p in exact_tables):
-            metrics['pretix_model_instances']['{model="%s"}' % m._meta] = m.objects.count()
+            metrics["pretix_model_instances"]['{model="%s"}' % m._meta] = (
+                m.objects.count()
+            )
         else:
-            metrics['pretix_model_instances']['{model="%s"}' % m._meta] = estimate_count_fast(m)
+            metrics["pretix_model_instances"]['{model="%s"}' % m._meta] = (
+                estimate_count_fast(m)
+            )
 
     if settings.HAS_CELERY:
         client = app.broker_connection().channel().client
         for q in settings.CELERY_TASK_QUEUES:
             llen = client.llen(q.name)
             lfirst = client.lindex(q.name, -1)
-            metrics['pretix_celery_tasks_queued_count']['{queue="%s"}' % q.name] = llen
+            metrics["pretix_celery_tasks_queued_count"]['{queue="%s"}' % q.name] = llen
             if lfirst:
                 ldata = json.loads(lfirst)
-                dt = time.time() - ldata.get('created', 0)
-                metrics['pretix_celery_tasks_queued_age_seconds']['{queue="%s"}' % q.name] = dt
+                dt = time.time() - ldata.get("created", 0)
+                metrics["pretix_celery_tasks_queued_age_seconds"][
+                    '{queue="%s"}' % q.name
+                ] = dt
             else:
-                metrics['pretix_celery_tasks_queued_age_seconds']['{queue="%s"}' % q.name] = 0
+                metrics["pretix_celery_tasks_queued_age_seconds"][
+                    '{queue="%s"}' % q.name
+                ] = 0
 
     return metrics
 
@@ -270,9 +306,14 @@ def metric_values():
 """
 Provided metrics
 """
-pretix_view_duration_seconds = Histogram("pretix_view_duration_seconds", "Return time of views.",
-                                         ["status_code", "method", "url_name"])
-pretix_task_runs_total = Counter("pretix_task_runs_total", "Total calls to a celery task",
-                                 ["task_name", "status"])
-pretix_task_duration_seconds = Histogram("pretix_task_duration_seconds", "Call time of a celery task",
-                                         ["task_name"])
+pretix_view_duration_seconds = Histogram(
+    "pretix_view_duration_seconds",
+    "Return time of views.",
+    ["status_code", "method", "url_name"],
+)
+pretix_task_runs_total = Counter(
+    "pretix_task_runs_total", "Total calls to a celery task", ["task_name", "status"]
+)
+pretix_task_duration_seconds = Histogram(
+    "pretix_task_duration_seconds", "Call time of a celery task", ["task_name"]
+)

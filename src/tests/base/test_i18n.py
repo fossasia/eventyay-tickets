@@ -12,74 +12,61 @@ class I18nStringTest(TestCase):
     """
 
     def test_explicit_translation(self):
-        data = {
-            'de': 'Hallo',
-            'en': 'Hello'
-        }
+        data = {"de": "Hallo", "en": "Hello"}
         s = LazyI18nString(data)
-        translation.activate('en')
-        self.assertEqual(str(s), 'Hello')
-        translation.activate('de')
-        self.assertEqual(str(s), 'Hallo')
+        translation.activate("en")
+        self.assertEqual(str(s), "Hello")
+        translation.activate("de")
+        self.assertEqual(str(s), "Hallo")
 
     def test_similar_translations(self):
-        data = {
-            'en': 'You',
-            'de': 'Sie',
-            'de-formal': 'Du'
-        }
+        data = {"en": "You", "de": "Sie", "de-formal": "Du"}
         s = LazyI18nString(data)
-        translation.activate('de')
-        self.assertEqual(str(s), 'Sie')
-        translation.activate('de-formal')
-        self.assertEqual(str(s), 'Du')
+        translation.activate("de")
+        self.assertEqual(str(s), "Sie")
+        translation.activate("de-formal")
+        self.assertEqual(str(s), "Du")
 
-        data = {
-            'en': 'You',
-            'de-formal': 'Du'
-        }
+        data = {"en": "You", "de-formal": "Du"}
         s = LazyI18nString(data)
-        translation.activate('de')
-        self.assertEqual(str(s), 'Du')
-        translation.activate('de-formal')
-        self.assertEqual(str(s), 'Du')
+        translation.activate("de")
+        self.assertEqual(str(s), "Du")
+        translation.activate("de-formal")
+        self.assertEqual(str(s), "Du")
 
-        data = {
-            'en': 'You',
-            'de': 'Sie'
-        }
+        data = {"en": "You", "de": "Sie"}
         s = LazyI18nString(data)
-        translation.activate('de')
-        self.assertEqual(str(s), 'Sie')
-        translation.activate('de-formal')
-        self.assertEqual(str(s), 'Sie')
+        translation.activate("de")
+        self.assertEqual(str(s), "Sie")
+        translation.activate("de-formal")
+        self.assertEqual(str(s), "Sie")
 
     def test_missing_default_translation(self):
         data = {
-            'de': 'Hallo',
+            "de": "Hallo",
         }
         s = LazyI18nString(data)
-        translation.activate('en')
-        self.assertEqual(str(s), 'Hallo')
-        translation.activate('de')
-        self.assertEqual(str(s), 'Hallo')
+        translation.activate("en")
+        self.assertEqual(str(s), "Hallo")
+        translation.activate("de")
+        self.assertEqual(str(s), "Hallo")
 
     def test_missing_translation(self):
         data = {
-            'en': 'Hello',
+            "en": "Hello",
         }
         s = LazyI18nString(data)
-        translation.activate('en')
-        self.assertEqual(str(s), 'Hello')
-        translation.activate('de')
-        self.assertEqual(str(s), 'Hello')
+        translation.activate("en")
+        self.assertEqual(str(s), "Hello")
+        translation.activate("de")
+        self.assertEqual(str(s), "Hello")
 
     def test_legacy_string(self):
         s = LazyI18nString("Hello")
-        translation.activate('en')
-        self.assertEqual(str(s), 'Hello')
-        translation.activate('de')
-        self.assertEqual(str(s), 'Hello')
+        translation.activate("en")
+        self.assertEqual(str(s), "Hello")
+        translation.activate("de")
+        self.assertEqual(str(s), "Hello")
 
     def test_none(self):
         s = LazyI18nString(None)
@@ -92,10 +79,13 @@ class I18nFieldTest(TestCase):
     """
     This test case tests the I18n*Field classes
     """
+
     def setUp(self):
-        o = Organizer.objects.create(name='Dummy', slug='dummy')
+        o = Organizer.objects.create(name="Dummy", slug="dummy")
         self.event = Event.objects.create(
-            organizer=o, name='Dummy', slug='dummy',
+            organizer=o,
+            name="Dummy",
+            slug="dummy",
             date_from=now(),
         )
 
@@ -103,22 +93,18 @@ class I18nFieldTest(TestCase):
         obj = ItemCategory.objects.create(event=self.event, name="Hello")
         obj = ItemCategory.objects.get(id=obj.id)
         self.assertIsInstance(obj.name, LazyI18nString)
-        translation.activate('en')
+        translation.activate("en")
         self.assertEqual(str(obj.name), "Hello")
-        translation.activate('de')
+        translation.activate("de")
         self.assertEqual(str(obj.name), "Hello")
 
     def test_save_load_cycle_i18n_string(self):
-        obj = ItemCategory.objects.create(event=self.event,
-                                          name=LazyI18nString(
-                                              {
-                                                  'de': 'Hallo',
-                                                  'en': 'Hello'
-                                              }
-                                          ))
+        obj = ItemCategory.objects.create(
+            event=self.event, name=LazyI18nString({"de": "Hallo", "en": "Hello"})
+        )
         obj = ItemCategory.objects.get(id=obj.id)
         self.assertIsInstance(obj.name, LazyI18nString)
-        translation.activate('en')
+        translation.activate("en")
         self.assertEqual(str(obj.name), "Hello")
-        translation.activate('de')
+        translation.activate("de")
         self.assertEqual(str(obj.name), "Hallo")

@@ -15,11 +15,17 @@ from ..signals import periodic_task
 @receiver(signal=periodic_task)
 @scopes_disabled()
 def clean_cart_positions(sender, **kwargs):
-    for cp in CartPosition.objects.filter(expires__lt=now() - timedelta(days=14), addon_to__isnull=False):
+    for cp in CartPosition.objects.filter(
+        expires__lt=now() - timedelta(days=14), addon_to__isnull=False
+    ):
         cp.delete()
-    for cp in CartPosition.objects.filter(expires__lt=now() - timedelta(days=14), addon_to__isnull=True):
+    for cp in CartPosition.objects.filter(
+        expires__lt=now() - timedelta(days=14), addon_to__isnull=True
+    ):
         cp.delete()
-    for ia in InvoiceAddress.objects.filter(order__isnull=True, last_modified__lt=now() - timedelta(days=14)):
+    for ia in InvoiceAddress.objects.filter(
+        order__isnull=True, last_modified__lt=now() - timedelta(days=14)
+    ):
         ia.delete()
 
 
@@ -33,17 +39,25 @@ def clean_cached_files(sender, **kwargs):
 @receiver(signal=periodic_task)
 @scopes_disabled()
 def clean_cached_tickets(sender, **kwargs):
-    for cf in CachedTicket.objects.filter(created__lte=now() - timedelta(hours=settings.CACHE_TICKETS_HOURS)):
+    for cf in CachedTicket.objects.filter(
+        created__lte=now() - timedelta(hours=settings.CACHE_TICKETS_HOURS)
+    ):
         cf.delete()
-    for cf in CachedCombinedTicket.objects.filter(created__lte=now() - timedelta(hours=settings.CACHE_TICKETS_HOURS)):
+    for cf in CachedCombinedTicket.objects.filter(
+        created__lte=now() - timedelta(hours=settings.CACHE_TICKETS_HOURS)
+    ):
         cf.delete()
-    for cf in CachedTicket.objects.filter(created__lte=now() - timedelta(minutes=30), file__isnull=True):
+    for cf in CachedTicket.objects.filter(
+        created__lte=now() - timedelta(minutes=30), file__isnull=True
+    ):
         cf.delete()
-    for cf in CachedCombinedTicket.objects.filter(created__lte=now() - timedelta(minutes=30), file__isnull=True):
+    for cf in CachedCombinedTicket.objects.filter(
+        created__lte=now() - timedelta(minutes=30), file__isnull=True
+    ):
         cf.delete()
 
 
 @receiver(signal=periodic_task)
 @scopes_disabled()
 def clearsessions(sender, **kwargs):
-    call_command('clearsessions')
+    call_command("clearsessions")

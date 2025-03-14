@@ -4,9 +4,10 @@ Based on sphinx-rtd-theme
 Based on https://github.com/ryan-roemer/sphinx-bootstrap-theme.
 
 """
+
 import os
 
-__version__ = '0.1.0'
+__version__ = "0.1.0"
 __version_full__ = __version__
 
 

@@ -19,7 +19,7 @@ class BaseTicketOutput:
 
     def __init__(self, event: Event):
         self.event = event
-        self.settings = SettingsSandbox('ticketoutput', self.identifier, event)
+        self.settings = SettingsSandbox("ticketoutput", self.identifier, event)
 
     def __str__(self):
         return self.identifier
@@ -30,7 +30,7 @@ class BaseTicketOutput:
         Returns whether or whether not this output is enabled.
         By default, this is determined by the value of the ``_enabled`` setting.
         """
-        return self.settings.get('_enabled', as_type=bool)
+        return self.settings.get("_enabled", as_type=bool)
 
     @property
     def multi_download_enabled(self) -> bool:
@@ -81,15 +81,22 @@ class BaseTicketOutput:
         appropriate filters for you.
         """
         with tempfile.TemporaryDirectory() as d:
-            with ZipFile(os.path.join(d, 'tmp.zip'), 'w') as zipf:
+            with ZipFile(os.path.join(d, "tmp.zip"), "w") as zipf:
                 for pos in order.positions_with_tickets:
                     fname, __, content = self.generate(pos)
-                    zipf.writestr('{}-{}{}'.format(
-                        order.code, pos.positionid, os.path.splitext(fname)[1]
-                    ), content)
+                    zipf.writestr(
+                        "{}-{}{}".format(
+                            order.code, pos.positionid, os.path.splitext(fname)[1]
+                        ),
+                        content,
+                    )
 
-            with open(os.path.join(d, 'tmp.zip'), 'rb') as zipf:
-                return '{}-{}.zip'.format(order.code, self.identifier), 'application/zip', zipf.read()
+            with open(os.path.join(d, "tmp.zip"), "rb") as zipf:
+                return (
+                    "{}-{}.zip".format(order.code, self.identifier),
+                    "application/zip",
+                    zipf.read(),
+                )
 
     @property
     def verbose_name(self) -> str:
@@ -139,13 +146,17 @@ class BaseTicketOutput:
         .. WARNING:: It is highly discouraged to alter the ``_enabled`` field of the default
                      implementation.
         """
-        return OrderedDict([
-            ('_enabled',
-             forms.BooleanField(
-                 label=_('Enable ticket format'),
-                 required=False,
-             )),
-        ])
+        return OrderedDict(
+            [
+                (
+                    "_enabled",
+                    forms.BooleanField(
+                        label=_("Enable ticket format"),
+                        required=False,
+                    ),
+                ),
+            ]
+        )
 
     def settings_content_render(self, request: HttpRequest) -> str:
         """
@@ -160,7 +171,7 @@ class BaseTicketOutput:
         """
         The text on the download button in the frontend.
         """
-        return _('Download ticket')
+        return _("Download ticket")
 
     @property
     def long_download_button_text(self) -> str:
@@ -181,7 +192,7 @@ class BaseTicketOutput:
         """
         The Font Awesome icon on the download button in the frontend.
         """
-        return 'fa-download'
+        return "fa-download"
 
     @property
     def preview_allowed(self) -> bool:

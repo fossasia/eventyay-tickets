@@ -4,7 +4,15 @@ from typing import Any, Dict, List, Optional, Tuple
 import pytz
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import (
-    Count, Exists, IntegerField, Max, Min, OuterRef, Q, QuerySet, Subquery,
+    Count,
+    Exists,
+    IntegerField,
+    Max,
+    Min,
+    OuterRef,
+    Q,
+    QuerySet,
+    Subquery,
 )
 from django.db.models.functions import Coalesce, Greatest
 from django.http import HttpRequest, HttpResponse, JsonResponse
@@ -18,13 +26,22 @@ from django.views.generic import TemplateView
 from pytz.tzinfo import DstTzInfo
 
 from pretix.base.models import (
-    Event, Item, ItemCategory, Order, OrderRefund, Question, Quota,
-    RequiredAction, SubEvent, Voucher,
+    Event,
+    Item,
+    ItemCategory,
+    Order,
+    OrderRefund,
+    Question,
+    Quota,
+    RequiredAction,
+    SubEvent,
+    Voucher,
 )
 from pretix.base.timeline import timeline_for_event
 from pretix.control.forms.event import CommentForm
 from pretix.control.signals import (
-    event_dashboard_widgets, user_dashboard_widgets,
+    event_dashboard_widgets,
+    user_dashboard_widgets,
 )
 from pretix.helpers.daterange import daterange
 from pretix.helpers.plugin_enable import is_video_enabled

@@ -17,4 +17,4 @@ def url_replace(request, *pairs):
             else:
                 dict_[key] = str(p)
             key = None
-    return dict_.urlencode(safe='[]')
+    return dict_.urlencode(safe="[]")

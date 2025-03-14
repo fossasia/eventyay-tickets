@@ -7,7 +7,6 @@ import pretix.base.models.base
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("pretixbase", "0004_create_billing_invoice"),
     ]

@@ -10,10 +10,15 @@ from django.urls import reverse
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.utils.timezone import get_current_timezone_name
-from django.utils.translation import gettext, gettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext, pgettext_lazy
+from django.utils.translation import gettext_lazy as _
 from django_countries.fields import LazyTypedChoiceField
 from i18nfield.forms import (
-    I18nForm, I18nFormField, I18nFormSetMixin, I18nTextarea, I18nTextInput,
+    I18nForm,
+    I18nFormField,
+    I18nFormSetMixin,
+    I18nTextarea,
+    I18nTextInput,
 )
 from pytz import common_timezones, timezone
 
@@ -24,10 +29,14 @@ from pretix.base.models import Event, Organizer, TaxRule, Team
 from pretix.base.models.event import EventMetaValue, SubEvent
 from pretix.base.reldate import RelativeDateField, RelativeDateTimeField
 from pretix.base.settings import (
-    PERSON_NAME_SCHEMES, PERSON_NAME_TITLE_GROUPS, validate_event_settings,
+    PERSON_NAME_SCHEMES,
+    PERSON_NAME_TITLE_GROUPS,
+    validate_event_settings,
 )
 from pretix.control.forms import (
-    MultipleLanguagesWidget, SlugWidget, SplitDateTimeField,
+    MultipleLanguagesWidget,
+    SlugWidget,
+    SplitDateTimeField,
     SplitDateTimePickerWidget,
 )
 from pretix.control.forms.widgets import Select2
@@ -268,7 +277,6 @@ class SafeEventMultipleChoiceField(EventChoiceMixin, forms.ModelMultipleChoiceFi
 
 
 class EventWizardCopyForm(forms.Form):
-
     @staticmethod
     def copy_from_queryset(user, session):
         if user.has_active_staff_session(session.session_key):
@@ -317,7 +325,6 @@ class EventWizardCopyForm(forms.Form):
 
 
 class EventMetaValueForm(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         self.property = kwargs.pop("property")
         self.disabled = kwargs.pop("disabled")
@@ -524,70 +531,70 @@ class EventSettingsForm(SettingsForm):
     )
 
     auto_fields = [
-        'imprint_url',
-        'checkout_email_helptext',
-        'presale_has_ended_text',
-        'voucher_explanation_text',
-        'checkout_success_text',
-        'show_dates_on_frontpage',
-        'show_date_to',
-        'show_times',
-        'show_items_outside_presale_period',
-        'display_net_prices',
-        'presale_start_show_date',
-        'locales',
-        'locale',
-        'region',
-        'show_quota_left',
-        'waiting_list_enabled',
-        'waiting_list_hours',
-        'waiting_list_auto',
-        'waiting_list_names_asked',
-        'waiting_list_names_required',
-        'waiting_list_phones_asked',
-        'waiting_list_phones_required',
-        'waiting_list_phones_explanation_text',
-        'max_items_per_order',
-        'reservation_time',
-        'contact_mail',
-        'show_variations_expanded',
-        'hide_sold_out',
-        'meta_noindex',
-        'redirect_to_checkout_directly',
-        'frontpage_subevent_ordering',
-        'event_list_type',
-        'event_list_available_only',
-        'frontpage_text',
-        'event_info_text',
-        'attendee_names_asked',
-        'attendee_names_required',
-        'attendee_emails_asked',
-        'attendee_emails_required',
-        'attendee_company_asked',
-        'attendee_company_required',
-        'attendee_addresses_asked',
-        'attendee_addresses_required',
-        'attendee_data_explanation_text',
-        'order_phone_asked',
-        'order_phone_required',
-        'checkout_phone_helptext',
-        'banner_text',
-        'banner_text_bottom',
-        'order_email_asked_twice',
-        'last_order_modification_date',
-        'allow_modifications_after_checkin',
-        'checkout_show_copy_answers_button',
-        'primary_color',
-        'theme_color_success',
-        'theme_color_danger',
-        'theme_color_background',
-        'theme_round_borders',
-        'hover_button_color',
-        'primary_font',
-        'logo_image',
-        'logo_image_large',
-        'logo_show_title',
-        'og_image',
+        "imprint_url",
+        "checkout_email_helptext",
+        "presale_has_ended_text",
+        "voucher_explanation_text",
+        "checkout_success_text",
+        "show_dates_on_frontpage",
+        "show_date_to",
+        "show_times",
+        "show_items_outside_presale_period",
+        "display_net_prices",
+        "presale_start_show_date",
+        "locales",
+        "locale",
+        "region",
+        "show_quota_left",
+        "waiting_list_enabled",
+        "waiting_list_hours",
+        "waiting_list_auto",
+        "waiting_list_names_asked",
+        "waiting_list_names_required",
+        "waiting_list_phones_asked",
+        "waiting_list_phones_required",
+        "waiting_list_phones_explanation_text",
+        "max_items_per_order",
+        "reservation_time",
+        "contact_mail",
+        "show_variations_expanded",
+        "hide_sold_out",
+        "meta_noindex",
+        "redirect_to_checkout_directly",
+        "frontpage_subevent_ordering",
+        "event_list_type",
+        "event_list_available_only",
+        "frontpage_text",
+        "event_info_text",
+        "attendee_names_asked",
+        "attendee_names_required",
+        "attendee_emails_asked",
+        "attendee_emails_required",
+        "attendee_company_asked",
+        "attendee_company_required",
+        "attendee_addresses_asked",
+        "attendee_addresses_required",
+        "attendee_data_explanation_text",
+        "order_phone_asked",
+        "order_phone_required",
+        "checkout_phone_helptext",
+        "banner_text",
+        "banner_text_bottom",
+        "order_email_asked_twice",
+        "last_order_modification_date",
+        "allow_modifications_after_checkin",
+        "checkout_show_copy_answers_button",
+        "primary_color",
+        "theme_color_success",
+        "theme_color_danger",
+        "theme_color_background",
+        "theme_round_borders",
+        "hover_button_color",
+        "primary_font",
+        "logo_image",
+        "logo_image_large",
+        "logo_show_title",
+        "og_image",
     ]
 
     def clean(self):
@@ -700,11 +707,11 @@ class CancelSettingsForm(SettingsForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.obj.settings.giftcard_expiry_years is not None:
-            self.fields["cancel_allow_user_paid_refund_as_giftcard"].help_text = (
-                gettext(
-                    "You have configured gift cards to be valid {} years plus the year the gift card is issued in."
-                ).format(self.obj.settings.giftcard_expiry_years)
-            )
+            self.fields[
+                "cancel_allow_user_paid_refund_as_giftcard"
+            ].help_text = gettext(
+                "You have configured gift cards to be valid {} years plus the year the gift card is issued in."
+            ).format(self.obj.settings.giftcard_expiry_years)
 
 
 class PaymentSettingsForm(SettingsForm):
@@ -798,7 +805,6 @@ class ProviderForm(SettingsForm):
 
 
 class InvoiceSettingsForm(SettingsForm):
-
     auto_fields = [
         "invoice_address_asked",
         "invoice_address_required",
@@ -870,7 +876,7 @@ class InvoiceSettingsForm(SettingsForm):
         else:
             self.fields["invoice_numbers_prefix_cancellations"].widget.attrs[
                 "placeholder"
-            ] = (event.slug.upper() + "-")
+            ] = event.slug.upper() + "-"
         locale_names = dict(settings.LANGUAGES)
         self.fields["invoice_language"].choices = [
             ("__user__", _("The user's language"))
@@ -1133,7 +1139,10 @@ class MailSettingsForm(SettingsForm):
     smtp_select = [("sendgrid", _("SendGrid")), ("smtp", _("SMTP"))]
 
     email_vendor = forms.ChoiceField(
-        label=_("Email vendor"), required=True, widget=forms.RadioSelect, choices=smtp_select
+        label=_("Email vendor"),
+        required=True,
+        widget=forms.RadioSelect,
+        choices=smtp_select,
     )
     smtp_host = forms.CharField(
         label=_("Hostname"),
@@ -1221,13 +1230,17 @@ class MailSettingsForm(SettingsForm):
 
     def clean(self):
         data = self.cleaned_data
-        if not data.get('smtp_password') and data.get('smtp_username'):
+        if not data.get("smtp_password") and data.get("smtp_username"):
             # Leave password unchanged if the username is set and the password field is empty.
             # This makes it impossible to set an empty password as long as a username is set, but
             # Python's smtplib does not support password-less schemes anyway.
-            data['smtp_password'] = self.initial.get('smtp_password')
-        if data.get('smtp_use_tls') and data.get('smtp_use_ssl'):
-            raise ValidationError(_('You can activate either SSL or STARTTLS security, but not both at the same time.'))
+            data["smtp_password"] = self.initial.get("smtp_password")
+        if data.get("smtp_use_tls") and data.get("smtp_use_ssl"):
+            raise ValidationError(
+                _(
+                    "You can activate either SSL or STARTTLS security, but not both at the same time."
+                )
+            )
 
 
 class TicketSettingsForm(SettingsForm):
@@ -1280,7 +1293,6 @@ class TicketSettingsForm(SettingsForm):
 
 
 class CommentForm(I18nModelForm):
-
     def __init__(self, *args, **kwargs):
         self.readonly = kwargs.pop("readonly", None)
         super().__init__(*args, **kwargs)
@@ -1528,10 +1540,12 @@ class QuickSetupForm(I18nForm):
         kwargs["locales"] = self.locales
         super().__init__(*args, **kwargs)
         plugins_active = self.obj.get_plugins()
-        if ('eventyay_stripe' not in plugins_active) or (not self.obj.settings.payment_stripe_connect_client_id):
+        if ("eventyay_stripe" not in plugins_active) or (
+            not self.obj.settings.payment_stripe_connect_client_id
+        ):
             del self.fields["payment_stripe__enabled"]
-        if ('pretix.plugins.banktransfer' not in plugins_active):
-            del self.fields['payment_banktransfer__enabled']
+        if "pretix.plugins.banktransfer" not in plugins_active:
+            del self.fields["payment_banktransfer__enabled"]
         self.fields["payment_banktransfer_bank_details"].required = False
         for f in self.fields.values():
             if "data-required-if" in f.widget.attrs:
@@ -1569,7 +1583,6 @@ class QuickSetupProductForm(I18nForm):
 
 
 class BaseQuickSetupProductFormSet(I18nFormSetMixin, forms.BaseFormSet):
-
     def __init__(self, *args, **kwargs):
         event = kwargs.pop("event", None)
         if event:

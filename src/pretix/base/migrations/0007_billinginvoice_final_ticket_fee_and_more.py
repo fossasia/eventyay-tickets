@@ -5,35 +5,39 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('pretixbase', '0006_create_invoice_voucher'),
+        ("pretixbase", "0006_create_invoice_voucher"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='billinginvoice',
-            name='final_ticket_fee',
+            model_name="billinginvoice",
+            name="final_ticket_fee",
             field=models.DecimalField(decimal_places=2, default=0, max_digits=10),
         ),
         migrations.AddField(
-            model_name='billinginvoice',
-            name='voucher_discount',
+            model_name="billinginvoice",
+            name="voucher_discount",
             field=models.DecimalField(decimal_places=2, default=0, max_digits=10),
         ),
         migrations.AddField(
-            model_name='organizerbillingmodel',
-            name='invoice_voucher',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='billing', to='pretixbase.invoicevoucher'),
+            model_name="organizerbillingmodel",
+            name="invoice_voucher",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="billing",
+                to="pretixbase.invoicevoucher",
+            ),
         ),
         migrations.AddField(
-            model_name='billinginvoice',
-            name='voucher_price_mode',
+            model_name="billinginvoice",
+            name="voucher_price_mode",
             field=models.CharField(max_length=20, null=True),
         ),
         migrations.AddField(
-            model_name='billinginvoice',
-            name='voucher_value',
+            model_name="billinginvoice",
+            name="voucher_value",
             field=models.DecimalField(decimal_places=2, default=0, max_digits=10),
-        )
+        ),
     ]

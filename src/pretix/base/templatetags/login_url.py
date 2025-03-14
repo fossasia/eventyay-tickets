@@ -7,7 +7,7 @@ register = template.Library()
 
 @register.simple_tag(takes_context=True)
 def build_login_url(context):
-    request = context['request']
+    request = context["request"]
     next_path = request.path
     query_string = request.META.get("QUERY_STRING", "")
 

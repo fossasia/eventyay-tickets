@@ -10,7 +10,6 @@ import pretix.base.models.base
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         (
             "pretixbase",

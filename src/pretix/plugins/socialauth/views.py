@@ -64,9 +64,7 @@ class OAuthLoginView(View):
 
         params = parse_qs(parsed.query)
         sanitized_params = {
-            k: v[0]
-            for k, v in params.items()
-            if k in OAuth2Params.model_fields.keys()
+            k: v[0] for k, v in params.items() if k in OAuth2Params.model_fields.keys()
         }
 
         try:
@@ -116,7 +114,7 @@ class OAuthReturnView(View):
 
 
 class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
-    template_name = 'socialauth/social_auth_settings.html'
+    template_name = "socialauth/social_auth_settings.html"
 
     class SettingState(StrEnum):
         ENABLED = "enabled"
@@ -133,27 +131,30 @@ class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
         Set the initial state of the login providers
         If the login providers are not valid, set them to the default
         """
+
         def validate_login_providers(login_providers):
             try:
                 validated_providers = LoginProviders.model_validate(login_providers)
                 return validated_providers
             except ValidationError as e:
-                logger.error('Error while validating login providers: %s', e)
+                logger.error("Error while validating login providers: %s", e)
                 return None
 
-        login_providers = self.gs.settings.get('login_providers', as_type=dict)
+        login_providers = self.gs.settings.get("login_providers", as_type=dict)
         if login_providers is None or validate_login_providers(login_providers) is None:
-            self.gs.settings.set('login_providers', LoginProviders().model_dump())
+            self.gs.settings.set("login_providers", LoginProviders().model_dump())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['login_providers'] = self.gs.settings.get('login_providers', as_type=dict)
-        context['tickets_domain'] = urljoin(settings.SITE_URL, settings.BASE_PATH)
+        context["login_providers"] = self.gs.settings.get(
+            "login_providers", as_type=dict
+        )
+        context["tickets_domain"] = urljoin(settings.SITE_URL, settings.BASE_PATH)
         return context
 
     def post(self, request, *args, **kwargs):
-        login_providers = self.gs.settings.get('login_providers', as_type=dict)
-        setting_state = request.POST.get('save_credentials', '').lower()
+        login_providers = self.gs.settings.get("login_providers", as_type=dict)
+        setting_state = request.POST.get("save_credentials", "").lower()
 
         for provider in LoginProviders.model_fields.keys():
             if setting_state == self.SettingState.CREDENTIALS:
@@ -161,29 +162,31 @@ class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
             else:
                 self.update_provider_state(request, provider, login_providers)
 
-        self.gs.settings.set('login_providers', login_providers)
+        self.gs.settings.set("login_providers", login_providers)
         return redirect(self.get_success_url())
 
     def update_credentials(self, request, provider, login_providers):
-        client_id_value = request.POST.get(f'{provider}_client_id', '')
-        secret_value = request.POST.get(f'{provider}_secret', '')
+        client_id_value = request.POST.get(f"{provider}_client_id", "")
+        secret_value = request.POST.get(f"{provider}_secret", "")
 
         if client_id_value and secret_value:
-            login_providers[provider]['client_id'] = client_id_value
-            login_providers[provider]['secret'] = secret_value
+            login_providers[provider]["client_id"] = client_id_value
+            login_providers[provider]["secret"] = secret_value
 
             SocialApp.objects.update_or_create(
                 provider=provider,
                 defaults={
-                    'client_id': client_id_value,
-                    'secret': secret_value,
-                }
+                    "client_id": client_id_value,
+                    "secret": secret_value,
+                },
             )
 
     def update_provider_state(self, request, provider, login_providers):
-        setting_state = request.POST.get(f'{provider}_login', '').lower()
+        setting_state = request.POST.get(f"{provider}_login", "").lower()
         if setting_state in [s.value for s in self.SettingState]:
-            login_providers[provider]['state'] = setting_state == self.SettingState.ENABLED
+            login_providers[provider]["state"] = (
+                setting_state == self.SettingState.ENABLED
+            )
 
     def get_success_url(self) -> str:
-        return reverse('plugins:socialauth:admin.global.social.auth.settings')
+        return reverse("plugins:socialauth:admin.global.social.auth.settings")

@@ -5,7 +5,7 @@ from pretix import __version__ as version
 
 
 class SocialAuthApp(AppConfig):
-    name = 'pretix.plugins.socialauth'
+    name = "pretix.plugins.socialauth"
     verbose_name = _("SocialAuth")
 
     class PretixPluginMeta:
@@ -17,4 +17,4 @@ class SocialAuthApp(AppConfig):
         visible = False
 
 
-default_app_config = 'pretix.plugins.socialauth.SocialAuthApp'
+default_app_config = "pretix.plugins.socialauth.SocialAuthApp"

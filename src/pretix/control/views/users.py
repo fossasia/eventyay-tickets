@@ -4,7 +4,10 @@ from contextlib import contextmanager
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import (
-    BACKEND_SESSION_KEY, get_user_model, load_backend, login,
+    BACKEND_SESSION_KEY,
+    get_user_model,
+    load_backend,
+    login,
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
@@ -46,8 +49,8 @@ def keep_session_age(session):
 
 
 class UserListView(AdministratorPermissionRequiredMixin, ListView):
-    template_name = 'pretixcontrol/admin/users/index.html'
-    context_object_name = 'users'
+    template_name = "pretixcontrol/admin/users/index.html"
+    context_object_name = "users"
     paginate_by = 30
 
     def get_queryset(self):
@@ -58,7 +61,7 @@ class UserListView(AdministratorPermissionRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['filter_form'] = self.filter_form
+        ctx["filter_form"] = self.filter_form
         return ctx
 
     @cached_property
@@ -66,9 +69,11 @@ class UserListView(AdministratorPermissionRequiredMixin, ListView):
         return UserFilterForm(data=self.request.GET)
 
 
-class UserEditView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, UpdateView):
-    template_name = 'pretixcontrol/admin/users/form.html'
-    context_object_name = 'user'
+class UserEditView(
+    AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, UpdateView
+):
+    template_name = "pretixcontrol/admin/users/form.html"
+    context_object_name = "user"
     form_class = UserEditForm
 
     def get_object(self, queryset=None):
@@ -76,103 +81,125 @@ class UserEditView(AdministratorPermissionRequiredMixin, RecentAuthenticationReq
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['teams'] = self.object.teams.select_related('organizer')
+        ctx["teams"] = self.object.teams.select_related("organizer")
         b = get_auth_backends()
-        ctx['backend'] = (
-            b[self.object.auth_backend].verbose_name if self.object.auth_backend in b else self.object.auth_backend
+        ctx["backend"] = (
+            b[self.object.auth_backend].verbose_name
+            if self.object.auth_backend in b
+            else self.object.auth_backend
         )
         return ctx
 
     def get_success_url(self):
-        return reverse('control:admin.users.edit', kwargs=self.kwargs)
+        return reverse("control:admin.users.edit", kwargs=self.kwargs)
 
     def form_valid(self, form):
-        messages.success(self.request, _('Your changes have been saved.'))
+        messages.success(self.request, _("Your changes have been saved."))
 
         data = {}
         for k in form.changed_data:
-            if k != 'new_pw_repeat':
-                if 'new_pw' == k:
-                    data['new_pw'] = True
+            if k != "new_pw_repeat":
+                if "new_pw" == k:
+                    data["new_pw"] = True
                 else:
                     data[k] = form.cleaned_data[k]
 
         sup = super().form_valid(form)
 
-        if 'require_2fa' in form.changed_data and form.cleaned_data['require_2fa']:
-            self.object.log_action('pretix.user.settings.2fa.enabled', user=self.request.user)
-        elif 'require_2fa' in form.changed_data and not form.cleaned_data['require_2fa']:
-            self.object.log_action('pretix.user.settings.2fa.disabled', user=self.request.user)
-        self.object.log_action('pretix.user.settings.changed', user=self.request.user, data=data)
+        if "require_2fa" in form.changed_data and form.cleaned_data["require_2fa"]:
+            self.object.log_action(
+                "pretix.user.settings.2fa.enabled", user=self.request.user
+            )
+        elif (
+            "require_2fa" in form.changed_data and not form.cleaned_data["require_2fa"]
+        ):
+            self.object.log_action(
+                "pretix.user.settings.2fa.disabled", user=self.request.user
+            )
+        self.object.log_action(
+            "pretix.user.settings.changed", user=self.request.user, data=data
+        )
 
         return sup
 
 
-class UserResetView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View):
-
+class UserResetView(
+    AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View
+):
     def get(self, request, *args, **kwargs):
-        return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
+        return redirect(reverse("control:admin.users.edit", kwargs=self.kwargs))
 
     def post(self, request, *args, **kwargs):
         self.object = get_object_or_404(User, pk=self.kwargs.get("id"))
         try:
             self.object.send_password_reset()
         except SendMailException:
-            messages.error(request, _('There was an error sending the mail. Please try again later.'))
+            messages.error(
+                request,
+                _("There was an error sending the mail. Please try again later."),
+            )
             return redirect(self.get_success_url())
 
-        self.object.log_action('pretix.control.auth.user.forgot_password.mail_sent',
-                               user=request.user)
-        messages.success(request, _('We sent out an e-mail containing further instructions.'))
+        self.object.log_action(
+            "pretix.control.auth.user.forgot_password.mail_sent", user=request.user
+        )
+        messages.success(
+            request, _("We sent out an e-mail containing further instructions.")
+        )
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('control:admin.users.edit', kwargs=self.kwargs)
+        return reverse("control:admin.users.edit", kwargs=self.kwargs)
 
 
-class UserAnonymizeView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, TemplateView):
+class UserAnonymizeView(
+    AdministratorPermissionRequiredMixin,
+    RecentAuthenticationRequiredMixin,
+    TemplateView,
+):
     template_name = "pretixcontrol/admin/users/anonymize.html"
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['user'] = get_object_or_404(User, pk=self.kwargs.get("id"))
+        ctx["user"] = get_object_or_404(User, pk=self.kwargs.get("id"))
         return ctx
 
     def post(self, request, *args, **kwargs):
         self.object = get_object_or_404(User, pk=self.kwargs.get("id"))
-        self.object.log_action('pretix.user.anonymized',
-                               user=request.user)
+        self.object.log_action("pretix.user.anonymized", user=request.user)
         self.object.email = "{}@disabled.eventyay.com".format(self.object.pk)
         self.object.fullname = ""
         self.object.is_active = False
         self.object.notifications_send = False
         self.object.save()
-        for le in self.object.all_logentries.filter(action_type="pretix.user.settings.changed"):
+        for le in self.object.all_logentries.filter(
+            action_type="pretix.user.settings.changed"
+        ):
             d = le.parsed_data
-            if 'email' in d:
-                d['email'] = '█'
-            if 'fullname' in d:
-                d['fullname'] = '█'
+            if "email" in d:
+                d["email"] = "█"
+            if "fullname" in d:
+                d["fullname"] = "█"
             le.data = json.dumps(d)
             le.shredded = True
-            le.save(update_fields=['data', 'shredded'])
+            le.save(update_fields=["data", "shredded"])
 
-        return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
+        return redirect(reverse("control:admin.users.edit", kwargs=self.kwargs))
 
 
-class UserImpersonateView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View):
-
+class UserImpersonateView(
+    AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, View
+):
     def get(self, request, *args, **kwargs):
-        return redirect(reverse('control:admin.users.edit', kwargs=self.kwargs))
+        return redirect(reverse("control:admin.users.edit", kwargs=self.kwargs))
 
     def post(self, request, *args, **kwargs):
         self.object = get_object_or_404(User, pk=self.kwargs.get("id"))
-        self.request.user.log_action('pretix.control.auth.user.impersonated',
-                                     user=request.user,
-                                     data={
-                                         'other': self.kwargs.get("id"),
-                                         'other_email': self.object.email
-                                     })
+        self.request.user.log_action(
+            "pretix.control.auth.user.impersonated",
+            user=request.user,
+            data={"other": self.kwargs.get("id"), "other_email": self.object.email},
+        )
         oldkey = request.session.session_key
         hijacker = request.user
         hijacked = self.object
@@ -194,15 +221,14 @@ class UserImpersonateView(AdministratorPermissionRequiredMixin, RecentAuthentica
             hijacker=hijacker,
             hijacked=hijacked,
         )
-        request.session['hijacker_session'] = oldkey
-        return redirect(reverse('control:index'))
+        request.session["hijacker_session"] = oldkey
+        return redirect(reverse("control:index"))
 
 
 class UserImpersonateStopView(LoginRequiredMixin, View):
-
     def post(self, request, *args, **kwargs):
         impersonated = request.user
-        hijs = request.session['hijacker_session']
+        hijs = request.session["hijacker_session"]
         hijack_history = request.session.get("hijack_history", [])
         hijacked = request.user
         user_pk = hijack_history.pop()
@@ -226,36 +252,37 @@ class UserImpersonateStopView(LoginRequiredMixin, View):
             ss.session_key = request.session.session_key
             ss.save()
 
-        request.user.log_action('pretix.control.auth.user.impersonate_stopped',
-                                user=request.user,
-                                data={
-                                    'other': impersonated.pk,
-                                    'other_email': impersonated.email
-                                })
-        return redirect(reverse('control:index'))
+        request.user.log_action(
+            "pretix.control.auth.user.impersonate_stopped",
+            user=request.user,
+            data={"other": impersonated.pk, "other_email": impersonated.email},
+        )
+        return redirect(reverse("control:index"))
 
 
-class UserCreateView(AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, CreateView):
-    template_name = 'pretixcontrol/admin/users/create.html'
-    context_object_name = 'user'
+class UserCreateView(
+    AdministratorPermissionRequiredMixin, RecentAuthenticationRequiredMixin, CreateView
+):
+    template_name = "pretixcontrol/admin/users/create.html"
+    context_object_name = "user"
     form_class = UserEditForm
 
     def get_form(self, form_class=None):
         f = super().get_form(form_class)
-        f.fields['new_pw'].required = True
-        f.fields['new_pw_repeat'].required = True
+        f.fields["new_pw"].required = True
+        f.fields["new_pw_repeat"].required = True
         return f
 
     def get_initial(self):
         i = super().get_initial()
-        i['timezone'] = settings.TIME_ZONE
+        i["timezone"] = settings.TIME_ZONE
         return i
 
     def get_success_url(self):
-        return reverse('control:admin.users')
+        return reverse("control:admin.users")
 
     def form_valid(self, form):
-        messages.success(self.request, _('The new user has been created.'))
+        messages.success(self.request, _("The new user has been created."))
         return super().form_valid(form)
 
 
@@ -267,12 +294,12 @@ def user_info(request):
     """
     user = request.resource_owner
     user_data = {
-        'email': user.email,
-        'name': user.get_full_name(),
-        'is_active': user.is_active,
-        'is_staff': user.is_staff,
-        'locale': user.locale,
-        'timezone': user.timezone,
+        "email": user.email,
+        "name": user.get_full_name(),
+        "is_active": user.is_active,
+        "is_staff": user.is_staff,
+        "locale": user.locale,
+        "timezone": user.timezone,
         # Add more user fields as necessary
     }
     return JsonResponse(user_data)

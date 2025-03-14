@@ -5,14 +5,16 @@ from pretix import __version__ as version
 
 
 class ManualPaymentApp(AppConfig):
-    name = 'pretix.plugins.manualpayment'
+    name = "pretix.plugins.manualpayment"
     verbose_name = _("Manual payment")
 
     class PretixPluginMeta:
         name = _("Manual payment")
         version = version
-        category = 'PAYMENT'
-        description = _("This plugin adds a customizable payment method for manual processing.")
+        category = "PAYMENT"
+        description = _(
+            "This plugin adds a customizable payment method for manual processing."
+        )
 
 
-default_app_config = 'pretix.plugins.manualpayment.ManualPaymentApp'
+default_app_config = "pretix.plugins.manualpayment.ManualPaymentApp"

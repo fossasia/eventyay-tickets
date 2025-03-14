@@ -9,7 +9,7 @@ from django.utils.timezone import now
 
 from pretix.base.models import EventLock
 
-logger = logging.getLogger('pretix.base.locking')
+logger = logging.getLogger("pretix.base.locking")
 LOCK_TIMEOUT = 120
 
 
@@ -55,7 +55,7 @@ def lock_event(event):
     :raises LockTimeoutException: if the event is locked every time we try
                                   to obtain the lock
     """
-    if hasattr(event, '_lock') and event._lock:
+    if hasattr(event, "_lock") and event._lock:
         return True
 
     if settings.HAS_REDIS:
@@ -72,8 +72,8 @@ def release_event(event):
 
     :raises LockReleaseException: if we do not own the lock
     """
-    if not hasattr(event, '_lock') or not event._lock:
-        raise LockReleaseException('Lock is not owned by this thread')
+    if not hasattr(event, "_lock") or not event._lock:
+        raise LockReleaseException("Lock is not owned by this thread")
     if settings.HAS_REDIS:
         return release_event_redis(event)
     else:
@@ -91,34 +91,38 @@ def lock_event_db(event):
                 return True
             elif l.date < now() - timedelta(seconds=LOCK_TIMEOUT):
                 newtoken = str(uuid.uuid4())
-                updated = EventLock.objects.filter(event=event.id, token=l.token).update(date=dt, token=newtoken)
+                updated = EventLock.objects.filter(
+                    event=event.id, token=l.token
+                ).update(date=dt, token=newtoken)
                 if updated:
                     l.token = newtoken
                     event._lock = l
                     return True
-        time.sleep(2 ** i / 100)
+        time.sleep(2**i / 100)
     raise LockTimeoutException()
 
 
 @transaction.atomic
 def release_event_db(event):
-    if not hasattr(event, '_lock') or not event._lock:
-        raise LockReleaseException('Lock is not owned by this thread')
+    if not hasattr(event, "_lock") or not event._lock:
+        raise LockReleaseException("Lock is not owned by this thread")
     try:
         lock = EventLock.objects.get(event=event.id, token=event._lock.token)
         lock.delete()
         event._lock = None
     except EventLock.DoesNotExist:
-        raise LockReleaseException('Lock is no longer owned by this thread')
+        raise LockReleaseException("Lock is no longer owned by this thread")
 
 
 def redis_lock_from_event(event):
     from django_redis import get_redis_connection
     from redis.lock import Lock
 
-    if not hasattr(event, '_lock') or not event._lock:
+    if not hasattr(event, "_lock") or not event._lock:
         rc = get_redis_connection("redis")
-        event._lock = Lock(redis=rc, name='pretix_event_%s' % event.id, timeout=LOCK_TIMEOUT)
+        event._lock = Lock(
+            redis=rc, name="pretix_event_%s" % event.id, timeout=LOCK_TIMEOUT
+        )
     return event._lock
 
 
@@ -132,9 +136,9 @@ def lock_event_redis(event):
             if lock.acquire(False):
                 return True
         except RedisError:
-            logger.exception('Error locking an event')
+            logger.exception("Error locking an event")
             raise LockTimeoutException()
-        time.sleep(2 ** i / 100)
+        time.sleep(2**i / 100)
     raise LockTimeoutException()
 
 
@@ -145,6 +149,6 @@ def release_event_redis(event):
     try:
         lock.release()
     except RedisError:
-        logger.exception('Error releasing an event lock')
+        logger.exception("Error releasing an event lock")
         raise LockTimeoutException()
     event._lock = None
