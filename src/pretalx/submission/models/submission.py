@@ -995,12 +995,11 @@ class Submission(GenerateCode, PretalxModel):
         from pretalx.mail.models import QueuedMail
 
         if not _from and (not subject or not text):
-            raise Exception("Please enter a sender for this invitation.")
+            raise ValueError("Please enter a sender for this invitation.")
 
         subject = subject or phrases.cfp.invite_subject.format(
             speaker=_from.get_display_name()
         )
-        subject = f"[{self.event.slug}] {subject}"
         text = text or phrases.cfp.invite_text.format(
             event=self.event.name,
             title=self.title,
@@ -1053,7 +1052,7 @@ class SubmissionFavouriteDeprecatedSerializer(serializers.ModelSerializer):
     def save(self, user_id, talk_code):
         with scopes_disabled():
             user = get_object_or_404(User, id=user_id)
-            submission_fav, created = (
+            submission_fav, _created = (
                 SubmissionFavouriteDeprecated.objects.get_or_create(user=user)
             )
             submission_fav.talk_list = talk_code
