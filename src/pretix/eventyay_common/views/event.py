@@ -518,7 +518,7 @@ class EventSearchView(views.APIView):
         query = request.GET.get('query', '')
         events = Event.objects.filter(
             Q(name__icontains=query) | Q(slug__icontains=query)
-        ).select_related('organizer')[:10]
+        ).order_by('name').select_related('organizer')[:10]
         
         results = []
         for event in events:
