@@ -10,7 +10,11 @@ from django.utils.formats import date_format
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
-    CreateView, DeleteView, ListView, TemplateView, UpdateView,
+    CreateView,
+    DeleteView,
+    ListView,
+    TemplateView,
+    UpdateView,
 )
 from django_celery_beat.models import PeriodicTask, PeriodicTasks
 
@@ -43,7 +47,9 @@ class OrganizerList(PaginationMixin, ListView):
         if self.request.user.has_active_staff_session(self.request.session.session_key):
             return qs
         else:
-            return qs.filter(pk__in=self.request.user.teams.values_list('organizer', flat=True))
+            return qs.filter(
+                pk__in=self.request.user.teams.values_list('organizer', flat=True)
+            )
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -56,7 +62,8 @@ class OrganizerList(PaginationMixin, ListView):
 
 
 class AdminEventList(EventList):
-    """ Inherit from EventList to add a custom template for the admin event list. """
+    """Inherit from EventList to add a custom template for the admin event list."""
+
     template_name = 'pretixcontrol/admin/events/index.html'
 
 
@@ -88,17 +95,16 @@ class TaskList(PaginationMixin, ListView):
         else:
             local_timezone = ZoneInfo(settings.TIME_ZONE)
             task.formatted_last_run_at = date_format(
-                task.last_run_at.astimezone(local_timezone),
-                format="M. d, Y, g:i a"
+                task.last_run_at.astimezone(local_timezone), format='M. d, Y, g:i a'
             )
 
-        task.name = task.name.replace("_", " ").capitalize()
+        task.name = task.name.replace('_', ' ').capitalize()
 
         options = Options()
         options.locale_code = settings.LANGUAGE_CODE
         options.verbose = True
         schedule = task.crontab
-        cron_expression = f"{schedule.minute} {schedule.hour} {schedule.day_of_month} {schedule.month_of_year} {schedule.day_of_week}"
+        cron_expression = f'{schedule.minute} {schedule.hour} {schedule.day_of_month} {schedule.month_of_year} {schedule.day_of_week}'
         task.run_at = get_description(cron_expression, options)
 
         return task
@@ -106,10 +112,7 @@ class TaskList(PaginationMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['tasks'] = [
-            self.process_task_data(task)
-            for task in context['tasks']
-        ]
+        context['tasks'] = [self.process_task_data(task) for task in context['tasks']]
 
         context['filter_form'] = self.filter_form
         return context
@@ -128,7 +131,7 @@ class TaskList(PaginationMixin, ListView):
             status_text = 'enabled' if new_status else 'disabled'
             messages.success(
                 self.request,
-                f'The task {task.name} has been successfully {status_text}.'
+                f'The task {task.name} has been successfully {status_text}.',
             )
 
             return HttpResponseRedirect(reverse('control:admin.task_management'))
@@ -191,11 +194,9 @@ class VoucherUpdate(AdministratorPermissionRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None) -> InvoiceVoucherForm:
         try:
-            return InvoiceVoucher.objects.get(
-                id=self.kwargs['voucher']
-            )
+            return InvoiceVoucher.objects.get(id=self.kwargs['voucher'])
         except InvoiceVoucher.DoesNotExist:
-            raise Http404(_("The requested voucher does not exist."))
+            raise Http404(_('The requested voucher does not exist.'))
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -217,15 +218,16 @@ class VoucherDelete(AdministratorPermissionRequiredMixin, DeleteView):
 
     def get_object(self, queryset=None) -> InvoiceVoucher:
         try:
-            return InvoiceVoucher.objects.get(
-                id=self.kwargs['voucher']
-            )
+            return InvoiceVoucher.objects.get(id=self.kwargs['voucher'])
         except InvoiceVoucher.DoesNotExist:
-            raise Http404(_("The requested voucher does not exist."))
+            raise Http404(_('The requested voucher does not exist.'))
 
     def get(self, request, *args, **kwargs):
         if self.get_object().redeemed > 0:
-            messages.error(request, _('A voucher can not be deleted if it already has been redeemed.'))
+            messages.error(
+                request,
+                _('A voucher can not be deleted if it already has been redeemed.'),
+            )
             return HttpResponseRedirect(self.get_success_url())
         return super().get(request, *args, **kwargs)
 
@@ -234,7 +236,10 @@ class VoucherDelete(AdministratorPermissionRequiredMixin, DeleteView):
         success_url = self.get_success_url()
 
         if self.object.redeemed > 0:
-            messages.error(self.request, _('A voucher can not be deleted if it already has been redeemed.'))
+            messages.error(
+                self.request,
+                _('A voucher can not be deleted if it already has been redeemed.'),
+            )
         else:
             self.object.delete()
             messages.success(self.request, _('The selected voucher has been deleted.'))

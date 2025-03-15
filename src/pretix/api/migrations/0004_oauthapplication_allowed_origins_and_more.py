@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('pretixapi', '0003_oauthapplication_post_logout_redirect_uris_and_more'),
     ]
@@ -25,7 +24,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='apicall',
             name='id',
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
+            field=models.BigAutoField(
+                auto_created=True, primary_key=True, serialize=False
+            ),
         ),
         migrations.AlterField(
             model_name='oauthaccesstoken',
@@ -35,21 +36,31 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='oauthapplication',
             name='client_secret',
-            field=oauth2_provider.models.ClientSecretField(db_index=True, default=oauth2_provider.generators.generate_client_secret, max_length=255),
+            field=oauth2_provider.models.ClientSecretField(
+                db_index=True,
+                default=oauth2_provider.generators.generate_client_secret,
+                max_length=255,
+            ),
         ),
         migrations.AlterField(
             model_name='webhook',
             name='id',
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
+            field=models.BigAutoField(
+                auto_created=True, primary_key=True, serialize=False
+            ),
         ),
         migrations.AlterField(
             model_name='webhookcall',
             name='id',
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
+            field=models.BigAutoField(
+                auto_created=True, primary_key=True, serialize=False
+            ),
         ),
         migrations.AlterField(
             model_name='webhookeventlistener',
             name='id',
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False),
+            field=models.BigAutoField(
+                auto_created=True, primary_key=True, serialize=False
+            ),
         ),
     ]

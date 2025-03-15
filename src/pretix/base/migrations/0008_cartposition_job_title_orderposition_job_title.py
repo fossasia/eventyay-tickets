@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('pretixbase', '0007_billinginvoice_final_ticket_fee_and_more'),
     ]

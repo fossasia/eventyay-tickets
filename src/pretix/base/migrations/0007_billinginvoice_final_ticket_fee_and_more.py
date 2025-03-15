@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('pretixbase', '0006_create_invoice_voucher'),
     ]
@@ -24,7 +23,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='organizerbillingmodel',
             name='invoice_voucher',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='billing', to='pretixbase.invoicevoucher'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='billing',
+                to='pretixbase.invoicevoucher',
+            ),
         ),
         migrations.AddField(
             model_name='billinginvoice',
@@ -35,5 +39,5 @@ class Migration(migrations.Migration):
             model_name='billinginvoice',
             name='voucher_value',
             field=models.DecimalField(decimal_places=2, default=0, max_digits=10),
-        )
+        ),
     ]

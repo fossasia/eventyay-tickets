@@ -12,13 +12,17 @@ from pretix.base.models.auth import StaffSession
 from pretix.base.models.page import Page
 from pretix.base.settings import GlobalSettingsObject
 from pretix.control.navigation import (
-    get_admin_navigation, get_event_navigation, get_global_navigation,
+    get_admin_navigation,
+    get_event_navigation,
+    get_global_navigation,
     get_organizer_navigation,
 )
 
 from ..eventyay_common.utils import EventCreatedFor
 from ..helpers.i18n import (
-    get_javascript_format, get_javascript_output_format, get_moment_locale,
+    get_javascript_format,
+    get_javascript_output_format,
+    get_moment_locale,
 )
 from ..helpers.plugin_enable import is_video_enabled
 from ..multidomain.urlreverse import get_event_domain
@@ -42,7 +46,9 @@ def _default_context(request):
     except Resolver404:
         return {}
 
-    if not request.path.startswith(get_script_prefix() + 'control') or not hasattr(request, 'user'):
+    if not request.path.startswith(get_script_prefix() + 'control') or not hasattr(
+        request, 'user'
+    ):
         return {}
     ctx = {
         'url_name': url.url_name,
@@ -54,18 +60,24 @@ def _default_context(request):
     if hasattr(request, 'event') and request.user.is_authenticated:
         for receiver, response in html_head.send(request.event, request=request):
             _html_head.append(response)
-        ctx["talk_edit_url"] = urljoin(settings.TALK_HOSTNAME, f"orga/event/{request.event.slug}")
+        ctx['talk_edit_url'] = urljoin(
+            settings.TALK_HOSTNAME, f'orga/event/{request.event.slug}'
+        )
         ctx['is_video_enabled'] = is_video_enabled(request.event)
-        ctx["is_talk_event_created"] = False
+        ctx['is_talk_event_created'] = False
         if (
             request.event.settings.create_for == EventCreatedFor.BOTH.value
             or request.event.settings.talk_schedule_public is not None
         ):
-            ctx["is_talk_event_created"] = True
-    ctx['html_head'] = "".join(_html_head)
+            ctx['is_talk_event_created'] = True
+    ctx['html_head'] = ''.join(_html_head)
 
     _js_payment_weekdays_disabled = '[]'
-    if getattr(request, 'event', None) and hasattr(request, 'organizer') and request.user.is_authenticated:
+    if (
+        getattr(request, 'event', None)
+        and hasattr(request, 'organizer')
+        and request.user.is_authenticated
+    ):
         ctx['nav_items'] = get_event_navigation(request)
 
         if request.event.settings.get('payment_term_weekdays'):
@@ -75,24 +87,39 @@ def _default_context(request):
 
         if not request.event.testmode:
             with scope(organizer=request.organizer):
-                complain_testmode_orders = request.event.cache.get('complain_testmode_orders')
+                complain_testmode_orders = request.event.cache.get(
+                    'complain_testmode_orders'
+                )
                 if complain_testmode_orders is None:
-                    complain_testmode_orders = request.event.orders.filter(testmode=True).exists()
-                    request.event.cache.set('complain_testmode_orders', complain_testmode_orders, 30)
-            ctx['complain_testmode_orders'] = complain_testmode_orders and request.user.has_event_permission(
-                request.organizer, request.event, 'can_view_orders', request=request
+                    complain_testmode_orders = request.event.orders.filter(
+                        testmode=True
+                    ).exists()
+                    request.event.cache.set(
+                        'complain_testmode_orders', complain_testmode_orders, 30
+                    )
+            ctx['complain_testmode_orders'] = (
+                complain_testmode_orders
+                and request.user.has_event_permission(
+                    request.organizer, request.event, 'can_view_orders', request=request
+                )
             )
         else:
             ctx['complain_testmode_orders'] = False
 
         if not request.event.live and ctx['has_domain']:
-            child_sess = request.session.get('child_session_{}'.format(request.event.pk))
+            child_sess = request.session.get(
+                'child_session_{}'.format(request.event.pk)
+            )
             s = SessionStore()
             if not child_sess or not s.exists(child_sess):
-                s['pretix_event_access_{}'.format(request.event.pk)] = request.session.session_key
+                s['pretix_event_access_{}'.format(request.event.pk)] = (
+                    request.session.session_key
+                )
                 s.create()
                 ctx['new_session'] = s.session_key
-                request.session['child_session_{}'.format(request.event.pk)] = s.session_key
+                request.session['child_session_{}'.format(request.event.pk)] = (
+                    s.session_key
+                )
                 request.session['event_access'] = True
             else:
                 ctx['new_session'] = child_sess
@@ -100,13 +127,17 @@ def _default_context(request):
 
         if request.GET.get('subevent', ''):
             # Do not use .get() for lazy evaluation
-            ctx['selected_subevents'] = request.event.subevents.filter(pk=request.GET.get('subevent'))
+            ctx['selected_subevents'] = request.event.subevents.filter(
+                pk=request.GET.get('subevent')
+            )
     elif getattr(request, 'organizer', None) and request.user.is_authenticated:
         ctx['nav_items'] = get_organizer_navigation(request)
     elif request.user.is_authenticated:
         ctx['nav_items'] = get_global_navigation(request)
 
-    if request.user.is_authenticated and request.user.has_active_staff_session(request.session.session_key):
+    if request.user.is_authenticated and request.user.has_active_staff_session(
+        request.session.session_key
+    ):
         ctx['admin_nav_items'] = get_admin_navigation(request)
 
     ctx['js_payment_weekdays_disabled'] = _js_payment_weekdays_disabled
@@ -136,12 +167,15 @@ def _default_context(request):
             ctx['warning_update_check_active'] = True
 
     if request.user.is_authenticated:
-        ctx['staff_session'] = request.user.has_active_staff_session(request.session.session_key)
+        ctx['staff_session'] = request.user.has_active_staff_session(
+            request.session.session_key
+        )
         ctx['staff_need_to_explain'] = (
-            StaffSession.objects.filter(user=request.user, date_end__isnull=False).filter(
-                Q(comment__isnull=True) | Q(comment="")
-            )
-            if request.user.is_staff and settings.PRETIX_ADMIN_AUDIT_COMMENTS else StaffSession.objects.none()
+            StaffSession.objects.filter(
+                user=request.user, date_end__isnull=False
+            ).filter(Q(comment__isnull=True) | Q(comment=''))
+            if request.user.is_staff and settings.PRETIX_ADMIN_AUDIT_COMMENTS
+            else StaffSession.objects.none()
         )
 
     ctx['talk_hostname'] = settings.TALK_HOSTNAME

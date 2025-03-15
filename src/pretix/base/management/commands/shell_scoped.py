@@ -15,6 +15,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             from django_extensions.management.commands import shell_plus  # noqa
+
             cmd = 'shell_plus'
         except ImportError:
             cmd = 'shell'
@@ -22,19 +23,17 @@ class Command(BaseCommand):
 
         parser = self.create_parser(sys.argv[0], sys.argv[1])
         flags = parser.parse_known_args(sys.argv[2:])[1]
-        if "--override" in flags:
+        if '--override' in flags:
             with scopes_disabled():
                 return call_command(cmd, *args, **options)
 
         lookups = {}
         for flag in flags:
-            lookup, value = flag.lstrip("-").split("=")
-            lookup = lookup.split("__", maxsplit=1)
-            lookups[lookup[0]] = {
-                lookup[1] if len(lookup) > 1 else "pk": value
-            }
+            lookup, value = flag.lstrip('-').split('=')
+            lookup = lookup.split('__', maxsplit=1)
+            lookups[lookup[0]] = {lookup[1] if len(lookup) > 1 else 'pk': value}
         models = {
-            model_name.split(".")[-1]: model_class
+            model_name.split('.')[-1]: model_class
             for app_name, app_content in apps.all_models.items()
             for (model_name, model_class) in app_content.items()
         }

@@ -1,15 +1,28 @@
 import importlib
 
 from django.apps import apps
-from django.urls import include, re_path as url
+from django.urls import include
+from django.urls import re_path as url
 from rest_framework import routers
 
 from pretix.api.views import cart
 
 from ..eventyay_common.views.billing import BillingInvoicePreview
 from .views import (
-    checkin, device, event, exporters, item, oauth, order, organizer, upload,
-    user, version, voucher, waitinglist, webhooks,
+    checkin,
+    device,
+    event,
+    exporters,
+    item,
+    oauth,
+    order,
+    organizer,
+    upload,
+    user,
+    version,
+    voucher,
+    waitinglist,
+    webhooks,
 )
 from .views.stripe import stripe_webhook_view
 
@@ -24,7 +37,9 @@ orga_router.register(r'seatingplans', organizer.SeatingPlanViewSet)
 orga_router.register(r'giftcards', organizer.GiftCardViewSet)
 orga_router.register(r'teams', organizer.TeamViewSet)
 orga_router.register(r'devices', organizer.DeviceViewSet)
-orga_router.register(r'exporters', exporters.OrganizerExportersViewSet, basename='exporters')
+orga_router.register(
+    r'exporters', exporters.OrganizerExportersViewSet, basename='exporters'
+)
 
 team_router = routers.DefaultRouter()
 team_router.register(r'members', organizer.TeamMemberViewSet)
@@ -42,15 +57,21 @@ event_router.register(r'vouchers', voucher.VoucherViewSet)
 event_router.register(r'orders', order.OrderViewSet)
 event_router.register(r'orderpositions', order.OrderPositionViewSet)
 event_router.register(r'invoices', order.InvoiceViewSet)
-event_router.register(r'revokedsecrets', order.RevokedSecretViewSet, basename='revokedsecrets')
+event_router.register(
+    r'revokedsecrets', order.RevokedSecretViewSet, basename='revokedsecrets'
+)
 event_router.register(r'taxrules', event.TaxRuleViewSet)
 event_router.register(r'waitinglistentries', waitinglist.WaitingListViewSet)
 event_router.register(r'checkinlists', checkin.CheckinListViewSet)
 event_router.register(r'cartpositions', cart.CartPositionViewSet)
-event_router.register(r'exporters', exporters.EventExportersViewSet, basename='exporters')
+event_router.register(
+    r'exporters', exporters.EventExportersViewSet, basename='exporters'
+)
 
 checkinlist_router = routers.DefaultRouter()
-checkinlist_router.register(r'positions', checkin.CheckinListPositionViewSet, basename='checkinlistpos')
+checkinlist_router.register(
+    r'positions', checkin.CheckinListPositionViewSet, basename='checkinlistpos'
+)
 
 question_router = routers.DefaultRouter()
 question_router.register(r'options', item.QuestionOptionViewSet)
@@ -76,36 +97,82 @@ for app in apps.get_app_configs():
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^organizers/(?P<organizer>[^/]+)/', include(orga_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/settings/$', organizer.OrganizerSettingsView.as_view(),
-        name="organizer.settings"),
-    url(r'^organizers/(?P<organizer>[^/]+)/giftcards/(?P<giftcard>[^/]+)/', include(giftcard_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/settings/$', event.EventSettingsView.as_view(),
-        name="event.settings"),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/', include(event_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/teams/(?P<team>[^/]+)/', include(team_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/items/(?P<item>[^/]+)/', include(item_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/questions/(?P<question>[^/]+)/',
-        include(question_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/checkinlists/(?P<list>[^/]+)/',
-        include(checkinlist_router.urls)),
-    url(r'^organizers/(?P<organizer>[^/]+)/checkin/redeem/$', checkin.CheckinRedeemView.as_view(),
-        name="checkin.redeem"),
-    url(r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/orders/(?P<order>[^/]+)/', include(order_router.urls)),
-    url(r"^oauth/authorize$", oauth.AuthorizationView.as_view(), name="authorize"),
-    url(r"^oauth/token$", oauth.TokenView.as_view(), name="token"),
-    url(r"^oauth/revoke_token$", oauth.RevokeTokenView.as_view(), name="revoke-token"),
-    url(r"^device/initialize$", device.InitializeView.as_view(), name="device.initialize"),
-    url(r"^device/update$", device.UpdateView.as_view(), name="device.update"),
-    url(r"^device/roll$", device.RollKeyView.as_view(), name="device.roll"),
-    url(r"^device/revoke$", device.RevokeKeyView.as_view(), name="device.revoke"),
-    url(r"^device/eventselection$", device.EventSelectionView.as_view(), name="device.eventselection"),
-    url(r"^upload$", upload.UploadView.as_view(), name="upload"),
-    url(r"^me$", user.MeView.as_view(), name="user.me"),
-    url(r"^version$", version.VersionView.as_view(), name="version"),
-    url(r"^billing-testing/(?P<task>[^/]+)", BillingInvoicePreview.as_view(), name="billing-testing"),
+    url(
+        r'^organizers/(?P<organizer>[^/]+)/settings/$',
+        organizer.OrganizerSettingsView.as_view(),
+        name='organizer.settings',
+    ),
+    url(
+        r'^organizers/(?P<organizer>[^/]+)/giftcards/(?P<giftcard>[^/]+)/',
+        include(giftcard_router.urls),
+    ),
+    url(
+        r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/settings/$',
+        event.EventSettingsView.as_view(),
+        name='event.settings',
+    ),
+    url(
+        r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/',
+        include(event_router.urls),
+    ),
+    url(
+        r'^organizers/(?P<organizer>[^/]+)/teams/(?P<team>[^/]+)/',
+        include(team_router.urls),
+    ),
+    url(
+        r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/items/(?P<item>[^/]+)/',
+        include(item_router.urls),
+    ),
+    url(
+        r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/questions/(?P<question>[^/]+)/',
+        include(question_router.urls),
+    ),
+    url(
+        r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/checkinlists/(?P<list>[^/]+)/',
+        include(checkinlist_router.urls),
+    ),
+    url(
+        r'^organizers/(?P<organizer>[^/]+)/checkin/redeem/$',
+        checkin.CheckinRedeemView.as_view(),
+        name='checkin.redeem',
+    ),
+    url(
+        r'^organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/orders/(?P<order>[^/]+)/',
+        include(order_router.urls),
+    ),
+    url(r'^oauth/authorize$', oauth.AuthorizationView.as_view(), name='authorize'),
+    url(r'^oauth/token$', oauth.TokenView.as_view(), name='token'),
+    url(r'^oauth/revoke_token$', oauth.RevokeTokenView.as_view(), name='revoke-token'),
+    url(
+        r'^device/initialize$',
+        device.InitializeView.as_view(),
+        name='device.initialize',
+    ),
+    url(r'^device/update$', device.UpdateView.as_view(), name='device.update'),
+    url(r'^device/roll$', device.RollKeyView.as_view(), name='device.roll'),
+    url(r'^device/revoke$', device.RevokeKeyView.as_view(), name='device.revoke'),
+    url(
+        r'^device/eventselection$',
+        device.EventSelectionView.as_view(),
+        name='device.eventselection',
+    ),
+    url(r'^upload$', upload.UploadView.as_view(), name='upload'),
+    url(r'^me$', user.MeView.as_view(), name='user.me'),
+    url(r'^version$', version.VersionView.as_view(), name='version'),
+    url(
+        r'^billing-testing/(?P<task>[^/]+)',
+        BillingInvoicePreview.as_view(),
+        name='billing-testing',
+    ),
     url(r'^webhook/stripe$', stripe_webhook_view, name='stripe-webhook'),
-    url(r"(?P<organizer>[^/]+)/(?P<event>[^/]+)/schedule-public", event.talk_schedule_public,
-        name="event.schedule-public"),
-    url(r"(?P<organizer>[^/]+)/(?P<event>[^/]+)/ticket-check", event.CustomerOrderCheckView.as_view(),
-        name="event.ticket-check"),
+    url(
+        r'(?P<organizer>[^/]+)/(?P<event>[^/]+)/schedule-public',
+        event.talk_schedule_public,
+        name='event.schedule-public',
+    ),
+    url(
+        r'(?P<organizer>[^/]+)/(?P<event>[^/]+)/ticket-check',
+        event.CustomerOrderCheckView.as_view(),
+        name='event.ticket-check',
+    ),
 ]

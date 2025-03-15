@@ -10,7 +10,7 @@ class ThumbnailingImageReader(ImageReader):
             height = width * self._image.size[1] / self._image.size[0]
         self._image.thumbnail(
             size=(int(width * dpi / 72), int(height * dpi / 72)),
-            resample=Resampling.BICUBIC
+            resample=Resampling.BICUBIC,
         )
         self._data = None
         return width, height

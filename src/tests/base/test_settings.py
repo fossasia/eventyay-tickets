@@ -11,16 +11,15 @@ from pretix.control.forms.global_settings import GlobalSettingsObject
 
 class SettingsTestCase(TestCase):
     def setUp(self):
-        settings.DEFAULTS['test_default'] = {
-            'default': 'def',
-            'type': str
-        }
+        settings.DEFAULTS['test_default'] = {'default': 'def', 'type': str}
         self.global_settings = GlobalSettingsObject()
         self.global_settings.settings.flush()
         self.organizer = Organizer.objects.create(name='Dummy', slug='dummy')
         self.organizer.settings.flush()
         self.event = Event.objects.create(
-            organizer=self.organizer, name='Dummy', slug='dummy',
+            organizer=self.organizer,
+            name='Dummy',
+            slug='dummy',
             date_from=now(),
         )
         self.event.settings.flush()
@@ -32,7 +31,9 @@ class SettingsTestCase(TestCase):
         self.assertIsInstance(self.event.settings.get('test', as_type=as_type), as_type)
 
     def test_serialize_lazyi18nstring(self):
-        self._test_serialization(LazyI18nString({'de': 'Hallo', 'en': 'Hello'}), LazyI18nString)
+        self._test_serialization(
+            LazyI18nString({'de': 'Hallo', 'en': 'Hello'}), LazyI18nString
+        )
 
     def test_sandbox(self):
         sandbox = SettingsSandbox('testing', 'foo', self.event)

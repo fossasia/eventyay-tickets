@@ -9,8 +9,16 @@ from django_scopes import scopes_disabled
 from i18nfield.strings import LazyI18nString
 
 from pretix.base.models import (
-    CachedFile, Event, Item, Order, OrderPayment, OrderPosition, Organizer,
-    Question, QuestionAnswer, User,
+    CachedFile,
+    Event,
+    Item,
+    Order,
+    OrderPayment,
+    OrderPosition,
+    Organizer,
+    Question,
+    QuestionAnswer,
+    User,
 )
 from pretix.base.services.orderimport import DataImportError, import_orders
 
@@ -19,15 +27,18 @@ from pretix.base.services.orderimport import DataImportError, import_orders
 def event():
     o = Organizer.objects.create(name='Dummy', slug='dummy')
     event = Event.objects.create(
-        organizer=o, name='Dummy', slug='dummy',
-        date_from=now(), plugins='pretix.plugins.banktransfer'
+        organizer=o,
+        name='Dummy',
+        slug='dummy',
+        date_from=now(),
+        plugins='pretix.plugins.banktransfer',
     )
     return event
 
 
 @pytest.fixture
 def item(event):
-    return Item.objects.create(event=event, name="Ticket", default_price=23)
+    return Item.objects.create(event=event, name='Ticket', default_price=23)
 
 
 @pytest.fixture
@@ -72,12 +83,14 @@ def inputfile_factory():
         },
     ]
     f = StringIO()
-    w = csv.DictWriter(f, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', "I"], dialect=csv.excel)
+    w = csv.DictWriter(
+        f, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'], dialect=csv.excel
+    )
     w.writeheader()
     w.writerows(d)
     f.seek(0)
-    c = CachedFile.objects.create(type="text/csv", filename="input.csv")
-    c.file.save("input.csv", ContentFile(f.read()))
+    c = CachedFile.objects.create(type='text/csv', filename='input.csv')
+    c.file.save('input.csv', ContentFile(f.read()))
     return c
 
 
@@ -102,7 +115,7 @@ DEFAULT_SETTINGS = {
     'secret': 'empty',
     'locale': 'static:en',
     'sales_channel': 'static:web',
-    'comment': 'empty'
+    'comment': 'empty',
 }
 
 
@@ -218,8 +231,8 @@ def test_import_email(user, event, item):
     import_orders.apply(
         args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
     )
-    assert event.orders.filter(email="schneider@example.org").exists()
-    assert event.orders.filter(email="daniel@example.org").exists()
+    assert event.orders.filter(email='schneider@example.org').exists()
+    assert event.orders.filter(email='daniel@example.org').exists()
     assert event.orders.filter(email__isnull=True).count() == 1
 
 
@@ -233,7 +246,10 @@ def test_import_email_invalid(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Dieter" for column "E-mail address" in line "1": Enter a valid email address.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Dieter" for column "E-mail address" in line "1": Enter a valid email address.'
+        in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -245,7 +261,7 @@ def test_import_attendee_email(user, event, item):
     import_orders.apply(
         args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
     )
-    assert OrderPosition.objects.filter(attendee_email="schneider@example.org").exists()
+    assert OrderPosition.objects.filter(attendee_email='schneider@example.org').exists()
     assert OrderPosition.objects.filter(attendee_email__isnull=True).count() == 1
 
 
@@ -259,7 +275,10 @@ def test_import_attendee_email_invalid(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Dieter" for column "Attendee e-mail address" in line "1": Enter a valid email address.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Dieter" for column "Attendee e-mail address" in line "1": Enter a valid email address.'
+        in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -288,7 +307,10 @@ def test_import_product_unknown(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Dieter" for column "Product" in line "1": No matching product was found.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Dieter" for column "Product" in line "1": No matching product was found.'
+        in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -310,7 +332,10 @@ def test_import_product_dupl(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Foo" for column "Product" in line "1": Multiple matching products were found.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Foo" for column "Product" in line "1": Multiple matching products were found.'
+        in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -323,7 +348,10 @@ def test_variation_required(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "" for column "Product variation" in line "1": You need to select a variation for this product.' in str(excinfo.value)
+    assert (
+        'Error while importing value "" for column "Product variation" in line "1": You need to select a variation for this product.'
+        in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -337,7 +365,10 @@ def test_variation_invalid(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Foo" for column "Product variation" in line "1": No matching variation was found.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Foo" for column "Product variation" in line "1": No matching variation was found.'
+        in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -367,7 +398,10 @@ def test_company(user, event, item):
     import_orders.apply(
         args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
     ).get()
-    assert event.orders.get(email='schneider@example.org').invoice_address.company == 'schneider@example.org'
+    assert (
+        event.orders.get(email='schneider@example.org').invoice_address.company
+        == 'schneider@example.org'
+    )
     assert event.orders.get(email='schneider@example.org').invoice_address.is_business
     assert event.orders.get(email__isnull=True).invoice_address.company == ''
     assert not event.orders.get(email__isnull=True).invoice_address.is_business
@@ -391,13 +425,13 @@ def test_name_parts(user, event, item):
     assert o.invoice_address.name_parts == {
         '_scheme': 'given_family',
         'given_name': 'Dieter',
-        'family_name': 'Schneider'
+        'family_name': 'Schneider',
     }
     assert o.invoice_address.name_cached == 'Dieter Schneider'
     assert o.positions.first().attendee_name_parts == {
         '_scheme': 'given_family',
         'given_name': 'Dieter',
-        'family_name': 'Schneider'
+        'family_name': 'Schneider',
     }
     assert o.positions.first().attendee_name_cached == 'Dieter Schneider'
 
@@ -412,7 +446,10 @@ def test_import_country(user, event, item):
     import_orders.apply(
         args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
     )
-    assert str(event.orders.get(email='schneider@example.org').invoice_address.country) == 'US'
+    assert (
+        str(event.orders.get(email='schneider@example.org').invoice_address.country)
+        == 'US'
+    )
 
 
 @pytest.mark.django_db
@@ -426,7 +463,10 @@ def test_import_country_invalid(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Dieter" for column "Invoice address: Country" in line "1": Please enter a valid country code.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Dieter" for column "Invoice address: Country" in line "1": Please enter a valid country code.'
+        in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -440,8 +480,14 @@ def test_import_state(user, event, item):
     import_orders.apply(
         args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
     )
-    assert str(event.orders.get(email='schneider@example.org').invoice_address.country) == 'US'
-    assert str(event.orders.get(email='schneider@example.org').invoice_address.state) == 'TX'
+    assert (
+        str(event.orders.get(email='schneider@example.org').invoice_address.country)
+        == 'US'
+    )
+    assert (
+        str(event.orders.get(email='schneider@example.org').invoice_address.state)
+        == 'TX'
+    )
 
 
 @pytest.mark.django_db
@@ -456,7 +502,10 @@ def test_import_state_invalid(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Texas" for column "Invoice address: State" in line "1": Please enter a valid state.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Texas" for column "Invoice address: State" in line "1": Please enter a valid state.'
+        in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -469,7 +518,10 @@ def test_import_saleschannel_invalid(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Dieter" for column "Sales channel" in line "1": Please enter a valid sales channel.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Dieter" for column "Sales channel" in line "1": Please enter a valid sales channel.'
+        in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -482,7 +534,10 @@ def test_import_locale_invalid(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "de" for column "Order locale" in line "1": Please enter a valid language code.' in str(excinfo.value)
+    assert (
+        'Error while importing value "de" for column "Order locale" in line "1": Please enter a valid language code.'
+        in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -495,8 +550,10 @@ def test_import_price_invalid(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Dieter" for column "Price" in line "1": You ' \
-           'entered an invalid number.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Dieter" for column "Price" in line "1": You '
+        'entered an invalid number.' in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -508,7 +565,7 @@ def test_import_secret(user, event, item):
     import_orders.apply(
         args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
     ).get()
-    assert OrderPosition.objects.filter(secret="Dieter").count() == 1
+    assert OrderPosition.objects.filter(secret='Dieter').count() == 1
 
 
 @pytest.mark.django_db
@@ -521,8 +578,10 @@ def test_import_secret_dupl(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Test" for column "Ticket code" in line "2": You cannot assign a position ' \
-           'secret that already exists.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Test" for column "Ticket code" in line "2": You cannot assign a position '
+        'secret that already exists.' in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -531,15 +590,15 @@ def test_import_seat_required(user, event, item):
     settings = dict(DEFAULT_SETTINGS)
     settings['item'] = 'static:{}'.format(item.pk)
 
-    event.seat_category_mappings.create(
-        layout_category='Stalls', product=item
-    )
+    event.seat_category_mappings.create(layout_category='Stalls', product=item)
     with pytest.raises(DataImportError) as excinfo:
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "" for column "Seat ID" in line "1": You need to select ' \
-           'a specific seat.' in str(excinfo.value)
+    assert (
+        'Error while importing value "" for column "Seat ID" in line "1": You need to select '
+        'a specific seat.' in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -549,16 +608,16 @@ def test_import_seat_blocked(user, event, item):
     settings['item'] = 'static:{}'.format(item.pk)
     settings['seat'] = 'csv:D'
 
-    event.seat_category_mappings.create(
-        layout_category='Stalls', product=item
-    )
-    event.seats.create(seat_number="Test", product=item, seat_guid="Test", blocked=True)
+    event.seat_category_mappings.create(layout_category='Stalls', product=item)
+    event.seats.create(seat_number='Test', product=item, seat_guid='Test', blocked=True)
     with pytest.raises(DataImportError) as excinfo:
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Test" for column "Seat ID" in line "1": The seat you selected has already ' \
-           'been taken. Please select a different seat.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Test" for column "Seat ID" in line "1": The seat you selected has already '
+        'been taken. Please select a different seat.' in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -568,16 +627,16 @@ def test_import_seat_dbl(user, event, item):
     settings['item'] = 'static:{}'.format(item.pk)
     settings['seat'] = 'csv:D'
 
-    event.seat_category_mappings.create(
-        layout_category='Stalls', product=item
-    )
-    event.seats.create(seat_number="Test", product=item, seat_guid="Test")
+    event.seat_category_mappings.create(layout_category='Stalls', product=item)
+    event.seats.create(seat_number='Test', product=item, seat_guid='Test')
     with pytest.raises(DataImportError) as excinfo:
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Test" for column "Seat ID" in line "2": The seat you selected has already ' \
-           'been taken. Please select a different seat.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Test" for column "Seat ID" in line "2": The seat you selected has already '
+        'been taken. Please select a different seat.' in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -587,12 +646,10 @@ def test_import_seat(user, event, item):
     settings['item'] = 'static:{}'.format(item.pk)
     settings['seat'] = 'csv:E'
 
-    event.seat_category_mappings.create(
-        layout_category='Stalls', product=item
-    )
-    s1 = event.seats.create(seat_number="Foo", product=item, seat_guid="Foo")
-    s2 = event.seats.create(seat_number="Bar", product=item, seat_guid="Bar")
-    s3 = event.seats.create(seat_number="Baz", product=item, seat_guid="Baz")
+    event.seat_category_mappings.create(layout_category='Stalls', product=item)
+    s1 = event.seats.create(seat_number='Foo', product=item, seat_guid='Foo')
+    s2 = event.seats.create(seat_number='Bar', product=item, seat_guid='Bar')
+    s3 = event.seats.create(seat_number='Baz', product=item, seat_guid='Baz')
     import_orders.apply(
         args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
     ).get()
@@ -615,7 +672,10 @@ def test_import_subevent_invalid(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Bar" for column "Date" in line "2": No matching date was found.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Bar" for column "Date" in line "2": No matching date was found.'
+        in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -630,7 +690,10 @@ def test_import_subevent_required(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "" for column "Date" in line "1": You need to select a date.' in str(excinfo.value)
+    assert (
+        'Error while importing value "" for column "Date" in line "1": You need to select a date.'
+        in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -661,7 +724,10 @@ def test_import_question_validate(user, event, item):
         import_orders.apply(
             args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
         ).get()
-    assert 'Error while importing value "Test" for column "Question: Foo" in line "1": Invalid number input.' in str(excinfo.value)
+    assert (
+        'Error while importing value "Test" for column "Question: Foo" in line "1": Invalid number input.'
+        in str(excinfo.value)
+    )
 
 
 @pytest.mark.django_db
@@ -679,11 +745,14 @@ def test_import_question_valid(user, event, item):
         args=(event.pk, inputfile_factory().id, settings, 'en', user.pk)
     ).get()
     assert QuestionAnswer.objects.filter(question=q).count() == 3
-    a1 = OrderPosition.objects.get(attendee_email='schneider@example.org').answers.first()
+    a1 = OrderPosition.objects.get(
+        attendee_email='schneider@example.org'
+    ).answers.first()
     assert a1.question == q
     assert list(a1.options.all()) == [o1]
     a3 = OrderPosition.objects.get(attendee_email__isnull=True).answers.first()
     assert a3.question == q
     assert set(a3.options.all()) == {o1, o2}
+
 
 # TODO: validate question

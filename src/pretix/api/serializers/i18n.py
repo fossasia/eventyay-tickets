@@ -22,15 +22,11 @@ class I18nField(Field):
             elif value.data is None:
                 return None
             else:
-                return {
-                    settings.LANGUAGE_CODE: str(value.data)
-                }
+                return {settings.LANGUAGE_CODE: str(value.data)}
         elif value is None:
             return None
         else:
-            return {
-                settings.LANGUAGE_CODE: str(value)
-            }
+            return {settings.LANGUAGE_CODE: str(value)}
 
     def to_internal_value(self, data):
         if isinstance(data, str):

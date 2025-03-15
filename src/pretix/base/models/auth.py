@@ -4,7 +4,9 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth.models import (
-    AbstractBaseUser, BaseUserManager, PermissionsMixin,
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
 )
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.contenttypes.models import ContentType
@@ -39,7 +41,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email: str, password: str = None):  # NOQA
         # Not used in the software but required by Django
         if password is None:
-            raise Exception("You must provide a password")
+            raise Exception('You must provide a password')
         user = self.model(email=email)
         user.is_staff = True
         user.set_password(password)
@@ -83,33 +85,40 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    email = models.EmailField(unique=True, db_index=True, null=True, blank=True,
-                              verbose_name=_('E-mail'), max_length=190)
-    fullname = models.CharField(max_length=255, blank=True, null=True,
-                                verbose_name=_('Full name'))
-    is_active = models.BooleanField(default=True,
-                                    verbose_name=_('Is active'))
-    is_staff = models.BooleanField(default=False,
-                                   verbose_name=_('Is site admin'))
-    date_joined = models.DateTimeField(auto_now_add=True,
-                                       verbose_name=_('Date joined'))
-    locale = models.CharField(max_length=50,
-                              choices=settings.LANGUAGES,
-                              default=settings.LANGUAGE_CODE,
-                              verbose_name=_('Language'))
-    timezone = models.CharField(max_length=100,
-                                default=settings.TIME_ZONE,
-                                verbose_name=_('Timezone'))
+    email = models.EmailField(
+        unique=True,
+        db_index=True,
+        null=True,
+        blank=True,
+        verbose_name=_('E-mail'),
+        max_length=190,
+    )
+    fullname = models.CharField(
+        max_length=255, blank=True, null=True, verbose_name=_('Full name')
+    )
+    is_active = models.BooleanField(default=True, verbose_name=_('Is active'))
+    is_staff = models.BooleanField(default=False, verbose_name=_('Is site admin'))
+    date_joined = models.DateTimeField(auto_now_add=True, verbose_name=_('Date joined'))
+    locale = models.CharField(
+        max_length=50,
+        choices=settings.LANGUAGES,
+        default=settings.LANGUAGE_CODE,
+        verbose_name=_('Language'),
+    )
+    timezone = models.CharField(
+        max_length=100, default=settings.TIME_ZONE, verbose_name=_('Timezone')
+    )
     require_2fa = models.BooleanField(
-        default=False,
-        verbose_name=_('Two-factor authentication is required to log in')
+        default=False, verbose_name=_('Two-factor authentication is required to log in')
     )
     notifications_send = models.BooleanField(
         default=True,
         verbose_name=_('Receive notifications according to my settings below'),
-        help_text=_('If turned off, you will not get any notifications.')
+        help_text=_('If turned off, you will not get any notifications.'),
     )
-    notifications_token = models.CharField(max_length=255, default=generate_notifications_token)
+    notifications_token = models.CharField(
+        max_length=255, default=generate_notifications_token
+    )
     auth_backend = models.CharField(max_length=255, default='native')
     session_token = models.CharField(max_length=32, default=generate_session_token)
 
@@ -120,8 +129,8 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         self._teamcache = {}
 
     class Meta:
-        verbose_name = _("User")
-        verbose_name_plural = _("Users")
+        verbose_name = _('User')
+        verbose_name_plural = _('Users')
         ordering = ('email',)
 
     def save(self, *args, **kwargs):
@@ -133,7 +142,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
                 action_type='pretix.event.order.refund.requested',
                 event=None,
                 method='mail',
-                enabled=True
+                enabled=True,
             )
 
     def __str__(self):
@@ -183,11 +192,11 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
                 {
                     'user': self,
                     'messages': msg,
-                    'url': build_absolute_uri('control:user.settings')
+                    'url': build_absolute_uri('control:user.settings'),
                 },
                 event=None,
                 user=self,
-                locale=self.locale
+                locale=self.locale,
             )
         except SendMailException:
             pass  # Already logged
@@ -196,13 +205,20 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         from pretix.base.services.mail import mail
 
         mail(
-            self.email, _('Password recovery'), 'pretixcontrol/email/forgot.txt',
+            self.email,
+            _('Password recovery'),
+            'pretixcontrol/email/forgot.txt',
             {
                 'user': self,
-                'url': (build_absolute_uri('control:auth.forgot.recover')
-                        + '?id=%d&token=%s' % (self.id, default_token_generator.make_token(self)))
+                'url': (
+                    build_absolute_uri('control:auth.forgot.recover')
+                    + '?id=%d&token=%s'
+                    % (self.id, default_token_generator.make_token(self))
+                ),
             },
-            None, locale=self.locale, user=self
+            None,
+            locale=self.locale,
+            user=self,
         )
 
     @property
@@ -213,19 +229,24 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
     def all_logentries(self):
         from pretix.base.models import LogEntry
 
-        return LogEntry.objects.filter(content_type=ContentType.objects.get_for_model(User),
-                                       object_id=self.pk)
+        return LogEntry.objects.filter(
+            content_type=ContentType.objects.get_for_model(User), object_id=self.pk
+        )
 
     def _get_teams_for_organizer(self, organizer):
         if 'o{}'.format(organizer.pk) not in self._teamcache:
-            self._teamcache['o{}'.format(organizer.pk)] = list(self.teams.filter(organizer=organizer))
+            self._teamcache['o{}'.format(organizer.pk)] = list(
+                self.teams.filter(organizer=organizer)
+            )
         return self._teamcache['o{}'.format(organizer.pk)]
 
     def _get_teams_for_event(self, organizer, event):
         if 'e{}'.format(event.pk) not in self._teamcache:
-            self._teamcache['e{}'.format(event.pk)] = list(self.teams.filter(organizer=organizer).filter(
-                Q(all_events=True) | Q(limit_events=event)
-            ))
+            self._teamcache['e{}'.format(event.pk)] = list(
+                self.teams.filter(organizer=organizer).filter(
+                    Q(all_events=True) | Q(limit_events=event)
+                )
+            )
         return self._teamcache['e{}'.format(event.pk)]
 
     def get_event_permission_set(self, organizer, event) -> set:
@@ -257,7 +278,9 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         else:
             return set()
 
-    def has_event_permission(self, organizer, event, perm_name=None, request=None) -> bool:
+    def has_event_permission(
+        self, organizer, event, perm_name=None, request=None
+    ) -> bool:
         """
         Checks if this user is part of any team that grants access of type ``perm_name``
         to the event ``event``.
@@ -274,7 +297,9 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         if teams:
             self._teamcache['e{}'.format(event.pk)] = teams
             if isinstance(perm_name, (tuple, list)):
-                return any([any(team.has_permission(p) for team in teams) for p in perm_name])
+                return any(
+                    [any(team.has_permission(p) for team in teams) for p in perm_name]
+                )
             if not perm_name or any([team.has_permission(perm_name) for team in teams]):
                 return True
         return False
@@ -294,7 +319,9 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         teams = self._get_teams_for_organizer(organizer)
         if teams:
             if isinstance(perm_name, (tuple, list)):
-                return any([any(team.has_permission(p) for team in teams) for p in perm_name])
+                return any(
+                    [any(team.has_permission(p) for team in teams) for p in perm_name]
+                )
             if not perm_name or any([team.has_permission(perm_name) for team in teams]):
                 return True
         return False
@@ -313,7 +340,11 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
             return Event.objects.all()
 
         return Event.objects.filter(
-            Q(organizer_id__in=self.teams.filter(all_events=True).values_list('organizer', flat=True))
+            Q(
+                organizer_id__in=self.teams.filter(all_events=True).values_list(
+                    'organizer', flat=True
+                )
+            )
             | Q(id__in=self.teams.values_list('limit_events__id', flat=True))
         )
 
@@ -333,8 +364,16 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         kwargs = {permission: True}
 
         return Event.objects.filter(
-            Q(organizer_id__in=self.teams.filter(all_events=True, **kwargs).values_list('organizer', flat=True))
-            | Q(id__in=self.teams.filter(**kwargs).values_list('limit_events__id', flat=True))
+            Q(
+                organizer_id__in=self.teams.filter(
+                    all_events=True, **kwargs
+                ).values_list('organizer', flat=True)
+            )
+            | Q(
+                id__in=self.teams.filter(**kwargs).values_list(
+                    'limit_events__id', flat=True
+                )
+            )
         )
 
     @scopes_disabled()
@@ -369,14 +408,14 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         if not hasattr(self, '_staff_session_cache'):
             self._staff_session_cache = {}
         if session_key not in self._staff_session_cache:
-            qs = StaffSession.objects.filter(
-                user=self, date_end__isnull=True
-            )
+            qs = StaffSession.objects.filter(user=self, date_end__isnull=True)
             if session_key:
                 qs = qs.filter(session_key=session_key)
             sess = qs.first()
             if sess:
-                if sess.date_start < now() - timedelta(seconds=settings.PRETIX_SESSION_TIMEOUT_ABSOLUTE):
+                if sess.date_start < now() - timedelta(
+                    seconds=settings.PRETIX_SESSION_TIMEOUT_ABSOLUTE
+                ):
                     sess.date_end = now()
                     sess.save()
                     sess = None
@@ -388,7 +427,7 @@ class User(AbstractBaseUser, PermissionsMixin, LoggingMixin):
         """
         Return an HMAC that needs to
         """
-        key_salt = "pretix.base.models.User.get_session_auth_hash"
+        key_salt = 'pretix.base.models.User.get_session_auth_hash'
         payload = self.password
         payload += self.email
         payload += self.session_token
@@ -411,11 +450,15 @@ class StaffSession(models.Model):
 
 
 class StaffSessionAuditLog(models.Model):
-    session = models.ForeignKey('StaffSession', related_name='logs', on_delete=models.PROTECT)
+    session = models.ForeignKey(
+        'StaffSession', related_name='logs', on_delete=models.PROTECT
+    )
     datetime = models.DateTimeField(auto_now_add=True)
     url = models.CharField(max_length=255)
     method = models.CharField(max_length=255)
-    impersonating = models.ForeignKey('User', null=True, blank=True, on_delete=models.PROTECT)
+    impersonating = models.ForeignKey(
+        'User', null=True, blank=True, on_delete=models.PROTECT
+    )
 
     class Meta:
         ordering = ('datetime',)
@@ -436,7 +479,9 @@ class U2FDevice(Device):
         # former U2F implementation) to the format required by webauthn. This
         # is based on the following example:
         # https://www.w3.org/TR/webauthn/#sctn-encoded-credPubKey-examples
-        pub_key = pub_key_from_der(websafe_decode(d['publicKey'].replace('+', '-').replace('/', '_')))
+        pub_key = pub_key_from_der(
+            websafe_decode(d['publicKey'].replace('+', '-').replace('/', '_'))
+        )
         pub_key = binascii.unhexlify(
             'A5010203262001215820{:064x}225820{:064x}'.format(
                 pub_key.public_numbers().x, pub_key.public_numbers().y

@@ -25,14 +25,14 @@ else:
     for i, dep in enumerate(pyproject['project']['dependencies']):
         if dep.startswith('eventyay-stripe'):
             # Update the stripe dependency with the github_token
-            pyproject['project']['dependencies'][
-                i
-            ] = f'eventyay-stripe @ git+https://{github_token}@github.com/fossasia/eventyay-tickets-stripe.git@master'
+            pyproject['project']['dependencies'][i] = (
+                f'eventyay-stripe @ git+https://{github_token}@github.com/fossasia/eventyay-tickets-stripe.git@master'
+            )
         elif dep.startswith('eventyay-paypal'):
             # Update the PayPal dependency with the github_token
-            pyproject['project']['dependencies'][
-                i
-            ] = f'eventyay-paypal @ git+https://{github_token}@github.com/fossasia/eventyay-tickets-paypal.git@master'
+            pyproject['project']['dependencies'][i] = (
+                f'eventyay-paypal @ git+https://{github_token}@github.com/fossasia/eventyay-tickets-paypal.git@master'
+            )
 
 # Write the updated pyproject.toml back to file
 with open('/pretix/pyproject.toml', 'w') as f:

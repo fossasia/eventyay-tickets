@@ -6,7 +6,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.utils.html import escape
-from django.utils.translation import gettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext_lazy
 
 from pretix.base.signals import logentry_object_link
 
@@ -35,14 +36,21 @@ class LogEntry(models.Model):
     :param data: Arbitrary data that can be used by the log action renderer
     :type data: str
     """
+
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(db_index=True)
     content_object = GenericForeignKey('content_type', 'object_id')
     datetime = models.DateTimeField(auto_now_add=True, db_index=True)
     user = models.ForeignKey('User', null=True, blank=True, on_delete=models.PROTECT)
-    api_token = models.ForeignKey('TeamAPIToken', null=True, blank=True, on_delete=models.PROTECT)
-    device = models.ForeignKey('Device', null=True, blank=True, on_delete=models.PROTECT)
-    oauth_application = models.ForeignKey('pretixapi.OAuthApplication', null=True, blank=True, on_delete=models.PROTECT)
+    api_token = models.ForeignKey(
+        'TeamAPIToken', null=True, blank=True, on_delete=models.PROTECT
+    )
+    device = models.ForeignKey(
+        'Device', null=True, blank=True, on_delete=models.PROTECT
+    )
+    oauth_application = models.ForeignKey(
+        'pretixapi.OAuthApplication', null=True, blank=True, on_delete=models.PROTECT
+    )
     event = models.ForeignKey('Event', null=True, blank=True, on_delete=models.SET_NULL)
     action_type = models.CharField(max_length=255)
     data = models.TextField(default='{}')
@@ -71,7 +79,9 @@ class LogEntry(models.Model):
         wh_type = None
         typepath = self.action_type
         while not wh_type and '.' in typepath:
-            wh_type = wh_type or wh_types.get(typepath + ('.*' if typepath != self.action_type else ''))
+            wh_type = wh_type or wh_types.get(
+                typepath + ('.*' if typepath != self.action_type else '')
+            )
             typepath = typepath.rsplit('.', 1)[0]
         return wh_type
 
@@ -83,7 +93,9 @@ class LogEntry(models.Model):
         no_types = get_all_notification_types()
         typepath = self.action_type
         while not no_type and '.' in typepath:
-            no_type = no_type or no_types.get(typepath + ('.*' if typepath != self.action_type else ''))
+            no_type = no_type or no_types.get(
+                typepath + ('.*' if typepath != self.action_type else '')
+            )
             typepath = typepath.rsplit('.', 1)[0]
         return no_type
 
@@ -104,8 +116,15 @@ class LogEntry(models.Model):
     @cached_property
     def display_object(self):
         from . import (
-            Event, Item, ItemCategory, Order, Question, Quota, SubEvent,
-            TaxRule, Voucher,
+            Event,
+            Item,
+            ItemCategory,
+            Order,
+            Question,
+            Quota,
+            SubEvent,
+            TaxRule,
+            Voucher,
         )
 
         try:
@@ -121,81 +140,105 @@ class LogEntry(models.Model):
         if isinstance(co, Order):
             a_text = _('Order {val}')
             a_map = {
-                'href': reverse('control:event.order', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'code': co.code
-                }),
+                'href': reverse(
+                    'control:event.order',
+                    kwargs={
+                        'event': self.event.slug,
+                        'organizer': self.event.organizer.slug,
+                        'code': co.code,
+                    },
+                ),
                 'val': escape(co.code),
             }
         elif isinstance(co, Voucher):
             a_text = _('Voucher {val}…')
             a_map = {
-                'href': reverse('control:event.voucher', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'voucher': co.id
-                }),
+                'href': reverse(
+                    'control:event.voucher',
+                    kwargs={
+                        'event': self.event.slug,
+                        'organizer': self.event.organizer.slug,
+                        'voucher': co.id,
+                    },
+                ),
                 'val': escape(co.code[:6]),
             }
         elif isinstance(co, Item):
             a_text = _('Product {val}')
             a_map = {
-                'href': reverse('control:event.item', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'item': co.id
-                }),
+                'href': reverse(
+                    'control:event.item',
+                    kwargs={
+                        'event': self.event.slug,
+                        'organizer': self.event.organizer.slug,
+                        'item': co.id,
+                    },
+                ),
                 'val': escape(co.name),
             }
         elif isinstance(co, SubEvent):
             a_text = pgettext_lazy('subevent', 'Date {val}')
             a_map = {
-                'href': reverse('control:event.subevent', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'subevent': co.id
-                }),
-                'val': escape(str(co))
+                'href': reverse(
+                    'control:event.subevent',
+                    kwargs={
+                        'event': self.event.slug,
+                        'organizer': self.event.organizer.slug,
+                        'subevent': co.id,
+                    },
+                ),
+                'val': escape(str(co)),
             }
         elif isinstance(co, Quota):
             a_text = _('Quota {val}')
             a_map = {
-                'href': reverse('control:event.items.quotas.show', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'quota': co.id
-                }),
+                'href': reverse(
+                    'control:event.items.quotas.show',
+                    kwargs={
+                        'event': self.event.slug,
+                        'organizer': self.event.organizer.slug,
+                        'quota': co.id,
+                    },
+                ),
                 'val': escape(co.name),
             }
         elif isinstance(co, ItemCategory):
             a_text = _('Category {val}')
             a_map = {
-                'href': reverse('control:event.items.categories.edit', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'category': co.id
-                }),
+                'href': reverse(
+                    'control:event.items.categories.edit',
+                    kwargs={
+                        'event': self.event.slug,
+                        'organizer': self.event.organizer.slug,
+                        'category': co.id,
+                    },
+                ),
                 'val': escape(co.name),
             }
         elif isinstance(co, Question):
             a_text = _('Question {val}')
             a_map = {
-                'href': reverse('control:event.items.questions.show', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'question': co.id
-                }),
+                'href': reverse(
+                    'control:event.items.questions.show',
+                    kwargs={
+                        'event': self.event.slug,
+                        'organizer': self.event.organizer.slug,
+                        'question': co.id,
+                    },
+                ),
                 'val': escape(co.question),
             }
         elif isinstance(co, TaxRule):
             a_text = _('Tax rule {val}')
             a_map = {
-                'href': reverse('control:event.settings.tax.edit', kwargs={
-                    'event': self.event.slug,
-                    'organizer': self.event.organizer.slug,
-                    'rule': co.id
-                }),
+                'href': reverse(
+                    'control:event.settings.tax.edit',
+                    kwargs={
+                        'event': self.event.slug,
+                        'organizer': self.event.organizer.slug,
+                        'rule': co.id,
+                    },
+                ),
                 'val': escape(co.name),
             }
 
@@ -205,7 +248,9 @@ class LogEntry(models.Model):
         elif a_text:
             return a_text
         else:
-            for receiver, response in logentry_object_link.send(self.event, logentry=self):
+            for receiver, response in logentry_object_link.send(
+                self.event, logentry=self
+            ):
                 if response:
                     return response
             return ''
@@ -215,7 +260,7 @@ class LogEntry(models.Model):
         return json.loads(self.data)
 
     def delete(self, using=None, keep_parents=False):
-        raise TypeError("Logs cannot be deleted.")
+        raise TypeError('Logs cannot be deleted.')
 
     @classmethod
     def bulk_postprocess(cls, objects):

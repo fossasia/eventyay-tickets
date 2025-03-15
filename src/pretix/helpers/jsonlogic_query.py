@@ -39,16 +39,31 @@ class LowerThan(Func):
 class InList(Func):
     arity = 2
 
-    def as_sql(self, compiler, connection, function=None, template=None, arg_joiner=None, **extra_context):
+    def as_sql(
+        self,
+        compiler,
+        connection,
+        function=None,
+        template=None,
+        arg_joiner=None,
+        **extra_context,
+    ):
         connection.ops.check_expression_support(self)
 
         # This ignores the special case for databases which limit the number of
         # elements which can appear in an 'IN' clause, which hopefully is only Oracle.
         lhs, lhs_params = compiler.compile(self.source_expressions[0])
 
-        if not isinstance(self.source_expressions[1], Value) and not isinstance(self.source_expressions[1].value, (list, tuple)):
-            raise TypeError(f'Dynamic right-hand-site currently not implemented, found {type(self.source_expressions[1])}')
-        rhs, rhs_params = ['%s' for _ in self.source_expressions[1].value], [d for d in self.source_expressions[1].value]
+        if not isinstance(self.source_expressions[1], Value) and not isinstance(
+            self.source_expressions[1].value, (list, tuple)
+        ):
+            raise TypeError(
+                f'Dynamic right-hand-site currently not implemented, found {type(self.source_expressions[1])}'
+            )
+        rhs, rhs_params = (
+            ['%s' for _ in self.source_expressions[1].value],
+            [d for d in self.source_expressions[1].value],
+        )
 
         return '%s IN (%s)' % (lhs, ', '.join(rhs)), lhs_params + rhs_params
 

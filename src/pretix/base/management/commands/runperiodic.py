@@ -11,18 +11,30 @@ from ...signals import periodic_task
 
 
 class Command(BaseCommand):
-    help = "Run periodic tasks"
+    help = 'Run periodic tasks'
 
     def add_arguments(self, parser):
-        parser.add_argument('--tasks', action='store', type=str, help='Only execute the tasks with this name '
-                                                                      '(dotted path, comma separation)')
-        parser.add_argument('--exclude', action='store', type=str, help='Exclude the tasks with this name '
-                                                                        '(dotted path, comma separation)')
+        parser.add_argument(
+            '--tasks',
+            action='store',
+            type=str,
+            help='Only execute the tasks with this name '
+            '(dotted path, comma separation)',
+        )
+        parser.add_argument(
+            '--exclude',
+            action='store',
+            type=str,
+            help='Exclude the tasks with this name (dotted path, comma separation)',
+        )
 
     def handle(self, *args, **options):
         verbosity = int(options['verbosity'])
 
-        if not periodic_task.receivers or periodic_task.sender_receivers_cache.get(self) is NO_RECEIVERS:
+        if (
+            not periodic_task.receivers
+            or periodic_task.sender_receivers_cache.get(self) is NO_RECEIVERS
+        ):
             return
 
         for receiver in periodic_task._live_receivers(self):
@@ -44,14 +56,23 @@ class Command(BaseCommand):
                     raise err
                 if settings.SENTRY_ENABLED:
                     from sentry_sdk import capture_exception
+
                     capture_exception(err)
-                    self.stdout.write(self.style.ERROR(f'ERROR runperiodic {str(err)}\n'))
+                    self.stdout.write(
+                        self.style.ERROR(f'ERROR runperiodic {str(err)}\n')
+                    )
                 else:
-                    self.stdout.write(self.style.ERROR(f'ERROR runperiodic {str(err)}\n'))
+                    self.stdout.write(
+                        self.style.ERROR(f'ERROR runperiodic {str(err)}\n')
+                    )
                     traceback.print_exc()
             else:
                 if options.get('verbosity') > 1:
                     if r is SKIPPED:
                         self.stdout.write(self.style.SUCCESS(f'INFO Skipped {name}'))
                     else:
-                        self.stdout.write(self.style.SUCCESS(f'INFO Completed {name} in {round(time.time() - t0, 3)}s'))
+                        self.stdout.write(
+                            self.style.SUCCESS(
+                                f'INFO Completed {name} in {round(time.time() - t0, 3)}s'
+                            )
+                        )

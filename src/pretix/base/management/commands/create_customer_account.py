@@ -15,7 +15,9 @@ class Command(BaseCommand):
         parser.add_argument('--event-slug', type=str, help='Event Slug')
 
     def handle(self, *args, **options):
-        organizer_slug = options.get('organizer-slug') or input('Enter Organizer Slug: ')
+        organizer_slug = options.get('organizer-slug') or input(
+            'Enter Organizer Slug: '
+        )
         event_slug = options.get('event-slug') or input('Enter Event Slug: ')
 
         try:
@@ -29,8 +31,13 @@ class Command(BaseCommand):
             self.stderr.write(self.style.ERROR('Event not found.'))
             sys.exit(1)
 
-        if not organizer.settings.customer_accounts or not organizer.settings.customer_accounts_native:
-            self.stderr.write(self.style.ERROR('Organizer not enable customer account yet.'))
+        if (
+            not organizer.settings.customer_accounts
+            or not organizer.settings.customer_accounts_native
+        ):
+            self.stderr.write(
+                self.style.ERROR('Organizer not enable customer account yet.')
+            )
             sys.exit(1)
 
         with scopes_disabled():
@@ -38,11 +45,13 @@ class Command(BaseCommand):
             # Get all orders email and check if they have a customer account or not
             for order in orders:
                 if order.email:
-                    customer = Customer.objects.filter(email__iexact=order.email).first()
+                    customer = Customer.objects.filter(
+                        email__iexact=order.email
+                    ).first()
                     if not customer:
                         name_parts_data = {
-                            "_scheme": "full",
-                            "full_name": order.email.split("@")[0]
+                            '_scheme': 'full',
+                            'full_name': order.email.split('@')[0],
                         }
                         customer = organizer.customers.create(
                             email=order.email,

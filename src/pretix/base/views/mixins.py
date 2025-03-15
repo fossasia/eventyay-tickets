@@ -9,10 +9,16 @@ from django.db.models import Prefetch, QuerySet
 from django.utils.functional import cached_property
 
 from pretix.base.forms.questions import (
-    BaseInvoiceAddressForm, BaseInvoiceNameForm, BaseQuestionsForm,
+    BaseInvoiceAddressForm,
+    BaseInvoiceNameForm,
+    BaseQuestionsForm,
 )
 from pretix.base.models import (
-    CartPosition, InvoiceAddress, OrderPosition, Question, QuestionAnswer,
+    CartPosition,
+    InvoiceAddress,
+    OrderPosition,
+    Question,
+    QuestionAnswer,
     QuestionOption,
 )
 from pretix.presale.signals import contact_form_fields_overrides
@@ -50,22 +56,29 @@ class BaseQuestionsViewMixin:
         for cr in self._positions_for_questions:
             cartpos = cr if isinstance(cr, CartPosition) else None
             orderpos = cr if isinstance(cr, OrderPosition) else None
-            form = self.form_class(event=self.request.event,
-                                   prefix=cr.id,
-                                   cartpos=cartpos,
-                                   orderpos=orderpos,
-                                   all_optional=self.all_optional,
-                                   data=(self.request.POST if self.request.method == 'POST' else None),
-                                   files=(self.request.FILES if self.request.method == 'POST' else None))
+            form = self.form_class(
+                event=self.request.event,
+                prefix=cr.id,
+                cartpos=cartpos,
+                orderpos=orderpos,
+                all_optional=self.all_optional,
+                data=(self.request.POST if self.request.method == 'POST' else None),
+                files=(self.request.FILES if self.request.method == 'POST' else None),
+            )
             form.pos = cartpos or orderpos
             form.show_copy_answers_to_addon_button = form.pos.addon_to and (
-                set(form.pos.addon_to.item.questions.all()) & set(form.pos.item.questions.all()) or
-                (form.pos.addon_to.item.admission and form.pos.item.admission and (
-                    self.request.event.settings.attendee_names_asked or
-                    self.request.event.settings.attendee_emails_asked or
-                    self.request.event.settings.attendee_company_asked or
-                    self.request.event.settings.attendee_addresses_asked
-                ))
+                set(form.pos.addon_to.item.questions.all())
+                & set(form.pos.item.questions.all())
+                or (
+                    form.pos.addon_to.item.admission
+                    and form.pos.item.admission
+                    and (
+                        self.request.event.settings.attendee_names_asked
+                        or self.request.event.settings.attendee_emails_asked
+                        or self.request.event.settings.attendee_company_asked
+                        or self.request.event.settings.attendee_addresses_asked
+                    )
+                )
             )
 
             override_sets = self.get_question_override_sets(cr)
@@ -73,16 +86,30 @@ class BaseQuestionsViewMixin:
                 for question_name, question_field in form.fields.items():
                     if hasattr(question_field, 'question'):
                         if question_field.question.identifier in overrides:
-                            if 'initial' in overrides[question_field.question.identifier]:
-                                question_field.initial = overrides[question_field.question.identifier]['initial']
-                            if 'disabled' in overrides[question_field.question.identifier]:
-                                question_field.disabled = overrides[question_field.question.identifier]['disabled']
+                            if (
+                                'initial'
+                                in overrides[question_field.question.identifier]
+                            ):
+                                question_field.initial = overrides[
+                                    question_field.question.identifier
+                                ]['initial']
+                            if (
+                                'disabled'
+                                in overrides[question_field.question.identifier]
+                            ):
+                                question_field.disabled = overrides[
+                                    question_field.question.identifier
+                                ]['disabled']
                     else:
                         if question_name in overrides:
                             if 'initial' in overrides[question_name]:
-                                question_field.initial = overrides[question_name]['initial']
+                                question_field.initial = overrides[question_name][
+                                    'initial'
+                                ]
                             if 'disabled' in overrides[question_name]:
-                                question_field.disabled = overrides[question_name]['disabled']
+                                question_field.disabled = overrides[question_name][
+                                    'disabled'
+                                ]
 
             if len(form.fields) > 0:
                 formlist.append(form)
@@ -135,8 +162,12 @@ class BaseQuestionsViewMixin:
                         if hasattr(field, 'answer'):
                             # We already have a cached answer object, so we don't
                             # have to create a new one
-                            if v == '' or v is None or (isinstance(field, forms.FileField) and v is False) \
-                                    or (isinstance(v, QuerySet) and not v.exists()):
+                            if (
+                                v == ''
+                                or v is None
+                                or (isinstance(field, forms.FileField) and v is False)
+                                or (isinstance(v, QuerySet) and not v.exists())
+                            ):
                                 if field.answer.file:
                                     field.answer.file.delete()
                                 field.answer.delete()
@@ -145,8 +176,16 @@ class BaseQuestionsViewMixin:
                                 field.answer.save()
                         elif v != '' and v is not None:
                             answer = QuestionAnswer(
-                                cartposition=(form.pos if isinstance(form.pos, CartPosition) else None),
-                                orderposition=(form.pos if isinstance(form.pos, OrderPosition) else None),
+                                cartposition=(
+                                    form.pos
+                                    if isinstance(form.pos, CartPosition)
+                                    else None
+                                ),
+                                orderposition=(
+                                    form.pos
+                                    if isinstance(form.pos, OrderPosition)
+                                    else None
+                                ),
                                 question=field.question,
                             )
                             try:
@@ -160,8 +199,16 @@ class BaseQuestionsViewMixin:
                                 # again. However, both of these approaches have a significant performance overhead for *all* requests,
                                 # while the issue happens very very rarely. So we opt for just catching the error and retrying properly.
                                 answer = QuestionAnswer.objects.get(
-                                    cartposition=(form.pos if isinstance(form.pos, CartPosition) else None),
-                                    orderposition=(form.pos if isinstance(form.pos, OrderPosition) else None),
+                                    cartposition=(
+                                        form.pos
+                                        if isinstance(form.pos, CartPosition)
+                                        else None
+                                    ),
+                                    orderposition=(
+                                        form.pos
+                                        if isinstance(form.pos, OrderPosition)
+                                        else None
+                                    ),
                                     question=field.question,
                                 )
                                 self._save_to_answer(field, answer, v)
@@ -181,7 +228,7 @@ class BaseQuestionsViewMixin:
 
     def _save_to_answer(self, field, answer, value):
         if isinstance(field, forms.ModelMultipleChoiceField):
-            answstr = ", ".join([str(o) for o in value])
+            answstr = ', '.join([str(o) for o in value])
             if not answer.pk:
                 answer.save()
             else:
@@ -218,25 +265,34 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
         qqs = self.request.event.questions.all()
         if self.only_user_visible:
             qqs = qqs.filter(ask_during_checkin=False, hidden=False)
-        return list(self.order.positions.select_related(
-            'item', 'variation'
-        ).prefetch_related(
-            Prefetch('answers',
-                     QuestionAnswer.objects.prefetch_related('options'),
-                     to_attr='answerlist'),
-            Prefetch('item__questions',
-                     qqs.prefetch_related(
-                         Prefetch('options', QuestionOption.objects.prefetch_related(Prefetch(
-                             # This prefetch statement is utter bullshit, but it actually prevents Django from doing
-                             # a lot of queries since ModelChoiceIterator stops trying to be clever once we have
-                             # a prefetch lookup on this query...
-                             'question',
-                             Question.objects.none(),
-                             to_attr='dummy'
-                         )))
-                     ).select_related('dependency_question'),
-                     to_attr='questions_to_ask')
-        ))
+        return list(
+            self.order.positions.select_related('item', 'variation').prefetch_related(
+                Prefetch(
+                    'answers',
+                    QuestionAnswer.objects.prefetch_related('options'),
+                    to_attr='answerlist',
+                ),
+                Prefetch(
+                    'item__questions',
+                    qqs.prefetch_related(
+                        Prefetch(
+                            'options',
+                            QuestionOption.objects.prefetch_related(
+                                Prefetch(
+                                    # This prefetch statement is utter bullshit, but it actually prevents Django from doing
+                                    # a lot of queries since ModelChoiceIterator stops trying to be clever once we have
+                                    # a prefetch lookup on this query...
+                                    'question',
+                                    Question.objects.none(),
+                                    to_attr='dummy',
+                                )
+                            ),
+                        )
+                    ).select_related('dependency_question'),
+                    to_attr='questions_to_ask',
+                ),
+            )
+        )
 
     @cached_property
     def invoice_address(self):
@@ -248,13 +304,15 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
     @cached_property
     def address_asked(self):
         return self.request.event.settings.invoice_address_asked and (
-            self.order.total != Decimal('0.00') or not self.request.event.settings.invoice_address_not_asked_free
+            self.order.total != Decimal('0.00')
+            or not self.request.event.settings.invoice_address_not_asked_free
         )
 
     @cached_property
     def _contact_override_sets(self):
         override_sets = [
-            resp for recv, resp in contact_form_fields_overrides.send(
+            resp
+            for recv, resp in contact_form_fields_overrides.send(
                 self.request.event,
                 request=self.request,
                 order=self.order,
@@ -270,20 +328,24 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
     def invoice_form(self):
         if not self.address_asked and self.request.event.settings.invoice_name_required:
             f = self.invoice_name_form_class(
-                data=self.request.POST if self.request.method == "POST" else None,
+                data=self.request.POST if self.request.method == 'POST' else None,
                 event=self.request.event,
-                instance=self.invoice_address, validate_vat_id=False,
-                all_optional=self.all_optional
+                instance=self.invoice_address,
+                validate_vat_id=False,
+                all_optional=self.all_optional,
             )
         elif self.address_asked:
             f = self.invoice_form_class(
-                data=self.request.POST if self.request.method == "POST" else None,
+                data=self.request.POST if self.request.method == 'POST' else None,
                 event=self.request.event,
-                instance=self.invoice_address, validate_vat_id=False,
+                instance=self.invoice_address,
+                validate_vat_id=False,
                 all_optional=self.all_optional,
             )
         else:
-            f = forms.Form(data=self.request.POST if self.request.method == "POST" else None)
+            f = forms.Form(
+                data=self.request.POST if self.request.method == 'POST' else None
+            )
 
         override_sets = self._contact_override_sets
         for overrides in override_sets:

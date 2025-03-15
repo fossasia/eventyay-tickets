@@ -3,11 +3,18 @@ from decimal import Decimal
 
 from django.utils.timezone import now
 from django_scopes import scopes_disabled
-from tests.base import SoupTest
 
 from pretix.base.models import (
-    Event, InvoiceAddress, Item, Order, OrderPosition, Organizer, Team, User,
+    Event,
+    InvoiceAddress,
+    Item,
+    Order,
+    OrderPosition,
+    Organizer,
+    Team,
+    User,
 )
+from tests.base import SoupTest
 
 
 class OrderSearchTest(SoupTest):
@@ -17,49 +24,73 @@ class OrderSearchTest(SoupTest):
         self.user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
         self.orga1 = Organizer.objects.create(name='CCC', slug='ccc')
         self.event1 = Event.objects.create(
-            organizer=self.orga1, name='30C3', slug='30c3',
+            organizer=self.orga1,
+            name='30C3',
+            slug='30c3',
             date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc),
-            plugins='pretix.plugins.banktransfer,tests.testdummy'
+            plugins='pretix.plugins.banktransfer,tests.testdummy',
         )
         self.event2 = Event.objects.create(
-            organizer=self.orga1, name='31C3', slug='31c3',
+            organizer=self.orga1,
+            name='31C3',
+            slug='31c3',
             date_from=datetime.datetime(2014, 12, 26, tzinfo=datetime.timezone.utc),
         )
 
         o1 = Order.objects.create(
-            code='FO1A', event=self.event1, email='dummy1@dummy.test',
+            code='FO1A',
+            event=self.event1,
+            email='dummy1@dummy.test',
             status=Order.STATUS_PENDING,
-            datetime=now(), expires=now() + datetime.timedelta(days=10),
-            total=14, locale='en'
+            datetime=now(),
+            expires=now() + datetime.timedelta(days=10),
+            total=14,
+            locale='en',
         )
-        InvoiceAddress.objects.create(order=o1, company="Test Ltd.", name_parts={'full_name': "Peter Miller", "_scheme": "full"})
-        ticket1 = Item.objects.create(event=self.event1, name='Early-bird ticket',
-                                      category=None, default_price=23,
-                                      admission=True)
+        InvoiceAddress.objects.create(
+            order=o1,
+            company='Test Ltd.',
+            name_parts={'full_name': 'Peter Miller', '_scheme': 'full'},
+        )
+        ticket1 = Item.objects.create(
+            event=self.event1,
+            name='Early-bird ticket',
+            category=None,
+            default_price=23,
+            admission=True,
+        )
         OrderPosition.objects.create(
             order=o1,
             item=ticket1,
             variation=None,
-            price=Decimal("14"),
-            attendee_name_parts={'full_name': "Peter", "_scheme": "full"},
-            attendee_email="att@att.com"
+            price=Decimal('14'),
+            attendee_name_parts={'full_name': 'Peter', '_scheme': 'full'},
+            attendee_email='att@att.com',
         )
 
         o2 = Order.objects.create(
-            code='FO2', event=self.event2, email='dummy2@dummy.test',
+            code='FO2',
+            event=self.event2,
+            email='dummy2@dummy.test',
             status=Order.STATUS_PENDING,
-            datetime=now(), expires=now() + datetime.timedelta(days=10),
-            total=14, locale='en'
+            datetime=now(),
+            expires=now() + datetime.timedelta(days=10),
+            total=14,
+            locale='en',
         )
-        ticket2 = Item.objects.create(event=self.event1, name='Early-bird ticket',
-                                      category=None, default_price=23,
-                                      admission=True)
+        ticket2 = Item.objects.create(
+            event=self.event1,
+            name='Early-bird ticket',
+            category=None,
+            default_price=23,
+            admission=True,
+        )
         OrderPosition.objects.create(
             order=o2,
             item=ticket2,
             variation=None,
-            price=Decimal("14"),
-            attendee_name_parts={'full_name': "Mark", "_scheme": "full"}
+            price=Decimal('14'),
+            attendee_name_parts={'full_name': 'Mark', '_scheme': 'full'},
         )
 
         self.team = Team.objects.create(organizer=self.orga1, can_view_orders=True)
@@ -103,7 +134,9 @@ class OrderSearchTest(SoupTest):
 
     def test_superuser(self):
         self.user.is_staff = True
-        self.user.staffsession_set.create(date_start=now(), session_key=self.client.session.session_key)
+        self.user.staffsession_set.create(
+            date_start=now(), session_key=self.client.session.session_key
+        )
         self.user.save()
         self.team.members.clear()
         resp = self.client.get('/control/search/orders/').content.decode()
@@ -111,9 +144,13 @@ class OrderSearchTest(SoupTest):
         assert 'FO2' in resp
 
     def test_filter_email(self):
-        resp = self.client.get('/control/search/orders/?query=dummy1@dummy').content.decode()
+        resp = self.client.get(
+            '/control/search/orders/?query=dummy1@dummy'
+        ).content.decode()
         assert 'FO1' in resp
-        resp = self.client.get('/control/search/orders/?query=dummynope').content.decode()
+        resp = self.client.get(
+            '/control/search/orders/?query=dummynope'
+        ).content.decode()
         assert 'FO1' not in resp
 
     def test_filter_attendee_name(self):
@@ -125,7 +162,9 @@ class OrderSearchTest(SoupTest):
     def test_filter_attendee_email(self):
         resp = self.client.get('/control/search/orders/?query=att.com').content.decode()
         assert 'FO1' in resp
-        resp = self.client.get('/control/search/orders/?query=nope.com').content.decode()
+        resp = self.client.get(
+            '/control/search/orders/?query=nope.com'
+        ).content.decode()
         assert 'FO1' not in resp
 
     def test_filter_invoice_address(self):
@@ -137,13 +176,21 @@ class OrderSearchTest(SoupTest):
     def test_filter_code(self):
         resp = self.client.get('/control/search/orders/?query=FO1').content.decode()
         assert '30C3-FO1' in resp
-        resp = self.client.get('/control/search/orders/?query=30c3-FO1').content.decode()
+        resp = self.client.get(
+            '/control/search/orders/?query=30c3-FO1'
+        ).content.decode()
         assert '30C3-FO1' in resp
-        resp = self.client.get('/control/search/orders/?query=30C3-fO1A').content.decode()
+        resp = self.client.get(
+            '/control/search/orders/?query=30C3-fO1A'
+        ).content.decode()
         assert '30C3-FO1' in resp
-        resp = self.client.get('/control/search/orders/?query=30C3-fo14').content.decode()
+        resp = self.client.get(
+            '/control/search/orders/?query=30C3-fo14'
+        ).content.decode()
         assert '30C3-FO1' in resp
-        resp = self.client.get('/control/search/orders/?query=31c3-FO1').content.decode()
+        resp = self.client.get(
+            '/control/search/orders/?query=31c3-FO1'
+        ).content.decode()
         assert '30C3-FO1' not in resp
         resp = self.client.get('/control/search/orders/?query=FO2').content.decode()
         assert '30C3-FO1' not in resp

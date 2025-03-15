@@ -25,7 +25,7 @@ class WebHookViewSet(viewsets.ModelViewSet):
             'pretix.webhook.created',
             user=self.request.user,
             auth=self.request.auth,
-            data=merge_dicts(self.request.data, {'id': inst.pk})
+            data=merge_dicts(self.request.data, {'id': inst.pk}),
         )
 
     def perform_update(self, serializer):
@@ -34,7 +34,7 @@ class WebHookViewSet(viewsets.ModelViewSet):
             'pretix.webhook.changed',
             user=self.request.user,
             auth=self.request.auth,
-            data=merge_dicts(self.request.data, {'id': serializer.instance.pk})
+            data=merge_dicts(self.request.data, {'id': serializer.instance.pk}),
         )
         return inst
 
@@ -43,7 +43,7 @@ class WebHookViewSet(viewsets.ModelViewSet):
             'pretix.webhook.changed',
             user=self.request.user,
             auth=self.request.auth,
-            data={'id': instance.pk, 'enabled': False}
+            data={'id': instance.pk, 'enabled': False},
         )
         instance.enabled = False
         instance.save(update_fields=['enabled'])

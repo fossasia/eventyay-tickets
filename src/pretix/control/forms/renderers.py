@@ -8,7 +8,9 @@ from django.utils.translation import pgettext
 from i18nfield.forms import I18nFormField
 
 
-def render_label(content, label_for=None, label_class=None, label_title='', optional=False):
+def render_label(
+    content, label_for=None, label_class=None, label_title='', optional=False
+):
     """
     Render a label with content
     """
@@ -30,7 +32,11 @@ def render_label(content, label_for=None, label_class=None, label_title='', opti
         builder,
         tag='label',
         attrs=mark_safe(flatatt(attrs)) if attrs else '',
-        opt=mark_safe('<br><span class="optional">{}</span>'.format(pgettext('form', 'Optional'))) if optional else '',
+        opt=mark_safe(
+            '<br><span class="optional">{}</span>'.format(pgettext('form', 'Optional'))
+        )
+        if optional
+        else '',
         content=text_value(content),
     )
 
@@ -51,17 +57,19 @@ class ControlFieldRenderer(FieldRenderer):
         else:
             required = self.field.field.required
 
-        html = render_label(
-            label,
-            label_for=self.field.id_for_label,
-            label_class=self.get_label_class(),
-            optional=not required and not isinstance(self.widget, CheckboxInput)
-        ) + html
+        html = (
+            render_label(
+                label,
+                label_for=self.field.id_for_label,
+                label_class=self.get_label_class(),
+                optional=not required and not isinstance(self.widget, CheckboxInput),
+            )
+            + html
+        )
         return html
 
 
 class BulkEditMixin:
-
     def __init__(self, *args, **kwargs):
         kwargs['layout'] = self.layout
         super().__init__(*args, **kwargs)
@@ -84,7 +92,7 @@ class BulkEditMixin:
             name=name,
             label=pgettext('form_bulk', 'change'),
             checked='checked' if checked else '',
-            html=html
+            html=html,
         )
         return html
 

@@ -41,5 +41,10 @@ class TicketLayoutItemForm(forms.ModelForm):
                 return
         else:
             return super().save(commit=commit)
-        tickets.invalidate_cache.apply_async(kwargs={'event': self.event.pk, 'provider': 'pdf',
-                                                     'item': self.instance.item_id})
+        tickets.invalidate_cache.apply_async(
+            kwargs={
+                'event': self.event.pk,
+                'provider': 'pdf',
+                'item': self.instance.item_id,
+            }
+        )

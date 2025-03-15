@@ -10,7 +10,11 @@ from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import (
-    CreateView, DeleteView, ListView, TemplateView, UpdateView,
+    CreateView,
+    DeleteView,
+    ListView,
+    TemplateView,
+    UpdateView,
 )
 
 from pretix.base.models import CachedFile, LogEntry
@@ -38,12 +42,15 @@ class ExportMixin:
     @cached_property
     def exporters(self):
         exporters = []
-        events = self.request.user.get_events_with_permission('can_view_orders', request=self.request).filter(
-            organizer=self.request.organizer
-        )
+        events = self.request.user.get_events_with_permission(
+            'can_view_orders', request=self.request
+        ).filter(organizer=self.request.organizer)
         responses = register_multievent_data_exporters.send(self.request.organizer)
-        id = self.request.GET.get("identifier") or self.request.POST.get("exporter")
-        for ex in sorted([response(events) for r, response in responses if response], key=lambda ex: str(ex.verbose_name)):
+        id = self.request.GET.get('identifier') or self.request.POST.get('exporter')
+        for ex in sorted(
+            [response(events) for r, response in responses if response],
+            key=lambda ex: str(ex.verbose_name),
+        ):
             if id and ex.identifier != id:
                 continue
 
@@ -52,27 +59,33 @@ class ExportMixin:
             test_form.fields = ex.export_form_fields
             test_form.is_valid()
             initial = {
-                k: v for k, v in test_form.cleaned_data.items() if ex.identifier + "-" + k in self.request.GET
+                k: v
+                for k, v in test_form.cleaned_data.items()
+                if ex.identifier + '-' + k in self.request.GET
             }
 
             ex.form = ExporterForm(
                 data=(self.request.POST if self.request.method == 'POST' else None),
                 prefix=ex.identifier,
-                initial=initial
+                initial=initial,
             )
             ex.form.fields = ex.export_form_fields
-            ex.form.fields.update([
-                ('events',
-                 forms.ModelMultipleChoiceField(
-                     queryset=events,
-                     initial=events,
-                     widget=forms.CheckboxSelectMultiple(
-                         attrs={'class': 'scrolling-multiple-choice'}
-                     ),
-                     label=_('Events'),
-                     required=True
-                 )),
-            ])
+            ex.form.fields.update(
+                [
+                    (
+                        'events',
+                        forms.ModelMultipleChoiceField(
+                            queryset=events,
+                            initial=events,
+                            widget=forms.CheckboxSelectMultiple(
+                                attrs={'class': 'scrolling-multiple-choice'}
+                            ),
+                            label=_('Events'),
+                            required=True,
+                        ),
+                    ),
+                ]
+            )
             exporters.append(ex)
         return exporters
 
@@ -82,7 +95,9 @@ class ExportMixin:
         return ctx
 
 
-class ExportDoView(OrganizerPermissionRequiredMixin, ExportMixin, AsyncAction, TemplateView):
+class ExportDoView(
+    OrganizerPermissionRequiredMixin, ExportMixin, AsyncAction, TemplateView
+):
     known_errortypes = ['ExportError']
     task = multiexport
     template_name = 'pretixcontrol/organizers/export.html'
@@ -94,14 +109,15 @@ class ExportDoView(OrganizerPermissionRequiredMixin, ExportMixin, AsyncAction, T
         return reverse('cachedfile.download', kwargs={'id': str(value)})
 
     def get_error_url(self):
-        return reverse('control:organizer.export', kwargs={
-            'organizer': self.request.organizer.slug
-        })
+        return reverse(
+            'control:organizer.export',
+            kwargs={'organizer': self.request.organizer.slug},
+        )
 
     @cached_property
     def exporter(self):
         for ex in self.exporters:
-            if ex.identifier == self.request.POST.get("exporter"):
+            if ex.identifier == self.request.POST.get('exporter'):
                 return ex
 
     def get(self, request, *args, **kwargs):
@@ -112,12 +128,18 @@ class ExportDoView(OrganizerPermissionRequiredMixin, ExportMixin, AsyncAction, T
     def post(self, request, *args, **kwargs):
         if not self.exporter:
             messages.error(self.request, _('The selected exporter was not found.'))
-            return redirect('control:organizer.export', kwargs={
-                'organizer': self.request.organizer.slug
-            })
+            return redirect(
+                'control:organizer.export',
+                kwargs={'organizer': self.request.organizer.slug},
+            )
 
         if not self.exporter.form.is_valid():
-            messages.error(self.request, _('There was a problem processing your input. See below for error details.'))
+            messages.error(
+                self.request,
+                _(
+                    'There was a problem processing your input. See below for error details.'
+                ),
+            )
             return self.get(request, *args, **kwargs)
 
         cf = CachedFile(web_download=True, session_key=request.session.session_key)
@@ -131,7 +153,7 @@ class ExportDoView(OrganizerPermissionRequiredMixin, ExportMixin, AsyncAction, T
             provider=self.exporter.identifier,
             device=None,
             token=None,
-            form_data=self.exporter.form.cleaned_data
+            form_data=self.exporter.form.cleaned_data,
         )
 
 
@@ -139,7 +161,9 @@ class ExportView(OrganizerPermissionRequiredMixin, ExportMixin, TemplateView):
     template_name = 'pretixcontrol/organizers/export.html'
 
 
-class EventMetaPropertyListView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView):
+class EventMetaPropertyListView(
+    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, ListView
+):
     model = EventMetaProperty
     template_name = 'pretixcontrol/organizers/properties.html'
     permission = 'can_change_organizer_settings'
@@ -149,27 +173,38 @@ class EventMetaPropertyListView(OrganizerDetailViewMixin, OrganizerPermissionReq
         return self.request.organizer.meta_properties.all()
 
 
-class EventMetaPropertyCreateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView):
+class EventMetaPropertyCreateView(
+    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, CreateView
+):
     model = EventMetaProperty
     template_name = 'pretixcontrol/organizers/property_edit.html'
     permission = 'can_change_organizer_settings'
     form_class = EventMetaPropertyForm
 
     def get_object(self, queryset=None):
-        return get_object_or_404(EventMetaProperty, organizer=self.request.organizer, pk=self.kwargs.get('property'))
+        return get_object_or_404(
+            EventMetaProperty,
+            organizer=self.request.organizer,
+            pk=self.kwargs.get('property'),
+        )
 
     def get_success_url(self):
-        return reverse('control:organizer.properties', kwargs={
-            'organizer': self.request.organizer.slug,
-        })
+        return reverse(
+            'control:organizer.properties',
+            kwargs={
+                'organizer': self.request.organizer.slug,
+            },
+        )
 
     def form_valid(self, form):
         messages.success(self.request, _('The property has been created.'))
         form.instance.organizer = self.request.organizer
         ret = super().form_valid(form)
-        form.instance.log_action('pretix.property.created', user=self.request.user, data={
-            k: getattr(self.object, k) for k in form.changed_data
-        })
+        form.instance.log_action(
+            'pretix.property.created',
+            user=self.request.user,
+            data={k: getattr(self.object, k) for k in form.changed_data},
+        )
         return ret
 
     def form_invalid(self, form):
@@ -177,7 +212,9 @@ class EventMetaPropertyCreateView(OrganizerDetailViewMixin, OrganizerPermissionR
         return super().form_invalid(form)
 
 
-class EventMetaPropertyUpdateView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView):
+class EventMetaPropertyUpdateView(
+    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, UpdateView
+):
     model = EventMetaProperty
     template_name = 'pretixcontrol/organizers/property_edit.html'
     permission = 'can_change_organizer_settings'
@@ -185,19 +222,27 @@ class EventMetaPropertyUpdateView(OrganizerDetailViewMixin, OrganizerPermissionR
     form_class = EventMetaPropertyForm
 
     def get_object(self, queryset=None):
-        return get_object_or_404(EventMetaProperty, organizer=self.request.organizer, pk=self.kwargs.get('property'))
+        return get_object_or_404(
+            EventMetaProperty,
+            organizer=self.request.organizer,
+            pk=self.kwargs.get('property'),
+        )
 
     def get_success_url(self):
-        return reverse('control:organizer.properties', kwargs={
-            'organizer': self.request.organizer.slug,
-        })
+        return reverse(
+            'control:organizer.properties',
+            kwargs={
+                'organizer': self.request.organizer.slug,
+            },
+        )
 
     def form_valid(self, form):
         if form.has_changed():
-            self.object.log_action('pretix.property.changed', user=self.request.user, data={
-                k: getattr(self.object, k)
-                for k in form.changed_data
-            })
+            self.object.log_action(
+                'pretix.property.changed',
+                user=self.request.user,
+                data={k: getattr(self.object, k) for k in form.changed_data},
+            )
         messages.success(self.request, _('Your changes have been saved.'))
         return super().form_valid(form)
 
@@ -206,19 +251,28 @@ class EventMetaPropertyUpdateView(OrganizerDetailViewMixin, OrganizerPermissionR
         return super().form_invalid(form)
 
 
-class EventMetaPropertyDeleteView(OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView):
+class EventMetaPropertyDeleteView(
+    OrganizerDetailViewMixin, OrganizerPermissionRequiredMixin, DeleteView
+):
     model = EventMetaProperty
     template_name = 'pretixcontrol/organizers/property_delete.html'
     permission = 'can_change_organizer_settings'
     context_object_name = 'property'
 
     def get_object(self, queryset=None):
-        return get_object_or_404(EventMetaProperty, organizer=self.request.organizer, pk=self.kwargs.get('property'))
+        return get_object_or_404(
+            EventMetaProperty,
+            organizer=self.request.organizer,
+            pk=self.kwargs.get('property'),
+        )
 
     def get_success_url(self):
-        return reverse('control:organizer.properties', kwargs={
-            'organizer': self.request.organizer.slug,
-        })
+        return reverse(
+            'control:organizer.properties',
+            kwargs={
+                'organizer': self.request.organizer.slug,
+            },
+        )
 
     @transaction.atomic
     def form_valid(self, form):
@@ -237,9 +291,13 @@ class LogView(OrganizerPermissionRequiredMixin, PaginationMixin, ListView):
     context_object_name = 'logs'
 
     def get_queryset(self):
-        qs = self.request.organizer.all_logentries().select_related(
-            'user', 'content_type', 'api_token', 'oauth_application', 'device'
-        ).order_by('-datetime')
+        qs = (
+            self.request.organizer.all_logentries()
+            .select_related(
+                'user', 'content_type', 'api_token', 'oauth_application', 'device'
+            )
+            .order_by('-datetime')
+        )
         qs = qs.exclude(action_type__in=OVERVIEW_BANLIST)
         if self.request.GET.get('user'):
             qs = qs.filter(user_id=self.request.GET.get('user'))

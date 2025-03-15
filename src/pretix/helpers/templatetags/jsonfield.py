@@ -8,7 +8,7 @@ from django.db.models import Expression, JSONField
 
 
 def postgres_compile_json_path(key_transforms):
-    return "{" + ','.join(key_transforms) + "}"
+    return '{' + ','.join(key_transforms) + '}'
 
 
 def sqlite_compile_json_path(key_transforms):
@@ -30,13 +30,25 @@ class JSONExtract(Expression):
         self.source_expression = self._parse_expressions(expression)[0]
         self.extra = extra
 
-    def resolve_expression(self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False):
+    def resolve_expression(
+        self, query=None, allow_joins=True, reuse=None, summarize=False, for_save=False
+    ):
         c = self.copy()
         c.is_summary = summarize
-        c.source_expression = c.source_expression.resolve_expression(query, allow_joins, reuse, summarize, for_save)
+        c.source_expression = c.source_expression.resolve_expression(
+            query, allow_joins, reuse, summarize, for_save
+        )
         return c
 
-    def as_sql(self, compiler, connection, function=None, template=None, arg_joiner=None, **extra_context):
+    def as_sql(
+        self,
+        compiler,
+        connection,
+        function=None,
+        template=None,
+        arg_joiner=None,
+        **extra_context,
+    ):
         if '.postgresql' in connection.settings_dict['ENGINE']:
             params = []
             arg_sql, arg_params = compiler.compile(self.source_expression)

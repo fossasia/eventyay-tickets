@@ -18,7 +18,8 @@ def browserconfig_xml(request):
 </browserconfig>""".format(
             static('pretixbase/img/icons/mstile-150x150.png'),
             static('pretixbase/img/icons/mstile-310x310.png'),
-        ), content_type='text/xml'
+        ),
+        content_type='text/xml',
     )
 
 
@@ -43,8 +44,10 @@ def webmanifest(request):
     "theme_color": "#2185d0",
     "background_color": "#2185d0",
     "display": "standalone"
-}""" % (
+}"""
+        % (
             static('pretixbase/img/icons/android-chrome-192x192.png'),
             static('pretixbase/img/icons/android-chrome-512x512.png'),
-        ), content_type='text/json'
+        ),
+        content_type='text/json',
     )

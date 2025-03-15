@@ -20,26 +20,40 @@ class ResendLinkView(EventViewMixin, TemplateView):
 
     @cached_property
     def link_form(self):
-        return ResendLinkForm(data=self.request.POST if self.request.method == 'POST' else None)
+        return ResendLinkForm(
+            data=self.request.POST if self.request.method == 'POST' else None
+        )
 
     def post(self, request, *args, **kwargs):
         if not self.link_form.is_valid():
-            messages.error(self.request, _('We had difficulties processing your input.'))
+            messages.error(
+                self.request, _('We had difficulties processing your input.')
+            )
             return self.get(request, *args, **kwargs)
 
         user = self.link_form.cleaned_data.get('email')
 
         if settings.HAS_REDIS:
             from django_redis import get_redis_connection
-            rc = get_redis_connection("redis")
+
+            rc = get_redis_connection('redis')
             if rc.exists('pretix_resend_{}_{}'.format(request.event.pk, user)):
-                messages.error(request, _('If the email address you entered is valid and associated with a ticket, we have '
-                                          'already sent you an email with a link to your ticket in the past {number} hours. '
-                                          'If the email did not arrive, please your check spam folder and also double check '
-                                          'that you used the correct email address.').format(number=24))
-                return redirect(eventreverse(self.request.event, 'presale:event.resend_link'))
+                messages.error(
+                    request,
+                    _(
+                        'If the email address you entered is valid and associated with a ticket, we have '
+                        'already sent you an email with a link to your ticket in the past {number} hours. '
+                        'If the email did not arrive, please your check spam folder and also double check '
+                        'that you used the correct email address.'
+                    ).format(number=24),
+                )
+                return redirect(
+                    eventreverse(self.request.event, 'presale:event.resend_link')
+                )
             else:
-                rc.setex('pretix_resend_{}_{}'.format(request.event.pk, user), 3600 * 24, '1')
+                rc.setex(
+                    'pretix_resend_{}_{}'.format(request.event.pk, user), 3600 * 24, '1'
+                )
 
         orders = self.request.event.orders.filter(email__iexact=user)
 
@@ -50,14 +64,31 @@ class ResendLinkView(EventViewMixin, TemplateView):
         template = self.request.event.settings.mail_text_resend_all_links
         context = get_email_context(event=self.request.event, orders=orders)
         try:
-            mail(user, subject, template, context, event=self.request.event, locale=self.request.LANGUAGE_CODE)
+            mail(
+                user,
+                subject,
+                template,
+                context,
+                event=self.request.event,
+                locale=self.request.LANGUAGE_CODE,
+            )
         except SendMailException:
             logger = logging.getLogger('pretix.presale.user')
-            logger.exception('A mail resending order links to {} could not be sent.'.format(user))
-            messages.error(self.request, _('We have trouble sending emails right now, please check back later.'))
+            logger.exception(
+                'A mail resending order links to {} could not be sent.'.format(user)
+            )
+            messages.error(
+                self.request,
+                _('We have trouble sending emails right now, please check back later.'),
+            )
             return self.get(request, *args, **kwargs)
 
-        messages.success(self.request, _('If there were any orders by this user, they will receive an email with their order codes.'))
+        messages.success(
+            self.request,
+            _(
+                'If there were any orders by this user, they will receive an email with their order codes.'
+            ),
+        )
         return redirect(eventreverse(self.request.event, 'presale:event.index'))
 
     def get_context_data(self, **kwargs):

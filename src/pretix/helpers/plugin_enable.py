@@ -5,7 +5,7 @@ def is_video_enabled(event):
     @return: boolean
     """
     if (
-        "pretix_venueless" not in event.get_plugins()
+        'pretix_venueless' not in event.get_plugins()
         or not event.settings.venueless_url
         or not event.settings.venueless_issuer
         or not event.settings.venueless_audience

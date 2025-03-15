@@ -51,7 +51,7 @@ class UploadedFileField(serializers.Field):
             cf = CachedFile.objects.get(
                 session_key=f'api-upload-{str(type(request.user or request.auth))}-{(request.user or request.auth).pk}',
                 file__isnull=False,
-                pk=data[len("file:"):],
+                pk=data[len('file:') :],
             )
         except (ValidationError, IndexError):  # invalid uuid
             self.fail('not_found')

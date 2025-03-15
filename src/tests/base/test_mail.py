@@ -15,8 +15,7 @@ from pretix.base.services.mail import mail
 def env():
     o = Organizer.objects.create(name='Dummy', slug='dummy')
     event = Event.objects.create(
-        organizer=o, name='Dummy', slug='dummy',
-        date_from=now()
+        organizer=o, name='Dummy', slug='dummy', date_from=now()
     )
     user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
     user.email = 'dummy@dummy.dummy'
@@ -77,8 +76,10 @@ def test_send_mail_with_default_sender(env):
 
 @pytest.mark.django_db
 @pytest.mark.skipif(
-    not os.path.exists(os.path.join(settings.LOCALE_PATHS[0], 'de', 'LC_MESSAGES', 'django.mo')),
-    reason="requires locale files to be compiled"
+    not os.path.exists(
+        os.path.join(settings.LOCALE_PATHS[0], 'de', 'LC_MESSAGES', 'django.mo')
+    ),
+    reason='requires locale files to be compiled',
 )
 def test_send_mail_with_user_locale(env):
     djmail.outbox = []
@@ -90,14 +91,23 @@ def test_send_mail_with_user_locale(env):
 
     assert len(djmail.outbox) == 1
     assert djmail.outbox[0].subject == 'Benutzer'
-    assert 'The language code used for rendering this e-mail is de.' in djmail.outbox[0].body
+    assert (
+        'The language code used for rendering this e-mail is de.'
+        in djmail.outbox[0].body
+    )
 
 
 @pytest.mark.django_db
 def test_sendmail_placeholder(env):
     djmail.outbox = []
     event, user, organizer = env
-    mail('dummy@dummy.dummy', '{event} Test subject', 'mailtest.txt', {"event": event}, event)
+    mail(
+        'dummy@dummy.dummy',
+        '{event} Test subject',
+        'mailtest.txt',
+        {'event': event},
+        event,
+    )
 
     assert len(djmail.outbox) == 1
     assert djmail.outbox[0].to == [user.email]

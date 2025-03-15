@@ -5,10 +5,10 @@ from phonenumbers import NumberParseException
 register = template.Library()
 
 
-@register.filter("phone_format")
+@register.filter('phone_format')
 def phone_format(value: str):
     if not value:
-        return ""
+        return ''
 
     if isinstance(value, str):
         try:

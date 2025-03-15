@@ -2,14 +2,15 @@ import collections
 import warnings
 
 from django.core.paginator import (
-    EmptyPage, PageNotAnInteger, UnorderedObjectListWarning,
+    EmptyPage,
+    PageNotAnInteger,
+    UnorderedObjectListWarning,
 )
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import edit
 
 
 class EventBasedFormMixin:
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         if hasattr(self.request, 'event'):
@@ -23,6 +24,7 @@ class CreateView(EventBasedFormMixin, edit.CreateView):
     argument to the form. This is necessary for I18nModelForms to work
     properly.
     """
+
     pass
 
 
@@ -32,15 +34,17 @@ class UpdateView(EventBasedFormMixin, edit.UpdateView):
     argument to the form. This is necessary for I18nModelForms to work
     properly.
     """
+
     pass
 
 
 class ChartContainingView:
-
     def get(self, request, *args, **kwargs):
         resp = super().get(request, *args, **kwargs)
         # required by raphael.js
-        resp['Content-Security-Policy'] = "script-src 'unsafe-eval'; style-src 'unsafe-inline'"
+        resp['Content-Security-Policy'] = (
+            "script-src 'unsafe-eval'; style-src 'unsafe-inline'"
+        )
         return resp
 
 
@@ -49,12 +53,16 @@ class PaginationMixin:
 
     def get_paginate_by(self, queryset):
         skey = 'stored_page_size_' + self.request.resolver_match.url_name
-        default = self.request.session.get(skey) or self.paginate_by or self.DEFAULT_PAGINATION
+        default = (
+            self.request.session.get(skey)
+            or self.paginate_by
+            or self.DEFAULT_PAGINATION
+        )
         if self.request.GET.get('page_size'):
             try:
-                size = min(250, int(self.request.GET.get("page_size")))
+                size = min(250, int(self.request.GET.get('page_size')))
                 self.request.session[skey] = size
-                return min(250, int(self.request.GET.get("page_size")))
+                return min(250, int(self.request.GET.get('page_size')))
             except ValueError:
                 return default
         return default
@@ -66,7 +74,6 @@ class PaginationMixin:
 
 
 class LargeResultSetPage(collections.abc.Sequence):
-
     def __init__(self, object_list, number, paginator):
         self.object_list = object_list
         self.number = number
@@ -127,9 +134,7 @@ class LargeResultSetPage(collections.abc.Sequence):
 
 
 class LargeResultSetPaginator(object):
-
-    def __init__(self, object_list, per_page, orphans=0,
-                 allow_empty_first_page=True):
+    def __init__(self, object_list, per_page, orphans=0, allow_empty_first_page=True):
         self.object_list = object_list
         self._check_object_list_is_ordered()
         self.per_page = int(per_page)
@@ -172,7 +177,9 @@ class LargeResultSetPaginator(object):
         ordered = getattr(self.object_list, 'ordered', None)
         if ordered is not None and not ordered:
             obj_list_repr = (
-                '{} {}'.format(self.object_list.model, self.object_list.__class__.__name__)
+                '{} {}'.format(
+                    self.object_list.model, self.object_list.__class__.__name__
+                )
                 if hasattr(self.object_list, 'model')
                 else '{!r}'.format(self.object_list)
             )
@@ -180,5 +187,5 @@ class LargeResultSetPaginator(object):
                 'Pagination may yield inconsistent results with an unordered '
                 'object_list: {}.'.format(obj_list_repr),
                 UnorderedObjectListWarning,
-                stacklevel=3
+                stacklevel=3,
             )

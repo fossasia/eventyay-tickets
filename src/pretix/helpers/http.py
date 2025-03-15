@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.http import (
-    HttpResponsePermanentRedirect, HttpResponseRedirect, StreamingHttpResponse,
+    HttpResponsePermanentRedirect,
+    HttpResponseRedirect,
+    StreamingHttpResponse,
 )
 
 
@@ -24,5 +26,7 @@ def get_client_ip(request):
 
 
 def redirect_to_url(to, permanent=False):
-    redirect_class = HttpResponsePermanentRedirect if permanent else HttpResponseRedirect
+    redirect_class = (
+        HttpResponsePermanentRedirect if permanent else HttpResponseRedirect
+    )
     return redirect_class(to)

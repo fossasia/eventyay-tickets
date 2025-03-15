@@ -30,8 +30,12 @@ class OrganizerList(PaginationMixin, ListView):
         qs = Organizer.objects.all()
         if self.filter_form.is_valid():
             qs = self.filter_form.filter_qs(qs)
-        if not self.request.user.has_active_staff_session(self.request.session.session_key):
-            qs = qs.filter(pk__in=self.request.user.teams.values_list('organizer', flat=True))
+        if not self.request.user.has_active_staff_session(
+            self.request.session.session_key
+        ):
+            qs = qs.filter(
+                pk__in=self.request.user.teams.values_list('organizer', flat=True)
+            )
         return qs
 
     def get_context_data(self, **kwargs):
@@ -60,10 +64,19 @@ class OrganizerCreate(CreateView):
         messages.success(self.request, _('New organizer is created.'))
         response = super().form_valid(form)
         team = Team.objects.create(
-            organizer=form.instance, name=_('Administrators'),
-            all_events=True, can_create_events=True, can_change_teams=True, can_manage_gift_cards=True,
-            can_change_organizer_settings=True, can_change_event_settings=True, can_change_items=True,
-            can_view_orders=True, can_change_orders=True, can_view_vouchers=True, can_change_vouchers=True
+            organizer=form.instance,
+            name=_('Administrators'),
+            all_events=True,
+            can_create_events=True,
+            can_change_teams=True,
+            can_manage_gift_cards=True,
+            can_change_organizer_settings=True,
+            can_change_event_settings=True,
+            can_change_items=True,
+            can_view_orders=True,
+            can_change_orders=True,
+            can_view_vouchers=True,
+            can_change_vouchers=True,
         )
         # Trigger webhook in talk to create organiser in talk component
         organizer_data = {
@@ -71,7 +84,9 @@ class OrganizerCreate(CreateView):
             'slug': self.object.slug,
             'action': 'create',
         }
-        send_organizer_webhook.delay(user_id=self.request.user.id, organizer=organizer_data)
+        send_organizer_webhook.delay(
+            user_id=self.request.user.id, organizer=organizer_data
+        )
 
         team.members.add(self.request.user)
         return response
@@ -99,7 +114,9 @@ class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["talk_edit_url"] = urljoin(settings.TALK_HOSTNAME, f"orga/organiser/{self.object.slug}")
+        ctx['talk_edit_url'] = urljoin(
+            settings.TALK_HOSTNAME, f'orga/organiser/{self.object.slug}'
+        )
         return ctx
 
     @transaction.atomic
@@ -108,9 +125,11 @@ class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
         organizer_data = {
             'name': self.object.name,
             'slug': self.object.slug,
-            'action': 'update'
+            'action': 'update',
         }
-        send_organizer_webhook.delay(user_id=self.request.user.id, organizer=organizer_data)
+        send_organizer_webhook.delay(
+            user_id=self.request.user.id, organizer=organizer_data
+        )
         return response
 
     def get_success_url(self) -> str:

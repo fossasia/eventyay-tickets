@@ -20,9 +20,9 @@ class EventURLNode(URLNode):
 
     def render(self, context):
         from pretix.multidomain.urlreverse import eventreverse
+
         kwargs = {
-            smart_str(k, 'ascii'): v.resolve(context)
-            for k, v in self.kwargs.items()
+            smart_str(k, 'ascii'): v.resolve(context) for k, v in self.kwargs.items()
         }
         view_name = self.view_name.resolve(context)
         event = self.event.resolve(context)
@@ -54,7 +54,10 @@ def eventurl(parser, token, absolute=False):
     """
     bits = token.split_contents()
     if len(bits) < 3:
-        raise TemplateSyntaxError("'%s' takes at least two arguments, an event and the name of a url()." % bits[0])
+        raise TemplateSyntaxError(
+            "'%s' takes at least two arguments, an event and the name of a url()."
+            % bits[0]
+        )
     viewname = parser.compile_filter(bits[2])
     event = parser.compile_filter(bits[1])
     kwargs = {}
@@ -68,7 +71,7 @@ def eventurl(parser, token, absolute=False):
         for bit in bits:
             match = kwarg_re.match(bit)
             if not match:
-                raise TemplateSyntaxError("Malformed arguments to eventurl tag")
+                raise TemplateSyntaxError('Malformed arguments to eventurl tag')
             name, value = match.groups()
             if name:
                 kwargs[name] = parser.compile_filter(value)
@@ -95,7 +98,9 @@ def setting_values(parser, token):
     """
     bits = token.split_contents()
     if len(bits) != 2:
-        raise TemplateSyntaxError("'%s' takes one argument, the name of a setting." % bits[0])
+        raise TemplateSyntaxError(
+            "'%s' takes one argument, the name of a setting." % bits[0]
+        )
     return SettingValueNode(bits[1])
 
 

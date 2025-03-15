@@ -61,7 +61,11 @@ class SettingsForm(i18nfield.forms.I18nFormMixin, HierarkeyForm):
         from pretix.base.settings import DEFAULTS
 
         self.obj = kwargs.get('obj', None)
-        self.locales = self.obj.settings.get('locales') if self.obj else kwargs.pop('locales', None)
+        self.locales = (
+            self.obj.settings.get('locales')
+            if self.obj
+            else kwargs.pop('locales', None)
+        )
         kwargs['attribute_name'] = 'settings'
         kwargs['locales'] = self.locales
         kwargs['initial'] = self.obj.settings.freeze()
@@ -71,9 +75,7 @@ class SettingsForm(i18nfield.forms.I18nFormMixin, HierarkeyForm):
             if callable(kwargs):
                 kwargs = kwargs()
             kwargs.setdefault('required', False)
-            field = DEFAULTS[fname]['form_class'](
-                **kwargs
-            )
+            field = DEFAULTS[fname]['form_class'](**kwargs)
             if isinstance(field, i18nfield.forms.I18nFormField):
                 field.widget.enabled_locales = self.locales
             self.fields[fname] = field
@@ -83,7 +85,10 @@ class SettingsForm(i18nfield.forms.I18nFormMixin, HierarkeyForm):
 
     def save(self):
         for k, v in self.cleaned_data.items():
-            if isinstance(self.fields.get(k), SecretKeySettingsField) and self.cleaned_data.get(k) == SECRET_REDACTED:
+            if (
+                isinstance(self.fields.get(k), SecretKeySettingsField)
+                and self.cleaned_data.get(k) == SECRET_REDACTED
+            ):
                 self.cleaned_data[k] = self.initial[k]
         return super().save()
 
@@ -93,7 +98,11 @@ class SettingsForm(i18nfield.forms.I18nFormMixin, HierarkeyForm):
         nonce = get_random_string(length=8)
         if isinstance(self.obj, Event):
             fname = '%s/%s/%s.%s.%s' % (
-                self.obj.organizer.slug, self.obj.slug, name, nonce, name.split('.')[-1]
+                self.obj.organizer.slug,
+                self.obj.slug,
+                name,
+                nonce,
+                name.split('.')[-1],
             )
         else:
             fname = '%s/%s.%s.%s' % (self.obj.slug, name, nonce, name.split('.')[-1])
@@ -109,7 +118,9 @@ class SafeSessionWizardView(SessionWizardView):
     def get_prefix(self, request, *args, **kwargs):
         if hasattr(request, '_session_wizard_prefix'):
             return request._session_wizard_prefix
-        prefix_form = PrefixForm(self.request.POST, prefix=super().get_prefix(request, *args, **kwargs))
+        prefix_form = PrefixForm(
+            self.request.POST, prefix=super().get_prefix(request, *args, **kwargs)
+        )
         if not prefix_form.is_valid():
             request._session_wizard_prefix = get_random_string(length=24)
         else:
@@ -120,9 +131,7 @@ class SafeSessionWizardView(SessionWizardView):
         context = super().get_context_data(form=form, **kwargs)
         context['wizard']['prefix_form'] = PrefixForm(
             prefix=super().get_prefix(self.request),
-            initial={
-                'prefix': self.get_prefix(self.request)
-            }
+            initial={'prefix': self.get_prefix(self.request)},
         )
         return context
 
@@ -131,9 +140,11 @@ class SecretKeySettingsWidget(forms.TextInput):
     def __init__(self, attrs=None):
         if attrs is None:
             attrs = {}
-        attrs.update({
-            'autocomplete': 'new-password'  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
-        })
+        attrs.update(
+            {
+                'autocomplete': 'new-password'  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
+            }
+        )
         super().__init__(attrs)
 
     def get_context(self, name, value, attrs):
@@ -158,10 +169,12 @@ class SecretKeySettingsField(forms.CharField):
 
 class I18nMarkdownTextarea(i18nfield.forms.I18nTextarea):
     def format_output(self, rendered_widgets) -> str:
-        markdown_note = _(
-            "You can use {name} in this field."
-        ).format(name='<a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">Markdown</a>')
-        rendered_widgets.append(f'<div class="i18n-field-markdown-note">{markdown_note}</div>')
+        markdown_note = _('You can use {name} in this field.').format(
+            name='<a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">Markdown</a>'
+        )
+        rendered_widgets.append(
+            f'<div class="i18n-field-markdown-note">{markdown_note}</div>'
+        )
         return super().format_output(rendered_widgets)
 
 

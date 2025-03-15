@@ -5,7 +5,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.formats import localize
 from django.utils.timezone import get_current_timezone, now
-from django.utils.translation import gettext_lazy as _, pgettext
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import pgettext
 from i18nfield.fields import I18nCharField
 from i18nfield.strings import LazyI18nString
 
@@ -16,7 +17,9 @@ from pretix.helpers.countries import FastCountryField
 
 
 class TaxedPrice:
-    def __init__(self, *, gross: Decimal, net: Decimal, tax: Decimal, rate: Decimal, name: str):
+    def __init__(
+        self, *, gross: Decimal, net: Decimal, tax: Decimal, rate: Decimal, name: str
+    ):
         if net + tax != gross:
             raise ValueError('Net value and tax value need to add to the gross value')
         self.gross = gross
@@ -26,20 +29,22 @@ class TaxedPrice:
         self.name = name
 
     def __repr__(self):
-        return '{} + {}% = {}'.format(localize(self.net), localize(self.rate), localize(self.gross))
+        return '{} + {}% = {}'.format(
+            localize(self.net), localize(self.rate), localize(self.gross)
+        )
 
     def print(self, currency):
         return '{} + {}% = {}'.format(
             money_filter(self.net, currency),
             localize(self.rate),
-            money_filter(self.gross, currency)
+            money_filter(self.gross, currency),
         )
 
     def __sub__(self, other):
         newgross = self.gross - other.gross
-        newnet = round_decimal(newgross - (newgross * (1 - 100 / (100 + self.rate)))).quantize(
-            Decimal('10') ** self.gross.as_tuple().exponent
-        )
+        newnet = round_decimal(
+            newgross - (newgross * (1 - 100 / (100 + self.rate)))
+        ).quantize(Decimal('10') ** self.gross.as_tuple().exponent)
         return TaxedPrice(
             gross=newgross,
             net=newnet,
@@ -50,9 +55,9 @@ class TaxedPrice:
 
     def __mul__(self, other):
         newgross = self.gross * other
-        newnet = round_decimal(newgross - (newgross * (1 - 100 / (100 + self.rate)))).quantize(
-            Decimal('10') ** self.gross.as_tuple().exponent
-        )
+        newnet = round_decimal(
+            newgross - (newgross * (1 - 100 / (100 + self.rate)))
+        ).quantize(Decimal('10') ** self.gross.as_tuple().exponent)
         return TaxedPrice(
             gross=newgross,
             net=newnet,
@@ -67,12 +72,38 @@ TAXED_ZERO = TaxedPrice(
     net=Decimal('0.00'),
     tax=Decimal('0.00'),
     rate=Decimal('0.00'),
-    name=''
+    name='',
 )
 
 EU_COUNTRIES = {
-    'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT',
-    'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'GB'
+    'AT',
+    'BE',
+    'BG',
+    'HR',
+    'CY',
+    'CZ',
+    'DK',
+    'EE',
+    'FI',
+    'FR',
+    'DE',
+    'GR',
+    'HU',
+    'IE',
+    'IT',
+    'LV',
+    'LT',
+    'LU',
+    'MT',
+    'NL',
+    'PL',
+    'PT',
+    'RO',
+    'SK',
+    'SI',
+    'ES',
+    'SE',
+    'GB',
 }
 EU_CURRENCIES = {
     'BG': 'BGN',
@@ -83,7 +114,7 @@ EU_CURRENCIES = {
     'HU': 'HUF',
     'PL': 'PLN',
     'RO': 'RON',
-    'SE': 'SEK'
+    'SE': 'SEK',
 }
 
 
@@ -102,35 +133,39 @@ def cc_to_vat_prefix(country_code):
 
 
 class TaxRule(LoggedModel):
-    event = models.ForeignKey('Event', related_name='tax_rules', on_delete=models.CASCADE)
+    event = models.ForeignKey(
+        'Event', related_name='tax_rules', on_delete=models.CASCADE
+    )
     name = I18nCharField(
         verbose_name=_('Name'),
         help_text=_('Should be short, e.g. "VAT"'),
         max_length=190,
     )
     rate = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        verbose_name=_("Tax rate")
+        max_digits=10, decimal_places=2, verbose_name=_('Tax rate')
     )
     price_includes_tax = models.BooleanField(
-        verbose_name=_("The configured product prices include the tax amount"),
+        verbose_name=_('The configured product prices include the tax amount'),
         default=True,
     )
     eu_reverse_charge = models.BooleanField(
-        verbose_name=_("Use EU reverse charge taxation rules"),
+        verbose_name=_('Use EU reverse charge taxation rules'),
         default=False,
-        help_text=_("Not recommended. Most events will NOT be qualified for reverse charge since the place of "
-                    "taxation is the location of the event. This option disables charging VAT for all customers "
-                    "outside the EU and for business customers in different EU countries who entered a valid EU VAT "
-                    "ID. Only enable this option after consulting a tax counsel. No warranty given for correct tax "
-                    "calculation. USE AT YOUR OWN RISK.")
+        help_text=_(
+            'Not recommended. Most events will NOT be qualified for reverse charge since the place of '
+            'taxation is the location of the event. This option disables charging VAT for all customers '
+            'outside the EU and for business customers in different EU countries who entered a valid EU VAT '
+            'ID. Only enable this option after consulting a tax counsel. No warranty given for correct tax '
+            'calculation. USE AT YOUR OWN RISK.'
+        ),
     )
     home_country = FastCountryField(
         verbose_name=_('Merchant country'),
         blank=True,
-        help_text=_('Your country of residence. This is the country the EU reverse charge rule will not apply in, '
-                    'if configured above.'),
+        help_text=_(
+            'Your country of residence. This is the country the EU reverse charge rule will not apply in, '
+            'if configured above.'
+        ),
     )
     custom_rules = models.TextField(blank=True, null=True)
 
@@ -145,7 +180,9 @@ class TaxRule(LoggedModel):
 
         return (
             not OrderFee.objects.filter(tax_rule=self, order__event=self.event).exists()
-            and not OrderPosition.all.filter(tax_rule=self, order__event=self.event).exists()
+            and not OrderPosition.all.filter(
+                tax_rule=self, order__event=self.event
+            ).exists()
             and not self.event.items.filter(tax_rule=self).exists()
             and self.event.settings.tax_rate_default != self
         )
@@ -157,12 +194,16 @@ class TaxRule(LoggedModel):
             name='',
             rate=Decimal('0.00'),
             price_includes_tax=True,
-            eu_reverse_charge=False
+            eu_reverse_charge=False,
         )
 
     def clean(self):
         if self.eu_reverse_charge and not self.home_country:
-            raise ValidationError(_('You need to set your home country to use the reverse charge feature.'))
+            raise ValidationError(
+                _(
+                    'You need to set your home country to use the reverse charge feature.'
+                )
+            )
 
     def __str__(self):
         if self.price_includes_tax:
@@ -188,9 +229,19 @@ class TaxRule(LoggedModel):
                 return Decimal(rule.get('rate'))
         return Decimal(self.rate)
 
-    def tax(self, base_price, base_price_is='auto', currency=None, override_tax_rate=None, invoice_address=None,
-            subtract_from_gross=Decimal('0.00'), gross_price_is_tax_rate: Decimal = None, force_fixed_gross_price=False):
+    def tax(
+        self,
+        base_price,
+        base_price_is='auto',
+        currency=None,
+        override_tax_rate=None,
+        invoice_address=None,
+        subtract_from_gross=Decimal('0.00'),
+        gross_price_is_tax_rate: Decimal = None,
+        force_fixed_gross_price=False,
+    ):
         from .event import Event
+
         try:
             currency = currency or self.event.currency
         except Event.DoesNotExist:
@@ -201,10 +252,17 @@ class TaxRule(LoggedModel):
             rate = override_tax_rate
         elif invoice_address:
             adjust_rate = self.tax_rate_for(invoice_address)
-            if (adjust_rate == gross_price_is_tax_rate or force_fixed_gross_price) and base_price_is == 'gross':
+            if (
+                adjust_rate == gross_price_is_tax_rate or force_fixed_gross_price
+            ) and base_price_is == 'gross':
                 rate = adjust_rate
             elif adjust_rate != rate:
-                normal_price = self.tax(base_price, base_price_is, currency, subtract_from_gross=subtract_from_gross)
+                normal_price = self.tax(
+                    base_price,
+                    base_price_is,
+                    currency,
+                    subtract_from_gross=subtract_from_gross,
+                )
                 base_price = normal_price.net
                 base_price_is = 'net'
                 subtract_from_gross = Decimal('0.00')
@@ -212,8 +270,11 @@ class TaxRule(LoggedModel):
 
         if rate == Decimal('0.00'):
             return TaxedPrice(
-                net=base_price - subtract_from_gross, gross=base_price - subtract_from_gross, tax=Decimal('0.00'),
-                rate=rate, name=self.name
+                net=base_price - subtract_from_gross,
+                gross=base_price - subtract_from_gross,
+                tax=Decimal('0.00'),
+                rate=rate,
+                name=self.name,
             )
 
         if base_price_is == 'auto':
@@ -229,21 +290,20 @@ class TaxRule(LoggedModel):
             else:
                 # If the price is already negative, we don't really care any more
                 gross = base_price - subtract_from_gross
-            net = round_decimal(gross - (gross * (1 - 100 / (100 + rate))),
-                                currency)
+            net = round_decimal(gross - (gross * (1 - 100 / (100 + rate))), currency)
         elif base_price_is == 'net':
             net = base_price
             gross = round_decimal((net * (1 + rate / 100)), currency)
             if subtract_from_gross:
                 gross -= subtract_from_gross
-                net = round_decimal(gross - (gross * (1 - 100 / (100 + rate))),
-                                    currency)
+                net = round_decimal(
+                    gross - (gross * (1 - 100 / (100 + rate))), currency
+                )
         else:
             raise ValueError('Unknown base price type: {}'.format(base_price_is))
 
         return TaxedPrice(
-            net=net, gross=gross, tax=gross - net,
-            rate=rate, name=self.name
+            net=net, gross=gross, tax=gross - net, rate=rate, name=self.name
         )
 
     @property
@@ -258,13 +318,20 @@ class TaxRule(LoggedModel):
             for r in rules:
                 if r['country'] == 'EU' and not is_eu_country(invoice_address.country):
                     continue
-                if r['country'] not in ('ZZ', 'EU') and r['country'] != str(invoice_address.country):
+                if r['country'] not in ('ZZ', 'EU') and r['country'] != str(
+                    invoice_address.country
+                ):
                     continue
                 if r['address_type'] == 'individual' and invoice_address.is_business:
                     continue
-                if r['address_type'] in ('business', 'business_vat_id') and not invoice_address.is_business:
+                if (
+                    r['address_type'] in ('business', 'business_vat_id')
+                    and not invoice_address.is_business
+                ):
                     continue
-                if r['address_type'] == 'business_vat_id' and (not invoice_address.vat_id or not invoice_address.vat_id_validated):
+                if r['address_type'] == 'business_vat_id' and (
+                    not invoice_address.vat_id or not invoice_address.vat_id_validated
+                ):
                     continue
                 return r
         return {'action': 'vat'}
@@ -278,14 +345,13 @@ class TaxRule(LoggedModel):
         if self.is_reverse_charge(invoice_address):
             if is_eu_country(invoice_address.country):
                 return pgettext(
-                    "invoice",
-                    "Reverse Charge: According to Article 194, 196 of Council Directive 2006/112/EEC, VAT liability "
-                    "rests with the service recipient."
+                    'invoice',
+                    'Reverse Charge: According to Article 194, 196 of Council Directive 2006/112/EEC, VAT liability '
+                    'rests with the service recipient.',
                 )
             else:
                 return pgettext(
-                    "invoice",
-                    "VAT liability rests with the service recipient."
+                    'invoice', 'VAT liability rests with the service recipient.'
                 )
 
     def is_reverse_charge(self, invoice_address):
@@ -305,7 +371,11 @@ class TaxRule(LoggedModel):
         if invoice_address.country == self.home_country:
             return False
 
-        if invoice_address.is_business and invoice_address.vat_id and invoice_address.vat_id_validated:
+        if (
+            invoice_address.is_business
+            and invoice_address.vat_id
+            and invoice_address.vat_id_validated
+        ):
             return True
 
         return False
@@ -333,7 +403,11 @@ class TaxRule(LoggedModel):
             # Within same EU country? Always apply VAT!
             return True
 
-        if invoice_address.is_business and invoice_address.vat_id and invoice_address.vat_id_validated:
+        if (
+            invoice_address.is_business
+            and invoice_address.vat_id
+            and invoice_address.vat_id_validated
+        ):
             # Reverse charge case
             return False
 

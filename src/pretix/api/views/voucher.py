@@ -4,7 +4,9 @@ from django.db import transaction
 from django.db.models import F, Q
 from django.utils.timezone import now
 from django_filters.rest_framework import (
-    BooleanFilter, DjangoFilterBackend, FilterSet,
+    BooleanFilter,
+    DjangoFilterBackend,
+    FilterSet,
 )
 from django_scopes import scopes_disabled
 from rest_framework import status, viewsets
@@ -17,21 +19,38 @@ from pretix.api.serializers.voucher import VoucherSerializer
 from pretix.base.models import Voucher
 
 with scopes_disabled():
+
     class VoucherFilter(FilterSet):
         active = BooleanFilter(method='filter_active')
 
         class Meta:
             model = Voucher
-            fields = ['code', 'max_usages', 'redeemed', 'block_quota', 'allow_ignore_quota',
-                      'price_mode', 'value', 'item', 'variation', 'quota', 'tag', 'subevent']
+            fields = [
+                'code',
+                'max_usages',
+                'redeemed',
+                'block_quota',
+                'allow_ignore_quota',
+                'price_mode',
+                'value',
+                'item',
+                'variation',
+                'quota',
+                'tag',
+                'subevent',
+            ]
 
         def filter_active(self, queryset, name, value):
             if value:
-                return queryset.filter(Q(redeemed__lt=F('max_usages')) &
-                                       (Q(valid_until__isnull=True) | Q(valid_until__gt=now())))
+                return queryset.filter(
+                    Q(redeemed__lt=F('max_usages'))
+                    & (Q(valid_until__isnull=True) | Q(valid_until__gt=now()))
+                )
             else:
-                return queryset.filter(Q(redeemed__gte=F('max_usages')) |
-                                       (Q(valid_until__isnull=False) & Q(valid_until__lte=now())))
+                return queryset.filter(
+                    Q(redeemed__gte=F('max_usages'))
+                    | (Q(valid_until__isnull=False) & Q(valid_until__lte=now()))
+                )
 
 
 class VoucherViewSet(viewsets.ModelViewSet):
@@ -54,7 +73,11 @@ class VoucherViewSet(viewsets.ModelViewSet):
         # locks when we know we won't need them.
         if 'allow_ignore_quota' in data and data.get('allow_ignore_quota'):
             return False
-        if instance and 'allow_ignore_quota' not in data and instance.allow_ignore_quota:
+        if (
+            instance
+            and 'allow_ignore_quota' not in data
+            and instance.allow_ignore_quota
+        ):
             return False
 
         if 'block_quota' in data and not data.get('block_quota'):
@@ -78,7 +101,7 @@ class VoucherViewSet(viewsets.ModelViewSet):
             'pretix.voucher.added',
             user=self.request.user,
             auth=self.request.auth,
-            data=self.request.data
+            data=self.request.data,
         )
 
     def get_serializer_context(self):
@@ -100,12 +123,14 @@ class VoucherViewSet(viewsets.ModelViewSet):
             'pretix.voucher.changed',
             user=self.request.user,
             auth=self.request.auth,
-            data=self.request.data
+            data=self.request.data,
         )
 
     def perform_destroy(self, instance):
         if not instance.allow_delete():
-            raise PermissionDenied('This voucher can not be deleted as it has already been used.')
+            raise PermissionDenied(
+                'This voucher can not be deleted as it has already been used.'
+            )
 
         instance.log_action(
             'pretix.voucher.deleted',
@@ -133,7 +158,9 @@ class VoucherViewSet(viewsets.ModelViewSet):
                         'pretix.voucher.added',
                         user=self.request.user,
                         auth=self.request.auth,
-                        data=self.request.data[i]
+                        data=self.request.data[i],
                     )
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )

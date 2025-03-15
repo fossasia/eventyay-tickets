@@ -11,12 +11,17 @@ from oauth2_provider.generators import generate_client_secret
 from oauth2_provider.models import get_application_model
 from oauth2_provider.scopes import get_scopes_backend
 from oauth2_provider.views import (
-    ApplicationDelete, ApplicationDetail, ApplicationList,
-    ApplicationRegistration, ApplicationUpdate,
+    ApplicationDelete,
+    ApplicationDetail,
+    ApplicationList,
+    ApplicationRegistration,
+    ApplicationUpdate,
 )
 
 from pretix.api.models import (
-    OAuthAccessToken, OAuthApplication, OAuthRefreshToken,
+    OAuthAccessToken,
+    OAuthApplication,
+    OAuthRefreshToken,
 )
 from pretix.control.signals import oauth_application_registered
 
@@ -35,10 +40,7 @@ class OAuthApplicationRegistrationView(ApplicationRegistration):
 
     def get_form_class(self):
         return forms.modelform_factory(
-            get_application_model(),
-            fields=(
-                "name", "redirect_uris"
-            )
+            get_application_model(), fields=('name', 'redirect_uris')
         )
 
     def form_valid(self, form):
@@ -53,7 +55,7 @@ class OAuthApplicationRegistrationView(ApplicationRegistration):
 class ApplicationUpdateForm(forms.ModelForm):
     class Meta:
         model = OAuthApplication
-        fields = ("name", "client_id", "client_secret", "redirect_uris")
+        fields = ('name', 'client_id', 'client_secret', 'redirect_uris')
 
     def clean_client_id(self):
         return self.instance.client_id
@@ -82,7 +84,9 @@ class OAuthApplicationRollView(ApplicationDetail):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        messages.success(request, _('A new client secret has been generated and is now effective.'))
+        messages.success(
+            request, _('A new client secret has been generated and is now effective.')
+        )
         self.object.client_secret = generate_client_secret()
         self.object.save()
         return HttpResponseRedirect(self.object.get_absolute_url())
@@ -93,7 +97,7 @@ class OAuthApplicationRollView(ApplicationDetail):
 
 class OAuthApplicationDeleteView(ApplicationDelete):
     template_name = 'pretixcontrol/oauth/app_delete.html'
-    success_url = reverse_lazy("control:user.settings.oauth.apps")
+    success_url = reverse_lazy('control:user.settings.oauth.apps')
 
     def get_queryset(self):
         return super().get_queryset().filter(active=True)
@@ -110,9 +114,11 @@ class AuthorizationListView(ListView):
     context_object_name = 'tokens'
 
     def get_queryset(self):
-        return OAuthAccessToken.objects.filter(
-            user=self.request.user
-        ).select_related('application').prefetch_related('organizers')
+        return (
+            OAuthAccessToken.objects.filter(user=self.request.user)
+            .select_related('application')
+            .prefetch_related('organizers')
+        )
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -124,7 +130,7 @@ class AuthorizationListView(ListView):
 
 class AuthorizationRevokeView(DetailView):
     template_name = 'pretixcontrol/oauth/auth_revoke.html'
-    success_url = reverse_lazy("control:user.settings.oauth.list")
+    success_url = reverse_lazy('control:user.settings.oauth.list')
 
     def get_queryset(self):
         return OAuthAccessToken.objects.filter(user=self.request.user)
@@ -140,5 +146,7 @@ class AuthorizationRevokeView(DetailView):
             rt.revoke()
         o.delete()
 
-        messages.success(request, _('Access for the selected application has been revoked.'))
+        messages.success(
+            request, _('Access for the selected application has been revoked.')
+        )
         return redirect(self.success_url)

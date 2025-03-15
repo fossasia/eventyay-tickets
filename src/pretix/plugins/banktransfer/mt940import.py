@@ -52,11 +52,15 @@ def parse_transaction_details(raw_data):
 
     delimiter = raw_data[3]
 
-    lines = sorted((line[:2], line[2:].strip()) for line in raw_data.split(delimiter)[1:])
+    lines = sorted(
+        (line[:2], line[2:].strip()) for line in raw_data.split(delimiter)[1:]
+    )
     for code, data in lines:
         transaction_details.setdefault(code_mapping.get(code, code), []).append(data)
 
-    transaction_details = {name: '\n'.join(elems) for name, elems in transaction_details.items()}
+    transaction_details = {
+        name: '\n'.join(elems) for name, elems in transaction_details.items()
+    }
 
     if 'reference' in transaction_details:
         fragments = {'': []}
@@ -65,7 +69,7 @@ def parse_transaction_details(raw_data):
             code = line.split('+', 1)[0]
             if code in ('EREF', 'SVWZ'):
                 current_code = code
-                line = line[len(code) + 1:]
+                line = line[len(code) + 1 :]
             fragments.setdefault(current_code, []).append(line)
 
         fragments = {code: '\n'.join(elems) for code, elems in fragments.items()}
@@ -88,10 +92,19 @@ def join_reference(reference_list, payer):
             if not d:
                 continue
             if not (
-                (reference[-1] in string.ascii_lowercase and d[0] in string.ascii_lowercase) or
-                (reference[-1] in string.ascii_uppercase and d[0] in string.ascii_uppercase) or
-                (reference[-1] in string.digits + string.ascii_uppercase and d[0] in ('-', ':')) or
-                (reference[-1] == ' ' or d[0] == ' ')
+                (
+                    reference[-1] in string.ascii_lowercase
+                    and d[0] in string.ascii_lowercase
+                )
+                or (
+                    reference[-1] in string.ascii_uppercase
+                    and d[0] in string.ascii_uppercase
+                )
+                or (
+                    reference[-1] in string.digits + string.ascii_uppercase
+                    and d[0] in ('-', ':')
+                )
+                or (reference[-1] == ' ' or d[0] == ' ')
             ):
                 reference += ' '
             reference += d
@@ -145,38 +158,62 @@ def parse(file):
         td = t.data.get('transaction_details', '')
         if len(td) >= 4 and td[3] == '?':
             # SEPA content
-            transaction_details = parse_transaction_details(td.replace("\n", ""))
+            transaction_details = parse_transaction_details(td.replace('\n', ''))
 
             payer = {
-                'name': transaction_details.get('accountholder', '') or t.data.get('applicant_name', ''),
+                'name': transaction_details.get('accountholder', '')
+                or t.data.get('applicant_name', ''),
                 # In reality, these fields are sometimes IBANs and BICs, and sometimes legacy numbers. We don't
                 # really know (except for a syntax check) which will be performed anyways much later in the stack.
-                'iban': transaction_details.get('accountnumber', '') or t.data.get('applicant_iban', ''),
-                'bic': transaction_details.get('blz', '') or t.data.get('applicant_bin', ''),
+                'iban': transaction_details.get('accountnumber', '')
+                or t.data.get('applicant_iban', ''),
+                'bic': transaction_details.get('blz', '')
+                or t.data.get('applicant_bin', ''),
             }
-            reference, eref = join_reference(transaction_details.get('reference', '').split('\n'), payer)
+            reference, eref = join_reference(
+                transaction_details.get('reference', '').split('\n'), payer
+            )
             if not eref:
                 eref = transaction_details.get('eref', '')
 
-            result.append({
-                'amount': str(round_decimal(t.data['amount'].amount)),
-                'reference': reference + (' EREF: {}'.format(eref) if eref else ''),
-                'payer': payer['name'].strip(),
-                'date': t.data['date'].isoformat(),
-                **{k: payer[k].strip() for k in ("iban", "bic") if payer.get(k)}
-            })
+            result.append(
+                {
+                    'amount': str(round_decimal(t.data['amount'].amount)),
+                    'reference': reference + (' EREF: {}'.format(eref) if eref else ''),
+                    'payer': payer['name'].strip(),
+                    'date': t.data['date'].isoformat(),
+                    **{k: payer[k].strip() for k in ('iban', 'bic') if payer.get(k)},
+                }
+            )
         else:
             payer = {
                 'payer': t.data.get('applicant_name', ''),
                 'iban': t.data.get('applicant_iban', ''),
                 'bic': t.data.get('applicant_bin', ''),
             }
-            result.append({
-                'reference': "\n".join([
-                    t.data.get(f) for f in ('transaction_details', 'customer_reference', 'bank_reference', 'purpose',
-                                            'extra_details', 'non_swift_text') if t.data.get(f, '')]),
-                'amount': str(round_decimal(t.data['amount'].amount)),
-                'date': t.data['date'].isoformat(),
-                **{k: payer[k].strip() for k in ("iban", "bic", "payer") if payer.get(k)}
-            })
+            result.append(
+                {
+                    'reference': '\n'.join(
+                        [
+                            t.data.get(f)
+                            for f in (
+                                'transaction_details',
+                                'customer_reference',
+                                'bank_reference',
+                                'purpose',
+                                'extra_details',
+                                'non_swift_text',
+                            )
+                            if t.data.get(f, '')
+                        ]
+                    ),
+                    'amount': str(round_decimal(t.data['amount'].amount)),
+                    'date': t.data['date'].isoformat(),
+                    **{
+                        k: payer[k].strip()
+                        for k in ('iban', 'bic', 'payer')
+                        if payer.get(k)
+                    },
+                }
+            )
     return result

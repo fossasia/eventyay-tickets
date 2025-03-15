@@ -10,12 +10,12 @@ class LocaleDeterminationTest(TestCase):
     This test case tests various methods around the properties /
     variations concept.
     """
+
     def setUp(self):
         super().setUp()
         o = Organizer.objects.create(name='Dummy', slug='dummy')
         self.event = Event.objects.create(
-            organizer=o, name='Dummy', slug='dummy',
-            date_from=now(), live=True
+            organizer=o, name='Dummy', slug='dummy', date_from=now(), live=True
         )
         self.TEST_LOCALE = 'de' if settings.LANGUAGE_CODE == 'en' else 'en'
         self.TEST_LOCALE_LONG = 'de-AT' if settings.LANGUAGE_CODE == 'en' else 'en-NZ'
@@ -61,10 +61,13 @@ class LocaleDeterminationTest(TestCase):
         c = Client()
         self.user.locale = self.TEST_LOCALE
         self.user.save()
-        response = c.post('/control/login', {
-            'email': 'dummy@dummy.dummy',
-            'password': 'dummy',
-        })
+        response = c.post(
+            '/control/login',
+            {
+                'email': 'dummy@dummy.dummy',
+                'password': 'dummy',
+            },
+        )
         self.assertEqual(response.status_code, 302)
 
         response = c.get('/control/login')

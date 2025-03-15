@@ -8,7 +8,7 @@ from pretix.helpers.http import ChunkBasedFileResponse
 
 
 class DownloadView(TemplateView):
-    template_name = "pretixbase/cachedfiles/pending.html"
+    template_name = 'pretixbase/cachedfiles/pending.html'
 
     @cached_property
     def object(self) -> CachedFile:
@@ -18,15 +18,19 @@ class DownloadView(TemplateView):
                 if o.session_key != self.request.session.session_key:
                     raise Http404()
             return o
-        except ValueError:   # Invalid URLs
+        except ValueError:  # Invalid URLs
             raise Http404()
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         if 'ajax' in request.GET:
             return HttpResponse('1' if self.object.file else '0')
         elif self.object.file:
-            resp = ChunkBasedFileResponse(self.object.file.file, content_type=self.object.type)
-            resp['Content-Disposition'] = 'attachment; filename="{}"'.format(self.object.filename)
+            resp = ChunkBasedFileResponse(
+                self.object.file.file, content_type=self.object.type
+            )
+            resp['Content-Disposition'] = 'attachment; filename="{}"'.format(
+                self.object.filename
+            )
             return resp
         else:
             return super().get(request, *args, **kwargs)

@@ -12,7 +12,7 @@ from pretix.settings import *  # NOQA
 DATA_DIR = tmpdir.name
 LOG_DIR = os.path.join(DATA_DIR, 'logs')
 MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
-SITE_URL = "http://example.com"
+SITE_URL = 'http://example.com'
 
 atexit.register(tmpdir.cleanup)
 
@@ -46,7 +46,7 @@ CELERY_RESULT_BACKEND = None
 CELERY_TASK_ALWAYS_EAGER = True
 
 # Don't use redis
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 HAS_REDIS = False
 CACHES = {
     'default': {
@@ -59,7 +59,6 @@ DATABASE_REPLICA = 'default'
 
 
 class DisableMigrations(object):
-
     def __contains__(self, item):
         return True
 
@@ -67,5 +66,5 @@ class DisableMigrations(object):
         return None
 
 
-if not os.environ.get("TRAVIS", "") and not os.environ.get("GITHUB_WORKFLOW", ""):
+if not os.environ.get('TRAVIS', '') and not os.environ.get('GITHUB_WORKFLOW', ''):
     MIGRATION_MODULES = DisableMigrations()

@@ -19,14 +19,15 @@ class JSONExporter(BaseExporter):
                 'slug': self.event.slug,
                 'organizer': {
                     'name': str(self.event.organizer.name),
-                    'slug': self.event.organizer.slug
+                    'slug': self.event.organizer.slug,
                 },
                 'categories': [
                     {
                         'id': category.id,
                         'name': str(category.name),
-                        'internal_name': category.internal_name
-                    } for category in self.event.categories.all()
+                        'internal_name': category.internal_name,
+                    }
+                    for category in self.event.categories.all()
                 ],
                 'items': [
                     {
@@ -35,7 +36,9 @@ class JSONExporter(BaseExporter):
                         'internal_name': str(item.internal_name),
                         'category': item.category_id,
                         'price': item.default_price,
-                        'tax_rate': item.tax_rule.rate if item.tax_rule else Decimal('0.00'),
+                        'tax_rate': item.tax_rule.rate
+                        if item.tax_rule
+                        else Decimal('0.00'),
                         'tax_name': str(item.tax_rule.name) if item.tax_rule else None,
                         'admission': item.admission,
                         'active': item.active,
@@ -43,19 +46,25 @@ class JSONExporter(BaseExporter):
                             {
                                 'id': variation.id,
                                 'active': variation.active,
-                                'price': variation.default_price if variation.default_price is not None else
-                                item.default_price,
-                                'name': str(variation)
-                            } for variation in item.variations.all()
-                        ]
-                    } for item in self.event.items.select_related('tax_rule').prefetch_related('variations')
+                                'price': variation.default_price
+                                if variation.default_price is not None
+                                else item.default_price,
+                                'name': str(variation),
+                            }
+                            for variation in item.variations.all()
+                        ],
+                    }
+                    for item in self.event.items.select_related(
+                        'tax_rule'
+                    ).prefetch_related('variations')
                 ],
                 'questions': [
                     {
                         'id': question.id,
                         'question': str(question.question),
-                        'type': question.type
-                    } for question in self.event.questions.all()
+                        'type': question.type,
+                    }
+                    for question in self.event.questions.all()
                 ],
                 'orders': [
                     {
@@ -68,7 +77,8 @@ class JSONExporter(BaseExporter):
                                 'type': fee.fee_type,
                                 'description': fee.description,
                                 'value': fee.value,
-                            } for fee in order.fees.all()
+                            }
+                            for fee in order.fees.all()
                         ],
                         'total': order.total,
                         'positions': [
@@ -84,28 +94,41 @@ class JSONExporter(BaseExporter):
                                 'answers': [
                                     {
                                         'question': answer.question_id,
-                                        'answer': answer.answer
-                                    } for answer in position.answers.all()
-                                ]
-                            } for position in order.positions.all()
-                        ]
-                    } for order in
-                    self.event.orders.all().prefetch_related('positions', 'positions__answers', 'fees')
+                                        'answer': answer.answer,
+                                    }
+                                    for answer in position.answers.all()
+                                ],
+                            }
+                            for position in order.positions.all()
+                        ],
+                    }
+                    for order in self.event.orders.all().prefetch_related(
+                        'positions', 'positions__answers', 'fees'
+                    )
                 ],
                 'quotas': [
                     {
                         'id': quota.id,
                         'size': quota.size,
                         'items': [item.id for item in quota.items.all()],
-                        'variations': [variation.id for variation in quota.variations.all()],
-                    } for quota in self.event.quotas.all().prefetch_related('items', 'variations')
-                ]
+                        'variations': [
+                            variation.id for variation in quota.variations.all()
+                        ],
+                    }
+                    for quota in self.event.quotas.all().prefetch_related(
+                        'items', 'variations'
+                    )
+                ],
             }
         }
 
-        return '{}_pretixdata.json'.format(self.event.slug), 'application/json', json.dumps(jo, cls=DjangoJSONEncoder)
+        return (
+            '{}_pretixdata.json'.format(self.event.slug),
+            'application/json',
+            json.dumps(jo, cls=DjangoJSONEncoder),
+        )
 
 
-@receiver(register_data_exporters, dispatch_uid="exporter_json")
+@receiver(register_data_exporters, dispatch_uid='exporter_json')
 def register_json_export(sender, **kwargs):
     return JSONExporter

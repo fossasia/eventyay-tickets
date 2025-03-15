@@ -9,10 +9,8 @@ class GiftCardUpdateForm(forms.ModelForm):
     class Meta:
         model = GiftCard
         fields = ['expires', 'conditions']
-        field_classes = {
-            'expires': SplitDateTimeField
-        }
+        field_classes = {'expires': SplitDateTimeField}
         widgets = {
             'expires': SplitDateTimePickerWidget,
-            'conditions': forms.Textarea(attrs={"rows": 2})
+            'conditions': forms.Textarea(attrs={'rows': 2}),
         }
