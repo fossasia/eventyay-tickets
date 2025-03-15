@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^organizer/(?P<organizer>[^/]+)/team/(?P<team>[^/]+)/delete$', team.TeamDeleteView.as_view(),
         name='organizer.team.delete'),
     url(r'^events/$', event.EventList.as_view(), name='events'),
+    url(r'^events/search/$', event.EventSearchView.as_view(), name='events.search'),
     url(r'^events/add$', event.EventCreateView.as_view(), name='events.add'),
     url(r'^event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/', include([
         url(r'^$', dashboards.EventIndexView.as_view(), name='event.index'),
