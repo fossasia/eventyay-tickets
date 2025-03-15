@@ -1,10 +1,13 @@
 $(document).ready(function () {
+  // Get the event search URL from a global variable or use the default URL.
+  var eventSearchUrl = window.eventSearchUrl || "/common/events/search/?query=%QUERY";
+
   // Initialize typeahead for event search
   var eventSearch = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace("name"),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote: {
-      url: "/common/events/search/?query=%QUERY",
+      url: eventSearchUrl,
       wildcard: "%QUERY",
     },
   });
