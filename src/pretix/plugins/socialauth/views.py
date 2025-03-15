@@ -104,15 +104,30 @@ class OAuthReturnView(View):
         """
         Get or create a user from social auth information.
         """
-        return User.objects.get_or_create(
+        social_account = request.user.socialaccount_set.filter(provider="mediawiki").last()  # Fetch only the latest signed in Wikimedia account
+        wikimedia_username = ""
+
+        if social_account:
+            extra_data = social_account.extra_data
+            wikimedia_username = extra_data.get("username", extra_data.get("realname", ""))
+
+        user, created = User.objects.get_or_create(
             email=request.user.email,
             defaults={
                 "locale": getattr(request, "LANGUAGE_CODE", settings.LANGUAGE_CODE),
                 "timezone": getattr(request, "timezone", settings.TIME_ZONE),
                 "auth_backend": "native",
                 "password": "",
+                "wikimedia_username": wikimedia_username,
             },
-        )[0]
+        )
+
+        # Update wikimedia_username if the user exists but has no wikimedia_username value set (Basically our existing users), or if the user has updated his username in his wikimedia account
+        if not created and (not user.wikimedia_username or user.wikimedia_username != wikimedia_username):
+            user.wikimedia_username = wikimedia_username
+            user.save()
+        
+        return user
 
 
 class SocialLoginView(AdministratorPermissionRequiredMixin, TemplateView):
