@@ -21,15 +21,7 @@ $(document).ready(function () {
       source: eventSearch,
       templates: {
         suggestion: function (data) {
-          return (
-            '<div><a href="/common/event/' +
-            data.organizer +
-            "/" +
-            data.slug +
-            '/">' +
-            data.name +
-            "</a></div>"
-          );
+          return `<div><a href="/common/event/${data.organizer}/${data.slug}/">${data.name}</a></div>`;
         },
       },
     }
