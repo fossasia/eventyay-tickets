@@ -17,24 +17,24 @@ class CartPositionViewSet(
     serializer_class = CartPositionSerializer
     queryset = CartPosition.objects.none()
     filter_backends = (OrderingFilter,)
-    ordering = ("datetime",)
-    ordering_fields = ("datetime", "cart_id")
-    lookup_field = "id"
-    permission = "can_view_orders"
-    write_permission = "can_change_orders"
+    ordering = ('datetime',)
+    ordering_fields = ('datetime', 'cart_id')
+    lookup_field = 'id'
+    permission = 'can_view_orders'
+    write_permission = 'can_change_orders'
 
     def get_queryset(self):
         return (
             CartPosition.objects.filter(
-                event=self.request.event, cart_id__endswith="@api"
+                event=self.request.event, cart_id__endswith='@api'
             )
-            .select_related("seat")
-            .prefetch_related("answers")
+            .select_related('seat')
+            .prefetch_related('answers')
         )
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
-        ctx["event"] = self.request.event
+        ctx['event'] = self.request.event
         return ctx
 
     def create(self, request, *args, **kwargs):

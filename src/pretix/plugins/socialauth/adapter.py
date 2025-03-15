@@ -13,6 +13,6 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         self, request, provider, error=None, exception=None, extra_context=None
     ):
         logger.error(
-            "Error while authorizing with %s: %s - %s", provider, error, exception
+            'Error while authorizing with %s: %s - %s', provider, error, exception
         )
-        raise ImmediateHttpResponse(HttpResponseRedirect(reverse("control:index")))
+        raise ImmediateHttpResponse(HttpResponseRedirect(reverse('control:index')))

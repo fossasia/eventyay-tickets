@@ -16,26 +16,26 @@ from django.db import models
 from django.db.migrations.operations import models as modelops
 from django_countries.fields import CountryField
 
-modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove("verbose_name")
-modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove("verbose_name_plural")
-modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove("ordering")
-modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove("get_latest_by")
-modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove("default_manager_name")
-modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove("permissions")
-modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove("default_permissions")
+modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove('verbose_name')
+modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove('verbose_name_plural')
+modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove('ordering')
+modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove('get_latest_by')
+modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove('default_manager_name')
+modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove('permissions')
+modelops.AlterModelOptions.ALTER_OPTION_KEYS.remove('default_permissions')
 IGNORED_ATTRS = [
     # (field type, attribute name, banlist of field sub-types)
-    (models.Field, "verbose_name", []),
-    (models.Field, "help_text", []),
-    (models.Field, "validators", []),
+    (models.Field, 'verbose_name', []),
+    (models.Field, 'help_text', []),
+    (models.Field, 'validators', []),
     (
         models.Field,
-        "editable",
+        'editable',
         [models.DateField, models.DateTimeField, models.DateField, models.BinaryField],
     ),
     (
         models.Field,
-        "blank",
+        'blank',
         [
             models.DateField,
             models.DateTimeField,
@@ -44,7 +44,7 @@ IGNORED_ATTRS = [
             models.TimeField,
         ],
     ),
-    (models.CharField, "choices", [CountryField]),
+    (models.CharField, 'choices', [CountryField]),
 ]
 
 original_deconstruct = models.Field.deconstruct

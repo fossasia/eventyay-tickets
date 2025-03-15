@@ -88,7 +88,7 @@ def dictsum(*dicts) -> dict:
 def order_overview(
     event: Event,
     subevent: SubEvent = None,
-    date_filter="",
+    date_filter='',
     date_from=None,
     date_until=None,
     fees=False,
@@ -97,10 +97,10 @@ def order_overview(
     items = (
         event.items.all()
         .select_related(
-            "category",  # for re-grouping
+            'category',  # for re-grouping
         )
-        .prefetch_related("variations")
-        .order_by("category__position", "category_id", "position", "name")
+        .prefetch_related('variations')
+        .order_by('category__position', 'category_id', 'position', 'name')
     )
 
     qs = OrderPosition.all
@@ -127,24 +127,24 @@ def order_overview(
             event.timezone,
         )
 
-    if date_filter == "order_date":
+    if date_filter == 'order_date':
         if date_from:
             qs = qs.filter(order__datetime__gte=date_from)
         if date_until:
             qs = qs.filter(order__datetime__lt=date_until)
-    elif date_filter == "last_payment_date":
+    elif date_filter == 'last_payment_date':
         p_date = (
             OrderPayment.objects.filter(
-                order=OuterRef("order"),
+                order=OuterRef('order'),
                 state__in=[
                     OrderPayment.PAYMENT_STATE_CONFIRMED,
                     OrderPayment.PAYMENT_STATE_REFUNDED,
                 ],
                 payment_date__isnull=False,
             )
-            .values("order")
-            .annotate(m=Max("payment_date"))
-            .values("m")
+            .values('order')
+            .annotate(m=Max('payment_date'))
+            .values('m')
             .order_by()
         )
         qs = qs.annotate(payment_date=Subquery(p_date, output_field=DateTimeField()))
@@ -158,39 +158,39 @@ def order_overview(
         .annotate(
             status=Case(
                 When(
-                    order__status="n",
+                    order__status='n',
                     order__require_approval=True,
-                    then=Value("unapproved"),
+                    then=Value('unapproved'),
                 ),
-                When(canceled=True, then=Value("c")),
-                default=F("order__status"),
+                When(canceled=True, then=Value('c')),
+                default=F('order__status'),
             )
         )
-        .values("item", "variation", "status")
-        .annotate(cnt=Count("id"), price=Sum("price"), tax_value=Sum("tax_value"))
+        .values('item', 'variation', 'status')
+        .annotate(cnt=Count('id'), price=Sum('price'), tax_value=Sum('tax_value'))
         .order_by()
     )
 
     states = {
-        "unapproved": "unapproved",
-        "canceled": Order.STATUS_CANCELED,
-        "paid": Order.STATUS_PAID,
-        "pending": Order.STATUS_PENDING,
-        "expired": Order.STATUS_EXPIRED,
+        'unapproved': 'unapproved',
+        'canceled': Order.STATUS_CANCELED,
+        'paid': Order.STATUS_PAID,
+        'pending': Order.STATUS_PENDING,
+        'expired': Order.STATUS_EXPIRED,
     }
     num = {}
     for l, s in states.items():
         num[l] = {
-            (p["item"], p["variation"]): (
-                p["cnt"],
-                p["price"],
-                p["price"] - p["tax_value"],
+            (p['item'], p['variation']): (
+                p['cnt'],
+                p['price'],
+                p['price'] - p['tax_value'],
             )
             for p in counters
-            if p["status"] == s
+            if p['status'] == s
         }
 
-    num["total"] = dictsum(num["pending"], num["paid"])
+    num['total'] = dictsum(num['pending'], num['paid'])
 
     for item in items:
         item.all_variations = list(item.variations.all())
@@ -202,18 +202,18 @@ def order_overview(
                 var.num = {}
                 for l in states.keys():
                     var.num[l] = num[l].get((item.id, variid), (0, 0, 0))
-                var.num["total"] = num["total"].get((item.id, variid), (0, 0, 0))
+                var.num['total'] = num['total'].get((item.id, variid), (0, 0, 0))
             for l in states.keys():
                 item.num[l] = tuplesum(var.num[l] for var in item.all_variations)
-            item.num["total"] = tuplesum(
-                var.num["total"] for var in item.all_variations
+            item.num['total'] = tuplesum(
+                var.num['total'] for var in item.all_variations
             )
         else:
             for l in states.keys():
                 item.num[l] = num[l].get((item.id, None), (0, 0, 0))
-            item.num["total"] = num["total"].get((item.id, None), (0, 0, 0))
+            item.num['total'] = num['total'].get((item.id, None), (0, 0, 0))
 
-    nonecat = ItemCategory(name=_("Uncategorized"))
+    nonecat = ItemCategory(name=_('Uncategorized'))
     # Regroup those by category
     items_by_category = sorted(
         [
@@ -235,31 +235,31 @@ def order_overview(
         c[0].num = {}
         for l in states.keys():
             c[0].num[l] = tuplesum(item.num[l] for item in c[1])
-        c[0].num["total"] = tuplesum(item.num["total"] for item in c[1])
+        c[0].num['total'] = tuplesum(item.num['total'] for item in c[1])
 
     # Payment fees
     payment_cat_obj = DummyObject()
-    payment_cat_obj.name = _("Fees")
+    payment_cat_obj.name = _('Fees')
     payment_items = []
 
     if not subevent and fees:
         qs = OrderFee.all.filter(order__event=event).annotate(
             status=Case(
                 When(
-                    order__status="n",
+                    order__status='n',
                     order__require_approval=True,
-                    then=Value("unapproved"),
+                    then=Value('unapproved'),
                 ),
-                When(canceled=True, then=Value("c")),
-                default=F("order__status"),
+                When(canceled=True, then=Value('c')),
+                default=F('order__status'),
             )
         )
-        if date_filter == "order_date":
+        if date_filter == 'order_date':
             if date_from:
                 qs = qs.filter(order__datetime__gte=date_from)
             if date_until:
                 qs = qs.filter(order__datetime__lt=date_until)
-        elif date_filter == "last_payment_date":
+        elif date_filter == 'last_payment_date':
             qs = qs.annotate(
                 payment_date=Subquery(p_date, output_field=DateTimeField())
             )
@@ -268,32 +268,32 @@ def order_overview(
             if date_until:
                 qs = qs.filter(payment_date__lt=date_until)
         counters = (
-            qs.values("fee_type", "internal_type", "status")
-            .annotate(cnt=Count("id"), value=Sum("value"), tax_value=Sum("tax_value"))
+            qs.values('fee_type', 'internal_type', 'status')
+            .annotate(cnt=Count('id'), value=Sum('value'), tax_value=Sum('tax_value'))
             .order_by()
         )
 
         for l, s in states.items():
             num[l] = {
-                (o["fee_type"], o["internal_type"]): (
-                    o["cnt"],
-                    o["value"],
-                    o["value"] - o["tax_value"],
+                (o['fee_type'], o['internal_type']): (
+                    o['cnt'],
+                    o['value'],
+                    o['value'] - o['tax_value'],
                 )
                 for o in counters
-                if o["status"] == s
+                if o['status'] == s
             }
-        num["total"] = dictsum(num["pending"], num["paid"])
+        num['total'] = dictsum(num['pending'], num['paid'])
 
         provider_names = {
             k: v.verbose_name for k, v in event.get_payment_providers().items()
         }
         names = dict(OrderFee.FEE_TYPES)
 
-        for pprov, total in sorted(num["total"].items(), key=lambda i: i[0]):
+        for pprov, total in sorted(num['total'].items(), key=lambda i: i[0]):
             ppobj = DummyObject()
             if pprov[0] == OrderFee.FEE_TYPE_PAYMENT:
-                ppobj.name = "{} - {}".format(
+                ppobj.name = '{} - {}'.format(
                     names[pprov[0]], provider_names.get(pprov[1], pprov[1])
                 )
             else:
@@ -305,34 +305,34 @@ def order_overview(
                         name = resp
                         break
 
-                ppobj.name = "{} - {}".format(names[pprov[0]], name)
+                ppobj.name = '{} - {}'.format(names[pprov[0]], name)
             ppobj.provider = pprov[1]
             ppobj.has_variations = False
             ppobj.num = {}
             for l in states.keys():
                 ppobj.num[l] = num[l].get(pprov, (0, 0, 0))
-            ppobj.num["total"] = total
+            ppobj.num['total'] = total
             payment_items.append(ppobj)
 
         payment_cat_obj.num = {}
         for l in states.keys():
             payment_cat_obj.num[l] = (
-                Dontsum(""),
+                Dontsum(''),
                 sum(i.num[l][1] for i in payment_items),
                 sum(i.num[l][2] for i in payment_items),
             )
-        payment_cat_obj.num["total"] = (
-            Dontsum(""),
-            sum(i.num["total"][1] for i in payment_items),
-            sum(i.num["total"][2] for i in payment_items),
+        payment_cat_obj.num['total'] = (
+            Dontsum(''),
+            sum(i.num['total'][1] for i in payment_items),
+            sum(i.num['total'][2] for i in payment_items),
         )
         payment_cat = (payment_cat_obj, payment_items)
         any_payment = any(payment_cat_obj.num[s][1] for s in states.keys())
         if any_payment:
             items_by_category.append(payment_cat)
 
-    total = {"num": {"total": tuplesum(c.num["total"] for c, i in items_by_category)}}
+    total = {'num': {'total': tuplesum(c.num['total'] for c, i in items_by_category)}}
     for l in states.keys():
-        total["num"][l] = tuplesum(c.num[l] for c, i in items_by_category)
+        total['num'][l] = tuplesum(c.num[l] for c, i in items_by_category)
 
     return items_by_category, total

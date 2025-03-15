@@ -23,69 +23,69 @@ from tests.base import SoupTest, extract_form_fields
 class UserSettingsTest(SoupTest):
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_user("dummy@dummy.dummy", "dummy")
-        self.client.login(email="dummy@dummy.dummy", password="dummy")
-        doc = self.get_doc("/control/settings")
-        self.form_data = extract_form_fields(doc.select(".container-fluid form")[0])
+        self.user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
+        self.client.login(email='dummy@dummy.dummy', password='dummy')
+        doc = self.get_doc('/control/settings')
+        self.form_data = extract_form_fields(doc.select('.container-fluid form')[0])
 
     def save(self, data):
         form_data = self.form_data.copy()
         form_data.update(data)
-        return self.post_doc("/control/settings", form_data)
+        return self.post_doc('/control/settings', form_data)
 
     def test_set_name(self):
         doc = self.save(
             {
-                "fullname": "Peter Miller",
+                'fullname': 'Peter Miller',
             }
         )
-        assert doc.select(".alert-success")
+        assert doc.select('.alert-success')
         self.user = User.objects.get(pk=self.user.pk)
-        assert self.user.fullname == "Peter Miller"
+        assert self.user.fullname == 'Peter Miller'
 
     def test_change_email_require_password(self):
         doc = self.save(
             {
-                "email": "foo@example.com",
+                'email': 'foo@example.com',
             }
         )
-        assert doc.select(".alert-danger")
+        assert doc.select('.alert-danger')
         self.user = User.objects.get(pk=self.user.pk)
-        assert self.user.email == "dummy@dummy.dummy"
+        assert self.user.email == 'dummy@dummy.dummy'
 
     def test_change_email_success(self):
-        doc = self.save({"email": "foo@example.com", "old_pw": "dummy"})
-        assert doc.select(".alert-success")
+        doc = self.save({'email': 'foo@example.com', 'old_pw': 'dummy'})
+        assert doc.select('.alert-success')
         self.user = User.objects.get(pk=self.user.pk)
-        assert self.user.email == "foo@example.com"
+        assert self.user.email == 'foo@example.com'
 
     def test_change_email_no_duplicates(self):
-        User.objects.create_user("foo@example.com", "foo")
-        doc = self.save({"email": "foo@example.com", "old_pw": "dummy"})
-        assert doc.select(".alert-danger")
+        User.objects.create_user('foo@example.com', 'foo')
+        doc = self.save({'email': 'foo@example.com', 'old_pw': 'dummy'})
+        assert doc.select('.alert-danger')
         self.user = User.objects.get(pk=self.user.pk)
-        assert self.user.email == "dummy@dummy.dummy"
+        assert self.user.email == 'dummy@dummy.dummy'
 
     def test_change_password_require_password(self):
         doc = self.save(
             {
-                "new_pw": "foo",
-                "new_pw_repeat": "foo",
+                'new_pw': 'foo',
+                'new_pw_repeat': 'foo',
             }
         )
-        assert doc.select(".alert-danger")
+        assert doc.select('.alert-danger')
         pw = self.user.password
         self.user = User.objects.get(pk=self.user.pk)
         assert self.user.password == pw
 
     def test_change_password_wrong_backend(self):
-        self.user.auth_backend = "test_request"
+        self.user.auth_backend = 'test_request'
         self.user.save()
         self.save(
             {
-                "new_pw": "foobarbar",
-                "new_pw_repeat": "foobarbar",
-                "old_pw": "dummy",
+                'new_pw': 'foobarbar',
+                'new_pw_repeat': 'foobarbar',
+                'old_pw': 'dummy',
             }
         )
         pw = self.user.password
@@ -95,24 +95,24 @@ class UserSettingsTest(SoupTest):
     def test_change_password_success(self):
         doc = self.save(
             {
-                "new_pw": "foobarbar",
-                "new_pw_repeat": "foobarbar",
-                "old_pw": "dummy",
+                'new_pw': 'foobarbar',
+                'new_pw_repeat': 'foobarbar',
+                'old_pw': 'dummy',
             }
         )
-        assert doc.select(".alert-success")
+        assert doc.select('.alert-success')
         self.user = User.objects.get(pk=self.user.pk)
-        assert self.user.check_password("foobarbar")
+        assert self.user.check_password('foobarbar')
 
     def test_change_password_short(self):
         doc = self.save(
             {
-                "new_pw": "foo",
-                "new_pw_repeat": "foo",
-                "old_pw": "dummy",
+                'new_pw': 'foo',
+                'new_pw_repeat': 'foo',
+                'old_pw': 'dummy',
             }
         )
-        assert doc.select(".alert-danger")
+        assert doc.select('.alert-danger')
         pw = self.user.password
         self.user = User.objects.get(pk=self.user.pk)
         assert self.user.password == pw
@@ -120,12 +120,12 @@ class UserSettingsTest(SoupTest):
     def test_change_password_user_attribute_similarity(self):
         doc = self.save(
             {
-                "new_pw": "dummy123",
-                "new_pw_repeat": "dummy123",
-                "old_pw": "dummy",
+                'new_pw': 'dummy123',
+                'new_pw_repeat': 'dummy123',
+                'old_pw': 'dummy',
             }
         )
-        assert doc.select(".alert-danger")
+        assert doc.select('.alert-danger')
         pw = self.user.password
         self.user = User.objects.get(pk=self.user.pk)
         assert self.user.password == pw
@@ -133,12 +133,12 @@ class UserSettingsTest(SoupTest):
     def test_change_password_require_repeat(self):
         doc = self.save(
             {
-                "new_pw": "foooooooooooooo",
-                "new_pw_repeat": "baaaaaaaaaaaar",
-                "old_pw": "dummy",
+                'new_pw': 'foooooooooooooo',
+                'new_pw_repeat': 'baaaaaaaaaaaar',
+                'old_pw': 'dummy',
             }
         )
-        assert doc.select(".alert-danger")
+        assert doc.select('.alert-danger')
         pw = self.user.password
         self.user = User.objects.get(pk=self.user.pk)
         assert self.user.password == pw
@@ -149,186 +149,186 @@ def class_monkeypatch(request, monkeypatch):
     request.cls.monkeypatch = monkeypatch
 
 
-@pytest.mark.usefixtures("class_monkeypatch")
+@pytest.mark.usefixtures('class_monkeypatch')
 class UserSettings2FATest(SoupTest):
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_user("dummy@dummy.dummy", "dummy")
-        self.client.login(email="dummy@dummy.dummy", password="dummy")
+        self.user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
+        self.client.login(email='dummy@dummy.dummy', password='dummy')
         session = self.client.session
-        session["pretix_auth_login_time"] = int(time.time())
+        session['pretix_auth_login_time'] = int(time.time())
         session.save()
 
     def test_require_reauth(self):
         session = self.client.session
-        session["pretix_auth_login_time"] = int(time.time()) - 3600 * 2
+        session['pretix_auth_login_time'] = int(time.time()) - 3600 * 2
         session.save()
 
-        response = self.client.get("/control/settings/2fa/")
-        self.assertIn("/control/reauth", response["Location"])
+        response = self.client.get('/control/settings/2fa/')
+        self.assertIn('/control/reauth', response['Location'])
         self.assertEqual(response.status_code, 302)
 
         response = self.client.post(
-            "/control/reauth/?next=/control/settings/2fa/", {"password": "dummy"}
+            '/control/reauth/?next=/control/settings/2fa/', {'password': 'dummy'}
         )
-        self.assertIn("/control/settings/2fa/", response["Location"])
+        self.assertIn('/control/settings/2fa/', response['Location'])
         self.assertEqual(response.status_code, 302)
 
     def test_enable_require_device(self):
-        r = self.client.post("/control/settings/2fa/enable", follow=True)
-        assert "alert-danger" in r.content.decode()
+        r = self.client.post('/control/settings/2fa/enable', follow=True)
+        assert 'alert-danger' in r.content.decode()
         self.user.refresh_from_db()
         assert not self.user.require_2fa
 
     def test_enable(self):
-        U2FDevice.objects.create(user=self.user, name="Test")
-        r = self.client.post("/control/settings/2fa/enable", follow=True)
-        assert "alert-success" in r.content.decode()
+        U2FDevice.objects.create(user=self.user, name='Test')
+        r = self.client.post('/control/settings/2fa/enable', follow=True)
+        assert 'alert-success' in r.content.decode()
         self.user.refresh_from_db()
         assert self.user.require_2fa
 
     def test_disable(self):
         self.user.require_2fa = True
         self.user.save()
-        r = self.client.post("/control/settings/2fa/disable", follow=True)
-        assert "alert-success" in r.content.decode()
+        r = self.client.post('/control/settings/2fa/disable', follow=True)
+        assert 'alert-success' in r.content.decode()
         self.user.refresh_from_db()
         assert not self.user.require_2fa
 
     def test_gen_emergency(self):
-        self.client.get("/control/settings/2fa/")
-        d = StaticDevice.objects.get(user=self.user, name="emergency")
+        self.client.get('/control/settings/2fa/')
+        d = StaticDevice.objects.get(user=self.user, name='emergency')
         assert d.token_set.count() == 10
         old_tokens = set(t.token for t in d.token_set.all())
-        self.client.post("/control/settings/2fa/regenemergency")
+        self.client.post('/control/settings/2fa/regenemergency')
         new_tokens = set(t.token for t in d.token_set.all())
-        d = StaticDevice.objects.get(user=self.user, name="emergency")
+        d = StaticDevice.objects.get(user=self.user, name='emergency')
         assert d.token_set.count() == 10
         assert old_tokens != new_tokens
 
     def test_delete_u2f(self):
-        d = U2FDevice.objects.create(user=self.user, name="Test")
-        self.client.get("/control/settings/2fa/u2f/{}/delete".format(d.pk))
-        self.client.post("/control/settings/2fa/u2f/{}/delete".format(d.pk))
+        d = U2FDevice.objects.create(user=self.user, name='Test')
+        self.client.get('/control/settings/2fa/u2f/{}/delete'.format(d.pk))
+        self.client.post('/control/settings/2fa/u2f/{}/delete'.format(d.pk))
         assert not U2FDevice.objects.exists()
 
     def test_delete_webauthn(self):
-        d = WebAuthnDevice.objects.create(user=self.user, name="Test")
-        self.client.get("/control/settings/2fa/webauthn/{}/delete".format(d.pk))
-        self.client.post("/control/settings/2fa/webauthn/{}/delete".format(d.pk))
+        d = WebAuthnDevice.objects.create(user=self.user, name='Test')
+        self.client.get('/control/settings/2fa/webauthn/{}/delete'.format(d.pk))
+        self.client.post('/control/settings/2fa/webauthn/{}/delete'.format(d.pk))
         assert not WebAuthnDevice.objects.exists()
 
     def test_delete_totp(self):
-        d = TOTPDevice.objects.create(user=self.user, name="Test")
-        self.client.get("/control/settings/2fa/totp/{}/delete".format(d.pk))
-        self.client.post("/control/settings/2fa/totp/{}/delete".format(d.pk))
+        d = TOTPDevice.objects.create(user=self.user, name='Test')
+        self.client.get('/control/settings/2fa/totp/{}/delete'.format(d.pk))
+        self.client.post('/control/settings/2fa/totp/{}/delete'.format(d.pk))
         assert not TOTPDevice.objects.exists()
 
     def test_create_webauthn_require_https(self):
         r = self.client.post(
-            "/control/settings/2fa/add", {"devicetype": "webauthn", "name": "Foo"}
+            '/control/settings/2fa/add', {'devicetype': 'webauthn', 'name': 'Foo'}
         )
-        assert "alert-danger" in r.content.decode()
+        assert 'alert-danger' in r.content.decode()
 
     def test_create_webauthn(self):
         with mocker_context() as mocker:
-            mocker.patch("django.http.request.HttpRequest.is_secure")
+            mocker.patch('django.http.request.HttpRequest.is_secure')
             self.client.post(
-                "/control/settings/2fa/add", {"devicetype": "webauthn", "name": "Foo"}
+                '/control/settings/2fa/add', {'devicetype': 'webauthn', 'name': 'Foo'}
             )
             d = WebAuthnDevice.objects.first()
-            assert d.name == "Foo"
+            assert d.name == 'Foo'
             assert not d.confirmed
 
     def test_create_totp(self):
         self.client.post(
-            "/control/settings/2fa/add", {"devicetype": "totp", "name": "Foo"}
+            '/control/settings/2fa/add', {'devicetype': 'totp', 'name': 'Foo'}
         )
         d = TOTPDevice.objects.first()
-        assert d.name == "Foo"
+        assert d.name == 'Foo'
 
     def test_confirm_totp(self):
         self.client.post(
-            "/control/settings/2fa/add",
-            {"devicetype": "totp", "name": "Foo"},
+            '/control/settings/2fa/add',
+            {'devicetype': 'totp', 'name': 'Foo'},
             follow=True,
         )
         d = TOTPDevice.objects.first()
         totp = TOTP(d.bin_key, d.step, d.t0, d.digits, d.drift)
         totp.time = time.time()
         r = self.client.post(
-            "/control/settings/2fa/totp/{}/confirm".format(d.pk),
-            {"token": str(totp.token()), "activate": "on"},
+            '/control/settings/2fa/totp/{}/confirm'.format(d.pk),
+            {'token': str(totp.token()), 'activate': 'on'},
             follow=True,
         )
         d.refresh_from_db()
         assert d.confirmed
-        assert "alert-success" in r.content.decode()
+        assert 'alert-success' in r.content.decode()
         self.user.refresh_from_db()
         assert self.user.require_2fa
 
     def test_confirm_totp_failed(self):
         self.client.post(
-            "/control/settings/2fa/add",
-            {"devicetype": "totp", "name": "Foo"},
+            '/control/settings/2fa/add',
+            {'devicetype': 'totp', 'name': 'Foo'},
             follow=True,
         )
         d = TOTPDevice.objects.first()
         totp = TOTP(d.bin_key, d.step, d.t0, d.digits, d.drift)
         totp.time = time.time()
         r = self.client.post(
-            "/control/settings/2fa/totp/{}/confirm".format(d.pk),
-            {"token": str(totp.token() - 2)},
+            '/control/settings/2fa/totp/{}/confirm'.format(d.pk),
+            {'token': str(totp.token() - 2)},
             follow=True,
         )
-        assert "alert-danger" in r.content.decode()
+        assert 'alert-danger' in r.content.decode()
         d.refresh_from_db()
         assert not d.confirmed
 
     def test_confirm_webauthn_failed(self):
         with mocker_context() as mocker:
-            mocker.patch("django.http.request.HttpRequest.is_secure")
+            mocker.patch('django.http.request.HttpRequest.is_secure')
             self.client.post(
-                "/control/settings/2fa/add",
-                {"devicetype": "webauthn", "name": "Foo"},
+                '/control/settings/2fa/add',
+                {'devicetype': 'webauthn', 'name': 'Foo'},
                 follow=True,
             )
         d = WebAuthnDevice.objects.first()
         r = self.client.post(
-            "/control/settings/2fa/webauthn/{}/confirm".format(d.pk),
-            {"token": "FOO"},
+            '/control/settings/2fa/webauthn/{}/confirm'.format(d.pk),
+            {'token': 'FOO'},
             follow=True,
         )
-        assert "alert-danger" in r.content.decode()
+        assert 'alert-danger' in r.content.decode()
         d.refresh_from_db()
         assert not d.confirmed
 
     def test_confirm_webauthn_success(self):
         with mocker_context() as mocker:
-            mocker.patch("django.http.request.HttpRequest.is_secure")
+            mocker.patch('django.http.request.HttpRequest.is_secure')
             self.client.post(
-                "/control/settings/2fa/add",
-                {"devicetype": "webauthn", "name": "Foo"},
+                '/control/settings/2fa/add',
+                {'devicetype': 'webauthn', 'name': 'Foo'},
                 follow=True,
             )
 
         m = self.monkeypatch
         m.setattr(
-            "webauthn.verify_registration_response",
+            'webauthn.verify_registration_response',
             lambda *args, **kwargs: VerifiedRegistration(
-                b"", b"", 1, "", "foo", "public-key", True, b"", "single_device", True
+                b'', b'', 1, '', 'foo', 'public-key', True, b'', 'single_device', True
             ),
         )
 
         d = WebAuthnDevice.objects.first()
         r = self.client.post(
-            "/control/settings/2fa/webauthn/{}/confirm".format(d.pk),
-            {"token": "{}", "activate": "on"},
+            '/control/settings/2fa/webauthn/{}/confirm'.format(d.pk),
+            {'token': '{}', 'activate': 'on'},
             follow=True,
         )
         d.refresh_from_db()
         assert d.confirmed
-        assert "alert-success" in r.content.decode()
+        assert 'alert-success' in r.content.decode()
         self.user.refresh_from_db()
         assert self.user.require_2fa
         m.undo()
@@ -337,16 +337,16 @@ class UserSettings2FATest(SoupTest):
 class UserSettingsNotificationsTest(SoupTest):
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_user("dummy@dummy.dummy", "dummy")
-        self.client.login(email="dummy@dummy.dummy", password="dummy")
+        self.user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
+        self.client.login(email='dummy@dummy.dummy', password='dummy')
 
-        o = Organizer.objects.create(name="Dummy", slug="dummy")
+        o = Organizer.objects.create(name='Dummy', slug='dummy')
         self.event = Event.objects.create(
             organizer=o,
-            name="Dummy",
-            slug="dummy",
+            name='Dummy',
+            slug='dummy',
             date_from=now(),
-            plugins="pretix.plugins.banktransfer",
+            plugins='pretix.plugins.banktransfer',
         )
         t = o.teams.create(can_change_orders=True, all_events=True)
         t.members.add(self.user)
@@ -354,25 +354,25 @@ class UserSettingsNotificationsTest(SoupTest):
     def test_toggle_all(self):
         assert self.user.notifications_send
         self.client.post(
-            "/control/settings/notifications/", {"notifications_send": "off"}
+            '/control/settings/notifications/', {'notifications_send': 'off'}
         )
         self.user.refresh_from_db()
         assert not self.user.notifications_send
         self.client.post(
-            "/control/settings/notifications/", {"notifications_send": "on"}
+            '/control/settings/notifications/', {'notifications_send': 'on'}
         )
         self.user.refresh_from_db()
         assert self.user.notifications_send
 
     def test_global_enable(self):
         self.client.post(
-            "/control/settings/notifications/", {"mail:pretix.event.order.placed": "on"}
+            '/control/settings/notifications/', {'mail:pretix.event.order.placed': 'on'}
         )
         assert (
             self.user.notification_settings.get(
                 event__isnull=True,
-                method="mail",
-                action_type="pretix.event.order.placed",
+                method='mail',
+                action_type='pretix.event.order.placed',
             ).enabled
             is True
         )
@@ -380,19 +380,19 @@ class UserSettingsNotificationsTest(SoupTest):
     def test_global_disable(self):
         self.user.notification_settings.create(
             event=None,
-            method="mail",
-            action_type="pretix.event.order.placed",
+            method='mail',
+            action_type='pretix.event.order.placed',
             enabled=True,
         )
         self.client.post(
-            "/control/settings/notifications/",
-            {"mail:pretix.event.order.placed": "off"},
+            '/control/settings/notifications/',
+            {'mail:pretix.event.order.placed': 'off'},
         )
         assert (
             self.user.notification_settings.get(
                 event__isnull=True,
-                method="mail",
-                action_type="pretix.event.order.placed",
+                method='mail',
+                action_type='pretix.event.order.placed',
             ).enabled
             is False
         )
@@ -400,29 +400,29 @@ class UserSettingsNotificationsTest(SoupTest):
     def test_event_enabled_disable(self):
         self.user.notification_settings.create(
             event=self.event,
-            method="mail",
-            action_type="pretix.event.order.placed",
+            method='mail',
+            action_type='pretix.event.order.placed',
             enabled=True,
         )
         self.client.post(
-            "/control/settings/notifications/?event={}".format(self.event.pk),
-            {"mail:pretix.event.order.placed": "off"},
+            '/control/settings/notifications/?event={}'.format(self.event.pk),
+            {'mail:pretix.event.order.placed': 'off'},
         )
         assert (
             self.user.notification_settings.get(
-                event=self.event, method="mail", action_type="pretix.event.order.placed"
+                event=self.event, method='mail', action_type='pretix.event.order.placed'
             ).enabled
             is False
         )
 
     def test_event_global_disable(self):
         self.client.post(
-            "/control/settings/notifications/?event={}".format(self.event.pk),
-            {"mail:pretix.event.order.placed": "off"},
+            '/control/settings/notifications/?event={}'.format(self.event.pk),
+            {'mail:pretix.event.order.placed': 'off'},
         )
         assert (
             self.user.notification_settings.get(
-                event=self.event, method="mail", action_type="pretix.event.order.placed"
+                event=self.event, method='mail', action_type='pretix.event.order.placed'
             ).enabled
             is False
         )
@@ -430,29 +430,29 @@ class UserSettingsNotificationsTest(SoupTest):
     def test_event_disabled_enable(self):
         self.user.notification_settings.create(
             event=self.event,
-            method="mail",
-            action_type="pretix.event.order.placed",
+            method='mail',
+            action_type='pretix.event.order.placed',
             enabled=False,
         )
         self.client.post(
-            "/control/settings/notifications/?event={}".format(self.event.pk),
-            {"mail:pretix.event.order.placed": "on"},
+            '/control/settings/notifications/?event={}'.format(self.event.pk),
+            {'mail:pretix.event.order.placed': 'on'},
         )
         assert (
             self.user.notification_settings.get(
-                event=self.event, method="mail", action_type="pretix.event.order.placed"
+                event=self.event, method='mail', action_type='pretix.event.order.placed'
             ).enabled
             is True
         )
 
     def test_event_global_enable(self):
         self.client.post(
-            "/control/settings/notifications/?event={}".format(self.event.pk),
-            {"mail:pretix.event.order.placed": "on"},
+            '/control/settings/notifications/?event={}'.format(self.event.pk),
+            {'mail:pretix.event.order.placed': 'on'},
         )
         assert (
             self.user.notification_settings.get(
-                event=self.event, method="mail", action_type="pretix.event.order.placed"
+                event=self.event, method='mail', action_type='pretix.event.order.placed'
             ).enabled
             is True
         )
@@ -460,37 +460,37 @@ class UserSettingsNotificationsTest(SoupTest):
     def test_event_enabled_global(self):
         self.user.notification_settings.create(
             event=self.event,
-            method="mail",
-            action_type="pretix.event.order.placed",
+            method='mail',
+            action_type='pretix.event.order.placed',
             enabled=True,
         )
         self.client.post(
-            "/control/settings/notifications/?event={}".format(self.event.pk),
-            {"mail:pretix.event.order.placed": "global"},
+            '/control/settings/notifications/?event={}'.format(self.event.pk),
+            {'mail:pretix.event.order.placed': 'global'},
         )
         assert not self.user.notification_settings.filter(
-            event=self.event, method="mail", action_type="pretix.event.order.placed"
+            event=self.event, method='mail', action_type='pretix.event.order.placed'
         ).exists()
 
     def test_event_disabled_global(self):
         self.user.notification_settings.create(
             event=self.event,
-            method="mail",
-            action_type="pretix.event.order.placed",
+            method='mail',
+            action_type='pretix.event.order.placed',
             enabled=False,
         )
         self.client.post(
-            "/control/settings/notifications/?event={}".format(self.event.pk),
-            {"mail:pretix.event.order.placed": "global"},
+            '/control/settings/notifications/?event={}'.format(self.event.pk),
+            {'mail:pretix.event.order.placed': 'global'},
         )
         assert not self.user.notification_settings.filter(
-            event=self.event, method="mail", action_type="pretix.event.order.placed"
+            event=self.event, method='mail', action_type='pretix.event.order.placed'
         ).exists()
 
     def test_disable_all_via_link(self):
         assert self.user.notifications_send
         self.client.post(
-            "/control/settings/notifications/off/{}/{}/".format(
+            '/control/settings/notifications/off/{}/{}/'.format(
                 self.user.pk, self.user.notifications_token
             )
         )
@@ -501,7 +501,7 @@ class UserSettingsNotificationsTest(SoupTest):
         self.client.logout()
         assert self.user.notifications_send
         self.client.post(
-            "/control/settings/notifications/off/{}/{}/".format(
+            '/control/settings/notifications/off/{}/{}/'.format(
                 self.user.pk, self.user.notifications_token
             )
         )

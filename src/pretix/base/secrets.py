@@ -92,8 +92,8 @@ class BaseTicketSecretGenerator:
 
 
 class RandomTicketSecretGenerator(BaseTicketSecretGenerator):
-    verbose_name = _("Random (default, works with all apps in the ecosystem)")
-    identifier = "random"
+    verbose_name = _('Random (default, works with all apps in the ecosystem)')
+    identifier = 'random'
     use_revocation_list = False
 
     def generate_secret(
@@ -108,9 +108,9 @@ class RandomTicketSecretGenerator(BaseTicketSecretGenerator):
         if current_secret and not force_invalidate:
             return current_secret
         return get_random_string(
-            length=settings.ENTROPY["ticket_secret"],
+            length=settings.ENTROPY['ticket_secret'],
             # Exclude o,0,1,i,l to avoid confusion with bad fonts/printers
-            allowed_chars="abcdefghjkmnpqrstuvwxyz23456789",
+            allowed_chars='abcdefghjkmnpqrstuvwxyz23456789',
         )
 
 
@@ -131,10 +131,10 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
     """
 
     verbose_name = _(
-        "signature scheme 1 (for very large events, does not work with pretixSCAN on iOS and "
-        "changes semantics of offline scanning – please refer to documentation or support for details)"
+        'signature scheme 1 (for very large events, does not work with pretixSCAN on iOS and '
+        'changes semantics of offline scanning – please refer to documentation or support for details)'
     )
-    identifier = "pretix_sig1"
+    identifier = 'pretix_sig1'
     use_revocation_list = True
 
     def _generate_keys(self):
@@ -158,8 +158,8 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
         signature = privkey.sign(payload)
         return (
             bytes([0x01])
-            + struct.pack(">H", len(payload))
-            + struct.pack(">H", len(signature))
+            + struct.pack('>H', len(payload))
+            + struct.pack('>H', len(signature))
             + payload
             + signature
         )
@@ -168,10 +168,10 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
         try:
             rawbytes = base64.b64decode(secret[::-1])
             if rawbytes[0] != 1:
-                raise ValueError("Invalid version")
+                raise ValueError('Invalid version')
 
-            payload_len = struct.unpack(">H", rawbytes[1:3])[0]
-            sig_len = struct.unpack(">H", rawbytes[3:5])[0]
+            payload_len = struct.unpack('>H', rawbytes[1:3])[0]
+            sig_len = struct.unpack('>H', rawbytes[3:5])[0]
             payload = rawbytes[5 : 5 + payload_len]
             signature = rawbytes[5 + payload_len : 5 + payload_len + sig_len]
             pubkey = load_pem_public_key(
@@ -214,7 +214,7 @@ class Sig1TicketSecretGenerator(BaseTicketSecretGenerator):
         return result
 
 
-@receiver(register_ticket_secret_generators, dispatch_uid="ticket_generator_default")
+@receiver(register_ticket_secret_generators, dispatch_uid='ticket_generator_default')
 def recv_classic(sender, **kwargs):
     return [RandomTicketSecretGenerator, Sig1TicketSecretGenerator]
 
@@ -231,8 +231,8 @@ def assign_ticket_secret(
         force_invalidate = True
 
     kwargs = {}
-    if "attendee_name" in inspect.signature(gen.generate_secret).parameters:
-        kwargs["attendee_name"] = position.attendee_name
+    if 'attendee_name' in inspect.signature(gen.generate_secret).parameters:
+        kwargs['attendee_name'] = position.attendee_name
     secret = gen.generate_secret(
         item=position.item,
         variation=position.variation,

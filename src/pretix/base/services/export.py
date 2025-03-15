@@ -36,7 +36,7 @@ def export(
 ) -> None:
     def set_progress(val):
         if not self.request.called_directly:
-            self.update_state(state="PROGRESS", meta={"value": val})
+            self.update_state(state='PROGRESS', meta={'value': val})
 
     file = CachedFile.objects.get(id=fileid)
     with (
@@ -49,7 +49,7 @@ def export(
             if ex.identifier == provider:
                 d = ex.render(form_data)
                 if d is None:
-                    raise ExportError(gettext("Your export did not contain any data."))
+                    raise ExportError(gettext('Your export did not contain any data.'))
                 file.filename, file.type, data = d
                 file.file.save(cachedfile_name(file, file.filename), ContentFile(data))
                 file.save()
@@ -72,12 +72,12 @@ def multiexport(
     if token:
         device = TeamAPIToken.objects.get(pk=token)
     allowed_events = (device or token or user).get_events_with_permission(
-        "can_view_orders"
+        'can_view_orders'
     )
 
     def set_progress(val):
         if not self.request.called_directly:
-            self.update_state(state="PROGRESS", meta={"value": val})
+            self.update_state(state='PROGRESS', meta={'value': val})
 
     file = CachedFile.objects.get(id=fileid)
     if user:
@@ -95,12 +95,12 @@ def multiexport(
             timezone = settings.TIME_ZONE
             region = None
     with language(locale, region), override(timezone):
-        if isinstance(form_data["events"][0], str):
+        if isinstance(form_data['events'][0], str):
             events = allowed_events.filter(
-                slug__in=form_data.get("events"), organizer=organizer
+                slug__in=form_data.get('events'), organizer=organizer
             )
         else:
-            events = allowed_events.filter(pk__in=form_data.get("events"))
+            events = allowed_events.filter(pk__in=form_data.get('events'))
         responses = register_multievent_data_exporters.send(organizer)
 
         for receiver, response in responses:
@@ -110,7 +110,7 @@ def multiexport(
             if ex.identifier == provider:
                 d = ex.render(form_data)
                 if d is None:
-                    raise ExportError(gettext("Your export did not contain any data."))
+                    raise ExportError(gettext('Your export did not contain any data.'))
                 file.filename, file.type, data = d
                 file.file.save(cachedfile_name(file, file.filename), ContentFile(data))
                 file.save()

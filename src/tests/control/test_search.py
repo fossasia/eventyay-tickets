@@ -21,40 +21,40 @@ class OrderSearchTest(SoupTest):
     @scopes_disabled()
     def setUp(self):
         super().setUp()
-        self.user = User.objects.create_user("dummy@dummy.dummy", "dummy")
-        self.orga1 = Organizer.objects.create(name="CCC", slug="ccc")
+        self.user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
+        self.orga1 = Organizer.objects.create(name='CCC', slug='ccc')
         self.event1 = Event.objects.create(
             organizer=self.orga1,
-            name="30C3",
-            slug="30c3",
+            name='30C3',
+            slug='30c3',
             date_from=datetime.datetime(2013, 12, 26, tzinfo=datetime.timezone.utc),
-            plugins="pretix.plugins.banktransfer,tests.testdummy",
+            plugins='pretix.plugins.banktransfer,tests.testdummy',
         )
         self.event2 = Event.objects.create(
             organizer=self.orga1,
-            name="31C3",
-            slug="31c3",
+            name='31C3',
+            slug='31c3',
             date_from=datetime.datetime(2014, 12, 26, tzinfo=datetime.timezone.utc),
         )
 
         o1 = Order.objects.create(
-            code="FO1A",
+            code='FO1A',
             event=self.event1,
-            email="dummy1@dummy.test",
+            email='dummy1@dummy.test',
             status=Order.STATUS_PENDING,
             datetime=now(),
             expires=now() + datetime.timedelta(days=10),
             total=14,
-            locale="en",
+            locale='en',
         )
         InvoiceAddress.objects.create(
             order=o1,
-            company="Test Ltd.",
-            name_parts={"full_name": "Peter Miller", "_scheme": "full"},
+            company='Test Ltd.',
+            name_parts={'full_name': 'Peter Miller', '_scheme': 'full'},
         )
         ticket1 = Item.objects.create(
             event=self.event1,
-            name="Early-bird ticket",
+            name='Early-bird ticket',
             category=None,
             default_price=23,
             admission=True,
@@ -63,24 +63,24 @@ class OrderSearchTest(SoupTest):
             order=o1,
             item=ticket1,
             variation=None,
-            price=Decimal("14"),
-            attendee_name_parts={"full_name": "Peter", "_scheme": "full"},
-            attendee_email="att@att.com",
+            price=Decimal('14'),
+            attendee_name_parts={'full_name': 'Peter', '_scheme': 'full'},
+            attendee_email='att@att.com',
         )
 
         o2 = Order.objects.create(
-            code="FO2",
+            code='FO2',
             event=self.event2,
-            email="dummy2@dummy.test",
+            email='dummy2@dummy.test',
             status=Order.STATUS_PENDING,
             datetime=now(),
             expires=now() + datetime.timedelta(days=10),
             total=14,
-            locale="en",
+            locale='en',
         )
         ticket2 = Item.objects.create(
             event=self.event1,
-            name="Early-bird ticket",
+            name='Early-bird ticket',
             category=None,
             default_price=23,
             admission=True,
@@ -89,48 +89,48 @@ class OrderSearchTest(SoupTest):
             order=o2,
             item=ticket2,
             variation=None,
-            price=Decimal("14"),
-            attendee_name_parts={"full_name": "Mark", "_scheme": "full"},
+            price=Decimal('14'),
+            attendee_name_parts={'full_name': 'Mark', '_scheme': 'full'},
         )
 
         self.team = Team.objects.create(organizer=self.orga1, can_view_orders=True)
         self.team.members.add(self.user)
         self.team.limit_events.add(self.event1)
 
-        self.client.login(email="dummy@dummy.dummy", password="dummy")
+        self.client.login(email='dummy@dummy.dummy', password='dummy')
 
     def test_team_limit_event(self):
-        resp = self.client.get("/control/search/orders/").content.decode()
-        assert "FO1" in resp
-        assert "FO2" not in resp
+        resp = self.client.get('/control/search/orders/').content.decode()
+        assert 'FO1' in resp
+        assert 'FO2' not in resp
 
     def test_team_limit_event_wrong_permission(self):
         self.team.can_view_orders = False
         self.team.save()
-        resp = self.client.get("/control/search/orders/").content.decode()
-        assert "FO1" not in resp
-        assert "FO2" not in resp
+        resp = self.client.get('/control/search/orders/').content.decode()
+        assert 'FO1' not in resp
+        assert 'FO2' not in resp
 
     def test_team_all_events(self):
         self.team.all_events = True
         self.team.save()
-        resp = self.client.get("/control/search/orders/").content.decode()
-        assert "FO1" in resp
-        assert "FO2" in resp
+        resp = self.client.get('/control/search/orders/').content.decode()
+        assert 'FO1' in resp
+        assert 'FO2' in resp
 
     def test_team_all_events_wrong_permission(self):
         self.team.all_events = True
         self.team.can_view_orders = False
         self.team.save()
-        resp = self.client.get("/control/search/orders/").content.decode()
-        assert "FO1" not in resp
-        assert "FO2" not in resp
+        resp = self.client.get('/control/search/orders/').content.decode()
+        assert 'FO1' not in resp
+        assert 'FO2' not in resp
 
     def test_team_none(self):
         self.team.members.clear()
-        resp = self.client.get("/control/search/orders/").content.decode()
-        assert "FO1" not in resp
-        assert "FO2" not in resp
+        resp = self.client.get('/control/search/orders/').content.decode()
+        assert 'FO1' not in resp
+        assert 'FO2' not in resp
 
     def test_superuser(self):
         self.user.is_staff = True
@@ -139,58 +139,58 @@ class OrderSearchTest(SoupTest):
         )
         self.user.save()
         self.team.members.clear()
-        resp = self.client.get("/control/search/orders/").content.decode()
-        assert "FO1" in resp
-        assert "FO2" in resp
+        resp = self.client.get('/control/search/orders/').content.decode()
+        assert 'FO1' in resp
+        assert 'FO2' in resp
 
     def test_filter_email(self):
         resp = self.client.get(
-            "/control/search/orders/?query=dummy1@dummy"
+            '/control/search/orders/?query=dummy1@dummy'
         ).content.decode()
-        assert "FO1" in resp
+        assert 'FO1' in resp
         resp = self.client.get(
-            "/control/search/orders/?query=dummynope"
+            '/control/search/orders/?query=dummynope'
         ).content.decode()
-        assert "FO1" not in resp
+        assert 'FO1' not in resp
 
     def test_filter_attendee_name(self):
-        resp = self.client.get("/control/search/orders/?query=Pete").content.decode()
-        assert "FO1" in resp
-        resp = self.client.get("/control/search/orders/?query=Mark").content.decode()
-        assert "FO1" not in resp
+        resp = self.client.get('/control/search/orders/?query=Pete').content.decode()
+        assert 'FO1' in resp
+        resp = self.client.get('/control/search/orders/?query=Mark').content.decode()
+        assert 'FO1' not in resp
 
     def test_filter_attendee_email(self):
-        resp = self.client.get("/control/search/orders/?query=att.com").content.decode()
-        assert "FO1" in resp
+        resp = self.client.get('/control/search/orders/?query=att.com').content.decode()
+        assert 'FO1' in resp
         resp = self.client.get(
-            "/control/search/orders/?query=nope.com"
+            '/control/search/orders/?query=nope.com'
         ).content.decode()
-        assert "FO1" not in resp
+        assert 'FO1' not in resp
 
     def test_filter_invoice_address(self):
-        resp = self.client.get("/control/search/orders/?query=Ltd").content.decode()
-        assert "FO1" in resp
-        resp = self.client.get("/control/search/orders/?query=Miller").content.decode()
-        assert "FO1" in resp
+        resp = self.client.get('/control/search/orders/?query=Ltd').content.decode()
+        assert 'FO1' in resp
+        resp = self.client.get('/control/search/orders/?query=Miller').content.decode()
+        assert 'FO1' in resp
 
     def test_filter_code(self):
-        resp = self.client.get("/control/search/orders/?query=FO1").content.decode()
-        assert "30C3-FO1" in resp
+        resp = self.client.get('/control/search/orders/?query=FO1').content.decode()
+        assert '30C3-FO1' in resp
         resp = self.client.get(
-            "/control/search/orders/?query=30c3-FO1"
+            '/control/search/orders/?query=30c3-FO1'
         ).content.decode()
-        assert "30C3-FO1" in resp
+        assert '30C3-FO1' in resp
         resp = self.client.get(
-            "/control/search/orders/?query=30C3-fO1A"
+            '/control/search/orders/?query=30C3-fO1A'
         ).content.decode()
-        assert "30C3-FO1" in resp
+        assert '30C3-FO1' in resp
         resp = self.client.get(
-            "/control/search/orders/?query=30C3-fo14"
+            '/control/search/orders/?query=30C3-fo14'
         ).content.decode()
-        assert "30C3-FO1" in resp
+        assert '30C3-FO1' in resp
         resp = self.client.get(
-            "/control/search/orders/?query=31c3-FO1"
+            '/control/search/orders/?query=31c3-FO1'
         ).content.decode()
-        assert "30C3-FO1" not in resp
-        resp = self.client.get("/control/search/orders/?query=FO2").content.decode()
-        assert "30C3-FO1" not in resp
+        assert '30C3-FO1' not in resp
+        resp = self.client.get('/control/search/orders/?query=FO2').content.decode()
+        assert '30C3-FO1' not in resp

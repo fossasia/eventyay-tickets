@@ -41,9 +41,9 @@ class CreateWorldTask(Task):
         """
         if not event.plugins:
             return plugin_name
-        plugins = set(event.plugins.split(","))
+        plugins = set(event.plugins.split(','))
         plugins.add(plugin_name)
-        return ",".join(plugins)
+        return ','.join(plugins)
 
     def attach_plugin_to_event(self, plugin_name: str, event_slug: str) -> None:
         """
@@ -62,7 +62,7 @@ class CreateWorldTask(Task):
                 event.plugins = self.add_plugin(event, plugin_name)
                 event.save()
         except Event.DoesNotExist:
-            logger.error("Event does not exist: %s", event_slug)
+            logger.error('Event does not exist: %s', event_slug)
             raise ValueError(f"Event with slug '{event_slug}' does not exist")
 
     def save_video_settings_information(
@@ -89,14 +89,14 @@ class CreateWorldTask(Task):
                 else:
                     errors = video_config_form.errors
                     logger.error(
-                        "Video integration configuration failed - Validation errors: %s",
+                        'Video integration configuration failed - Validation errors: %s',
                         errors,
                     )
                     raise ValueError(
-                        f"Failed to validate video integration settings: {errors}"
+                        f'Failed to validate video integration settings: {errors}'
                     )
         except Event.DoesNotExist:
-            logger.error("Event does not exist: %s", event_id)
+            logger.error('Event does not exist: %s', event_id)
             raise ValueError(f"Event with ID '{event_id}' does not exist")
 
     def check_installed_plugin(self, plugin_name: str) -> bool:
@@ -115,7 +115,7 @@ class CreateWorldTask(Task):
                 return True
             return False
         except ImportError:
-            logger.warning("Failed to import plugin: %s", plugin_name)
+            logger.warning('Failed to import plugin: %s', plugin_name)
             return False
 
     def extract_jwt_config(self, world_data: dict) -> dict:
@@ -129,18 +129,18 @@ class CreateWorldTask(Task):
             dict: JWT configuration with secret, issuer, and audience
         """
         try:
-            config = world_data.get("config", {})
-            jwt_secrets = config.get("JWT_secrets", [])
+            config = world_data.get('config', {})
+            jwt_secrets = config.get('JWT_secrets', [])
             jwt_config = jwt_secrets[0] if jwt_secrets else {}
 
             return {
-                "secret": jwt_config.get("secret", ""),
-                "issuer": jwt_config.get("issuer", ""),
-                "audience": jwt_config.get("audience", ""),
+                'secret': jwt_config.get('secret', ''),
+                'issuer': jwt_config.get('issuer', ''),
+                'audience': jwt_config.get('audience', ''),
             }
         except (KeyError, IndexError) as e:
-            logger.warning("Failed to extract JWT config: %s", e)
-            return {"secret": "", "issuer": "", "audience": ""}
+            logger.warning('Failed to extract JWT config: %s', e)
+            return {'secret': '', 'issuer': '', 'audience': ''}
 
     def setup_video_plugin(self, world_data: dict) -> None:
         """
@@ -152,16 +152,16 @@ class CreateWorldTask(Task):
         Raises:
             ValueError: If plugin is not installed or configuration fails
         """
-        plugin_name = "pretix_venueless"
+        plugin_name = 'pretix_venueless'
         if not self.check_installed_plugin(plugin_name):
             logger.error(
-                "Video integration configuration failed - Plugin not installed"
+                'Video integration configuration failed - Plugin not installed'
             )
             raise ValueError(f"Plugin '{plugin_name}' is not installed")
 
-        event_id = world_data.get("id")
+        event_id = world_data.get('id')
         if not event_id:
-            raise ValueError("World data missing event ID")
+            raise ValueError('World data missing event ID')
 
         # Setup plugin
         self.attach_plugin_to_event(plugin_name, event_id)
@@ -169,13 +169,13 @@ class CreateWorldTask(Task):
         # Configure video settings
         jwt_config = self.extract_jwt_config(world_data)
         video_settings = {
-            "venueless_url": world_data.get("domain", ""),
-            "venueless_secret": jwt_config["secret"],
-            "venueless_issuer": jwt_config["issuer"],
-            "venueless_audience": jwt_config["audience"],
-            "venueless_all_items": True,
-            "venueless_items": [],
-            "venueless_questions": [],
+            'venueless_url': world_data.get('domain', ''),
+            'venueless_secret': jwt_config['secret'],
+            'venueless_issuer': jwt_config['issuer'],
+            'venueless_audience': jwt_config['audience'],
+            'venueless_all_items': True,
+            'venueless_items': [],
+            'venueless_questions': [],
         }
 
         self.save_video_settings_information(event_id, video_settings)
@@ -198,7 +198,7 @@ class CreateWorldTask(Task):
             try:
                 self.setup_video_plugin(retval)
             except ValueError as e:
-                logger.error("Video integration configuration failed: %s", e)
+                logger.error('Video integration configuration failed: %s', e)
         return super().on_success(retval, task_id, args, kwargs)
 
 
@@ -218,12 +218,12 @@ class SendEventTask(Task):
         Returns:
             Any: Result from parent class on_success method
         """
-        event_slug = kwargs.get("event", {}).get("slug", "")
+        event_slug = kwargs.get('event', {}).get('slug', '')
         try:
             with scopes_disabled():
                 event = Event.objects.get(slug=event_slug)
-                event.settings.set("create_for", EventCreatedFor.BOTH.value)
+                event.settings.set('create_for', EventCreatedFor.BOTH.value)
                 event.save()
         except Event.DoesNotExist:
-            logger.error("Event with slug %s does not exist", event_slug)
+            logger.error('Event with slug %s does not exist', event_slug)
         return super().on_success(retval, task_id, args, kwargs)

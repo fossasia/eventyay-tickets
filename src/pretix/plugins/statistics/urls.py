@@ -4,8 +4,8 @@ from . import views
 
 urlpatterns = [
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/statistics/",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/statistics/',
         views.IndexView.as_view(),
-        name="index",
+        name='index',
     ),
 ]

@@ -29,13 +29,13 @@ from pretix.presale.signals import question_form_fields
 def cached_invoice_address(request):
     from .cart import cart_session
 
-    if not hasattr(request, "_checkout_flow_invoice_address"):
+    if not hasattr(request, '_checkout_flow_invoice_address'):
         if not request.session.session_key:
             # do not create a session, if we don't have a session we also don't have an invoice address ;)
             request._checkout_flow_invoice_address = InvoiceAddress()
             return request._checkout_flow_invoice_address
         cs = cart_session(request)
-        iapk = cs.get("invoice_address")
+        iapk = cs.get('invoice_address')
         if not iapk:
             request._checkout_flow_invoice_address = InvoiceAddress()
         else:
@@ -71,30 +71,30 @@ class CartMixin:
         if queryset is not None:
             prefetch = []
             if answers:
-                prefetch.append("item__questions")
+                prefetch.append('item__questions')
                 prefetch.append(
                     Prefetch(
-                        "answers",
-                        queryset=QuestionAnswer.objects.prefetch_related("options"),
+                        'answers',
+                        queryset=QuestionAnswer.objects.prefetch_related('options'),
                     )
                 )
 
             cartpos = (
                 queryset.order_by(
-                    "item__category__position",
-                    "item__category_id",
-                    "item__position",
-                    "item__name",
-                    "variation__value",
+                    'item__category__position',
+                    'item__category_id',
+                    'item__position',
+                    'item__name',
+                    'variation__value',
                 )
                 .select_related(
-                    "item",
-                    "variation",
-                    "addon_to",
-                    "subevent",
-                    "subevent__event",
-                    "subevent__event__organizer",
-                    "seat",
+                    'item',
+                    'variation',
+                    'addon_to',
+                    'subevent',
+                    'subevent__event',
+                    'subevent__event__organizer',
+                    'seat',
                 )
                 .prefetch_related(*prefetch)
             )
@@ -120,8 +120,8 @@ class CartMixin:
                     for key, value in response.items():
                         pos_additional_fields[cp.pk].append(
                             {
-                                "answer": data.get("question_form_data", {}).get(key),
-                                "question": value.label,
+                                'answer': data.get('question_form_data', {}).get(key),
+                                'question': value.label,
                             }
                         )
 
@@ -200,8 +200,8 @@ class CartMixin:
             group.count = len(g)
             group.total = group.count * group.price
             group.net_total = group.count * group.net_price
-            group.has_questions = answers and k[0] != ""
-            if not hasattr(group, "tax_rule"):
+            group.has_questions = answers and k[0] != ''
+            if not hasattr(group, 'tax_rule'):
                 group.tax_rule = group.item.tax_rule
 
             group.bundle_sum = group.price + sum(a.price for a in has_addons[group.pk])
@@ -226,7 +226,7 @@ class CartMixin:
                 self.request,
                 total,
                 self.invoice_address,
-                self.cart_session.get("payment"),
+                self.cart_session.get('payment'),
                 cartpos,
             )
         else:
@@ -247,26 +247,26 @@ class CartMixin:
             seconds_left = None
 
         return {
-            "positions": positions,
-            "invoice_address": self.invoice_address,
-            "all_with_voucher": all(p.voucher_id for p in positions),
-            "raw": cartpos,
-            "total": total,
-            "net_total": net_total,
-            "tax_total": tax_total,
-            "fees": fees,
-            "answers": answers,
-            "minutes_left": minutes_left,
-            "seconds_left": seconds_left,
-            "first_expiry": first_expiry,
-            "itemcount": sum(c.count for c in positions if not c.addon_to),
+            'positions': positions,
+            'invoice_address': self.invoice_address,
+            'all_with_voucher': all(p.voucher_id for p in positions),
+            'raw': cartpos,
+            'total': total,
+            'net_total': net_total,
+            'tax_total': tax_total,
+            'fees': fees,
+            'answers': answers,
+            'minutes_left': minutes_left,
+            'seconds_left': seconds_left,
+            'first_expiry': first_expiry,
+            'itemcount': sum(c.count for c in positions if not c.addon_to),
         }
 
 
 def cart_exists(request):
     from pretix.presale.views.cart import get_or_create_cart_id
 
-    if not hasattr(request, "_cart_cache"):
+    if not hasattr(request, '_cart_cache'):
         return CartPosition.objects.filter(
             cart_id=get_or_create_cart_id(request), event=request.event
         ).exists()
@@ -279,7 +279,7 @@ def get_cart(request):
     qqs = request.event.questions.all()
     qqs = qqs.filter(ask_during_checkin=False, hidden=False)
 
-    if not hasattr(request, "_cart_cache"):
+    if not hasattr(request, '_cart_cache'):
         cart_id = get_or_create_cart_id(request, create=False)
         if not cart_id:
             request._cart_cache = CartPosition.objects.none()
@@ -288,53 +288,53 @@ def get_cart(request):
                 CartPosition.objects.filter(cart_id=cart_id, event=request.event)
                 .annotate(
                     has_addon_choices=Exists(
-                        ItemAddOn.objects.filter(base_item_id=OuterRef("item_id"))
+                        ItemAddOn.objects.filter(base_item_id=OuterRef('item_id'))
                     )
                 )
                 .order_by(
-                    "item__category__position",
-                    "item__category_id",
-                    "item__position",
-                    "item__name",
-                    "variation__value",
+                    'item__category__position',
+                    'item__category_id',
+                    'item__position',
+                    'item__name',
+                    'variation__value',
                 )
                 .select_related(
-                    "item",
-                    "variation",
-                    "subevent",
-                    "subevent__event",
-                    "subevent__event__organizer",
-                    "item__tax_rule",
-                    "addon_to",
+                    'item',
+                    'variation',
+                    'subevent',
+                    'subevent__event',
+                    'subevent__event__organizer',
+                    'item__tax_rule',
+                    'addon_to',
                 )
-                .select_related("addon_to")
+                .select_related('addon_to')
                 .prefetch_related(
-                    "addons",
-                    "addons__item",
-                    "addons__variation",
+                    'addons',
+                    'addons__item',
+                    'addons__variation',
                     Prefetch(
-                        "answers",
-                        QuestionAnswer.objects.prefetch_related("options"),
-                        to_attr="answerlist",
+                        'answers',
+                        QuestionAnswer.objects.prefetch_related('options'),
+                        to_attr='answerlist',
                     ),
                     Prefetch(
-                        "item__questions",
+                        'item__questions',
                         qqs.prefetch_related(
                             Prefetch(
-                                "options",
+                                'options',
                                 QuestionOption.objects.prefetch_related(
                                     Prefetch(
                                         # This prefetch statement is utter bullshit, but it actually prevents Django from doing
                                         # a lot of queries since ModelChoiceIterator stops trying to be clever once we have
                                         # a prefetch lookup on this query...
-                                        "question",
+                                        'question',
                                         Question.objects.none(),
-                                        to_attr="dummy",
+                                        to_attr='dummy',
                                     )
                                 ),
                             )
-                        ).select_related("dependency_question"),
-                        to_attr="questions_to_ask",
+                        ).select_related('dependency_question'),
+                        to_attr='questions_to_ask',
                     ),
                 )
             )
@@ -348,22 +348,22 @@ def get_cart(request):
 def get_cart_total(request):
     from pretix.presale.views.cart import get_or_create_cart_id
 
-    if not hasattr(request, "_cart_total_cache"):
-        if hasattr(request, "_cart_cache"):
+    if not hasattr(request, '_cart_total_cache'):
+        if hasattr(request, '_cart_cache'):
             request._cart_total_cache = sum(i.price for i in request._cart_cache)
         else:
             request._cart_total_cache = CartPosition.objects.filter(
                 cart_id=get_or_create_cart_id(request), event=request.event
-            ).aggregate(sum=Sum("price"))["sum"] or Decimal("0.00")
+            ).aggregate(sum=Sum('price'))['sum'] or Decimal('0.00')
     return request._cart_total_cache
 
 
 def get_cart_invoice_address(request):
     from pretix.presale.views.cart import cart_session
 
-    if not hasattr(request, "_checkout_flow_invoice_address"):
+    if not hasattr(request, '_checkout_flow_invoice_address'):
         cs = cart_session(request)
-        iapk = cs.get("invoice_address")
+        iapk = cs.get('invoice_address')
         if not iapk:
             request._checkout_flow_invoice_address = InvoiceAddress()
         else:
@@ -380,33 +380,33 @@ def get_cart_invoice_address(request):
 def get_cart_is_free(request):
     from pretix.presale.views.cart import cart_session
 
-    if not hasattr(request, "_cart_free_cache"):
+    if not hasattr(request, '_cart_free_cache'):
         cs = cart_session(request)
         pos = get_cart(request)
         ia = get_cart_invoice_address(request)
         total = get_cart_total(request)
-        fees = get_fees(request.event, request, total, ia, cs.get("payment"), pos)
-        request._cart_free_cache = total + sum(f.value for f in fees) == Decimal("0.00")
+        fees = get_fees(request.event, request, total, ia, cs.get('payment'), pos)
+        request._cart_free_cache = total + sum(f.value for f in fees) == Decimal('0.00')
     return request._cart_free_cache
 
 
 class EventViewMixin:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["event"] = self.request.event
+        context['event'] = self.request.event
         return context
 
     def get_index_url(self):
         kwargs = {}
-        if "cart_namespace" in self.kwargs:
-            kwargs["cart_namespace"] = self.kwargs["cart_namespace"]
-        return eventreverse(self.request.event, "presale:event.index", kwargs=kwargs)
+        if 'cart_namespace' in self.kwargs:
+            kwargs['cart_namespace'] = self.kwargs['cart_namespace']
+        return eventreverse(self.request.event, 'presale:event.index', kwargs=kwargs)
 
 
 class OrganizerViewMixin:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["organizer"] = self.request.organizer
+        context['organizer'] = self.request.organizer
         return context
 
 
@@ -419,7 +419,7 @@ def allow_frame_if_namespaced(view_func):
     def wrapped_view(request, *args, **kwargs):
         resp = view_func(request, *args, **kwargs)
         if request.resolver_match and request.resolver_match.kwargs.get(
-            "cart_namespace"
+            'cart_namespace'
         ):
             resp.xframe_options_exempt = True
         return resp
@@ -436,9 +436,9 @@ def allow_cors_if_namespaced(view_func):
     def wrapped_view(request, *args, **kwargs):
         resp = view_func(request, *args, **kwargs)
         if request.resolver_match and request.resolver_match.kwargs.get(
-            "cart_namespace"
+            'cart_namespace'
         ):
-            resp["Access-Control-Allow-Origin"] = "*"
+            resp['Access-Control-Allow-Origin'] = '*'
         return resp
 
     return wraps(view_func)(wrapped_view)
@@ -446,13 +446,13 @@ def allow_cors_if_namespaced(view_func):
 
 def iframe_entry_view_wrapper(view_func):
     def wrapped_view(request, *args, **kwargs):
-        if "iframe" in request.GET:
-            request.session["iframe_session"] = True
+        if 'iframe' in request.GET:
+            request.session['iframe_session'] = True
 
-        locale = request.GET.get("locale")
+        locale = request.GET.get('locale')
         if locale and locale in [lc for lc, ll in settings.LANGUAGES]:
             region = None
-            if hasattr(request, "event"):
+            if hasattr(request, 'event'):
                 region = request.event.settings.region
             with language(locale, region):
                 resp = view_func(request, *args, **kwargs)
@@ -464,7 +464,7 @@ def iframe_entry_view_wrapper(view_func):
                 locale,
                 max_age=max_age,
                 expires=(datetime.utcnow() + timedelta(seconds=max_age)).strftime(
-                    "%a, %d-%b-%Y %H:%M:%S GMT"
+                    '%a, %d-%b-%Y %H:%M:%S GMT'
                 ),
                 domain=settings.SESSION_COOKIE_DOMAIN,
             )

@@ -33,50 +33,50 @@ from .models import BadgeLayout
 
 class LayoutListView(EventPermissionRequiredMixin, ListView):
     model = BadgeLayout
-    permission = ("can_change_event_settings", "can_view_orders")
-    template_name = "pretixplugins/badges/index.html"
-    context_object_name = "layouts"
+    permission = ('can_change_event_settings', 'can_view_orders')
+    template_name = 'pretixplugins/badges/index.html'
+    context_object_name = 'layouts'
 
     def get_queryset(self):
-        return self.request.event.badge_layouts.prefetch_related("item_assignments")
+        return self.request.event.badge_layouts.prefetch_related('item_assignments')
 
 
 class LayoutCreate(EventPermissionRequiredMixin, CreateView):
     model = BadgeLayout
     form_class = BadgeLayoutForm
-    template_name = "pretixplugins/badges/edit.html"
-    permission = "can_change_event_settings"
-    context_object_name = "layout"
-    success_url = "/ignored"
+    template_name = 'pretixplugins/badges/edit.html'
+    permission = 'can_change_event_settings'
+    context_object_name = 'layout'
+    success_url = '/ignored'
 
     @transaction.atomic
     def form_valid(self, form):
         form.instance.event = self.request.event
         if not self.request.event.badge_layouts.filter(default=True).exists():
             form.instance.default = True
-        messages.success(self.request, _("The new badge layout has been created."))
+        messages.success(self.request, _('The new badge layout has been created.'))
         super().form_valid(form)
         if form.instance.background and form.instance.background.name:
-            form.instance.background.save("background.pdf", form.instance.background)
+            form.instance.background.save('background.pdf', form.instance.background)
         form.instance.log_action(
-            "pretix.plugins.badges.layout.added",
+            'pretix.plugins.badges.layout.added',
             user=self.request.user,
             data=dict(form.cleaned_data),
         )
         return redirect(
             reverse(
-                "plugins:badges:edit",
+                'plugins:badges:edit',
                 kwargs={
-                    "organizer": self.request.event.organizer.slug,
-                    "event": self.request.event.slug,
-                    "layout": form.instance.pk,
+                    'organizer': self.request.event.organizer.slug,
+                    'event': self.request.event.slug,
+                    'layout': form.instance.pk,
                 },
             )
         )
 
     def form_invalid(self, form):
         messages.error(
-            self.request, _("We could not save your changes. See below for details.")
+            self.request, _('We could not save your changes. See below for details.')
         )
         return super().form_invalid(form)
 
@@ -85,10 +85,10 @@ class LayoutCreate(EventPermissionRequiredMixin, CreateView):
 
     @cached_property
     def copy_from(self):
-        if self.request.GET.get("copy_from") and not getattr(self, "object", None):
+        if self.request.GET.get('copy_from') and not getattr(self, 'object', None):
             try:
                 return self.request.event.badge_layouts.get(
-                    pk=self.request.GET.get("copy_from")
+                    pk=self.request.GET.get('copy_from')
                 )
             except BadgeLayout.DoesNotExist:
                 pass
@@ -100,73 +100,73 @@ class LayoutCreate(EventPermissionRequiredMixin, CreateView):
             i = modelcopy(self.copy_from)
             i.pk = None
             i.default = False
-            kwargs["instance"] = i
-            kwargs.setdefault("initial", {})
+            kwargs['instance'] = i
+            kwargs.setdefault('initial', {})
         return kwargs
 
 
 class LayoutSetDefault(EventPermissionRequiredMixin, DetailView):
     model = BadgeLayout
-    permission = "can_change_event_settings"
+    permission = 'can_change_event_settings'
 
     def get_object(self, queryset=None) -> BadgeLayout:
         try:
-            return self.request.event.badge_layouts.get(id=self.kwargs["layout"])
+            return self.request.event.badge_layouts.get(id=self.kwargs['layout'])
         except BadgeLayout.DoesNotExist:
-            raise Http404(_("The requested badge layout does not exist."))
+            raise Http404(_('The requested badge layout does not exist.'))
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
-        messages.success(self.request, _("Your changes have been saved."))
+        messages.success(self.request, _('Your changes have been saved.'))
         obj = self.get_object()
         self.request.event.badge_layouts.exclude(pk=obj.pk).update(default=False)
         obj.default = True
-        obj.save(update_fields=["default"])
+        obj.save(update_fields=['default'])
         return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
         return reverse(
-            "plugins:badges:index",
+            'plugins:badges:index',
             kwargs={
-                "organizer": self.request.event.organizer.slug,
-                "event": self.request.event.slug,
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
             },
         )
 
 
 class LayoutDelete(EventPermissionRequiredMixin, DeleteView):
     model = BadgeLayout
-    template_name = "pretixplugins/badges/delete.html"
-    permission = "can_change_event_settings"
-    context_object_name = "layout"
+    template_name = 'pretixplugins/badges/delete.html'
+    permission = 'can_change_event_settings'
+    context_object_name = 'layout'
 
     def get_object(self, queryset=None) -> BadgeLayout:
         try:
-            return self.request.event.badge_layouts.get(id=self.kwargs["layout"])
+            return self.request.event.badge_layouts.get(id=self.kwargs['layout'])
         except BadgeLayout.DoesNotExist:
-            raise Http404(_("The requested badge layout does not exist."))
+            raise Http404(_('The requested badge layout does not exist.'))
 
     @transaction.atomic
     def form_valid(self, form):
         self.object = self.get_object()
         self.object.log_action(
-            action="pretix.plugins.badges.layout.deleted", user=self.request.user
+            action='pretix.plugins.badges.layout.deleted', user=self.request.user
         )
         self.object.delete()
         if not self.request.event.badge_layouts.filter(default=True).exists():
             f = self.request.event.badge_layouts.first()
             if f:
                 f.default = True
-                f.save(update_fields=["default"])
-        messages.success(self.request, _("The selected badge layout been deleted."))
+                f.save(update_fields=['default'])
+        messages.success(self.request, _('The selected badge layout been deleted.'))
         return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
         return reverse(
-            "plugins:badges:index",
+            'plugins:badges:index',
             kwargs={
-                "organizer": self.request.event.organizer.slug,
-                "event": self.request.event.slug,
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
             },
         )
 
@@ -175,25 +175,25 @@ class LayoutEditorView(BaseEditorView):
     @cached_property
     def layout(self):
         try:
-            return self.request.event.badge_layouts.get(id=self.kwargs["layout"])
+            return self.request.event.badge_layouts.get(id=self.kwargs['layout'])
         except BadgeLayout.DoesNotExist:
-            raise Http404(_("The requested badge layout does not exist."))
+            raise Http404(_('The requested badge layout does not exist.'))
 
     @property
     def title(self):
-        return _("Badge layout: {}").format(self.layout)
+        return _('Badge layout: {}').format(self.layout)
 
     def save_layout(self):
-        self.layout.layout = self.request.POST.get("data")
-        self.layout.save(update_fields=["layout"])
+        self.layout.layout = self.request.POST.get('data')
+        self.layout.save(update_fields=['layout'])
         self.layout.log_action(
-            action="pretix.plugins.badges.layout.changed",
+            action='pretix.plugins.badges.layout.changed',
             user=self.request.user,
-            data={"layout": self.request.POST.get("data")},
+            data={'layout': self.request.POST.get('data')},
         )
 
     def get_default_background(self):
-        return static("pretixplugins/badges/badge_default_a6l.pdf")
+        return static('pretixplugins/badges/badge_default_a6l.pdf')
 
     def generate(
         self, op: OrderPosition, override_layout=None, override_background=None
@@ -202,11 +202,11 @@ class LayoutEditorView(BaseEditorView):
 
         buffer = BytesIO()
         if override_background:
-            bgf = default_storage.open(override_background.name, "rb")
+            bgf = default_storage.open(override_background.name, 'rb')
         elif isinstance(self.layout.background, File) and self.layout.background.name:
-            bgf = default_storage.open(self.layout.background.name, "rb")
+            bgf = default_storage.open(self.layout.background.name, 'rb')
         else:
-            bgf = open(finders.find("pretixplugins/badges/badge_default_a6l.pdf"), "rb")
+            bgf = open(finders.find('pretixplugins/badges/badge_default_a6l.pdf'), 'rb')
         r = Renderer(
             self.request.event,
             override_layout or self.get_current_layout(),
@@ -215,8 +215,8 @@ class LayoutEditorView(BaseEditorView):
         p = canvas.Canvas(buffer, pagesize=pagesizes.A4)
         r.draw_page(p, op.order, op)
         p.save()
-        outbuffer = r.render_background(buffer, "Badge")
-        return "badge.pdf", "application/pdf", outbuffer.read()
+        outbuffer = r.render_background(buffer, 'Badge')
+        return 'badge.pdf', 'application/pdf', outbuffer.read()
 
     def get_current_layout(self):
         return json.loads(self.layout.layout)
@@ -231,26 +231,26 @@ class LayoutEditorView(BaseEditorView):
     def save_background(self, f: CachedFile):
         if self.layout.background:
             self.layout.background.delete()
-        self.layout.background.save("background.pdf", f.file)
+        self.layout.background.save('background.pdf', f.file)
 
 
 class OrderPrintDo(EventPermissionRequiredMixin, AsyncAction, View):
     task = badges_create_pdf
-    permission = "can_view_orders"
-    known_errortypes = ["OrderError"]
+    permission = 'can_view_orders'
+    known_errortypes = ['OrderError']
 
     def get_success_message(self, value):
         return None
 
     def get_success_url(self, value):
-        return reverse("cachedfile.download", kwargs={"id": str(value)})
+        return reverse('cachedfile.download', kwargs={'id': str(value)})
 
     def get_error_url(self):
         return reverse(
-            "control:event.index",
+            'control:event.index',
             kwargs={
-                "organizer": self.request.organizer.slug,
-                "event": self.request.event.slug,
+                'organizer': self.request.organizer.slug,
+                'event': self.request.event.slug,
             },
         )
 
@@ -261,20 +261,20 @@ class OrderPrintDo(EventPermissionRequiredMixin, AsyncAction, View):
 
     def post(self, request, *args, **kwargs):
         order = get_object_or_404(
-            self.request.event.orders, code=request.GET.get("code")
+            self.request.event.orders, code=request.GET.get('code')
         )
         cf = CachedFile(web_download=True, session_key=self.request.session.session_key)
         cf.date = now()
-        cf.type = "application/pdf"
+        cf.type = 'application/pdf'
         cf.expires = now() + timedelta(days=3)
-        if "position" in request.GET:
-            qs = order.positions.filter(pk=request.GET.get("position"))
+        if 'position' in request.GET:
+            qs = order.positions.filter(pk=request.GET.get('position'))
             positions = [p.pk for p in qs]
             if len(positions) < 5:
-                cf.filename = f"badges_{self.request.event.slug}_{order.code}_{'_'.join(str(p.positionid) for p in qs)}.pdf"
+                cf.filename = f'badges_{self.request.event.slug}_{order.code}_{"_".join(str(p.positionid) for p in qs)}.pdf'
         else:
             positions = [p.pk for p in order.positions.all()]
-            cf.filename = f"badges_{self.request.event.slug}_{order.code}.pdf"
+            cf.filename = f'badges_{self.request.event.slug}_{order.code}.pdf'
         cf.save()
         return self.do(
             self.request.event.pk,

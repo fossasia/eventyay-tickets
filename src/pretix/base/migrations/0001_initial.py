@@ -28,113 +28,113 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("auth", "0012_alter_user_first_name_max_length"),
+        ('auth', '0012_alter_user_first_name_max_length'),
         migrations.swappable_dependency(settings.OAUTH2_PROVIDER_APPLICATION_MODEL),
-        ("contenttypes", "0002_remove_content_type_name"),
+        ('contenttypes', '0002_remove_content_type_name'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="User",
+            name='User',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("password", models.CharField(max_length=128)),
-                ("last_login", models.DateTimeField(blank=True, null=True)),
+                ('password', models.CharField(max_length=128)),
+                ('last_login', models.DateTimeField(blank=True, null=True)),
                 (
-                    "email",
+                    'email',
                     models.EmailField(
                         db_index=True, max_length=190, null=True, unique=True
                     ),
                 ),
-                ("fullname", models.CharField(max_length=255, null=True)),
-                ("is_active", models.BooleanField(default=True)),
-                ("is_staff", models.BooleanField(default=False)),
-                ("date_joined", models.DateTimeField(auto_now_add=True)),
-                ("locale", models.CharField(default="en", max_length=50)),
-                ("timezone", models.CharField(default="UTC", max_length=100)),
-                ("require_2fa", models.BooleanField(default=False)),
-                ("notifications_send", models.BooleanField(default=True)),
+                ('fullname', models.CharField(max_length=255, null=True)),
+                ('is_active', models.BooleanField(default=True)),
+                ('is_staff', models.BooleanField(default=False)),
+                ('date_joined', models.DateTimeField(auto_now_add=True)),
+                ('locale', models.CharField(default='en', max_length=50)),
+                ('timezone', models.CharField(default='UTC', max_length=100)),
+                ('require_2fa', models.BooleanField(default=False)),
+                ('notifications_send', models.BooleanField(default=True)),
                 (
-                    "notifications_token",
+                    'notifications_token',
                     models.CharField(
                         default=pretix.base.models.auth.generate_notifications_token,
                         max_length=255,
                     ),
                 ),
-                ("auth_backend", models.CharField(default="native", max_length=255)),
+                ('auth_backend', models.CharField(default='native', max_length=255)),
                 (
-                    "session_token",
+                    'session_token',
                     models.CharField(
                         default=pretix.base.models.auth.generate_session_token,
                         max_length=32,
                     ),
                 ),
                 (
-                    "groups",
+                    'groups',
                     models.ManyToManyField(
-                        related_name="user_set",
-                        related_query_name="user",
-                        to="auth.group",
+                        related_name='user_set',
+                        related_query_name='user',
+                        to='auth.group',
                     ),
                 ),
                 (
-                    "user_permissions",
+                    'user_permissions',
                     models.ManyToManyField(
-                        related_name="user_set",
-                        related_query_name="user",
-                        to="auth.permission",
+                        related_name='user_set',
+                        related_query_name='user',
+                        to='auth.permission',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "User",
-                "verbose_name_plural": "Users",
-                "ordering": ("email",),
+                'verbose_name': 'User',
+                'verbose_name_plural': 'Users',
+                'ordering': ('email',),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="CachedFile",
+            name='CachedFile',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.UUIDField(
                         default=uuid.uuid4, primary_key=True, serialize=False
                     ),
                 ),
-                ("expires", models.DateTimeField(blank=True, null=True)),
-                ("date", models.DateTimeField(blank=True, null=True)),
-                ("filename", models.CharField(max_length=255)),
-                ("type", models.CharField(max_length=255)),
+                ('expires', models.DateTimeField(blank=True, null=True)),
+                ('date', models.DateTimeField(blank=True, null=True)),
+                ('filename', models.CharField(max_length=255)),
+                ('type', models.CharField(max_length=255)),
                 (
-                    "file",
+                    'file',
                     models.FileField(
                         max_length=255,
                         null=True,
                         upload_to=pretix.base.models.base.cachedfile_name,
                     ),
                 ),
-                ("web_download", models.BooleanField(default=True)),
-                ("session_key", models.TextField(null=True)),
+                ('web_download', models.BooleanField(default=True)),
+                ('session_key', models.TextField(null=True)),
             ],
         ),
         migrations.CreateModel(
-            name="Device",
+            name='Device',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("device_id", models.PositiveIntegerField()),
+                ('device_id', models.PositiveIntegerField()),
                 (
-                    "unique_serial",
+                    'unique_serial',
                     models.CharField(
                         default=pretix.base.models.devices.generate_serial,
                         max_length=190,
@@ -142,65 +142,65 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "initialization_token",
+                    'initialization_token',
                     models.CharField(
                         default=pretix.base.models.devices.generate_initialization_token,
                         max_length=190,
                         unique=True,
                     ),
                 ),
-                ("api_token", models.CharField(max_length=190, null=True, unique=True)),
-                ("all_events", models.BooleanField(default=False)),
-                ("revoked", models.BooleanField(default=False)),
-                ("name", models.CharField(max_length=190)),
-                ("created", models.DateTimeField(auto_now_add=True)),
-                ("initialized", models.DateTimeField(null=True)),
-                ("hardware_brand", models.CharField(max_length=190, null=True)),
-                ("hardware_model", models.CharField(max_length=190, null=True)),
-                ("software_brand", models.CharField(max_length=190, null=True)),
-                ("software_version", models.CharField(max_length=190, null=True)),
+                ('api_token', models.CharField(max_length=190, null=True, unique=True)),
+                ('all_events', models.BooleanField(default=False)),
+                ('revoked', models.BooleanField(default=False)),
+                ('name', models.CharField(max_length=190)),
+                ('created', models.DateTimeField(auto_now_add=True)),
+                ('initialized', models.DateTimeField(null=True)),
+                ('hardware_brand', models.CharField(max_length=190, null=True)),
+                ('hardware_model', models.CharField(max_length=190, null=True)),
+                ('software_brand', models.CharField(max_length=190, null=True)),
+                ('software_version', models.CharField(max_length=190, null=True)),
                 (
-                    "security_profile",
-                    models.CharField(default="full", max_length=190, null=True),
+                    'security_profile',
+                    models.CharField(default='full', max_length=190, null=True),
                 ),
             ],
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="Event",
+            name='Event',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("testmode", models.BooleanField(default=False)),
-                ("name", i18nfield.fields.I18nCharField(max_length=200)),
-                ("slug", models.CharField(db_index=True, max_length=50)),
-                ("live", models.BooleanField(default=False)),
-                ("currency", models.CharField(default="EUR", max_length=10)),
-                ("date_from", models.DateTimeField()),
-                ("date_to", models.DateTimeField(blank=True, null=True)),
-                ("date_admission", models.DateTimeField(blank=True, null=True)),
-                ("is_public", models.BooleanField(default=True)),
-                ("presale_end", models.DateTimeField(blank=True, null=True)),
-                ("presale_start", models.DateTimeField(blank=True, null=True)),
-                ("location", i18nfield.fields.I18nTextField(max_length=200, null=True)),
-                ("geo_lat", models.FloatField(null=True)),
-                ("geo_lon", models.FloatField(null=True)),
-                ("plugins", models.TextField()),
-                ("comment", models.TextField(null=True)),
-                ("has_subevents", models.BooleanField(default=False)),
+                ('testmode', models.BooleanField(default=False)),
+                ('name', i18nfield.fields.I18nCharField(max_length=200)),
+                ('slug', models.CharField(db_index=True, max_length=50)),
+                ('live', models.BooleanField(default=False)),
+                ('currency', models.CharField(default='EUR', max_length=10)),
+                ('date_from', models.DateTimeField()),
+                ('date_to', models.DateTimeField(blank=True, null=True)),
+                ('date_admission', models.DateTimeField(blank=True, null=True)),
+                ('is_public', models.BooleanField(default=True)),
+                ('presale_end', models.DateTimeField(blank=True, null=True)),
+                ('presale_start', models.DateTimeField(blank=True, null=True)),
+                ('location', i18nfield.fields.I18nTextField(max_length=200, null=True)),
+                ('geo_lat', models.FloatField(null=True)),
+                ('geo_lon', models.FloatField(null=True)),
+                ('plugins', models.TextField()),
+                ('comment', models.TextField(null=True)),
+                ('has_subevents', models.BooleanField(default=False)),
                 (
-                    "sales_channels",
-                    pretix.base.models.fields.MultiStringField(default=["web"]),
+                    'sales_channels',
+                    pretix.base.models.fields.MultiStringField(default=['web']),
                 ),
             ],
             options={
-                "verbose_name": "Event",
-                "verbose_name_plural": "Events",
-                "ordering": ("date_from", "name"),
+                'verbose_name': 'Event',
+                'verbose_name_plural': 'Events',
+                'ordering': ('date_from', 'name'),
             },
             bases=(
                 pretix.base.models.event.EventMixin,
@@ -209,305 +209,305 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.CreateModel(
-            name="EventLock",
+            name='EventLock',
             fields=[
                 (
-                    "event",
+                    'event',
                     models.CharField(max_length=36, primary_key=True, serialize=False),
                 ),
-                ("date", models.DateTimeField(auto_now=True)),
-                ("token", models.UUIDField(default=uuid.uuid4)),
+                ('date', models.DateTimeField(auto_now=True)),
+                ('token', models.UUIDField(default=uuid.uuid4)),
             ],
         ),
         migrations.CreateModel(
-            name="GiftCard",
+            name='GiftCard',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("issuance", models.DateTimeField(auto_now_add=True)),
-                ("secret", models.CharField(db_index=True, max_length=190)),
-                ("testmode", models.BooleanField(default=False)),
-                ("expires", models.DateTimeField(blank=True, null=True)),
-                ("conditions", models.TextField(null=True)),
-                ("currency", models.CharField(max_length=10)),
+                ('issuance', models.DateTimeField(auto_now_add=True)),
+                ('secret', models.CharField(db_index=True, max_length=190)),
+                ('testmode', models.BooleanField(default=False)),
+                ('expires', models.DateTimeField(blank=True, null=True)),
+                ('conditions', models.TextField(null=True)),
+                ('currency', models.CharField(max_length=10)),
             ],
             options={
-                "ordering": ("issuance",),
+                'ordering': ('issuance',),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="GlobalSettingsObject_SettingsStore",
+            name='GlobalSettingsObject_SettingsStore',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("key", models.CharField(max_length=255)),
-                ("value", models.TextField()),
+                ('key', models.CharField(max_length=255)),
+                ('value', models.TextField()),
             ],
         ),
         migrations.CreateModel(
-            name="Invoice",
+            name='Invoice',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("prefix", models.CharField(db_index=True, max_length=160)),
-                ("invoice_no", models.CharField(db_index=True, max_length=19)),
-                ("full_invoice_no", models.CharField(db_index=True, max_length=190)),
-                ("is_cancellation", models.BooleanField(default=False)),
-                ("invoice_from", models.TextField()),
-                ("invoice_from_name", models.CharField(max_length=190, null=True)),
-                ("invoice_from_zipcode", models.CharField(max_length=190, null=True)),
-                ("invoice_from_city", models.CharField(max_length=190, null=True)),
+                ('prefix', models.CharField(db_index=True, max_length=160)),
+                ('invoice_no', models.CharField(db_index=True, max_length=19)),
+                ('full_invoice_no', models.CharField(db_index=True, max_length=190)),
+                ('is_cancellation', models.BooleanField(default=False)),
+                ('invoice_from', models.TextField()),
+                ('invoice_from_name', models.CharField(max_length=190, null=True)),
+                ('invoice_from_zipcode', models.CharField(max_length=190, null=True)),
+                ('invoice_from_city', models.CharField(max_length=190, null=True)),
                 (
-                    "invoice_from_country",
+                    'invoice_from_country',
                     pretix.helpers.countries.FastCountryField(
                         countries=pretix.helpers.countries.CachedCountries,
                         max_length=2,
                         null=True,
                     ),
                 ),
-                ("invoice_from_tax_id", models.CharField(max_length=190, null=True)),
-                ("invoice_from_vat_id", models.CharField(max_length=190, null=True)),
-                ("invoice_to", models.TextField()),
-                ("invoice_to_company", models.TextField(null=True)),
-                ("invoice_to_name", models.TextField(null=True)),
-                ("invoice_to_street", models.TextField(null=True)),
-                ("invoice_to_zipcode", models.CharField(max_length=190, null=True)),
-                ("invoice_to_city", models.TextField(null=True)),
-                ("invoice_to_state", models.CharField(max_length=190, null=True)),
+                ('invoice_from_tax_id', models.CharField(max_length=190, null=True)),
+                ('invoice_from_vat_id', models.CharField(max_length=190, null=True)),
+                ('invoice_to', models.TextField()),
+                ('invoice_to_company', models.TextField(null=True)),
+                ('invoice_to_name', models.TextField(null=True)),
+                ('invoice_to_street', models.TextField(null=True)),
+                ('invoice_to_zipcode', models.CharField(max_length=190, null=True)),
+                ('invoice_to_city', models.TextField(null=True)),
+                ('invoice_to_state', models.CharField(max_length=190, null=True)),
                 (
-                    "invoice_to_country",
+                    'invoice_to_country',
                     pretix.helpers.countries.FastCountryField(
                         countries=pretix.helpers.countries.CachedCountries,
                         max_length=2,
                         null=True,
                     ),
                 ),
-                ("invoice_to_vat_id", models.TextField(null=True)),
-                ("invoice_to_beneficiary", models.TextField(null=True)),
-                ("date", models.DateField(default=pretix.base.models.invoices.today)),
-                ("locale", models.CharField(default="en", max_length=50)),
-                ("introductory_text", models.TextField()),
-                ("additional_text", models.TextField()),
-                ("reverse_charge", models.BooleanField(default=False)),
-                ("payment_provider_text", models.TextField()),
-                ("footer_text", models.TextField()),
+                ('invoice_to_vat_id', models.TextField(null=True)),
+                ('invoice_to_beneficiary', models.TextField(null=True)),
+                ('date', models.DateField(default=pretix.base.models.invoices.today)),
+                ('locale', models.CharField(default='en', max_length=50)),
+                ('introductory_text', models.TextField()),
+                ('additional_text', models.TextField()),
+                ('reverse_charge', models.BooleanField(default=False)),
+                ('payment_provider_text', models.TextField()),
+                ('footer_text', models.TextField()),
                 (
-                    "foreign_currency_display",
+                    'foreign_currency_display',
                     models.CharField(max_length=50, null=True),
                 ),
                 (
-                    "foreign_currency_rate",
+                    'foreign_currency_rate',
                     models.DecimalField(decimal_places=4, max_digits=10, null=True),
                 ),
-                ("foreign_currency_rate_date", models.DateField(blank=True, null=True)),
-                ("shredded", models.BooleanField(default=False)),
+                ('foreign_currency_rate_date', models.DateField(blank=True, null=True)),
+                ('shredded', models.BooleanField(default=False)),
                 (
-                    "file",
+                    'file',
                     models.FileField(
                         max_length=255,
                         null=True,
                         upload_to=pretix.base.models.invoices.invoice_filename,
                     ),
                 ),
-                ("internal_reference", models.TextField()),
-                ("custom_field", models.CharField(max_length=255, null=True)),
+                ('internal_reference', models.TextField()),
+                ('custom_field', models.CharField(max_length=255, null=True)),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="invoices",
-                        to="pretixbase.event",
+                        related_name='invoices',
+                        to='pretixbase.event',
                     ),
                 ),
             ],
             options={
-                "ordering": ("date", "invoice_no"),
+                'ordering': ('date', 'invoice_no'),
             },
         ),
         migrations.CreateModel(
-            name="Item",
+            name='Item',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", i18nfield.fields.I18nCharField(max_length=255)),
-                ("internal_name", models.CharField(max_length=255, null=True)),
-                ("active", models.BooleanField(default=True)),
-                ("description", i18nfield.fields.I18nTextField(null=True)),
+                ('name', i18nfield.fields.I18nCharField(max_length=255)),
+                ('internal_name', models.CharField(max_length=255, null=True)),
+                ('active', models.BooleanField(default=True)),
+                ('description', i18nfield.fields.I18nTextField(null=True)),
                 (
-                    "default_price",
+                    'default_price',
                     models.DecimalField(decimal_places=2, max_digits=7, null=True),
                 ),
-                ("free_price", models.BooleanField(default=False)),
-                ("admission", models.BooleanField(default=False)),
-                ("generate_tickets", models.BooleanField(null=True)),
-                ("allow_waitinglist", models.BooleanField(default=True)),
-                ("show_quota_left", models.BooleanField(null=True)),
-                ("position", models.IntegerField(default=0)),
+                ('free_price', models.BooleanField(default=False)),
+                ('admission', models.BooleanField(default=False)),
+                ('generate_tickets', models.BooleanField(null=True)),
+                ('allow_waitinglist', models.BooleanField(default=True)),
+                ('show_quota_left', models.BooleanField(null=True)),
+                ('position', models.IntegerField(default=0)),
                 (
-                    "picture",
+                    'picture',
                     models.ImageField(
                         max_length=255,
                         null=True,
                         upload_to=pretix.base.models.items.itempicture_upload_to,
                     ),
                 ),
-                ("available_from", models.DateTimeField(blank=True, null=True)),
-                ("available_until", models.DateTimeField(blank=True, null=True)),
-                ("require_voucher", models.BooleanField(default=False)),
-                ("require_approval", models.BooleanField(default=False)),
-                ("hide_without_voucher", models.BooleanField(default=False)),
-                ("require_bundling", models.BooleanField(default=False)),
-                ("allow_cancel", models.BooleanField(default=True)),
-                ("min_per_order", models.IntegerField(null=True)),
-                ("max_per_order", models.IntegerField(null=True)),
-                ("checkin_attention", models.BooleanField(default=False)),
+                ('available_from', models.DateTimeField(blank=True, null=True)),
+                ('available_until', models.DateTimeField(blank=True, null=True)),
+                ('require_voucher', models.BooleanField(default=False)),
+                ('require_approval', models.BooleanField(default=False)),
+                ('hide_without_voucher', models.BooleanField(default=False)),
+                ('require_bundling', models.BooleanField(default=False)),
+                ('allow_cancel', models.BooleanField(default=True)),
+                ('min_per_order', models.IntegerField(null=True)),
+                ('max_per_order', models.IntegerField(null=True)),
+                ('checkin_attention', models.BooleanField(default=False)),
                 (
-                    "original_price",
+                    'original_price',
                     models.DecimalField(decimal_places=2, max_digits=7, null=True),
                 ),
                 (
-                    "sales_channels",
-                    pretix.base.models.fields.MultiStringField(default=["web"]),
+                    'sales_channels',
+                    pretix.base.models.fields.MultiStringField(default=['web']),
                 ),
-                ("issue_giftcard", models.BooleanField(default=False)),
+                ('issue_giftcard', models.BooleanField(default=False)),
             ],
             options={
-                "verbose_name": "Product",
-                "verbose_name_plural": "Products",
-                "ordering": ("category__position", "category", "position"),
+                'verbose_name': 'Product',
+                'verbose_name_plural': 'Products',
+                'ordering': ('category__position', 'category', 'position'),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="ItemMetaProperty",
+            name='ItemMetaProperty',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", models.CharField(db_index=True, max_length=50)),
-                ("default", models.TextField()),
+                ('name', models.CharField(db_index=True, max_length=50)),
+                ('default', models.TextField()),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="item_meta_properties",
-                        to="pretixbase.event",
+                        related_name='item_meta_properties',
+                        to='pretixbase.event',
                     ),
                 ),
             ],
             options={
-                "abstract": False,
+                'abstract': False,
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="ItemVariation",
+            name='ItemVariation',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("value", i18nfield.fields.I18nCharField(max_length=255)),
-                ("active", models.BooleanField(default=True)),
-                ("description", i18nfield.fields.I18nTextField(null=True)),
-                ("position", models.PositiveIntegerField(default=0)),
+                ('value', i18nfield.fields.I18nCharField(max_length=255)),
+                ('active', models.BooleanField(default=True)),
+                ('description', i18nfield.fields.I18nTextField(null=True)),
+                ('position', models.PositiveIntegerField(default=0)),
                 (
-                    "default_price",
+                    'default_price',
                     models.DecimalField(decimal_places=2, max_digits=7, null=True),
                 ),
                 (
-                    "original_price",
+                    'original_price',
                     models.DecimalField(decimal_places=2, max_digits=7, null=True),
                 ),
                 (
-                    "item",
+                    'item',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="variations",
-                        to="pretixbase.item",
+                        related_name='variations',
+                        to='pretixbase.item',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Product variation",
-                "verbose_name_plural": "Product variations",
-                "ordering": ("position", "id"),
+                'verbose_name': 'Product variation',
+                'verbose_name_plural': 'Product variations',
+                'ordering': ('position', 'id'),
             },
         ),
         migrations.CreateModel(
-            name="Order",
+            name='Order',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("code", models.CharField(db_index=True, max_length=16)),
-                ("status", models.CharField(db_index=True, max_length=3)),
-                ("testmode", models.BooleanField(default=False)),
-                ("email", models.EmailField(max_length=254, null=True)),
+                ('code', models.CharField(db_index=True, max_length=16)),
+                ('status', models.CharField(db_index=True, max_length=3)),
+                ('testmode', models.BooleanField(default=False)),
+                ('email', models.EmailField(max_length=254, null=True)),
                 (
-                    "phone",
+                    'phone',
                     phonenumber_field.modelfields.PhoneNumberField(
                         max_length=128, null=True, region=None
                     ),
                 ),
-                ("locale", models.CharField(max_length=32, null=True)),
+                ('locale', models.CharField(max_length=32, null=True)),
                 (
-                    "secret",
+                    'secret',
                     models.CharField(
                         default=pretix.base.models.orders.generate_secret, max_length=32
                     ),
                 ),
-                ("datetime", models.DateTimeField(db_index=True)),
-                ("cancellation_date", models.DateTimeField(blank=True, null=True)),
-                ("expires", models.DateTimeField()),
-                ("total", models.DecimalField(decimal_places=2, max_digits=10)),
-                ("comment", models.TextField()),
-                ("checkin_attention", models.BooleanField(default=False)),
-                ("expiry_reminder_sent", models.BooleanField(default=False)),
-                ("download_reminder_sent", models.BooleanField(default=False)),
-                ("meta_info", models.TextField(null=True)),
-                ("last_modified", models.DateTimeField(auto_now=True, db_index=True)),
-                ("require_approval", models.BooleanField(default=False)),
-                ("sales_channel", models.CharField(default="web", max_length=190)),
-                ("email_known_to_work", models.BooleanField(default=False)),
+                ('datetime', models.DateTimeField(db_index=True)),
+                ('cancellation_date', models.DateTimeField(blank=True, null=True)),
+                ('expires', models.DateTimeField()),
+                ('total', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('comment', models.TextField()),
+                ('checkin_attention', models.BooleanField(default=False)),
+                ('expiry_reminder_sent', models.BooleanField(default=False)),
+                ('download_reminder_sent', models.BooleanField(default=False)),
+                ('meta_info', models.TextField(null=True)),
+                ('last_modified', models.DateTimeField(auto_now=True, db_index=True)),
+                ('require_approval', models.BooleanField(default=False)),
+                ('sales_channel', models.CharField(default='web', max_length=190)),
+                ('email_known_to_work', models.BooleanField(default=False)),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="orders",
-                        to="pretixbase.event",
+                        related_name='orders',
+                        to='pretixbase.event',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Order",
-                "verbose_name_plural": "Orders",
-                "ordering": ("-datetime",),
+                'verbose_name': 'Order',
+                'verbose_name_plural': 'Orders',
+                'ordering': ('-datetime',),
             },
             bases=(
                 pretix.base.models.base.LockModel,
@@ -516,110 +516,110 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.CreateModel(
-            name="OrderFee",
+            name='OrderFee',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("value", models.DecimalField(decimal_places=2, max_digits=10)),
-                ("fee_type", models.CharField(max_length=100)),
-                ("description", models.CharField(max_length=190)),
-                ("internal_type", models.CharField(max_length=255)),
-                ("tax_rate", models.DecimalField(decimal_places=2, max_digits=7)),
-                ("tax_value", models.DecimalField(decimal_places=2, max_digits=10)),
-                ("canceled", models.BooleanField(default=False)),
+                ('value', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('fee_type', models.CharField(max_length=100)),
+                ('description', models.CharField(max_length=190)),
+                ('internal_type', models.CharField(max_length=255)),
+                ('tax_rate', models.DecimalField(decimal_places=2, max_digits=7)),
+                ('tax_value', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('canceled', models.BooleanField(default=False)),
                 (
-                    "order",
+                    'order',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="all_fees",
-                        to="pretixbase.order",
+                        related_name='all_fees',
+                        to='pretixbase.order',
                     ),
                 ),
             ],
             managers=[
-                ("all", django.db.models.manager.Manager()),
+                ('all', django.db.models.manager.Manager()),
             ],
         ),
         migrations.CreateModel(
-            name="OrderPayment",
+            name='OrderPayment',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("local_id", models.PositiveIntegerField()),
-                ("state", models.CharField(max_length=190)),
-                ("amount", models.DecimalField(decimal_places=2, max_digits=10)),
-                ("created", models.DateTimeField(auto_now_add=True)),
-                ("payment_date", models.DateTimeField(blank=True, null=True)),
-                ("provider", models.CharField(max_length=255, null=True)),
-                ("info", models.TextField(null=True)),
-                ("migrated", models.BooleanField(default=False)),
+                ('local_id', models.PositiveIntegerField()),
+                ('state', models.CharField(max_length=190)),
+                ('amount', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('created', models.DateTimeField(auto_now_add=True)),
+                ('payment_date', models.DateTimeField(blank=True, null=True)),
+                ('provider', models.CharField(max_length=255, null=True)),
+                ('info', models.TextField(null=True)),
+                ('migrated', models.BooleanField(default=False)),
                 (
-                    "fee",
+                    'fee',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="payments",
-                        to="pretixbase.orderfee",
+                        related_name='payments',
+                        to='pretixbase.orderfee',
                     ),
                 ),
                 (
-                    "order",
+                    'order',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="payments",
-                        to="pretixbase.order",
+                        related_name='payments',
+                        to='pretixbase.order',
                     ),
                 ),
             ],
             options={
-                "ordering": ("local_id",),
+                'ordering': ('local_id',),
             },
         ),
         migrations.CreateModel(
-            name="OrderPosition",
+            name='OrderPosition',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
                 (
-                    "price_before_voucher",
+                    'price_before_voucher',
                     models.DecimalField(decimal_places=2, max_digits=10, null=True),
                 ),
-                ("price", models.DecimalField(decimal_places=2, max_digits=10)),
-                ("attendee_name_cached", models.CharField(max_length=255, null=True)),
-                ("attendee_name_parts", models.JSONField(default=dict)),
-                ("attendee_email", models.EmailField(max_length=254, null=True)),
-                ("meta_info", models.TextField(null=True)),
-                ("company", models.CharField(max_length=255, null=True)),
-                ("street", models.TextField(null=True)),
-                ("zipcode", models.CharField(max_length=30, null=True)),
-                ("city", models.CharField(max_length=255, null=True)),
+                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('attendee_name_cached', models.CharField(max_length=255, null=True)),
+                ('attendee_name_parts', models.JSONField(default=dict)),
+                ('attendee_email', models.EmailField(max_length=254, null=True)),
+                ('meta_info', models.TextField(null=True)),
+                ('company', models.CharField(max_length=255, null=True)),
+                ('street', models.TextField(null=True)),
+                ('zipcode', models.CharField(max_length=30, null=True)),
+                ('city', models.CharField(max_length=255, null=True)),
                 (
-                    "country",
+                    'country',
                     pretix.helpers.countries.FastCountryField(
                         countries=pretix.helpers.countries.CachedCountries,
                         max_length=2,
                         null=True,
                     ),
                 ),
-                ("state", models.CharField(max_length=255, null=True)),
-                ("positionid", models.PositiveIntegerField(default=1)),
-                ("tax_rate", models.DecimalField(decimal_places=2, max_digits=7)),
-                ("tax_value", models.DecimalField(decimal_places=2, max_digits=10)),
-                ("secret", models.CharField(db_index=True, max_length=255)),
+                ('state', models.CharField(max_length=255, null=True)),
+                ('positionid', models.PositiveIntegerField(default=1)),
+                ('tax_rate', models.DecimalField(decimal_places=2, max_digits=7)),
+                ('tax_value', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('secret', models.CharField(db_index=True, max_length=255)),
                 (
-                    "web_secret",
+                    'web_secret',
                     models.CharField(
                         db_index=True,
                         default=pretix.base.models.orders.generate_secret,
@@ -627,243 +627,243 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "pseudonymization_id",
+                    'pseudonymization_id',
                     models.CharField(db_index=True, max_length=16, unique=True),
                 ),
-                ("canceled", models.BooleanField(default=False)),
+                ('canceled', models.BooleanField(default=False)),
                 (
-                    "addon_to",
+                    'addon_to',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="addons",
-                        to="pretixbase.orderposition",
+                        related_name='addons',
+                        to='pretixbase.orderposition',
                     ),
                 ),
                 (
-                    "item",
+                    'item',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        to="pretixbase.item",
+                        to='pretixbase.item',
                     ),
                 ),
                 (
-                    "order",
+                    'order',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="all_positions",
-                        to="pretixbase.order",
+                        related_name='all_positions',
+                        to='pretixbase.order',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Order position",
-                "verbose_name_plural": "Order positions",
-                "ordering": ("positionid", "id"),
+                'verbose_name': 'Order position',
+                'verbose_name_plural': 'Order positions',
+                'ordering': ('positionid', 'id'),
             },
             managers=[
-                ("all", django.db.models.manager.Manager()),
+                ('all', django.db.models.manager.Manager()),
             ],
         ),
         migrations.CreateModel(
-            name="Organizer",
+            name='Organizer',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", models.CharField(max_length=200)),
-                ("slug", models.CharField(db_index=True, max_length=50, unique=True)),
+                ('name', models.CharField(max_length=200)),
+                ('slug', models.CharField(db_index=True, max_length=50, unique=True)),
             ],
             options={
-                "verbose_name": "Organizer",
-                "verbose_name_plural": "Organizers",
-                "ordering": ("name",),
+                'verbose_name': 'Organizer',
+                'verbose_name_plural': 'Organizers',
+                'ordering': ('name',),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="Question",
+            name='Question',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("question", i18nfield.fields.I18nTextField()),
-                ("identifier", models.CharField(max_length=190)),
-                ("help_text", i18nfield.fields.I18nTextField(null=True)),
-                ("type", models.CharField(max_length=5)),
-                ("required", models.BooleanField(default=False)),
-                ("position", models.PositiveIntegerField(default=0)),
-                ("ask_during_checkin", models.BooleanField(default=False)),
-                ("hidden", models.BooleanField(default=False)),
-                ("print_on_invoice", models.BooleanField(default=False)),
+                ('question', i18nfield.fields.I18nTextField()),
+                ('identifier', models.CharField(max_length=190)),
+                ('help_text', i18nfield.fields.I18nTextField(null=True)),
+                ('type', models.CharField(max_length=5)),
+                ('required', models.BooleanField(default=False)),
+                ('position', models.PositiveIntegerField(default=0)),
+                ('ask_during_checkin', models.BooleanField(default=False)),
+                ('hidden', models.BooleanField(default=False)),
+                ('print_on_invoice', models.BooleanField(default=False)),
                 (
-                    "dependency_values",
+                    'dependency_values',
                     pretix.base.models.fields.MultiStringField(default=[]),
                 ),
                 (
-                    "valid_number_min",
+                    'valid_number_min',
                     models.DecimalField(decimal_places=6, max_digits=16, null=True),
                 ),
                 (
-                    "valid_number_max",
+                    'valid_number_max',
                     models.DecimalField(decimal_places=6, max_digits=16, null=True),
                 ),
-                ("valid_date_min", models.DateField(blank=True, null=True)),
-                ("valid_date_max", models.DateField(blank=True, null=True)),
-                ("valid_datetime_min", models.DateTimeField(blank=True, null=True)),
-                ("valid_datetime_max", models.DateTimeField(blank=True, null=True)),
+                ('valid_date_min', models.DateField(blank=True, null=True)),
+                ('valid_date_max', models.DateField(blank=True, null=True)),
+                ('valid_datetime_min', models.DateTimeField(blank=True, null=True)),
+                ('valid_datetime_max', models.DateTimeField(blank=True, null=True)),
                 (
-                    "dependency_question",
+                    'dependency_question',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="dependent_questions",
-                        to="pretixbase.question",
+                        related_name='dependent_questions',
+                        to='pretixbase.question',
                     ),
                 ),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="questions",
-                        to="pretixbase.event",
+                        related_name='questions',
+                        to='pretixbase.event',
                     ),
                 ),
                 (
-                    "items",
+                    'items',
                     models.ManyToManyField(
-                        related_name="questions", to="pretixbase.item"
+                        related_name='questions', to='pretixbase.item'
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Question",
-                "verbose_name_plural": "Questions",
-                "ordering": ("position", "id"),
+                'verbose_name': 'Question',
+                'verbose_name_plural': 'Questions',
+                'ordering': ('position', 'id'),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="Quota",
+            name='Quota',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", models.CharField(max_length=200)),
-                ("size", models.PositiveIntegerField(null=True)),
-                ("close_when_sold_out", models.BooleanField(default=False)),
-                ("closed", models.BooleanField(default=False)),
-                ("release_after_exit", models.BooleanField(default=False)),
+                ('name', models.CharField(max_length=200)),
+                ('size', models.PositiveIntegerField(null=True)),
+                ('close_when_sold_out', models.BooleanField(default=False)),
+                ('closed', models.BooleanField(default=False)),
+                ('release_after_exit', models.BooleanField(default=False)),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="quotas",
-                        to="pretixbase.event",
+                        related_name='quotas',
+                        to='pretixbase.event',
                     ),
                 ),
                 (
-                    "items",
-                    models.ManyToManyField(related_name="quotas", to="pretixbase.item"),
+                    'items',
+                    models.ManyToManyField(related_name='quotas', to='pretixbase.item'),
                 ),
             ],
             options={
-                "verbose_name": "Quota",
-                "verbose_name_plural": "Quotas",
-                "ordering": ("name",),
+                'verbose_name': 'Quota',
+                'verbose_name_plural': 'Quotas',
+                'ordering': ('name',),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="Seat",
+            name='Seat',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("zone_name", models.CharField(default="", max_length=190)),
-                ("row_name", models.CharField(default="", max_length=190)),
-                ("row_label", models.CharField(max_length=190, null=True)),
-                ("seat_number", models.CharField(default="", max_length=190)),
-                ("seat_label", models.CharField(max_length=190, null=True)),
-                ("seat_guid", models.CharField(db_index=True, max_length=190)),
-                ("blocked", models.BooleanField(default=False)),
-                ("sorting_rank", models.BigIntegerField(default=0)),
-                ("x", models.FloatField(null=True)),
-                ("y", models.FloatField(null=True)),
+                ('zone_name', models.CharField(default='', max_length=190)),
+                ('row_name', models.CharField(default='', max_length=190)),
+                ('row_label', models.CharField(max_length=190, null=True)),
+                ('seat_number', models.CharField(default='', max_length=190)),
+                ('seat_label', models.CharField(max_length=190, null=True)),
+                ('seat_guid', models.CharField(db_index=True, max_length=190)),
+                ('blocked', models.BooleanField(default=False)),
+                ('sorting_rank', models.BigIntegerField(default=0)),
+                ('x', models.FloatField(null=True)),
+                ('y', models.FloatField(null=True)),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="seats",
-                        to="pretixbase.event",
+                        related_name='seats',
+                        to='pretixbase.event',
                     ),
                 ),
                 (
-                    "product",
+                    'product',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="seats",
-                        to="pretixbase.item",
+                        related_name='seats',
+                        to='pretixbase.item',
                     ),
                 ),
             ],
             options={
-                "ordering": ["sorting_rank", "seat_guid"],
+                'ordering': ['sorting_rank', 'seat_guid'],
             },
         ),
         migrations.CreateModel(
-            name="SeatingPlan",
+            name='SeatingPlan',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", models.CharField(max_length=190)),
-                ("layout", models.TextField()),
+                ('name', models.CharField(max_length=190)),
+                ('layout', models.TextField()),
                 (
-                    "organizer",
+                    'organizer',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="seating_plans",
-                        to="pretixbase.organizer",
+                        related_name='seating_plans',
+                        to='pretixbase.organizer',
                     ),
                 ),
             ],
             options={
-                "abstract": False,
+                'abstract': False,
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="StaffSession",
+            name='StaffSession',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("date_start", models.DateTimeField(auto_now_add=True)),
-                ("date_end", models.DateTimeField(blank=True, null=True)),
-                ("session_key", models.CharField(max_length=255)),
-                ("comment", models.TextField()),
+                ('date_start', models.DateTimeField(auto_now_add=True)),
+                ('date_end', models.DateTimeField(blank=True, null=True)),
+                ('session_key', models.CharField(max_length=255)),
+                ('comment', models.TextField()),
                 (
-                    "user",
+                    'user',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
                         to=settings.AUTH_USER_MODEL,
@@ -871,44 +871,44 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "ordering": ("date_start",),
+                'ordering': ('date_start',),
             },
         ),
         migrations.CreateModel(
-            name="SubEvent",
+            name='SubEvent',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("active", models.BooleanField(default=False)),
-                ("is_public", models.BooleanField(default=True)),
-                ("name", i18nfield.fields.I18nCharField(max_length=200)),
-                ("date_from", models.DateTimeField()),
-                ("date_to", models.DateTimeField(blank=True, null=True)),
-                ("date_admission", models.DateTimeField(blank=True, null=True)),
-                ("presale_end", models.DateTimeField(blank=True, null=True)),
-                ("presale_start", models.DateTimeField(blank=True, null=True)),
-                ("location", i18nfield.fields.I18nTextField(max_length=200, null=True)),
-                ("geo_lat", models.FloatField(null=True)),
-                ("geo_lon", models.FloatField(null=True)),
-                ("frontpage_text", i18nfield.fields.I18nTextField(null=True)),
-                ("last_modified", models.DateTimeField(auto_now=True, db_index=True)),
+                ('active', models.BooleanField(default=False)),
+                ('is_public', models.BooleanField(default=True)),
+                ('name', i18nfield.fields.I18nCharField(max_length=200)),
+                ('date_from', models.DateTimeField()),
+                ('date_to', models.DateTimeField(blank=True, null=True)),
+                ('date_admission', models.DateTimeField(blank=True, null=True)),
+                ('presale_end', models.DateTimeField(blank=True, null=True)),
+                ('presale_start', models.DateTimeField(blank=True, null=True)),
+                ('location', i18nfield.fields.I18nTextField(max_length=200, null=True)),
+                ('geo_lat', models.FloatField(null=True)),
+                ('geo_lon', models.FloatField(null=True)),
+                ('frontpage_text', i18nfield.fields.I18nTextField(null=True)),
+                ('last_modified', models.DateTimeField(auto_now=True, db_index=True)),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="subevents",
-                        to="pretixbase.event",
+                        related_name='subevents',
+                        to='pretixbase.event',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Date in event series",
-                "verbose_name_plural": "Dates in event series",
-                "ordering": ("date_from", "name"),
+                'verbose_name': 'Date in event series',
+                'verbose_name_plural': 'Dates in event series',
+                'ordering': ('date_from', 'name'),
             },
             bases=(
                 pretix.base.models.event.EventMixin,
@@ -917,166 +917,166 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.CreateModel(
-            name="Team",
+            name='Team',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", models.CharField(max_length=190)),
-                ("all_events", models.BooleanField(default=False)),
-                ("can_create_events", models.BooleanField(default=False)),
-                ("can_change_teams", models.BooleanField(default=False)),
-                ("can_change_organizer_settings", models.BooleanField(default=False)),
-                ("can_manage_gift_cards", models.BooleanField(default=False)),
-                ("can_change_event_settings", models.BooleanField(default=False)),
-                ("can_change_items", models.BooleanField(default=False)),
-                ("can_view_orders", models.BooleanField(default=False)),
-                ("can_change_orders", models.BooleanField(default=False)),
-                ("can_checkin_orders", models.BooleanField(default=False)),
-                ("can_view_vouchers", models.BooleanField(default=False)),
-                ("can_change_vouchers", models.BooleanField(default=False)),
-                ("limit_events", models.ManyToManyField(to="pretixbase.event")),
+                ('name', models.CharField(max_length=190)),
+                ('all_events', models.BooleanField(default=False)),
+                ('can_create_events', models.BooleanField(default=False)),
+                ('can_change_teams', models.BooleanField(default=False)),
+                ('can_change_organizer_settings', models.BooleanField(default=False)),
+                ('can_manage_gift_cards', models.BooleanField(default=False)),
+                ('can_change_event_settings', models.BooleanField(default=False)),
+                ('can_change_items', models.BooleanField(default=False)),
+                ('can_view_orders', models.BooleanField(default=False)),
+                ('can_change_orders', models.BooleanField(default=False)),
+                ('can_checkin_orders', models.BooleanField(default=False)),
+                ('can_view_vouchers', models.BooleanField(default=False)),
+                ('can_change_vouchers', models.BooleanField(default=False)),
+                ('limit_events', models.ManyToManyField(to='pretixbase.event')),
                 (
-                    "members",
+                    'members',
                     models.ManyToManyField(
-                        related_name="teams", to=settings.AUTH_USER_MODEL
+                        related_name='teams', to=settings.AUTH_USER_MODEL
                     ),
                 ),
                 (
-                    "organizer",
+                    'organizer',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="teams",
-                        to="pretixbase.organizer",
+                        related_name='teams',
+                        to='pretixbase.organizer',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Team",
-                "verbose_name_plural": "Teams",
+                'verbose_name': 'Team',
+                'verbose_name_plural': 'Teams',
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="Voucher",
+            name='Voucher',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
                 (
-                    "code",
+                    'code',
                     models.CharField(
                         db_index=True,
                         default=pretix.base.models.vouchers.generate_code,
                         max_length=255,
                     ),
                 ),
-                ("max_usages", models.PositiveIntegerField(default=1)),
-                ("redeemed", models.PositiveIntegerField(default=0)),
+                ('max_usages', models.PositiveIntegerField(default=1)),
+                ('redeemed', models.PositiveIntegerField(default=0)),
                 (
-                    "budget",
+                    'budget',
                     models.DecimalField(decimal_places=2, max_digits=10, null=True),
                 ),
                 (
-                    "valid_until",
+                    'valid_until',
                     models.DateTimeField(blank=True, db_index=True, null=True),
                 ),
-                ("block_quota", models.BooleanField(default=False)),
-                ("allow_ignore_quota", models.BooleanField(default=False)),
-                ("price_mode", models.CharField(default="none", max_length=100)),
+                ('block_quota', models.BooleanField(default=False)),
+                ('allow_ignore_quota', models.BooleanField(default=False)),
+                ('price_mode', models.CharField(default='none', max_length=100)),
                 (
-                    "value",
+                    'value',
                     models.DecimalField(decimal_places=2, max_digits=10, null=True),
                 ),
-                ("tag", models.CharField(db_index=True, max_length=255)),
-                ("comment", models.TextField()),
-                ("show_hidden_items", models.BooleanField(default=True)),
+                ('tag', models.CharField(db_index=True, max_length=255)),
+                ('comment', models.TextField()),
+                ('show_hidden_items', models.BooleanField(default=True)),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="vouchers",
-                        to="pretixbase.event",
+                        related_name='vouchers',
+                        to='pretixbase.event',
                     ),
                 ),
                 (
-                    "item",
+                    'item',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="vouchers",
-                        to="pretixbase.item",
+                        related_name='vouchers',
+                        to='pretixbase.item',
                     ),
                 ),
                 (
-                    "quota",
+                    'quota',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="vouchers",
-                        to="pretixbase.quota",
+                        related_name='vouchers',
+                        to='pretixbase.quota',
                     ),
                 ),
                 (
-                    "seat",
+                    'seat',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="vouchers",
-                        to="pretixbase.seat",
+                        related_name='vouchers',
+                        to='pretixbase.seat',
                     ),
                 ),
                 (
-                    "subevent",
+                    'subevent',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="pretixbase.subevent",
+                        to='pretixbase.subevent',
                     ),
                 ),
                 (
-                    "variation",
+                    'variation',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="vouchers",
-                        to="pretixbase.itemvariation",
+                        related_name='vouchers',
+                        to='pretixbase.itemvariation',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Voucher",
-                "verbose_name_plural": "Vouchers",
-                "ordering": ("code",),
-                "unique_together": {("event", "code")},
+                'verbose_name': 'Voucher',
+                'verbose_name_plural': 'Vouchers',
+                'ordering': ('code',),
+                'unique_together': {('event', 'code')},
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="WebAuthnDevice",
+            name='WebAuthnDevice',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", models.CharField(max_length=64)),
-                ("confirmed", models.BooleanField(default=True)),
-                ("credential_id", models.CharField(max_length=255, null=True)),
-                ("rp_id", models.CharField(max_length=255, null=True)),
-                ("icon_url", models.CharField(max_length=255, null=True)),
-                ("ukey", models.TextField(null=True)),
-                ("pub_key", models.TextField(null=True)),
-                ("sign_count", models.IntegerField(default=0)),
+                ('name', models.CharField(max_length=64)),
+                ('confirmed', models.BooleanField(default=True)),
+                ('credential_id', models.CharField(max_length=255, null=True)),
+                ('rp_id', models.CharField(max_length=255, null=True)),
+                ('icon_url', models.CharField(max_length=255, null=True)),
+                ('ukey', models.TextField(null=True)),
+                ('pub_key', models.TextField(null=True)),
+                ('sign_count', models.IntegerField(default=0)),
                 (
-                    "user",
+                    'user',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         to=settings.AUTH_USER_MODEL,
@@ -1084,94 +1084,94 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "abstract": False,
+                'abstract': False,
             },
         ),
         migrations.CreateModel(
-            name="WaitingListEntry",
+            name='WaitingListEntry',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("created", models.DateTimeField(auto_now_add=True)),
-                ("name_cached", models.CharField(max_length=255, null=True)),
-                ("name_parts", models.JSONField(default=dict)),
-                ("email", models.EmailField(max_length=254)),
+                ('created', models.DateTimeField(auto_now_add=True)),
+                ('name_cached', models.CharField(max_length=255, null=True)),
+                ('name_parts', models.JSONField(default=dict)),
+                ('email', models.EmailField(max_length=254)),
                 (
-                    "phone",
+                    'phone',
                     phonenumber_field.modelfields.PhoneNumberField(
                         max_length=128, null=True, region=None
                     ),
                 ),
-                ("locale", models.CharField(default="en", max_length=190)),
-                ("priority", models.IntegerField(default=0)),
+                ('locale', models.CharField(default='en', max_length=190)),
+                ('priority', models.IntegerField(default=0)),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="waitinglistentries",
-                        to="pretixbase.event",
+                        related_name='waitinglistentries',
+                        to='pretixbase.event',
                     ),
                 ),
                 (
-                    "item",
+                    'item',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="waitinglistentries",
-                        to="pretixbase.item",
+                        related_name='waitinglistentries',
+                        to='pretixbase.item',
                     ),
                 ),
                 (
-                    "subevent",
+                    'subevent',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="pretixbase.subevent",
+                        to='pretixbase.subevent',
                     ),
                 ),
                 (
-                    "variation",
+                    'variation',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="waitinglistentries",
-                        to="pretixbase.itemvariation",
+                        related_name='waitinglistentries',
+                        to='pretixbase.itemvariation',
                     ),
                 ),
                 (
-                    "voucher",
+                    'voucher',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="waitinglistentries",
-                        to="pretixbase.voucher",
+                        related_name='waitinglistentries',
+                        to='pretixbase.voucher',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Waiting list entry",
-                "verbose_name_plural": "Waiting list entries",
-                "ordering": ("-priority", "created"),
+                'verbose_name': 'Waiting list entry',
+                'verbose_name_plural': 'Waiting list entries',
+                'ordering': ('-priority', 'created'),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="U2FDevice",
+            name='U2FDevice',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", models.CharField(max_length=64)),
-                ("confirmed", models.BooleanField(default=True)),
-                ("json_data", models.TextField()),
+                ('name', models.CharField(max_length=64)),
+                ('confirmed', models.BooleanField(default=True)),
+                ('json_data', models.TextField()),
                 (
-                    "user",
+                    'user',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         to=settings.AUTH_USER_MODEL,
@@ -1179,21 +1179,21 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "abstract": False,
+                'abstract': False,
             },
         ),
         migrations.CreateModel(
-            name="TeamInvite",
+            name='TeamInvite',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("email", models.EmailField(max_length=254, null=True)),
+                ('email', models.EmailField(max_length=254, null=True)),
                 (
-                    "token",
+                    'token',
                     models.CharField(
                         default=pretix.base.models.organizer.generate_invite_token,
                         max_length=64,
@@ -1201,176 +1201,176 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "team",
+                    'team',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="invites",
-                        to="pretixbase.team",
+                        related_name='invites',
+                        to='pretixbase.team',
                     ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name="TeamAPIToken",
+            name='TeamAPIToken',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", models.CharField(max_length=190)),
-                ("active", models.BooleanField(default=True)),
+                ('name', models.CharField(max_length=190)),
+                ('active', models.BooleanField(default=True)),
                 (
-                    "token",
+                    'token',
                     models.CharField(
                         default=pretix.base.models.organizer.generate_api_token,
                         max_length=64,
                     ),
                 ),
                 (
-                    "team",
+                    'team',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="tokens",
-                        to="pretixbase.team",
+                        related_name='tokens',
+                        to='pretixbase.team',
                     ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name="TaxRule",
+            name='TaxRule',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", i18nfield.fields.I18nCharField(max_length=190)),
-                ("rate", models.DecimalField(decimal_places=2, max_digits=10)),
-                ("price_includes_tax", models.BooleanField(default=True)),
-                ("eu_reverse_charge", models.BooleanField(default=False)),
+                ('name', i18nfield.fields.I18nCharField(max_length=190)),
+                ('rate', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('price_includes_tax', models.BooleanField(default=True)),
+                ('eu_reverse_charge', models.BooleanField(default=False)),
                 (
-                    "home_country",
+                    'home_country',
                     pretix.helpers.countries.FastCountryField(
                         countries=pretix.helpers.countries.CachedCountries, max_length=2
                     ),
                 ),
-                ("custom_rules", models.TextField(null=True)),
+                ('custom_rules', models.TextField(null=True)),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="tax_rules",
-                        to="pretixbase.event",
+                        related_name='tax_rules',
+                        to='pretixbase.event',
                     ),
                 ),
             ],
             options={
-                "ordering": ("event", "rate", "id"),
+                'ordering': ('event', 'rate', 'id'),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="SubEventItemVariation",
+            name='SubEventItemVariation',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
                 (
-                    "price",
+                    'price',
                     models.DecimalField(decimal_places=2, max_digits=7, null=True),
                 ),
-                ("disabled", models.BooleanField(default=False)),
+                ('disabled', models.BooleanField(default=False)),
                 (
-                    "subevent",
+                    'subevent',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="pretixbase.subevent",
+                        to='pretixbase.subevent',
                     ),
                 ),
                 (
-                    "variation",
+                    'variation',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="pretixbase.itemvariation",
+                        to='pretixbase.itemvariation',
                     ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name="SubEventItem",
+            name='SubEventItem',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
                 (
-                    "price",
+                    'price',
                     models.DecimalField(decimal_places=2, max_digits=7, null=True),
                 ),
-                ("disabled", models.BooleanField(default=False)),
+                ('disabled', models.BooleanField(default=False)),
                 (
-                    "item",
+                    'item',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="pretixbase.item",
+                        to='pretixbase.item',
                     ),
                 ),
                 (
-                    "subevent",
+                    'subevent',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="pretixbase.subevent",
+                        to='pretixbase.subevent',
                     ),
                 ),
             ],
         ),
         migrations.AddField(
-            model_name="subevent",
-            name="items",
+            model_name='subevent',
+            name='items',
             field=models.ManyToManyField(
-                through="pretixbase.SubEventItem", to="pretixbase.item"
+                through='pretixbase.SubEventItem', to='pretixbase.item'
             ),
         ),
         migrations.AddField(
-            model_name="subevent",
-            name="seating_plan",
+            model_name='subevent',
+            name='seating_plan',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
-                related_name="subevents",
-                to="pretixbase.seatingplan",
+                related_name='subevents',
+                to='pretixbase.seatingplan',
             ),
         ),
         migrations.AddField(
-            model_name="subevent",
-            name="variations",
+            model_name='subevent',
+            name='variations',
             field=models.ManyToManyField(
-                through="pretixbase.SubEventItemVariation",
-                to="pretixbase.itemvariation",
+                through='pretixbase.SubEventItemVariation',
+                to='pretixbase.itemvariation',
             ),
         ),
         migrations.CreateModel(
-            name="StaffSessionAuditLog",
+            name='StaffSessionAuditLog',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("datetime", models.DateTimeField(auto_now_add=True)),
-                ("url", models.CharField(max_length=255)),
-                ("method", models.CharField(max_length=255)),
+                ('datetime', models.DateTimeField(auto_now_add=True)),
+                ('url', models.CharField(max_length=255)),
+                ('method', models.CharField(max_length=255)),
                 (
-                    "impersonating",
+                    'impersonating',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
@@ -1378,118 +1378,118 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "session",
+                    'session',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="logs",
-                        to="pretixbase.staffsession",
+                        related_name='logs',
+                        to='pretixbase.staffsession',
                     ),
                 ),
             ],
             options={
-                "ordering": ("datetime",),
+                'ordering': ('datetime',),
             },
         ),
         migrations.CreateModel(
-            name="SeatCategoryMapping",
+            name='SeatCategoryMapping',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("layout_category", models.CharField(max_length=190)),
+                ('layout_category', models.CharField(max_length=190)),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="seat_category_mappings",
-                        to="pretixbase.event",
+                        related_name='seat_category_mappings',
+                        to='pretixbase.event',
                     ),
                 ),
                 (
-                    "product",
+                    'product',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="seat_category_mappings",
-                        to="pretixbase.item",
+                        related_name='seat_category_mappings',
+                        to='pretixbase.item',
                     ),
                 ),
                 (
-                    "subevent",
+                    'subevent',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="seat_category_mappings",
-                        to="pretixbase.subevent",
+                        related_name='seat_category_mappings',
+                        to='pretixbase.subevent',
                     ),
                 ),
             ],
         ),
         migrations.AddField(
-            model_name="seat",
-            name="subevent",
+            model_name='seat',
+            name='subevent',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="seats",
-                to="pretixbase.subevent",
+                related_name='seats',
+                to='pretixbase.subevent',
             ),
         ),
         migrations.CreateModel(
-            name="RevokedTicketSecret",
+            name='RevokedTicketSecret',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("secret", models.TextField(db_index=True)),
-                ("created", models.DateTimeField(auto_now_add=True)),
+                ('secret', models.TextField(db_index=True)),
+                ('created', models.DateTimeField(auto_now_add=True)),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="revoked_secrets",
-                        to="pretixbase.event",
+                        related_name='revoked_secrets',
+                        to='pretixbase.event',
                     ),
                 ),
                 (
-                    "position",
+                    'position',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="revoked_secrets",
-                        to="pretixbase.orderposition",
+                        related_name='revoked_secrets',
+                        to='pretixbase.orderposition',
                     ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name="RequiredAction",
+            name='RequiredAction',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("datetime", models.DateTimeField(auto_now_add=True, db_index=True)),
-                ("done", models.BooleanField(default=False)),
-                ("action_type", models.CharField(max_length=255)),
-                ("data", models.TextField(default="{}")),
+                ('datetime', models.DateTimeField(auto_now_add=True, db_index=True)),
+                ('done', models.BooleanField(default=False)),
+                ('action_type', models.CharField(max_length=255)),
+                ('data', models.TextField(default='{}')),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="pretixbase.event",
+                        to='pretixbase.event',
                     ),
                 ),
                 (
-                    "user",
+                    'user',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
@@ -1498,216 +1498,216 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "ordering": ("datetime",),
+                'ordering': ('datetime',),
             },
         ),
         migrations.AddField(
-            model_name="quota",
-            name="subevent",
+            model_name='quota',
+            name='subevent',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="quotas",
-                to="pretixbase.subevent",
+                related_name='quotas',
+                to='pretixbase.subevent',
             ),
         ),
         migrations.AddField(
-            model_name="quota",
-            name="variations",
+            model_name='quota',
+            name='variations',
             field=models.ManyToManyField(
-                related_name="quotas", to="pretixbase.itemvariation"
+                related_name='quotas', to='pretixbase.itemvariation'
             ),
         ),
         migrations.CreateModel(
-            name="QuestionOption",
+            name='QuestionOption',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("identifier", models.CharField(max_length=190)),
-                ("answer", i18nfield.fields.I18nCharField()),
-                ("position", models.IntegerField(default=0)),
+                ('identifier', models.CharField(max_length=190)),
+                ('answer', i18nfield.fields.I18nCharField()),
+                ('position', models.IntegerField(default=0)),
                 (
-                    "question",
+                    'question',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="options",
-                        to="pretixbase.question",
+                        related_name='options',
+                        to='pretixbase.question',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Question option",
-                "verbose_name_plural": "Question options",
-                "ordering": ("position", "id"),
+                'verbose_name': 'Question option',
+                'verbose_name_plural': 'Question options',
+                'ordering': ('position', 'id'),
             },
         ),
         migrations.CreateModel(
-            name="Organizer_SettingsStore",
+            name='Organizer_SettingsStore',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("key", models.CharField(max_length=255)),
-                ("value", models.TextField()),
+                ('key', models.CharField(max_length=255)),
+                ('value', models.TextField()),
                 (
-                    "object",
+                    'object',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="_settings_objects",
-                        to="pretixbase.organizer",
+                        related_name='_settings_objects',
+                        to='pretixbase.organizer',
                     ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name="OrderRefund",
+            name='OrderRefund',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("local_id", models.PositiveIntegerField()),
-                ("state", models.CharField(max_length=190)),
-                ("source", models.CharField(max_length=190)),
-                ("amount", models.DecimalField(decimal_places=2, max_digits=10)),
-                ("created", models.DateTimeField(auto_now_add=True)),
-                ("execution_date", models.DateTimeField(blank=True, null=True)),
-                ("provider", models.CharField(max_length=255, null=True)),
-                ("comment", models.TextField(null=True)),
-                ("info", models.TextField(null=True)),
+                ('local_id', models.PositiveIntegerField()),
+                ('state', models.CharField(max_length=190)),
+                ('source', models.CharField(max_length=190)),
+                ('amount', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('created', models.DateTimeField(auto_now_add=True)),
+                ('execution_date', models.DateTimeField(blank=True, null=True)),
+                ('provider', models.CharField(max_length=255, null=True)),
+                ('comment', models.TextField(null=True)),
+                ('info', models.TextField(null=True)),
                 (
-                    "order",
+                    'order',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="refunds",
-                        to="pretixbase.order",
+                        related_name='refunds',
+                        to='pretixbase.order',
                     ),
                 ),
                 (
-                    "payment",
+                    'payment',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="refunds",
-                        to="pretixbase.orderpayment",
+                        related_name='refunds',
+                        to='pretixbase.orderpayment',
                     ),
                 ),
             ],
             options={
-                "ordering": ("local_id",),
+                'ordering': ('local_id',),
             },
         ),
         migrations.AddField(
-            model_name="orderposition",
-            name="seat",
+            model_name='orderposition',
+            name='seat',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="pretixbase.seat",
+                to='pretixbase.seat',
             ),
         ),
         migrations.AddField(
-            model_name="orderposition",
-            name="subevent",
+            model_name='orderposition',
+            name='subevent',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="pretixbase.subevent",
+                to='pretixbase.subevent',
             ),
         ),
         migrations.AddField(
-            model_name="orderposition",
-            name="tax_rule",
+            model_name='orderposition',
+            name='tax_rule',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="pretixbase.taxrule",
+                to='pretixbase.taxrule',
             ),
         ),
         migrations.AddField(
-            model_name="orderposition",
-            name="variation",
+            model_name='orderposition',
+            name='variation',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="pretixbase.itemvariation",
+                to='pretixbase.itemvariation',
             ),
         ),
         migrations.AddField(
-            model_name="orderposition",
-            name="voucher",
+            model_name='orderposition',
+            name='voucher',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="pretixbase.voucher",
+                to='pretixbase.voucher',
             ),
         ),
         migrations.AddField(
-            model_name="orderfee",
-            name="tax_rule",
+            model_name='orderfee',
+            name='tax_rule',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="pretixbase.taxrule",
+                to='pretixbase.taxrule',
             ),
         ),
         migrations.CreateModel(
-            name="LogEntry",
+            name='LogEntry',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("object_id", models.PositiveIntegerField(db_index=True)),
-                ("datetime", models.DateTimeField(auto_now_add=True, db_index=True)),
-                ("action_type", models.CharField(max_length=255)),
-                ("data", models.TextField(default="{}")),
-                ("visible", models.BooleanField(default=True)),
-                ("shredded", models.BooleanField(default=False)),
+                ('object_id', models.PositiveIntegerField(db_index=True)),
+                ('datetime', models.DateTimeField(auto_now_add=True, db_index=True)),
+                ('action_type', models.CharField(max_length=255)),
+                ('data', models.TextField(default='{}')),
+                ('visible', models.BooleanField(default=True)),
+                ('shredded', models.BooleanField(default=False)),
                 (
-                    "api_token",
+                    'api_token',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        to="pretixbase.teamapitoken",
+                        to='pretixbase.teamapitoken',
                     ),
                 ),
                 (
-                    "content_type",
+                    'content_type',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="contenttypes.contenttype",
+                        to='contenttypes.contenttype',
                     ),
                 ),
                 (
-                    "device",
+                    'device',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        to="pretixbase.device",
+                        to='pretixbase.device',
                     ),
                 ),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        to="pretixbase.event",
+                        to='pretixbase.event',
                     ),
                 ),
                 (
-                    "oauth_application",
+                    'oauth_application',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
@@ -1715,7 +1715,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "user",
+                    'user',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
@@ -1724,795 +1724,795 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "ordering": ("-datetime", "-id"),
+                'ordering': ('-datetime', '-id'),
             },
         ),
         migrations.CreateModel(
-            name="ItemCategory",
+            name='ItemCategory',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", i18nfield.fields.I18nCharField(max_length=255)),
-                ("internal_name", models.CharField(max_length=255, null=True)),
-                ("description", i18nfield.fields.I18nTextField()),
-                ("position", models.IntegerField(default=0)),
-                ("is_addon", models.BooleanField(default=False)),
+                ('name', i18nfield.fields.I18nCharField(max_length=255)),
+                ('internal_name', models.CharField(max_length=255, null=True)),
+                ('description', i18nfield.fields.I18nTextField()),
+                ('position', models.IntegerField(default=0)),
+                ('is_addon', models.BooleanField(default=False)),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="categories",
-                        to="pretixbase.event",
+                        related_name='categories',
+                        to='pretixbase.event',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Product category",
-                "verbose_name_plural": "Product categories",
-                "ordering": ("position", "id"),
+                'verbose_name': 'Product category',
+                'verbose_name_plural': 'Product categories',
+                'ordering': ('position', 'id'),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="ItemBundle",
+            name='ItemBundle',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("count", models.PositiveIntegerField(default=1)),
+                ('count', models.PositiveIntegerField(default=1)),
                 (
-                    "designated_price",
+                    'designated_price',
                     models.DecimalField(
-                        decimal_places=2, default=Decimal("0.00"), max_digits=10
+                        decimal_places=2, default=Decimal('0.00'), max_digits=10
                     ),
                 ),
                 (
-                    "base_item",
+                    'base_item',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="bundles",
-                        to="pretixbase.item",
+                        related_name='bundles',
+                        to='pretixbase.item',
                     ),
                 ),
                 (
-                    "bundled_item",
+                    'bundled_item',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="bundled_with",
-                        to="pretixbase.item",
+                        related_name='bundled_with',
+                        to='pretixbase.item',
                     ),
                 ),
                 (
-                    "bundled_variation",
+                    'bundled_variation',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="bundled_with",
-                        to="pretixbase.itemvariation",
+                        related_name='bundled_with',
+                        to='pretixbase.itemvariation',
                     ),
                 ),
             ],
         ),
         migrations.AddField(
-            model_name="item",
-            name="category",
+            model_name='item',
+            name='category',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
-                related_name="items",
-                to="pretixbase.itemcategory",
+                related_name='items',
+                to='pretixbase.itemcategory',
             ),
         ),
         migrations.AddField(
-            model_name="item",
-            name="event",
+            model_name='item',
+            name='event',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
-                related_name="items",
-                to="pretixbase.event",
+                related_name='items',
+                to='pretixbase.event',
             ),
         ),
         migrations.AddField(
-            model_name="item",
-            name="hidden_if_available",
+            model_name='item',
+            name='hidden_if_available',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
-                to="pretixbase.quota",
+                to='pretixbase.quota',
             ),
         ),
         migrations.AddField(
-            model_name="item",
-            name="tax_rule",
+            model_name='item',
+            name='tax_rule',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
-                to="pretixbase.taxrule",
+                to='pretixbase.taxrule',
             ),
         ),
         migrations.CreateModel(
-            name="InvoiceLine",
+            name='InvoiceLine',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("position", models.PositiveIntegerField(default=0)),
-                ("description", models.TextField()),
-                ("gross_value", models.DecimalField(decimal_places=2, max_digits=10)),
+                ('position', models.PositiveIntegerField(default=0)),
+                ('description', models.TextField()),
+                ('gross_value', models.DecimalField(decimal_places=2, max_digits=10)),
                 (
-                    "tax_value",
+                    'tax_value',
                     models.DecimalField(
-                        decimal_places=2, default=Decimal("0.00"), max_digits=10
+                        decimal_places=2, default=Decimal('0.00'), max_digits=10
                     ),
                 ),
                 (
-                    "tax_rate",
+                    'tax_rate',
                     models.DecimalField(
-                        decimal_places=2, default=Decimal("0.00"), max_digits=7
+                        decimal_places=2, default=Decimal('0.00'), max_digits=7
                     ),
                 ),
-                ("tax_name", models.CharField(max_length=190)),
-                ("event_date_from", models.DateTimeField(null=True)),
-                ("event_date_to", models.DateTimeField(null=True)),
-                ("attendee_name", models.TextField(null=True)),
+                ('tax_name', models.CharField(max_length=190)),
+                ('event_date_from', models.DateTimeField(null=True)),
+                ('event_date_to', models.DateTimeField(null=True)),
+                ('attendee_name', models.TextField(null=True)),
                 (
-                    "invoice",
+                    'invoice',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="lines",
-                        to="pretixbase.invoice",
+                        related_name='lines',
+                        to='pretixbase.invoice',
                     ),
                 ),
                 (
-                    "item",
+                    'item',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        to="pretixbase.item",
+                        to='pretixbase.item',
                     ),
                 ),
                 (
-                    "subevent",
+                    'subevent',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        to="pretixbase.subevent",
+                        to='pretixbase.subevent',
                     ),
                 ),
                 (
-                    "variation",
+                    'variation',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        to="pretixbase.itemvariation",
+                        to='pretixbase.itemvariation',
                     ),
                 ),
             ],
             options={
-                "ordering": ("position", "pk"),
+                'ordering': ('position', 'pk'),
             },
         ),
         migrations.CreateModel(
-            name="InvoiceAddress",
+            name='InvoiceAddress',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("last_modified", models.DateTimeField(auto_now=True)),
-                ("is_business", models.BooleanField(default=False)),
-                ("company", models.CharField(max_length=255)),
-                ("name_cached", models.CharField(max_length=255)),
-                ("name_parts", models.JSONField(default=dict)),
-                ("street", models.TextField()),
-                ("zipcode", models.CharField(max_length=30)),
-                ("city", models.CharField(max_length=255)),
-                ("country_old", models.CharField(max_length=255)),
+                ('last_modified', models.DateTimeField(auto_now=True)),
+                ('is_business', models.BooleanField(default=False)),
+                ('company', models.CharField(max_length=255)),
+                ('name_cached', models.CharField(max_length=255)),
+                ('name_parts', models.JSONField(default=dict)),
+                ('street', models.TextField()),
+                ('zipcode', models.CharField(max_length=30)),
+                ('city', models.CharField(max_length=255)),
+                ('country_old', models.CharField(max_length=255)),
                 (
-                    "country",
+                    'country',
                     pretix.helpers.countries.FastCountryField(
                         countries=pretix.helpers.countries.CachedCountries, max_length=2
                     ),
                 ),
-                ("state", models.CharField(max_length=255)),
-                ("vat_id", models.CharField(max_length=255)),
-                ("vat_id_validated", models.BooleanField(default=False)),
-                ("custom_field", models.CharField(max_length=255, null=True)),
-                ("internal_reference", models.TextField()),
-                ("beneficiary", models.TextField()),
+                ('state', models.CharField(max_length=255)),
+                ('vat_id', models.CharField(max_length=255)),
+                ('vat_id_validated', models.BooleanField(default=False)),
+                ('custom_field', models.CharField(max_length=255, null=True)),
+                ('internal_reference', models.TextField()),
+                ('beneficiary', models.TextField()),
                 (
-                    "order",
+                    'order',
                     models.OneToOneField(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="invoice_address",
-                        to="pretixbase.order",
+                        related_name='invoice_address',
+                        to='pretixbase.order',
                     ),
                 ),
             ],
         ),
         migrations.AddField(
-            model_name="invoice",
-            name="order",
+            model_name='invoice',
+            name='order',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="invoices",
-                to="pretixbase.order",
+                related_name='invoices',
+                to='pretixbase.order',
             ),
         ),
         migrations.AddField(
-            model_name="invoice",
-            name="organizer",
+            model_name='invoice',
+            name='organizer',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
-                related_name="invoices",
-                to="pretixbase.organizer",
+                related_name='invoices',
+                to='pretixbase.organizer',
             ),
         ),
         migrations.AddField(
-            model_name="invoice",
-            name="refers",
+            model_name='invoice',
+            name='refers',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="refered",
-                to="pretixbase.invoice",
+                related_name='refered',
+                to='pretixbase.invoice',
             ),
         ),
         migrations.CreateModel(
-            name="GiftCardTransaction",
+            name='GiftCardTransaction',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("datetime", models.DateTimeField(auto_now_add=True)),
-                ("value", models.DecimalField(decimal_places=2, max_digits=10)),
-                ("text", models.TextField(null=True)),
+                ('datetime', models.DateTimeField(auto_now_add=True)),
+                ('value', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('text', models.TextField(null=True)),
                 (
-                    "card",
+                    'card',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="transactions",
-                        to="pretixbase.giftcard",
+                        related_name='transactions',
+                        to='pretixbase.giftcard',
                     ),
                 ),
                 (
-                    "order",
+                    'order',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="gift_card_transactions",
-                        to="pretixbase.order",
+                        related_name='gift_card_transactions',
+                        to='pretixbase.order',
                     ),
                 ),
                 (
-                    "payment",
+                    'payment',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="gift_card_transactions",
-                        to="pretixbase.orderpayment",
+                        related_name='gift_card_transactions',
+                        to='pretixbase.orderpayment',
                     ),
                 ),
                 (
-                    "refund",
+                    'refund',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="gift_card_transactions",
-                        to="pretixbase.orderrefund",
+                        related_name='gift_card_transactions',
+                        to='pretixbase.orderrefund',
                     ),
                 ),
             ],
             options={
-                "ordering": ("datetime",),
+                'ordering': ('datetime',),
             },
         ),
         migrations.CreateModel(
-            name="GiftCardAcceptance",
+            name='GiftCardAcceptance',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
                 (
-                    "collector",
+                    'collector',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="gift_card_issuer_acceptance",
-                        to="pretixbase.organizer",
+                        related_name='gift_card_issuer_acceptance',
+                        to='pretixbase.organizer',
                     ),
                 ),
                 (
-                    "issuer",
+                    'issuer',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="gift_card_collector_acceptance",
-                        to="pretixbase.organizer",
+                        related_name='gift_card_collector_acceptance',
+                        to='pretixbase.organizer',
                     ),
                 ),
             ],
         ),
         migrations.AddField(
-            model_name="giftcard",
-            name="issued_in",
+            model_name='giftcard',
+            name='issued_in',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
-                related_name="issued_gift_cards",
-                to="pretixbase.orderposition",
+                related_name='issued_gift_cards',
+                to='pretixbase.orderposition',
             ),
         ),
         migrations.AddField(
-            model_name="giftcard",
-            name="issuer",
+            model_name='giftcard',
+            name='issuer',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
-                related_name="issued_gift_cards",
-                to="pretixbase.organizer",
+                related_name='issued_gift_cards',
+                to='pretixbase.organizer',
             ),
         ),
         migrations.CreateModel(
-            name="Gate",
+            name='Gate',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", models.CharField(max_length=190)),
-                ("identifier", models.CharField(max_length=190)),
+                ('name', models.CharField(max_length=190)),
+                ('identifier', models.CharField(max_length=190)),
                 (
-                    "organizer",
+                    'organizer',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="gates",
-                        to="pretixbase.organizer",
+                        related_name='gates',
+                        to='pretixbase.organizer',
                     ),
                 ),
             ],
             options={
-                "ordering": ("name",),
+                'ordering': ('name',),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="EventMetaProperty",
+            name='EventMetaProperty',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", models.CharField(db_index=True, max_length=50)),
-                ("default", models.TextField()),
-                ("protected", models.BooleanField(default=False)),
-                ("required", models.BooleanField(default=False)),
-                ("allowed_values", models.TextField(null=True)),
+                ('name', models.CharField(db_index=True, max_length=50)),
+                ('default', models.TextField()),
+                ('protected', models.BooleanField(default=False)),
+                ('required', models.BooleanField(default=False)),
+                ('allowed_values', models.TextField(null=True)),
                 (
-                    "organizer",
+                    'organizer',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="meta_properties",
-                        to="pretixbase.organizer",
+                        related_name='meta_properties',
+                        to='pretixbase.organizer',
                     ),
                 ),
             ],
             options={
-                "abstract": False,
+                'abstract': False,
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="Event_SettingsStore",
+            name='Event_SettingsStore',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("key", models.CharField(max_length=255)),
-                ("value", models.TextField()),
+                ('key', models.CharField(max_length=255)),
+                ('value', models.TextField()),
                 (
-                    "object",
+                    'object',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="_settings_objects",
-                        to="pretixbase.event",
+                        related_name='_settings_objects',
+                        to='pretixbase.event',
                     ),
                 ),
             ],
         ),
         migrations.AddField(
-            model_name="event",
-            name="organizer",
+            model_name='event',
+            name='organizer',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
-                related_name="events",
-                to="pretixbase.organizer",
+                related_name='events',
+                to='pretixbase.organizer',
             ),
         ),
         migrations.AddField(
-            model_name="event",
-            name="seating_plan",
+            model_name='event',
+            name='seating_plan',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.PROTECT,
-                related_name="events",
-                to="pretixbase.seatingplan",
+                related_name='events',
+                to='pretixbase.seatingplan',
             ),
         ),
         migrations.AddField(
-            model_name="device",
-            name="gate",
+            model_name='device',
+            name='gate',
             field=models.ForeignKey(
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
-                related_name="devices",
-                to="pretixbase.gate",
+                related_name='devices',
+                to='pretixbase.gate',
             ),
         ),
         migrations.AddField(
-            model_name="device",
-            name="limit_events",
-            field=models.ManyToManyField(to="pretixbase.event"),
+            model_name='device',
+            name='limit_events',
+            field=models.ManyToManyField(to='pretixbase.event'),
         ),
         migrations.AddField(
-            model_name="device",
-            name="organizer",
+            model_name='device',
+            name='organizer',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.PROTECT,
-                related_name="devices",
-                to="pretixbase.organizer",
+                related_name='devices',
+                to='pretixbase.organizer',
             ),
         ),
         migrations.CreateModel(
-            name="CheckinList",
+            name='CheckinList',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("name", models.CharField(max_length=190)),
-                ("all_products", models.BooleanField(default=True)),
-                ("include_pending", models.BooleanField(default=False)),
-                ("allow_entry_after_exit", models.BooleanField(default=True)),
-                ("allow_multiple_entries", models.BooleanField(default=False)),
-                ("exit_all_at", models.DateTimeField(blank=True, null=True)),
+                ('name', models.CharField(max_length=190)),
+                ('all_products', models.BooleanField(default=True)),
+                ('include_pending', models.BooleanField(default=False)),
+                ('allow_entry_after_exit', models.BooleanField(default=True)),
+                ('allow_multiple_entries', models.BooleanField(default=False)),
+                ('exit_all_at', models.DateTimeField(blank=True, null=True)),
                 (
-                    "auto_checkin_sales_channels",
+                    'auto_checkin_sales_channels',
                     pretix.base.models.fields.MultiStringField(default=[]),
                 ),
-                ("rules", models.JSONField(default=dict)),
+                ('rules', models.JSONField(default=dict)),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="checkin_lists",
-                        to="pretixbase.event",
+                        related_name='checkin_lists',
+                        to='pretixbase.event',
                     ),
                 ),
-                ("gates", models.ManyToManyField(to="pretixbase.gate")),
-                ("limit_products", models.ManyToManyField(to="pretixbase.item")),
+                ('gates', models.ManyToManyField(to='pretixbase.gate')),
+                ('limit_products', models.ManyToManyField(to='pretixbase.item')),
                 (
-                    "subevent",
+                    'subevent',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="pretixbase.subevent",
+                        to='pretixbase.subevent',
                     ),
                 ),
             ],
             options={
-                "ordering": ("subevent__date_from", "name"),
+                'ordering': ('subevent__date_from', 'name'),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="Checkin",
+            name='Checkin',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("datetime", models.DateTimeField(default=django.utils.timezone.now)),
-                ("nonce", models.CharField(max_length=190, null=True)),
-                ("type", models.CharField(default="entry", max_length=100)),
-                ("forced", models.BooleanField(default=False)),
-                ("auto_checked_in", models.BooleanField(default=False)),
+                ('datetime', models.DateTimeField(default=django.utils.timezone.now)),
+                ('nonce', models.CharField(max_length=190, null=True)),
+                ('type', models.CharField(default='entry', max_length=100)),
+                ('forced', models.BooleanField(default=False)),
+                ('auto_checked_in', models.BooleanField(default=False)),
                 (
-                    "device",
+                    'device',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="checkins",
-                        to="pretixbase.device",
+                        related_name='checkins',
+                        to='pretixbase.device',
                     ),
                 ),
                 (
-                    "gate",
+                    'gate',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        related_name="checkins",
-                        to="pretixbase.gate",
+                        related_name='checkins',
+                        to='pretixbase.gate',
                     ),
                 ),
                 (
-                    "list",
+                    'list',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="checkins",
-                        to="pretixbase.checkinlist",
+                        related_name='checkins',
+                        to='pretixbase.checkinlist',
                     ),
                 ),
                 (
-                    "position",
+                    'position',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="checkins",
-                        to="pretixbase.orderposition",
+                        related_name='checkins',
+                        to='pretixbase.orderposition',
                     ),
                 ),
             ],
             options={
-                "ordering": ("-datetime",),
+                'ordering': ('-datetime',),
             },
         ),
         migrations.CreateModel(
-            name="CartPosition",
+            name='CartPosition',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
                 (
-                    "price_before_voucher",
+                    'price_before_voucher',
                     models.DecimalField(decimal_places=2, max_digits=10, null=True),
                 ),
-                ("price", models.DecimalField(decimal_places=2, max_digits=10)),
-                ("attendee_name_cached", models.CharField(max_length=255, null=True)),
-                ("attendee_name_parts", models.JSONField(default=dict)),
-                ("attendee_email", models.EmailField(max_length=254, null=True)),
-                ("meta_info", models.TextField(null=True)),
-                ("company", models.CharField(max_length=255, null=True)),
-                ("street", models.TextField(null=True)),
-                ("zipcode", models.CharField(max_length=30, null=True)),
-                ("city", models.CharField(max_length=255, null=True)),
+                ('price', models.DecimalField(decimal_places=2, max_digits=10)),
+                ('attendee_name_cached', models.CharField(max_length=255, null=True)),
+                ('attendee_name_parts', models.JSONField(default=dict)),
+                ('attendee_email', models.EmailField(max_length=254, null=True)),
+                ('meta_info', models.TextField(null=True)),
+                ('company', models.CharField(max_length=255, null=True)),
+                ('street', models.TextField(null=True)),
+                ('zipcode', models.CharField(max_length=30, null=True)),
+                ('city', models.CharField(max_length=255, null=True)),
                 (
-                    "country",
+                    'country',
                     pretix.helpers.countries.FastCountryField(
                         countries=pretix.helpers.countries.CachedCountries,
                         max_length=2,
                         null=True,
                     ),
                 ),
-                ("state", models.CharField(max_length=255, null=True)),
-                ("cart_id", models.CharField(db_index=True, max_length=255, null=True)),
-                ("datetime", models.DateTimeField(auto_now_add=True)),
-                ("expires", models.DateTimeField(db_index=True)),
-                ("includes_tax", models.BooleanField(default=True)),
+                ('state', models.CharField(max_length=255, null=True)),
+                ('cart_id', models.CharField(db_index=True, max_length=255, null=True)),
+                ('datetime', models.DateTimeField(auto_now_add=True)),
+                ('expires', models.DateTimeField(db_index=True)),
+                ('includes_tax', models.BooleanField(default=True)),
                 (
-                    "override_tax_rate",
+                    'override_tax_rate',
                     models.DecimalField(decimal_places=2, max_digits=10, null=True),
                 ),
-                ("is_bundled", models.BooleanField(default=False)),
+                ('is_bundled', models.BooleanField(default=False)),
                 (
-                    "addon_to",
+                    'addon_to',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="addons",
-                        to="pretixbase.cartposition",
+                        related_name='addons',
+                        to='pretixbase.cartposition',
                     ),
                 ),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="pretixbase.event",
+                        to='pretixbase.event',
                     ),
                 ),
                 (
-                    "item",
+                    'item',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        to="pretixbase.item",
+                        to='pretixbase.item',
                     ),
                 ),
                 (
-                    "seat",
-                    models.ForeignKey(
-                        null=True,
-                        on_delete=django.db.models.deletion.PROTECT,
-                        to="pretixbase.seat",
-                    ),
-                ),
-                (
-                    "subevent",
+                    'seat',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        to="pretixbase.subevent",
+                        to='pretixbase.seat',
                     ),
                 ),
                 (
-                    "variation",
+                    'subevent',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        to="pretixbase.itemvariation",
+                        to='pretixbase.subevent',
                     ),
                 ),
                 (
-                    "voucher",
+                    'variation',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        to="pretixbase.voucher",
+                        to='pretixbase.itemvariation',
+                    ),
+                ),
+                (
+                    'voucher',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to='pretixbase.voucher',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Cart position",
-                "verbose_name_plural": "Cart positions",
+                'verbose_name': 'Cart position',
+                'verbose_name_plural': 'Cart positions',
             },
         ),
         migrations.CreateModel(
-            name="CancellationRequest",
+            name='CancellationRequest',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("created", models.DateTimeField(auto_now_add=True)),
+                ('created', models.DateTimeField(auto_now_add=True)),
                 (
-                    "cancellation_fee",
+                    'cancellation_fee',
                     models.DecimalField(decimal_places=2, max_digits=10),
                 ),
-                ("refund_as_giftcard", models.BooleanField(default=False)),
+                ('refund_as_giftcard', models.BooleanField(default=False)),
                 (
-                    "order",
+                    'order',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="cancellation_requests",
-                        to="pretixbase.order",
+                        related_name='cancellation_requests',
+                        to='pretixbase.order',
                     ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name="CachedTicket",
+            name='CachedTicket',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("provider", models.CharField(max_length=255)),
-                ("type", models.CharField(max_length=255)),
-                ("extension", models.CharField(max_length=255)),
+                ('provider', models.CharField(max_length=255)),
+                ('type', models.CharField(max_length=255)),
+                ('extension', models.CharField(max_length=255)),
                 (
-                    "file",
+                    'file',
                     models.FileField(
                         max_length=255,
                         null=True,
                         upload_to=pretix.base.models.orders.cachedticket_name,
                     ),
                 ),
-                ("created", models.DateTimeField(auto_now_add=True)),
+                ('created', models.DateTimeField(auto_now_add=True)),
                 (
-                    "order_position",
+                    'order_position',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="pretixbase.orderposition",
+                        to='pretixbase.orderposition',
                     ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name="CachedCombinedTicket",
+            name='CachedCombinedTicket',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("provider", models.CharField(max_length=255)),
-                ("type", models.CharField(max_length=255)),
-                ("extension", models.CharField(max_length=255)),
+                ('provider', models.CharField(max_length=255)),
+                ('type', models.CharField(max_length=255)),
+                ('extension', models.CharField(max_length=255)),
                 (
-                    "file",
+                    'file',
                     models.FileField(
                         max_length=255,
                         null=True,
                         upload_to=pretix.base.models.orders.cachedcombinedticket_name,
                     ),
                 ),
-                ("created", models.DateTimeField(auto_now_add=True)),
+                ('created', models.DateTimeField(auto_now_add=True)),
                 (
-                    "order",
+                    'order',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="pretixbase.order",
+                        to='pretixbase.order',
                     ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name="SubEventMetaValue",
+            name='SubEventMetaValue',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("value", models.TextField()),
+                ('value', models.TextField()),
                 (
-                    "property",
+                    'property',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="subevent_values",
-                        to="pretixbase.eventmetaproperty",
+                        related_name='subevent_values',
+                        to='pretixbase.eventmetaproperty',
                     ),
                 ),
                 (
-                    "subevent",
+                    'subevent',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="meta_values",
-                        to="pretixbase.subevent",
+                        related_name='meta_values',
+                        to='pretixbase.subevent',
                     ),
                 ),
             ],
             options={
-                "unique_together": {("subevent", "property")},
+                'unique_together': {('subevent', 'property')},
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="QuestionAnswer",
+            name='QuestionAnswer',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("answer", models.TextField()),
+                ('answer', models.TextField()),
                 (
-                    "file",
+                    'file',
                     models.FileField(
                         max_length=255,
                         null=True,
@@ -2520,193 +2520,193 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "cartposition",
+                    'cartposition',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="answers",
-                        to="pretixbase.cartposition",
+                        related_name='answers',
+                        to='pretixbase.cartposition',
                     ),
                 ),
                 (
-                    "options",
+                    'options',
                     models.ManyToManyField(
-                        related_name="answers", to="pretixbase.questionoption"
+                        related_name='answers', to='pretixbase.questionoption'
                     ),
                 ),
                 (
-                    "orderposition",
+                    'orderposition',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="answers",
-                        to="pretixbase.orderposition",
+                        related_name='answers',
+                        to='pretixbase.orderposition',
                     ),
                 ),
                 (
-                    "question",
+                    'question',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="answers",
-                        to="pretixbase.question",
+                        related_name='answers',
+                        to='pretixbase.question',
                     ),
                 ),
             ],
             options={
-                "unique_together": {
-                    ("orderposition", "question"),
-                    ("cartposition", "question"),
+                'unique_together': {
+                    ('orderposition', 'question'),
+                    ('cartposition', 'question'),
                 },
             },
         ),
         migrations.CreateModel(
-            name="NotificationSetting",
+            name='NotificationSetting',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("action_type", models.CharField(max_length=255)),
-                ("method", models.CharField(max_length=255)),
-                ("enabled", models.BooleanField(default=True)),
+                ('action_type', models.CharField(max_length=255)),
+                ('method', models.CharField(max_length=255)),
+                ('enabled', models.BooleanField(default=True)),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="notification_settings",
-                        to="pretixbase.event",
+                        related_name='notification_settings',
+                        to='pretixbase.event',
                     ),
                 ),
                 (
-                    "user",
+                    'user',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="notification_settings",
+                        related_name='notification_settings',
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
             ],
             options={
-                "unique_together": {("user", "action_type", "event", "method")},
+                'unique_together': {('user', 'action_type', 'event', 'method')},
             },
         ),
         migrations.CreateModel(
-            name="ItemMetaValue",
+            name='ItemMetaValue',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("value", models.TextField()),
+                ('value', models.TextField()),
                 (
-                    "item",
+                    'item',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="meta_values",
-                        to="pretixbase.item",
+                        related_name='meta_values',
+                        to='pretixbase.item',
                     ),
                 ),
                 (
-                    "property",
+                    'property',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="item_values",
-                        to="pretixbase.itemmetaproperty",
+                        related_name='item_values',
+                        to='pretixbase.itemmetaproperty',
                     ),
                 ),
             ],
             options={
-                "unique_together": {("item", "property")},
+                'unique_together': {('item', 'property')},
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="ItemAddOn",
+            name='ItemAddOn',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("min_count", models.PositiveIntegerField(default=0)),
-                ("max_count", models.PositiveIntegerField(default=1)),
-                ("price_included", models.BooleanField(default=False)),
-                ("multi_allowed", models.BooleanField(default=False)),
-                ("position", models.PositiveIntegerField(default=0)),
+                ('min_count', models.PositiveIntegerField(default=0)),
+                ('max_count', models.PositiveIntegerField(default=1)),
+                ('price_included', models.BooleanField(default=False)),
+                ('multi_allowed', models.BooleanField(default=False)),
+                ('position', models.PositiveIntegerField(default=0)),
                 (
-                    "addon_category",
+                    'addon_category',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="addon_to",
-                        to="pretixbase.itemcategory",
+                        related_name='addon_to',
+                        to='pretixbase.itemcategory',
                     ),
                 ),
                 (
-                    "base_item",
+                    'base_item',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="addons",
-                        to="pretixbase.item",
+                        related_name='addons',
+                        to='pretixbase.item',
                     ),
                 ),
             ],
             options={
-                "ordering": ("position", "pk"),
-                "unique_together": {("base_item", "addon_category")},
+                'ordering': ('position', 'pk'),
+                'unique_together': {('base_item', 'addon_category')},
             },
         ),
         migrations.AlterUniqueTogether(
-            name="invoice",
-            unique_together={("organizer", "prefix", "invoice_no")},
+            name='invoice',
+            unique_together={('organizer', 'prefix', 'invoice_no')},
         ),
         migrations.AlterUniqueTogether(
-            name="giftcard",
-            unique_together={("secret", "issuer")},
+            name='giftcard',
+            unique_together={('secret', 'issuer')},
         ),
         migrations.CreateModel(
-            name="EventMetaValue",
+            name='EventMetaValue',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("value", models.TextField()),
+                ('value', models.TextField()),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="meta_values",
-                        to="pretixbase.event",
+                        related_name='meta_values',
+                        to='pretixbase.event',
                     ),
                 ),
                 (
-                    "property",
+                    'property',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="event_values",
-                        to="pretixbase.eventmetaproperty",
+                        related_name='event_values',
+                        to='pretixbase.eventmetaproperty',
                     ),
                 ),
             ],
             options={
-                "unique_together": {("event", "property")},
+                'unique_together': {('event', 'property')},
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.AlterUniqueTogether(
-            name="event",
-            unique_together={("organizer", "slug")},
+            name='event',
+            unique_together={('organizer', 'slug')},
         ),
         migrations.AlterUniqueTogether(
-            name="device",
-            unique_together={("organizer", "device_id")},
+            name='device',
+            unique_together={('organizer', 'device_id')},
         ),
     ]

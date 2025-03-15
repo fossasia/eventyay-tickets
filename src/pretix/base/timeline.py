@@ -10,7 +10,7 @@ from pretix.base.reldate import RelativeDateWrapper
 from pretix.base.signals import timeline_events
 
 TimelineEvent = namedtuple(
-    "TimelineEvent", ("event", "subevent", "datetime", "description", "edit_url")
+    'TimelineEvent', ('event', 'subevent', 'datetime', 'description', 'edit_url')
 )
 
 
@@ -19,17 +19,17 @@ def timeline_for_event(event, subevent=None):
     ev = subevent or event
     if subevent:
         ev_edit_url = reverse(
-            "control:event.subevent",
+            'control:event.subevent',
             kwargs={
-                "event": event.slug,
-                "organizer": event.organizer.slug,
-                "subevent": subevent.pk,
+                'event': event.slug,
+                'organizer': event.organizer.slug,
+                'subevent': subevent.pk,
             },
         )
     else:
         ev_edit_url = reverse(
-            "control:event.settings",
-            kwargs={"event": event.slug, "organizer": event.organizer.slug},
+            'control:event.settings',
+            kwargs={'event': event.slug, 'organizer': event.organizer.slug},
         )
 
     tl.append(
@@ -37,7 +37,7 @@ def timeline_for_event(event, subevent=None):
             event=event,
             subevent=subevent,
             datetime=ev.date_from,
-            description=pgettext_lazy("timeline", "Your event starts"),
+            description=pgettext_lazy('timeline', 'Your event starts'),
             edit_url=ev_edit_url,
         )
     )
@@ -48,7 +48,7 @@ def timeline_for_event(event, subevent=None):
                 event=event,
                 subevent=subevent,
                 datetime=ev.date_to,
-                description=pgettext_lazy("timeline", "Your event ends"),
+                description=pgettext_lazy('timeline', 'Your event ends'),
                 edit_url=ev_edit_url,
             )
         )
@@ -60,7 +60,7 @@ def timeline_for_event(event, subevent=None):
                 subevent=subevent,
                 datetime=ev.date_admission,
                 description=pgettext_lazy(
-                    "timeline", "Admissions for your event start"
+                    'timeline', 'Admissions for your event start'
                 ),
                 edit_url=ev_edit_url,
             )
@@ -72,7 +72,7 @@ def timeline_for_event(event, subevent=None):
                 event=event,
                 subevent=subevent,
                 datetime=ev.presale_start,
-                description=pgettext_lazy("timeline", "Start of ticket sales"),
+                description=pgettext_lazy('timeline', 'Start of ticket sales'),
                 edit_url=ev_edit_url,
             )
         )
@@ -83,12 +83,12 @@ def timeline_for_event(event, subevent=None):
                 event=event,
                 subevent=subevent,
                 datetime=ev.presale_end,
-                description=pgettext_lazy("timeline", "End of ticket sales"),
+                description=pgettext_lazy('timeline', 'End of ticket sales'),
                 edit_url=ev_edit_url,
             )
         )
 
-    rd = event.settings.get("last_order_modification_date", as_type=RelativeDateWrapper)
+    rd = event.settings.get('last_order_modification_date', as_type=RelativeDateWrapper)
     if rd:
         tl.append(
             TimelineEvent(
@@ -96,13 +96,13 @@ def timeline_for_event(event, subevent=None):
                 subevent=subevent,
                 datetime=rd.datetime(ev),
                 description=pgettext_lazy(
-                    "timeline", "Customers can no longer modify their orders"
+                    'timeline', 'Customers can no longer modify their orders'
                 ),
                 edit_url=ev_edit_url,
             )
         )
 
-    rd = event.settings.get("payment_term_last", as_type=RelativeDateWrapper)
+    rd = event.settings.get('payment_term_last', as_type=RelativeDateWrapper)
     if rd:
         d = make_aware(
             datetime.combine(rd.date(ev), time(hour=23, minute=59, second=59)),
@@ -114,31 +114,31 @@ def timeline_for_event(event, subevent=None):
                 subevent=subevent,
                 datetime=d,
                 description=pgettext_lazy(
-                    "timeline", "No more payments can be completed"
+                    'timeline', 'No more payments can be completed'
                 ),
                 edit_url=reverse(
-                    "control:event.settings.payment",
-                    kwargs={"event": event.slug, "organizer": event.organizer.slug},
+                    'control:event.settings.payment',
+                    kwargs={'event': event.slug, 'organizer': event.organizer.slug},
                 ),
             )
         )
 
-    rd = event.settings.get("ticket_download_date", as_type=RelativeDateWrapper)
+    rd = event.settings.get('ticket_download_date', as_type=RelativeDateWrapper)
     if rd and event.settings.ticket_download:
         tl.append(
             TimelineEvent(
                 event=event,
                 subevent=subevent,
                 datetime=rd.datetime(ev),
-                description=pgettext_lazy("timeline", "Tickets can be downloaded"),
+                description=pgettext_lazy('timeline', 'Tickets can be downloaded'),
                 edit_url=reverse(
-                    "control:event.settings.tickets",
-                    kwargs={"event": event.slug, "organizer": event.organizer.slug},
+                    'control:event.settings.tickets',
+                    kwargs={'event': event.slug, 'organizer': event.organizer.slug},
                 ),
             )
         )
 
-    rd = event.settings.get("cancel_allow_user_until", as_type=RelativeDateWrapper)
+    rd = event.settings.get('cancel_allow_user_until', as_type=RelativeDateWrapper)
     if rd and event.settings.cancel_allow_user:
         tl.append(
             TimelineEvent(
@@ -146,16 +146,16 @@ def timeline_for_event(event, subevent=None):
                 subevent=subevent,
                 datetime=rd.datetime(ev),
                 description=pgettext_lazy(
-                    "timeline", "Customers can no longer cancel free or unpaid orders"
+                    'timeline', 'Customers can no longer cancel free or unpaid orders'
                 ),
                 edit_url=reverse(
-                    "control:event.settings.cancel",
-                    kwargs={"event": event.slug, "organizer": event.organizer.slug},
+                    'control:event.settings.cancel',
+                    kwargs={'event': event.slug, 'organizer': event.organizer.slug},
                 ),
             )
         )
 
-    rd = event.settings.get("cancel_allow_user_paid_until", as_type=RelativeDateWrapper)
+    rd = event.settings.get('cancel_allow_user_paid_until', as_type=RelativeDateWrapper)
     if rd and event.settings.cancel_allow_user_paid:
         tl.append(
             TimelineEvent(
@@ -163,17 +163,17 @@ def timeline_for_event(event, subevent=None):
                 subevent=subevent,
                 datetime=rd.datetime(ev),
                 description=pgettext_lazy(
-                    "timeline", "Customers can no longer cancel paid orders"
+                    'timeline', 'Customers can no longer cancel paid orders'
                 ),
                 edit_url=reverse(
-                    "control:event.settings.cancel",
-                    kwargs={"event": event.slug, "organizer": event.organizer.slug},
+                    'control:event.settings.cancel',
+                    kwargs={'event': event.slug, 'organizer': event.organizer.slug},
                 ),
             )
         )
 
     if not event.has_subevents:
-        days = event.settings.get("mail_days_download_reminder", as_type=int)
+        days = event.settings.get('mail_days_download_reminder', as_type=int)
         if days is not None and event.settings.ticket_download:
             reminder_date = (ev.date_from - timedelta(days=days)).replace(
                 hour=0, minute=0, second=0, microsecond=0
@@ -184,11 +184,11 @@ def timeline_for_event(event, subevent=None):
                     subevent=subevent,
                     datetime=reminder_date,
                     description=pgettext_lazy(
-                        "timeline", "Download reminders are being sent out"
+                        'timeline', 'Download reminders are being sent out'
                     ),
                     edit_url=reverse(
-                        "control:event.settings.mail",
-                        kwargs={"event": event.slug, "organizer": event.organizer.slug},
+                        'control:event.settings.mail',
+                        kwargs={'event': event.slug, 'organizer': event.organizer.slug},
                     ),
                 )
             )
@@ -203,14 +203,14 @@ def timeline_for_event(event, subevent=None):
                     subevent=subevent,
                     datetime=p.available_from,
                     description=pgettext_lazy(
-                        "timeline", 'Product "{name}" becomes available'
+                        'timeline', 'Product "{name}" becomes available'
                     ).format(name=str(p)),
                     edit_url=reverse(
-                        "control:event.item",
+                        'control:event.item',
                         kwargs={
-                            "event": event.slug,
-                            "organizer": event.organizer.slug,
-                            "item": p.pk,
+                            'event': event.slug,
+                            'organizer': event.organizer.slug,
+                            'item': p.pk,
                         },
                     ),
                 )
@@ -222,14 +222,14 @@ def timeline_for_event(event, subevent=None):
                     subevent=subevent,
                     datetime=p.available_until,
                     description=pgettext_lazy(
-                        "timeline", 'Product "{name}" becomes unavailable'
+                        'timeline', 'Product "{name}" becomes unavailable'
                     ).format(name=str(p)),
                     edit_url=reverse(
-                        "control:event.item",
+                        'control:event.item',
                         kwargs={
-                            "event": event.slug,
-                            "organizer": event.organizer.slug,
-                            "item": p.pk,
+                            'event': event.slug,
+                            'organizer': event.organizer.slug,
+                            'item': p.pk,
                         },
                     ),
                 )
@@ -239,7 +239,7 @@ def timeline_for_event(event, subevent=None):
     # This is a special case, depending on payment providers not overriding BasePaymentProvider by too much, but it's
     # preferrable to having all plugins implement this spearately.
     for pprov in pprovs.values():
-        if not pprov.settings.get("_enabled", as_type=bool):
+        if not pprov.settings.get('_enabled', as_type=bool):
             continue
         try:
             if not pprov.is_enabled:
@@ -247,7 +247,7 @@ def timeline_for_event(event, subevent=None):
         except:
             pass
         availability_date = pprov.settings.get(
-            "_availability_date", as_type=RelativeDateWrapper
+            '_availability_date', as_type=RelativeDateWrapper
         )
         if availability_date:
             d = make_aware(
@@ -262,15 +262,15 @@ def timeline_for_event(event, subevent=None):
                     subevent=subevent,
                     datetime=d,
                     description=pgettext_lazy(
-                        "timeline",
+                        'timeline',
                         'Payment provider "{name}" can no longer be selected',
                     ).format(name=str(pprov.verbose_name)),
                     edit_url=reverse(
-                        "control:event.settings.payment.provider",
+                        'control:event.settings.payment.provider',
                         kwargs={
-                            "event": event.slug,
-                            "organizer": event.organizer.slug,
-                            "provider": pprov.identifier,
+                            'event': event.slug,
+                            'organizer': event.organizer.slug,
+                            'provider': pprov.identifier,
                         },
                     ),
                 )

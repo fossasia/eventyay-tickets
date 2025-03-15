@@ -71,7 +71,7 @@ from . import (
     iframe_entry_view_wrapper,
 )
 
-package_name = "pretix_venueless"
+package_name = 'pretix_venueless'
 
 if importlib.util.find_spec(package_name) is not None:
     pretix_venueless = import_module(package_name)
@@ -102,7 +102,7 @@ def get_grouped_items(
     event,
     subevent=None,
     voucher=None,
-    channel="web",
+    channel='web',
     require_seat=0,
     base_qs=None,
     allow_addons=False,
@@ -114,7 +114,7 @@ def get_grouped_items(
     base_qs = base_qs if base_qs is not None else event.items
 
     requires_seat = Exists(
-        SeatCategoryMapping.objects.filter(product_id=OuterRef("pk"), subevent=subevent)
+        SeatCategoryMapping.objects.filter(product_id=OuterRef('pk'), subevent=subevent)
     )
     if not event.settings.seating_choice:
         requires_seat = Value(0, output_field=IntegerField())
@@ -123,31 +123,31 @@ def get_grouped_items(
         base_qs.using(settings.DATABASE_REPLICA)
         .filter_available(channel=channel, voucher=voucher, allow_addons=allow_addons)
         .select_related(
-            "category",
-            "tax_rule",  # for re-grouping
-            "hidden_if_available",
+            'category',
+            'tax_rule',  # for re-grouping
+            'hidden_if_available',
         )
         .prefetch_related(
             Prefetch(
-                "quotas",
-                to_attr="_subevent_quotas",
+                'quotas',
+                to_attr='_subevent_quotas',
                 queryset=event.quotas.using(settings.DATABASE_REPLICA).filter(
                     subevent=subevent
                 ),
             ),
             Prefetch(
-                "bundles",
+                'bundles',
                 queryset=ItemBundle.objects.using(
                     settings.DATABASE_REPLICA
                 ).prefetch_related(
                     Prefetch(
-                        "bundled_item",
+                        'bundled_item',
                         queryset=event.items.using(settings.DATABASE_REPLICA)
-                        .select_related("tax_rule")
+                        .select_related('tax_rule')
                         .prefetch_related(
                             Prefetch(
-                                "quotas",
-                                to_attr="_subevent_quotas",
+                                'quotas',
+                                to_attr='_subevent_quotas',
                                 queryset=event.quotas.using(
                                     settings.DATABASE_REPLICA
                                 ).filter(subevent=subevent),
@@ -155,14 +155,14 @@ def get_grouped_items(
                         ),
                     ),
                     Prefetch(
-                        "bundled_variation",
+                        'bundled_variation',
                         queryset=ItemVariation.objects.using(settings.DATABASE_REPLICA)
-                        .select_related("item", "item__tax_rule")
+                        .select_related('item', 'item__tax_rule')
                         .filter(item__event=event)
                         .prefetch_related(
                             Prefetch(
-                                "quotas",
-                                to_attr="_subevent_quotas",
+                                'quotas',
+                                to_attr='_subevent_quotas',
                                 queryset=event.quotas.using(
                                     settings.DATABASE_REPLICA
                                 ).filter(subevent=subevent),
@@ -172,13 +172,13 @@ def get_grouped_items(
                 ),
             ),
             Prefetch(
-                "variations",
-                to_attr="available_variations",
+                'variations',
+                to_attr='available_variations',
                 queryset=ItemVariation.objects.using(settings.DATABASE_REPLICA)
                 .annotate(
                     subevent_disabled=Exists(
                         SubEventItemVariation.objects.filter(
-                            variation_id=OuterRef("pk"),
+                            variation_id=OuterRef('pk'),
                             subevent=subevent,
                             disabled=True,
                         )
@@ -187,8 +187,8 @@ def get_grouped_items(
                 .filter(active=True, quotas__isnull=False, subevent_disabled=False)
                 .prefetch_related(
                     Prefetch(
-                        "quotas",
-                        to_attr="_subevent_quotas",
+                        'quotas',
+                        to_attr='_subevent_quotas',
                         queryset=event.quotas.using(settings.DATABASE_REPLICA).filter(
                             subevent=subevent
                         ),
@@ -198,11 +198,11 @@ def get_grouped_items(
             ),
         )
         .annotate(
-            quotac=Count("quotas"),
-            has_variations=Count("variations"),
+            quotac=Count('quotas'),
+            has_variations=Count('variations'),
             subevent_disabled=Exists(
                 SubEventItem.objects.filter(
-                    item_id=OuterRef("pk"),
+                    item_id=OuterRef('pk'),
                     subevent=subevent,
                     disabled=True,
                 )
@@ -213,7 +213,7 @@ def get_grouped_items(
             quotac__gt=0,
             subevent_disabled=False,
         )
-        .order_by("category__position", "category_id", "position", "name")
+        .order_by('category__position', 'category_id', 'position', 'name')
     )
     if require_seat:
         items = items.filter(requires_seat__gt=0)
@@ -228,7 +228,7 @@ def get_grouped_items(
         )
 
     display_add_to_cart = False
-    quota_cache_key = f"item_quota_cache:{subevent.id if subevent else 0}:{channel}:{bool(require_seat)}"
+    quota_cache_key = f'item_quota_cache:{subevent.id if subevent else 0}:{channel}:{bool(require_seat)}'
     quota_cache = quota_cache or event.cache.get(quota_cache_key) or {}
     quota_cache_existed = bool(quota_cache)
 
@@ -287,7 +287,7 @@ def get_grouped_items(
             sender=event, item=item, variation=None
         ):
             if resp:
-                item.description += ("<br/>" if item.description else "") + resp
+                item.description += ('<br/>' if item.description else '') + resp
 
         if not item.has_variations:
             item._remove = False
@@ -341,9 +341,9 @@ def get_grouped_items(
                         item.original_price,
                         currency=event.currency,
                         include_bundled=True,
-                        base_price_is="net"
+                        base_price_is='net'
                         if event.settings.display_net_prices
-                        else "gross",
+                        else 'gross',
                     )  # backwards-compat
                     if item.original_price
                     else None
@@ -357,7 +357,7 @@ def get_grouped_items(
                     sender=event, item=item, variation=var
                 ):
                     if resp:
-                        var.description += ("<br/>" if var.description else "") + resp
+                        var.description += ('<br/>' if var.description else '') + resp
 
                 if voucher and (voucher.allow_ignore_quota or voucher.block_quota):
                     var.cached_availability = (
@@ -399,9 +399,9 @@ def get_grouped_items(
                                 var.original_price or item.original_price,
                                 currency=event.currency,
                                 include_bundled=True,
-                                base_price_is="net"
+                                base_price_is='net'
                                 if event.settings.display_net_prices
-                                else "gross",
+                                else 'gross',
                             )  # backwards-compat
                         )
                         if var.original_price or item.original_price
@@ -415,9 +415,9 @@ def get_grouped_items(
                     item.original_price,
                     currency=event.currency,
                     include_bundled=True,
-                    base_price_is="net"
+                    base_price_is='net'
                     if event.settings.display_net_prices
-                    else "gross",
+                    else 'gross',
                 )  # backwards-compat
                 if item.original_price
                 else None
@@ -480,54 +480,54 @@ def get_grouped_items(
     return items, display_add_to_cart
 
 
-@method_decorator(allow_frame_if_namespaced, "dispatch")
-@method_decorator(iframe_entry_view_wrapper, "dispatch")
+@method_decorator(allow_frame_if_namespaced, 'dispatch')
+@method_decorator(iframe_entry_view_wrapper, 'dispatch')
 class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
-    template_name = "pretixpresale/event/index.html"
+    template_name = 'pretixpresale/event/index.html'
 
     def get(self, request, *args, **kwargs):
         from pretix.presale.views.cart import get_or_create_cart_id
 
         self.subevent = None
-        if request.GET.get("src", "") == "widget" and "take_cart_id" in request.GET:
+        if request.GET.get('src', '') == 'widget' and 'take_cart_id' in request.GET:
             # User has clicked "Open in a new tab" link in widget
             get_or_create_cart_id(request)
             return redirect(
-                eventreverse(request.event, "presale:event.index", kwargs=kwargs)
+                eventreverse(request.event, 'presale:event.index', kwargs=kwargs)
             )
-        elif request.GET.get("iframe", "") == "1" and "take_cart_id" in request.GET:
+        elif request.GET.get('iframe', '') == '1' and 'take_cart_id' in request.GET:
             # Widget just opened, a cart already exists. Let's to a stupid redirect to check if cookies are disabled
             get_or_create_cart_id(request)
             return redirect(
-                eventreverse(request.event, "presale:event.index", kwargs=kwargs)
-                + "?require_cookie=true&cart_id={}".format(
-                    request.GET.get("take_cart_id")
+                eventreverse(request.event, 'presale:event.index', kwargs=kwargs)
+                + '?require_cookie=true&cart_id={}'.format(
+                    request.GET.get('take_cart_id')
                 )
             )
         elif (
-            request.GET.get("iframe", "") == "1"
-            and len(self.request.GET.get("widget_data", "{}")) > 3
+            request.GET.get('iframe', '') == '1'
+            and len(self.request.GET.get('widget_data', '{}')) > 3
         ):
             # We've been passed data from a widget, we need to create a cart session to store it.
             get_or_create_cart_id(request)
         elif (
-            "require_cookie" in request.GET
+            'require_cookie' in request.GET
             and settings.SESSION_COOKIE_NAME not in request.COOKIES
         ):
             # Cookies are in fact not supported
             r = render(
                 request,
-                "pretixpresale/event/cookies.html",
+                'pretixpresale/event/cookies.html',
                 {
-                    "url": eventreverse(
+                    'url': eventreverse(
                         request.event,
-                        "presale:event.index",
-                        kwargs={"cart_namespace": kwargs.get("cart_namespace") or ""},
+                        'presale:event.index',
+                        kwargs={'cart_namespace': kwargs.get('cart_namespace') or ''},
                     )
                     + (
-                        "?src=widget&take_cart_id={}".format(request.GET.get("cart_id"))
-                        if "cart_id" in request.GET
-                        else ""
+                        '?src=widget&take_cart_id={}'.format(request.GET.get('cart_id'))
+                        if 'cart_id' in request.GET
+                        else ''
                     )
                 },
             )
@@ -536,14 +536,14 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
 
         if request.sales_channel.identifier not in request.event.sales_channels:
             raise Http404(
-                _("Tickets for this event cannot be purchased on this sales channel.")
+                _('Tickets for this event cannot be purchased on this sales channel.')
             )
 
         if request.event.has_subevents:
-            if "subevent" in kwargs:
+            if 'subevent' in kwargs:
                 self.subevent = (
                     request.event.subevents.using(settings.DATABASE_REPLICA)
-                    .filter(pk=kwargs["subevent"], active=True)
+                    .filter(pk=kwargs['subevent'], active=True)
                     .first()
                 )
                 if not self.subevent:
@@ -552,7 +552,7 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
             else:
                 return super().get(request, *args, **kwargs)
         else:
-            if "subevent" in kwargs:
+            if 'subevent' in kwargs:
                 return redirect(self.get_index_url())
             else:
                 return super().get(request, *args, **kwargs)
@@ -561,29 +561,29 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         # Show voucher option if an event is selected and vouchers exist
-        vouchers_exist = self.request.event.cache.get("vouchers_exist")
+        vouchers_exist = self.request.event.cache.get('vouchers_exist')
         if vouchers_exist is None:
             vouchers_exist = self.request.event.vouchers.exists()
-            self.request.event.cache.set("vouchers_exist", vouchers_exist)
-        context["show_vouchers"] = context["vouchers_exist"] = vouchers_exist
+            self.request.event.cache.set('vouchers_exist', vouchers_exist)
+        context['show_vouchers'] = context['vouchers_exist'] = vouchers_exist
 
         if not self.request.event.has_subevents or self.subevent:
             # Fetch all items
             items, display_add_to_cart = get_grouped_items(
                 self.request.event,
                 self.subevent,
-                filter_items=self.request.GET.getlist("item"),
-                filter_categories=self.request.GET.getlist("category"),
+                filter_items=self.request.GET.getlist('item'),
+                filter_categories=self.request.GET.getlist('category'),
                 channel=self.request.sales_channel.identifier,
             )
-            context["itemnum"] = len(items)
-            context["allfree"] = all(
-                item.display_price.gross == Decimal("0.00")
+            context['itemnum'] = len(items)
+            context['allfree'] = all(
+                item.display_price.gross == Decimal('0.00')
                 for item in items
                 if not item.has_variations
             ) and all(
                 all(
-                    var.display_price.gross == Decimal("0.00")
+                    var.display_price.gross == Decimal('0.00')
                     for var in item.available_variations
                 )
                 for item in items
@@ -591,38 +591,38 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
             )
 
             # Regroup those by category
-            context["items_by_category"] = item_group_by_category(items)
-            context["display_add_to_cart"] = display_add_to_cart
+            context['items_by_category'] = item_group_by_category(items)
+            context['display_add_to_cart'] = display_add_to_cart
 
-        context["ev"] = self.subevent or self.request.event
-        context["subevent"] = self.subevent
-        context["cart"] = self.get_cart()
-        context["has_addon_choices"] = any(
+        context['ev'] = self.subevent or self.request.event
+        context['subevent'] = self.subevent
+        context['cart'] = self.get_cart()
+        context['has_addon_choices'] = any(
             cp.has_addon_choices for cp in get_cart(self.request)
         )
         if self.subevent:
-            context["frontpage_text"] = str(self.subevent.frontpage_text)
+            context['frontpage_text'] = str(self.subevent.frontpage_text)
         else:
-            context["frontpage_text"] = str(self.request.event.settings.frontpage_text)
+            context['frontpage_text'] = str(self.request.event.settings.frontpage_text)
 
         if self.request.event.has_subevents:
             context.update(self._subevent_list_context())
 
-        context["show_cart"] = context["cart"]["positions"] and (
+        context['show_cart'] = context['cart']['positions'] and (
             self.request.event.has_subevents or self.request.event.presale_is_running
         )
         if self.request.event.settings.redirect_to_checkout_directly:
-            context["cart_redirect"] = eventreverse(
+            context['cart_redirect'] = eventreverse(
                 self.request.event,
-                "presale:event.checkout.start",
-                kwargs={"cart_namespace": kwargs.get("cart_namespace") or ""},
+                'presale:event.checkout.start',
+                kwargs={'cart_namespace': kwargs.get('cart_namespace') or ''},
             )
-            if context["cart_redirect"].startswith("https:"):
-                context["cart_redirect"] = (
-                    "/" + context["cart_redirect"].split("/", 3)[3]
+            if context['cart_redirect'].startswith('https:'):
+                context['cart_redirect'] = (
+                    '/' + context['cart_redirect'].split('/', 3)[3]
                 )
         else:
-            context["cart_redirect"] = self.request.path
+            context['cart_redirect'] = self.request.path
 
         # Get event_name in language code
         event_name_data = self.request.event.name.data
@@ -633,7 +633,7 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
 
             if event_name is None:
                 # If event_name is not available in the language code, get event name in English
-                event_name = event_name_data.get("en")
+                event_name = event_name_data.get('en')
 
             if event_name is None and len(event_name_data) > 0:
                 # If event_name is not available in English, get the first available event name
@@ -642,32 +642,32 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
             # If event_name_data is a string, use it directly
             event_name = event_name_data
 
-        context["event_name"] = event_name
+        context['event_name'] = event_name
 
-        context["is_video_plugin_enabled"] = False
+        context['is_video_plugin_enabled'] = False
 
         if (
             getattr(
-                getattr(getattr(pretix_venueless, "apps", None), "PluginApp", None),
-                "name",
+                getattr(getattr(pretix_venueless, 'apps', None), 'PluginApp', None),
+                'name',
                 None,
             )
             in self.request.event.get_plugins()
         ):
-            context["is_video_plugin_enabled"] = True
+            context['is_video_plugin_enabled'] = True
 
         context[
-            "guest_checkout_allowed"
+            'guest_checkout_allowed'
         ] = not self.request.event.settings.require_registered_account_for_tickets
 
         if (
-            not context["guest_checkout_allowed"]
+            not context['guest_checkout_allowed']
             and not self.request.user.is_authenticated
         ):
             messages.error(
                 self.request,
                 _(
-                    "This event only available for registered users. Please login to continue."
+                    'This event only available for registered users. Please login to continue.'
                 ),
             )
 
@@ -675,28 +675,28 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
 
     def _subevent_list_context(self):
         voucher = None
-        if self.request.GET.get("voucher"):
+        if self.request.GET.get('voucher'):
             try:
                 voucher = Voucher.objects.get(
-                    code__iexact=self.request.GET.get("voucher"),
+                    code__iexact=self.request.GET.get('voucher'),
                     event=self.request.event,
                 )
             except Voucher.DoesNotExist:
                 pass
 
         context = {}
-        context["list_type"] = self.request.GET.get(
-            "style", self.request.event.settings.event_list_type
+        context['list_type'] = self.request.GET.get(
+            'style', self.request.event.settings.event_list_type
         )
         if (
-            context["list_type"] not in ("calendar", "week")
+            context['list_type'] not in ('calendar', 'week')
             and self.request.event.subevents.filter(date_from__gt=now()).count() > 50
         ):
-            if self.request.event.settings.event_list_type not in ("calendar", "week"):
-                self.request.event.settings.event_list_type = "calendar"
-            context["list_type"] = "calendar"
+            if self.request.event.settings.event_list_type not in ('calendar', 'week'):
+                self.request.event.settings.event_list_type = 'calendar'
+            context['list_type'] = 'calendar'
 
-        if context["list_type"] == "calendar":
+        if context['list_type'] == 'calendar':
             self._set_month_year()
             tz = pytz.timezone(self.request.event.settings.timezone)
             _, ndays = calendar.monthrange(self.year, self.month)
@@ -707,9 +707,9 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
                 self.year, self.month, ndays, 0, 0, 0, tzinfo=tz
             ) + timedelta(days=1)
 
-            context["date"] = date(self.year, self.month, 1)
-            context["before"] = before
-            context["after"] = after
+            context['date'] = date(self.year, self.month, 1)
+            context['before'] = before
+            context['after'] = after
 
             ebd = defaultdict(list)
             add_subevents_for_days(
@@ -724,18 +724,18 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
                 ebd,
                 set(),
                 self.request.event,
-                self.kwargs.get("cart_namespace"),
+                self.kwargs.get('cart_namespace'),
                 voucher,
             )
 
-            context["show_names"] = (
-                ebd.get("_subevents_different_names", False)
+            context['show_names'] = (
+                ebd.get('_subevents_different_names', False)
                 or sum(len(i) for i in ebd.values() if isinstance(i, list)) < 2
             )
-            context["weeks"] = weeks_for_template(ebd, self.year, self.month)
-            context["months"] = [date(self.year, i + 1, 1) for i in range(12)]
-            context["years"] = range(now().year - 2, now().year + 3)
-        elif context["list_type"] == "week":
+            context['weeks'] = weeks_for_template(ebd, self.year, self.month)
+            context['months'] = [date(self.year, i + 1, 1) for i in range(12)]
+            context['years'] = range(now().year - 2, now().year + 3)
+        elif context['list_type'] == 'week':
             self._set_week_year()
             tz = pytz.timezone(self.request.event.settings.timezone)
             week = isoweek.Week(self.year, self.week)
@@ -758,9 +758,9 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
                 tzinfo=tz,
             ) + timedelta(days=1)
 
-            context["date"] = week.monday()
-            context["before"] = before
-            context["after"] = after
+            context['date'] = week.monday()
+            context['before'] = before
+            context['after'] = after
 
             ebd = defaultdict(list)
             add_subevents_for_days(
@@ -775,16 +775,16 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
                 ebd,
                 set(),
                 self.request.event,
-                self.kwargs.get("cart_namespace"),
+                self.kwargs.get('cart_namespace'),
                 voucher,
             )
 
-            context["show_names"] = (
-                ebd.get("_subevents_different_names", False)
+            context['show_names'] = (
+                ebd.get('_subevents_different_names', False)
                 or sum(len(i) for i in ebd.values() if isinstance(i, list)) < 2
             )
-            context["days"] = days_for_template(ebd, week)
-            context["weeks"] = [
+            context['days'] = days_for_template(ebd, week)
+            context['weeks'] = [
                 (
                     date_fromisocalendar(self.year, i + 1, 1),
                     date_fromisocalendar(self.year, i + 1, 7),
@@ -793,12 +793,12 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
                     53 if date(self.year, 12, 31).isocalendar()[1] == 53 else 52
                 )
             ]
-            context["years"] = range(now().year - 2, now().year + 3)
-            context["week_format"] = get_format("WEEK_FORMAT")
-            if context["week_format"] == "WEEK_FORMAT":
-                context["week_format"] = WEEK_FORMAT
+            context['years'] = range(now().year - 2, now().year + 3)
+            context['week_format'] = get_format('WEEK_FORMAT')
+            if context['week_format'] == 'WEEK_FORMAT':
+                context['week_format'] = WEEK_FORMAT
         else:
-            context["subevent_list"] = self.request.event.subevents_sorted(
+            context['subevent_list'] = self.request.event.subevents_sorted(
                 filter_qs_by_attr(
                     self.request.event.subevents_annotated(
                         self.request.sales_channel.identifier
@@ -807,51 +807,51 @@ class EventIndex(EventViewMixin, EventListMixin, CartMixin, TemplateView):
                 )
             )
             if self.request.event.settings.event_list_available_only and not voucher:
-                context["subevent_list"] = [
+                context['subevent_list'] = [
                     se
-                    for se in context["subevent_list"]
+                    for se in context['subevent_list']
                     if not se.presale_has_ended
                     and se.best_availability_state >= Quota.AVAILABILITY_RESERVED
                 ]
         return context
 
 
-@method_decorator(allow_frame_if_namespaced, "dispatch")
-@method_decorator(iframe_entry_view_wrapper, "dispatch")
+@method_decorator(allow_frame_if_namespaced, 'dispatch')
+@method_decorator(iframe_entry_view_wrapper, 'dispatch')
 class SeatingPlanView(EventViewMixin, TemplateView):
-    template_name = "pretixpresale/event/seatingplan.html"
+    template_name = 'pretixpresale/event/seatingplan.html'
 
     def get(self, request, *args, **kwargs):
         from pretix.presale.views.cart import get_or_create_cart_id
 
         self.subevent = None
-        if request.GET.get("src", "") == "widget" and "take_cart_id" in request.GET:
+        if request.GET.get('src', '') == 'widget' and 'take_cart_id' in request.GET:
             # User has clicked "Open in a new tab" link in widget
             get_or_create_cart_id(request)
             return redirect(
-                eventreverse(request.event, "presale:event.seatingplan", kwargs=kwargs)
+                eventreverse(request.event, 'presale:event.seatingplan', kwargs=kwargs)
             )
-        elif request.GET.get("iframe", "") == "1" and "take_cart_id" in request.GET:
+        elif request.GET.get('iframe', '') == '1' and 'take_cart_id' in request.GET:
             # Widget just opened, a cart already exists. Let's to a stupid redirect to check if cookies are disabled
             get_or_create_cart_id(request)
             return redirect(
-                eventreverse(request.event, "presale:event.seatingplan", kwargs=kwargs)
-                + "?require_cookie=true&cart_id={}".format(
-                    request.GET.get("take_cart_id")
+                eventreverse(request.event, 'presale:event.seatingplan', kwargs=kwargs)
+                + '?require_cookie=true&cart_id={}'.format(
+                    request.GET.get('take_cart_id')
                 )
             )
         elif (
-            request.GET.get("iframe", "") == "1"
-            and len(self.request.GET.get("widget_data", "{}")) > 3
+            request.GET.get('iframe', '') == '1'
+            and len(self.request.GET.get('widget_data', '{}')) > 3
         ):
             # We've been passed data from a widget, we need to create a cart session to store it.
             get_or_create_cart_id(request)
 
         if request.event.has_subevents:
-            if "subevent" in kwargs:
+            if 'subevent' in kwargs:
                 self.subevent = (
                     request.event.subevents.using(settings.DATABASE_REPLICA)
-                    .filter(pk=kwargs["subevent"], active=True)
+                    .filter(pk=kwargs['subevent'], active=True)
                     .first()
                 )
                 if not self.subevent or not self.subevent.seating_plan:
@@ -860,21 +860,21 @@ class SeatingPlanView(EventViewMixin, TemplateView):
             else:
                 raise Http404()
         else:
-            if "subevent" in kwargs or not request.event.seating_plan:
+            if 'subevent' in kwargs or not request.event.seating_plan:
                 raise Http404()
             else:
                 return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["subevent"] = self.subevent
-        context["cart_redirect"] = eventreverse(
+        context['subevent'] = self.subevent
+        context['cart_redirect'] = eventreverse(
             self.request.event,
-            "presale:event.checkout.start",
-            kwargs={"cart_namespace": kwargs.get("cart_namespace") or ""},
+            'presale:event.checkout.start',
+            kwargs={'cart_namespace': kwargs.get('cart_namespace') or ''},
         )
-        if context["cart_redirect"].startswith("https:"):
-            context["cart_redirect"] = "/" + context["cart_redirect"].split("/", 3)[3]
+        if context['cart_redirect'].startswith('https:'):
+            context['cart_redirect'] = '/' + context['cart_redirect'].split('/', 3)[3]
         return context
 
 
@@ -882,29 +882,29 @@ class EventIcalDownload(EventViewMixin, View):
     def get(self, request, *args, **kwargs):
         if not self.request.event:
             raise Http404(
-                _("Unknown event code or not authorized to access this event.")
+                _('Unknown event code or not authorized to access this event.')
             )
 
         subevent = None
         if request.event.has_subevents:
-            if "subevent" in kwargs:
+            if 'subevent' in kwargs:
                 subevent = get_object_or_404(
-                    SubEvent, event=request.event, pk=kwargs["subevent"], active=True
+                    SubEvent, event=request.event, pk=kwargs['subevent'], active=True
                 )
             else:
-                raise Http404(pgettext_lazy("subevent", "No date selected."))
+                raise Http404(pgettext_lazy('subevent', 'No date selected.'))
         else:
-            if "subevent" in kwargs:
-                raise Http404(pgettext_lazy("subevent", "Unknown date selected."))
+            if 'subevent' in kwargs:
+                raise Http404(pgettext_lazy('subevent', 'Unknown date selected.'))
 
         event = self.request.event
         cal = get_ical([subevent or event])
 
-        resp = HttpResponse(cal.serialize(), content_type="text/calendar")
-        resp["Content-Disposition"] = 'attachment; filename="{}-{}-{}.ics"'.format(
+        resp = HttpResponse(cal.serialize(), content_type='text/calendar')
+        resp['Content-Disposition'] = 'attachment; filename="{}-{}-{}.ics"'.format(
             event.organizer.slug,
             event.slug,
-            subevent.pk if subevent else "0",
+            subevent.pk if subevent else '0',
         )
         return resp
 
@@ -915,42 +915,42 @@ class EventAuth(View):
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        s = SessionStore(request.POST.get("session"))
+        s = SessionStore(request.POST.get('session'))
 
         try:
             data = s.load()
         except:
-            raise PermissionDenied(_("Please go back and try again."))
+            raise PermissionDenied(_('Please go back and try again.'))
 
-        parent = data.get("pretix_event_access_{}".format(request.event.pk))
+        parent = data.get('pretix_event_access_{}'.format(request.event.pk))
 
         sparent = SessionStore(parent)
         try:
             parentdata = sparent.load()
         except:
-            raise PermissionDenied(_("Please go back and try again."))
+            raise PermissionDenied(_('Please go back and try again.'))
         else:
-            if "event_access" not in parentdata:
-                raise PermissionDenied(_("Please go back and try again."))
+            if 'event_access' not in parentdata:
+                raise PermissionDenied(_('Please go back and try again.'))
 
-        request.session["pretix_event_access_{}".format(request.event.pk)] = parent
-        return redirect(eventreverse(request.event, "presale:event.index"))
+        request.session['pretix_event_access_{}'.format(request.event.pk)] = parent
+        return redirect(eventreverse(request.event, 'presale:event.index'))
 
 
-@method_decorator(allow_frame_if_namespaced, "dispatch")
-@method_decorator(iframe_entry_view_wrapper, "dispatch")
+@method_decorator(allow_frame_if_namespaced, 'dispatch')
+@method_decorator(iframe_entry_view_wrapper, 'dispatch')
 class JoinOnlineVideoView(EventViewMixin, View):
     def get(self, request, *args, **kwargs):
         # First check if video plugin is installed and values is set
         if (
-            "pretix_venueless" not in self.request.event.get_plugins()
+            'pretix_venueless' not in self.request.event.get_plugins()
             or not self.request.event.settings.venueless_url
             or not self.request.event.settings.venueless_issuer
             or not self.request.event.settings.venueless_audience
             or not self.request.event.settings.venueless_secret
         ):
-            logger.error("Video Online configuration is not available for this event.")
-            raise PermissionDenied(_("Please go back and try again."))
+            logger.error('Video Online configuration is not available for this event.')
+            raise PermissionDenied(_('Please go back and try again.'))
 
         # Validate if customer allow to join this online video
         is_allowed, order_position, order = self.validate_access(
@@ -958,15 +958,15 @@ class JoinOnlineVideoView(EventViewMixin, View):
         )
         if not is_allowed:
             # Show popup
-            return HttpResponse(status=403, content="user_not_allowed")
+            return HttpResponse(status=403, content='user_not_allowed')
 
         return JsonResponse(
-            {"redirect_url": self.generate_token_url(request, order_position, order)},
+            {'redirect_url': self.generate_token_url(request, order_position, order)},
             status=200,
         )
 
     def validate_access(self, request, *args, **kwargs):
-        if not hasattr(self.request, "user"):
+        if not hasattr(self.request, 'user'):
             # Customer not logged in yet
             return False, None, None
         else:
@@ -976,8 +976,8 @@ class JoinOnlineVideoView(EventViewMixin, View):
                     Q(event=self.request.event)
                     & (Q(email__iexact=self.request.user.email))
                 )
-                .select_related("event")
-                .order_by("-datetime")
+                .select_related('event')
+                .order_by('-datetime')
             )
             # Check qs is empty
             if not order_list:
@@ -1003,16 +1003,16 @@ class JoinOnlineVideoView(EventViewMixin, View):
         if not order_position:
             order_position = order.positions.first()
 
-        profile = {"fields": {}}
+        profile = {'fields': {}}
         if order_position.attendee_name:
-            profile["display_name"] = order_position.attendee_name
+            profile['display_name'] = order_position.attendee_name
         if order_position.company:
-            profile["fields"]["company"] = order_position.company
+            profile['fields']['company'] = order_position.company
 
         for a in order_position.answers.filter(
             question_id__in=self.request.event.settings.venueless_questions
-        ).select_related("question"):
-            profile["fields"][a.question.identifier] = a.answer
+        ).select_related('question'):
+            profile['fields'][a.question.identifier] = a.answer
 
         uid_token = (
             encode_email(order.email)
@@ -1023,33 +1023,33 @@ class JoinOnlineVideoView(EventViewMixin, View):
         exp = iat + dt.timedelta(days=30)
 
         payload = {
-            "iss": self.request.event.settings.venueless_issuer,
-            "aud": self.request.event.settings.venueless_audience,
-            "exp": exp,
-            "iat": iat,
-            "uid": uid_token,
-            "profile": profile,
-            "traits": list(
+            'iss': self.request.event.settings.venueless_issuer,
+            'aud': self.request.event.settings.venueless_audience,
+            'exp': exp,
+            'iat': iat,
+            'uid': uid_token,
+            'profile': profile,
+            'traits': list(
                 {
-                    "eventyay-video-event-{}".format(request.event.slug),
-                    "eventyay-video-subevent-{}".format(order_position.subevent_id),
-                    "eventyay-video-item-{}".format(order_position.item_id),
-                    "eventyay-video-variation-{}".format(order_position.variation_id),
-                    "eventyay-video-category-{}".format(
+                    'eventyay-video-event-{}'.format(request.event.slug),
+                    'eventyay-video-subevent-{}'.format(order_position.subevent_id),
+                    'eventyay-video-item-{}'.format(order_position.item_id),
+                    'eventyay-video-variation-{}'.format(order_position.variation_id),
+                    'eventyay-video-category-{}'.format(
                         order_position.item.category_id
                     ),
                 }
                 | {
-                    "eventyay-video-item-{}".format(p.item_id)
+                    'eventyay-video-item-{}'.format(p.item_id)
                     for p in order_position.addons.all()
                 }
                 | {
-                    "eventyay-video-variation-{}".format(p.variation_id)
+                    'eventyay-video-variation-{}'.format(p.variation_id)
                     for p in order_position.addons.all()
                     if p.variation_id
                 }
                 | {
-                    "eventyay-video-category-{}".format(p.item.category_id)
+                    'eventyay-video-category-{}'.format(p.item.category_id)
                     for p in order_position.addons.all()
                     if p.item.category_id
                 }
@@ -1057,7 +1057,7 @@ class JoinOnlineVideoView(EventViewMixin, View):
         }
 
         token = jwt.encode(
-            payload, self.request.event.settings.venueless_secret, algorithm="HS256"
+            payload, self.request.event.settings.venueless_secret, algorithm='HS256'
         )
         baseurl = self.request.event.settings.venueless_url
-        return "{}/#token={}".format(baseurl, token).replace("//#", "/#")
+        return '{}/#token={}'.format(baseurl, token).replace('//#', '/#')

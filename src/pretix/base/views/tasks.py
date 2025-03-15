@@ -15,7 +15,7 @@ from pretix.base.models import User
 from pretix.base.services.tasks import ProfiledEventTask
 from pretix.celery_app import app
 
-logger = logging.getLogger("pretix.base.tasks")
+logger = logging.getLogger('pretix.base.tasks')
 
 
 class AsyncMixin:
@@ -31,7 +31,7 @@ class AsyncMixin:
 
     def get_check_url(self, task_id, ajax):
         return (
-            self.request.path + "?async_id=%s" % task_id + ("&ajax=1" if ajax else "")
+            self.request.path + '?async_id=%s' % task_id + ('&ajax=1' if ajax else '')
         )
 
     def _ajax_response_data(self):
@@ -46,16 +46,16 @@ class AsyncMixin:
             except ConnectionError:
                 # Redis probably just restarted, let's just report not ready and retry next time
                 data = self._ajax_response_data()
-                data.update({"async_id": res.id, "ready": False})
+                data.update({'async_id': res.id, 'ready': False})
                 return data
 
         ready = res.ready()
         data = self._ajax_response_data()
         data.update(
             {
-                "async_id": res.id,
-                "ready": ready,
-                "started": False,
+                'async_id': res.id,
+                'ready': ready,
+                'started': False,
             }
         )
         if ready:
@@ -67,9 +67,9 @@ class AsyncMixin:
                 # but handle the message itself
                 data.update(
                     {
-                        "redirect": self.get_success_url(res.info),
-                        "success": True,
-                        "message": str(self.get_success_message(res.info)),
+                        'redirect': self.get_success_url(res.info),
+                        'success': True,
+                        'message': str(self.get_success_message(res.info)),
                     }
                 )
             else:
@@ -78,24 +78,24 @@ class AsyncMixin:
                 # but handle the message itself
                 data.update(
                     {
-                        "redirect": self.get_error_url(),
-                        "success": False,
-                        "message": str(self.get_error_message(res.info)),
+                        'redirect': self.get_error_url(),
+                        'success': False,
+                        'message': str(self.get_error_message(res.info)),
                     }
                 )
-        elif res.state == "PROGRESS":
-            data.update({"started": True, "percentage": res.result.get("value", 0)})
-        elif res.state == "STARTED":
+        elif res.state == 'PROGRESS':
+            data.update({'started': True, 'percentage': res.result.get('value', 0)})
+        elif res.state == 'STARTED':
             data.update(
                 {
-                    "started": True,
+                    'started': True,
                 }
             )
         return data
 
     def get_result(self, request):
-        res = AsyncResult(request.GET.get("async_id"))
-        if "ajax" in self.request.GET:
+        res = AsyncResult(request.GET.get('async_id'))
+        if 'ajax' in self.request.GET:
             return JsonResponse(self._return_ajax_result(res, timeout=0.25))
         else:
             if res.ready():
@@ -103,32 +103,32 @@ class AsyncMixin:
                     return self.success(res.info)
                 else:
                     return self.error(res.info)
-            return render(request, "pretixpresale/waiting.html")
+            return render(request, 'pretixpresale/waiting.html')
 
     def success(self, value):
         smes = self.get_success_message(value)
         if smes:
             messages.success(self.request, smes)
-        if "ajax" in self.request.POST or "ajax" in self.request.GET:
+        if 'ajax' in self.request.POST or 'ajax' in self.request.GET:
             return JsonResponse(
                 {
-                    "ready": True,
-                    "success": True,
-                    "redirect": self.get_success_url(value),
-                    "message": str(self.get_success_message(value)),
+                    'ready': True,
+                    'success': True,
+                    'redirect': self.get_success_url(value),
+                    'message': str(self.get_success_message(value)),
                 }
             )
         return redirect(self.get_success_url(value))
 
     def error(self, exception):
         messages.error(self.request, self.get_error_message(exception))
-        if "ajax" in self.request.POST or "ajax" in self.request.GET:
+        if 'ajax' in self.request.POST or 'ajax' in self.request.GET:
             return JsonResponse(
                 {
-                    "ready": True,
-                    "success": False,
-                    "redirect": self.get_error_url(),
-                    "message": str(self.get_error_message(exception)),
+                    'ready': True,
+                    'success': False,
+                    'redirect': self.get_error_url(),
+                    'message': str(self.get_error_message(exception)),
                 }
             )
         return redirect(self.get_error_url())
@@ -136,17 +136,17 @@ class AsyncMixin:
     def get_error_message(self, exception):
         if (
             isinstance(exception, dict)
-            and exception["exc_type"] in self.known_errortypes
+            and exception['exc_type'] in self.known_errortypes
         ):
-            return exception["exc_message"]
+            return exception['exc_message']
         elif exception.__class__.__name__ in self.known_errortypes:
             return str(exception)
         else:
-            logger.error("Unexpected exception: %r" % exception)
-            return _("An unexpected error has occurred, please try again later.")
+            logger.error('Unexpected exception: %r' % exception)
+            return _('An unexpected error has occurred, please try again later.')
 
     def get_success_message(self, value):
-        return _("The task has been completed.")
+        return _('The task has been completed.')
 
 
 class AsyncAction(AsyncMixin):
@@ -154,7 +154,7 @@ class AsyncAction(AsyncMixin):
 
     def do(self, *args, **kwargs):
         if not isinstance(self.task, app.Task):
-            raise TypeError("Method has no task attached")
+            raise TypeError('Method has no task attached')
 
         try:
             res = self.task.apply_async(args=args, kwargs=kwargs)
@@ -162,9 +162,9 @@ class AsyncAction(AsyncMixin):
             # Task very likely not yet sent, due to redis restarting etc. Let's try once again
             res = self.task.apply_async(args=args, kwargs=kwargs)
 
-        if "ajax" in self.request.GET or "ajax" in self.request.POST:
+        if 'ajax' in self.request.GET or 'ajax' in self.request.POST:
             data = self._return_ajax_result(res)
-            data["check_url"] = self.get_check_url(res.id, True)
+            data['check_url'] = self.get_check_url(res.id, True)
             return JsonResponse(data)
         else:
             if res.ready():
@@ -175,7 +175,7 @@ class AsyncAction(AsyncMixin):
             return redirect(self.get_check_url(res.id, False))
 
     def get(self, request, *args, **kwargs):
-        if "async_id" in request.GET and settings.HAS_CELERY:
+        if 'async_id' in request.GET and settings.HAS_CELERY:
             return self.get_result(request)
         return self.http_method_not_allowed(request)
 
@@ -189,7 +189,7 @@ class AsyncFormView(AsyncMixin, FormView):
     Also, all form keyword arguments except ``instance`` need to be serializable.
     """
 
-    known_errortypes = ["ValidationError"]
+    known_errortypes = ['ValidationError']
 
     def __init_subclass__(cls):
         def async_execute(
@@ -205,8 +205,8 @@ class AsyncFormView(AsyncMixin, FormView):
                 view_instance.request.user = User.objects.get(pk=user)
 
             form_class = view_instance.get_form_class()
-            if form_kwargs.get("instance"):
-                cls.model.objects.get(pk=form_kwargs["instance"])
+            if form_kwargs.get('instance'):
+                cls.model.objects.get(pk=form_kwargs['instance'])
 
             form_kwargs = view_instance.get_async_form_kwargs(
                 form_kwargs, organizer, event
@@ -218,7 +218,7 @@ class AsyncFormView(AsyncMixin, FormView):
         cls.async_execute = app.task(
             base=ProfiledEventTask,
             bind=True,
-            name=cls.__module__ + "." + cls.__name__ + ".async_execute",
+            name=cls.__module__ + '.' + cls.__name__ + '.async_execute',
             throws=(ValidationError,),
         )(async_execute)
 
@@ -229,30 +229,30 @@ class AsyncFormView(AsyncMixin, FormView):
         return form_kwargs
 
     def get(self, request, *args, **kwargs):
-        if "async_id" in request.GET and settings.HAS_CELERY:
+        if 'async_id' in request.GET and settings.HAS_CELERY:
             return self.get_result(request)
         return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
         if form.files:
-            raise TypeError("File upload currently not supported in AsyncFormView")
+            raise TypeError('File upload currently not supported in AsyncFormView')
         form_kwargs = {k: v for k, v in self.get_form_kwargs().items()}
-        if form_kwargs.get("instance"):
-            if form_kwargs["instance"].pk:
-                form_kwargs["instance"] = form_kwargs["instance"].pk
+        if form_kwargs.get('instance'):
+            if form_kwargs['instance'].pk:
+                form_kwargs['instance'] = form_kwargs['instance'].pk
             else:
-                form_kwargs["instance"] = None
-        form_kwargs.setdefault("data", {})
+                form_kwargs['instance'] = None
+        form_kwargs.setdefault('data', {})
         kwargs = {
-            "request_path": self.request.path,
-            "form_kwargs": form_kwargs,
+            'request_path': self.request.path,
+            'form_kwargs': form_kwargs,
         }
-        if hasattr(self.request, "organizer"):
-            kwargs["organizer"] = self.request.organizer.pk
+        if hasattr(self.request, 'organizer'):
+            kwargs['organizer'] = self.request.organizer.pk
         if self.request.user.is_authenticated:
-            kwargs["user"] = self.request.user.pk
-        if hasattr(self.request, "event"):
-            kwargs["event"] = self.request.event.pk
+            kwargs['user'] = self.request.user.pk
+        if hasattr(self.request, 'event'):
+            kwargs['event'] = self.request.event.pk
 
         try:
             res = type(self).async_execute.apply_async(kwargs=kwargs)
@@ -260,9 +260,9 @@ class AsyncFormView(AsyncMixin, FormView):
             # Task very likely not yet sent, due to redis restarting etc. Let's try once again
             res = type(self).async_execute.apply_async(kwargs=kwargs)
 
-        if "ajax" in self.request.GET or "ajax" in self.request.POST:
+        if 'ajax' in self.request.GET or 'ajax' in self.request.POST:
             data = self._return_ajax_result(res)
-            data["check_url"] = self.get_check_url(res.id, True)
+            data['check_url'] = self.get_check_url(res.id, True)
             return JsonResponse(data)
         else:
             if res.ready():

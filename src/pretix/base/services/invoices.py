@@ -43,46 +43,46 @@ logger = logging.getLogger(__name__)
 @transaction.atomic
 def build_invoice(invoice: Invoice) -> Invoice:
     invoice.locale = invoice.event.settings.get(
-        "invoice_language", invoice.event.settings.locale
+        'invoice_language', invoice.event.settings.locale
     )
-    if invoice.locale == "__user__":
+    if invoice.locale == '__user__':
         invoice.locale = invoice.order.locale or invoice.event.settings.locale
 
     lp = invoice.order.payments.last()
 
     with language(invoice.locale, invoice.event.settings.region):
-        invoice.invoice_from = invoice.event.settings.get("invoice_address_from")
+        invoice.invoice_from = invoice.event.settings.get('invoice_address_from')
         invoice.invoice_from_name = invoice.event.settings.get(
-            "invoice_address_from_name"
+            'invoice_address_from_name'
         )
         invoice.invoice_from_zipcode = invoice.event.settings.get(
-            "invoice_address_from_zipcode"
+            'invoice_address_from_zipcode'
         )
         invoice.invoice_from_city = invoice.event.settings.get(
-            "invoice_address_from_city"
+            'invoice_address_from_city'
         )
         invoice.invoice_from_country = invoice.event.settings.get(
-            "invoice_address_from_country"
+            'invoice_address_from_country'
         )
         invoice.invoice_from_tax_id = invoice.event.settings.get(
-            "invoice_address_from_tax_id"
+            'invoice_address_from_tax_id'
         )
         invoice.invoice_from_vat_id = invoice.event.settings.get(
-            "invoice_address_from_vat_id"
+            'invoice_address_from_vat_id'
         )
 
         introductory = invoice.event.settings.get(
-            "invoice_introductory_text", as_type=LazyI18nString
+            'invoice_introductory_text', as_type=LazyI18nString
         )
         additional = invoice.event.settings.get(
-            "invoice_additional_text", as_type=LazyI18nString
+            'invoice_additional_text', as_type=LazyI18nString
         )
         footer = invoice.event.settings.get(
-            "invoice_footer_text", as_type=LazyI18nString
+            'invoice_footer_text', as_type=LazyI18nString
         )
         if lp and lp.payment_provider:
             if (
-                "payment"
+                'payment'
                 in inspect.signature(lp.payment_provider.render_invoice_text).parameters
             ):
                 payment = str(
@@ -91,41 +91,41 @@ def build_invoice(invoice: Invoice) -> Invoice:
             else:
                 payment = str(lp.payment_provider.render_invoice_text(invoice.order))
         else:
-            payment = ""
+            payment = ''
         if (
             invoice.event.settings.invoice_include_expire_date
             and invoice.order.status == Order.STATUS_PENDING
         ):
             if payment:
-                payment += "<br />"
+                payment += '<br />'
             payment += pgettext(
-                "invoice", "Please complete your payment before {expire_date}."
+                'invoice', 'Please complete your payment before {expire_date}.'
             ).format(
-                expire_date=date_format(invoice.order.expires, "SHORT_DATE_FORMAT")
+                expire_date=date_format(invoice.order.expires, 'SHORT_DATE_FORMAT')
             )
 
-        invoice.introductory_text = str(introductory).replace("\n", "<br />")
-        invoice.additional_text = str(additional).replace("\n", "<br />")
+        invoice.introductory_text = str(introductory).replace('\n', '<br />')
+        invoice.additional_text = str(additional).replace('\n', '<br />')
         invoice.footer_text = str(footer)
-        invoice.payment_provider_text = str(payment).replace("\n", "<br />")
+        invoice.payment_provider_text = str(payment).replace('\n', '<br />')
 
         try:
             ia = invoice.order.invoice_address
             addr_template = pgettext(
-                "invoice",
+                'invoice',
                 """{i.company}
 {i.name}
 {i.street}
 {i.zipcode} {i.city} {state}
 {country}""",
             )
-            invoice.invoice_to = "\n".join(
+            invoice.invoice_to = '\n'.join(
                 a.strip()
                 for a in addr_template.format(
                     i=ia,
                     country=ia.country.name if ia.country else ia.country_old,
                     state=ia.state_for_address,
-                ).split("\n")
+                ).split('\n')
                 if a.strip()
             )
             invoice.internal_reference = ia.internal_reference
@@ -141,7 +141,7 @@ def build_invoice(invoice: Invoice) -> Invoice:
 
             if ia.vat_id:
                 invoice.invoice_to += (
-                    "\n" + pgettext("invoice", "VAT-ID: %s") % ia.vat_id
+                    '\n' + pgettext('invoice', 'VAT-ID: %s') % ia.vat_id
                 )
                 invoice.invoice_to_vat_id = ia.vat_id
 
@@ -156,8 +156,8 @@ def build_invoice(invoice: Invoice) -> Invoice:
 
                 if settings.FETCH_ECB_RATES:
                     gs = GlobalSettingsObject()
-                    rates_date = gs.settings.get("ecb_rates_date", as_type=date)
-                    rates_dict = gs.settings.get("ecb_rates_dict", as_type=dict)
+                    rates_date = gs.settings.get('ecb_rates_date', as_type=date)
+                    rates_dict = gs.settings.get('ecb_rates_dict', as_type=dict)
                     convert = (
                         rates_date
                         and rates_dict
@@ -169,12 +169,12 @@ def build_invoice(invoice: Invoice) -> Invoice:
                         invoice.foreign_currency_rate = (
                             Decimal(rates_dict[invoice.foreign_currency_display])
                             / Decimal(rates_dict[invoice.event.currency])
-                        ).quantize(Decimal("0.0001"), ROUND_HALF_UP)
+                        ).quantize(Decimal('0.0001'), ROUND_HALF_UP)
                         invoice.foreign_currency_rate_date = rates_date
 
         except InvoiceAddress.DoesNotExist:
             ia = None
-            invoice.invoice_to = ""
+            invoice.invoice_to = ''
 
         invoice.file = None
         invoice.save()
@@ -182,11 +182,11 @@ def build_invoice(invoice: Invoice) -> Invoice:
 
         positions = list(
             invoice.order.positions.select_related(
-                "addon_to", "item", "tax_rule", "subevent", "variation"
+                'addon_to', 'item', 'tax_rule', 'subevent', 'variation'
             )
-            .annotate(addon_c=Count("addons"))
-            .prefetch_related("answers", "answers__question")
-            .order_by("positionid", "id")
+            .annotate(addon_c=Count('addons'))
+            .prefetch_related('answers', 'answers__question')
+            .order_by('positionid', 'id')
         )
 
         reverse_charge = False
@@ -197,35 +197,35 @@ def build_invoice(invoice: Invoice) -> Invoice:
         for i, p in enumerate(positions):
             if (
                 not invoice.event.settings.invoice_include_free
-                and p.price == Decimal("0.00")
+                and p.price == Decimal('0.00')
                 and not p.addon_c
             ):
                 continue
 
             desc = str(p.item.name)
             if p.variation:
-                desc += " - " + str(p.variation.value)
+                desc += ' - ' + str(p.variation.value)
             if p.addon_to_id:
-                desc = "  + " + desc
+                desc = '  + ' + desc
             if invoice.event.settings.invoice_attendee_name and p.attendee_name:
-                desc += "<br />" + pgettext("invoice", "Attendee: {name}").format(
+                desc += '<br />' + pgettext('invoice', 'Attendee: {name}').format(
                     name=p.attendee_name
                 )
             for recv, resp in invoice_line_text.send(sender=invoice.event, position=p):
                 if resp:
-                    desc += "<br/>" + resp
+                    desc += '<br/>' + resp
 
             for answ in p.answers.all():
                 if not answ.question.print_on_invoice:
                     continue
-                desc += "<br />{}{} {}".format(
+                desc += '<br />{}{} {}'.format(
                     answ.question.question,
-                    "" if str(answ.question.question).endswith("?") else ":",
+                    '' if str(answ.question.question).endswith('?') else ':',
                     str(answ),
                 )
 
             if invoice.event.has_subevents:
-                desc += "<br />" + pgettext("subevent", "Date: {}").format(p.subevent)
+                desc += '<br />' + pgettext('subevent', 'Date: {}').format(p.subevent)
             InvoiceLine.objects.create(
                 position=i,
                 invoice=invoice,
@@ -245,7 +245,7 @@ def build_invoice(invoice: Invoice) -> Invoice:
                 if invoice.event.has_subevents
                 else invoice.event.date_to,
                 tax_rate=p.tax_rate,
-                tax_name=p.tax_rule.name if p.tax_rule else "",
+                tax_name=p.tax_rule.name if p.tax_rule else '',
             )
 
             if (
@@ -268,7 +268,7 @@ def build_invoice(invoice: Invoice) -> Invoice:
             else:
                 fee_title = _(fee.get_fee_type_display())
                 if fee.description:
-                    fee_title += " - " + fee.description
+                    fee_title += ' - ' + fee.description
             InvoiceLine.objects.create(
                 position=i + offset,
                 invoice=invoice,
@@ -282,7 +282,7 @@ def build_invoice(invoice: Invoice) -> Invoice:
                 else invoice.event.date_to,
                 tax_value=fee.tax_value,
                 tax_rate=fee.tax_rate,
-                tax_name=fee.tax_rule.name if fee.tax_rule else "",
+                tax_name=fee.tax_rule.name if fee.tax_rule else '',
             )
 
             if (
@@ -299,8 +299,8 @@ def build_invoice(invoice: Invoice) -> Invoice:
                     tax_texts.append(tax_text)
 
         if tax_texts:
-            invoice.additional_text += "<br /><br />"
-            invoice.additional_text += "<br />".join(tax_texts)
+            invoice.additional_text += '<br /><br />'
+            invoice.additional_text += '<br />'.join(tax_texts)
         invoice.reverse_charge = reverse_charge
         invoice.save()
 
@@ -321,7 +321,7 @@ def build_cancellation(invoice: Invoice):
 
 def generate_cancellation(invoice: Invoice, trigger_pdf=True):
     if invoice.canceled:
-        raise ValueError("Invoice should not be canceled twice.")
+        raise ValueError('Invoice should not be canceled twice.')
     cancellation = modelcopy(invoice)
     cancellation.pk = None
     cancellation.invoice_no = None
@@ -329,27 +329,27 @@ def generate_cancellation(invoice: Invoice, trigger_pdf=True):
     cancellation.refers = invoice
     cancellation.is_cancellation = True
     cancellation.date = timezone.now().date()
-    cancellation.payment_provider_text = ""
+    cancellation.payment_provider_text = ''
     cancellation.file = None
     with language(invoice.locale, invoice.event.settings.region):
-        cancellation.invoice_from = invoice.event.settings.get("invoice_address_from")
+        cancellation.invoice_from = invoice.event.settings.get('invoice_address_from')
         cancellation.invoice_from_name = invoice.event.settings.get(
-            "invoice_address_from_name"
+            'invoice_address_from_name'
         )
         cancellation.invoice_from_zipcode = invoice.event.settings.get(
-            "invoice_address_from_zipcode"
+            'invoice_address_from_zipcode'
         )
         cancellation.invoice_from_city = invoice.event.settings.get(
-            "invoice_address_from_city"
+            'invoice_address_from_city'
         )
         cancellation.invoice_from_country = invoice.event.settings.get(
-            "invoice_address_from_country"
+            'invoice_address_from_country'
         )
         cancellation.invoice_from_tax_id = invoice.event.settings.get(
-            "invoice_address_from_tax_id"
+            'invoice_address_from_tax_id'
         )
         cancellation.invoice_from_vat_id = invoice.event.settings.get(
-            "invoice_address_from_vat_id"
+            'invoice_address_from_vat_id'
         )
     cancellation.save()
 
@@ -405,10 +405,10 @@ def invoice_pdf_task(invoice: int):
 
 def invoice_qualified(order: Order):
     if (
-        order.total == Decimal("0.00")
+        order.total == Decimal('0.00')
         or order.require_approval
         or order.sales_channel
-        not in order.event.settings.get("invoice_generate_sales_channels")
+        not in order.event.settings.get('invoice_generate_sales_channels')
     ):
         return False
     return True
@@ -428,7 +428,7 @@ class DummyRollbackException(Exception):  # NOQA: N818
 
 def build_preview_invoice_pdf(event):
     locale = event.settings.invoice_language
-    if not locale or locale == "__user__":
+    if not locale or locale == '__user__':
         locale = event.settings.locale
 
     with rolledback_transaction(), language(locale, event.settings.region):
@@ -436,72 +436,72 @@ def build_preview_invoice_pdf(event):
             status=Order.STATUS_PENDING,
             datetime=timezone.now(),
             expires=timezone.now(),
-            code="PREVIEW",
+            code='PREVIEW',
             total=100 * event.tax_rules.count(),
         )
         invoice = Invoice(
             order=order,
             event=event,
-            invoice_no="PREVIEW",
+            invoice_no='PREVIEW',
             date=timezone.now().date(),
             locale=locale,
             organizer=event.organizer,
         )
-        invoice.invoice_from = event.settings.get("invoice_address_from")
+        invoice.invoice_from = event.settings.get('invoice_address_from')
         invoice.invoice_from_name = invoice.event.settings.get(
-            "invoice_address_from_name"
+            'invoice_address_from_name'
         )
         invoice.invoice_from_zipcode = invoice.event.settings.get(
-            "invoice_address_from_zipcode"
+            'invoice_address_from_zipcode'
         )
         invoice.invoice_from_city = invoice.event.settings.get(
-            "invoice_address_from_city"
+            'invoice_address_from_city'
         )
         invoice.invoice_from_country = invoice.event.settings.get(
-            "invoice_address_from_country"
+            'invoice_address_from_country'
         )
         invoice.invoice_from_tax_id = invoice.event.settings.get(
-            "invoice_address_from_tax_id"
+            'invoice_address_from_tax_id'
         )
         invoice.invoice_from_vat_id = invoice.event.settings.get(
-            "invoice_address_from_vat_id"
+            'invoice_address_from_vat_id'
         )
 
         introductory = event.settings.get(
-            "invoice_introductory_text", as_type=LazyI18nString
+            'invoice_introductory_text', as_type=LazyI18nString
         )
         additional = event.settings.get(
-            "invoice_additional_text", as_type=LazyI18nString
+            'invoice_additional_text', as_type=LazyI18nString
         )
-        footer = event.settings.get("invoice_footer_text", as_type=LazyI18nString)
-        payment = _("A payment provider specific text might appear here.")
+        footer = event.settings.get('invoice_footer_text', as_type=LazyI18nString)
+        payment = _('A payment provider specific text might appear here.')
 
-        invoice.introductory_text = str(introductory).replace("\n", "<br />")
-        invoice.additional_text = str(additional).replace("\n", "<br />")
+        invoice.introductory_text = str(introductory).replace('\n', '<br />')
+        invoice.additional_text = str(additional).replace('\n', '<br />')
         invoice.footer_text = str(footer)
-        invoice.payment_provider_text = str(payment).replace("\n", "<br />")
-        invoice.invoice_to_name = _("John Doe")
-        invoice.invoice_to_street = _("214th Example Street")
-        invoice.invoice_to_zipcode = _("012345")
-        invoice.invoice_to_city = _("Sample city")
-        invoice.invoice_to_country = Country("DE")
-        invoice.invoice_to = "{}\n{}\n{} {}".format(
+        invoice.payment_provider_text = str(payment).replace('\n', '<br />')
+        invoice.invoice_to_name = _('John Doe')
+        invoice.invoice_to_street = _('214th Example Street')
+        invoice.invoice_to_zipcode = _('012345')
+        invoice.invoice_to_city = _('Sample city')
+        invoice.invoice_to_country = Country('DE')
+        invoice.invoice_to = '{}\n{}\n{} {}'.format(
             invoice.invoice_to_name,
             invoice.invoice_to_street,
             invoice.invoice_to_zipcode,
             invoice.invoice_to_city,
         )
-        invoice.invoice_to_beneficiary = ""
+        invoice.invoice_to_beneficiary = ''
         invoice.file = None
         invoice.save()
         invoice.lines.all().delete()
 
         if event.tax_rules.exists():
             for i, tr in enumerate(event.tax_rules.all()):
-                tax = tr.tax(Decimal("100.00"), base_price_is="gross")
+                tax = tr.tax(Decimal('100.00'), base_price_is='gross')
                 InvoiceLine.objects.create(
                     invoice=invoice,
-                    description=_("Sample product {}").format(i + 1),
+                    description=_('Sample product {}').format(i + 1),
                     gross_value=tax.gross,
                     tax_value=tax.tax,
                     tax_rate=tax.rate,
@@ -509,7 +509,7 @@ def build_preview_invoice_pdf(event):
         else:
             InvoiceLine.objects.create(
                 invoice=invoice,
-                description=_("Sample product A"),
+                description=_('Sample product A'),
                 gross_value=100,
                 tax_value=0,
                 tax_rate=0,
@@ -524,7 +524,7 @@ def fetch_ecb_rates(sender, **kwargs):
         return
 
     gs = GlobalSettingsObject()
-    if gs.settings.ecb_rates_date == now().strftime("%Y-%m-%d"):
+    if gs.settings.ecb_rates_date == now().strftime('%Y-%m-%d'):
         return
 
     try:
@@ -532,4 +532,4 @@ def fetch_ecb_rates(sender, **kwargs):
         gs.settings.ecb_rates_date = date
         gs.settings.ecb_rates_dict = json.dumps(rates, cls=DjangoJSONEncoder)
     except urllib.error.URLError:
-        logger.exception("Could not retrieve rates from ECB")
+        logger.exception('Could not retrieve rates from ECB')

@@ -8,9 +8,9 @@ class EnvOrParserConfig:
         self.cp = configparser
 
     def _envkey(self, section, option):
-        section = re.sub("[^a-zA-Z0-9]", "_", section.upper())
-        option = re.sub("[^a-zA-Z0-9]", "_", option.upper())
-        return f"PRETIX_{section}_{option}"
+        section = re.sub('[^a-zA-Z0-9]', '_', section.upper())
+        option = re.sub('[^a-zA-Z0-9]', '_', option.upper())
+        return f'PRETIX_{section}_{option}'
 
     def get(self, section, option, *, raw=False, vars=None, fallback=_UNSET):
         if self._envkey(section, option) in os.environ:
@@ -37,7 +37,7 @@ class EnvOrParserConfig:
         )
 
     def has_section(self, section):
-        if any(k.startswith(self._envkey(section, "")) for k in os.environ):
+        if any(k.startswith(self._envkey(section, '')) for k in os.environ):
             return True
         return self.cp.has_section(section)
 

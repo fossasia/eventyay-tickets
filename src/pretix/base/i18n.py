@@ -28,7 +28,7 @@ class LazyDate:
         return self.__str__()
 
     def __str__(self):
-        return date_format(self.value, "SHORT_DATE_FORMAT")
+        return date_format(self.value, 'SHORT_DATE_FORMAT')
 
 
 class LazyExpiresDate:
@@ -45,9 +45,9 @@ class LazyExpiresDate:
             and self.value.second >= 59
         )
         if at_end_of_day:
-            return date_format(self.value, "SHORT_DATE_FORMAT")
+            return date_format(self.value, 'SHORT_DATE_FORMAT')
         else:
-            return date_format(self.value, "SHORT_DATETIME_FORMAT")
+            return date_format(self.value, 'SHORT_DATETIME_FORMAT')
 
 
 class LazyCurrencyNumber:
@@ -78,7 +78,7 @@ ALLOWED_LANGUAGES = dict(settings.LANGUAGES)
 
 
 def get_babel_locale():
-    babel_locale = "en"
+    babel_locale = 'en'
     # Babel, and therefore django-phonenumberfield, do not support our custom locales such das de_Informal
     if translation.get_language():
         if localedata.exists(translation.get_language()):
@@ -99,7 +99,7 @@ def get_language_without_region(lng=None):
     """
     lng = lng or translation.get_language() or settings.LANGUAGE_CODE
     if lng not in ALLOWED_LANGUAGES:
-        lng = lng.split("-")[0]
+        lng = lng.split('-')[0]
     if lng not in ALLOWED_LANGUAGES:
         lng = settings.LANGUAGE_CODE
     return lng
@@ -118,8 +118,8 @@ def language(lng, region=None):
     """
     _lng = translation.get_language()
     lng = lng or settings.LANGUAGE_CODE
-    if "-" not in lng and region:
-        lng += "-" + region.lower()
+    if '-' not in lng and region:
+        lng += '-' + region.lower()
     translation.activate(lng)
     try:
         yield

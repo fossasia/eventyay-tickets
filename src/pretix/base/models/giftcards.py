@@ -14,7 +14,7 @@ from pretix.base.models import LoggedModel
 
 
 def gen_giftcard_secret(length=8):
-    charset = list("ABCDEFGHJKLMNPQRSTUVWXYZ3789")
+    charset = list('ABCDEFGHJKLMNPQRSTUVWXYZ3789')
     while True:
         code = get_random_string(length=length, allowed_chars=charset)
         if not banned(code) and not GiftCard.objects.filter(secret=code).exists():
@@ -23,26 +23,26 @@ def gen_giftcard_secret(length=8):
 
 class GiftCardAcceptance(models.Model):
     issuer = models.ForeignKey(
-        "Organizer",
-        related_name="gift_card_collector_acceptance",
+        'Organizer',
+        related_name='gift_card_collector_acceptance',
         on_delete=models.CASCADE,
     )
     collector = models.ForeignKey(
-        "Organizer",
-        related_name="gift_card_issuer_acceptance",
+        'Organizer',
+        related_name='gift_card_issuer_acceptance',
         on_delete=models.CASCADE,
     )
 
 
 class GiftCard(LoggedModel):
     issuer = models.ForeignKey(
-        "Organizer",
-        related_name="issued_gift_cards",
+        'Organizer',
+        related_name='issued_gift_cards',
         on_delete=models.PROTECT,
     )
     issued_in = models.ForeignKey(
-        "OrderPosition",
-        related_name="issued_gift_cards",
+        'OrderPosition',
+        related_name='issued_gift_cards',
         on_delete=models.PROTECT,
         null=True,
         blank=True,
@@ -53,25 +53,25 @@ class GiftCard(LoggedModel):
     secret = models.CharField(
         max_length=190,
         db_index=True,
-        verbose_name=_("Gift card code"),
+        verbose_name=_('Gift card code'),
         validators=[
             RegexValidator(
-                regex="^[a-zA-Z0-9][a-zA-Z0-9.-]+$",
+                regex='^[a-zA-Z0-9][a-zA-Z0-9.-]+$',
                 message=_(
-                    "The gift card code may only contain letters, numbers, dots and dashes."
+                    'The gift card code may only contain letters, numbers, dots and dashes.'
                 ),
             )
         ],
     )
-    testmode = models.BooleanField(verbose_name=_("Test mode card"), default=False)
-    expires = models.DateTimeField(null=True, blank=True, verbose_name=_("Expiry date"))
+    testmode = models.BooleanField(verbose_name=_('Test mode card'), default=False)
+    expires = models.DateTimeField(null=True, blank=True, verbose_name=_('Expiry date'))
     conditions = models.TextField(
         null=True,
         blank=True,
-        verbose_name=pgettext_lazy("giftcard", "Special terms and conditions"),
+        verbose_name=pgettext_lazy('giftcard', 'Special terms and conditions'),
     )
     CURRENCY_CHOICES = [
-        (c.alpha_3, c.alpha_3 + " - " + c.name) for c in settings.CURRENCIES
+        (c.alpha_3, c.alpha_3 + ' - ' + c.name) for c in settings.CURRENCIES
     ]
     currency = models.CharField(max_length=10, choices=CURRENCY_CHOICES)
 
@@ -84,7 +84,7 @@ class GiftCard(LoggedModel):
 
     @property
     def value(self):
-        return self.transactions.aggregate(s=Sum("value"))["s"] or Decimal("0.00")
+        return self.transactions.aggregate(s=Sum('value'))['s'] or Decimal('0.00')
 
     def accepted_by(self, organizer):
         return (
@@ -101,33 +101,33 @@ class GiftCard(LoggedModel):
         super().save(*args, **kwargs)
 
     class Meta:
-        unique_together = (("secret", "issuer"),)
-        ordering = ("issuance",)
+        unique_together = (('secret', 'issuer'),)
+        ordering = ('issuance',)
 
 
 class GiftCardTransaction(models.Model):
     card = models.ForeignKey(
-        "GiftCard", related_name="transactions", on_delete=models.PROTECT
+        'GiftCard', related_name='transactions', on_delete=models.PROTECT
     )
     datetime = models.DateTimeField(auto_now_add=True)
     value = models.DecimalField(decimal_places=2, max_digits=10)
     order = models.ForeignKey(
-        "Order",
-        related_name="gift_card_transactions",
+        'Order',
+        related_name='gift_card_transactions',
         null=True,
         blank=True,
         on_delete=models.PROTECT,
     )
     payment = models.ForeignKey(
-        "OrderPayment",
-        related_name="gift_card_transactions",
+        'OrderPayment',
+        related_name='gift_card_transactions',
         null=True,
         blank=True,
         on_delete=models.PROTECT,
     )
     refund = models.ForeignKey(
-        "OrderRefund",
-        related_name="gift_card_transactions",
+        'OrderRefund',
+        related_name='gift_card_transactions',
         null=True,
         blank=True,
         on_delete=models.PROTECT,
@@ -135,4 +135,4 @@ class GiftCardTransaction(models.Model):
     text = models.TextField(blank=True, null=True)
 
     class Meta:
-        ordering = ("datetime",)
+        ordering = ('datetime',)

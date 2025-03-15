@@ -18,33 +18,33 @@ class IdempotencyMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest):
-        if request.method in ("GET", "HEAD", "OPTIONS"):
+        if request.method in ('GET', 'HEAD', 'OPTIONS'):
             return self.get_response(request)
 
-        if not request.path_info.startswith("/api/"):
+        if not request.path_info.startswith('/api/'):
             return self.get_response(request)
 
-        if not request.headers.get("X-Idempotency-Key"):
+        if not request.headers.get('X-Idempotency-Key'):
             return self.get_response(request)
 
-        auth_hash_parts = "{}:{}".format(
-            request.headers.get("Authorization", ""),
-            request.COOKIES.get(settings.SESSION_COOKIE_NAME, ""),
+        auth_hash_parts = '{}:{}'.format(
+            request.headers.get('Authorization', ''),
+            request.COOKIES.get(settings.SESSION_COOKIE_NAME, ''),
         )
         auth_hash = sha1(auth_hash_parts.encode()).hexdigest()
-        idempotency_key = request.headers.get("X-Idempotency-Key", "")
+        idempotency_key = request.headers.get('X-Idempotency-Key', '')
 
         with transaction.atomic():
             call, created = ApiCall.objects.select_for_update().get_or_create(
                 auth_hash=auth_hash,
                 idempotency_key=idempotency_key,
                 defaults={
-                    "locked": now(),
-                    "request_method": request.method,
-                    "request_path": request.path,
-                    "response_code": 0,
-                    "response_headers": "{}",
-                    "response_body": b"",
+                    'locked': now(),
+                    'request_method': request.method,
+                    'request_path': request.path,
+                    'response_code': 0,
+                    'response_headers': '{}',
+                    'response_body': b'',
                 },
             )
 
@@ -62,9 +62,9 @@ class IdempotencyMiddleware:
                         call.response_body = resp.content.tobytes()
                     elif isinstance(resp.content, bytes):
                         call.response_body = resp.content
-                    elif hasattr(resp.content, "read"):
+                    elif hasattr(resp.content, 'read'):
                         call.response_body = resp.read()
-                    elif hasattr(resp, "data"):
+                    elif hasattr(resp, 'data'):
                         call.response_body = json.dumps(resp.data)
                     else:
                         call.response_body = repr(resp).encode()
@@ -72,20 +72,20 @@ class IdempotencyMiddleware:
                     call.locked = None
                     call.save(
                         update_fields=[
-                            "locked",
-                            "response_code",
-                            "response_headers",
-                            "response_body",
+                            'locked',
+                            'response_code',
+                            'response_headers',
+                            'response_body',
                         ]
                     )
             return resp
         else:
             if call.locked:
                 r = JsonResponse(
-                    {"detail": "Concurrent request with idempotency key."},
+                    {'detail': 'Concurrent request with idempotency key.'},
                     status=status.HTTP_409_CONFLICT,
                 )
-                r["Retry-After"] = 5
+                r['Retry-After'] = 5
                 return r
 
             content = call.response_body
@@ -105,14 +105,14 @@ class ApiScopeMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest):
-        if not request.path_info.startswith("/api/"):
+        if not request.path_info.startswith('/api/'):
             return self.get_response(request)
 
         url = resolve(request.path_info)
-        if "organizer" in url.kwargs:
+        if 'organizer' in url.kwargs:
             request.organizer = Organizer.objects.filter(
-                slug=url.kwargs["organizer"],
+                slug=url.kwargs['organizer'],
             ).first()
 
-        with scope(organizer=getattr(request, "organizer", None)):
+        with scope(organizer=getattr(request, 'organizer', None)):
             return self.get_response(request)

@@ -7,33 +7,33 @@ logger = logging.getLogger(__name__)
 
 
 class Equal(Func):
-    arg_joiner = " = "
+    arg_joiner = ' = '
     arity = 2
-    function = ""
+    function = ''
 
 
 class GreaterThan(Func):
-    arg_joiner = " > "
+    arg_joiner = ' > '
     arity = 2
-    function = ""
+    function = ''
 
 
 class GreaterEqualThan(Func):
-    arg_joiner = " >= "
+    arg_joiner = ' >= '
     arity = 2
-    function = ""
+    function = ''
 
 
 class LowerEqualThan(Func):
-    arg_joiner = " < "
+    arg_joiner = ' < '
     arity = 2
-    function = ""
+    function = ''
 
 
 class LowerThan(Func):
-    arg_joiner = " < "
+    arg_joiner = ' < '
     arity = 2
-    function = ""
+    function = ''
 
 
 class InList(Func):
@@ -58,14 +58,14 @@ class InList(Func):
             self.source_expressions[1].value, (list, tuple)
         ):
             raise TypeError(
-                f"Dynamic right-hand-site currently not implemented, found {type(self.source_expressions[1])}"
+                f'Dynamic right-hand-site currently not implemented, found {type(self.source_expressions[1])}'
             )
         rhs, rhs_params = (
-            ["%s" for _ in self.source_expressions[1].value],
+            ['%s' for _ in self.source_expressions[1].value],
             [d for d in self.source_expressions[1].value],
         )
 
-        return "%s IN (%s)" % (lhs, ", ".join(rhs)), lhs_params + rhs_params
+        return '%s IN (%s)' % (lhs, ', '.join(rhs)), lhs_params + rhs_params
 
 
 def tolerance(b, tol=None, sign=1):

@@ -19,7 +19,7 @@ from . import BillingInvoice
 from .auth import User
 
 
-@settings_hierarkey.add(cache_namespace="organizer")
+@settings_hierarkey.add(cache_namespace='organizer')
 class Organizer(LoggedModel):
     """
     This model represents an entity organizing events, e.g. a company, institution,
@@ -32,35 +32,35 @@ class Organizer(LoggedModel):
     :type slug: str
     """
 
-    settings_namespace = "organizer"
-    name = models.CharField(max_length=200, verbose_name=_("Name"))
+    settings_namespace = 'organizer'
+    name = models.CharField(max_length=200, verbose_name=_('Name'))
     slug = models.CharField(
         max_length=50,
         db_index=True,
         help_text=_(
-            "Should be short, only contain lowercase letters, numbers, dots, and dashes. Every slug can only be used "
-            "once. This is being used in URLs to refer to your organizer accounts and your events."
+            'Should be short, only contain lowercase letters, numbers, dots, and dashes. Every slug can only be used '
+            'once. This is being used in URLs to refer to your organizer accounts and your events.'
         ),
         validators=[
             MinLengthValidator(
                 limit_value=2,
             ),
             RegexValidator(
-                regex="^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]$",
+                regex='^[a-zA-Z0-9][a-zA-Z0-9.-]*[a-zA-Z0-9]$',
                 message=_(
-                    "The slug may only contain letters, numbers, dots and dashes."
+                    'The slug may only contain letters, numbers, dots and dashes.'
                 ),
             ),
             OrganizerSlugBanlistValidator(),
         ],
-        verbose_name=_("Short form"),
+        verbose_name=_('Short form'),
         unique=True,
     )
 
     class Meta:
-        verbose_name = _("Organizer")
-        verbose_name_plural = _("Organizers")
-        ordering = ("name",)
+        verbose_name = _('Organizer')
+        verbose_name_plural = _('Organizers')
+        ordering = ('name',)
 
     def __str__(self) -> str:
         return self.name
@@ -101,16 +101,16 @@ class Organizer(LoggedModel):
     @cached_property
     def all_logentries_link(self):
         return reverse(
-            "control:organizer.log",
+            'control:organizer.log',
             kwargs={
-                "organizer": self.slug,
+                'organizer': self.slug,
             },
         )
 
     @property
     def has_gift_cards(self):
         return self.cache.get_or_set(
-            key="has_gift_cards",
+            key='has_gift_cards',
             timeout=15,
             default=lambda: self.issued_gift_cards.exists()
             or self.gift_card_issuer_acceptance.exists(),
@@ -123,7 +123,7 @@ class Organizer(LoggedModel):
         return GiftCard.objects.annotate(
             accepted=Exists(
                 GiftCardAcceptance.objects.filter(
-                    issuer=OuterRef("issuer"), collector=self
+                    issuer=OuterRef('issuer'), collector=self
                 )
             )
         ).filter(Q(issuer=self) | Q(accepted=True))
@@ -136,7 +136,7 @@ class Organizer(LoggedModel):
                 datetime.combine(
                     date(
                         now().astimezone(tz).year
-                        + self.settings.get("giftcard_expiry_years", as_type=int),
+                        + self.settings.get('giftcard_expiry_years', as_type=int),
                         12,
                         31,
                     ),
@@ -215,75 +215,75 @@ class Team(LoggedModel):
     """
 
     organizer = models.ForeignKey(
-        Organizer, related_name="teams", on_delete=models.CASCADE
+        Organizer, related_name='teams', on_delete=models.CASCADE
     )
-    name = models.CharField(max_length=190, verbose_name=_("Team name"))
+    name = models.CharField(max_length=190, verbose_name=_('Team name'))
     members = models.ManyToManyField(
-        User, related_name="teams", verbose_name=_("Team members")
+        User, related_name='teams', verbose_name=_('Team members')
     )
     all_events = models.BooleanField(
-        default=False, verbose_name=_("All events (including newly created ones)")
+        default=False, verbose_name=_('All events (including newly created ones)')
     )
     limit_events = models.ManyToManyField(
-        "Event", verbose_name=_("Limit to events"), blank=True
+        'Event', verbose_name=_('Limit to events'), blank=True
     )
 
     can_create_events = models.BooleanField(
         default=False,
-        verbose_name=_("Can create events"),
+        verbose_name=_('Can create events'),
     )
     can_change_teams = models.BooleanField(
         default=False,
-        verbose_name=_("Can change teams and permissions"),
+        verbose_name=_('Can change teams and permissions'),
     )
     can_change_organizer_settings = models.BooleanField(
         default=False,
-        verbose_name=_("Can change organizer settings"),
+        verbose_name=_('Can change organizer settings'),
         help_text=_(
-            "Someone with this setting can get access to most data of all of your events, i.e. via privacy "
-            "reports, so be careful who you add to this team!"
+            'Someone with this setting can get access to most data of all of your events, i.e. via privacy '
+            'reports, so be careful who you add to this team!'
         ),
     )
     can_manage_gift_cards = models.BooleanField(
-        default=False, verbose_name=_("Can manage gift cards")
+        default=False, verbose_name=_('Can manage gift cards')
     )
 
     can_change_event_settings = models.BooleanField(
-        default=False, verbose_name=_("Can change event settings")
+        default=False, verbose_name=_('Can change event settings')
     )
     can_change_items = models.BooleanField(
-        default=False, verbose_name=_("Can change product settings")
+        default=False, verbose_name=_('Can change product settings')
     )
     can_view_orders = models.BooleanField(
-        default=False, verbose_name=_("Can view orders")
+        default=False, verbose_name=_('Can view orders')
     )
     can_change_orders = models.BooleanField(
-        default=False, verbose_name=_("Can change orders")
+        default=False, verbose_name=_('Can change orders')
     )
     can_checkin_orders = models.BooleanField(
         default=False,
-        verbose_name=_("Can perform check-ins"),
+        verbose_name=_('Can perform check-ins'),
         help_text=_(
-            "This includes searching for attendees, which can be used to obtain personal information about "
+            'This includes searching for attendees, which can be used to obtain personal information about '
             'attendees. Users with "can change orders" can also perform check-ins.'
         ),
     )
     can_view_vouchers = models.BooleanField(
-        default=False, verbose_name=_("Can view vouchers")
+        default=False, verbose_name=_('Can view vouchers')
     )
     can_change_vouchers = models.BooleanField(
-        default=False, verbose_name=_("Can change vouchers")
+        default=False, verbose_name=_('Can change vouchers')
     )
 
     def __str__(self) -> str:
-        return _("%(name)s on %(object)s") % {
-            "name": str(self.name),
-            "object": str(self.organizer),
+        return _('%(name)s on %(object)s') % {
+            'name': str(self.name),
+            'object': str(self.organizer),
         }
 
     def permission_set(self) -> set:
         attribs = dir(self)
-        return {a for a in attribs if a.startswith("can_") and self.has_permission(a)}
+        return {a for a in attribs if a.startswith('can_') and self.has_permission(a)}
 
     @property
     def can_change_settings(self):  # Legacy compatiblilty
@@ -293,7 +293,7 @@ class Team(LoggedModel):
         try:
             return getattr(self, perm_name)
         except AttributeError:
-            raise ValueError("Invalid required permission: %s" % perm_name)
+            raise ValueError('Invalid required permission: %s' % perm_name)
 
     def permission_for_event(self, event):
         if self.all_events:
@@ -306,8 +306,8 @@ class Team(LoggedModel):
         return self.tokens.filter(active=True)
 
     class Meta:
-        verbose_name = _("Team")
-        verbose_name_plural = _("Teams")
+        verbose_name = _('Team')
+        verbose_name_plural = _('Teams')
 
 
 class TeamInvite(models.Model):
@@ -323,7 +323,7 @@ class TeamInvite(models.Model):
     :type token: str
     """
 
-    team = models.ForeignKey(Team, related_name="invites", on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, related_name='invites', on_delete=models.CASCADE)
     email = models.EmailField(null=True, blank=True)
     token = models.CharField(
         default=generate_invite_token, max_length=64, null=True, blank=True
@@ -349,7 +349,7 @@ class TeamAPIToken(models.Model):
     :type token: str
     """
 
-    team = models.ForeignKey(Team, related_name="tokens", on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, related_name='tokens', on_delete=models.CASCADE)
     name = models.CharField(max_length=190)
     active = models.BooleanField(default=True)
     token = models.CharField(default=generate_api_token, max_length=64)
@@ -451,83 +451,83 @@ class OrganizerBillingModel(models.Model):
     """
 
     organizer = models.ForeignKey(
-        "Organizer", on_delete=models.CASCADE, related_name="billing"
+        'Organizer', on_delete=models.CASCADE, related_name='billing'
     )
 
     primary_contact_name = models.CharField(
         max_length=255,
-        verbose_name=_("Primary Contact Name"),
+        verbose_name=_('Primary Contact Name'),
     )
 
     primary_contact_email = models.EmailField(
         max_length=255,
-        verbose_name=_("Primary Contact Email"),
+        verbose_name=_('Primary Contact Email'),
     )
 
     company_or_organization_name = models.CharField(
         max_length=255,
-        verbose_name=_("Company or Organization Name"),
+        verbose_name=_('Company or Organization Name'),
     )
 
     address_line_1 = models.CharField(
         max_length=255,
-        verbose_name=_("Address Line 1"),
+        verbose_name=_('Address Line 1'),
     )
 
     address_line_2 = models.CharField(
         max_length=255,
-        verbose_name=_("Address Line 2"),
+        verbose_name=_('Address Line 2'),
     )
 
     city = models.CharField(
         max_length=255,
-        verbose_name=_("City"),
+        verbose_name=_('City'),
     )
 
     zip_code = models.CharField(
         max_length=255,
-        verbose_name=_("Zip Code"),
+        verbose_name=_('Zip Code'),
     )
 
     country = models.CharField(
         max_length=255,
-        verbose_name=_("Country"),
+        verbose_name=_('Country'),
     )
 
     preferred_language = models.CharField(
         max_length=255,
-        verbose_name=_("Preferred Language"),
+        verbose_name=_('Preferred Language'),
     )
 
     tax_id = models.CharField(
         max_length=255,
-        verbose_name=_("Tax ID"),
+        verbose_name=_('Tax ID'),
     )
 
     invoice_voucher = models.ForeignKey(
-        "pretixbase.InvoiceVoucher",
+        'pretixbase.InvoiceVoucher',
         on_delete=models.CASCADE,
-        related_name="billing",
+        related_name='billing',
         null=True,
     )
 
     stripe_customer_id = models.CharField(
         max_length=255,
-        verbose_name=_("Stripe Customer ID"),
+        verbose_name=_('Stripe Customer ID'),
         blank=True,
         null=True,
     )
 
     stripe_payment_method_id = models.CharField(
         max_length=255,
-        verbose_name=_("Payment Method"),
+        verbose_name=_('Payment Method'),
         blank=True,
         null=True,
     )
 
     stripe_setup_intent_id = models.CharField(
         max_length=255,
-        verbose_name=_("Setup Intent ID"),
+        verbose_name=_('Setup Intent ID'),
         blank=True,
         null=True,
     )

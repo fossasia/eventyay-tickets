@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 def get_auth_backends():
     backends = {}
     for b in settings.PRETIX_AUTH_BACKENDS:
-        mod, name = b.rsplit(".", 1)
+        mod, name = b.rsplit('.', 1)
         b = getattr(import_module(mod), name)()
         backends[b.identifier] = b
     return backends
@@ -91,17 +91,17 @@ class BaseAuthBackend:
         ``'next'`` query parameter. However, external authentication methods could use custom attributes with hardcoded
         names for security purposes. For example, OAuth uses ``'state'`` for keeping track of application state.
         """
-        if "next" in request.GET:
-            return request.GET.get("next")
+        if 'next' in request.GET:
+            return request.GET.get('next')
         return None
 
 
 class NativeAuthBackend(BaseAuthBackend):
-    identifier = "native"
+    identifier = 'native'
 
     @property
     def verbose_name(self):
-        return _("{system} User").format(system=settings.INSTANCE_NAME)
+        return _('{system} User').format(system=settings.INSTANCE_NAME)
 
     @property
     def login_form_fields(self) -> dict:
@@ -112,16 +112,16 @@ class NativeAuthBackend(BaseAuthBackend):
         d = OrderedDict(
             [
                 (
-                    "email",
+                    'email',
                     forms.EmailField(
-                        label=_("E-mail"),
+                        label=_('E-mail'),
                         max_length=254,
-                        widget=forms.EmailInput(attrs={"autofocus": "autofocus"}),
+                        widget=forms.EmailInput(attrs={'autofocus': 'autofocus'}),
                     ),
                 ),
                 (
-                    "password",
-                    forms.CharField(label=_("Password"), widget=forms.PasswordInput),
+                    'password',
+                    forms.CharField(label=_('Password'), widget=forms.PasswordInput),
                 ),
             ]
         )
@@ -130,8 +130,8 @@ class NativeAuthBackend(BaseAuthBackend):
     def form_authenticate(self, request, form_data):
         u = authenticate(
             request=request,
-            email=form_data["email"].lower(),
-            password=form_data["password"],
+            email=form_data['email'].lower(),
+            password=form_data['password'],
         )
         if u and u.auth_backend == self.identifier:
             return u

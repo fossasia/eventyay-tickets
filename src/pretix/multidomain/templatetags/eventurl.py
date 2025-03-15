@@ -22,11 +22,11 @@ class EventURLNode(URLNode):
         from pretix.multidomain.urlreverse import eventreverse
 
         kwargs = {
-            smart_str(k, "ascii"): v.resolve(context) for k, v in self.kwargs.items()
+            smart_str(k, 'ascii'): v.resolve(context) for k, v in self.kwargs.items()
         }
         view_name = self.view_name.resolve(context)
         event = self.event.resolve(context)
-        url = ""
+        url = ''
         try:
             if self.absolute:
                 url = build_absolute_uri(event, view_name, kwargs=kwargs)
@@ -38,7 +38,7 @@ class EventURLNode(URLNode):
 
         if self.asvar:
             context[self.asvar] = url
-            return ""
+            return ''
         else:
             if context.autoescape:
                 url = conditional_escape(url)
@@ -63,7 +63,7 @@ def eventurl(parser, token, absolute=False):
     kwargs = {}
     asvar = None
     bits = bits[3:]
-    if len(bits) >= 2 and bits[-2] == "as":
+    if len(bits) >= 2 and bits[-2] == 'as':
         asvar = bits[-1]
         bits = bits[:-2]
 
@@ -71,12 +71,12 @@ def eventurl(parser, token, absolute=False):
         for bit in bits:
             match = kwarg_re.match(bit)
             if not match:
-                raise TemplateSyntaxError("Malformed arguments to eventurl tag")
+                raise TemplateSyntaxError('Malformed arguments to eventurl tag')
             name, value = match.groups()
             if name:
                 kwargs[name] = parser.compile_filter(value)
             else:
-                raise TemplateSyntaxError("Event urls only have keyword arguments.")
+                raise TemplateSyntaxError('Event urls only have keyword arguments.')
 
     return EventURLNode(event, viewname, kwargs, asvar, absolute)
 
@@ -109,4 +109,4 @@ class SettingValueNode(template.Node):
         self.key = key
 
     def render(self, context):
-        return getattr(settings, self.key, "")
+        return getattr(settings, self.key, '')

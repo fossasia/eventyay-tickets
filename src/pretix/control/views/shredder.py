@@ -37,13 +37,13 @@ class StartShredView(
     ShredderMixin,
     TemplateView,
 ):
-    permission = "can_change_orders"
-    template_name = "pretixcontrol/shredder/index.html"
+    permission = 'can_change_orders'
+    template_name = 'pretixcontrol/shredder/index.html'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["shredders"] = self.shredders
-        ctx["constraints"] = shred_constraints(self.request.event)
+        ctx['shredders'] = self.shredders
+        ctx['constraints'] = shred_constraints(self.request.event)
         return ctx
 
 
@@ -53,41 +53,41 @@ class ShredDownloadView(
     ShredderMixin,
     TemplateView,
 ):
-    permission = "can_change_orders"
-    template_name = "pretixcontrol/shredder/download.html"
+    permission = 'can_change_orders'
+    template_name = 'pretixcontrol/shredder/download.html'
 
     def get_context_data(self, **kwargs):
         try:
-            cf = CachedFile.objects.get(pk=kwargs["file"])
+            cf = CachedFile.objects.get(pk=kwargs['file'])
         except CachedFile.DoesNotExist:
             raise ShredError(
                 _(
-                    "The download file could no longer be found on the server, please try to start again."
+                    'The download file could no longer be found on the server, please try to start again.'
                 )
             )
 
-        with ZipFile(cf.file.file, "r") as zipfile:
-            indexdata = json.loads(zipfile.read("index.json").decode())
+        with ZipFile(cf.file.file, 'r') as zipfile:
+            indexdata = json.loads(zipfile.read('index.json').decode())
 
         if (
-            indexdata["organizer"] != kwargs["organizer"]
-            or indexdata["event"] != kwargs["event"]
+            indexdata['organizer'] != kwargs['organizer']
+            or indexdata['event'] != kwargs['event']
         ):
-            raise ShredError(_("This file is from a different event."))
+            raise ShredError(_('This file is from a different event.'))
 
         shredders = []
-        for s in indexdata["shredders"]:
+        for s in indexdata['shredders']:
             shredder = self.shredders.get(s)
             if not shredder:
                 continue
             shredders.append(shredder)
 
         ctx = super().get_context_data(**kwargs)
-        ctx["shredders"] = self.shredders
-        ctx["download_on_shred"] = any(
+        ctx['shredders'] = self.shredders
+        ctx['download_on_shred'] = any(
             shredder.require_download_confirmation for shredder in shredders
         )
-        ctx["file"] = get_object_or_404(CachedFile, pk=kwargs.get("file"))
+        ctx['file'] = get_object_or_404(CachedFile, pk=kwargs.get('file'))
         return ctx
 
 
@@ -98,29 +98,29 @@ class ShredExportView(
     AsyncAction,
     View,
 ):
-    permission = "can_change_orders"
+    permission = 'can_change_orders'
     task = export
-    known_errortypes = ["ShredError"]
+    known_errortypes = ['ShredError']
 
     def get_success_message(self, value):
         return None
 
     def get_success_url(self, value):
         return reverse(
-            "control:event.shredder.download",
+            'control:event.shredder.download',
             kwargs={
-                "event": self.request.event.slug,
-                "organizer": self.request.event.organizer.slug,
-                "file": str(value),
+                'event': self.request.event.slug,
+                'organizer': self.request.event.organizer.slug,
+                'file': str(value),
             },
         )
 
     def get_error_url(self):
         return reverse(
-            "control:event.shredder.start",
+            'control:event.shredder.start',
             kwargs={
-                "event": self.request.event.slug,
-                "organizer": self.request.event.organizer.slug,
+                'event': self.request.event.slug,
+                'organizer': self.request.event.organizer.slug,
             },
         )
 
@@ -131,7 +131,7 @@ class ShredExportView(
 
         return self.do(
             self.request.event.id,
-            request.POST.getlist("shredder"),
+            request.POST.getlist('shredder'),
             self.request.session.session_key,
         )
 
@@ -143,29 +143,29 @@ class ShredDoView(
     AsyncAction,
     View,
 ):
-    permission = "can_change_orders"
+    permission = 'can_change_orders'
     task = shred
-    known_errortypes = ["ShredError"]
+    known_errortypes = ['ShredError']
 
     def get_success_url(self, value):
         return reverse(
-            "control:event.shredder.start",
+            'control:event.shredder.start',
             kwargs={
-                "event": self.request.event.slug,
-                "organizer": self.request.event.organizer.slug,
+                'event': self.request.event.slug,
+                'organizer': self.request.event.organizer.slug,
             },
         )
 
     def get_success_message(self, value):
-        return _("The selected data was deleted successfully.")
+        return _('The selected data was deleted successfully.')
 
     def get_error_url(self):
         return reverse(
-            "control:event.shredder.download",
+            'control:event.shredder.download',
             kwargs={
-                "event": self.request.event.slug,
-                "organizer": self.request.event.organizer.slug,
-                "file": self.request.POST.get("file"),
+                'event': self.request.event.slug,
+                'organizer': self.request.event.organizer.slug,
+                'file': self.request.POST.get('file'),
             },
         )
 
@@ -174,11 +174,11 @@ class ShredDoView(
         if constr:
             return self.error(ShredError(self.get_error_url()))
 
-        if request.event.slug != request.POST.get("slug"):
-            return self.error(ShredError(_("The slug you entered was not correct.")))
+        if request.event.slug != request.POST.get('slug'):
+            return self.error(ShredError(_('The slug you entered was not correct.')))
 
         return self.do(
             self.request.event.id,
-            request.POST.get("file"),
-            request.POST.get("confirm_code"),
+            request.POST.get('file'),
+            request.POST.get('confirm_code'),
         )

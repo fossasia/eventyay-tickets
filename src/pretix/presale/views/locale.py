@@ -12,15 +12,15 @@ from .robots import NoSearchIndexViewMixin
 
 class LocaleSet(NoSearchIndexViewMixin, View):
     def get(self, request, *args, **kwargs):
-        url = request.GET.get("next", request.headers.get("Referer", "/"))
+        url = request.GET.get('next', request.headers.get('Referer', '/'))
         url = (
             url
             if url_has_allowed_host_and_scheme(url, allowed_hosts=[request.get_host()])
-            else "/"
+            else '/'
         )
         resp = HttpResponseRedirect(url)
 
-        locale = request.GET.get("locale")
+        locale = request.GET.get('locale')
         if locale in [lc for lc, ll in settings.LANGUAGES]:
             max_age = 10 * 365 * 24 * 60 * 60
             set_cookie_without_samesite(
@@ -30,7 +30,7 @@ class LocaleSet(NoSearchIndexViewMixin, View):
                 locale,
                 max_age=max_age,
                 expires=(datetime.utcnow() + timedelta(seconds=max_age)).strftime(
-                    "%a, %d-%b-%Y %H:%M:%S GMT"
+                    '%a, %d-%b-%Y %H:%M:%S GMT'
                 ),
                 domain=settings.SESSION_COOKIE_DOMAIN,
             )

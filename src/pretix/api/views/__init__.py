@@ -11,13 +11,13 @@ class RichOrderingFilter(OrderingFilter):
         ordering = self.get_ordering(request, queryset, view)
 
         if ordering:
-            if hasattr(view, "ordering_custom"):
+            if hasattr(view, 'ordering_custom'):
                 newo = []
                 for ordering_part in ordering:
                     ob = view.ordering_custom.get(ordering_part)
                     if ob:
                         ob = dict(ob)
-                        newo.append(ob.pop("_order"))
+                        newo.append(ob.pop('_order'))
                         queryset = queryset.annotate(**ob)
                     else:
                         newo.append(ordering_part)
@@ -29,19 +29,19 @@ class RichOrderingFilter(OrderingFilter):
 
 class ConditionalListView:
     def list(self, request, **kwargs):
-        if_modified_since = request.headers.get("If-Modified-Since")
+        if_modified_since = request.headers.get('If-Modified-Since')
         if if_modified_since:
             if_modified_since = parse_http_date_safe(if_modified_since)
-        if_unmodified_since = request.headers.get("If-Unmodified-Since")
+        if_unmodified_since = request.headers.get('If-Unmodified-Since')
         if if_unmodified_since:
             if_unmodified_since = parse_http_date_safe(if_unmodified_since)
-        if not hasattr(request, "event"):
+        if not hasattr(request, 'event'):
             return super().list(request, **kwargs)
 
         lmd = request.event.logentry_set.filter(
             content_type__model=self.get_queryset().model._meta.model_name,
             content_type__app_label=self.get_queryset().model._meta.app_label,
-        ).aggregate(m=Max("datetime"))["m"]
+        ).aggregate(m=Max('datetime'))['m']
         if lmd:
             lmd_ts = timegm(lmd.utctimetuple())
 
@@ -53,5 +53,5 @@ class ConditionalListView:
 
         resp = super().list(request, **kwargs)
         if lmd:
-            resp["Last-Modified"] = http_date(lmd_ts)
+            resp['Last-Modified'] = http_date(lmd_ts)
         return resp

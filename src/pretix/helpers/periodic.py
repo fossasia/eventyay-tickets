@@ -25,8 +25,8 @@ def minimum_interval(
     def deco(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            key_running = f"pretix_periodic_{f.__module__}.{f.__name__}_running"
-            key_result = f"pretix_periodic_{f.__module__}.{f.__name__}_result"
+            key_running = f'pretix_periodic_{f.__module__}.{f.__name__}_running'
+            key_result = f'pretix_periodic_{f.__module__}.{f.__name__}_result'
 
             running_val = cache.get(key_running)
             if running_val:
@@ -44,22 +44,22 @@ def minimum_interval(
                 retval = f(*args, **kwargs)
             except Exception as e:
                 try:
-                    cache.set(key_result, "error", timeout=minutes_after_error * 60)
+                    cache.set(key_result, 'error', timeout=minutes_after_error * 60)
                 except:
-                    logger.exception("Could not store result")
+                    logger.exception('Could not store result')
                 raise e
             else:
                 try:
-                    cache.set(key_result, "success", timeout=minutes_after_success * 60)
+                    cache.set(key_result, 'success', timeout=minutes_after_success * 60)
                 except:
-                    logger.exception("Could not store result")
+                    logger.exception('Could not store result')
                 return retval
             finally:
                 try:
                     if cache.get(key_running) == uniqid:
                         cache.delete(key_running)
                 except:
-                    logger.exception("Could not release lock")
+                    logger.exception('Could not release lock')
 
         return wrapper
 

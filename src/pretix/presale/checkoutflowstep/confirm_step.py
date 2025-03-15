@@ -26,12 +26,12 @@ from .template_flow_step import TemplateFlowStep
 
 class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
     priority = 1001
-    identifier = "confirm"
-    template_name = "pretixpresale/event/checkout_confirm.html"
+    identifier = 'confirm'
+    template_name = 'pretixpresale/event/checkout_confirm.html'
     task = perform_order
-    known_errortypes = ["OrderError"]
-    label = pgettext_lazy("checkoutflow", "Review order")
-    icon = "eye"
+    known_errortypes = ['OrderError']
+    label = pgettext_lazy('checkoutflow', 'Review order')
+    icon = 'eye'
 
     def is_applicable(self, request):
         return True
@@ -48,40 +48,40 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["cart"] = self.get_cart(answers=True)
+        ctx['cart'] = self.get_cart(answers=True)
         if self.payment_provider:
-            ctx["payment"] = self.payment_provider.checkout_confirm_render(self.request)
-            ctx["payment_provider"] = self.payment_provider
-        ctx["require_approval"] = any(
-            cp.item.require_approval for cp in ctx["cart"]["positions"]
+            ctx['payment'] = self.payment_provider.checkout_confirm_render(self.request)
+            ctx['payment_provider'] = self.payment_provider
+        ctx['require_approval'] = any(
+            cp.item.require_approval for cp in ctx['cart']['positions']
         )
-        ctx["addr"] = self.invoice_address
-        ctx["confirm_messages"] = self.confirm_messages
-        ctx["cart_session"] = self.cart_session
-        ctx["invoice_address_asked"] = self.address_asked
+        ctx['addr'] = self.invoice_address
+        ctx['confirm_messages'] = self.confirm_messages
+        ctx['cart_session'] = self.cart_session
+        ctx['invoice_address_asked'] = self.address_asked
 
-        self.cart_session["shown_total"] = str(ctx["cart"]["total"])
+        self.cart_session['shown_total'] = str(ctx['cart']['total'])
 
-        email = self.cart_session.get("contact_form_data", {}).get("email")
+        email = self.cart_session.get('contact_form_data', {}).get('email')
         if email != settings.PRETIX_EMAIL_NONE_VALUE:
-            ctx["contact_info"] = [
-                (_("E-mail"), email),
+            ctx['contact_info'] = [
+                (_('E-mail'), email),
             ]
         else:
-            ctx["contact_info"] = []
-        phone = self.cart_session.get("contact_form_data", {}).get("phone")
+            ctx['contact_info'] = []
+        phone = self.cart_session.get('contact_form_data', {}).get('phone')
         if phone:
-            ctx["contact_info"].append((_("Phone number"), phone))
+            ctx['contact_info'].append((_('Phone number'), phone))
         responses = contact_form_fields.send(self.event, request=self.request)
         for r, response in sorted(responses, key=lambda r: str(r[0])):
             for key, value in response.items():
-                v = self.cart_session.get("contact_form_data", {}).get(key)
-                v = value.bound_data(v, initial="")
+                v = self.cart_session.get('contact_form_data', {}).get(key)
+                v = value.bound_data(v, initial='')
                 if v is True:
-                    v = _("Yes")
+                    v = _('Yes')
                 elif v is False:
-                    v = _("No")
-                ctx["contact_info"].append((rich_text_snippet(value.label), v))
+                    v = _('No')
+                ctx['contact_info'].append((rich_text_snippet(value.label), v))
 
         return ctx
 
@@ -97,15 +97,15 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
 
     @cached_property
     def payment_provider(self):
-        if "payment" not in self.cart_session:
+        if 'payment' not in self.cart_session:
             return None
         return self.request.event.get_payment_providers().get(
-            self.cart_session["payment"]
+            self.cart_session['payment']
         )
 
     def get(self, request):
         self.request = request
-        if "async_id" in request.GET and settings.HAS_CELERY:
+        if 'async_id' in request.GET and settings.HAS_CELERY:
             return self.get_result(request)
         return TemplateFlowStep.get(self, request)
 
@@ -123,24 +123,24 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
 
         if self.confirm_messages and not self.all_optional:
             for key, msg in self.confirm_messages.items():
-                if request.POST.get("confirm_{}".format(key)) != "yes":
+                if request.POST.get('confirm_{}'.format(key)) != 'yes':
                     msg = str(
-                        _("You need to check all checkboxes on the bottom of the page.")
+                        _('You need to check all checkboxes on the bottom of the page.')
                     )
                     messages.error(self.request, msg)
-                    if "ajax" in self.request.POST or "ajax" in self.request.GET:
+                    if 'ajax' in self.request.POST or 'ajax' in self.request.GET:
                         return JsonResponse(
                             {
-                                "ready": True,
-                                "redirect": self.get_error_url(),
-                                "message": msg,
+                                'ready': True,
+                                'redirect': self.get_error_url(),
+                                'message': msg,
                             }
                         )
                     return redirect(self.get_error_url())
 
         meta_info = {
-            "contact_form_data": self.cart_session.get("contact_form_data", {}),
-            "confirm_messages": [str(m) for m in self.confirm_messages.values()],
+            'contact_form_data': self.cart_session.get('contact_form_data', {}),
+            'confirm_messages': [str(m) for m in self.confirm_messages.values()],
         }
         for receiver, response in order_meta_from_request.send(
             sender=request.event, request=request
@@ -151,13 +151,13 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
             self.request.event.id,
             self.payment_provider.identifier if self.payment_provider else None,
             [p.id for p in self.positions],
-            self.cart_session.get("email"),
+            self.cart_session.get('email'),
             translation.get_language(),
             self.invoice_address.pk,
             meta_info,
             request.sales_channel.identifier,
-            self.cart_session.get("gift_cards"),
-            self.cart_session.get("shown_total"),
+            self.cart_session.get('gift_cards'),
+            self.cart_session.get('shown_total'),
         )
 
     def get_success_message(self, value):
@@ -169,9 +169,9 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
         return self.get_order_url(order)
 
     def get_error_message(self, exception):
-        if exception.__class__.__name__ == "SendMailException":
+        if exception.__class__.__name__ == 'SendMailException':
             return _(
-                "There was an error sending the confirmation mail. Please try again later."
+                'There was an error sending the confirmation mail. Please try again later.'
             )
         return super().get_error_message(exception)
 
@@ -186,16 +186,16 @@ class ConfirmStep(CartMixin, AsyncAction, TemplateFlowStep):
             return (
                 eventreverse(
                     self.request.event,
-                    "presale:event.order",
+                    'presale:event.order',
                     kwargs={
-                        "order": order.code,
-                        "secret": order.secret,
+                        'order': order.code,
+                        'secret': order.secret,
                     },
                 )
-                + "?thanks=1"
+                + '?thanks=1'
             )
         return eventreverse(
             self.request.event,
-            "presale:event.order.pay.complete",
-            kwargs={"order": order.code, "secret": order.secret, "payment": payment.pk},
+            'presale:event.order.pay.complete',
+            kwargs={'order': order.code, 'secret': order.secret, 'payment': payment.pk},
         )

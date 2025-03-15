@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 def generate_orderposition(order_position: int, provider: str):
-    order_position = OrderPosition.objects.select_related("order", "order__event").get(
+    order_position = OrderPosition.objects.select_related('order', 'order__event').get(
         id=order_position
     )
 
@@ -54,7 +54,7 @@ def generate_orderposition(order_position: int, provider: str):
 
 
 def generate_order(order: int, provider: str):
-    order = Order.objects.select_related("event").get(id=order)
+    order = Order.objects.select_related('event').get(id=order)
 
     with language(order.locale, order.event.settings.region):
         responses = register_ticket_outputs.send(order.event)
@@ -62,7 +62,7 @@ def generate_order(order: int, provider: str):
             prov = response(order.event)
             if prov.identifier == provider:
                 filename, ttype, data = prov.generate_order(order)
-                if ttype == "text/uri-list":
+                if ttype == 'text/uri-list':
                     continue
 
                 path, ext = os.path.splitext(filename)
@@ -80,9 +80,9 @@ def generate_order(order: int, provider: str):
 @app.task(base=ProfiledTask)
 def generate(model: str, pk: int, provider: str):
     with scopes_disabled():
-        if model == "order":
+        if model == 'order':
             return generate_order(pk, provider)
-        elif model == "orderposition":
+        elif model == 'orderposition':
             return generate_orderposition(pk, provider)
 
 
@@ -98,26 +98,26 @@ def preview(event: int, provider: str):
         language(event.settings.locale, event.settings.region),
     ):
         item = event.items.create(
-            name=_("Sample product"),
+            name=_('Sample product'),
             default_price=42.23,
-            description=_("Sample product description"),
+            description=_('Sample product description'),
         )
-        item2 = event.items.create(name=_("Sample workshop"), default_price=23.40)
+        item2 = event.items.create(name=_('Sample workshop'), default_price=23.40)
 
         from pretix.base.models import Order
 
         order = event.orders.create(
             status=Order.STATUS_PENDING,
             datetime=now(),
-            email="sample@eventyay.com",
+            email='sample@eventyay.com',
             locale=event.settings.locale,
             expires=now(),
-            code="PREVIEW1234",
+            code='PREVIEW1234',
             total=119,
         )
 
         scheme = PERSON_NAME_SCHEMES[event.settings.name_scheme]
-        sample = {k: str(v) for k, v in scheme["sample"].items()}
+        sample = {k: str(v) for k, v in scheme['sample'].items()}
         p = order.positions.create(
             item=item, attendee_name_parts=sample, price=item.default_price
         )
@@ -138,7 +138,7 @@ def preview(event: int, provider: str):
         )
 
         InvoiceAddress.objects.create(
-            order=order, name_parts=sample, company=_("Sample company")
+            order=order, name_parts=sample, company=_('Sample company')
         )
 
         responses = register_ticket_outputs.send(event)
@@ -191,7 +191,7 @@ def get_tickets_for_order(order, base_position=None):
                     ct = CachedCombinedTicket.objects.get(pk=retval)
                 tickets.append(
                     (
-                        "{}-{}-{}{}".format(
+                        '{}-{}-{}{}'.format(
                             order.event.slug.upper(),
                             order.code,
                             ct.provider,
@@ -201,7 +201,7 @@ def get_tickets_for_order(order, base_position=None):
                     )
                 )
             except:
-                logger.exception("Failed to generate ticket.")
+                logger.exception('Failed to generate ticket.')
         else:
             for pos in positions:
                 try:
@@ -214,21 +214,21 @@ def get_tickets_for_order(order, base_position=None):
                             continue
                         ct = CachedTicket.objects.get(pk=retval)
 
-                    if ct.type == "text/uri-list":
+                    if ct.type == 'text/uri-list':
                         continue
 
                     if pos.subevent:
                         # Subevent date in filename improves accessibility e.g. for screen reader users
-                        fname = "{}-{}-{}-{}-{}{}".format(
+                        fname = '{}-{}-{}-{}-{}{}'.format(
                             order.event.slug.upper(),
                             order.code,
                             pos.positionid,
-                            pos.subevent.date_from.strftime("%Y_%m_%d"),
+                            pos.subevent.date_from.strftime('%Y_%m_%d'),
                             ct.provider,
                             ct.extension,
                         )
                     else:
-                        fname = "{}-{}-{}-{}{}".format(
+                        fname = '{}-{}-{}-{}{}'.format(
                             order.event.slug.upper(),
                             order.code,
                             pos.positionid,
@@ -237,7 +237,7 @@ def get_tickets_for_order(order, base_position=None):
                         )
                     tickets.append((fname, ct))
                 except:
-                    logger.exception("Failed to generate ticket.")
+                    logger.exception('Failed to generate ticket.')
 
     return tickets
 

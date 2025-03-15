@@ -60,4 +60,4 @@ def clean_cached_tickets(sender, **kwargs):
 @receiver(signal=periodic_task)
 @scopes_disabled()
 def clearsessions(sender, **kwargs):
-    call_command("clearsessions")
+    call_command('clearsessions')

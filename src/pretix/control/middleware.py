@@ -35,27 +35,27 @@ class PermissionMiddleware:
     """
 
     EXCEPTIONS = (
-        "auth.login",
-        "auth.login.2fa",
-        "auth.register",
-        "auth.forgot",
-        "auth.forgot.recover",
-        "auth.invite",
-        "user.settings.notifications.off",
-        "oauth2_provider",
+        'auth.login',
+        'auth.login.2fa',
+        'auth.register',
+        'auth.forgot',
+        'auth.forgot.recover',
+        'auth.invite',
+        'user.settings.notifications.off',
+        'oauth2_provider',
     )
 
     EXCEPTIONS_2FA = (
-        "user.settings.2fa",
-        "user.settings.2fa.add",
-        "user.settings.2fa.enable",
-        "user.settings.2fa.disable",
-        "user.settings.2fa.regenemergency",
-        "user.settings.2fa.confirm.totp",
-        "user.settings.2fa.confirm.u2f",
-        "user.settings.2fa.delete",
-        "auth.logout",
-        "user.reauth",
+        'user.settings.2fa',
+        'user.settings.2fa.add',
+        'user.settings.2fa.enable',
+        'user.settings.2fa.disable',
+        'user.settings.2fa.regenemergency',
+        'user.settings.2fa.confirm.totp',
+        'user.settings.2fa.confirm.u2f',
+        'user.settings.2fa.delete',
+        'auth.logout',
+        'user.reauth',
     )
 
     def __init__(self, get_response=None):
@@ -70,15 +70,15 @@ class PermissionMiddleware:
         """
         # urlparse chokes on lazy objects in Python 3, force to str
         resolved_login_url = force_str(resolve_url(settings.LOGIN_URL_CONTROL))
-        unwanted_path = reverse("control:index")
+        unwanted_path = reverse('control:index')
         if request.path.startswith(unwanted_path):
-            next_url = reverse("eventyay_common:dashboard")
+            next_url = reverse('eventyay_common:dashboard')
         else:
             next_url = request.path
-        logger.info("URL to redirect to, after logging-in: %s", next_url)
+        logger.info('URL to redirect to, after logging-in: %s', next_url)
         from django.contrib.auth.views import redirect_to_login
 
-        logger.info("Redirect to login page: %s", resolved_login_url)
+        logger.info('Redirect to login page: %s', resolved_login_url)
         return redirect_to_login(next_url, resolved_login_url, REDIRECT_FIELD_NAME)
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
@@ -86,19 +86,19 @@ class PermissionMiddleware:
         url_name = url.url_name
 
         if not request.path.startswith(
-            get_script_prefix() + "control"
-        ) and not request.path.startswith(get_script_prefix() + "common"):
+            get_script_prefix() + 'control'
+        ) and not request.path.startswith(get_script_prefix() + 'common'):
             # This middleware should only touch the /control subpath
             return self.get_response(request)
 
-        if hasattr(request, "organizer"):
+        if hasattr(request, 'organizer'):
             # If the user is on a organizer's subdomain, he should be redirected to pretix
             new_url = urljoin(settings.SITE_URL, request.get_full_path())
-            logger.info("Organizer info is seen, redirecting to: %s", new_url)
+            logger.info('Organizer info is seen, redirecting to: %s', new_url)
             return redirect(new_url)
 
         # Add this condition to bypass middleware for 'oauth/' and its sub-URLs
-        if request.path.startswith(get_script_prefix() + "control/oauth2/"):
+        if request.path.startswith(get_script_prefix() + 'control/oauth2/'):
             return self.get_response(request)
 
         if url_name in self.EXCEPTIONS:
@@ -113,10 +113,10 @@ class PermissionMiddleware:
             logout(request)
             return self._login_redirect(request)
         except SessionReauthRequired:
-            if url_name not in ("user.reauth", "auth.logout"):
+            if url_name not in ('user.reauth', 'auth.logout'):
                 return redirect(
-                    reverse("control:user.reauth")
-                    + "?next="
+                    reverse('control:user.reauth')
+                    + '?next='
                     + quote(request.get_full_path())
                 )
 
@@ -125,21 +125,21 @@ class PermissionMiddleware:
             and settings.PRETIX_OBLIGATORY_2FA
             and url_name not in self.EXCEPTIONS_2FA
         ):
-            next_url = reverse("control:user.settings.2fa")
+            next_url = reverse('control:user.settings.2fa')
             logger.info(
-                "This site requires 2FA but user doesnot have one. Redirect to 2FA setting page: %s",
+                'This site requires 2FA but user doesnot have one. Redirect to 2FA setting page: %s',
                 next_url,
             )
             return redirect(next_url)
 
-        if "event" in url.kwargs and "organizer" in url.kwargs:
+        if 'event' in url.kwargs and 'organizer' in url.kwargs:
             with scope(organizer=None):
                 event = (
                     Event.objects.filter(
-                        slug=url.kwargs["event"],
-                        organizer__slug=url.kwargs["organizer"],
+                        slug=url.kwargs['event'],
+                        organizer__slug=url.kwargs['organizer'],
                     )
-                    .select_related("organizer")
+                    .select_related('organizer')
                     .first()
                 )
             request.event = event
@@ -148,11 +148,11 @@ class PermissionMiddleware:
             ):
                 raise Http404(
                     _(
-                        "The selected event was not found or you have no permission to administrate it."
+                        'The selected event was not found or you have no permission to administrate it.'
                     )
                 )
             logger.info(
-                "Found organizer %s from event %s. Attaching to request.",
+                'Found organizer %s from event %s. Attaching to request.',
                 event.organizer.slug,
                 event.slug,
             )
@@ -163,13 +163,13 @@ class PermissionMiddleware:
                 request.eventpermset = request.user.get_event_permission_set(
                     event.organizer, event
                 )
-        elif "organizer" in url.kwargs:
+        elif 'organizer' in url.kwargs:
             organizer = Organizer.objects.filter(
-                slug=url.kwargs["organizer"],
+                slug=url.kwargs['organizer'],
             ).first()
             if organizer:
                 logger.info(
-                    "Found organizer from kwargs %s. Attaching to request.",
+                    'Found organizer from kwargs %s. Attaching to request.',
                     organizer.slug,
                 )
             request.organizer = organizer
@@ -178,7 +178,7 @@ class PermissionMiddleware:
             ):
                 raise Http404(
                     _(
-                        "The selected organizer was not found or you have no permission to administrate it."
+                        'The selected organizer was not found or you have no permission to administrate it.'
                     )
                 )
             if request.user.has_active_staff_session(request.session.session_key):
@@ -188,7 +188,7 @@ class PermissionMiddleware:
                     organizer
                 )
 
-        with scope(organizer=getattr(request, "organizer", None)):
+        with scope(organizer=getattr(request, 'organizer', None)):
             r = self.get_response(request)
             if isinstance(r, TemplateResponse):
                 r = r.render()
@@ -201,14 +201,14 @@ class AuditLogMiddleware:
 
     def __call__(self, request):
         if (
-            request.path.startswith(get_script_prefix() + "control")
+            request.path.startswith(get_script_prefix() + 'control')
             and request.user.is_authenticated
         ):
-            if getattr(request.user, "is_hijacked", False):
-                hijack_history = request.session.get("hijack_history", False)
+            if getattr(request.user, 'is_hijacked', False):
+                hijack_history = request.session.get('hijack_history', False)
                 hijacker = get_object_or_404(User, pk=hijack_history[0])
                 ss = hijacker.get_active_staff_session(
-                    request.session.get("hijacker_session")
+                    request.session.get('hijacker_session')
                 )
                 if ss:
                     ss.logs.create(

@@ -21,7 +21,7 @@ def notify(logentry_ids: list):
     if not isinstance(logentry_ids, list):
         logentry_ids = [logentry_ids]
 
-    qs = LogEntry.all.select_related("event", "event__organizer").filter(
+    qs = LogEntry.all.select_related('event', 'event__organizer').filter(
         id__in=logentry_ids
     )
 
@@ -55,7 +55,7 @@ def notify(logentry_ids: list):
                 for ns in NotificationSetting.objects.filter(
                     event=logentry.event,
                     action_type=notification_type.action_type,
-                    user__pk__in=users.values_list("pk", flat=True),
+                    user__pk__in=users.values_list('pk', flat=True),
                 )
             }
             notify_global = {
@@ -63,7 +63,7 @@ def notify(logentry_ids: list):
                 for ns in NotificationSetting.objects.filter(
                     event__isnull=True,
                     action_type=notification_type.action_type,
-                    user__pk__in=users.values_list("pk", flat=True),
+                    user__pk__in=users.values_list('pk', flat=True),
                 )
             }
 
@@ -107,43 +107,43 @@ def send_notification(logentry_id: int, action_type: str, user_id: int, method: 
         ):
             notification = notification_type.build_notification(logentry)
 
-            if method == "mail":
+            if method == 'mail':
                 send_notification_mail(notification, user)
 
 
 def send_notification_mail(notification: Notification, user: User):
     ctx = {
-        "site": settings.INSTANCE_NAME,
-        "site_url": settings.SITE_URL,
-        "color": settings.PRETIX_PRIMARY_COLOR,
-        "notification": notification,
-        "settings_url": build_absolute_uri(
-            "control:user.settings.notifications",
+        'site': settings.INSTANCE_NAME,
+        'site_url': settings.SITE_URL,
+        'color': settings.PRETIX_PRIMARY_COLOR,
+        'notification': notification,
+        'settings_url': build_absolute_uri(
+            'control:user.settings.notifications',
         ),
-        "disable_url": build_absolute_uri(
-            "control:user.settings.notifications.off",
-            kwargs={"token": user.notifications_token, "id": user.pk},
+        'disable_url': build_absolute_uri(
+            'control:user.settings.notifications.off',
+            kwargs={'token': user.notifications_token, 'id': user.pk},
         ),
     }
 
-    tpl_html = get_template("pretixbase/email/notification.html")
+    tpl_html = get_template('pretixbase/email/notification.html')
     body_html = inline_css(tpl_html.render(ctx))
-    tpl_plain = get_template("pretixbase/email/notification.txt")
+    tpl_plain = get_template('pretixbase/email/notification.txt')
     body_plain = tpl_plain.render(ctx)
 
     mail_send_task.apply_async(
         kwargs={
-            "to": [user.email],
-            "subject": "[{}] {}: {}".format(
+            'to': [user.email],
+            'subject': '[{}] {}: {}'.format(
                 settings.INSTANCE_NAME,
                 notification.event.settings.mail_prefix
                 or notification.event.slug.upper(),
                 notification.title,
             ),
-            "body": body_plain,
-            "html": body_html,
-            "sender": settings.MAIL_FROM,
-            "headers": {},
-            "user": user.pk,
+            'body': body_plain,
+            'html': body_html,
+            'sender': settings.MAIL_FROM,
+            'headers': {},
+            'user': user.pk,
         }
     )

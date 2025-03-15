@@ -13,7 +13,7 @@ def get_checkout_flow(event):
         step = response(event=event)
         if step.priority > 1000:
             raise ValueError(
-                "Plugins are not allowed to define a priority greater than 1000"
+                'Plugins are not allowed to define a priority greater than 1000'
             )
         flow.append(step)
 

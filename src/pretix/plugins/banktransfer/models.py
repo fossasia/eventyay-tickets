@@ -8,60 +8,60 @@ from django.utils.functional import cached_property
 
 
 class BankImportJob(models.Model):
-    STATE_PENDING = "pending"
-    STATE_RUNNING = "running"
-    STATE_ERROR = "error"
-    STATE_COMPLETED = "completed"
+    STATE_PENDING = 'pending'
+    STATE_RUNNING = 'running'
+    STATE_ERROR = 'error'
+    STATE_COMPLETED = 'completed'
     STATES = (
-        (STATE_PENDING, "pending"),
-        (STATE_RUNNING, "running"),
-        (STATE_ERROR, "error"),
-        (STATE_COMPLETED, "completed"),
+        (STATE_PENDING, 'pending'),
+        (STATE_RUNNING, 'running'),
+        (STATE_ERROR, 'error'),
+        (STATE_COMPLETED, 'completed'),
     )
 
-    event = models.ForeignKey("pretixbase.Event", null=True, on_delete=models.CASCADE)
+    event = models.ForeignKey('pretixbase.Event', null=True, on_delete=models.CASCADE)
     organizer = models.ForeignKey(
-        "pretixbase.Organizer", null=True, on_delete=models.CASCADE
+        'pretixbase.Organizer', null=True, on_delete=models.CASCADE
     )
     created = models.DateTimeField(auto_now_add=True)
     state = models.CharField(max_length=32, choices=STATES, default=STATE_PENDING)
 
     class Meta:
-        ordering = ("id",)
+        ordering = ('id',)
 
     @property
     def owner_kwargs(self):
         if self.event:
-            return {"event": self.event}
+            return {'event': self.event}
         else:
-            return {"organizer": self.organizer}
+            return {'organizer': self.organizer}
 
 
 class BankTransaction(models.Model):
-    STATE_UNCHECKED = "imported"
-    STATE_NOMATCH = "nomatch"
-    STATE_INVALID = "invalid"
-    STATE_ERROR = "error"
-    STATE_VALID = "valid"
-    STATE_DISCARDED = "discarded"
-    STATE_DUPLICATE = "already"
+    STATE_UNCHECKED = 'imported'
+    STATE_NOMATCH = 'nomatch'
+    STATE_INVALID = 'invalid'
+    STATE_ERROR = 'error'
+    STATE_VALID = 'valid'
+    STATE_DISCARDED = 'discarded'
+    STATE_DUPLICATE = 'already'
 
     STATES = (
-        (STATE_UNCHECKED, "imported, unchecked"),
-        (STATE_NOMATCH, "no match"),
-        (STATE_INVALID, "not valid"),
-        (STATE_ERROR, "error"),
-        (STATE_VALID, "valid"),
-        (STATE_DUPLICATE, "valid, already paid"),
-        (STATE_DISCARDED, "manually discarded"),
+        (STATE_UNCHECKED, 'imported, unchecked'),
+        (STATE_NOMATCH, 'no match'),
+        (STATE_INVALID, 'not valid'),
+        (STATE_ERROR, 'error'),
+        (STATE_VALID, 'valid'),
+        (STATE_DUPLICATE, 'valid, already paid'),
+        (STATE_DISCARDED, 'manually discarded'),
     )
 
-    event = models.ForeignKey("pretixbase.Event", null=True, on_delete=models.CASCADE)
+    event = models.ForeignKey('pretixbase.Event', null=True, on_delete=models.CASCADE)
     organizer = models.ForeignKey(
-        "pretixbase.Organizer", null=True, on_delete=models.CASCADE
+        'pretixbase.Organizer', null=True, on_delete=models.CASCADE
     )
     import_job = models.ForeignKey(
-        "BankImportJob", related_name="transactions", on_delete=models.CASCADE
+        'BankImportJob', related_name='transactions', on_delete=models.CASCADE
     )
     state = models.CharField(max_length=32, choices=STATES, default=STATE_UNCHECKED)
     message = models.TextField()
@@ -74,46 +74,46 @@ class BankTransaction(models.Model):
     iban = models.CharField(max_length=250, blank=True)
     bic = models.CharField(max_length=250, blank=True)
     order = models.ForeignKey(
-        "pretixbase.Order", null=True, blank=True, on_delete=models.CASCADE
+        'pretixbase.Order', null=True, blank=True, on_delete=models.CASCADE
     )
     comment = models.TextField(blank=True)
 
     def calculate_checksum(self):
-        clean = re.compile("[^a-zA-Z0-9.-]")
+        clean = re.compile('[^a-zA-Z0-9.-]')
         hasher = hashlib.sha1()
-        hasher.update(clean.sub("", self.payer.lower()).encode("utf-8"))
-        hasher.update(clean.sub("", self.reference.lower()).encode("utf-8"))
-        hasher.update(clean.sub("", str(self.amount).lower()).encode("utf-8"))
-        hasher.update(clean.sub("", self.date.lower()).encode("utf-8"))
+        hasher.update(clean.sub('', self.payer.lower()).encode('utf-8'))
+        hasher.update(clean.sub('', self.reference.lower()).encode('utf-8'))
+        hasher.update(clean.sub('', str(self.amount).lower()).encode('utf-8'))
+        hasher.update(clean.sub('', self.date.lower()).encode('utf-8'))
         return str(hasher.hexdigest())
 
     def shred_private_data(self):
-        self.payer = ""
-        self.reference = ""
+        self.payer = ''
+        self.reference = ''
 
     class Meta:
-        unique_together = ("event", "organizer", "checksum")
-        ordering = ("date", "id")
+        unique_together = ('event', 'organizer', 'checksum')
+        ordering = ('date', 'id')
 
 
 class RefundExport(models.Model):
     event = models.ForeignKey(
-        "pretixbase.Event",
-        related_name="banktransfer_refund_exports",
+        'pretixbase.Event',
+        related_name='banktransfer_refund_exports',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
     )
     organizer = models.ForeignKey(
-        "pretixbase.Organizer",
-        related_name="banktransfer_refund_exports",
+        'pretixbase.Organizer',
+        related_name='banktransfer_refund_exports',
         on_delete=models.PROTECT,
         null=True,
         blank=True,
     )
     datetime = models.DateTimeField(auto_now_add=True)
     testmode = models.BooleanField(default=False)
-    rows = models.TextField(default="[]")
+    rows = models.TextField(default='[]')
     downloaded = models.BooleanField(default=False)
 
     @cached_property
@@ -135,7 +135,7 @@ class RefundExport(models.Model):
 
     @property
     def sum(self):
-        return sum(Decimal(row["amount"]) for row in self.rows_data)
+        return sum(Decimal(row['amount']) for row in self.rows_data)
 
     @property
     def cnt(self):

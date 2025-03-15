@@ -25,31 +25,31 @@ from pretix.plugins.banktransfer.tasks import process_banktransfers
 
 @pytest.fixture
 def env():
-    o = Organizer.objects.create(name="Dummy", slug="dummy")
+    o = Organizer.objects.create(name='Dummy', slug='dummy')
     event = Event.objects.create(
         organizer=o,
-        name="Dummy",
-        slug="dummy",
+        name='Dummy',
+        slug='dummy',
         date_from=now(),
-        plugins="pretix.plugins.banktransfer",
+        plugins='pretix.plugins.banktransfer',
     )
-    user = User.objects.create_user("dummy@dummy.dummy", "dummy")
+    user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
     t = Team.objects.create(
         organizer=event.organizer, can_view_orders=True, can_change_orders=True
     )
     t.members.add(user)
     t.limit_events.add(event)
     o1 = Order.objects.create(
-        code="1Z3AS",
+        code='1Z3AS',
         event=event,
-        email="admin@localhost",
+        email='admin@localhost',
         status=Order.STATUS_PENDING,
         datetime=now(),
         expires=now() + timedelta(days=10),
         total=23,
     )
     o2 = Order.objects.create(
-        code="6789Z",
+        code='6789Z',
         event=event,
         status=Order.STATUS_CANCELED,
         datetime=now(),
@@ -57,15 +57,15 @@ def env():
         total=23,
     )
     Order.objects.create(
-        code="GS89Z",
+        code='GS89Z',
         event=event,
         status=Order.STATUS_CANCELED,
         datetime=now(),
         expires=now() + timedelta(days=10),
         total=23,
     )
-    quota = Quota.objects.create(name="Test", size=2, event=event)
-    item1 = Item.objects.create(event=event, name="Ticket", default_price=23)
+    quota = Quota.objects.create(name='Test', size=2, event=event)
+    item1 = Item.objects.create(event=event, name='Ticket', default_price=23)
     quota.items.add(item1)
     OrderPosition.objects.create(order=o1, item=item1, variation=None, price=23)
     return event, user, o1, o2
@@ -73,12 +73,12 @@ def env():
 
 @pytest.mark.django_db
 def test_import_csv_file(client, env):
-    client.login(email="dummy@dummy.dummy", password="dummy")
-    r = client.get("/control/event/dummy/dummy/banktransfer/import/")
+    client.login(email='dummy@dummy.dummy', password='dummy')
+    r = client.get('/control/event/dummy/dummy/banktransfer/import/')
     assert r.status_code == 200
 
     file = SimpleUploadedFile(
-        "file.csv",
+        'file.csv',
         """
 Buchungstag;Valuta;Buchungstext;Auftraggeber / Empfänger;Verwendungszweck;Betrag in EUR;
 09.04.2015;09.04.2015;SEPA-Überweisung;Karl Kunde;Bestellung 2015ABCDE;23,00;
@@ -88,21 +88,21 @@ Buchungstag;Valuta;Buchungstext;Auftraggeber / Empfänger;Verwendungszweck;Betra
 09.04.2015;09.04.2015;SEPA-Überweisung;Karla Kundin;Bestellung DUMMY6789Z;23,00;
 09.04.2015;09.04.2015;SEPA-Überweisung;Karla Kundin;Bestellung DUMMY65892;23,00;
 
-""".encode("utf-8"),
-        content_type="text/csv",
+""".encode('utf-8'),
+        content_type='text/csv',
     )
 
-    r = client.post("/control/event/dummy/dummy/banktransfer/import/", {"file": file})
-    doc = BeautifulSoup(r.content, "lxml")
+    r = client.post('/control/event/dummy/dummy/banktransfer/import/', {'file': file})
+    doc = BeautifulSoup(r.content, 'lxml')
     assert r.status_code == 200
-    assert len(doc.select("input[name=date]")) > 0
-    data = {"payer": [3], "reference": [4], "date": 1, "amount": 5, "cols": 7}
-    for inp in doc.select("input[type=hidden]"):
-        data[inp.attrs["name"]] = inp.attrs["value"]
-    for inp in doc.select("textarea"):
-        data[inp.attrs["name"]] = inp.text
-    r = client.post("/control/event/dummy/dummy/banktransfer/import/", data)
-    assert "/job/" in r["Location"]
+    assert len(doc.select('input[name=date]')) > 0
+    data = {'payer': [3], 'reference': [4], 'date': 1, 'amount': 5, 'cols': 7}
+    for inp in doc.select('input[type=hidden]'):
+        data[inp.attrs['name']] = inp.attrs['value']
+    for inp in doc.select('textarea'):
+        data[inp.attrs['name']] = inp.text
+    r = client.post('/control/event/dummy/dummy/banktransfer/import/', data)
+    assert '/job/' in r['Location']
 
 
 @pytest.fixture
@@ -122,17 +122,17 @@ def test_mark_paid(env, job):
         job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUMMY1234S",
-                "date": "2016-01-26",
-                "amount": "23.00",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUMMY1234S',
+                'date': '2016-01-26',
+                'amount': '23.00',
             }
         ],
     )
     env[2].refresh_from_db()
     assert env[2].status == Order.STATUS_PAID
     assert len(djmail.outbox) == 1
-    assert djmail.outbox[0].subject == "Payment received for your order: 1Z3AS"
+    assert djmail.outbox[0].subject == 'Payment received for your order: 1Z3AS'
 
 
 @pytest.mark.django_db
@@ -142,10 +142,10 @@ def test_underpaid(env, job):
         job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUMMY1Z3AS",
-                "date": "2016-01-26",
-                "amount": "22.50",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUMMY1Z3AS',
+                'date': '2016-01-26',
+                'amount': '22.50',
             }
         ],
     )
@@ -153,13 +153,13 @@ def test_underpaid(env, job):
     assert env[2].status == Order.STATUS_PENDING
     with scopes_disabled():
         p = env[2].payments.last()
-        assert p.amount == Decimal("22.50")
+        assert p.amount == Decimal('22.50')
         assert p.state == OrderPayment.PAYMENT_STATE_CONFIRMED
-        assert env[2].pending_sum == Decimal("0.50")
+        assert env[2].pending_sum == Decimal('0.50')
 
     assert len(djmail.outbox) == 1
     assert (
-        djmail.outbox[0].subject == "Your order received an incomplete payment: 1Z3AS"
+        djmail.outbox[0].subject == 'Your order received an incomplete payment: 1Z3AS'
     )
 
 
@@ -169,10 +169,10 @@ def test_in_parts(env, job):
         job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUMMY1Z3AS",
-                "date": "2016-01-26",
-                "amount": "10.00",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUMMY1Z3AS',
+                'date': '2016-01-26',
+                'amount': '10.00',
             }
         ],
     )
@@ -180,10 +180,10 @@ def test_in_parts(env, job):
         job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUMMY1Z3AS",
-                "date": "2016-01-26",
-                "amount": "13.00",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUMMY1Z3AS',
+                'date': '2016-01-26',
+                'amount': '13.00',
             }
         ],
     )
@@ -191,7 +191,7 @@ def test_in_parts(env, job):
     assert env[2].status == Order.STATUS_PAID
     with scopes_disabled():
         assert env[2].payments.count() == 2
-    assert env[2].pending_sum == Decimal("0.00")
+    assert env[2].pending_sum == Decimal('0.00')
 
 
 @pytest.mark.django_db
@@ -200,10 +200,10 @@ def test_overpaid(env, job):
         job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUMMY1Z3AS",
-                "date": "2016-01-26",
-                "amount": "23.50",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUMMY1Z3AS',
+                'date': '2016-01-26',
+                'amount': '23.50',
             }
         ],
     )
@@ -211,9 +211,9 @@ def test_overpaid(env, job):
     assert env[2].status == Order.STATUS_PAID
     with scopes_disabled():
         p = env[2].payments.last()
-        assert p.amount == Decimal("23.50")
+        assert p.amount == Decimal('23.50')
         assert p.state == OrderPayment.PAYMENT_STATE_CONFIRMED
-        assert env[2].pending_sum == Decimal("-0.50")
+        assert env[2].pending_sum == Decimal('-0.50')
 
 
 @pytest.mark.django_db
@@ -222,10 +222,10 @@ def test_ignore_canceled(env, job):
         job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUMMY6789Z",
-                "date": "2016-01-26",
-                "amount": "23.00",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUMMY6789Z',
+                'date': '2016-01-26',
+                'amount': '23.00',
             }
         ],
     )
@@ -239,10 +239,10 @@ def test_autocorrection(env, job):
         job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUMMY12345",
-                "amount": "23.00",
-                "date": "2016-01-26",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUMMY12345',
+                'amount': '23.00',
+                'date': '2016-01-26',
             }
         ],
     )
@@ -256,10 +256,10 @@ def test_random_spaces(env, job):
         job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUM MY123 45NEXTLINE",
-                "amount": "23.00",
-                "date": "2016-01-26",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUM MY123 45NEXTLINE',
+                'amount': '23.00',
+                'date': '2016-01-26',
             }
         ],
     )
@@ -273,10 +273,10 @@ def test_random_newlines(env, job):
         job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUM\nMY123\n 45NEXTLINE",
-                "amount": "23.00",
-                "date": "2016-01-26",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUM\nMY123\n 45NEXTLINE',
+                'amount': '23.00',
+                'date': '2016-01-26',
             }
         ],
     )
@@ -290,10 +290,10 @@ def test_end_comma(env, job):
         job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUMMY12345,NEXTLINE",
-                "amount": "23.00",
-                "date": "2016-01-26",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUMMY12345,NEXTLINE',
+                'amount': '23.00',
+                'date': '2016-01-26',
             }
         ],
     )
@@ -303,16 +303,16 @@ def test_end_comma(env, job):
 
 @pytest.mark.django_db
 def test_huge_amount(env, job):
-    env[2].total = Decimal("23000.00")
+    env[2].total = Decimal('23000.00')
     env[2].save()
     process_banktransfers(
         job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUMMY12345",
-                "amount": "23.000,00",
-                "date": "2016-01-26",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUMMY12345',
+                'amount': '23.000,00',
+                'date': '2016-01-26',
             }
         ],
     )
@@ -326,10 +326,10 @@ def test_mark_paid_organizer(env, orga_job):
         orga_job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUMMY-1234S",
-                "date": "2016-01-26",
-                "amount": "23.00",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUMMY-1234S',
+                'date': '2016-01-26',
+                'amount': '23.00',
             }
         ],
     )
@@ -343,10 +343,10 @@ def test_mark_paid_double_reference(env, orga_job):
         orga_job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUMMY-1234S DUMMY-1234S",
-                "date": "2016-01-26",
-                "amount": "23.00",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUMMY-1234S DUMMY-1234S',
+                'date': '2016-01-26',
+                'amount': '23.00',
             }
         ],
     )
@@ -356,16 +356,16 @@ def test_mark_paid_double_reference(env, orga_job):
 
 @pytest.mark.django_db
 def test_mark_paid_organizer_dash_in_slug(env, orga_job):
-    env[0].slug = "foo-bar"
+    env[0].slug = 'foo-bar'
     env[0].save()
     process_banktransfers(
         orga_job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung FOO-BAR-1234S",
-                "date": "2016-01-26",
-                "amount": "23.00",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung FOO-BAR-1234S',
+                'date': '2016-01-26',
+                'amount': '23.00',
             }
         ],
     )
@@ -375,16 +375,16 @@ def test_mark_paid_organizer_dash_in_slug(env, orga_job):
 
 @pytest.mark.django_db
 def test_mark_paid_organizer_varying_order_code_length(env, orga_job):
-    env[2].code = "123412341234"
+    env[2].code = '123412341234'
     env[2].save()
     process_banktransfers(
         orga_job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DUMMY-123412341234",
-                "date": "2016-01-26",
-                "amount": "23.00",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DUMMY-123412341234',
+                'date': '2016-01-26',
+                'amount': '23.00',
             }
         ],
     )
@@ -394,16 +394,16 @@ def test_mark_paid_organizer_varying_order_code_length(env, orga_job):
 
 @pytest.mark.django_db
 def test_mark_paid_organizer_weird_slug(env, orga_job):
-    env[0].slug = "du.m-y"
+    env[0].slug = 'du.m-y'
     env[0].save()
     process_banktransfers(
         orga_job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung DU.M-Y-1234S",
-                "date": "2016-01-26",
-                "amount": "23.00",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung DU.M-Y-1234S',
+                'date': '2016-01-26',
+                'amount': '23.00',
             }
         ],
     )
@@ -415,19 +415,19 @@ def test_mark_paid_organizer_weird_slug(env, orga_job):
 def test_wrong_event_organizer(env, orga_job):
     Event.objects.create(
         organizer=env[0].organizer,
-        name="Wrong",
-        slug="wrong",
+        name='Wrong',
+        slug='wrong',
         date_from=now(),
-        plugins="pretix.plugins.banktransfer",
+        plugins='pretix.plugins.banktransfer',
     )
     process_banktransfers(
         orga_job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellung WRONG-1234S",
-                "date": "2016-01-26",
-                "amount": "23.00",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellung WRONG-1234S',
+                'date': '2016-01-26',
+                'amount': '23.00',
             }
         ],
     )
@@ -441,10 +441,10 @@ def test_keep_unmatched(env, orga_job):
         orga_job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "No useful reference",
-                "date": "2016-01-26",
-                "amount": "23.00",
+                'payer': 'Karla Kundin',
+                'reference': 'No useful reference',
+                'date': '2016-01-26',
+                'amount': '23.00',
             }
         ],
     )
@@ -457,7 +457,7 @@ def test_keep_unmatched(env, orga_job):
 @pytest.mark.django_db
 def test_split_payment_success(env, orga_job):
     o4 = Order.objects.create(
-        code="99999",
+        code='99999',
         event=env[0],
         status=Order.STATUS_PENDING,
         datetime=now(),
@@ -468,10 +468,10 @@ def test_split_payment_success(env, orga_job):
         orga_job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellungen DUMMY-1Z3AS DUMMY-99999",
-                "date": "2016-01-26",
-                "amount": "35.00",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellungen DUMMY-1Z3AS DUMMY-99999',
+                'date': '2016-01-26',
+                'amount': '35.00',
             }
         ],
     )
@@ -481,16 +481,16 @@ def test_split_payment_success(env, orga_job):
         assert t.state == BankTransaction.STATE_VALID
         env[2].refresh_from_db()
         assert env[2].status == Order.STATUS_PAID
-        assert env[2].payments.get().amount == Decimal("23.00")
+        assert env[2].payments.get().amount == Decimal('23.00')
         o4.refresh_from_db()
         assert o4.status == Order.STATUS_PAID
-        assert o4.payments.get().amount == Decimal("12.00")
+        assert o4.payments.get().amount == Decimal('12.00')
 
 
 @pytest.mark.django_db
 def test_split_payment_mismatch(env, orga_job):
     o4 = Order.objects.create(
-        code="99999",
+        code='99999',
         event=env[0],
         status=Order.STATUS_PENDING,
         datetime=now(),
@@ -501,10 +501,10 @@ def test_split_payment_mismatch(env, orga_job):
         orga_job,
         [
             {
-                "payer": "Karla Kundin",
-                "reference": "Bestellungen DUMMY-1Z3AS DUMMY-99999",
-                "date": "2016-01-26",
-                "amount": "36.00",
+                'payer': 'Karla Kundin',
+                'reference': 'Bestellungen DUMMY-1Z3AS DUMMY-99999',
+                'date': '2016-01-26',
+                'amount': '36.00',
             }
         ],
     )
@@ -520,8 +520,8 @@ def test_split_payment_mismatch(env, orga_job):
 
 @pytest.mark.django_db
 def test_import_very_long_csv_file(client, env):
-    client.login(email="dummy@dummy.dummy", password="dummy")
-    r = client.get("/control/event/dummy/dummy/banktransfer/import/")
+    client.login(email='dummy@dummy.dummy', password='dummy')
+    r = client.get('/control/event/dummy/dummy/banktransfer/import/')
     assert r.status_code == 200
 
     payload = """
@@ -534,22 +534,22 @@ Buchungstag;Valuta;Buchungstext;Auftraggeber / Empfänger;Verwendungszweck;Betra
 09.04.2015;09.04.2015;SEPA-Überweisung;Karla Kundin;Bestellung DUMMY6789Z;23,00;
 """
     payload += (
-        "09.04.2015;09.04.2015;SEPA-Überweisung;Karla Kundin;Bestellung DUMMY6789Z;23,00;\n"
+        '09.04.2015;09.04.2015;SEPA-Überweisung;Karla Kundin;Bestellung DUMMY6789Z;23,00;\n'
         * 1000
     )
 
     file = SimpleUploadedFile(
-        "file.csv", payload.encode("utf-8"), content_type="text/csv"
+        'file.csv', payload.encode('utf-8'), content_type='text/csv'
     )
 
-    r = client.post("/control/event/dummy/dummy/banktransfer/import/", {"file": file})
-    doc = BeautifulSoup(r.content, "lxml")
+    r = client.post('/control/event/dummy/dummy/banktransfer/import/', {'file': file})
+    doc = BeautifulSoup(r.content, 'lxml')
     assert r.status_code == 200
-    assert len(doc.select("input[name=date]")) > 0
-    data = {"payer": [3], "reference": [4], "date": 1, "amount": 5, "cols": 7}
-    for inp in doc.select("input[type=hidden]"):
-        data[inp.attrs["name"]] = inp.attrs["value"]
-    for inp in doc.select("textarea"):
-        data[inp.attrs["name"]] = inp.text
-    r = client.post("/control/event/dummy/dummy/banktransfer/import/", data)
-    assert "/job/" in r["Location"]
+    assert len(doc.select('input[name=date]')) > 0
+    data = {'payer': [3], 'reference': [4], 'date': 1, 'amount': 5, 'cols': 7}
+    for inp in doc.select('input[type=hidden]'):
+        data[inp.attrs['name']] = inp.attrs['value']
+    for inp in doc.select('textarea'):
+        data[inp.attrs['name']] = inp.text
+    r = client.post('/control/event/dummy/dummy/banktransfer/import/', data)
+    assert '/job/' in r['Location']

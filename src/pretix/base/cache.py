@@ -7,7 +7,7 @@ from django.db.models import Model
 
 
 class NamespacedCache:
-    def __init__(self, prefixkey: str, cache: str = "default"):
+    def __init__(self, prefixkey: str, cache: str = 'default'):
         self.cache = caches[cache]
         self.prefixkey = prefixkey
         self._last_prefix = None
@@ -23,14 +23,14 @@ class NamespacedCache:
             prefix = int(time.time())
             self.cache.set(self.prefixkey, prefix)
         self._last_prefix = prefix
-        key = "%s:%d:%s" % (self.prefixkey, prefix, original_key)
+        key = '%s:%d:%s' % (self.prefixkey, prefix, original_key)
         if len(key) > 200:  # Hash long keys, as memcached has a length limit
             # TODO: Use a more efficient, non-cryptographic hash algorithm
-            key = hashlib.sha256(key.encode("UTF-8")).hexdigest()
+            key = hashlib.sha256(key.encode('UTF-8')).hexdigest()
         return key
 
     def _strip_prefix(self, key: str) -> str:
-        return key.split(":", 2 + self.prefixkey.count(":"))[-1]
+        return key.split(':', 2 + self.prefixkey.count(':'))[-1]
 
     def clear(self) -> None:
         self._last_prefix = None
@@ -96,6 +96,6 @@ class ObjectRelatedCache(NamespacedCache):
     times as you want.
     """
 
-    def __init__(self, obj: Model, cache: str = "default"):
+    def __init__(self, obj: Model, cache: str = 'default'):
         assert isinstance(obj, Model)
-        super().__init__("%s:%s" % (obj._meta.object_name, obj.pk), cache)
+        super().__init__('%s:%s' % (obj._meta.object_name, obj.pk), cache)

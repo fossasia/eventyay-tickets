@@ -40,7 +40,7 @@ class ProfiledTask(app.Task):
             profiler.dump_stats(
                 os.path.join(
                     settings.PROFILE_DIR,
-                    "{time:.0f}_{tottime:.3f}_celery_{t}.pstat".format(
+                    '{time:.0f}_{tottime:.3f}_celery_{t}.pstat'.format(
                         t=self.name, tottime=tottime, time=time.time()
                     ),
                 )
@@ -62,36 +62,36 @@ class ProfiledTask(app.Task):
                     expected = True
                     break
             pretix_task_runs_total.inc(
-                1, task_name=self.name, status="expected-error" if expected else "error"
+                1, task_name=self.name, status='expected-error' if expected else 'error'
             )
 
         return super().on_failure(exc, task_id, args, kwargs, einfo)
 
     def on_success(self, retval, task_id, args, kwargs):
         if settings.METRICS_ENABLED:
-            pretix_task_runs_total.inc(1, task_name=self.name, status="success")
+            pretix_task_runs_total.inc(1, task_name=self.name, status='success')
 
         return super().on_success(retval, task_id, args, kwargs)
 
 
 class EventTask(app.Task):
     def __call__(self, *args, **kwargs):
-        if "event_id" in kwargs:
-            event_id = kwargs.get("event_id")
+        if 'event_id' in kwargs:
+            event_id = kwargs.get('event_id')
             with scopes_disabled():
-                event = Event.objects.select_related("organizer").get(pk=event_id)
-            del kwargs["event_id"]
-            kwargs["event"] = event
-        elif "event" in kwargs:
-            event_id = kwargs.get("event")
+                event = Event.objects.select_related('organizer').get(pk=event_id)
+            del kwargs['event_id']
+            kwargs['event'] = event
+        elif 'event' in kwargs:
+            event_id = kwargs.get('event')
             with scopes_disabled():
-                event = Event.objects.select_related("organizer").get(pk=event_id)
-            kwargs["event"] = event
+                event = Event.objects.select_related('organizer').get(pk=event_id)
+            kwargs['event'] = event
         else:
             args = list(args)
             event_id = args[0]
             with scopes_disabled():
-                event = Event.objects.select_related("organizer").get(pk=event_id)
+                event = Event.objects.select_related('organizer').get(pk=event_id)
             args[0] = event
 
         with scope(organizer=event.organizer):
@@ -101,15 +101,15 @@ class EventTask(app.Task):
 
 class OrganizerUserTask(app.Task):
     def __call__(self, *args, **kwargs):
-        organizer_id = kwargs["organizer"]
+        organizer_id = kwargs['organizer']
         with scopes_disabled():
             organizer = Organizer.objects.get(pk=organizer_id)
-        kwargs["organizer"] = organizer
+        kwargs['organizer'] = organizer
 
-        user_id = kwargs["user"]
+        user_id = kwargs['user']
         if user_id is not None:
             user = User.objects.get(pk=user_id)
-            kwargs["user"] = user
+            kwargs['user'] = user
 
         with scope(organizer=organizer):
             ret = super().__call__(*args, **kwargs)

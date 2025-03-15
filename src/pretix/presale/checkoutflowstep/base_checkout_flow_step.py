@@ -10,7 +10,7 @@ from pretix.presale.views.cart import cart_session
 
 class BaseCheckoutFlowStep:
     requires_valid_cart = True
-    icon = "pencil"
+    icon = 'pencil'
 
     def __init__(self, event):
         self.event = event
@@ -22,7 +22,7 @@ class BaseCheckoutFlowStep:
 
     @property
     def label(self):
-        return pgettext_lazy("checkoutflow", "Step")
+        return pgettext_lazy('checkoutflow', 'Step')
 
     @property
     def priority(self):
@@ -35,13 +35,13 @@ class BaseCheckoutFlowStep:
         raise NotImplementedError()
 
     def get_next_applicable(self, request):
-        if hasattr(self, "_next") and self._next:
+        if hasattr(self, '_next') and self._next:
             if not self._next.is_applicable(request):
                 return self._next.get_next_applicable(request)
             return self._next
 
     def get_prev_applicable(self, request):
-        if hasattr(self, "_previous") and self._previous:
+        if hasattr(self, '_previous') and self._previous:
             if not self._previous.is_applicable(request):
                 return self._previous.get_prev_applicable(request)
             return self._previous
@@ -53,10 +53,10 @@ class BaseCheckoutFlowStep:
         return HttpResponseNotAllowed([])
 
     def get_step_url(self, request):
-        kwargs = {"step": self.identifier}
-        if request.resolver_match and "cart_namespace" in request.resolver_match.kwargs:
-            kwargs["cart_namespace"] = request.resolver_match.kwargs["cart_namespace"]
-        return eventreverse(self.event, "presale:event.checkout", kwargs=kwargs)
+        kwargs = {'step': self.identifier}
+        if request.resolver_match and 'cart_namespace' in request.resolver_match.kwargs:
+            kwargs['cart_namespace'] = request.resolver_match.kwargs['cart_namespace']
+        return eventreverse(self.event, 'presale:event.checkout', kwargs=kwargs)
 
     def get_prev_url(self, request):
         prev = self.get_prev_applicable(request)
@@ -64,13 +64,13 @@ class BaseCheckoutFlowStep:
             kwargs = {}
             if (
                 request.resolver_match
-                and "cart_namespace" in request.resolver_match.kwargs
+                and 'cart_namespace' in request.resolver_match.kwargs
             ):
-                kwargs["cart_namespace"] = request.resolver_match.kwargs[
-                    "cart_namespace"
+                kwargs['cart_namespace'] = request.resolver_match.kwargs[
+                    'cart_namespace'
                 ]
             return eventreverse(
-                self.request.event, "presale:event.index", kwargs=kwargs
+                self.request.event, 'presale:event.index', kwargs=kwargs
             )
         else:
             return prev.get_step_url(request)
@@ -86,8 +86,8 @@ class BaseCheckoutFlowStep:
 
     @cached_property
     def invoice_address(self):
-        if not hasattr(self.request, "_checkout_flow_invoice_address"):
-            iapk = self.cart_session.get("invoice_address")
+        if not hasattr(self.request, '_checkout_flow_invoice_address'):
+            iapk = self.cart_session.get('invoice_address')
             if not iapk:
                 self.request._checkout_flow_invoice_address = InvoiceAddress()
             else:

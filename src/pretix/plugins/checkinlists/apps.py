@@ -6,15 +6,15 @@ from pretix import __version__ as version
 
 
 class CheckinlistsApp(AppConfig):
-    name = "pretix.plugins.checkinlists"
-    verbose_name = _("Check-in lists")
+    name = 'pretix.plugins.checkinlists'
+    verbose_name = _('Check-in lists')
 
     class PretixPluginMeta:
-        name = _("Check-in list exporter")
+        name = _('Check-in list exporter')
         version = version
         visible = False
         description = _(
-            "This plugin allows you to generate check-in lists for your conference."
+            'This plugin allows you to generate check-in lists for your conference.'
         )
 
     def ready(self):
@@ -30,4 +30,4 @@ class CheckinlistsApp(AppConfig):
         return errs
 
 
-default_app_config = "pretix.plugins.checkinlists.CheckinlistsApp"
+default_app_config = 'pretix.plugins.checkinlists.CheckinlistsApp'

@@ -12,21 +12,21 @@ from pretix.base.models import Device
 
 class DeviceTokenAuthentication(TokenAuthentication):
     model = Device
-    keyword = "Device"
+    keyword = 'Device'
 
     def authenticate_credentials(self, key):
         model = self.get_model()
         try:
             with scopes_disabled():
-                device = model.objects.select_related("organizer").get(api_token=key)
+                device = model.objects.select_related('organizer').get(api_token=key)
         except model.DoesNotExist:
-            raise exceptions.AuthenticationFailed("Invalid token.")
+            raise exceptions.AuthenticationFailed('Invalid token.')
 
         if not device.initialized:
-            raise exceptions.AuthenticationFailed("Device has not been initialized.")
+            raise exceptions.AuthenticationFailed('Device has not been initialized.')
 
         if device.revoked:
-            raise exceptions.AuthenticationFailed("Device access has been revoked.")
+            raise exceptions.AuthenticationFailed('Device access has been revoked.')
 
         return AnonymousUser(), device
 
@@ -38,6 +38,6 @@ class DeviceTokenAuthentication(TokenAuthentication):
             )
             if not profile.is_allowed(request):
                 raise exceptions.PermissionDenied(
-                    "Request denied by device security profile."
+                    'Request denied by device security profile.'
                 )
         return r

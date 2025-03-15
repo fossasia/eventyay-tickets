@@ -14,10 +14,10 @@ from pretix.api.auth.token import TeamTokenAuthentication
 from pretix.base.models import CachedFile
 
 ALLOWED_TYPES = {
-    "image/gif": {".gif"},
-    "image/jpeg": {".jpg", ".jpeg"},
-    "image/png": {".png"},
-    "application/pdf": {".pdf"},
+    'image/gif': {'.gif'},
+    'image/jpeg': {'.jpg', '.jpeg'},
+    'image/png': {'.png'},
+    'application/pdf': {'.pdf'},
 }
 
 
@@ -32,10 +32,10 @@ class UploadView(APIView):
     permission_classes = [AnyAuthenticatedClientPermission]
 
     def post(self, request):
-        if "file" not in request.data:
-            raise ValidationError("No file has been submitted.")
-        file_obj = request.data["file"]
-        content_type = file_obj.content_type.split(";")[0]  # ignore e.g. "; charset=…"
+        if 'file' not in request.data:
+            raise ValidationError('No file has been submitted.')
+        file_obj = request.data['file']
+        content_type = file_obj.content_type.split(';')[0]  # ignore e.g. "; charset=…"
         if content_type not in ALLOWED_TYPES:
             raise ValidationError(
                 'Content type "{type}" is not allowed'.format(type=content_type)
@@ -52,8 +52,8 @@ class UploadView(APIView):
             web_download=False,
             filename=file_obj.name,
             type=content_type,
-            session_key=f"api-upload-{str(type(request.user or request.auth))}-{(request.user or request.auth).pk}",
+            session_key=f'api-upload-{str(type(request.user or request.auth))}-{(request.user or request.auth).pk}',
         )
         cf.file.save(file_obj.name, file_obj)
         cf.save()
-        return Response({"id": f"file:{cf.pk}"}, status=201)
+        return Response({'id': f'file:{cf.pk}'}, status=201)

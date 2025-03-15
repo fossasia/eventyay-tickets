@@ -5,20 +5,20 @@ from pretix import __version__ as version
 
 
 class WebCheckinApp(AppConfig):
-    name = "pretix.plugins.webcheckin"
-    verbose_name = _("Web-based check-in")
+    name = 'pretix.plugins.webcheckin'
+    verbose_name = _('Web-based check-in')
 
     class PretixPluginMeta:
-        name = _("Web-based check-in")
+        name = _('Web-based check-in')
         version = version
-        category = "FEATURE"
+        category = 'FEATURE'
         featured = True
         description = _(
-            "This plugin allows you to perform check-in actions in your browser."
+            'This plugin allows you to perform check-in actions in your browser.'
         )
 
     def ready(self):
         from . import signals  # NOQA
 
 
-default_app_config = "pretix.plugins.webcheckin.WebCheckinApp"
+default_app_config = 'pretix.plugins.webcheckin.WebCheckinApp'

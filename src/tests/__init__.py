@@ -15,17 +15,17 @@ class _AssertNumQueriesContext(CaptureQueriesContext):
             return
         executed = len(self)
         assert executed == self.num, (
-            "%d queries executed, %d expected\nCaptured queries were:\n%s"
+            '%d queries executed, %d expected\nCaptured queries were:\n%s'
             % (
                 executed,
                 self.num,
-                "\n".join(query["sql"] for query in self.captured_queries),
+                '\n'.join(query['sql'] for query in self.captured_queries),
             )
         )
 
 
 def assert_num_queries(num, func=None, *args, **kwargs):
-    using = kwargs.pop("using", DEFAULT_DB_ALIAS)
+    using = kwargs.pop('using', DEFAULT_DB_ALIAS)
     conn = connections[using]
 
     context = _AssertNumQueriesContext(num, conn)

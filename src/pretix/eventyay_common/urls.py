@@ -9,62 +9,62 @@ from pretix.eventyay_common.views import (
     team,
 )
 
-app_name = "eventyay_common"
+app_name = 'eventyay_common'
 
 urlpatterns = [
-    url(r"^$", dashboards.eventyay_common_dashboard, name="dashboard"),
+    url(r'^$', dashboards.eventyay_common_dashboard, name='dashboard'),
     url(
-        r"^widgets.json/$", dashboards.user_index_widgets_lazy, name="dashboard.widgets"
+        r'^widgets.json/$', dashboards.user_index_widgets_lazy, name='dashboard.widgets'
     ),
-    url(r"^organizers/$", organizer.OrganizerList.as_view(), name="organizers"),
+    url(r'^organizers/$', organizer.OrganizerList.as_view(), name='organizers'),
     url(
-        r"^organizers/add$", organizer.OrganizerCreate.as_view(), name="organizers.add"
+        r'^organizers/add$', organizer.OrganizerCreate.as_view(), name='organizers.add'
     ),
     url(
-        r"^organizer/(?P<organizer>[^/]+)/update$",
+        r'^organizer/(?P<organizer>[^/]+)/update$',
         organizer.OrganizerUpdate.as_view(),
-        name="organizer.update",
+        name='organizer.update',
     ),
     url(
-        r"^organizer/(?P<organizer>[^/]+)/teams$",
+        r'^organizer/(?P<organizer>[^/]+)/teams$',
         team.TeamListView.as_view(),
-        name="organizer.teams",
+        name='organizer.teams',
     ),
     url(
-        r"^organizer/(?P<organizer>[^/]+)/team/add$",
+        r'^organizer/(?P<organizer>[^/]+)/team/add$',
         team.TeamCreateView.as_view(),
-        name="organizer.team.add",
+        name='organizer.team.add',
     ),
     url(
-        r"^organizer/(?P<organizer>[^/]+)/team/(?P<team>[^/]+)/edit$",
+        r'^organizer/(?P<organizer>[^/]+)/team/(?P<team>[^/]+)/edit$',
         team.TeamUpdateView.as_view(),
-        name="organizer.team.edit",
+        name='organizer.team.edit',
     ),
     url(
-        r"^organizer/(?P<organizer>[^/]+)/team/(?P<team>[^/]+)/delete$",
+        r'^organizer/(?P<organizer>[^/]+)/team/(?P<team>[^/]+)/delete$',
         team.TeamDeleteView.as_view(),
-        name="organizer.team.delete",
+        name='organizer.team.delete',
     ),
-    url(r"^events/$", event.EventList.as_view(), name="events"),
-    url(r"^events/add$", event.EventCreateView.as_view(), name="events.add"),
+    url(r'^events/$', event.EventList.as_view(), name='events'),
+    url(r'^events/add$', event.EventCreateView.as_view(), name='events.add'),
     url(
-        r"^event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/",
+        r'^event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/',
         include(
             [
-                url(r"^$", dashboards.EventIndexView.as_view(), name="event.index"),
+                url(r'^$', dashboards.EventIndexView.as_view(), name='event.index'),
                 url(
-                    r"^widgets.json$",
+                    r'^widgets.json$',
                     dashboards.event_index_widgets_lazy,
-                    name="event.index.widgets",
+                    name='event.index.widgets',
                 ),
-                url(r"^settings/$", event.EventUpdate.as_view(), name="event.update"),
+                url(r'^settings/$', event.EventUpdate.as_view(), name='event.update'),
                 url(
-                    r"^video-access/$",
+                    r'^video-access/$',
                     event.VideoAccessAuthenticator.as_view(),
-                    name="event.create_access_to_video",
+                    name='event.create_access_to_video',
                 ),
             ]
         ),
     ),
-    url(r"^account/$", account.AccountSettings.as_view(), name="account"),
+    url(r'^account/$', account.AccountSettings.as_view(), name='account'),
 ]

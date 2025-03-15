@@ -94,65 +94,65 @@ def base_widgets(sender, subevent=None, lazy=False, **kwargs):
         if subevent:
             rev = opqs.filter(
                 order__event=sender, order__status=Order.STATUS_PAID
-            ).aggregate(sum=Sum("price"))["sum"] or Decimal("0.00")
+            ).aggregate(sum=Sum('price'))['sum'] or Decimal('0.00')
         else:
             rev = Order.objects.filter(
                 event=sender, status=Order.STATUS_PAID
-            ).aggregate(sum=Sum("total"))["sum"] or Decimal("0.00")
+            ).aggregate(sum=Sum('total'))['sum'] or Decimal('0.00')
 
     return [
         {
-            "content": None
+            'content': None
             if lazy
-            else NUM_WIDGET.format(num=tickc, text=_("Attendees (ordered)")),
-            "lazy": "attendees-ordered",
-            "display_size": "small",
-            "priority": 100,
-            "url": reverse(
-                "control:event.orders",
-                kwargs={"event": sender.slug, "organizer": sender.organizer.slug},
+            else NUM_WIDGET.format(num=tickc, text=_('Attendees (ordered)')),
+            'lazy': 'attendees-ordered',
+            'display_size': 'small',
+            'priority': 100,
+            'url': reverse(
+                'control:event.orders',
+                kwargs={'event': sender.slug, 'organizer': sender.organizer.slug},
             )
-            + ("?subevent={}".format(subevent.pk) if subevent else ""),
+            + ('?subevent={}'.format(subevent.pk) if subevent else ''),
         },
         {
-            "content": None
+            'content': None
             if lazy
-            else NUM_WIDGET.format(num=paidc, text=_("Attendees (paid)")),
-            "lazy": "attendees-paid",
-            "display_size": "small",
-            "priority": 100,
-            "url": reverse(
-                "control:event.orders.overview",
-                kwargs={"event": sender.slug, "organizer": sender.organizer.slug},
+            else NUM_WIDGET.format(num=paidc, text=_('Attendees (paid)')),
+            'lazy': 'attendees-paid',
+            'display_size': 'small',
+            'priority': 100,
+            'url': reverse(
+                'control:event.orders.overview',
+                kwargs={'event': sender.slug, 'organizer': sender.organizer.slug},
             )
-            + ("?subevent={}".format(subevent.pk) if subevent else ""),
+            + ('?subevent={}'.format(subevent.pk) if subevent else ''),
         },
         {
-            "content": None
+            'content': None
             if lazy
             else NUM_WIDGET.format(
                 num=formats.localize(round_decimal(rev, sender.currency)),
-                text=_("Total revenue ({currency})").format(currency=sender.currency),
+                text=_('Total revenue ({currency})').format(currency=sender.currency),
             ),
-            "lazy": "total-revenue",
-            "display_size": "small",
-            "priority": 100,
-            "url": reverse(
-                "control:event.orders.overview",
-                kwargs={"event": sender.slug, "organizer": sender.organizer.slug},
+            'lazy': 'total-revenue',
+            'display_size': 'small',
+            'priority': 100,
+            'url': reverse(
+                'control:event.orders.overview',
+                kwargs={'event': sender.slug, 'organizer': sender.organizer.slug},
             )
-            + ("?subevent={}".format(subevent.pk) if subevent else ""),
+            + ('?subevent={}'.format(subevent.pk) if subevent else ''),
         },
         {
-            "content": None
+            'content': None
             if lazy
-            else NUM_WIDGET.format(num=prodc, text=_("Active products")),
-            "lazy": "active-products",
-            "display_size": "small",
-            "priority": 100,
-            "url": reverse(
-                "control:event.items",
-                kwargs={"event": sender.slug, "organizer": sender.organizer.slug},
+            else NUM_WIDGET.format(num=prodc, text=_('Active products')),
+            'lazy': 'active-products',
+            'display_size': 'small',
+            'priority': 100,
+            'url': reverse(
+                'control:event.items',
+                kwargs={'event': sender.slug, 'organizer': sender.organizer.slug},
             ),
         },
     ]
@@ -170,17 +170,17 @@ def waitinglist_widgets(sender, subevent=None, lazy=False, **kwargs):
             quota_cache = {}
             happy = 0
             tuples = (
-                wles.values("item", "variation").order_by().annotate(cnt=Count("id"))
+                wles.values('item', 'variation').order_by().annotate(cnt=Count('id'))
             )
 
             items = {
                 i.pk: i
                 for i in sender.items.filter(
-                    id__in=[t["item"] for t in tuples]
+                    id__in=[t['item'] for t in tuples]
                 ).prefetch_related(
                     Prefetch(
-                        "quotas",
-                        to_attr="_subevent_quotas",
+                        'quotas',
+                        to_attr='_subevent_quotas',
                         queryset=sender.quotas.using(settings.DATABASE_REPLICA).filter(
                             subevent=subevent
                         ),
@@ -191,11 +191,11 @@ def waitinglist_widgets(sender, subevent=None, lazy=False, **kwargs):
                 i.pk: i
                 for i in ItemVariation.objects.filter(
                     item__event=sender,
-                    id__in=[t["variation"] for t in tuples if t["variation"]],
+                    id__in=[t['variation'] for t in tuples if t['variation']],
                 ).prefetch_related(
                     Prefetch(
-                        "quotas",
-                        to_attr="_subevent_quotas",
+                        'quotas',
+                        to_attr='_subevent_quotas',
                         queryset=sender.quotas.using(settings.DATABASE_REPLICA).filter(
                             subevent=subevent
                         ),
@@ -204,8 +204,8 @@ def waitinglist_widgets(sender, subevent=None, lazy=False, **kwargs):
             }
 
             for wlt in tuples:
-                item = items.get(wlt["item"])
-                variation = vars.get(wlt["variation"])
+                item = items.get(wlt['item'])
+                variation = vars.get(wlt['variation'])
                 if not item:
                     continue
                 quotas = (
@@ -235,38 +235,38 @@ def waitinglist_widgets(sender, subevent=None, lazy=False, **kwargs):
 
         widgets.append(
             {
-                "content": None
+                'content': None
                 if lazy
                 else NUM_WIDGET.format(
                     num=str(happy),
-                    text=_("available to give to people on waiting list"),
+                    text=_('available to give to people on waiting list'),
                 ),
-                "lazy": "waitinglist-avail",
-                "priority": 50,
-                "url": reverse(
-                    "control:event.orders.waitinglist",
+                'lazy': 'waitinglist-avail',
+                'priority': 50,
+                'url': reverse(
+                    'control:event.orders.waitinglist',
                     kwargs={
-                        "event": sender.slug,
-                        "organizer": sender.organizer.slug,
+                        'event': sender.slug,
+                        'organizer': sender.organizer.slug,
                     },
                 ),
             }
         )
         widgets.append(
             {
-                "content": None
+                'content': None
                 if lazy
                 else NUM_WIDGET.format(
-                    num=str(wles.count()), text=_("total waiting list length")
+                    num=str(wles.count()), text=_('total waiting list length')
                 ),
-                "lazy": "waitinglist-length",
-                "display_size": "small",
-                "priority": 50,
-                "url": reverse(
-                    "control:event.orders.waitinglist",
+                'lazy': 'waitinglist-length',
+                'display_size': 'small',
+                'priority': 50,
+                'url': reverse(
+                    'control:event.orders.waitinglist',
                     kwargs={
-                        "event": sender.slug,
-                        "organizer": sender.organizer.slug,
+                        'event': sender.slug,
+                        'organizer': sender.organizer.slug,
                     },
                 ),
             }
@@ -292,23 +292,23 @@ def quota_widgets(sender, subevent=None, lazy=False, **kwargs):
             )
         widgets.append(
             {
-                "content": None
+                'content': None
                 if lazy
                 else NUM_WIDGET.format(
-                    num="{}/{}".format(left, q.size)
+                    num='{}/{}'.format(left, q.size)
                     if q.size is not None
-                    else "\u221e",
-                    text=_("{quota} left").format(quota=escape(q.name)),
+                    else '\u221e',
+                    text=_('{quota} left').format(quota=escape(q.name)),
                 ),
-                "lazy": "quota-{}".format(q.pk),
-                "display_size": "small",
-                "priority": 50,
-                "url": reverse(
-                    "control:event.items.quotas.show",
+                'lazy': 'quota-{}'.format(q.pk),
+                'display_size': 'small',
+                'priority': 50,
+                'url': reverse(
+                    'control:event.items.quotas.show',
                     kwargs={
-                        "event": sender.slug,
-                        "organizer": sender.organizer.slug,
-                        "quota": q.id,
+                        'event': sender.slug,
+                        'organizer': sender.organizer.slug,
+                        'quota': q.id,
                     },
                 ),
             }
@@ -320,38 +320,38 @@ def quota_widgets(sender, subevent=None, lazy=False, **kwargs):
 def shop_state_widget(sender, **kwargs):
     return [
         {
-            "display_size": "small",
-            "priority": 1000,
-            "content": '<div class="shopstate">{t1}<br><span class="{cls}"><span class="fa {icon}"></span> {state}</span>{t2}</div>'.format(
-                t1=_("Your ticket shop is"),
-                t2=_("Click here to change"),
-                state=_("live")
+            'display_size': 'small',
+            'priority': 1000,
+            'content': '<div class="shopstate">{t1}<br><span class="{cls}"><span class="fa {icon}"></span> {state}</span>{t2}</div>'.format(
+                t1=_('Your ticket shop is'),
+                t2=_('Click here to change'),
+                state=_('live')
                 if sender.live and not sender.testmode
                 else (
-                    _("live and in test mode")
+                    _('live and in test mode')
                     if sender.live
                     else (
-                        _("not yet public")
+                        _('not yet public')
                         if not sender.testmode
-                        else (_("in private test mode"))
+                        else (_('in private test mode'))
                     )
                 ),
-                icon="fa-check-circle"
+                icon='fa-check-circle'
                 if sender.live and not sender.testmode
                 else (
-                    "fa-warning"
+                    'fa-warning'
                     if sender.live
                     else (
-                        "fa-times-circle"
+                        'fa-times-circle'
                         if not sender.testmode
-                        else ("fa-times-circle")
+                        else ('fa-times-circle')
                     )
                 ),
-                cls="live" if sender.live else "off",
+                cls='live' if sender.live else 'off',
             ),
-            "url": reverse(
-                "control:event.live",
-                kwargs={"event": sender.slug, "organizer": sender.organizer.slug},
+            'url': reverse(
+                'control:event.live',
+                kwargs={'event': sender.slug, 'organizer': sender.organizer.slug},
             ),
         }
     ]
@@ -364,21 +364,21 @@ def checkin_widget(sender, subevent=None, lazy=False, **kwargs):
     for cl in qs:
         widgets.append(
             {
-                "content": None
+                'content': None
                 if lazy
                 else NUM_WIDGET.format(
-                    num="{}/{}".format(cl.inside_count, cl.position_count),
-                    text=_("Present – {list}").format(list=escape(cl.name)),
+                    num='{}/{}'.format(cl.inside_count, cl.position_count),
+                    text=_('Present – {list}').format(list=escape(cl.name)),
                 ),
-                "lazy": "checkin-{}".format(cl.pk),
-                "display_size": "small",
-                "priority": 50,
-                "url": reverse(
-                    "control:event.orders.checkinlists.show",
+                'lazy': 'checkin-{}'.format(cl.pk),
+                'display_size': 'small',
+                'priority': 50,
+                'url': reverse(
+                    'control:event.orders.checkinlists.show',
                     kwargs={
-                        "event": sender.slug,
-                        "organizer": sender.organizer.slug,
-                        "list": cl.pk,
+                        'event': sender.slug,
+                        'organizer': sender.organizer.slug,
+                        'list': cl.pk,
                     },
                 ),
             }
@@ -388,47 +388,47 @@ def checkin_widget(sender, subevent=None, lazy=False, **kwargs):
 
 @receiver(signal=event_dashboard_widgets)
 def welcome_wizard_widget(sender, **kwargs):
-    template = get_template("pretixcontrol/event/dashboard_widget_welcome.html")
-    ctx = {"title": _("Welcome")}
-    kwargs = {"event": sender.slug, "organizer": sender.organizer.slug}
+    template = get_template('pretixcontrol/event/dashboard_widget_welcome.html')
+    ctx = {'title': _('Welcome')}
+    kwargs = {'event': sender.slug, 'organizer': sender.organizer.slug}
 
     if not sender.items.exists():
         ctx.update(
             {
-                "subtitle": _("Get started with our setup tool"),
-                "text": _(
-                    "To start selling tickets, you need to create products or quotas. The fastest way to create "
-                    "this is to use our setup tool."
+                'subtitle': _('Get started with our setup tool'),
+                'text': _(
+                    'To start selling tickets, you need to create products or quotas. The fastest way to create '
+                    'this is to use our setup tool.'
                 ),
-                "button_text": _("Set up event"),
-                "button_url": reverse("control:event.quick", kwargs=kwargs),
+                'button_text': _('Set up event'),
+                'button_url': reverse('control:event.quick', kwargs=kwargs),
             }
         )
     else:
         return []
-    return [{"display_size": "full", "priority": 2000, "content": template.render(ctx)}]
+    return [{'display_size': 'full', 'priority': 2000, 'content': template.render(ctx)}]
 
 
 def event_index(request, organizer, event):
     subevent = None
-    if request.GET.get("subevent", "") != "" and request.event.has_subevents:
-        i = request.GET.get("subevent", "")
+    if request.GET.get('subevent', '') != '' and request.event.has_subevents:
+        i = request.GET.get('subevent', '')
         try:
             subevent = request.event.subevents.get(pk=i)
         except SubEvent.DoesNotExist:
             pass
 
     can_view_orders = request.user.has_event_permission(
-        request.organizer, request.event, "can_view_orders", request=request
+        request.organizer, request.event, 'can_view_orders', request=request
     )
     can_change_orders = request.user.has_event_permission(
-        request.organizer, request.event, "can_change_orders", request=request
+        request.organizer, request.event, 'can_change_orders', request=request
     )
     can_change_event_settings = request.user.has_event_permission(
-        request.organizer, request.event, "can_change_event_settings", request=request
+        request.organizer, request.event, 'can_change_event_settings', request=request
     )
     can_view_vouchers = request.user.has_event_permission(
-        request.organizer, request.event, "can_view_vouchers", request=request
+        request.organizer, request.event, 'can_view_vouchers', request=request
     )
     widgets = []
     if can_view_orders:
@@ -440,9 +440,9 @@ def event_index(request, organizer, event):
     qs = (
         request.event.logentry_set.all()
         .select_related(
-            "user", "content_type", "api_token", "oauth_application", "device"
+            'user', 'content_type', 'api_token', 'oauth_application', 'device'
         )
-        .order_by("-datetime")
+        .order_by('-datetime')
     )
     qs = qs.exclude(action_type__in=OVERVIEW_BANLIST)
     if not can_view_orders:
@@ -455,7 +455,7 @@ def event_index(request, organizer, event):
             ContentType.objects.get_for_model(Order),
         ]
         if request.user.has_event_permission(
-            request.organizer, request.event, "can_change_items", request=request
+            request.organizer, request.event, 'can_change_items', request=request
         ):
             allowed_types += [
                 ContentType.objects.get_for_model(Item),
@@ -468,17 +468,17 @@ def event_index(request, organizer, event):
     a_qs = request.event.requiredaction_set.filter(done=False)
 
     ctx = {
-        "widgets": rearrange(widgets),
-        "logs": qs[:5],
-        "subevent": subevent,
-        "actions": a_qs[:5] if can_change_orders else [],
-        "comment_form": CommentForm(
-            initial={"comment": request.event.comment},
+        'widgets': rearrange(widgets),
+        'logs': qs[:5],
+        'subevent': subevent,
+        'actions': a_qs[:5] if can_change_orders else [],
+        'comment_form': CommentForm(
+            initial={'comment': request.event.comment},
             readonly=not can_change_event_settings,
         ),
     }
 
-    ctx["has_overpaid_orders"] = (
+    ctx['has_overpaid_orders'] = (
         can_view_orders
         and Order.annotate_overpayments(request.event.orders)
         .filter(
@@ -487,7 +487,7 @@ def event_index(request, organizer, event):
         )
         .exists()
     )
-    ctx["has_pending_orders_with_full_payment"] = (
+    ctx['has_pending_orders_with_full_payment'] = (
         can_view_orders
         and Order.annotate_overpayments(request.event.orders)
         .filter(
@@ -497,7 +497,7 @@ def event_index(request, organizer, event):
         )
         .exists()
     )
-    ctx["has_pending_refunds"] = (
+    ctx['has_pending_refunds'] = (
         can_view_orders
         and OrderRefund.objects.filter(
             order__event=request.event,
@@ -507,40 +507,40 @@ def event_index(request, organizer, event):
             ),
         ).exists()
     )
-    ctx["has_pending_approvals"] = (
+    ctx['has_pending_approvals'] = (
         can_view_orders
         and request.event.orders.filter(
             status=Order.STATUS_PENDING, require_approval=True
         ).exists()
     )
-    ctx["has_cancellation_requests"] = (
+    ctx['has_cancellation_requests'] = (
         can_view_orders
         and CancellationRequest.objects.filter(order__event=request.event).exists()
     )
 
-    for a in ctx["actions"]:
+    for a in ctx['actions']:
         a.display = a.display(request)
 
-    ctx["timeline"] = [
+    ctx['timeline'] = [
         {
-            "date": t.datetime.astimezone(request.event.timezone).date(),
-            "entry": t,
-            "time": t.datetime.astimezone(request.event.timezone),
+            'date': t.datetime.astimezone(request.event.timezone).date(),
+            'entry': t,
+            'time': t.datetime.astimezone(request.event.timezone),
         }
         for t in timeline_for_event(request.event, subevent)
     ]
-    ctx["today"] = now().astimezone(request.event.timezone).date()
-    ctx["nearly_now"] = now().astimezone(request.event.timezone) - timedelta(seconds=20)
-    ctx["organizer_teams"] = request.organizer.teams.values_list("id", "name")
-    resp = render(request, "pretixcontrol/event/index.html", ctx)
+    ctx['today'] = now().astimezone(request.event.timezone).date()
+    ctx['nearly_now'] = now().astimezone(request.event.timezone) - timedelta(seconds=20)
+    ctx['organizer_teams'] = request.organizer.teams.values_list('id', 'name')
+    resp = render(request, 'pretixcontrol/event/index.html', ctx)
     # resp['Content-Security-Policy'] = "style-src 'unsafe-inline'"
     return resp
 
 
 def event_index_widgets_lazy(request, organizer, event):
     subevent = None
-    if request.GET.get("subevent", "") != "" and request.event.has_subevents:
-        i = request.GET.get("subevent", "")
+    if request.GET.get('subevent', '') != '' and request.event.has_subevents:
+        i = request.GET.get('subevent', '')
         try:
             subevent = request.event.subevents.get(pk=i)
         except SubEvent.DoesNotExist:
@@ -552,21 +552,21 @@ def event_index_widgets_lazy(request, organizer, event):
     ):
         widgets.extend(result)
 
-    return JsonResponse({"widgets": widgets})
+    return JsonResponse({'widgets': widgets})
 
 
 def annotated_event_query(request, lazy=False):
     active_orders = (
         Order.objects.filter(
-            event=OuterRef("pk"), status__in=[Order.STATUS_PENDING, Order.STATUS_PAID]
+            event=OuterRef('pk'), status__in=[Order.STATUS_PENDING, Order.STATUS_PAID]
         )
         .order_by()
-        .values("event")
-        .annotate(c=Count("*"))
-        .values("c")
+        .values('event')
+        .annotate(c=Count('*'))
+        .values('c')
     )
 
-    required_actions = RequiredAction.objects.filter(event=OuterRef("pk"), done=False)
+    required_actions = RequiredAction.objects.filter(event=OuterRef('pk'), done=False)
     qs = request.user.get_events_with_any_permission(request)
     if not lazy:
         qs = qs.annotate(
@@ -574,12 +574,12 @@ def annotated_event_query(request, lazy=False):
             has_ra=Exists(required_actions),
         )
     qs = qs.annotate(
-        min_from=Min("subevents__date_from"),
-        max_from=Max("subevents__date_from"),
-        max_to=Max("subevents__date_to"),
-        max_fromto=Greatest(Max("subevents__date_to"), Max("subevents__date_from")),
+        min_from=Min('subevents__date_from'),
+        max_from=Max('subevents__date_from'),
+        max_to=Max('subevents__date_to'),
+        max_fromto=Greatest(Max('subevents__date_to'), Max('subevents__date_from')),
     ).annotate(
-        order_to=Coalesce("max_fromto", "max_to", "max_from", "date_to", "date_from"),
+        order_to=Coalesce('max_fromto', 'max_to', 'max_from', 'date_to', 'date_from'),
     )
     return qs
 
@@ -594,14 +594,14 @@ def widgets_for_event_qs(request, qs, user, nmax, lazy=False):
                 Q(
                     organizer_id__in=user.teams.filter(
                         all_events=True, can_view_orders=True
-                    ).values_list("organizer", flat=True)
+                    ).values_list('organizer', flat=True)
                 )
                 | Q(
                     id__in=user.teams.filter(can_view_orders=True).values_list(
-                        "limit_events__id", flat=True
+                        'limit_events__id', flat=True
                     )
                 )
-            ).values_list("id", flat=True)
+            ).values_list('id', flat=True)
         )
 
     tpl = """
@@ -622,15 +622,15 @@ def widgets_for_event_qs(request, qs, user, nmax, lazy=False):
         events = qs[:nmax]
     else:
         events = qs.prefetch_related(
-            "_settings_objects", "organizer___settings_objects"
-        ).select_related("organizer")[:nmax]
+            '_settings_objects', 'organizer___settings_objects'
+        ).select_related('organizer')[:nmax]
     for event in events:
         if not lazy:
-            tzname = event.cache.get_or_set("timezone", lambda: event.settings.timezone)
+            tzname = event.cache.get_or_set('timezone', lambda: event.settings.timezone)
             tz = pytz.timezone(tzname)
             if event.has_subevents:
                 if event.min_from is None:
-                    dr = pgettext("subevent", "No dates")
+                    dr = pgettext('subevent', 'No dates')
                 else:
                     dr = daterange(
                         (event.min_from).astimezone(tz),
@@ -644,41 +644,41 @@ def widgets_for_event_qs(request, qs, user, nmax, lazy=False):
                         event.date_from.astimezone(tz), event.date_to.astimezone(tz)
                     )
                 else:
-                    dr = date_format(event.date_from.astimezone(tz), "DATE_FORMAT")
+                    dr = date_format(event.date_from.astimezone(tz), 'DATE_FORMAT')
 
             if event.has_ra:
-                status = ("danger", _("Action required"))
+                status = ('danger', _('Action required'))
             elif not event.live:
-                status = ("warning", _("Shop disabled"))
+                status = ('warning', _('Shop disabled'))
             elif event.presale_has_ended:
-                status = ("default", _("Sale over"))
+                status = ('default', _('Sale over'))
             elif not event.presale_is_running:
-                status = ("default", _("Soon"))
+                status = ('default', _('Soon'))
             else:
-                status = ("success", _("On sale"))
+                status = ('success', _('On sale'))
 
         widgets.append(
             {
-                "content": tpl.format(
+                'content': tpl.format(
                     event=escape(event.name),
-                    times=_("Event series")
+                    times=_('Event series')
                     if event.has_subevents
                     else (
                         (
                             (
                                 date_format(
-                                    event.date_admission.astimezone(tz), "TIME_FORMAT"
+                                    event.date_admission.astimezone(tz), 'TIME_FORMAT'
                                 )
-                                + " / "
+                                + ' / '
                             )
                             if event.date_admission
                             and event.date_admission != event.date_from
-                            else ""
+                            else ''
                         )
                         + (
-                            date_format(event.date_from.astimezone(tz), "TIME_FORMAT")
+                            date_format(event.date_from.astimezone(tz), 'TIME_FORMAT')
                             if event.date_from
-                            else ""
+                            else ''
                         )
                     )
                     + (
@@ -686,39 +686,39 @@ def widgets_for_event_qs(request, qs, user, nmax, lazy=False):
                             tzname
                         )
                         if tzname != request.timezone and not event.has_subevents
-                        else ""
+                        else ''
                     ),
                     url=reverse(
-                        "control:event.index",
-                        kwargs={"event": event.slug, "organizer": event.organizer.slug},
+                        'control:event.index',
+                        kwargs={'event': event.slug, 'organizer': event.organizer.slug},
                     ),
                     orders=(
                         '<a href="{orders_url}" class="orders">{orders_text}</a>'.format(
                             orders_url=reverse(
-                                "control:event.orders",
+                                'control:event.orders',
                                 kwargs={
-                                    "event": event.slug,
-                                    "organizer": event.organizer.slug,
+                                    'event': event.slug,
+                                    'organizer': event.organizer.slug,
                                 },
                             ),
                             orders_text=ngettext(
-                                "{num} order", "{num} orders", event.order_count or 0
+                                '{num} order', '{num} orders', event.order_count or 0
                             ).format(num=event.order_count or 0),
                         )
                         if user.has_active_staff_session(request.session.session_key)
                         or event.pk in events_with_orders
-                        else ""
+                        else ''
                     ),
                     daterange=dr,
                     status=status[1],
                     statusclass=status[0],
                 )
                 if not lazy
-                else "",
-                "display_size": "small",
-                "lazy": "event-{}".format(event.pk),
-                "priority": 100,
-                "container_class": "widget-container widget-container-event",
+                else '',
+                'display_size': 'small',
+                'lazy': 'event-{}'.format(event.pk),
+                'priority': 100,
+                'container_class': 'widget-container widget-container-event',
             }
         )
         """
@@ -747,7 +747,7 @@ def user_index_widgets_lazy(request):
                 | Q(Q(date_to__isnull=False) & Q(date_to__gte=now()))
             )
         )
-        .order_by("date_from", "order_to", "pk"),
+        .order_by('date_from', 'order_to', 'pk'),
         request.user,
         7,
     )
@@ -761,7 +761,7 @@ def user_index_widgets_lazy(request):
                 | Q(Q(date_to__isnull=False) & Q(date_to__lt=now()))
             )
         )
-        .order_by("-order_to", "pk"),
+        .order_by('-order_to', 'pk'),
         request.user,
         8,
     )
@@ -769,11 +769,11 @@ def user_index_widgets_lazy(request):
         request,
         annotated_event_query(request)
         .filter(has_subevents=True)
-        .order_by("-order_to", "pk"),
+        .order_by('-order_to', 'pk'),
         request.user,
         8,
     )
-    return JsonResponse({"widgets": widgets})
+    return JsonResponse({'widgets': widgets})
 
 
 def user_index(request):
@@ -782,9 +782,9 @@ def user_index(request):
         widgets.extend(result)
 
     ctx = {
-        "widgets": rearrange(widgets),
-        "can_create_event": request.user.teams.filter(can_create_events=True).exists(),
-        "upcoming": widgets_for_event_qs(
+        'widgets': rearrange(widgets),
+        'can_create_event': request.user.teams.filter(can_create_events=True).exists(),
+        'upcoming': widgets_for_event_qs(
             request,
             annotated_event_query(request, lazy=True)
             .filter(
@@ -794,12 +794,12 @@ def user_index(request):
                     | Q(Q(date_to__isnull=False) & Q(date_to__gte=now()))
                 )
             )
-            .order_by("date_from", "order_to", "pk"),
+            .order_by('date_from', 'order_to', 'pk'),
             request.user,
             7,
             lazy=True,
         ),
-        "past": widgets_for_event_qs(
+        'past': widgets_for_event_qs(
             request,
             annotated_event_query(request, lazy=True)
             .filter(
@@ -809,22 +809,22 @@ def user_index(request):
                     | Q(Q(date_to__isnull=False) & Q(date_to__lt=now()))
                 )
             )
-            .order_by("-order_to", "pk"),
+            .order_by('-order_to', 'pk'),
             request.user,
             8,
             lazy=True,
         ),
-        "series": widgets_for_event_qs(
+        'series': widgets_for_event_qs(
             request,
             annotated_event_query(request, lazy=True)
             .filter(has_subevents=True)
-            .order_by("-order_to", "pk"),
+            .order_by('-order_to', 'pk'),
             request.user,
             8,
             lazy=True,
         ),
     }
-    return render(request, "pretixcontrol/dashboard.html", ctx)
+    return render(request, 'pretixcontrol/dashboard.html', ctx)
 
 
 def rearrange(widgets: list):
@@ -832,15 +832,15 @@ def rearrange(widgets: list):
     Sort widget boxes according to priority.
     """
     mapping = {
-        "small": 1,
-        "big": 2,
-        "full": 3,
+        'small': 1,
+        'big': 2,
+        'full': 3,
     }
 
     def sort_key(element):
         return (
-            element.get("priority", 1),
-            mapping.get(element.get("display_size", "small"), 1),
+            element.get('priority', 1),
+            mapping.get(element.get('display_size', 'small'), 1),
         )
 
     return sorted(widgets, key=sort_key, reverse=True)

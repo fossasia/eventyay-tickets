@@ -4,8 +4,8 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_der_public_key
 
 PUB_KEY_DER_EVENTYAY = (
-    b"\x30\x59\x30\x13\x06\x07\x2a\x86\x48\xce\x3d\x02\x01"
-    b"\x06\x08\x2a\x86\x48\xce\x3d\x03\x01\x07\x03\x42\x00"
+    b'\x30\x59\x30\x13\x06\x07\x2a\x86\x48\xce\x3d\x02\x01'
+    b'\x06\x08\x2a\x86\x48\xce\x3d\x03\x01\x07\x03\x42\x00'
 )
 
 
@@ -37,8 +37,8 @@ def websafe_decode(data):
         bytes: The decoded byte data.
     """
     if isinstance(data, str):
-        data = data.encode("ascii")
-    data += b"=" * (-len(data) % 4)
+        data = data.encode('ascii')
+    data += b'=' * (-len(data) % 4)
     return urlsafe_b64decode(data)
 
 
@@ -55,5 +55,5 @@ def websafe_encode(data):
         str: The web-safe base64-encoded string.
     """
     if isinstance(data, str):
-        data = data.encode("ascii")
-        return urlsafe_b64encode(data).replace(b"=", b"").decode("ascii")
+        data = data.encode('ascii')
+        return urlsafe_b64encode(data).replace(b'=', b'').decode('ascii')

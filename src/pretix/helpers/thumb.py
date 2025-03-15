@@ -15,12 +15,12 @@ class ThumbnailError(Exception):
 
 def get_sizes(size, imgsize):
     crop = False
-    if size.endswith("^"):
+    if size.endswith('^'):
         crop = True
         size = size[:-1]
 
-    if "x" in size:
-        size = [int(p) for p in size.split("x")]
+    if 'x' in size:
+        size = [int(p) for p in size.split('x')]
     else:
         size = [int(size), int(size)]
 
@@ -65,7 +65,7 @@ def create_thumbnail(sourcename, size):
     try:
         image.load()
     except:
-        raise ThumbnailError("Could not load image")
+        raise ThumbnailError('Could not load image')
 
     # before we calc thumbnail, we need to check and apply EXIF-orientation
     image = ImageOps.exif_transpose(image)
@@ -76,11 +76,11 @@ def create_thumbnail(sourcename, size):
         image = image.crop(crop)
 
     checksum = hashlib.md5(image.tobytes()).hexdigest()
-    name = checksum + "." + size.replace("^", "c") + ".png"
+    name = checksum + '.' + size.replace('^', 'c') + '.png'
     buffer = BytesIO()
-    if image.mode not in ("1", "L", "RGB", "RGBA"):
-        image = image.convert("RGB")
-    image.save(fp=buffer, format="PNG")
+    if image.mode not in ('1', 'L', 'RGB', 'RGBA'):
+        image = image.convert('RGB')
+    image.save(fp=buffer, format='PNG')
     imgfile = ContentFile(buffer.getvalue())
 
     t = Thumbnail.objects.create(source=sourcename, size=size)

@@ -25,9 +25,9 @@ def assign_automatically(event: Event, user_id: int = None, subevent_id: int = N
 
     qs = (
         WaitingListEntry.objects.filter(event=event, voucher__isnull=True)
-        .select_related("item", "variation", "subevent")
-        .prefetch_related("item__quotas", "variation__quotas")
-        .order_by("-priority", "created")
+        .select_related('item', 'variation', 'subevent')
+        .prefetch_related('item__quotas', 'variation__quotas')
+        .order_by('-priority', 'created')
     )
 
     if subevent_id and event.has_subevents:
@@ -96,8 +96,8 @@ def process_waitinglist(sender, **kwargs):
             has_subevents=False,
             date_from__lt=now() - timedelta(days=14),
         )
-        .prefetch_related("_settings_objects", "organizer___settings_objects")
-        .select_related("organizer")
+        .prefetch_related('_settings_objects', 'organizer___settings_objects')
+        .select_related('organizer')
     )
     for e in qs:
         if e.settings.waiting_list_auto and (e.presale_is_running or e.has_subevents):

@@ -8,27 +8,27 @@ from pretix.base.templatetags.rich_text import (
 
 
 @pytest.mark.parametrize(
-    "link",
+    'link',
     [
         # Test link detection
         (
-            "google.com",
+            'google.com',
             '<a href="http://google.com" rel="noopener" target="_blank">google.com</a>',
         ),
         # Test abslink_callback
-        ("[Call](tel:+12345)", '<a href="tel:+12345" rel="nofollow">Call</a>'),
+        ('[Call](tel:+12345)', '<a href="tel:+12345" rel="nofollow">Call</a>'),
         (
-            "[Foo](/foo)",
+            '[Foo](/foo)',
             '<a href="http://example.com/foo" rel="noopener" target="_blank">Foo</a>',
         ),
-        ("mail@example.org", '<a href="mailto:mail@example.org">mail@example.org</a>'),
+        ('mail@example.org', '<a href="mailto:mail@example.org">mail@example.org</a>'),
         # Test truelink_callback
         (
-            "evilsite.com",
+            'evilsite.com',
             '<a href="http://evilsite.com" rel="noopener" target="_blank">evilsite.com</a>',
         ),
         (
-            "cool-example.eu",
+            'cool-example.eu',
             '<a href="http://cool-example.eu" rel="noopener" target="_blank">cool-example.eu</a>',
         ),
         (
@@ -56,5 +56,5 @@ from pretix.base.templatetags.rich_text import (
 def test_linkify_abs(link):
     input, output = link
     assert rich_text_snippet(input, safelinks=False) == output
-    assert rich_text(input, safelinks=False) == f"<p>{output}</p>"
-    assert markdown_compile_email(input) == f"<p>{output}</p>"
+    assert rich_text(input, safelinks=False) == f'<p>{output}</p>'
+    assert markdown_compile_email(input) == f'<p>{output}</p>'

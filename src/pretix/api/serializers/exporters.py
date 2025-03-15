@@ -5,14 +5,14 @@ from rest_framework import serializers
 
 class FormFieldWrapperField(serializers.Field):
     def __init__(self, *args, **kwargs):
-        self.form_field = kwargs.pop("form_field")
+        self.form_field = kwargs.pop('form_field')
         super().__init__(*args, **kwargs)
 
     def to_representation(self, value):
         return self.form_field.widget.format_value(value)
 
     def to_internal_value(self, data):
-        d = self.form_field.widget.value_from_datadict({"name": data}, {}, "name")
+        d = self.form_field.widget.value_from_datadict({'name': data}, {}, 'name')
         d = self.form_field.clean(d)
         return d
 
@@ -25,7 +25,7 @@ simple_mappings = (
     (
         forms.DecimalField,
         serializers.DecimalField,
-        ("max_digits", "decimal_places", "min_value", "max_value"),
+        ('max_digits', 'decimal_places', 'min_value', 'max_value'),
     ),
     (forms.FloatField, serializers.FloatField, ()),
     (forms.IntegerField, serializers.IntegerField, ()),
@@ -41,11 +41,11 @@ class SerializerDescriptionField(serializers.Field):
         fields = []
         for k, v in value.fields.items():
             d = {
-                "name": k,
-                "required": v.required,
+                'name': k,
+                'required': v.required,
             }
             if isinstance(v, serializers.ChoiceField):
-                d["choices"] = list(v.choices.keys())
+                d['choices'] = list(v.choices.keys())
             fields.append(d)
 
         return fields
@@ -54,7 +54,7 @@ class SerializerDescriptionField(serializers.Field):
 class ExporterSerializer(serializers.Serializer):
     identifier = serializers.CharField()
     verbose_name = serializers.CharField()
-    input_parameters = SerializerDescriptionField(source="_serializer")
+    input_parameters = SerializerDescriptionField(source='_serializer')
 
 
 class PrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
@@ -66,15 +66,15 @@ class PrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
 
 class JobRunSerializer(serializers.Serializer):
     def __init__(self, *args, **kwargs):
-        ex = kwargs.pop("exporter")
-        events = kwargs.pop("events", None)
+        ex = kwargs.pop('exporter')
+        events = kwargs.pop('events', None)
         super().__init__(*args, **kwargs)
         if events is not None:
-            self.fields["events"] = serializers.SlugRelatedField(
+            self.fields['events'] = serializers.SlugRelatedField(
                 queryset=events,
                 required=True,
                 allow_empty=False,
-                slug_field="slug",
+                slug_field='slug',
                 many=True,
             )
         for k, v in ex.export_form_fields.items():

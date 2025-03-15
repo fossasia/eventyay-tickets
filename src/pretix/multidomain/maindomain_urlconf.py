@@ -15,23 +15,23 @@ from pretix.urls import common_patterns
 
 presale_patterns_main = [
     url(
-        r"",
+        r'',
         include(
             (
                 locale_patterns
                 + [
-                    url(r"^(?P<organizer>[^/]+)/", include(organizer_patterns)),
+                    url(r'^(?P<organizer>[^/]+)/', include(organizer_patterns)),
                     url(
-                        r"^(?P<organizer>[^/]+)/(?P<event>[^/]+)/",
+                        r'^(?P<organizer>[^/]+)/(?P<event>[^/]+)/',
                         include(event_patterns),
                     ),
                     url(
-                        r"^$",
-                        TemplateView.as_view(template_name="pretixpresale/index.html"),
-                        name="index",
+                        r'^$',
+                        TemplateView.as_view(template_name='pretixpresale/index.html'),
+                        name='index',
                     ),
                 ],
-                "presale",
+                'presale',
             )
         ),
     )
@@ -39,30 +39,30 @@ presale_patterns_main = [
 
 raw_plugin_patterns = []
 for app in apps.get_app_configs():
-    if hasattr(app, "PretixPluginMeta"):
-        if importlib.util.find_spec(app.name + ".urls"):
-            urlmod = importlib.import_module(app.name + ".urls")
+    if hasattr(app, 'PretixPluginMeta'):
+        if importlib.util.find_spec(app.name + '.urls'):
+            urlmod = importlib.import_module(app.name + '.urls')
             single_plugin_patterns = []
-            if hasattr(urlmod, "urlpatterns"):
+            if hasattr(urlmod, 'urlpatterns'):
                 single_plugin_patterns += urlmod.urlpatterns
-            if hasattr(urlmod, "event_patterns"):
+            if hasattr(urlmod, 'event_patterns'):
                 patterns = plugin_event_urls(urlmod.event_patterns, plugin=app.name)
                 single_plugin_patterns.append(
-                    url(r"^(?P<organizer>[^/]+)/(?P<event>[^/]+)/", include(patterns))
+                    url(r'^(?P<organizer>[^/]+)/(?P<event>[^/]+)/', include(patterns))
                 )
-            if hasattr(urlmod, "organizer_patterns"):
+            if hasattr(urlmod, 'organizer_patterns'):
                 patterns = urlmod.organizer_patterns
                 single_plugin_patterns.append(
-                    url(r"^(?P<organizer>[^/]+)/", include(patterns))
+                    url(r'^(?P<organizer>[^/]+)/', include(patterns))
                 )
             raw_plugin_patterns.append(
-                url(r"", include((single_plugin_patterns, app.label)))
+                url(r'', include((single_plugin_patterns, app.label)))
             )
 
-plugin_patterns = [url(r"", include((raw_plugin_patterns, "plugins")))]
+plugin_patterns = [url(r'', include((raw_plugin_patterns, 'plugins')))]
 
 # The presale namespace comes last, because it contains a wildcard catch
 urlpatterns = common_patterns + plugin_patterns + presale_patterns_main
 
-handler404 = "pretix.base.views.errors.page_not_found"
-handler500 = "pretix.base.views.errors.server_error"
+handler404 = 'pretix.base.views.errors.page_not_found'
+handler500 = 'pretix.base.views.errors.server_error'

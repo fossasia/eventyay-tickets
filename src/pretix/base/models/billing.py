@@ -11,21 +11,21 @@ from .choices import PriceModeChoices
 
 
 class BillingInvoice(LoggedModel):
-    STATUS_PENDING = "n"
-    STATUS_PAID = "p"
-    STATUS_EXPIRED = "e"
-    STATUS_CANCELED = "c"
+    STATUS_PENDING = 'n'
+    STATUS_PAID = 'p'
+    STATUS_EXPIRED = 'e'
+    STATUS_CANCELED = 'c'
 
     STATUS_CHOICES = [
-        (STATUS_PENDING, _("pending")),
-        (STATUS_PAID, _("paid")),
-        (STATUS_EXPIRED, _("expired")),
-        (STATUS_CANCELED, _("canceled")),
+        (STATUS_PENDING, _('pending')),
+        (STATUS_PAID, _('paid')),
+        (STATUS_EXPIRED, _('expired')),
+        (STATUS_CANCELED, _('canceled')),
     ]
 
-    organizer = models.ForeignKey("Organizer", on_delete=models.CASCADE)
+    organizer = models.ForeignKey('Organizer', on_delete=models.CASCADE)
     # organizer_billing = models.ForeignKey('OrganizerBilling', on_delete=models.CASCADE)
-    event = models.ForeignKey("Event", on_delete=models.CASCADE)
+    event = models.ForeignKey('Event', on_delete=models.CASCADE)
 
     status = models.CharField(
         max_length=1, choices=STATUS_CHOICES, default=STATUS_PENDING
@@ -56,14 +56,14 @@ class BillingInvoice(LoggedModel):
         models.IntegerField(),
         default=list,  # Sets the default to an empty list
         blank=True,
-        help_text="Days after creation for reminders, e.g., [14, 28]",
+        help_text='Days after creation for reminders, e.g., [14, 28]',
     )
     reminder_enabled = models.BooleanField(default=True)
     stripe_payment_intent_id = models.CharField(max_length=50, null=True, blank=True)
 
-    objects = ScopedManager(organizer="organizer")
+    objects = ScopedManager(organizer='organizer')
 
     class Meta:
-        verbose_name = "Billing Invoice"
-        verbose_name_plural = "Billing Invoices"
-        ordering = ("-created_at",)
+        verbose_name = 'Billing Invoice'
+        verbose_name_plural = 'Billing Invoices'
+        ordering = ('-created_at',)

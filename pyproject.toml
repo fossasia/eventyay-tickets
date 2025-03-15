@@ -111,7 +111,7 @@ dependencies = [
 memcached = ["pylibmc"]
 dev = [
             'django-debug-toolbar==4.4.*',
-            'ruff==0.4.4',
+            'ruff = "^0.11.0"',
             'coveralls',
             'coverage',
             'pytest==7.2.*',
@@ -158,6 +158,6 @@ include = ["pretix*"]
 namespaces = false
 
 [tool.ruff]
-format = { indent-style = "space" }
+format = { indent-style = "space", quote-style = "single" }
 lint = { select = ["E", "F", "W", "I"] }
 isort = { known-first-party = ["pretix"] }

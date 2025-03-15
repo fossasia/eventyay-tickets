@@ -15,7 +15,7 @@ from pretix.helpers.json import CustomJSONEncoder
 
 def cachedfile_name(instance, filename: str) -> str:
     secret = get_random_string(length=12)
-    return "cachedfiles/%s.%s.%s" % (instance.id, secret, filename.split(".")[-1])
+    return 'cachedfiles/%s.%s.%s' % (instance.id, secret, filename.split('.')[-1])
 
 
 class CachedFile(models.Model):
@@ -70,37 +70,37 @@ class LoggingMixin:
         event = None
         if isinstance(self, Event):
             event = self
-        elif hasattr(self, "event"):
+        elif hasattr(self, 'event'):
             event = self.event
         if user and not user.is_authenticated:
             user = None
 
         kwargs = {}
         if isinstance(auth, OAuthAccessToken):
-            kwargs["oauth_application"] = auth.application
+            kwargs['oauth_application'] = auth.application
         elif isinstance(auth, OAuthApplication):
-            kwargs["oauth_application"] = auth
+            kwargs['oauth_application'] = auth
         elif isinstance(auth, TeamAPIToken):
-            kwargs["api_token"] = auth
+            kwargs['api_token'] = auth
         elif isinstance(auth, Device):
-            kwargs["device"] = auth
+            kwargs['device'] = auth
         elif isinstance(api_token, TeamAPIToken):
-            kwargs["api_token"] = api_token
+            kwargs['api_token'] = api_token
 
         logentry = LogEntry(
             content_object=self, user=user, action_type=action, event=event, **kwargs
         )
         if isinstance(data, dict):
-            sensitivekeys = ["password", "secret", "api_key"]
+            sensitivekeys = ['password', 'secret', 'api_key']
 
             for sensitivekey in sensitivekeys:
                 for k, v in data.items():
                     if (sensitivekey in k) and v:
-                        data[k] = "********"
+                        data[k] = '********'
 
             logentry.data = json.dumps(data, cls=CustomJSONEncoder, sort_keys=True)
         elif data:
-            raise TypeError("You should only supply dictionaries as log data.")
+            raise TypeError('You should only supply dictionaries as log data.')
         if save:
             logentry.save()
 
@@ -126,17 +126,17 @@ class LoggedModel(models.Model, LoggingMixin):
 
         if isinstance(self, Event):
             event = self
-        elif hasattr(self, "event"):
+        elif hasattr(self, 'event'):
             event = self.event
         else:
             return None
         return reverse(
-            "control:event.log",
+            'control:event.log',
             kwargs={
-                "event": event.slug,
-                "organizer": event.organizer.slug,
+                'event': event.slug,
+                'organizer': event.organizer.slug,
             },
-        ) + "?content_type={}&object={}".format(self.logs_content_type.pk, self.pk)
+        ) + '?content_type={}&object={}'.format(self.logs_content_type.pk, self.pk)
 
     def top_logentries(self):
         qs = self.all_logentries()
@@ -157,7 +157,7 @@ class LoggedModel(models.Model, LoggingMixin):
 
         return LogEntry.objects.filter(
             content_type=self.logs_content_type, object_id=self.pk
-        ).select_related("user", "event", "oauth_application", "api_token", "device")
+        ).select_related('user', 'event', 'oauth_application', 'api_token', 'device')
 
 
 class LockModel:
@@ -172,10 +172,10 @@ class LockModel:
             if any(LOOKUP_SEP in f for f in fields):
                 raise ValueError(
                     'Found "%s" in fields argument. Relations and transforms '
-                    "are not allowed in fields." % LOOKUP_SEP
+                    'are not allowed in fields.' % LOOKUP_SEP
                 )
 
-        hints = {"instance": self}
+        hints = {'instance': self}
         db_instance_qs = (
             self.__class__._base_manager.db_manager(using, hints=hints)
             .filter(pk=self.pk)

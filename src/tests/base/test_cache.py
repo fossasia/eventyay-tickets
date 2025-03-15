@@ -9,9 +9,9 @@ from pretix.base.models import Event, Organizer
 
 @override_settings(
     CACHES={
-        "default": {
-            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-            "LOCATION": "unique-snowflake",
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
         }
     }
 )
@@ -22,36 +22,36 @@ class CacheTest(TestCase):
     """
 
     def setUp(self):
-        o = Organizer.objects.create(name="Dummy", slug="dummy")
+        o = Organizer.objects.create(name='Dummy', slug='dummy')
         self.event = Event.objects.create(
             organizer=o,
-            name="Dummy",
-            slug="dummy",
+            name='Dummy',
+            slug='dummy',
             date_from=now(),
         )
         self.cache = self.event.get_cache()
         randint = random.random()
-        self.testkey = "test" + str(randint)
+        self.testkey = 'test' + str(randint)
 
     def test_interference(self):
         django_cache.clear()
-        self.cache.set(self.testkey, "foo")
+        self.cache.set(self.testkey, 'foo')
         self.assertIsNone(django_cache.get(self.testkey))
-        self.assertIn(self.cache.get(self.testkey), (None, "foo"))
+        self.assertIn(self.cache.get(self.testkey), (None, 'foo'))
 
     def test_longkey(self):
-        self.cache.set(self.testkey * 100, "foo")
-        self.assertEqual(self.cache.get(self.testkey * 100), "foo")
+        self.cache.set(self.testkey * 100, 'foo')
+        self.assertEqual(self.cache.get(self.testkey * 100), 'foo')
 
     def test_invalidation(self):
-        self.cache.set(self.testkey, "foo")
+        self.cache.set(self.testkey, 'foo')
         self.cache.clear()
         self.assertIsNone(self.cache.get(self.testkey))
 
     def test_many(self):
         inp = {
-            "a": "foo",
-            "b": "bar",
+            'a': 'foo',
+            'b': 'bar',
         }
         self.cache.set_many(inp)
         self.assertEqual(inp, self.cache.get_many(inp.keys()))

@@ -29,15 +29,15 @@ def send_mails(
     message = LazyI18nString(message)
 
     for o in orders:
-        send_to_order = recipients in ("both", "orders")
+        send_to_order = recipients in ('both', 'orders')
 
         try:
             ia = o.invoice_address
         except InvoiceAddress.DoesNotExist:
             ia = InvoiceAddress(order=o)
 
-        if recipients in ("both", "attendees"):
-            for p in o.positions.prefetch_related("addons"):
+        if recipients in ('both', 'attendees'):
+            for p in o.positions.prefetch_related('addons'):
                 if p.addon_to_id is not None:
                     continue
 
@@ -55,7 +55,7 @@ def send_mails(
                         continue
 
                 if not p.attendee_email:
-                    if recipients == "attendees":
+                    if recipients == 'attendees':
                         send_to_order = True
                     continue
 
@@ -79,17 +79,17 @@ def send_mails(
                             attach_cached_files=attachments,
                         )
                         o.log_action(
-                            "pretix.plugins.sendmail.order.email.sent.attendee",
+                            'pretix.plugins.sendmail.order.email.sent.attendee',
                             user=user,
                             data={
-                                "position": p.positionid,
-                                "subject": subject.localize(o.locale).format_map(
+                                'position': p.positionid,
+                                'subject': subject.localize(o.locale).format_map(
                                     email_context
                                 ),
-                                "message": message.localize(o.locale).format_map(
+                                'message': message.localize(o.locale).format_map(
                                     email_context
                                 ),
-                                "recipient": p.attendee_email,
+                                'recipient': p.attendee_email,
                             },
                         )
                 except SendMailException:
@@ -112,16 +112,16 @@ def send_mails(
                         attach_cached_files=attachments,
                     )
                     o.log_action(
-                        "pretix.plugins.sendmail.order.email.sent",
+                        'pretix.plugins.sendmail.order.email.sent',
                         user=user,
                         data={
-                            "subject": subject.localize(o.locale).format_map(
+                            'subject': subject.localize(o.locale).format_map(
                                 email_context
                             ),
-                            "message": message.localize(o.locale).format_map(
+                            'message': message.localize(o.locale).format_map(
                                 email_context
                             ),
-                            "recipient": o.email,
+                            'recipient': o.email,
                         },
                     )
             except SendMailException:

@@ -12,16 +12,16 @@ class KnownDomain(models.Model):
         Organizer,
         blank=True,
         null=True,
-        related_name="domains",
+        related_name='domains',
         on_delete=models.CASCADE,
     )
     event = models.ForeignKey(
-        Event, blank=True, null=True, related_name="domains", on_delete=models.PROTECT
+        Event, blank=True, null=True, related_name='domains', on_delete=models.PROTECT
     )
 
     class Meta:
-        verbose_name = _("Known domain")
-        verbose_name_plural = _("Known domains")
+        verbose_name = _('Known domain')
+        verbose_name_plural = _('Known domains')
 
     def __str__(self):
         return self.domainname
@@ -35,9 +35,9 @@ class KnownDomain(models.Model):
             self.organizer.get_cache().clear()
             for event in self.organizer.events.all():
                 event.get_cache().clear()
-        cache.delete("pretix_multidomain_organizer_{}".format(self.domainname))
-        cache.delete("pretix_multidomain_instance_{}".format(self.domainname))
-        cache.delete("pretix_multidomain_event_{}".format(self.domainname))
+        cache.delete('pretix_multidomain_organizer_{}'.format(self.domainname))
+        cache.delete('pretix_multidomain_instance_{}'.format(self.domainname))
+        cache.delete('pretix_multidomain_event_{}'.format(self.domainname))
 
     @scopes_disabled()
     def delete(self, *args, **kwargs):
@@ -47,7 +47,7 @@ class KnownDomain(models.Model):
             self.organizer.get_cache().clear()
             for event in self.organizer.events.all():
                 event.get_cache().clear()
-        cache.delete("pretix_multidomain_organizer_{}".format(self.domainname))
-        cache.delete("pretix_multidomain_instance_{}".format(self.domainname))
-        cache.delete("pretix_multidomain_event_{}".format(self.domainname))
+        cache.delete('pretix_multidomain_organizer_{}'.format(self.domainname))
+        cache.delete('pretix_multidomain_instance_{}'.format(self.domainname))
+        cache.delete('pretix_multidomain_event_{}'.format(self.domainname))
         super().delete(*args, **kwargs)

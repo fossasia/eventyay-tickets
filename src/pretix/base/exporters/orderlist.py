@@ -50,8 +50,8 @@ from ..signals import (
 
 
 class OrderListExporter(MultiSheetListExporter):
-    identifier = "orderlist"
-    verbose_name = gettext_lazy("Order data")
+    identifier = 'orderlist'
+    verbose_name = gettext_lazy('Order data')
 
     @cached_property
     def providers(self):
@@ -60,81 +60,81 @@ class OrderListExporter(MultiSheetListExporter):
     @property
     def sheets(self):
         return (
-            ("orders", _("Orders")),
-            ("positions", _("Order positions")),
-            ("fees", _("Order fees")),
+            ('orders', _('Orders')),
+            ('positions', _('Order positions')),
+            ('fees', _('Order fees')),
         )
 
     @property
     def additional_form_fields(self):
         d = [
             (
-                "paid_only",
+                'paid_only',
                 forms.BooleanField(
-                    label=_("Only paid orders"), initial=True, required=False
+                    label=_('Only paid orders'), initial=True, required=False
                 ),
             ),
             (
-                "include_payment_amounts",
+                'include_payment_amounts',
                 forms.BooleanField(
-                    label=_("Include payment amounts"), initial=False, required=False
+                    label=_('Include payment amounts'), initial=False, required=False
                 ),
             ),
             (
-                "group_multiple_choice",
+                'group_multiple_choice',
                 forms.BooleanField(
-                    label=_("Show multiple choice answers grouped in one column"),
+                    label=_('Show multiple choice answers grouped in one column'),
                     initial=False,
                     required=False,
                 ),
             ),
             (
-                "date_from",
+                'date_from',
                 forms.DateField(
-                    label=_("Start date"),
-                    widget=forms.DateInput(attrs={"class": "datepickerfield"}),
+                    label=_('Start date'),
+                    widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
                     required=False,
-                    help_text=_("Only include orders created on or after this date."),
+                    help_text=_('Only include orders created on or after this date.'),
                 ),
             ),
             (
-                "date_to",
+                'date_to',
                 forms.DateField(
-                    label=_("End date"),
-                    widget=forms.DateInput(attrs={"class": "datepickerfield"}),
+                    label=_('End date'),
+                    widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
                     required=False,
-                    help_text=_("Only include orders created on or before this date."),
+                    help_text=_('Only include orders created on or before this date.'),
                 ),
             ),
             (
-                "event_date_from",
+                'event_date_from',
                 forms.DateField(
-                    label=_("Start event date"),
-                    widget=forms.DateInput(attrs={"class": "datepickerfield"}),
+                    label=_('Start event date'),
+                    widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
                     required=False,
                     help_text=_(
-                        "Only include orders including at least one ticket for a date on or after this date. "
-                        "Will also include other dates in case of mixed orders!"
+                        'Only include orders including at least one ticket for a date on or after this date. '
+                        'Will also include other dates in case of mixed orders!'
                     ),
                 ),
             ),
             (
-                "event_date_to",
+                'event_date_to',
                 forms.DateField(
-                    label=_("End event date"),
-                    widget=forms.DateInput(attrs={"class": "datepickerfield"}),
+                    label=_('End event date'),
+                    widget=forms.DateInput(attrs={'class': 'datepickerfield'}),
                     required=False,
                     help_text=_(
-                        "Only include orders including at least one ticket for a date on or after this date. "
-                        "Will also include other dates in case of mixed orders!"
+                        'Only include orders including at least one ticket for a date on or after this date. '
+                        'Will also include other dates in case of mixed orders!'
                     ),
                 ),
             ),
         ]
         d = OrderedDict(d)
         if not self.is_multievent and not self.event.has_subevents:
-            del d["event_date_from"]
-            del d["event_date_to"]
+            del d['event_date_from']
+            del d['event_date_to']
         return d
 
     def _get_all_payment_methods(self, qs):
@@ -143,9 +143,9 @@ class OrderListExporter(MultiSheetListExporter):
             [
                 (pp, pps[pp])
                 for pp in set(
-                    OrderPayment.objects.exclude(provider="free")
+                    OrderPayment.objects.exclude(provider='free')
                     .filter(order__event__in=self.events)
-                    .values_list("provider", flat=True)
+                    .values_list('provider', flat=True)
                     .distinct()
                 )
             ],
@@ -156,14 +156,14 @@ class OrderListExporter(MultiSheetListExporter):
         tax_rates = set(
             a
             for a in OrderFee.objects.filter(order__event__in=self.events)
-            .values_list("tax_rate", flat=True)
+            .values_list('tax_rate', flat=True)
             .distinct()
             .order_by()
         )
         tax_rates |= set(
             a
             for a in OrderPosition.objects.filter(order__event__in=self.events)
-            .values_list("tax_rate", flat=True)
+            .values_list('tax_rate', flat=True)
             .distinct()
             .order_by()
         )
@@ -171,11 +171,11 @@ class OrderListExporter(MultiSheetListExporter):
         return tax_rates
 
     def iterate_sheet(self, form_data, sheet):
-        if sheet == "orders":
+        if sheet == 'orders':
             return self.iterate_orders(form_data)
-        elif sheet == "positions":
+        elif sheet == 'positions':
             return self.iterate_positions(form_data)
-        elif sheet == "fees":
+        elif sheet == 'fees':
             return self.iterate_fees(form_data)
 
     @cached_property
@@ -186,49 +186,49 @@ class OrderListExporter(MultiSheetListExporter):
         annotations = {}
         filters = {}
 
-        if form_data.get("date_from"):
-            date_value = form_data.get("date_from")
+        if form_data.get('date_from'):
+            date_value = form_data.get('date_from')
             if isinstance(date_value, str):
                 date_value = dateutil.parser.parse(date_value).date()
 
-            annotations["date"] = TruncDate(f"{rel}datetime")
-            filters["date__gte"] = date_value
+            annotations['date'] = TruncDate(f'{rel}datetime')
+            filters['date__gte'] = date_value
 
-        if form_data.get("date_to"):
-            date_value = form_data.get("date_to")
+        if form_data.get('date_to'):
+            date_value = form_data.get('date_to')
             if isinstance(date_value, str):
                 date_value = dateutil.parser.parse(date_value).date()
 
-            annotations["date"] = TruncDate(f"{rel}datetime")
-            filters["date__lte"] = date_value
+            annotations['date'] = TruncDate(f'{rel}datetime')
+            filters['date__lte'] = date_value
 
-        if form_data.get("event_date_from"):
-            date_value = form_data.get("event_date_from")
+        if form_data.get('event_date_from'):
+            date_value = form_data.get('event_date_from')
             if isinstance(date_value, str):
                 date_value = dateutil.parser.parse(date_value).date()
 
-            annotations["event_date_max"] = Case(
+            annotations['event_date_max'] = Case(
                 When(
-                    **{f"{rel}event__has_subevents": True},
-                    then=Max(f"{rel}all_positions__subevent__date_from"),
+                    **{f'{rel}event__has_subevents': True},
+                    then=Max(f'{rel}all_positions__subevent__date_from'),
                 ),
-                default=F(f"{rel}event__date_from"),
+                default=F(f'{rel}event__date_from'),
             )
-            filters["event_date_max__gte"] = date_value
+            filters['event_date_max__gte'] = date_value
 
-        if form_data.get("event_date_to"):
-            date_value = form_data.get("event_date_to")
+        if form_data.get('event_date_to'):
+            date_value = form_data.get('event_date_to')
             if isinstance(date_value, str):
                 date_value = dateutil.parser.parse(date_value).date()
 
-            annotations["event_date_min"] = Case(
+            annotations['event_date_min'] = Case(
                 When(
-                    **{f"{rel}event__has_subevents": True},
-                    then=Min(f"{rel}all_positions__subevent__date_from"),
+                    **{f'{rel}event__has_subevents': True},
+                    then=Min(f'{rel}all_positions__subevent__date_from'),
                 ),
-                default=F(f"{rel}event__date_from"),
+                default=F(f'{rel}event__date_from'),
             )
-            filters["event_date_min__lte"] = date_value
+            filters['event_date_min__lte'] = date_value
 
         if filters:
             return qs.annotate(**annotations).filter(**filters)
@@ -237,21 +237,21 @@ class OrderListExporter(MultiSheetListExporter):
     def iterate_orders(self, form_data: dict):
         p_date = (
             OrderPayment.objects.filter(
-                order=OuterRef("pk"),
+                order=OuterRef('pk'),
                 state__in=(
                     OrderPayment.PAYMENT_STATE_CONFIRMED,
                     OrderPayment.PAYMENT_STATE_REFUNDED,
                 ),
                 payment_date__isnull=False,
             )
-            .values("order")
-            .annotate(m=Max("payment_date"))
-            .values("m")
+            .values('order')
+            .annotate(m=Max('payment_date'))
+            .values('m')
             .order_by()
         )
         p_providers = (
             OrderPayment.objects.filter(
-                order=OuterRef("pk"),
+                order=OuterRef('pk'),
                 state__in=(
                     OrderPayment.PAYMENT_STATE_CONFIRMED,
                     OrderPayment.PAYMENT_STATE_REFUNDED,
@@ -259,27 +259,27 @@ class OrderListExporter(MultiSheetListExporter):
                     OrderPayment.PAYMENT_STATE_CREATED,
                 ),
             )
-            .values("order")
-            .annotate(m=GroupConcat("provider", delimiter=","))
-            .values("m")
+            .values('order')
+            .annotate(m=GroupConcat('provider', delimiter=','))
+            .values('m')
             .order_by()
         )
         i_numbers = (
             Invoice.objects.filter(
-                order=OuterRef("pk"),
+                order=OuterRef('pk'),
             )
-            .values("order")
-            .annotate(m=GroupConcat("full_invoice_no", delimiter=", "))
-            .values("m")
+            .values('order')
+            .annotate(m=GroupConcat('full_invoice_no', delimiter=', '))
+            .values('m')
             .order_by()
         )
 
         s = (
-            OrderPosition.objects.filter(order=OuterRef("pk"))
+            OrderPosition.objects.filter(order=OuterRef('pk'))
             .order_by()
-            .values("order")
-            .annotate(k=Count("id"))
-            .values("k")
+            .values('order')
+            .annotate(k=Count('id'))
+            .values('k')
         )
         qs = (
             Order.objects.filter(event__in=self.events)
@@ -289,84 +289,84 @@ class OrderListExporter(MultiSheetListExporter):
                 invoice_numbers=Subquery(i_numbers, output_field=CharField()),
                 pcnt=Subquery(s, output_field=IntegerField()),
             )
-            .select_related("invoice_address")
+            .select_related('invoice_address')
         )
 
-        qs = self._date_filter(qs, form_data, rel="")
+        qs = self._date_filter(qs, form_data, rel='')
 
-        if form_data["paid_only"]:
+        if form_data['paid_only']:
             qs = qs.filter(status=Order.STATUS_PAID)
         tax_rates = self._get_all_tax_rates(qs)
 
         headers = [
-            _("Event slug"),
-            _("Order code"),
-            _("Order total"),
-            _("Status"),
-            _("Email"),
-            _("Phone number"),
-            _("Order date"),
-            _("Order time"),
-            _("Company"),
-            _("Name"),
+            _('Event slug'),
+            _('Order code'),
+            _('Order total'),
+            _('Status'),
+            _('Email'),
+            _('Phone number'),
+            _('Order date'),
+            _('Order time'),
+            _('Company'),
+            _('Name'),
         ]
         name_scheme = (
             PERSON_NAME_SCHEMES[self.event.settings.name_scheme]
             if not self.is_multievent
             else None
         )
-        if name_scheme and len(name_scheme["fields"]) > 1:
-            for k, label, w in name_scheme["fields"]:
+        if name_scheme and len(name_scheme['fields']) > 1:
+            for k, label, w in name_scheme['fields']:
                 headers.append(label)
         headers += [
-            _("Address"),
-            _("ZIP code"),
-            _("City"),
-            _("Country"),
-            pgettext("address", "State"),
-            _("Custom address field"),
-            _("VAT ID"),
-            _("Date of last payment"),
-            _("Fees"),
-            _("Order locale"),
+            _('Address'),
+            _('ZIP code'),
+            _('City'),
+            _('Country'),
+            pgettext('address', 'State'),
+            _('Custom address field'),
+            _('VAT ID'),
+            _('Date of last payment'),
+            _('Fees'),
+            _('Order locale'),
         ]
 
         for tr in tax_rates:
             headers += [
-                _("Gross at {rate} % tax").format(rate=tr),
-                _("Net at {rate} % tax").format(rate=tr),
-                _("Tax value at {rate} % tax").format(rate=tr),
+                _('Gross at {rate} % tax').format(rate=tr),
+                _('Net at {rate} % tax').format(rate=tr),
+                _('Tax value at {rate} % tax').format(rate=tr),
             ]
 
-        headers.append(_("Invoice numbers"))
-        headers.append(_("Sales channel"))
-        headers.append(_("Requires special attention"))
-        headers.append(_("Comment"))
-        headers.append(_("Positions"))
-        headers.append(_("Payment providers"))
-        if form_data.get("include_payment_amounts"):
+        headers.append(_('Invoice numbers'))
+        headers.append(_('Sales channel'))
+        headers.append(_('Requires special attention'))
+        headers.append(_('Comment'))
+        headers.append(_('Positions'))
+        headers.append(_('Payment providers'))
+        if form_data.get('include_payment_amounts'):
             payment_methods = self._get_all_payment_methods(qs)
             for id, vn in payment_methods:
-                headers.append(_("Paid by {method}").format(method=vn))
+                headers.append(_('Paid by {method}').format(method=vn))
 
         yield headers
 
         full_fee_sum_cache = {
-            o["order__id"]: o["grosssum"]
-            for o in OrderFee.objects.values("tax_rate", "order__id")
+            o['order__id']: o['grosssum']
+            for o in OrderFee.objects.values('tax_rate', 'order__id')
             .order_by()
-            .annotate(grosssum=Sum("value"))
+            .annotate(grosssum=Sum('value'))
         }
         fee_sum_cache = {
-            (o["order__id"], o["tax_rate"]): o
-            for o in OrderFee.objects.values("tax_rate", "order__id")
+            (o['order__id'], o['tax_rate']): o
+            for o in OrderFee.objects.values('tax_rate', 'order__id')
             .order_by()
-            .annotate(taxsum=Sum("tax_value"), grosssum=Sum("value"))
+            .annotate(taxsum=Sum('tax_value'), grosssum=Sum('value'))
         }
-        if form_data.get("include_payment_amounts"):
+        if form_data.get('include_payment_amounts'):
             payment_sum_cache = {
-                (o["order__id"], o["provider"]): o["grosssum"]
-                for o in OrderPayment.objects.values("provider", "order__id")
+                (o['order__id'], o['provider']): o['grosssum']
+                for o in OrderPayment.objects.values('provider', 'order__id')
                 .order_by()
                 .filter(
                     state__in=[
@@ -374,11 +374,11 @@ class OrderListExporter(MultiSheetListExporter):
                         OrderPayment.PAYMENT_STATE_REFUNDED,
                     ]
                 )
-                .annotate(grosssum=Sum("amount"))
+                .annotate(grosssum=Sum('amount'))
             }
             refund_sum_cache = {
-                (o["order__id"], o["provider"]): o["grosssum"]
-                for o in OrderRefund.objects.values("provider", "order__id")
+                (o['order__id'], o['provider']): o['grosssum']
+                for o in OrderRefund.objects.values('provider', 'order__id')
                 .order_by()
                 .filter(
                     state__in=[
@@ -386,17 +386,17 @@ class OrderListExporter(MultiSheetListExporter):
                         OrderRefund.REFUND_STATE_TRANSIT,
                     ]
                 )
-                .annotate(grosssum=Sum("amount"))
+                .annotate(grosssum=Sum('amount'))
             }
         sum_cache = {
-            (o["order__id"], o["tax_rate"]): o
-            for o in OrderPosition.objects.values("tax_rate", "order__id")
+            (o['order__id'], o['tax_rate']): o
+            for o in OrderPosition.objects.values('tax_rate', 'order__id')
             .order_by()
-            .annotate(taxsum=Sum("tax_value"), grosssum=Sum("price"))
+            .annotate(taxsum=Sum('tax_value'), grosssum=Sum('price'))
         }
 
         yield self.ProgressSetTotal(total=qs.count())
-        for order in qs.order_by("datetime").iterator():
+        for order in qs.order_by('datetime').iterator():
             tz = pytz.timezone(
                 self.event_object_cache[order.event_id].settings.timezone
             )
@@ -407,18 +407,18 @@ class OrderListExporter(MultiSheetListExporter):
                 order.total,
                 order.get_status_display(),
                 order.email,
-                str(order.phone) if order.phone else "",
-                order.datetime.astimezone(tz).strftime("%Y-%m-%d"),
-                order.datetime.astimezone(tz).strftime("%H:%M:%S"),
+                str(order.phone) if order.phone else '',
+                order.datetime.astimezone(tz).strftime('%Y-%m-%d'),
+                order.datetime.astimezone(tz).strftime('%H:%M:%S'),
             ]
             try:
                 row += [
                     order.invoice_address.company,
                     order.invoice_address.name,
                 ]
-                if name_scheme and len(name_scheme["fields"]) > 1:
-                    for k, label, w in name_scheme["fields"]:
-                        row.append(order.invoice_address.name_parts.get(k, ""))
+                if name_scheme and len(name_scheme['fields']) > 1:
+                    for k, label, w in name_scheme['fields']:
+                        row.append(order.invoice_address.name_parts.get(k, ''))
                 row += [
                     order.invoice_address.street,
                     order.invoice_address.zipcode,
@@ -431,72 +431,72 @@ class OrderListExporter(MultiSheetListExporter):
                     order.invoice_address.vat_id,
                 ]
             except InvoiceAddress.DoesNotExist:
-                row += [""] * (
+                row += [''] * (
                     9
                     + (
-                        len(name_scheme["fields"])
-                        if name_scheme and len(name_scheme["fields"]) > 1
+                        len(name_scheme['fields'])
+                        if name_scheme and len(name_scheme['fields']) > 1
                         else 0
                     )
                 )
 
             row += [
-                order.payment_date.astimezone(tz).strftime("%Y-%m-%d")
+                order.payment_date.astimezone(tz).strftime('%Y-%m-%d')
                 if order.payment_date
-                else "",
-                full_fee_sum_cache.get(order.id) or Decimal("0.00"),
+                else '',
+                full_fee_sum_cache.get(order.id) or Decimal('0.00'),
                 order.locale,
             ]
 
             for tr in tax_rates:
                 taxrate_values = sum_cache.get(
                     (order.id, tr),
-                    {"grosssum": Decimal("0.00"), "taxsum": Decimal("0.00")},
+                    {'grosssum': Decimal('0.00'), 'taxsum': Decimal('0.00')},
                 )
                 fee_taxrate_values = fee_sum_cache.get(
                     (order.id, tr),
-                    {"grosssum": Decimal("0.00"), "taxsum": Decimal("0.00")},
+                    {'grosssum': Decimal('0.00'), 'taxsum': Decimal('0.00')},
                 )
 
                 row += [
-                    taxrate_values["grosssum"] + fee_taxrate_values["grosssum"],
+                    taxrate_values['grosssum'] + fee_taxrate_values['grosssum'],
                     (
-                        taxrate_values["grosssum"]
-                        - taxrate_values["taxsum"]
-                        + fee_taxrate_values["grosssum"]
-                        - fee_taxrate_values["taxsum"]
+                        taxrate_values['grosssum']
+                        - taxrate_values['taxsum']
+                        + fee_taxrate_values['grosssum']
+                        - fee_taxrate_values['taxsum']
                     ),
-                    taxrate_values["taxsum"] + fee_taxrate_values["taxsum"],
+                    taxrate_values['taxsum'] + fee_taxrate_values['taxsum'],
                 ]
 
             row.append(order.invoice_numbers)
             row.append(order.sales_channel)
-            row.append(_("Yes") if order.checkin_attention else _("No"))
-            row.append(order.comment or "")
+            row.append(_('Yes') if order.checkin_attention else _('No'))
+            row.append(order.comment or '')
             row.append(order.pcnt)
             row.append(
-                ", ".join(
+                ', '.join(
                     [
                         str(self.providers.get(p, p))
-                        for p in sorted(set((order.payment_providers or "").split(",")))
-                        if p and p != "free"
+                        for p in sorted(set((order.payment_providers or '').split(',')))
+                        if p and p != 'free'
                     ]
                 )
             )
 
-            if form_data.get("include_payment_amounts"):
+            if form_data.get('include_payment_amounts'):
                 payment_methods = self._get_all_payment_methods(qs)
                 for id, vn in payment_methods:
                     row.append(
-                        payment_sum_cache.get((order.id, id), Decimal("0.00"))
-                        - refund_sum_cache.get((order.id, id), Decimal("0.00"))
+                        payment_sum_cache.get((order.id, id), Decimal('0.00'))
+                        - refund_sum_cache.get((order.id, id), Decimal('0.00'))
                     )
             yield row
 
     def iterate_fees(self, form_data: dict):
         p_providers = (
             OrderPayment.objects.filter(
-                order=OuterRef("order"),
+                order=OuterRef('order'),
                 state__in=(
                     OrderPayment.PAYMENT_STATE_CONFIRMED,
                     OrderPayment.PAYMENT_STATE_REFUNDED,
@@ -504,9 +504,9 @@ class OrderListExporter(MultiSheetListExporter):
                     OrderPayment.PAYMENT_STATE_CREATED,
                 ),
             )
-            .values("order")
-            .annotate(m=GroupConcat("provider", delimiter=","))
-            .values("m")
+            .values('order')
+            .annotate(m=GroupConcat('provider', delimiter=','))
+            .values('m')
             .order_by()
         )
         qs = (
@@ -516,52 +516,52 @@ class OrderListExporter(MultiSheetListExporter):
             .annotate(
                 payment_providers=Subquery(p_providers, output_field=CharField()),
             )
-            .select_related("order", "order__invoice_address", "tax_rule")
+            .select_related('order', 'order__invoice_address', 'tax_rule')
         )
-        if form_data["paid_only"]:
+        if form_data['paid_only']:
             qs = qs.filter(order__status=Order.STATUS_PAID)
 
-        qs = self._date_filter(qs, form_data, rel="order__")
+        qs = self._date_filter(qs, form_data, rel='order__')
 
         headers = [
-            _("Event slug"),
-            _("Order code"),
-            _("Status"),
-            _("Email"),
-            _("Phone number"),
-            _("Order date"),
-            _("Order time"),
-            _("Fee type"),
-            _("Description"),
-            _("Price"),
-            _("Tax rate"),
-            _("Tax rule"),
-            _("Tax value"),
-            _("Company"),
-            _("Invoice address name"),
+            _('Event slug'),
+            _('Order code'),
+            _('Status'),
+            _('Email'),
+            _('Phone number'),
+            _('Order date'),
+            _('Order time'),
+            _('Fee type'),
+            _('Description'),
+            _('Price'),
+            _('Tax rate'),
+            _('Tax rule'),
+            _('Tax value'),
+            _('Company'),
+            _('Invoice address name'),
         ]
         name_scheme = (
             PERSON_NAME_SCHEMES[self.event.settings.name_scheme]
             if not self.is_multievent
             else None
         )
-        if name_scheme and len(name_scheme["fields"]) > 1:
-            for k, label, w in name_scheme["fields"]:
-                headers.append(_("Invoice address name") + ": " + str(label))
+        if name_scheme and len(name_scheme['fields']) > 1:
+            for k, label, w in name_scheme['fields']:
+                headers.append(_('Invoice address name') + ': ' + str(label))
         headers += [
-            _("Address"),
-            _("ZIP code"),
-            _("City"),
-            _("Country"),
-            pgettext("address", "State"),
-            _("VAT ID"),
+            _('Address'),
+            _('ZIP code'),
+            _('City'),
+            _('Country'),
+            pgettext('address', 'State'),
+            _('VAT ID'),
         ]
 
-        headers.append(_("Payment providers"))
+        headers.append(_('Payment providers'))
         yield headers
 
         yield self.ProgressSetTotal(total=qs.count())
-        for op in qs.order_by("order__datetime").iterator():
+        for op in qs.order_by('order__datetime').iterator():
             order = op.order
             tz = pytz.timezone(order.event.settings.timezone)
             row = [
@@ -569,14 +569,14 @@ class OrderListExporter(MultiSheetListExporter):
                 order.code,
                 order.get_status_display(),
                 order.email,
-                str(order.phone) if order.phone else "",
-                order.datetime.astimezone(tz).strftime("%Y-%m-%d"),
-                order.datetime.astimezone(tz).strftime("%H:%M:%S"),
+                str(order.phone) if order.phone else '',
+                order.datetime.astimezone(tz).strftime('%Y-%m-%d'),
+                order.datetime.astimezone(tz).strftime('%H:%M:%S'),
                 op.get_fee_type_display(),
                 op.description,
                 op.value,
                 op.tax_rate,
-                str(op.tax_rule) if op.tax_rule else "",
+                str(op.tax_rule) if op.tax_rule else '',
                 op.tax_value,
             ]
             try:
@@ -584,9 +584,9 @@ class OrderListExporter(MultiSheetListExporter):
                     order.invoice_address.company,
                     order.invoice_address.name,
                 ]
-                if name_scheme and len(name_scheme["fields"]) > 1:
-                    for k, label, w in name_scheme["fields"]:
-                        row.append(order.invoice_address.name_parts.get(k, ""))
+                if name_scheme and len(name_scheme['fields']) > 1:
+                    for k, label, w in name_scheme['fields']:
+                        row.append(order.invoice_address.name_parts.get(k, ''))
                 row += [
                     order.invoice_address.street,
                     order.invoice_address.zipcode,
@@ -598,20 +598,20 @@ class OrderListExporter(MultiSheetListExporter):
                     order.invoice_address.vat_id,
                 ]
             except InvoiceAddress.DoesNotExist:
-                row += [""] * (
+                row += [''] * (
                     8
                     + (
-                        len(name_scheme["fields"])
-                        if name_scheme and len(name_scheme["fields"]) > 1
+                        len(name_scheme['fields'])
+                        if name_scheme and len(name_scheme['fields']) > 1
                         else 0
                     )
                 )
             row.append(
-                ", ".join(
+                ', '.join(
                     [
                         str(self.providers.get(p, p))
-                        for p in sorted(set((op.payment_providers or "").split(",")))
-                        if p and p != "free"
+                        for p in sorted(set((op.payment_providers or '').split(',')))
+                        if p and p != 'free'
                     ]
                 )
             )
@@ -620,7 +620,7 @@ class OrderListExporter(MultiSheetListExporter):
     def iterate_positions(self, form_data: dict):
         p_providers = (
             OrderPayment.objects.filter(
-                order=OuterRef("order"),
+                order=OuterRef('order'),
                 state__in=(
                     OrderPayment.PAYMENT_STATE_CONFIRMED,
                     OrderPayment.PAYMENT_STATE_REFUNDED,
@@ -628,9 +628,9 @@ class OrderListExporter(MultiSheetListExporter):
                     OrderPayment.PAYMENT_STATE_CREATED,
                 ),
             )
-            .values("order")
-            .annotate(m=GroupConcat("provider", delimiter=","))
-            .values("m")
+            .values('order')
+            .annotate(m=GroupConcat('provider', delimiter=','))
+            .values('m')
             .order_by()
         )
         base_qs = OrderPosition.objects.filter(
@@ -641,69 +641,69 @@ class OrderListExporter(MultiSheetListExporter):
                 payment_providers=Subquery(p_providers, output_field=CharField()),
             )
             .select_related(
-                "order",
-                "order__invoice_address",
-                "item",
-                "variation",
-                "voucher",
-                "tax_rule",
+                'order',
+                'order__invoice_address',
+                'item',
+                'variation',
+                'voucher',
+                'tax_rule',
             )
-            .prefetch_related("answers", "answers__question", "answers__options")
+            .prefetch_related('answers', 'answers__question', 'answers__options')
         )
-        if form_data["paid_only"]:
+        if form_data['paid_only']:
             qs = qs.filter(order__status=Order.STATUS_PAID)
 
-        qs = self._date_filter(qs, form_data, rel="order__")
+        qs = self._date_filter(qs, form_data, rel='order__')
 
         has_subevents = self.events.filter(has_subevents=True).exists()
 
         headers = [
-            _("Event slug"),
-            _("Order code"),
-            _("Position ID"),
-            _("Status"),
-            _("Email"),
-            _("Phone number"),
-            _("Order date"),
-            _("Order time"),
+            _('Event slug'),
+            _('Order code'),
+            _('Position ID'),
+            _('Status'),
+            _('Email'),
+            _('Phone number'),
+            _('Order date'),
+            _('Order time'),
         ]
         if has_subevents:
-            headers.append(pgettext("subevent", "Date"))
-            headers.append(_("Start date"))
-            headers.append(_("End date"))
+            headers.append(pgettext('subevent', 'Date'))
+            headers.append(_('Start date'))
+            headers.append(_('End date'))
         headers += [
-            _("Product"),
-            _("Variation"),
-            _("Price"),
-            _("Tax rate"),
-            _("Tax rule"),
-            _("Tax value"),
-            _("Attendee name"),
+            _('Product'),
+            _('Variation'),
+            _('Price'),
+            _('Tax rate'),
+            _('Tax rule'),
+            _('Tax value'),
+            _('Attendee name'),
         ]
         name_scheme = (
             PERSON_NAME_SCHEMES[self.event.settings.name_scheme]
             if not self.is_multievent
             else None
         )
-        if name_scheme and len(name_scheme["fields"]) > 1:
-            for k, label, w in name_scheme["fields"]:
-                headers.append(_("Attendee name") + ": " + str(label))
+        if name_scheme and len(name_scheme['fields']) > 1:
+            for k, label, w in name_scheme['fields']:
+                headers.append(_('Attendee name') + ': ' + str(label))
         headers += [
-            _("Attendee email"),
-            _("Company"),
-            _("Address"),
-            _("ZIP code"),
-            _("City"),
-            _("Country"),
-            pgettext("address", "State"),
-            _("Voucher"),
-            _("Pseudonymization ID"),
-            _("Seat ID"),
-            _("Seat name"),
-            _("Seat zone"),
-            _("Seat row"),
-            _("Seat number"),
-            _("Order comment"),
+            _('Attendee email'),
+            _('Company'),
+            _('Address'),
+            _('ZIP code'),
+            _('City'),
+            _('Country'),
+            pgettext('address', 'State'),
+            _('Voucher'),
+            _('Pseudonymization ID'),
+            _('Seat ID'),
+            _('Seat name'),
+            _('Seat zone'),
+            _('Seat row'),
+            _('Seat number'),
+            _('Order comment'),
         ]
 
         questions = list(Question.objects.filter(event__in=self.events))
@@ -711,42 +711,42 @@ class OrderListExporter(MultiSheetListExporter):
         for q in questions:
             if q.type == Question.TYPE_CHOICE_MULTIPLE:
                 options[q.pk] = []
-                if form_data["group_multiple_choice"]:
+                if form_data['group_multiple_choice']:
                     for o in q.options.all():
                         options[q.pk].append(o)
                     headers.append(str(q.question))
                 else:
                     for o in q.options.all():
-                        headers.append(str(q.question) + " – " + str(o.answer))
+                        headers.append(str(q.question) + ' – ' + str(o.answer))
                         options[q.pk].append(o)
             else:
                 headers.append(str(q.question))
         headers += [
-            _("Company"),
-            _("Invoice address name"),
+            _('Company'),
+            _('Invoice address name'),
         ]
-        if name_scheme and len(name_scheme["fields"]) > 1:
-            for k, label, w in name_scheme["fields"]:
-                headers.append(_("Invoice address name") + ": " + str(label))
+        if name_scheme and len(name_scheme['fields']) > 1:
+            for k, label, w in name_scheme['fields']:
+                headers.append(_('Invoice address name') + ': ' + str(label))
         headers += [
-            _("Address"),
-            _("ZIP code"),
-            _("City"),
-            _("Country"),
-            pgettext("address", "State"),
-            _("VAT ID"),
+            _('Address'),
+            _('ZIP code'),
+            _('City'),
+            _('Country'),
+            pgettext('address', 'State'),
+            _('VAT ID'),
         ]
         headers += [
-            _("Sales channel"),
-            _("Order locale"),
-            _("Payment providers"),
+            _('Sales channel'),
+            _('Order locale'),
+            _('Payment providers'),
         ]
 
         yield headers
 
         all_ids = list(
-            base_qs.order_by("order__datetime", "positionid").values_list(
-                "pk", flat=True
+            base_qs.order_by('order__datetime', 'positionid').values_list(
+                'pk', flat=True
             )
         )
         yield self.ProgressSetTotal(total=len(all_ids))
@@ -764,9 +764,9 @@ class OrderListExporter(MultiSheetListExporter):
                     op.positionid,
                     order.get_status_display(),
                     order.email,
-                    str(order.phone) if order.phone else "",
-                    order.datetime.astimezone(tz).strftime("%Y-%m-%d"),
-                    order.datetime.astimezone(tz).strftime("%H:%M:%S"),
+                    str(order.phone) if order.phone else '',
+                    order.datetime.astimezone(tz).strftime('%Y-%m-%d'),
+                    order.datetime.astimezone(tz).strftime('%H:%M:%S'),
                 ]
                 if has_subevents:
                     if op.subevent:
@@ -774,41 +774,41 @@ class OrderListExporter(MultiSheetListExporter):
                         row.append(
                             op.subevent.date_from.astimezone(
                                 self.event_object_cache[order.event_id].timezone
-                            ).strftime("%Y-%m-%d %H:%M:%S")
+                            ).strftime('%Y-%m-%d %H:%M:%S')
                         )
                         if op.subevent.date_to:
                             row.append(
                                 op.subevent.date_to.astimezone(
                                     self.event_object_cache[order.event_id].timezone
-                                ).strftime("%Y-%m-%d %H:%M:%S")
+                                ).strftime('%Y-%m-%d %H:%M:%S')
                             )
                         else:
-                            row.append("")
+                            row.append('')
                     else:
-                        row.append("")
-                        row.append("")
-                        row.append("")
+                        row.append('')
+                        row.append('')
+                        row.append('')
                 row += [
                     str(op.item),
-                    str(op.variation) if op.variation else "",
+                    str(op.variation) if op.variation else '',
                     op.price,
                     op.tax_rate,
-                    str(op.tax_rule) if op.tax_rule else "",
+                    str(op.tax_rule) if op.tax_rule else '',
                     op.tax_value,
                     op.attendee_name,
                 ]
-                if name_scheme and len(name_scheme["fields"]) > 1:
-                    for k, label, w in name_scheme["fields"]:
-                        row.append(op.attendee_name_parts.get(k, ""))
+                if name_scheme and len(name_scheme['fields']) > 1:
+                    for k, label, w in name_scheme['fields']:
+                        row.append(op.attendee_name_parts.get(k, ''))
                 row += [
                     op.attendee_email,
-                    op.company or "",
-                    op.street or "",
-                    op.zipcode or "",
-                    op.city or "",
-                    op.country if op.country else "",
-                    op.state or "",
-                    op.voucher.code if op.voucher else "",
+                    op.company or '',
+                    op.street or '',
+                    op.zipcode or '',
+                    op.city or '',
+                    op.country if op.country else '',
+                    op.state or '',
+                    op.voucher.code if op.voucher else '',
                     op.pseudonymization_id,
                 ]
 
@@ -821,7 +821,7 @@ class OrderListExporter(MultiSheetListExporter):
                         op.seat.seat_number,
                     ]
                 else:
-                    row += ["", "", "", "", ""]
+                    row += ['', '', '', '', '']
 
                 row.append(order.comment)
                 acache = {}
@@ -836,9 +836,9 @@ class OrderListExporter(MultiSheetListExporter):
                         acache[a.question_id] = str(a)
                 for q in questions:
                     if q.type == Question.TYPE_CHOICE_MULTIPLE:
-                        if form_data["group_multiple_choice"]:
+                        if form_data['group_multiple_choice']:
                             row.append(
-                                ", ".join(
+                                ', '.join(
                                     str(o.answer)
                                     for o in options[q.pk]
                                     if o.pk in acache.get(q.pk, set())
@@ -847,21 +847,21 @@ class OrderListExporter(MultiSheetListExporter):
                         else:
                             for o in options[q.pk]:
                                 row.append(
-                                    _("Yes")
+                                    _('Yes')
                                     if o.pk in acache.get(q.pk, set())
-                                    else _("No")
+                                    else _('No')
                                 )
                     else:
-                        row.append(acache.get(q.pk, ""))
+                        row.append(acache.get(q.pk, ''))
 
                 try:
                     row += [
                         order.invoice_address.company,
                         order.invoice_address.name,
                     ]
-                    if name_scheme and len(name_scheme["fields"]) > 1:
-                        for k, label, w in name_scheme["fields"]:
-                            row.append(order.invoice_address.name_parts.get(k, ""))
+                    if name_scheme and len(name_scheme['fields']) > 1:
+                        for k, label, w in name_scheme['fields']:
+                            row.append(order.invoice_address.name_parts.get(k, ''))
                     row += [
                         order.invoice_address.street,
                         order.invoice_address.zipcode,
@@ -873,11 +873,11 @@ class OrderListExporter(MultiSheetListExporter):
                         order.invoice_address.vat_id,
                     ]
                 except InvoiceAddress.DoesNotExist:
-                    row += [""] * (
+                    row += [''] * (
                         8
                         + (
-                            len(name_scheme["fields"])
-                            if name_scheme and len(name_scheme["fields"]) > 1
+                            len(name_scheme['fields'])
+                            if name_scheme and len(name_scheme['fields']) > 1
                             else 0
                         )
                     )
@@ -886,13 +886,13 @@ class OrderListExporter(MultiSheetListExporter):
                     order.locale,
                 ]
                 row.append(
-                    ", ".join(
+                    ', '.join(
                         [
                             str(self.providers.get(p, p))
                             for p in sorted(
-                                set((op.payment_providers or "").split(","))
+                                set((op.payment_providers or '').split(','))
                             )
-                            if p and p != "free"
+                            if p and p != 'free'
                         ]
                     )
                 )
@@ -900,23 +900,23 @@ class OrderListExporter(MultiSheetListExporter):
 
     def get_filename(self):
         if self.is_multievent:
-            return "{}_orders".format(self.events.first().organizer.slug)
+            return '{}_orders'.format(self.events.first().organizer.slug)
         else:
-            return "{}_orders".format(self.event.slug)
+            return '{}_orders'.format(self.event.slug)
 
 
 class PaymentListExporter(ListExporter):
-    identifier = "paymentlist"
-    verbose_name = gettext_lazy("Order payments and refunds")
+    identifier = 'paymentlist'
+    verbose_name = gettext_lazy('Order payments and refunds')
 
     @property
     def additional_form_fields(self):
         return OrderedDict(
             [
                 (
-                    "payment_states",
+                    'payment_states',
                     forms.MultipleChoiceField(
-                        label=_("Payment states"),
+                        label=_('Payment states'),
                         choices=OrderPayment.PAYMENT_STATES,
                         initial=[
                             OrderPayment.PAYMENT_STATE_CONFIRMED,
@@ -927,9 +927,9 @@ class PaymentListExporter(ListExporter):
                     ),
                 ),
                 (
-                    "refund_states",
+                    'refund_states',
                     forms.MultipleChoiceField(
-                        label=_("Refund states"),
+                        label=_('Refund states'),
                         choices=OrderRefund.REFUND_STATES,
                         initial=[
                             OrderRefund.REFUND_STATE_DONE,
@@ -947,25 +947,25 @@ class PaymentListExporter(ListExporter):
         provider_names = dict(get_all_payment_providers())
 
         payments = OrderPayment.objects.filter(
-            order__event__in=self.events, state__in=form_data.get("payment_states", [])
-        ).order_by("created")
+            order__event__in=self.events, state__in=form_data.get('payment_states', [])
+        ).order_by('created')
         refunds = OrderRefund.objects.filter(
-            order__event__in=self.events, state__in=form_data.get("refund_states", [])
-        ).order_by("created")
+            order__event__in=self.events, state__in=form_data.get('refund_states', [])
+        ).order_by('created')
 
         objs = sorted(list(payments) + list(refunds), key=lambda o: o.created)
 
         headers = [
-            _("Event slug"),
-            _("Order"),
-            _("Payment ID"),
-            _("Creation date"),
-            _("Completion date"),
-            _("Status"),
-            _("Status code"),
-            _("Amount"),
-            _("Payment method"),
-            _("Comment"),
+            _('Event slug'),
+            _('Order'),
+            _('Payment ID'),
+            _('Creation date'),
+            _('Completion date'),
+            _('Status'),
+            _('Status code'),
+            _('Amount'),
+            _('Payment method'),
+            _('Comment'),
         ]
         yield headers
 
@@ -973,56 +973,56 @@ class PaymentListExporter(ListExporter):
         for obj in objs:
             tz = pytz.timezone(obj.order.event.settings.timezone)
             if isinstance(obj, OrderPayment) and obj.payment_date:
-                d2 = obj.payment_date.astimezone(tz).date().strftime("%Y-%m-%d")
+                d2 = obj.payment_date.astimezone(tz).date().strftime('%Y-%m-%d')
             elif isinstance(obj, OrderRefund) and obj.execution_date:
-                d2 = obj.execution_date.astimezone(tz).date().strftime("%Y-%m-%d")
+                d2 = obj.execution_date.astimezone(tz).date().strftime('%Y-%m-%d')
             else:
-                d2 = ""
+                d2 = ''
             row = [
                 obj.order.event.slug,
                 obj.order.code,
                 obj.full_id,
-                obj.created.astimezone(tz).date().strftime("%Y-%m-%d"),
+                obj.created.astimezone(tz).date().strftime('%Y-%m-%d'),
                 d2,
                 obj.get_state_display(),
                 obj.state,
                 obj.amount * (-1 if isinstance(obj, OrderRefund) else 1),
                 provider_names.get(obj.provider, obj.provider),
-                obj.comment if isinstance(obj, OrderRefund) else "",
+                obj.comment if isinstance(obj, OrderRefund) else '',
             ]
             yield row
 
     def get_filename(self):
         if self.is_multievent:
-            return "{}_payments".format(self.events.first().organizer.slug)
+            return '{}_payments'.format(self.events.first().organizer.slug)
         else:
-            return "{}_payments".format(self.event.slug)
+            return '{}_payments'.format(self.event.slug)
 
 
 class QuotaListExporter(ListExporter):
-    identifier = "quotalist"
-    verbose_name = gettext_lazy("Quota availabilities")
+    identifier = 'quotalist'
+    verbose_name = gettext_lazy('Quota availabilities')
 
     def iterate_list(self, form_data):
         has_subevents = self.event.has_subevents
         headers = [
-            _("Quota name"),
-            _("Total quota"),
-            _("Paid orders"),
-            _("Pending orders"),
-            _("Blocking vouchers"),
+            _('Quota name'),
+            _('Total quota'),
+            _('Paid orders'),
+            _('Pending orders'),
+            _('Blocking vouchers'),
             _("Current user's carts"),
-            _("Waiting list"),
-            _("Exited orders"),
-            _("Current availability"),
+            _('Waiting list'),
+            _('Exited orders'),
+            _('Current availability'),
         ]
         if has_subevents:
-            headers.append(pgettext("subevent", "Date"))
-            headers.append(_("Start date"))
-            headers.append(_("End date"))
+            headers.append(pgettext('subevent', 'Date'))
+            headers.append(_('Start date'))
+            headers.append(_('End date'))
         yield headers
 
-        quotas = list(self.event.quotas.select_related("subevent"))
+        quotas = list(self.event.quotas.select_related('subevent'))
         qa = QuotaAvailability(full_results=True)
         qa.queue(*quotas)
         qa.compute()
@@ -1031,14 +1031,14 @@ class QuotaListExporter(ListExporter):
             avail = qa.results[quota]
             row = [
                 quota.name,
-                _("Infinite") if quota.size is None else quota.size,
+                _('Infinite') if quota.size is None else quota.size,
                 qa.count_paid_orders[quota],
                 qa.count_pending_orders[quota],
                 qa.count_vouchers[quota],
                 qa.count_cart[quota],
                 qa.count_waitinglist[quota],
                 qa.count_exited_orders[quota],
-                _("Infinite") if avail[1] is None else avail[1],
+                _('Infinite') if avail[1] is None else avail[1],
             ]
             if has_subevents:
                 if quota.subevent:
@@ -1046,68 +1046,68 @@ class QuotaListExporter(ListExporter):
                     row.append(
                         quota.subevent.date_from.astimezone(
                             self.event.timezone
-                        ).strftime("%Y-%m-%d %H:%M:%S")
+                        ).strftime('%Y-%m-%d %H:%M:%S')
                     )
                     if quota.subevent.date_to:
                         row.append(
                             quota.subevent.date_to.astimezone(
                                 self.event.timezone
-                            ).strftime("%Y-%m-%d %H:%M:%S")
+                            ).strftime('%Y-%m-%d %H:%M:%S')
                         )
                     else:
-                        row.append("")
+                        row.append('')
                 else:
-                    row.append("")
-                    row.append("")
-                    row.append("")
+                    row.append('')
+                    row.append('')
+                    row.append('')
             yield row
 
     def get_filename(self):
-        return "{}_quotas".format(self.event.slug)
+        return '{}_quotas'.format(self.event.slug)
 
 
 class GiftcardRedemptionListExporter(ListExporter):
-    identifier = "giftcardredemptionlist"
-    verbose_name = gettext_lazy("Gift card redemptions")
+    identifier = 'giftcardredemptionlist'
+    verbose_name = gettext_lazy('Gift card redemptions')
 
     def iterate_list(self, form_data):
         payments = OrderPayment.objects.filter(
             order__event__in=self.events,
-            provider="giftcard",
+            provider='giftcard',
             state__in=(
                 OrderPayment.PAYMENT_STATE_CONFIRMED,
                 OrderPayment.PAYMENT_STATE_REFUNDED,
             ),
-        ).order_by("created")
+        ).order_by('created')
         refunds = OrderRefund.objects.filter(
             order__event__in=self.events,
-            provider="giftcard",
+            provider='giftcard',
             state=OrderRefund.REFUND_STATE_DONE,
-        ).order_by("created")
+        ).order_by('created')
 
         objs = sorted(
             list(payments) + list(refunds), key=lambda o: (o.order.code, o.created)
         )
 
         headers = [
-            _("Event slug"),
-            _("Order"),
-            _("Payment ID"),
-            _("Date"),
-            _("Gift card code"),
-            _("Amount"),
-            _("Issuer"),
+            _('Event slug'),
+            _('Order'),
+            _('Payment ID'),
+            _('Date'),
+            _('Gift card code'),
+            _('Amount'),
+            _('Issuer'),
         ]
         yield headers
 
         for obj in objs:
             tz = pytz.timezone(obj.order.event.settings.timezone)
-            gc = GiftCard.objects.get(pk=obj.info_data.get("gift_card"))
+            gc = GiftCard.objects.get(pk=obj.info_data.get('gift_card'))
             row = [
                 obj.order.event.slug,
                 obj.order.code,
                 obj.full_id,
-                obj.created.astimezone(tz).date().strftime("%Y-%m-%d"),
+                obj.created.astimezone(tz).date().strftime('%Y-%m-%d'),
                 gc.secret,
                 obj.amount * (-1 if isinstance(obj, OrderRefund) else 1),
                 gc.issuer,
@@ -1116,52 +1116,52 @@ class GiftcardRedemptionListExporter(ListExporter):
 
     def get_filename(self):
         if self.is_multievent:
-            return "{}_giftcardredemptions".format(self.events.first().organizer.slug)
+            return '{}_giftcardredemptions'.format(self.events.first().organizer.slug)
         else:
-            return "{}_giftcardredemptions".format(self.event.slug)
+            return '{}_giftcardredemptions'.format(self.event.slug)
 
 
 def generate_GiftCardListExporter(organizer):  # hackhack
     class GiftcardListExporter(ListExporter):
-        identifier = "giftcardlist"
-        verbose_name = gettext_lazy("Gift cards")
+        identifier = 'giftcardlist'
+        verbose_name = gettext_lazy('Gift cards')
 
         @property
         def additional_form_fields(self):
             return OrderedDict(
                 [
                     (
-                        "date",
+                        'date',
                         forms.DateTimeField(
-                            label=_("Show value at"),
+                            label=_('Show value at'),
                             initial=now(),
                         ),
                     ),
                     (
-                        "testmode",
+                        'testmode',
                         forms.ChoiceField(
-                            label=_("Test mode"),
+                            label=_('Test mode'),
                             choices=(
-                                ("", _("All")),
-                                ("yes", _("Test mode")),
-                                ("no", _("Live")),
+                                ('', _('All')),
+                                ('yes', _('Test mode')),
+                                ('no', _('Live')),
                             ),
-                            initial="no",
+                            initial='no',
                             required=False,
                         ),
                     ),
                     (
-                        "state",
+                        'state',
                         forms.ChoiceField(
-                            label=_("Status"),
+                            label=_('Status'),
                             choices=(
-                                ("", _("All")),
-                                ("empty", _("Empty")),
-                                ("valid_value", _("Valid and with value")),
-                                ("expired_value", _("Expired and with value")),
-                                ("expired", _("Expired")),
+                                ('', _('All')),
+                                ('empty', _('Empty')),
+                                ('valid_value', _('Valid and with value')),
+                                ('expired_value', _('Expired and with value')),
+                                ('expired', _('Expired')),
                             ),
-                            initial="valid_value",
+                            initial='valid_value',
                             required=False,
                         ),
                     ),
@@ -1171,54 +1171,54 @@ def generate_GiftCardListExporter(organizer):  # hackhack
         def iterate_list(self, form_data):
             s = (
                 GiftCardTransaction.objects.filter(
-                    card=OuterRef("pk"), datetime__lte=form_data["date"]
+                    card=OuterRef('pk'), datetime__lte=form_data['date']
                 )
                 .order_by()
-                .values("card")
-                .annotate(s=Sum("value"))
-                .values("s")
+                .values('card')
+                .annotate(s=Sum('value'))
+                .values('s')
             )
             qs = (
-                organizer.issued_gift_cards.filter(issuance__lte=form_data["date"])
+                organizer.issued_gift_cards.filter(issuance__lte=form_data['date'])
                 .annotate(
-                    cached_value=Coalesce(Subquery(s), Decimal("0.00")),
+                    cached_value=Coalesce(Subquery(s), Decimal('0.00')),
                 )
-                .order_by("issuance")
+                .order_by('issuance')
                 .prefetch_related(
-                    "transactions",
-                    "transactions__order",
-                    "transactions__order__event",
-                    "transactions__order__invoices",
+                    'transactions',
+                    'transactions__order',
+                    'transactions__order__event',
+                    'transactions__order__invoices',
                 )
             )
 
-            if form_data.get("testmode") == "yes":
+            if form_data.get('testmode') == 'yes':
                 qs = qs.filter(testmode=True)
-            elif form_data.get("testmode") == "no":
+            elif form_data.get('testmode') == 'no':
                 qs = qs.filter(testmode=False)
 
-            if form_data.get("state") == "empty":
+            if form_data.get('state') == 'empty':
                 qs = qs.filter(cached_value=0)
-            elif form_data.get("state") == "valid_value":
+            elif form_data.get('state') == 'valid_value':
                 qs = qs.exclude(cached_value=0).filter(
-                    Q(expires__isnull=True) | Q(expires__gte=form_data["date"])
+                    Q(expires__isnull=True) | Q(expires__gte=form_data['date'])
                 )
-            elif form_data.get("state") == "expired_value":
-                qs = qs.exclude(cached_value=0).filter(expires__lt=form_data["date"])
-            elif form_data.get("state") == "expired":
-                qs = qs.filter(expires__lt=form_data["date"])
+            elif form_data.get('state') == 'expired_value':
+                qs = qs.exclude(cached_value=0).filter(expires__lt=form_data['date'])
+            elif form_data.get('state') == 'expired':
+                qs = qs.filter(expires__lt=form_data['date'])
 
             headers = [
-                _("Gift card code"),
-                _("Test mode card"),
-                _("Creation date"),
-                _("Expiry date"),
-                _("Special terms and conditions"),
-                _("Currency"),
-                _("Current value"),
-                _("Created in order"),
-                _("Last invoice number of order"),
-                _("Last invoice date of order"),
+                _('Gift card code'),
+                _('Test mode card'),
+                _('Creation date'),
+                _('Expiry date'),
+                _('Special terms and conditions'),
+                _('Currency'),
+                _('Current value'),
+                _('Created in order'),
+                _('Last invoice number of order'),
+                _('Last invoice date of order'),
             ]
             yield headers
 
@@ -1235,64 +1235,64 @@ def generate_GiftCardListExporter(organizer):  # hackhack
                         i = invs[-1]
                 row = [
                     obj.secret,
-                    _("Yes") if obj.testmode else _("No"),
-                    obj.issuance.astimezone(tz).date().strftime("%Y-%m-%d"),
-                    obj.expires.astimezone(tz).date().strftime("%Y-%m-%d")
+                    _('Yes') if obj.testmode else _('No'),
+                    obj.issuance.astimezone(tz).date().strftime('%Y-%m-%d'),
+                    obj.expires.astimezone(tz).date().strftime('%Y-%m-%d')
                     if obj.expires
-                    else "",
-                    obj.conditions or "",
+                    else '',
+                    obj.conditions or '',
                     obj.currency,
                     obj.cached_value,
-                    o.full_code if o else "",
-                    i.number if i else "",
-                    i.date.strftime("%Y-%m-%d") if i else "",
+                    o.full_code if o else '',
+                    i.number if i else '',
+                    i.date.strftime('%Y-%m-%d') if i else '',
                 ]
                 yield row
 
         def get_filename(self):
-            return "{}_giftcards".format(organizer.slug)
+            return '{}_giftcards'.format(organizer.slug)
 
     return GiftcardListExporter
 
 
-@receiver(register_data_exporters, dispatch_uid="exporter_orderlist")
+@receiver(register_data_exporters, dispatch_uid='exporter_orderlist')
 def register_orderlist_exporter(sender, **kwargs):
     return OrderListExporter
 
 
-@receiver(register_multievent_data_exporters, dispatch_uid="multiexporter_orderlist")
+@receiver(register_multievent_data_exporters, dispatch_uid='multiexporter_orderlist')
 def register_multievent_orderlist_exporter(sender, **kwargs):
     return OrderListExporter
 
 
-@receiver(register_data_exporters, dispatch_uid="exporter_paymentlist")
+@receiver(register_data_exporters, dispatch_uid='exporter_paymentlist')
 def register_paymentlist_exporter(sender, **kwargs):
     return PaymentListExporter
 
 
-@receiver(register_multievent_data_exporters, dispatch_uid="multiexporter_paymentlist")
+@receiver(register_multievent_data_exporters, dispatch_uid='multiexporter_paymentlist')
 def register_multievent_paymentlist_exporter(sender, **kwargs):
     return PaymentListExporter
 
 
-@receiver(register_data_exporters, dispatch_uid="exporter_quotalist")
+@receiver(register_data_exporters, dispatch_uid='exporter_quotalist')
 def register_quotalist_exporter(sender, **kwargs):
     return QuotaListExporter
 
 
-@receiver(register_data_exporters, dispatch_uid="exporter_giftcardredemptionlist")
+@receiver(register_data_exporters, dispatch_uid='exporter_giftcardredemptionlist')
 def register_giftcardredemptionlist_exporter(sender, **kwargs):
     return GiftcardRedemptionListExporter
 
 
 @receiver(
     register_multievent_data_exporters,
-    dispatch_uid="multiexporter_giftcardredemptionlist",
+    dispatch_uid='multiexporter_giftcardredemptionlist',
 )
 def register_multievent_i_giftcardredemptionlist_exporter(sender, **kwargs):
     return GiftcardRedemptionListExporter
 
 
-@receiver(register_multievent_data_exporters, dispatch_uid="multiexporter_giftcardlist")
+@receiver(register_multievent_data_exporters, dispatch_uid='multiexporter_giftcardlist')
 def register_multievent_i_giftcardlist_exporter(sender, **kwargs):
     return generate_GiftCardListExporter(sender)

@@ -28,16 +28,15 @@ import sys
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 from datetime import date
 
-sys.path.insert(0, os.path.abspath("../src"))
+sys.path.insert(0, os.path.abspath('../src'))
 
 import django
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pretix.testutils.settings")
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pretix.testutils.settings')
 django.setup()
 
 
 try:
-
     HAS_PYENCHANT = True
 except:
     HAS_PYENCHANT = False
@@ -51,31 +50,31 @@ except:
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.doctest",
-    "sphinx.ext.coverage",
-    "sphinxcontrib.httpdomain",
-    "sphinxcontrib.images",
-    "sphinxemoji.sphinxemoji",
+    'sphinx.ext.autodoc',
+    'sphinx.ext.doctest',
+    'sphinx.ext.coverage',
+    'sphinxcontrib.httpdomain',
+    'sphinxcontrib.images',
+    'sphinxemoji.sphinxemoji',
 ]
 if HAS_PYENCHANT:
-    extensions.append("sphinxcontrib.spelling")
+    extensions.append('sphinxcontrib.spelling')
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ["_templates"]
+templates_path = ['_templates']
 
 # The suffix of source filenames.
-source_suffix = ".rst"
+source_suffix = '.rst'
 
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-master_doc = "index"
+master_doc = 'index'
 
 # General information about the project.
-project = "pretix"
-copyright = "2014-{}, Raphael Michel".format(date.today().year)
+project = 'pretix'
+copyright = '2014-{}, Raphael Michel'.format(date.today().year)
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -84,7 +83,7 @@ copyright = "2014-{}, Raphael Michel".format(date.today().year)
 # The short X.Y version.
 from pretix import __version__
 
-version = ".".join(__version__.split(".")[:2])
+version = '.'.join(__version__.split('.')[:2])
 # The full version, including alpha/beta/rc tags.
 release = __version__
 
@@ -100,7 +99,7 @@ release = __version__
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ["_build"]
+exclude_patterns = ['_build']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -118,7 +117,7 @@ exclude_patterns = ["_build"]
 # show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = "sphinx"
+pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
@@ -137,7 +136,7 @@ pygments_style = "sphinx"
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    "logo_only": True,
+    'logo_only': True,
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
@@ -152,7 +151,7 @@ html_theme_options = {
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = "images/logo-white.svg"
+html_logo = 'images/logo-white.svg'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -163,9 +162,9 @@ html_logo = "images/logo-white.svg"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = [
-    "_static",
-    os.path.abspath("../src/pretix/static/fonts/"),
-    os.path.abspath("../src/pretix/static/fontawesome/fonts/"),
+    '_static',
+    os.path.abspath('../src/pretix/static/fonts/'),
+    os.path.abspath('../src/pretix/static/fontawesome/fonts/'),
 ]
 
 # Add any extra paths that contain custom files (such as robots.txt or
@@ -186,7 +185,7 @@ html_static_path = [
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
-html_additional_pages = {"index": "index.html"}
+html_additional_pages = {'index': 'index.html'}
 
 # If false, no module index is generated.
 html_domain_indices = False
@@ -215,19 +214,19 @@ html_show_sourcelink = True
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "pretixdoc"
+htmlhelp_basename = 'pretixdoc'
 
-html_theme = "pretix_theme"
-html_theme_path = [os.path.abspath("_themes")]
+html_theme = 'pretix_theme'
+html_theme_path = [os.path.abspath('_themes')]
 
 
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
-    "papersize": "a4paper",
+    'papersize': 'a4paper',
     # The font size ('10pt', '11pt' or '12pt').
-    "pointsize": "10pt",
+    'pointsize': '10pt',
     # Additional stuff for the LaTeX preamble.
     #'preamble': '',
 }
@@ -236,7 +235,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    ("index", "pretix.tex", "pretix Documentation", "Raphael Michel", "manual"),
+    ('index', 'pretix.tex', 'pretix Documentation', 'Raphael Michel', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -264,7 +263,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [("index", "pretix", "pretix Documentation", ["Raphael Michel"], 1)]
+man_pages = [('index', 'pretix', 'pretix Documentation', ['Raphael Michel'], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -277,13 +276,13 @@ man_pages = [("index", "pretix", "pretix Documentation", ["Raphael Michel"], 1)]
 #  dir menu entry, description, category)
 texinfo_documents = [
     (
-        "index",
-        "pretix",
-        "pretix Documentation",
-        "Raphael Michel",
-        "pretix",
-        "One line description of project.",
-        "Miscellaneous",
+        'index',
+        'pretix',
+        'pretix Documentation',
+        'Raphael Michel',
+        'pretix',
+        'One line description of project.',
+        'Miscellaneous',
     ),
 ]
 
@@ -300,25 +299,25 @@ texinfo_documents = [
 # texinfo_no_detailmenu = False
 
 
-images_config = {"default_image_width": "250px"}
+images_config = {'default_image_width': '250px'}
 
 linkcheck_ignore = [
-    r"http://localhost.*",
-    r".*yourdomain.*",
-    r"https://en.wikipedia.org",
-    "https://eventyay.com/",
+    r'http://localhost.*',
+    r'.*yourdomain.*',
+    r'https://en.wikipedia.org',
+    'https://eventyay.com/',
 ]
 
 # -- Options for Spelling output ------------------------------------------
 if HAS_PYENCHANT:
     # String specifying the language, as understood by PyEnchant and enchant.
     # Defaults to en_US for US English.
-    spelling_lang = "en_US"
+    spelling_lang = 'en_US'
 
     # String specifying a file containing a list of words known to be spelled
     # correctly but that do not appear in the language dictionary selected by
     # spelling_lang. The file should contain one word per line.
-    spelling_word_list_filename = "spelling_wordlist.txt"
+    spelling_word_list_filename = 'spelling_wordlist.txt'
 
     # Boolean controlling whether suggestions for misspelled words are printed.
     # Defaults to False.

@@ -34,26 +34,26 @@ class GateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Gate
         fields = [
-            "id",
-            "name",
-            "identifier",
+            'id',
+            'name',
+            'identifier',
         ]
 
 
 class DeviceSerializer(serializers.ModelSerializer):
-    organizer = serializers.SlugRelatedField(slug_field="slug", read_only=True)
+    organizer = serializers.SlugRelatedField(slug_field='slug', read_only=True)
     gate = GateSerializer(read_only=True)
 
     class Meta:
         model = Device
         fields = [
-            "organizer",
-            "device_id",
-            "unique_serial",
-            "api_token",
-            "name",
-            "security_profile",
-            "gate",
+            'organizer',
+            'device_id',
+            'unique_serial',
+            'api_token',
+            'name',
+            'security_profile',
+            'gate',
         ]
 
 
@@ -67,26 +67,26 @@ class InitializeView(APIView):
 
         try:
             device = Device.objects.get(
-                initialization_token=serializer.validated_data.get("token")
+                initialization_token=serializer.validated_data.get('token')
             )
         except Device.DoesNotExist:
-            raise ValidationError({"token": ["Unknown initialization token."]})
+            raise ValidationError({'token': ['Unknown initialization token.']})
 
         if device.initialized:
             raise ValidationError(
-                {"token": ["This initialization token has already been used."]}
+                {'token': ['This initialization token has already been used.']}
             )
 
         device.initialized = now()
-        device.hardware_brand = serializer.validated_data.get("hardware_brand")
-        device.hardware_model = serializer.validated_data.get("hardware_model")
-        device.software_brand = serializer.validated_data.get("software_brand")
-        device.software_version = serializer.validated_data.get("software_version")
+        device.hardware_brand = serializer.validated_data.get('hardware_brand')
+        device.hardware_model = serializer.validated_data.get('hardware_model')
+        device.software_brand = serializer.validated_data.get('software_brand')
+        device.software_version = serializer.validated_data.get('software_version')
         device.api_token = generate_api_token()
         device.save()
 
         device.log_action(
-            "pretix.device.initialized", data=serializer.validated_data, auth=device
+            'pretix.device.initialized', data=serializer.validated_data, auth=device
         )
 
         serializer = DeviceSerializer(device)
@@ -100,13 +100,13 @@ class UpdateView(APIView):
         serializer = UpdateRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         device = request.auth
-        device.hardware_brand = serializer.validated_data.get("hardware_brand")
-        device.hardware_model = serializer.validated_data.get("hardware_model")
-        device.software_brand = serializer.validated_data.get("software_brand")
-        device.software_version = serializer.validated_data.get("software_version")
+        device.hardware_brand = serializer.validated_data.get('hardware_brand')
+        device.hardware_model = serializer.validated_data.get('hardware_model')
+        device.software_brand = serializer.validated_data.get('software_brand')
+        device.software_version = serializer.validated_data.get('software_version')
         device.save()
         device.log_action(
-            "pretix.device.updated", data=serializer.validated_data, auth=device
+            'pretix.device.updated', data=serializer.validated_data, auth=device
         )
 
         serializer = DeviceSerializer(device)
@@ -120,7 +120,7 @@ class RollKeyView(APIView):
         device = request.auth
         device.api_token = generate_api_token()
         device.save()
-        device.log_action("pretix.device.keyroll", auth=device)
+        device.log_action('pretix.device.keyroll', auth=device)
 
         serializer = DeviceSerializer(device)
         return Response(serializer.data)
@@ -133,7 +133,7 @@ class RevokeKeyView(APIView):
         device = request.auth
         device.revoked = True
         device.save()
-        device.log_action("pretix.device.revoked", auth=device)
+        device.log_action('pretix.device.revoked', auth=device)
 
         serializer = DeviceSerializer(device)
         return Response(serializer.data)
@@ -147,15 +147,15 @@ class EventSelectionView(APIView):
         qs = (
             self.request.auth.get_events_with_any_permission()
             .annotate(
-                first_date=Coalesce("date_admission", "date_from"),
-                last_date=Coalesce("date_to", "date_from"),
+                first_date=Coalesce('date_admission', 'date_from'),
+                last_date=Coalesce('date_to', 'date_from'),
             )
             .filter(live=True, has_subevents=False)
-            .order_by("first_date")
+            .order_by('first_date')
         )
         if self.request.auth.gate:
             has_cl = CheckinList.objects.filter(
-                event=OuterRef("pk"), gates__in=[self.request.auth.gate]
+                event=OuterRef('pk'), gates__in=[self.request.auth.gate]
             )
             qs = qs.annotate(has_cl=Exists(has_cl)).filter(has_cl=True)
         return qs
@@ -164,8 +164,8 @@ class EventSelectionView(APIView):
     def base_subevent_qs(self):
         qs = (
             SubEvent.objects.annotate(
-                first_date=Coalesce("date_admission", "date_from"),
-                last_date=Coalesce("date_to", "date_from"),
+                first_date=Coalesce('date_admission', 'date_from'),
+                last_date=Coalesce('date_to', 'date_from'),
             )
             .filter(
                 event__organizer=self.request.auth.organizer,
@@ -173,13 +173,13 @@ class EventSelectionView(APIView):
                 event__in=self.request.auth.get_events_with_any_permission(),
                 active=True,
             )
-            .select_related("event")
-            .order_by("first_date")
+            .select_related('event')
+            .order_by('first_date')
         )
         if self.request.auth.gate:
             has_cl = CheckinList.objects.filter(
-                Q(subevent__isnull=True) | Q(subevent=OuterRef("pk")),
-                event_id=OuterRef("event_id"),
+                Q(subevent__isnull=True) | Q(subevent=OuterRef('pk')),
+                event_id=OuterRef('event_id'),
                 gates__in=[self.request.auth.gate],
             )
             qs = qs.annotate(has_cl=Exists(has_cl)).filter(has_cl=True)
@@ -189,13 +189,13 @@ class EventSelectionView(APIView):
         device = request.auth
         current_event = None
         current_subevent = None
-        if "current_event" in request.query_params:
+        if 'current_event' in request.query_params:
             current_event = device.organizer.events.filter(
-                slug=request.query_params["current_event"]
+                slug=request.query_params['current_event']
             ).first()
-            if current_event and "current_subevent" in request.query_params:
+            if current_event and 'current_subevent' in request.query_params:
                 current_subevent = current_event.subevents.filter(
-                    pk=request.query_params["current_subevent"]
+                    pk=request.query_params['current_subevent']
                 ).first()
             if current_event and current_event.has_subevents and not current_subevent:
                 current_event = None
@@ -265,9 +265,9 @@ class EventSelectionView(APIView):
 
     def _suggest_event(self, current_event, ev):
         current_checkinlist = None
-        if current_event and "current_checkinlist" in self.request.query_params:
+        if current_event and 'current_checkinlist' in self.request.query_params:
             current_checkinlist = current_event.checkin_lists.filter(
-                pk=self.request.query_params["current_checkinlist"]
+                pk=self.request.query_params['current_checkinlist']
             ).first()
         if isinstance(ev, SubEvent):
             checkinlist_qs = ev.event.checkin_lists.filter(
@@ -287,29 +287,29 @@ class EventSelectionView(APIView):
         if not checkinlist:
             checkinlist = checkinlist_qs.first()
         r = {
-            "event": {
-                "slug": ev.event.slug if isinstance(ev, SubEvent) else ev.slug,
-                "name": str(ev.event.name)
+            'event': {
+                'slug': ev.event.slug if isinstance(ev, SubEvent) else ev.slug,
+                'name': str(ev.event.name)
                 if isinstance(ev, SubEvent)
                 else str(ev.name),
             },
-            "subevent": ev.pk if isinstance(ev, SubEvent) else None,
-            "checkinlist": checkinlist.pk if checkinlist else None,
+            'subevent': ev.pk if isinstance(ev, SubEvent) else None,
+            'checkinlist': checkinlist.pk if checkinlist else None,
         }
 
         if r == {
-            "event": {
-                "slug": current_event.slug if current_event else None,
-                "name": str(current_event.name) if current_event else None,
+            'event': {
+                'slug': current_event.slug if current_event else None,
+                'name': str(current_event.name) if current_event else None,
             },
-            "subevent": (
-                int(self.request.query_params.get("current_subevent"))
-                if self.request.query_params.get("current_subevent")
+            'subevent': (
+                int(self.request.query_params.get('current_subevent'))
+                if self.request.query_params.get('current_subevent')
                 else None
             ),
-            "checkinlist": (
-                int(self.request.query_params.get("current_checkinlist"))
-                if self.request.query_params.get("current_checkinlist")
+            'checkinlist': (
+                int(self.request.query_params.get('current_checkinlist'))
+                if self.request.query_params.get('current_checkinlist')
                 else None
             ),
         }:

@@ -25,12 +25,12 @@ DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
-_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, "pretix_sig1_pb2", _globals)
+_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'pretix_sig1_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
     DESCRIPTOR._options = None
     DESCRIPTOR._serialized_options = (
-        b"\n#eu.pretix.libpretixsync.crypto.sig1B\014TicketProtos"
+        b'\n#eu.pretix.libpretixsync.crypto.sig1B\014TicketProtos'
     )
-    _globals["_TICKET"]._serialized_start = 21
-    _globals["_TICKET"]._serialized_end = 94
+    _globals['_TICKET']._serialized_start = 21
+    _globals['_TICKET']._serialized_end = 94
 # @@protoc_insertion_point(module_scope)

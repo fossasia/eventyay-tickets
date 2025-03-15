@@ -10,8 +10,8 @@ from .utils import _detect_event
 
 class EventMiddleware:
     NO_REQUIRE_LIVE_URLS = {
-        "event.widget.productlist",
-        "event.widget.css",
+        'event.widget.productlist',
+        'event.widget.css',
     }
 
     def __init__(self, get_response=None):
@@ -22,19 +22,19 @@ class EventMiddleware:
         url = resolve(request.path_info)
         request._namespace = url.namespace
 
-        if not hasattr(request, "sales_channel"):
+        if not hasattr(request, 'sales_channel'):
             # The environ lookup is only relevant during unit testing
             request.sales_channel = request.environ.get(
-                "PRETIX_SALES_CHANNEL", WebshopSalesChannel()
+                'PRETIX_SALES_CHANNEL', WebshopSalesChannel()
             )
 
-        if url.namespace != "presale":
+        if url.namespace != 'presale':
             return self.get_response(request)
 
         if (
-            "organizer" in url.kwargs
-            or "event" in url.kwargs
-            or getattr(request, "event_domain", False)
+            'organizer' in url.kwargs
+            or 'event' in url.kwargs
+            or getattr(request, 'event_domain', False)
         ):
             redirect = _detect_event(
                 request, require_live=url.url_name not in self.NO_REQUIRE_LIVE_URLS
@@ -42,13 +42,13 @@ class EventMiddleware:
             if redirect:
                 return redirect
 
-        with scope(organizer=getattr(request, "organizer", None)):
+        with scope(organizer=getattr(request, 'organizer', None)):
             response = self.get_response(request)
 
             if (
-                hasattr(request, "_namespace")
-                and request._namespace == "presale"
-                and hasattr(request, "event")
+                hasattr(request, '_namespace')
+                and request._namespace == 'presale'
+                and hasattr(request, 'event')
             ):
                 for receiver, r in process_response.send(
                     request.event, request=request, response=response

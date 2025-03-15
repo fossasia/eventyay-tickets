@@ -27,7 +27,7 @@ class WebhookEvent:
         pass
 
     def __repr__(self):
-        return "<WebhookEvent: {}>".format(self.action_type)
+        return '<WebhookEvent: {}>'.format(self.action_type)
 
     @property
     def action_type(self) -> str:
@@ -90,11 +90,11 @@ class ParametrizedOrderWebhookEvent(WebhookEvent):
             return None
 
         return {
-            "notification_id": logentry.pk,
-            "organizer": order.event.organizer.slug,
-            "event": order.event.slug,
-            "code": order.code,
-            "action": logentry.action_type,
+            'notification_id': logentry.pk,
+            'organizer': order.event.organizer.slug,
+            'event': order.event.slug,
+            'code': order.code,
+            'action': logentry.action_type,
         }
 
 
@@ -113,13 +113,13 @@ class ParametrizedEventWebhookEvent(WebhookEvent):
         return self._verbose_name
 
     def build_payload(self, logentry: LogEntry):
-        if logentry.action_type == "pretix.event.deleted":
+        if logentry.action_type == 'pretix.event.deleted':
             organizer = logentry.content_object
             return {
-                "notification_id": logentry.pk,
-                "organizer": organizer.slug,
-                "event": logentry.parsed_data.get("slug"),
-                "action": logentry.action_type,
+                'notification_id': logentry.pk,
+                'organizer': organizer.slug,
+                'event': logentry.parsed_data.get('slug'),
+                'action': logentry.action_type,
             }
 
         event = logentry.content_object
@@ -127,10 +127,10 @@ class ParametrizedEventWebhookEvent(WebhookEvent):
             return None
 
         return {
-            "notification_id": logentry.pk,
-            "organizer": event.organizer.slug,
-            "event": event.slug,
-            "action": logentry.action_type,
+            'notification_id': logentry.pk,
+            'organizer': event.organizer.slug,
+            'event': event.slug,
+            'action': logentry.action_type,
         }
 
 
@@ -151,11 +151,11 @@ class ParametrizedSubEventWebhookEvent(WebhookEvent):
     def build_payload(self, logentry: LogEntry):
         # do not use content_object, this is also called in deletion
         return {
-            "notification_id": logentry.pk,
-            "organizer": logentry.event.organizer.slug,
-            "event": logentry.event.slug,
-            "subevent": logentry.object_id,
-            "action": logentry.action_type,
+            'notification_id': logentry.pk,
+            'organizer': logentry.event.organizer.slug,
+            'event': logentry.event.slug,
+            'subevent': logentry.object_id,
+            'action': logentry.action_type,
         }
 
 
@@ -164,95 +164,95 @@ class ParametrizedOrderPositionWebhookEvent(ParametrizedOrderWebhookEvent):
         d = super().build_payload(logentry)
         if d is None:
             return None
-        d["orderposition_id"] = logentry.parsed_data.get("position")
-        d["orderposition_positionid"] = logentry.parsed_data.get("positionid")
-        d["checkin_list"] = logentry.parsed_data.get("list")
-        d["first_checkin"] = logentry.parsed_data.get("first_checkin")
+        d['orderposition_id'] = logentry.parsed_data.get('position')
+        d['orderposition_positionid'] = logentry.parsed_data.get('positionid')
+        d['checkin_list'] = logentry.parsed_data.get('list')
+        d['first_checkin'] = logentry.parsed_data.get('first_checkin')
         return d
 
 
-@receiver(register_webhook_events, dispatch_uid="base_register_default_webhook_events")
+@receiver(register_webhook_events, dispatch_uid='base_register_default_webhook_events')
 def register_default_webhook_events(sender, **kwargs):
     return (
         ParametrizedOrderWebhookEvent(
-            "pretix.event.order.placed",
-            _("New order placed"),
+            'pretix.event.order.placed',
+            _('New order placed'),
         ),
         ParametrizedOrderWebhookEvent(
-            "pretix.event.order.placed.require_approval",
-            _("New order requires approval"),
+            'pretix.event.order.placed.require_approval',
+            _('New order requires approval'),
         ),
         ParametrizedOrderWebhookEvent(
-            "pretix.event.order.paid",
-            _("Order marked as paid"),
+            'pretix.event.order.paid',
+            _('Order marked as paid'),
         ),
         ParametrizedOrderWebhookEvent(
-            "pretix.event.order.canceled",
-            _("Order canceled"),
+            'pretix.event.order.canceled',
+            _('Order canceled'),
         ),
         ParametrizedOrderWebhookEvent(
-            "pretix.event.order.reactivated",
-            _("Order reactivated"),
+            'pretix.event.order.reactivated',
+            _('Order reactivated'),
         ),
         ParametrizedOrderWebhookEvent(
-            "pretix.event.order.expired",
-            _("Order expired"),
+            'pretix.event.order.expired',
+            _('Order expired'),
         ),
         ParametrizedOrderWebhookEvent(
-            "pretix.event.order.modified",
-            _("Order information changed"),
+            'pretix.event.order.modified',
+            _('Order information changed'),
         ),
         ParametrizedOrderWebhookEvent(
-            "pretix.event.order.contact.changed",
-            _("Order contact address changed"),
+            'pretix.event.order.contact.changed',
+            _('Order contact address changed'),
         ),
         ParametrizedOrderWebhookEvent(
-            "pretix.event.order.changed.*",
-            _("Order changed"),
+            'pretix.event.order.changed.*',
+            _('Order changed'),
         ),
         ParametrizedOrderWebhookEvent(
-            "pretix.event.order.refund.created.externally",
-            _("External refund of payment"),
+            'pretix.event.order.refund.created.externally',
+            _('External refund of payment'),
         ),
         ParametrizedOrderWebhookEvent(
-            "pretix.event.order.approved",
-            _("Order approved"),
+            'pretix.event.order.approved',
+            _('Order approved'),
         ),
         ParametrizedOrderWebhookEvent(
-            "pretix.event.order.denied",
-            _("Order denied"),
+            'pretix.event.order.denied',
+            _('Order denied'),
         ),
         ParametrizedOrderPositionWebhookEvent(
-            "pretix.event.checkin",
-            _("Ticket checked in"),
+            'pretix.event.checkin',
+            _('Ticket checked in'),
         ),
         ParametrizedOrderPositionWebhookEvent(
-            "pretix.event.checkin.reverted",
-            _("Ticket check-in reverted"),
+            'pretix.event.checkin.reverted',
+            _('Ticket check-in reverted'),
         ),
         ParametrizedEventWebhookEvent(
-            "pretix.event.added",
-            _("Event created"),
+            'pretix.event.added',
+            _('Event created'),
         ),
         ParametrizedEventWebhookEvent(
-            "pretix.event.changed",
-            _("Event details changed"),
+            'pretix.event.changed',
+            _('Event details changed'),
         ),
         ParametrizedEventWebhookEvent(
-            "pretix.event.deleted",
-            _("Event details changed"),
+            'pretix.event.deleted',
+            _('Event details changed'),
         ),
         ParametrizedSubEventWebhookEvent(
-            "pretix.subevent.added",
-            pgettext_lazy("subevent", "Event series date added"),
+            'pretix.subevent.added',
+            pgettext_lazy('subevent', 'Event series date added'),
         ),
         ParametrizedSubEventWebhookEvent(
-            "pretix.subevent.changed",
-            pgettext_lazy("subevent", "Event series date changed"),
+            'pretix.subevent.changed',
+            pgettext_lazy('subevent', 'Event series date changed'),
         ),
         ParametrizedSubEventWebhookEvent(
-            "pretix.subevent.deleted",
-            pgettext_lazy("subevent", "Event series date deleted"),
+            'pretix.subevent.deleted',
+            pgettext_lazy('subevent', 'Event series date deleted'),
         ),
     )
 
@@ -263,7 +263,7 @@ def register_default_webhook_events(sender, **kwargs):
 def notify_webhooks(logentry_ids: list):
     if not isinstance(logentry_ids, list):
         logentry_ids = [logentry_ids]
-    qs = LogEntry.all.select_related("event", "event__organizer").filter(
+    qs = LogEntry.all.select_related('event', 'event__organizer').filter(
         id__in=logentry_ids
     )
     _org, _at, webhooks = None, None, None
@@ -286,7 +286,7 @@ def notify_webhooks(logentry_ids: list):
 
             # All webhooks that registered for this notification
             event_listener = WebHookEventListener.objects.filter(
-                webhook=OuterRef("pk"), action_type=notification_type.action_type
+                webhook=OuterRef('pk'), action_type=notification_type.action_type
             )
             webhooks = WebHook.objects.annotate(has_el=Exists(event_listener)).filter(
                 organizer=logentry.organizer, has_el=True, enabled=True

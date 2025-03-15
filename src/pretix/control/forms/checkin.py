@@ -41,14 +41,14 @@ class NextTimeInput(forms.TimeInput):
 
 class CheckinListForm(forms.ModelForm):
     def __init__(self, **kwargs):
-        self.event = kwargs.pop("event")
-        kwargs.pop("locales", None)
+        self.event = kwargs.pop('event')
+        kwargs.pop('locales', None)
         super().__init__(**kwargs)
-        self.fields["limit_products"].queryset = self.event.items.all()
-        self.fields["auto_checkin_sales_channels"] = forms.MultipleChoiceField(
-            label=self.fields["auto_checkin_sales_channels"].label,
-            help_text=self.fields["auto_checkin_sales_channels"].help_text,
-            required=self.fields["auto_checkin_sales_channels"].required,
+        self.fields['limit_products'].queryset = self.event.items.all()
+        self.fields['auto_checkin_sales_channels'] = forms.MultipleChoiceField(
+            label=self.fields['auto_checkin_sales_channels'].label,
+            help_text=self.fields['auto_checkin_sales_channels'].help_text,
+            required=self.fields['auto_checkin_sales_channels'].required,
             choices=(
                 (c.identifier, c.verbose_name)
                 for c in get_all_sales_channels().values()
@@ -57,101 +57,101 @@ class CheckinListForm(forms.ModelForm):
         )
 
         if not self.event.organizer.gates.exists():
-            del self.fields["gates"]
+            del self.fields['gates']
         else:
-            self.fields["gates"].queryset = self.event.organizer.gates.all()
+            self.fields['gates'].queryset = self.event.organizer.gates.all()
 
         if self.event.has_subevents:
-            self.fields["subevent"].queryset = self.event.subevents.all()
-            self.fields["subevent"].widget = Select2(
+            self.fields['subevent'].queryset = self.event.subevents.all()
+            self.fields['subevent'].widget = Select2(
                 attrs={
-                    "data-model-select2": "event",
-                    "data-select2-url": reverse(
-                        "control:event.subevents.select2",
+                    'data-model-select2': 'event',
+                    'data-select2-url': reverse(
+                        'control:event.subevents.select2',
                         kwargs={
-                            "event": self.event.slug,
-                            "organizer": self.event.organizer.slug,
+                            'event': self.event.slug,
+                            'organizer': self.event.organizer.slug,
                         },
                     ),
-                    "data-placeholder": pgettext_lazy("subevent", "All dates"),
+                    'data-placeholder': pgettext_lazy('subevent', 'All dates'),
                 }
             )
-            self.fields["subevent"].widget.choices = self.fields["subevent"].choices
+            self.fields['subevent'].widget.choices = self.fields['subevent'].choices
         else:
-            del self.fields["subevent"]
+            del self.fields['subevent']
 
     class Meta:
         model = CheckinList
-        localized_fields = "__all__"
+        localized_fields = '__all__'
         fields = [
-            "name",
-            "all_products",
-            "limit_products",
-            "subevent",
-            "include_pending",
-            "auto_checkin_sales_channels",
-            "allow_multiple_entries",
-            "allow_entry_after_exit",
-            "rules",
-            "gates",
-            "exit_all_at",
+            'name',
+            'all_products',
+            'limit_products',
+            'subevent',
+            'include_pending',
+            'auto_checkin_sales_channels',
+            'allow_multiple_entries',
+            'allow_entry_after_exit',
+            'rules',
+            'gates',
+            'exit_all_at',
         ]
         widgets = {
-            "limit_products": forms.CheckboxSelectMultiple(
-                attrs={"data-inverse-dependency": "<[name$=all_products]"}
+            'limit_products': forms.CheckboxSelectMultiple(
+                attrs={'data-inverse-dependency': '<[name$=all_products]'}
             ),
-            "gates": forms.CheckboxSelectMultiple(
-                attrs={"class": "scrolling-multiple-choice"}
+            'gates': forms.CheckboxSelectMultiple(
+                attrs={'class': 'scrolling-multiple-choice'}
             ),
-            "auto_checkin_sales_channels": forms.CheckboxSelectMultiple(),
-            "exit_all_at": NextTimeInput(attrs={"class": "timepickerfield"}),
+            'auto_checkin_sales_channels': forms.CheckboxSelectMultiple(),
+            'exit_all_at': NextTimeInput(attrs={'class': 'timepickerfield'}),
         }
         field_classes = {
-            "limit_products": SafeModelMultipleChoiceField,
-            "gates": SafeModelMultipleChoiceField,
-            "subevent": SafeModelChoiceField,
-            "exit_all_at": NextTimeField,
+            'limit_products': SafeModelMultipleChoiceField,
+            'gates': SafeModelMultipleChoiceField,
+            'subevent': SafeModelChoiceField,
+            'exit_all_at': NextTimeField,
         }
 
     def clean(self):
         d = super().clean()
-        CheckinList.validate_rules(d.get("rules"))
+        CheckinList.validate_rules(d.get('rules'))
         return d
 
 
 class SimpleCheckinListForm(forms.ModelForm):
     def __init__(self, **kwargs):
-        self.event = kwargs.pop("event")
-        kwargs.pop("locales", None)
+        self.event = kwargs.pop('event')
+        kwargs.pop('locales', None)
         super().__init__(**kwargs)
-        self.fields["limit_products"].queryset = self.event.items.all()
+        self.fields['limit_products'].queryset = self.event.items.all()
 
         if not self.event.organizer.gates.exists():
-            del self.fields["gates"]
+            del self.fields['gates']
         else:
-            self.fields["gates"].queryset = self.event.organizer.gates.all()
+            self.fields['gates'].queryset = self.event.organizer.gates.all()
 
     class Meta:
         model = CheckinList
-        localized_fields = "__all__"
+        localized_fields = '__all__'
         fields = [
-            "name",
-            "all_products",
-            "limit_products",
-            "include_pending",
-            "allow_entry_after_exit",
-            "gates",
+            'name',
+            'all_products',
+            'limit_products',
+            'include_pending',
+            'allow_entry_after_exit',
+            'gates',
         ]
         widgets = {
-            "limit_products": forms.CheckboxSelectMultiple(
-                attrs={"data-inverse-dependency": "<[name$=all_products]"}
+            'limit_products': forms.CheckboxSelectMultiple(
+                attrs={'data-inverse-dependency': '<[name$=all_products]'}
             ),
-            "gates": forms.CheckboxSelectMultiple(
-                attrs={"class": "scrolling-multiple-choice"}
+            'gates': forms.CheckboxSelectMultiple(
+                attrs={'class': 'scrolling-multiple-choice'}
             ),
         }
         field_classes = {
-            "limit_products": SafeModelMultipleChoiceField,
-            "subevent": SafeModelChoiceField,
-            "gates": SafeModelMultipleChoiceField,
+            'limit_products': SafeModelMultipleChoiceField,
+            'subevent': SafeModelChoiceField,
+            'gates': SafeModelMultipleChoiceField,
         }

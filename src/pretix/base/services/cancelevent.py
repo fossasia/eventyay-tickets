@@ -54,7 +54,7 @@ def _send_wle_mail(
                 locale=wle.locale,
             )
         except SendMailException:
-            logger.exception("Waiting list canceled email could not be sent")
+            logger.exception('Waiting list canceled email could not be sent')
 
 
 def _send_mail(
@@ -85,11 +85,11 @@ def _send_mail(
                 real_subject,
                 message,
                 email_context,
-                "pretix.event.order.email.event_canceled",
+                'pretix.event.order.email.event_canceled',
                 user,
             )
         except SendMailException:
-            logger.exception("Order canceled email could not be sent")
+            logger.exception('Order canceled email could not be sent')
 
         for p in positions:
             if subevent and p.subevent_id != subevent.id:
@@ -114,13 +114,13 @@ def _send_mail(
                         real_subject,
                         message,
                         email_context,
-                        "pretix.event.order.email.event_canceled",
+                        'pretix.event.order.email.event_canceled',
                         position=p,
                         user=user,
                     )
                 except SendMailException:
                     logger.exception(
-                        "Order canceled email could not be sent to attendee"
+                        'Order canceled email could not be sent to attendee'
                     )
 
 
@@ -162,11 +162,11 @@ def cancel_event(
         user = User.objects.get(pk=user)
 
     s = (
-        OrderPosition.objects.filter(order=OuterRef("pk"))
+        OrderPosition.objects.filter(order=OuterRef('pk'))
         .order_by()
-        .values("order")
-        .annotate(k=Count("id"))
-        .values("k")
+        .values('order')
+        .annotate(k=Count('id'))
+        .values('k')
     )
     orders_to_cancel = (
         event.orders.annotate(pcnt=Subquery(s, output_field=IntegerField()))
@@ -186,13 +186,13 @@ def cancel_event(
             subevents = event.subevents.filter(
                 date_from__gte=subevents_from, date_from__lt=subevents_to
             )
-            subevent_ids = set(subevents.values_list("id", flat=True))
+            subevent_ids = set(subevents.values_list('id', flat=True))
 
-        has_subevent = OrderPosition.objects.filter(order_id=OuterRef("pk")).filter(
+        has_subevent = OrderPosition.objects.filter(order_id=OuterRef('pk')).filter(
             subevent__in=subevents
         )
         has_other_subevent = OrderPosition.objects.filter(
-            order_id=OuterRef("pk")
+            order_id=OuterRef('pk')
         ).exclude(subevent__in=subevents)
         orders_to_change = orders_to_cancel.annotate(
             has_subevent=Exists(has_subevent),
@@ -205,49 +205,49 @@ def cancel_event(
 
         for se in subevents:
             se.log_action(
-                "pretix.subevent.canceled",
+                'pretix.subevent.canceled',
                 user=user,
             )
             se.active = False
-            se.save(update_fields=["active"])
+            se.save(update_fields=['active'])
             se.log_action(
-                "pretix.subevent.changed",
+                'pretix.subevent.changed',
                 user=user,
-                data={"active": False, "_source": "cancel_event"},
+                data={'active': False, '_source': 'cancel_event'},
             )
     else:
         subevents = None
         subevent_ids = set()
         orders_to_change = event.orders.none()
         event.log_action(
-            "pretix.event.canceled",
+            'pretix.event.canceled',
             user=user,
         )
 
         for i in event.items.filter(active=True):
             i.active = False
-            i.save(update_fields=["active"])
+            i.save(update_fields=['active'])
             i.log_action(
-                "pretix.event.item.changed",
+                'pretix.event.item.changed',
                 user=user,
-                data={"active": False, "_source": "cancel_event"},
+                data={'active': False, '_source': 'cancel_event'},
             )
     failed = 0
     total = orders_to_cancel.count() + orders_to_change.count()
     qs_wl = event.waitinglistentries.filter(voucher__isnull=True).select_related(
-        "subevent"
+        'subevent'
     )
     if subevents:
         qs_wl = qs_wl.filter(subevent__in=subevents)
     if send_waitinglist:
         total += qs_wl.count()
     counter = 0
-    self.update_state(state="PROGRESS", meta={"value": 0})
+    self.update_state(state='PROGRESS', meta={'value': 0})
 
-    for o in orders_to_cancel.only("id", "total").iterator():
+    for o in orders_to_cancel.only('id', 'total').iterator():
         try:
-            fee = Decimal("0.00")
-            fee_sum = Decimal("0.00")
+            fee = Decimal('0.00')
+            fee_sum = Decimal('0.00')
             keep_fee_objects = []
             if keep_fees:
                 for f in o.fees.all():
@@ -258,7 +258,7 @@ def cancel_event(
             if keep_fee_percentage:
                 fee += (
                     Decimal(keep_fee_percentage)
-                    / Decimal("100.00")
+                    / Decimal('100.00')
                     * (o.total - fee_sum)
                 )
             if keep_fee_fixed:
@@ -288,7 +288,7 @@ def cancel_event(
                         refund_as_giftcard=refund_as_giftcard,
                         giftcard_expires=giftcard_expires,
                         giftcard_conditions=giftcard_conditions,
-                        comment=gettext("Event canceled"),
+                        comment=gettext('Event canceled'),
                     )
             finally:
                 if send:
@@ -308,20 +308,20 @@ def cancel_event(
                 and counter % max(10, total // 100) == 0
             ):
                 self.update_state(
-                    state="PROGRESS", meta={"value": round(counter / total * 100, 2)}
+                    state='PROGRESS', meta={'value': round(counter / total * 100, 2)}
                 )
         except LockTimeoutException:
-            logger.exception("Could not cancel order")
+            logger.exception('Could not cancel order')
             failed += 1
         except OrderError:
-            logger.exception("Could not cancel order")
+            logger.exception('Could not cancel order')
             failed += 1
 
-    for o in orders_to_change.values_list("id", flat=True).iterator():
+    for o in orders_to_change.values_list('id', flat=True).iterator():
         with transaction.atomic():
             o = event.orders.select_for_update().get(pk=o)
-            total = Decimal("0.00")
-            fee = Decimal("0.00")
+            total = Decimal('0.00')
+            fee = Decimal('0.00')
             positions = []
 
             ocm = OrderChangeManager(o, user=user, notify=False)
@@ -338,7 +338,7 @@ def cancel_event(
             if keep_fee_fixed:
                 fee += Decimal(keep_fee_fixed)
             if keep_fee_percentage:
-                fee += Decimal(keep_fee_percentage) / Decimal("100.00") * total
+                fee += Decimal(keep_fee_percentage) / Decimal('100.00') * total
             fee = round_decimal(min(fee, o.payment_refund_sum), event.currency)
             if fee:
                 f = OrderFee(
@@ -362,7 +362,7 @@ def cancel_event(
                     refund_as_giftcard=refund_as_giftcard,
                     giftcard_expires=giftcard_expires,
                     giftcard_conditions=giftcard_conditions,
-                    comment=gettext("Event canceled"),
+                    comment=gettext('Event canceled'),
                 )
 
             if send:
@@ -382,7 +382,7 @@ def cancel_event(
                 and counter % max(10, total // 100) == 0
             ):
                 self.update_state(
-                    state="PROGRESS", meta={"value": round(counter / total * 100, 2)}
+                    state='PROGRESS', meta={'value': round(counter / total * 100, 2)}
                 )
 
     if send_waitinglist:
@@ -397,6 +397,6 @@ def cancel_event(
                 and counter % max(10, total // 100) == 0
             ):
                 self.update_state(
-                    state="PROGRESS", meta={"value": round(counter / total * 100, 2)}
+                    state='PROGRESS', meta={'value': round(counter / total * 100, 2)}
                 )
     return failed

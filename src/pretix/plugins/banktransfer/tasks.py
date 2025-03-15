@@ -31,18 +31,18 @@ def notify_incomplete_payment(o: Order):
         email_template = o.event.settings.mail_text_order_expire_warning
         email_context = get_email_context(event=o.event, order=o)
         email_subject = gettext(
-            "Your order received an incomplete payment: %(code)s"
-        ) % {"code": o.code}
+            'Your order received an incomplete payment: %(code)s'
+        ) % {'code': o.code}
 
         try:
             o.send_mail(
                 email_subject,
                 email_template,
                 email_context,
-                "pretix.event.order.email.expire_warning_sent",
+                'pretix.event.order.email.expire_warning_sent',
             )
         except SendMailException:
-            logger.exception("Reminder email could not be sent")
+            logger.exception('Reminder email could not be sent')
 
 
 def cancel_old_payments(order):
@@ -51,22 +51,22 @@ def cancel_old_payments(order):
             OrderPayment.PAYMENT_STATE_PENDING,
             OrderPayment.PAYMENT_STATE_CREATED,
         ),
-        provider="banktransfer",
+        provider='banktransfer',
     ):
         try:
             with transaction.atomic():
                 p.payment_provider.cancel_payment(p)
                 order.log_action(
-                    "pretix.event.order.payment.canceled",
+                    'pretix.event.order.payment.canceled',
                     {
-                        "local_id": p.local_id,
-                        "provider": p.provider,
+                        'local_id': p.local_id,
+                        'provider': p.provider,
                     },
                 )
         except PaymentException as e:
             order.log_action(
-                "pretix.event.order.payment.canceled.failed",
-                {"local_id": p.local_id, "provider": p.provider, "error": str(e)},
+                'pretix.event.order.payment.canceled.failed',
+                {'local_id': p.local_id, 'provider': p.provider, 'error': str(e)},
             )
 
 
@@ -74,8 +74,8 @@ def _find_order_for_code(base_qs, code):
     try_codes = [
         code,
         Order.normalize_code(code, is_fallback=True),
-        code[: settings.ENTROPY["order_code"]],
-        Order.normalize_code(code[: settings.ENTROPY["order_code"]], is_fallback=True),
+        code[: settings.ENTROPY['order_code']],
+        Order.normalize_code(code[: settings.ENTROPY['order_code']], is_fallback=True),
     ]
     for c in try_codes:
         try:
@@ -113,13 +113,13 @@ def _handle_transaction(
         trans.order = orders[0]
 
     for o in orders:
-        if o.status == Order.STATUS_PAID and o.pending_sum <= Decimal("0.00"):
+        if o.status == Order.STATUS_PAID and o.pending_sum <= Decimal('0.00'):
             trans.state = BankTransaction.STATE_DUPLICATE
             trans.save()
             return
         elif o.status == Order.STATUS_CANCELED:
             trans.state = BankTransaction.STATE_ERROR
-            trans.message = gettext_noop("The order has already been canceled.")
+            trans.message = gettext_noop('The order has already been canceled.')
             trans.save()
             return
 
@@ -130,7 +130,7 @@ def _handle_transaction(
             # we can't :( this needs to be dealt with by a human
             trans.state = BankTransaction.STATE_NOMATCH
             trans.message = gettext_noop(
-                "Automatic split to multiple orders not possible."
+                'Automatic split to multiple orders not possible.'
             )
             trans.save()
             return
@@ -145,20 +145,20 @@ def _handle_transaction(
         try:
             p, created = order.payments.get_or_create(
                 amount=amount,
-                provider="banktransfer",
+                provider='banktransfer',
                 state__in=(
                     OrderPayment.PAYMENT_STATE_CREATED,
                     OrderPayment.PAYMENT_STATE_PENDING,
                 ),
                 defaults={
-                    "state": OrderPayment.PAYMENT_STATE_CREATED,
+                    'state': OrderPayment.PAYMENT_STATE_CREATED,
                 },
             )
         except OrderPayment.MultipleObjectsReturned:
             created = False
             p = order.payments.filter(
                 amount=amount,
-                provider="banktransfer",
+                provider='banktransfer',
                 state__in=(
                     OrderPayment.PAYMENT_STATE_CREATED,
                     OrderPayment.PAYMENT_STATE_PENDING,
@@ -166,13 +166,13 @@ def _handle_transaction(
             ).last()
 
         p.info_data = {
-            "reference": trans.reference,
-            "date": trans.date_parsed.isoformat() if trans.date_parsed else trans.date,
-            "payer": trans.payer,
-            "iban": trans.iban,
-            "bic": trans.bic,
-            "full_amount": str(trans.amount),
-            "trans_id": trans.pk,
+            'reference': trans.reference,
+            'date': trans.date_parsed.isoformat() if trans.date_parsed else trans.date,
+            'payer': trans.payer,
+            'iban': trans.iban,
+            'bic': trans.bic,
+            'full_amount': str(trans.amount),
+            'trans_id': trans.pk,
         }
 
         if created:
@@ -182,7 +182,7 @@ def _handle_transaction(
             )  # noqa
             if fee:
                 p.fee = fee
-                p.save(update_fields=["fee"])
+                p.save(update_fields=['fee'])
 
         try:
             p.confirm()
@@ -197,7 +197,7 @@ def _handle_transaction(
 
             order.refresh_from_db()
             if (
-                order.pending_sum > Decimal("0.00")
+                order.pending_sum > Decimal('0.00')
                 and order.status == Order.STATUS_PENDING
             ):
                 notify_incomplete_payment(order)
@@ -209,7 +209,7 @@ def parse_date(date_str):
     try:
         return dateutil.parser.parse(
             date_str,
-            dayfirst="." in date_str,
+            dayfirst='.' in date_str,
         ).date()
     except (ValueError, OverflowError):
         pass
@@ -219,43 +219,43 @@ def parse_date(date_str):
 def _get_unknown_transactions(
     job: BankImportJob, data: list, event: Event = None, organizer: Organizer = None
 ):
-    amount_pattern = re.compile("[^0-9.-]")
+    amount_pattern = re.compile('[^0-9.-]')
     known_checksums = set(
-        t["checksum"]
+        t['checksum']
         for t in BankTransaction.objects.filter(
             Q(event=event) if event else Q(organizer=organizer)
-        ).values("checksum")
+        ).values('checksum')
     )
 
     transactions = []
     for row in data:
-        amount = row["amount"]
+        amount = row['amount']
         if not isinstance(amount, Decimal):
-            if "," in amount and "." in amount:
+            if ',' in amount and '.' in amount:
                 # Handle thousand-seperator , or .
-                if amount.find(",") < amount.find("."):
-                    amount = amount.replace(",", "")
+                if amount.find(',') < amount.find('.'):
+                    amount = amount.replace(',', '')
                 else:
-                    amount = amount.replace(".", "")
-            amount = amount_pattern.sub("", amount.replace(",", "."))
+                    amount = amount.replace('.', '')
+            amount = amount_pattern.sub('', amount.replace(',', '.'))
             try:
                 amount = Decimal(amount)
             except:
                 logger.exception(
-                    "Could not parse amount of transaction: {}".format(amount)
+                    'Could not parse amount of transaction: {}'.format(amount)
                 )
-                amount = Decimal("0.00")
+                amount = Decimal('0.00')
 
         trans = BankTransaction(
             event=event,
             organizer=organizer,
             import_job=job,
-            payer=row.get("payer", ""),
-            reference=row["reference"],
+            payer=row.get('payer', ''),
+            reference=row['reference'],
             amount=amount,
-            date=row["date"],
-            iban=row.get("iban", ""),
-            bic=row.get("bic", ""),
+            date=row['date'],
+            iban=row.get('iban', ''),
+            bic=row.get('bic', ''),
         )
 
         trans.date_parsed = parse_date(trans.date)
@@ -271,7 +271,7 @@ def _get_unknown_transactions(
 
 @app.task(base=TransactionAwareTask, bind=True, max_retries=5, default_retry_delay=1)
 def process_banktransfers(self, job: int, data: list) -> None:
-    with language("en"):  # We'll translate error messages at display time
+    with language('en'):  # We'll translate error messages at display time
         with scopes_disabled():
             job = BankImportJob.objects.get(pk=job)
         with scope(organizer=job.organizer or job.event.organizer):
@@ -288,28 +288,28 @@ def process_banktransfers(self, job: int, data: list) -> None:
 
                 code_len_agg = (
                     Order.objects.filter(event__organizer=job.organizer)
-                    .annotate(clen=Length("code"))
-                    .aggregate(min=Min("clen"), max=Max("clen"))
+                    .annotate(clen=Length('code'))
+                    .aggregate(min=Min('clen'), max=Max('clen'))
                 )
                 if job.event:
                     prefixes = [job.event.slug.upper()]
                 else:
                     prefixes = [e.slug.upper() for e in job.organizer.events.all()]
                 pattern = re.compile(
-                    "(%s)[ \\-_]*([A-Z0-9]{%s,%s})"
+                    '(%s)[ \\-_]*([A-Z0-9]{%s,%s})'
                     % (
-                        "|".join(
-                            p.replace(".", r"\.").replace("-", r"[\- ]*")
+                        '|'.join(
+                            p.replace('.', r'\.').replace('-', r'[\- ]*')
                             for p in prefixes
                         ),
-                        code_len_agg["min"] or 0,
-                        code_len_agg["max"] or 5,
+                        code_len_agg['min'] or 0,
+                        code_len_agg['max'] or 5,
                     )
                 )
 
                 for trans in transactions:
                     matches = pattern.findall(
-                        trans.reference.replace(" ", "").replace("\n", "").upper()
+                        trans.reference.replace(' ', '').replace('\n', '').upper()
                     )
 
                     if matches:
@@ -324,7 +324,7 @@ def process_banktransfers(self, job: int, data: list) -> None:
                 try:
                     self.retry()
                 except MaxRetriesExceededError:
-                    logger.exception("Maximum number of retries exceeded for task.")
+                    logger.exception('Maximum number of retries exceeded for task.')
                     job.state = BankImportJob.STATE_ERROR
                     job.save()
             except Exception as e:

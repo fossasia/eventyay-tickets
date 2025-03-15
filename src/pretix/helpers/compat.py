@@ -11,7 +11,7 @@ from django.views.generic.edit import DeletionMixin, FormMixin
 
 def date_fromisocalendar(isoyear, isoweek, isoday):
     if sys.version_info < (3, 8):
-        return datetime.datetime.strptime(f"{isoyear}-W{isoweek}-{isoday}", "%G-W%V-%u")
+        return datetime.datetime.strptime(f'{isoyear}-W{isoweek}-{isoday}', '%G-W%V-%u')
     else:
         return datetime.datetime.fromisocalendar(isoyear, isoweek, isoday)
 
@@ -24,7 +24,7 @@ class CompatDeleteView(
     """
 
     form_class = Form
-    template_name_suffix = "_confirm_delete"
+    template_name_suffix = '_confirm_delete'
 
     def post(self, request, *args, **kwargs):
         """

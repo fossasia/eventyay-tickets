@@ -29,15 +29,15 @@ class ExportersMixin:
         res = ExporterSerializer(self.exporters, many=True)
         return Response(
             {
-                "count": len(self.exporters),
-                "next": None,
-                "previous": None,
-                "results": res.data,
+                'count': len(self.exporters),
+                'next': None,
+                'previous': None,
+                'results': res.data,
             }
         )
 
     def get_object(self):
-        instances = [e for e in self.exporters if e.identifier == self.kwargs.get("pk")]
+        instances = [e for e in self.exporters if e.identifier == self.kwargs.get('pk')]
         if not instances:
             raise Http404()
         return instances[0]
@@ -49,45 +49,45 @@ class ExportersMixin:
 
     @action(
         detail=True,
-        methods=["GET"],
-        url_name="download",
-        url_path="download/(?P<asyncid>[^/]+)/(?P<cfid>[^/]+)",
+        methods=['GET'],
+        url_name='download',
+        url_path='download/(?P<asyncid>[^/]+)/(?P<cfid>[^/]+)',
     )
     def download(self, *args, **kwargs):
-        cf = get_object_or_404(CachedFile, id=kwargs["cfid"])
+        cf = get_object_or_404(CachedFile, id=kwargs['cfid'])
         if cf.file:
             resp = ChunkBasedFileResponse(cf.file.file, content_type=cf.type)
-            resp["Content-Disposition"] = 'attachment; filename="{}"'.format(
+            resp['Content-Disposition'] = 'attachment; filename="{}"'.format(
                 cf.filename
             )
             return resp
         elif not settings.HAS_CELERY:
             return Response(
-                {"status": "failed", "message": "Unknown file ID or export failed"},
+                {'status': 'failed', 'message': 'Unknown file ID or export failed'},
                 status=status.HTTP_410_GONE,
             )
 
-        res = AsyncResult(kwargs["asyncid"])
+        res = AsyncResult(kwargs['asyncid'])
         if res.failed():
-            if isinstance(res.info, dict) and res.info["exc_type"] == "ExportError":
-                msg = res.info["exc_message"]
+            if isinstance(res.info, dict) and res.info['exc_type'] == 'ExportError':
+                msg = res.info['exc_message']
             else:
-                msg = "Internal error"
+                msg = 'Internal error'
             return Response(
-                {"status": "failed", "message": msg}, status=status.HTTP_410_GONE
+                {'status': 'failed', 'message': msg}, status=status.HTTP_410_GONE
             )
 
         return Response(
             {
-                "status": "running"
-                if res.state in ("PROGRESS", "STARTED", "SUCCESS")
-                else "waiting",
-                "percentage": res.result.get("value", None) if res.result else None,
+                'status': 'running'
+                if res.state in ('PROGRESS', 'STARTED', 'SUCCESS')
+                else 'waiting',
+                'percentage': res.result.get('value', None) if res.result else None,
             },
             status=status.HTTP_409_CONFLICT,
         )
 
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, methods=['POST'])
     def run(self, *args, **kwargs):
         instance = self.get_object()
         serializer = JobRunSerializer(
@@ -106,14 +106,14 @@ class ExportersMixin:
         async_result = self.do_export(cf, instance, d)
 
         url_kwargs = {
-            "asyncid": str(async_result.id),
-            "cfid": str(cf.id),
+            'asyncid': str(async_result.id),
+            'cfid': str(cf.id),
         }
         url_kwargs.update(self.kwargs)
         return Response(
             {
-                "download": reverse(
-                    "api-v1:exporters-download", kwargs=url_kwargs, request=self.request
+                'download': reverse(
+                    'api-v1:exporters-download', kwargs=url_kwargs, request=self.request
                 )
             },
             status=status.HTTP_202_ACCEPTED,
@@ -121,7 +121,7 @@ class ExportersMixin:
 
 
 class EventExportersViewSet(ExportersMixin, viewsets.ViewSet):
-    permission = "can_view_orders"
+    permission = 'can_view_orders'
 
     def get_serializer_kwargs(self):
         return {}
@@ -152,7 +152,7 @@ class OrganizerExportersViewSet(ExportersMixin, viewsets.ViewSet):
         exporters = []
         events = (
             (self.request.auth or self.request.user)
-            .get_events_with_permission("can_view_orders", request=self.request)
+            .get_events_with_permission('can_view_orders', request=self.request)
             .filter(organizer=self.request.organizer)
         )
         responses = register_multievent_data_exporters.send(self.request.organizer)
@@ -166,26 +166,26 @@ class OrganizerExportersViewSet(ExportersMixin, viewsets.ViewSet):
 
     def get_serializer_kwargs(self):
         return {
-            "events": self.request.auth.get_events_with_permission(
-                "can_view_orders", request=self.request
+            'events': self.request.auth.get_events_with_permission(
+                'can_view_orders', request=self.request
             ).filter(organizer=self.request.organizer)
         }
 
     def do_export(self, cf, instance, data):
         return multiexport.apply_async(
             kwargs={
-                "organizer": self.request.organizer.id,
-                "user": self.request.user.id
+                'organizer': self.request.organizer.id,
+                'user': self.request.user.id
                 if self.request.user.is_authenticated
                 else None,
-                "token": self.request.auth.pk
+                'token': self.request.auth.pk
                 if isinstance(self.request.auth, TeamAPIToken)
                 else None,
-                "device": self.request.auth.pk
+                'device': self.request.auth.pk
                 if isinstance(self.request.auth, Device)
                 else None,
-                "fileid": str(cf.id),
-                "provider": instance.identifier,
-                "form_data": data,
+                'fileid': str(cf.id),
+                'provider': instance.identifier,
+                'form_data': data,
             }
         )

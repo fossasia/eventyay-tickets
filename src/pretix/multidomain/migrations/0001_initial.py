@@ -8,39 +8,39 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("pretixbase", "0001_initial"),
+        ('pretixbase', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="KnownDomain",
+            name='KnownDomain',
             fields=[
                 (
-                    "domainname",
+                    'domainname',
                     models.CharField(max_length=255, primary_key=True, serialize=False),
                 ),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.PROTECT,
-                        related_name="domains",
-                        to="pretixbase.event",
+                        related_name='domains',
+                        to='pretixbase.event',
                     ),
                 ),
                 (
-                    "organizer",
+                    'organizer',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="domains",
-                        to="pretixbase.organizer",
+                        related_name='domains',
+                        to='pretixbase.organizer',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Known domain",
-                "verbose_name_plural": "Known domains",
+                'verbose_name': 'Known domain',
+                'verbose_name_plural': 'Known domains',
             },
         ),
     ]

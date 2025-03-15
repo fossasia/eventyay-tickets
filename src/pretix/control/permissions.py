@@ -8,7 +8,7 @@ from django.utils.translation import gettext as _
 
 def current_url(request):
     if request.GET:
-        return request.path + "?" + request.GET.urlencode()
+        return request.path + '?' + request.GET.urlencode()
     else:
         return request.path
 
@@ -18,9 +18,9 @@ def event_permission_required(permission):
     This view decorator rejects all requests with a 403 response which are not from
     users having the given permission for the event the request is associated with.
     """
-    if permission == "can_change_settings":
+    if permission == 'can_change_settings':
         # Legacy support
-        permission = "can_change_event_settings"
+        permission = 'can_change_event_settings'
 
     def decorator(function):
         def wrapper(request, *args, **kw):
@@ -35,7 +35,7 @@ def event_permission_required(permission):
                 return function(request, *args, **kw)
 
             raise PermissionDenied(
-                _("You do not have permission to view this content.")
+                _('You do not have permission to view this content.')
             )
 
         return wrapper
@@ -49,7 +49,7 @@ class EventPermissionRequiredMixin:
     is in a form suitable for class-based views.
     """
 
-    permission = ""
+    permission = ''
 
     @classmethod
     def as_view(cls, **initkwargs):
@@ -62,9 +62,9 @@ def organizer_permission_required(permission):
     This view decorator rejects all requests with a 403 response which are not from
     users having the given permission for the event the request is associated with.
     """
-    if permission == "can_change_settings":
+    if permission == 'can_change_settings':
         # Legacy support
-        permission = "can_change_organizer_settings"
+        permission = 'can_change_organizer_settings'
 
     def decorator(function):
         def wrapper(request, *args, **kw):
@@ -79,7 +79,7 @@ def organizer_permission_required(permission):
                 return function(request, *args, **kw)
 
             raise PermissionDenied(
-                _("You do not have permission to view this content.")
+                _('You do not have permission to view this content.')
             )
 
         return wrapper
@@ -93,7 +93,7 @@ class OrganizerPermissionRequiredMixin:
     is in a form suitable for class-based views.
     """
 
-    permission = ""
+    permission = ''
 
     @classmethod
     def as_view(cls, **initkwargs):
@@ -115,12 +115,12 @@ def administrator_permission_required():
             if not request.user.has_active_staff_session(request.session.session_key):
                 if request.user.is_staff:
                     return redirect(
-                        reverse("control:user.sudo")
-                        + "?next="
+                        reverse('control:user.sudo')
+                        + '?next='
                         + quote(current_url(request))
                     )
                 raise PermissionDenied(
-                    _("You do not have permission to view this content.")
+                    _('You do not have permission to view this content.')
                 )
             return function(request, *args, **kw)
 
@@ -142,7 +142,7 @@ def staff_member_required():
                 raise PermissionDenied()
             if not request.user.is_staff:
                 raise PermissionDenied(
-                    _("You do not have permission to view this content.")
+                    _('You do not have permission to view this content.')
                 )
             return function(request, *args, **kw)
 

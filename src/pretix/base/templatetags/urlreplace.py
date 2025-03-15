@@ -11,10 +11,10 @@ def url_replace(request, *pairs):
         if key is None:
             key = p
         else:
-            if p == "":
+            if p == '':
                 if key in dict_:
                     del dict_[key]
             else:
                 dict_[key] = str(p)
             key = None
-    return dict_.urlencode(safe="[]")
+    return dict_.urlencode(safe='[]')

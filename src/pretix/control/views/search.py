@@ -12,8 +12,8 @@ from pretix.control.views import LargeResultSetPaginator, PaginationMixin
 class OrderSearch(PaginationMixin, ListView):
     model = Order
     paginator_class = LargeResultSetPaginator
-    context_object_name = "orders"
-    template_name = "pretixcontrol/search/orders.html"
+    context_object_name = 'orders'
+    template_name = 'pretixcontrol/search/orders.html'
 
     @cached_property
     def filter_form(self):
@@ -21,56 +21,56 @@ class OrderSearch(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data()
-        ctx["filter_form"] = self.filter_form
-        ctx["meta_fields"] = [
+        ctx['filter_form'] = self.filter_form
+        ctx['meta_fields'] = [
             self.filter_form[k]
             for k in self.filter_form.fields
-            if k.startswith("meta_")
+            if k.startswith('meta_')
         ]
 
         # Only compute this annotations for this page (query optimization)
         s = (
-            OrderPosition.objects.filter(order=OuterRef("pk"))
+            OrderPosition.objects.filter(order=OuterRef('pk'))
             .order_by()
-            .values("order")
-            .annotate(k=Count("id"))
-            .values("k")
+            .values('order')
+            .annotate(k=Count('id'))
+            .values('k')
         )
         annotated = {
-            o["pk"]: o
+            o['pk']: o
             for o in Order.annotate_overpayments(Order.objects)
             .using(settings.DATABASE_REPLICA)
-            .filter(pk__in=[o.pk for o in ctx["orders"]])
+            .filter(pk__in=[o.pk for o in ctx['orders']])
             .annotate(
                 pcnt=Subquery(s, output_field=IntegerField()),
                 has_cancellation_request=Exists(
-                    CancellationRequest.objects.filter(order=OuterRef("pk"))
+                    CancellationRequest.objects.filter(order=OuterRef('pk'))
                 ),
             )
             .values(
-                "pk",
-                "pcnt",
-                "is_overpaid",
-                "is_underpaid",
-                "is_pending_with_full_payment",
-                "has_external_refund",
-                "has_pending_refund",
-                "has_cancellation_request",
+                'pk',
+                'pcnt',
+                'is_overpaid',
+                'is_underpaid',
+                'is_pending_with_full_payment',
+                'has_external_refund',
+                'has_pending_refund',
+                'has_cancellation_request',
             )
         }
 
-        for o in ctx["orders"]:
+        for o in ctx['orders']:
             if o.pk not in annotated:
                 continue
-            o.pcnt = annotated.get(o.pk)["pcnt"]
-            o.is_overpaid = annotated.get(o.pk)["is_overpaid"]
-            o.is_underpaid = annotated.get(o.pk)["is_underpaid"]
+            o.pcnt = annotated.get(o.pk)['pcnt']
+            o.is_overpaid = annotated.get(o.pk)['is_overpaid']
+            o.is_underpaid = annotated.get(o.pk)['is_underpaid']
             o.is_pending_with_full_payment = annotated.get(o.pk)[
-                "is_pending_with_full_payment"
+                'is_pending_with_full_payment'
             ]
-            o.has_external_refund = annotated.get(o.pk)["has_external_refund"]
-            o.has_pending_refund = annotated.get(o.pk)["has_pending_refund"]
-            o.has_cancellation_request = annotated.get(o.pk)["has_cancellation_request"]
+            o.has_external_refund = annotated.get(o.pk)['has_external_refund']
+            o.has_pending_refund = annotated.get(o.pk)['has_pending_refund']
+            o.has_cancellation_request = annotated.get(o.pk)['has_cancellation_request']
 
         return ctx
 
@@ -83,15 +83,15 @@ class OrderSearch(PaginationMixin, ListView):
             qs = qs.filter(
                 Q(
                     event_id__in=self.request.user.get_events_with_permission(
-                        "can_view_orders"
-                    ).values_list("id", flat=True)
+                        'can_view_orders'
+                    ).values_list('id', flat=True)
                 )
             )
 
         if self.filter_form.is_valid():
             qs = self.filter_form.filter_qs(qs)
 
-            if self.filter_form.cleaned_data.get("query"):
+            if self.filter_form.cleaned_data.get('query'):
                 """
                 We need to work around a bug in PostgreSQL's query plan optimizer here.
                 The database lacks statistical data to predict how common our search filter is and therefore
@@ -122,7 +122,7 @@ class OrderSearch(PaginationMixin, ListView):
                     offset = (int(page) - 1) * limit
                 except ValueError:
                     offset = 0
-                resultids = list(qs.order_by().values_list("id", flat=True)[:201])
+                resultids = list(qs.order_by().values_list('id', flat=True)[:201])
                 if len(resultids) <= 200 and len(resultids) <= offset + limit:
                     qs = Order.objects.using(settings.DATABASE_REPLICA).filter(
                         id__in=resultids
@@ -138,18 +138,18 @@ class OrderSearch(PaginationMixin, ListView):
         """
         return (
             qs.only(
-                "id",
-                "invoice_address__name_cached",
-                "invoice_address__name_parts",
-                "code",
-                "event",
-                "email",
-                "datetime",
-                "total",
-                "status",
-                "require_approval",
-                "testmode",
+                'id',
+                'invoice_address__name_cached',
+                'invoice_address__name_parts',
+                'code',
+                'event',
+                'email',
+                'datetime',
+                'total',
+                'status',
+                'require_approval',
+                'testmode',
             )
-            .prefetch_related("event", "event__organizer")
-            .select_related("invoice_address")
+            .prefetch_related('event', 'event__organizer')
+            .select_related('invoice_address')
         )

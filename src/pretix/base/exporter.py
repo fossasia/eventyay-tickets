@@ -22,7 +22,7 @@ def excel_safe(val):
         val = str(val)
 
     if isinstance(val, str):
-        val = re.sub(ILLEGAL_CHARACTERS_RE, "", val)
+        val = re.sub(ILLEGAL_CHARACTERS_RE, '', val)
 
     return val
 
@@ -107,21 +107,21 @@ class BaseExporter:
 
 
 class ListExporter(BaseExporter):
-    ProgressSetTotal = namedtuple("ProgressSetTotal", "total")
+    ProgressSetTotal = namedtuple('ProgressSetTotal', 'total')
 
     @property
     def export_form_fields(self) -> dict:
         ff = OrderedDict(
             [
                 (
-                    "_format",
+                    '_format',
                     forms.ChoiceField(
-                        label=_("Export format"),
+                        label=_('Export format'),
                         choices=(
-                            ("xlsx", _("Excel (.xlsx)")),
-                            ("default", _("CSV (with commas)")),
-                            ("csv-excel", _("CSV (Excel-style)")),
-                            ("semicolon", _("CSV (with semicolons)")),
+                            ('xlsx', _('Excel (.xlsx)')),
+                            ('default', _('CSV (with commas)')),
+                            ('csv-excel', _('CSV (Excel-style)')),
+                            ('semicolon', _('CSV (with semicolons)')),
                         ),
                     ),
                 ),
@@ -138,13 +138,13 @@ class ListExporter(BaseExporter):
         raise NotImplementedError()  # noqa
 
     def get_filename(self):
-        return "export"
+        return 'export'
 
     def _render_csv(self, form_data, output_file=None, **kwargs):
         if output_file:
-            if "b" in output_file.mode:
+            if 'b' in output_file.mode:
                 output_file = io.TextIOWrapper(
-                    output_file, encoding="utf-8", newline=""
+                    output_file, encoding='utf-8', newline=''
                 )
             writer = csv.writer(output_file, **kwargs)
             total = 0
@@ -159,7 +159,7 @@ class ListExporter(BaseExporter):
                     if counter % max(10, total // 100) == 0:
                         self.progress_callback(counter / total * 100)
                 writer.writerow(line)
-            return self.get_filename() + ".csv", "text/csv", None
+            return self.get_filename() + '.csv', 'text/csv', None
         else:
             output = io.StringIO()
             writer = csv.writer(output, **kwargs)
@@ -176,9 +176,9 @@ class ListExporter(BaseExporter):
                         self.progress_callback(counter / total * 100)
                 writer.writerow(line)
             return (
-                self.get_filename() + ".csv",
-                "text/csv",
-                output.getvalue().encode("utf-8"),
+                self.get_filename() + '.csv',
+                'text/csv',
+                output.getvalue().encode('utf-8'),
             )
 
     def _render_xlsx(self, form_data, output_file=None):
@@ -208,35 +208,35 @@ class ListExporter(BaseExporter):
         if output_file:
             wb.save(output_file)
             return (
-                self.get_filename() + ".xlsx",
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                self.get_filename() + '.xlsx',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 None,
             )
         else:
-            with tempfile.NamedTemporaryFile(suffix=".xlsx") as f:
+            with tempfile.NamedTemporaryFile(suffix='.xlsx') as f:
                 wb.save(f.name)
                 f.seek(0)
                 return (
-                    self.get_filename() + ".xlsx",
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    self.get_filename() + '.xlsx',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                     f.read(),
                 )
 
     def render(self, form_data: dict, output_file=None) -> Tuple[str, str, bytes]:
-        if form_data.get("_format") == "xlsx":
+        if form_data.get('_format') == 'xlsx':
             return self._render_xlsx(form_data, output_file=output_file)
-        elif form_data.get("_format") == "default":
+        elif form_data.get('_format') == 'default':
             return self._render_csv(
                 form_data,
                 quoting=csv.QUOTE_NONNUMERIC,
-                delimiter=",",
+                delimiter=',',
                 output_file=output_file,
             )
-        elif form_data.get("_format") == "csv-excel":
-            return self._render_csv(form_data, dialect="excel", output_file=output_file)
-        elif form_data.get("_format") == "semicolon":
+        elif form_data.get('_format') == 'csv-excel':
+            return self._render_csv(form_data, dialect='excel', output_file=output_file)
+        elif form_data.get('_format') == 'semicolon':
             return self._render_csv(
-                form_data, dialect="excel", delimiter=";", output_file=output_file
+                form_data, dialect='excel', delimiter=';', output_file=output_file
             )
 
 
@@ -248,20 +248,20 @@ class MultiSheetListExporter(ListExporter):
     @property
     def export_form_fields(self) -> dict:
         choices = [
-            ("xlsx", _("Combined Excel (.xlsx)")),
+            ('xlsx', _('Combined Excel (.xlsx)')),
         ]
         for s, l in self.sheets:
             choices += [
-                (s + ":default", str(l) + " – " + gettext("CSV (with commas)")),
-                (s + ":excel", str(l) + " – " + gettext("CSV (Excel-style)")),
-                (s + ":semicolon", str(l) + " – " + gettext("CSV (with semicolons)")),
+                (s + ':default', str(l) + ' – ' + gettext('CSV (with commas)')),
+                (s + ':excel', str(l) + ' – ' + gettext('CSV (Excel-style)')),
+                (s + ':semicolon', str(l) + ' – ' + gettext('CSV (with semicolons)')),
             ]
         ff = OrderedDict(
             [
                 (
-                    "_format",
+                    '_format',
                     forms.ChoiceField(
-                        label=_("Export format"),
+                        label=_('Export format'),
                         choices=choices,
                     ),
                 ),
@@ -274,8 +274,8 @@ class MultiSheetListExporter(ListExporter):
         pass
 
     def iterate_sheet(self, form_data, sheet):
-        if hasattr(self, "iterate_" + sheet):
-            yield from getattr(self, "iterate_" + sheet)(form_data)
+        if hasattr(self, 'iterate_' + sheet):
+            yield from getattr(self, 'iterate_' + sheet)(form_data)
         else:
             raise NotImplementedError()  # noqa
 
@@ -283,9 +283,9 @@ class MultiSheetListExporter(ListExporter):
         total = 0
         counter = 0
         if output_file:
-            if "b" in output_file.mode:
+            if 'b' in output_file.mode:
                 output_file = io.TextIOWrapper(
-                    output_file, encoding="utf-8", newline=""
+                    output_file, encoding='utf-8', newline=''
                 )
             writer = csv.writer(output_file, **kwargs)
             for line in self.iterate_sheet(form_data, sheet):
@@ -298,7 +298,7 @@ class MultiSheetListExporter(ListExporter):
                     counter += 1
                     if counter % max(10, total // 100) == 0:
                         self.progress_callback(counter / total * 100)
-            return self.get_filename() + ".csv", "text/csv", None
+            return self.get_filename() + '.csv', 'text/csv', None
         else:
             output = io.StringIO()
             writer = csv.writer(output, **kwargs)
@@ -313,9 +313,9 @@ class MultiSheetListExporter(ListExporter):
                     if counter % max(10, total // 100) == 0:
                         self.progress_callback(counter / total * 100)
             return (
-                self.get_filename() + ".csv",
-                "text/csv",
-                output.getvalue().encode("utf-8"),
+                self.get_filename() + '.csv',
+                'text/csv',
+                output.getvalue().encode('utf-8'),
             )
 
     def _render_xlsx(self, form_data, output_file=None):
@@ -323,8 +323,8 @@ class MultiSheetListExporter(ListExporter):
         n_sheets = len(self.sheets)
         for i_sheet, (s, l) in enumerate(self.sheets):
             ws = wb.create_sheet(str(l))
-            if hasattr(self, "prepare_xlsx_sheet_" + s):
-                getattr(self, "prepare_xlsx_sheet_" + s)(ws)
+            if hasattr(self, 'prepare_xlsx_sheet_' + s):
+                getattr(self, 'prepare_xlsx_sheet_' + s)(ws)
 
             total = 0
             counter = 0
@@ -343,42 +343,42 @@ class MultiSheetListExporter(ListExporter):
         if output_file:
             wb.save(output_file)
             return (
-                self.get_filename() + ".xlsx",
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                self.get_filename() + '.xlsx',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 None,
             )
         else:
-            with tempfile.NamedTemporaryFile(suffix=".xlsx") as f:
+            with tempfile.NamedTemporaryFile(suffix='.xlsx') as f:
                 wb.save(f.name)
                 f.seek(0)
                 return (
-                    self.get_filename() + ".xlsx",
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    self.get_filename() + '.xlsx',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                     f.read(),
                 )
 
     def render(self, form_data: dict, output_file=None) -> Tuple[str, str, bytes]:
-        if form_data.get("_format") == "xlsx":
+        if form_data.get('_format') == 'xlsx':
             return self._render_xlsx(form_data, output_file=output_file)
-        elif ":" in form_data.get("_format"):
-            sheet, f = form_data.get("_format").split(":")
-            if f == "default":
+        elif ':' in form_data.get('_format'):
+            sheet, f = form_data.get('_format').split(':')
+            if f == 'default':
                 return self._render_sheet_csv(
                     form_data,
                     sheet,
                     quoting=csv.QUOTE_NONNUMERIC,
-                    delimiter=",",
+                    delimiter=',',
                     output_file=output_file,
                 )
-            elif f == "excel":
+            elif f == 'excel':
                 return self._render_sheet_csv(
-                    form_data, sheet, dialect="excel", output_file=output_file
+                    form_data, sheet, dialect='excel', output_file=output_file
                 )
-            elif f == "semicolon":
+            elif f == 'semicolon':
                 return self._render_sheet_csv(
                     form_data,
                     sheet,
-                    dialect="excel",
-                    delimiter=";",
+                    dialect='excel',
+                    delimiter=';',
                     output_file=output_file,
                 )

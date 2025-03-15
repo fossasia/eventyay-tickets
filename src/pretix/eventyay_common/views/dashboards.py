@@ -49,7 +49,7 @@ from pretix.helpers.plugin_enable import is_video_enabled
 from ...base.models.orders import CancellationRequest
 from ..utils import EventCreatedFor, get_subevent
 
-OVERVIEW_BANLIST = ["pretix.plugins.sendmail.order.email.sent"]
+OVERVIEW_BANLIST = ['pretix.plugins.sendmail.order.email.sent']
 
 
 def event_index_widgets_lazy(request: HttpRequest, **kwargs) -> JsonResponse:
@@ -61,7 +61,7 @@ def event_index_widgets_lazy(request: HttpRequest, **kwargs) -> JsonResponse:
     ):
         widgets.extend(result)
 
-    return JsonResponse({"widgets": widgets})
+    return JsonResponse({'widgets': widgets})
 
 
 class EventIndexView(TemplateView):
@@ -69,7 +69,7 @@ class EventIndexView(TemplateView):
     A class-based view for rendering the event index dashboard.
     """
 
-    template_name = "eventyay_common/event/index.html"
+    template_name = 'eventyay_common/event/index.html'
 
     @staticmethod
     def rearrange(widgets: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -77,15 +77,15 @@ class EventIndexView(TemplateView):
         Sort widget boxes according to priority.
         """
         mapping = {
-            "small": 1,
-            "big": 2,
-            "full": 3,
+            'small': 1,
+            'big': 2,
+            'full': 3,
         }
 
         def sort_key(element: Dict[str, Any]) -> tuple:
             return (
-                element.get("priority", 1),
-                mapping.get(element.get("display_size", "small"), 1),
+                element.get('priority', 1),
+                mapping.get(element.get('display_size', 'small'), 1),
             )
 
         return sorted(widgets, key=sort_key, reverse=True)
@@ -96,23 +96,23 @@ class EventIndexView(TemplateView):
         """
         request = self.request
         return {
-            "can_view_orders": request.user.has_event_permission(
-                request.organizer, request.event, "can_view_orders", request=request
+            'can_view_orders': request.user.has_event_permission(
+                request.organizer, request.event, 'can_view_orders', request=request
             ),
-            "can_change_orders": request.user.has_event_permission(
-                request.organizer, request.event, "can_change_orders", request=request
+            'can_change_orders': request.user.has_event_permission(
+                request.organizer, request.event, 'can_change_orders', request=request
             ),
-            "can_change_event_settings": request.user.has_event_permission(
+            'can_change_event_settings': request.user.has_event_permission(
                 request.organizer,
                 request.event,
-                "can_change_event_settings",
+                'can_change_event_settings',
                 request=request,
             ),
-            "can_view_vouchers": request.user.has_event_permission(
-                request.organizer, request.event, "can_view_vouchers", request=request
+            'can_view_vouchers': request.user.has_event_permission(
+                request.organizer, request.event, 'can_view_vouchers', request=request
             ),
-            "can_change_items": request.user.has_event_permission(
-                request.organizer, request.event, "can_change_items", request=request
+            'can_change_items': request.user.has_event_permission(
+                request.organizer, request.event, 'can_change_items', request=request
             ),
         }
 
@@ -145,19 +145,19 @@ class EventIndexView(TemplateView):
         """
         qs = qs.exclude(action_type__in=OVERVIEW_BANLIST)
 
-        if not permissions["can_view_orders"]:
+        if not permissions['can_view_orders']:
             qs = qs.exclude(content_type=ContentType.objects.get_for_model(Order))
 
-        if not permissions["can_view_vouchers"]:
+        if not permissions['can_view_vouchers']:
             qs = qs.exclude(content_type=ContentType.objects.get_for_model(Voucher))
 
-        if not permissions["can_change_event_settings"]:
+        if not permissions['can_change_event_settings']:
             allowed_types = [
                 ContentType.objects.get_for_model(Voucher),
                 ContentType.objects.get_for_model(Order),
             ]
 
-            if permissions["can_change_items"]:
+            if permissions['can_change_items']:
                 allowed_types += [
                     ContentType.objects.get_for_model(Item),
                     ContentType.objects.get_for_model(ItemCategory),
@@ -175,14 +175,14 @@ class EventIndexView(TemplateView):
         """
         request = self.request
         return {
-            "has_overpaid_orders": can_view_orders
+            'has_overpaid_orders': can_view_orders
             and Order.annotate_overpayments(request.event.orders)
             .filter(
                 Q(~Q(status=Order.STATUS_CANCELED) & Q(pending_sum_t__lt=0))
                 | Q(Q(status=Order.STATUS_CANCELED) & Q(pending_sum_rc__lt=0))
             )
             .exists(),
-            "has_pending_orders_with_full_payment": can_view_orders
+            'has_pending_orders_with_full_payment': can_view_orders
             and Order.annotate_overpayments(request.event.orders)
             .filter(
                 Q(status__in=(Order.STATUS_EXPIRED, Order.STATUS_PENDING))
@@ -190,7 +190,7 @@ class EventIndexView(TemplateView):
                 & Q(require_approval=False)
             )
             .exists(),
-            "has_pending_refunds": can_view_orders
+            'has_pending_refunds': can_view_orders
             and OrderRefund.objects.filter(
                 order__event=request.event,
                 state__in=(
@@ -198,11 +198,11 @@ class EventIndexView(TemplateView):
                     OrderRefund.REFUND_STATE_EXTERNAL,
                 ),
             ).exists(),
-            "has_pending_approvals": can_view_orders
+            'has_pending_approvals': can_view_orders
             and request.event.orders.filter(
                 status=Order.STATUS_PENDING, require_approval=True
             ).exists(),
-            "has_cancellation_requests": can_view_orders
+            'has_cancellation_requests': can_view_orders
             and CancellationRequest.objects.filter(order__event=request.event).exists(),
         }
 
@@ -216,54 +216,54 @@ class EventIndexView(TemplateView):
 
         # Collect widgets
         widgets = self._collect_dashboard_widgets(
-            subevent, permissions["can_view_orders"]
+            subevent, permissions['can_view_orders']
         )
 
         # Filter log entries
         qs = (
             request.event.logentry_set.all()
             .select_related(
-                "user", "content_type", "api_token", "oauth_application", "device"
+                'user', 'content_type', 'api_token', 'oauth_application', 'device'
             )
-            .order_by("-datetime")
+            .order_by('-datetime')
         )
         qs = self._filter_log_entries(qs, permissions)
 
         # Prepare context
         context.update(
             {
-                "widgets": widgets,
-                "logs": qs[:5],
-                "subevent": subevent,
-                "actions": (
+                'widgets': widgets,
+                'logs': qs[:5],
+                'subevent': subevent,
+                'actions': (
                     request.event.requiredaction_set.filter(done=False)[:5]
-                    if permissions["can_change_orders"]
+                    if permissions['can_change_orders']
                     else []
                 ),
-                "comment_form": CommentForm(
-                    initial={"comment": request.event.comment},
-                    readonly=not permissions["can_change_event_settings"],
+                'comment_form': CommentForm(
+                    initial={'comment': request.event.comment},
+                    readonly=not permissions['can_change_event_settings'],
                 ),
-                **self._check_event_statuses(permissions["can_view_orders"]),
+                **self._check_event_statuses(permissions['can_view_orders']),
             }
         )
 
         # Process actions
-        for action in context["actions"]:
+        for action in context['actions']:
             action.display = action.display(request)
 
         # Add timeline information
-        context["timeline"] = [
+        context['timeline'] = [
             {
-                "date": t.datetime.astimezone(request.event.timezone).date(),
-                "entry": t,
-                "time": t.datetime.astimezone(request.event.timezone),
+                'date': t.datetime.astimezone(request.event.timezone).date(),
+                'entry': t,
+                'time': t.datetime.astimezone(request.event.timezone),
             }
             for t in timeline_for_event(request.event, subevent)
         ]
 
-        context["today"] = now().astimezone(request.event.timezone).date()
-        context["nearly_now"] = now().astimezone(request.event.timezone) - timedelta(
+        context['today'] = now().astimezone(request.event.timezone).date()
+        context['nearly_now'] = now().astimezone(request.event.timezone) - timedelta(
             seconds=20
         )
 
@@ -286,8 +286,8 @@ class EventWidgetGenerator:
             return qs[:nmax]
 
         return qs.prefetch_related(
-            "_settings_objects", "organizer___settings_objects"
-        ).select_related("organizer")[:nmax]
+            '_settings_objects', 'organizer___settings_objects'
+        ).select_related('organizer')[:nmax]
 
     @staticmethod
     def format_event_daterange(event: Event, tz: DstTzInfo) -> str:
@@ -296,7 +296,7 @@ class EventWidgetGenerator:
         """
         if event.has_subevents:
             return (
-                _("No dates")
+                _('No dates')
                 if event.min_from is None
                 else daterange(
                     event.min_from.astimezone(tz),
@@ -309,7 +309,7 @@ class EventWidgetGenerator:
                 event.date_from.astimezone(tz), event.date_to.astimezone(tz)
             )
 
-        return date_format(event.date_from.astimezone(tz), "DATE_FORMAT")
+        return date_format(event.date_from.astimezone(tz), 'DATE_FORMAT')
 
     @staticmethod
     def format_event_times(event: Event, tz: DstTzInfo, request: HttpRequest) -> str:
@@ -317,24 +317,24 @@ class EventWidgetGenerator:
         Generate a formatted time string for an event.
         """
         if event.has_subevents:
-            return _("Event series")
+            return _('Event series')
 
         times = []
 
         # Add admission time if different from event start
         if event.date_admission and event.date_admission != event.date_from:
             times.append(
-                date_format(event.date_admission.astimezone(tz), "TIME_FORMAT")
+                date_format(event.date_admission.astimezone(tz), 'TIME_FORMAT')
             )
 
         # Add event start time
         if event.date_from:
-            times.append(date_format(event.date_from.astimezone(tz), "TIME_FORMAT"))
+            times.append(date_format(event.date_from.astimezone(tz), 'TIME_FORMAT'))
 
-        formatted_times = " / ".join(times)
+        formatted_times = ' / '.join(times)
 
         # Add timezone indicator
-        tzname = event.cache.get_or_set("timezone", lambda e=event: e.settings.timezone)
+        tzname = event.cache.get_or_set('timezone', lambda e=event: e.settings.timezone)
         if tzname != request.timezone and not event.has_subevents:
             formatted_times += f' <span class="fa fa-globe text-muted" data-toggle="tooltip" title="{tzname}"></span>'
 
@@ -347,13 +347,13 @@ class EventWidgetGenerator:
         """
         if is_video_enabled(event):
             url = reverse(
-                "eventyay_common:event.create_access_to_video",
-                kwargs={"event": event.slug, "organizer": event.organizer.slug},
+                'eventyay_common:event.create_access_to_video',
+                kwargs={'event': event.slug, 'organizer': event.organizer.slug},
             )
             return f'<a href="{url}" class="component">{_("Video")}</a>'
         return f"""
             <a href="#" data-toggle="modal" data-target="#alert-modal" class="component">
-                {_("Video")}
+                {_('Video')}
             </a>
         """
 
@@ -369,7 +369,7 @@ class EventWidgetGenerator:
             return f'<a href="{event.talk_dashboard_url}" class="middle-component">{_("Talks")}</a>'
         return f"""
             <a href="#" data-toggle="modal" data-target="#alert-modal" class="middle-component">
-                {_("Talks")}
+                {_('Talks')}
             </a>
         """
 
@@ -380,10 +380,10 @@ class EventWidgetGenerator:
         """
         Generate a complete widget for an event.
         """
-        widget_content = ""
+        widget_content = ''
         if not lazy:
             tzname = event.cache.get_or_set(
-                "timezone", lambda e=event: e.settings.timezone
+                'timezone', lambda e=event: e.settings.timezone
             )
             tz = pytz.timezone(tzname)
 
@@ -405,26 +405,26 @@ class EventWidgetGenerator:
                 times=cls.format_event_times(event, tz, request),
                 daterange=cls.format_event_daterange(event, tz),
                 url=reverse(
-                    "eventyay_common:event.index",
+                    'eventyay_common:event.index',
                     kwargs={
-                        "organizer": event.organizer.slug,
-                        "event": event.slug,
+                        'organizer': event.organizer.slug,
+                        'event': event.slug,
                     },
                 ),
                 ticket_url=reverse(
-                    "control:event.index",
-                    kwargs={"event": event.slug, "organizer": event.organizer.slug},
+                    'control:event.index',
+                    kwargs={'event': event.slug, 'organizer': event.organizer.slug},
                 ),
                 video_button=cls.generate_video_button(event),
                 talk_button=cls.generate_talk_button(event),
             )
 
         return {
-            "content": widget_content,
-            "display_size": "small",
-            "lazy": f"event-{event.pk}",
-            "priority": 100,
-            "container_class": "widget-container widget-container-event",
+            'content': widget_content,
+            'display_size': 'small',
+            'lazy': f'event-{event.pk}',
+            'priority': 100,
+            'container_class': 'widget-container widget-container-event',
         }
 
 
@@ -444,15 +444,15 @@ def widgets_for_event_qs(
 def annotated_event_query(request: HttpRequest, lazy: bool = False) -> QuerySet[Event]:
     active_orders = (
         Order.objects.filter(
-            event=OuterRef("pk"), status__in=[Order.STATUS_PENDING, Order.STATUS_PAID]
+            event=OuterRef('pk'), status__in=[Order.STATUS_PENDING, Order.STATUS_PAID]
         )
         .order_by()
-        .values("event")
-        .annotate(c=Count("*"))
-        .values("c")
+        .values('event')
+        .annotate(c=Count('*'))
+        .values('c')
     )
 
-    required_actions = RequiredAction.objects.filter(event=OuterRef("pk"), done=False)
+    required_actions = RequiredAction.objects.filter(event=OuterRef('pk'), done=False)
     qs = request.user.get_events_with_any_permission(request)
     if not lazy:
         qs = qs.annotate(
@@ -460,12 +460,12 @@ def annotated_event_query(request: HttpRequest, lazy: bool = False) -> QuerySet[
             has_ra=Exists(required_actions),
         )
     qs = qs.annotate(
-        min_from=Min("subevents__date_from"),
-        max_from=Max("subevents__date_from"),
-        max_to=Max("subevents__date_to"),
-        max_fromto=Greatest(Max("subevents__date_to"), Max("subevents__date_from")),
+        min_from=Min('subevents__date_from'),
+        max_from=Max('subevents__date_from'),
+        max_to=Max('subevents__date_to'),
+        max_fromto=Greatest(Max('subevents__date_to'), Max('subevents__date_from')),
     ).annotate(
-        order_to=Coalesce("max_fromto", "max_to", "max_from", "date_to", "date_from"),
+        order_to=Coalesce('max_fromto', 'max_to', 'max_from', 'date_to', 'date_from'),
     )
     return qs
 
@@ -475,15 +475,15 @@ def rearrange(widgets: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     Sort widget boxes according to priority.
     """
     mapping = {
-        "small": 1,
-        "big": 2,
-        "full": 3,
+        'small': 1,
+        'big': 2,
+        'full': 3,
     }
 
     def sort_key(element: Dict[str, Any]) -> Tuple[int, int]:
         return (
-            element.get("priority", 1),
-            mapping.get(element.get("display_size", "small"), 1),
+            element.get('priority', 1),
+            mapping.get(element.get('display_size', 'small'), 1),
         )
 
     return sorted(widgets, key=sort_key, reverse=True)
@@ -494,9 +494,9 @@ def eventyay_common_dashboard(request: HttpRequest) -> HttpResponse:
     for r, result in user_dashboard_widgets.send(request, user=request.user):
         widgets.extend(result)
     ctx = {
-        "widgets": rearrange(widgets),
-        "can_create_event": request.user.teams.filter(can_create_events=True).exists(),
-        "upcoming": widgets_for_event_qs(
+        'widgets': rearrange(widgets),
+        'can_create_event': request.user.teams.filter(can_create_events=True).exists(),
+        'upcoming': widgets_for_event_qs(
             request,
             annotated_event_query(request, lazy=True)
             .filter(
@@ -506,11 +506,11 @@ def eventyay_common_dashboard(request: HttpRequest) -> HttpResponse:
                     | Q(Q(date_to__isnull=False) & Q(date_to__gte=now()))
                 )
             )
-            .order_by("date_from", "order_to", "pk"),
+            .order_by('date_from', 'order_to', 'pk'),
             7,
             lazy=True,
         ),
-        "past": widgets_for_event_qs(
+        'past': widgets_for_event_qs(
             request,
             annotated_event_query(request, lazy=True)
             .filter(
@@ -520,21 +520,21 @@ def eventyay_common_dashboard(request: HttpRequest) -> HttpResponse:
                     | Q(Q(date_to__isnull=False) & Q(date_to__lt=now()))
                 )
             )
-            .order_by("-order_to", "pk"),
+            .order_by('-order_to', 'pk'),
             8,
             lazy=True,
         ),
-        "series": widgets_for_event_qs(
+        'series': widgets_for_event_qs(
             request,
             annotated_event_query(request, lazy=True)
             .filter(has_subevents=True)
-            .order_by("-order_to", "pk"),
+            .order_by('-order_to', 'pk'),
             8,
             lazy=True,
         ),
     }
 
-    return render(request, "eventyay_common/dashboard/dashboard.html", ctx)
+    return render(request, 'eventyay_common/dashboard/dashboard.html', ctx)
 
 
 def user_index_widgets_lazy(request: HttpRequest) -> JsonResponse:
@@ -549,7 +549,7 @@ def user_index_widgets_lazy(request: HttpRequest) -> JsonResponse:
                 | Q(Q(date_to__isnull=False) & Q(date_to__gte=now()))
             )
         )
-        .order_by("date_from", "order_to", "pk"),
+        .order_by('date_from', 'order_to', 'pk'),
         7,
     )
     widgets += widgets_for_event_qs(
@@ -562,14 +562,14 @@ def user_index_widgets_lazy(request: HttpRequest) -> JsonResponse:
                 | Q(Q(date_to__isnull=False) & Q(date_to__lt=now()))
             )
         )
-        .order_by("-order_to", "pk"),
+        .order_by('-order_to', 'pk'),
         8,
     )
     widgets += widgets_for_event_qs(
         request,
         annotated_event_query(request)
         .filter(has_subevents=True)
-        .order_by("-order_to", "pk"),
+        .order_by('-order_to', 'pk'),
         8,
     )
-    return JsonResponse({"widgets": widgets})
+    return JsonResponse({'widgets': widgets})

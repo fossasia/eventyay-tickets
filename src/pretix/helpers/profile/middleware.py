@@ -7,7 +7,7 @@ from django.conf import settings
 
 
 class CProfileMiddleware(object):
-    banlist = ("/healthcheck/", "/jsi18n/")
+    banlist = ('/healthcheck/', '/jsi18n/')
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -33,8 +33,8 @@ class CProfileMiddleware(object):
             profiler.dump_stats(
                 os.path.join(
                     settings.PROFILE_DIR,
-                    "{time:.0f}_{tottime:.3f}_{path}.pstat".format(
-                        path=request.path[1:].replace("/", "_"),
+                    '{time:.0f}_{tottime:.3f}_{path}.pstat'.format(
+                        path=request.path[1:].replace('/', '_'),
                         tottime=tottime,
                         time=time.time(),
                     ),

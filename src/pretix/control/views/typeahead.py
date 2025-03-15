@@ -32,22 +32,22 @@ from pretix.helpers.i18n import i18ncomp
 
 def serialize_user(u):
     return {
-        "id": u.pk,
-        "type": "user",
-        "name": str(u),
-        "text": str(u),
-        "url": reverse("control:index"),
+        'id': u.pk,
+        'type': 'user',
+        'name': str(u),
+        'text': str(u),
+        'url': reverse('control:index'),
     }
 
 
 def serialize_orga(o):
     return {
-        "id": o.pk,
-        "slug": o.slug,
-        "type": "organizer",
-        "name": str(o.name),
-        "text": str(o.name),
-        "url": reverse("control:organizer", kwargs={"organizer": o.slug}),
+        'id': o.pk,
+        'slug': o.slug,
+        'type': 'organizer',
+        'name': str(o.name),
+        'text': str(o.name),
+        'url': reverse('control:organizer', kwargs={'organizer': o.slug}),
     }
 
 
@@ -55,43 +55,43 @@ def serialize_event(e):
     dr = e.get_date_range_display()
     if e.has_subevents:
         if e.min_from is None:
-            dr = pgettext("subevent", "No dates")
+            dr = pgettext('subevent', 'No dates')
         else:
             tz = pytz.timezone(e.settings.timezone)
             dr = (
-                _("Series:")
-                + " "
+                _('Series:')
+                + ' '
                 + daterange(
                     e.min_from.astimezone(tz),
                     (e.max_fromto or e.max_to or e.max_from).astimezone(tz),
                 )
             )
     return {
-        "id": e.pk,
-        "slug": e.slug,
-        "type": "event",
-        "organizer": str(e.organizer.name),
-        "name": str(e.name),
-        "text": str(e.name),
-        "date_range": dr,
-        "url": reverse(
-            "control:event.index",
-            kwargs={"event": e.slug, "organizer": e.organizer.slug},
+        'id': e.pk,
+        'slug': e.slug,
+        'type': 'event',
+        'organizer': str(e.organizer.name),
+        'name': str(e.name),
+        'text': str(e.name),
+        'date_range': dr,
+        'url': reverse(
+            'control:event.index',
+            kwargs={'event': e.slug, 'organizer': e.organizer.slug},
         ),
     }
 
 
 def serialize_order(o):
     return {
-        "type": "order",
-        "event": str(o.event),
-        "title": _("Order {}").format(str(o.code)),
-        "url": reverse(
-            "control:event.order",
+        'type': 'order',
+        'event': str(o.event),
+        'title': _('Order {}').format(str(o.code)),
+        'url': reverse(
+            'control:event.order',
             kwargs={
-                "event": o.event.slug,
-                "organizer": o.event.organizer.slug,
-                "code": o.code,
+                'event': o.event.slug,
+                'organizer': o.event.organizer.slug,
+                'code': o.code,
             },
         ),
     }
@@ -99,28 +99,28 @@ def serialize_order(o):
 
 def serialize_voucher(v):
     return {
-        "type": "voucher",
-        "event": str(v.event),
-        "title": _("Voucher {}").format(str(v.code)),
-        "url": reverse(
-            "control:event.voucher",
+        'type': 'voucher',
+        'event': str(v.event),
+        'title': _('Voucher {}').format(str(v.code)),
+        'url': reverse(
+            'control:event.voucher',
             kwargs={
-                "event": v.event.slug,
-                "organizer": v.event.organizer.slug,
-                "voucher": v.pk,
+                'event': v.event.slug,
+                'organizer': v.event.organizer.slug,
+                'voucher': v.pk,
             },
         ),
     }
 
 
 def event_list(request):
-    query = request.GET.get("query", "")
+    query = request.GET.get('query', '')
     try:
-        page = int(request.GET.get("page", "1"))
+        page = int(request.GET.get('page', '1'))
     except ValueError:
         page = 1
 
-    if "can_copy" in request.GET:
+    if 'can_copy' in request.GET:
         qs = EventWizardCopyForm.copy_from_queryset(request.user, request.session)
     else:
         qs = request.user.get_events_with_any_permission(request)
@@ -133,36 +133,36 @@ def event_list(request):
             | Q(organizer__slug__icontains=query)
         )
         .annotate(
-            min_from=Min("subevents__date_from"),
-            max_from=Max("subevents__date_from"),
-            max_to=Max("subevents__date_to"),
-            max_fromto=Greatest(Max("subevents__date_to"), Max("subevents__date_from")),
+            min_from=Min('subevents__date_from'),
+            max_from=Max('subevents__date_from'),
+            max_to=Max('subevents__date_to'),
+            max_fromto=Greatest(Max('subevents__date_to'), Max('subevents__date_from')),
         )
         .annotate(
-            order_from=Coalesce("min_from", "date_from"),
+            order_from=Coalesce('min_from', 'date_from'),
         )
-        .order_by("-order_from")
+        .order_by('-order_from')
     )
 
     total = qs.count()
     pagesize = 20
     offset = (page - 1) * pagesize
     doc = {
-        "results": [
+        'results': [
             serialize_event(e)
-            for e in qs.select_related("organizer")[offset : offset + pagesize]
+            for e in qs.select_related('organizer')[offset : offset + pagesize]
         ],
-        "pagination": {"more": total >= (offset + pagesize)},
+        'pagination': {'more': total >= (offset + pagesize)},
     }
     return JsonResponse(doc)
 
 
 def nav_context_list(request):
-    query = request.GET.get("query", "").strip()
-    organizer = request.GET.get("organizer", None)
+    query = request.GET.get('query', '').strip()
+    organizer = request.GET.get('organizer', None)
 
     try:
-        page = int(request.GET.get("page", "1"))
+        page = int(request.GET.get('page', '1'))
     except ValueError:
         page = 1
 
@@ -170,22 +170,22 @@ def nav_context_list(request):
         request.user.get_events_with_any_permission(request)
         .filter(Q(name__icontains=i18ncomp(query)) | Q(slug__icontains=query))
         .annotate(
-            min_from=Min("subevents__date_from"),
-            max_from=Max("subevents__date_from"),
-            max_to=Max("subevents__date_to"),
-            max_fromto=Greatest(Max("subevents__date_to"), Max("subevents__date_from")),
+            min_from=Min('subevents__date_from'),
+            max_from=Max('subevents__date_from'),
+            max_to=Max('subevents__date_to'),
+            max_fromto=Greatest(Max('subevents__date_to'), Max('subevents__date_from')),
         )
         .annotate(
-            order_from=Coalesce("min_from", "date_from"),
+            order_from=Coalesce('min_from', 'date_from'),
         )
-        .order_by("-order_from")
+        .order_by('-order_from')
     )
 
     if request.user.has_active_staff_session(request.session.session_key):
         qs_orga = Organizer.objects.all()
     else:
         qs_orga = Organizer.objects.filter(
-            pk__in=request.user.teams.values_list("organizer", flat=True)
+            pk__in=request.user.teams.values_list('organizer', flat=True)
         )
     if query:
         qs_orga = qs_orga.filter(Q(name__icontains=query) | Q(slug__icontains=query))
@@ -193,8 +193,8 @@ def nav_context_list(request):
     if query:
         qs_orders = (
             Order.objects.filter(code__icontains=query)
-            .select_related("event", "event__organizer")
-            .only("event", "code", "pk")
+            .select_related('event', 'event__organizer')
+            .only('event', 'code', 'pk')
             .order_by()
         )
         if not request.user.has_active_staff_session(request.session.session_key):
@@ -202,19 +202,19 @@ def nav_context_list(request):
                 Q(
                     event__organizer_id__in=request.user.teams.filter(
                         all_events=True, can_view_orders=True
-                    ).values_list("organizer", flat=True)
+                    ).values_list('organizer', flat=True)
                 )
                 | Q(
                     event_id__in=request.user.teams.filter(
                         can_view_orders=True
-                    ).values_list("limit_events__id", flat=True)
+                    ).values_list('limit_events__id', flat=True)
                 )
             )
 
         qs_vouchers = (
             Voucher.objects.filter(code__icontains=query)
-            .select_related("event", "event__organizer")
-            .only("event", "code", "pk")
+            .select_related('event', 'event__organizer')
+            .only('event', 'code', 'pk')
             .order_by()
         )
         if not request.user.has_active_staff_session(request.session.session_key):
@@ -222,12 +222,12 @@ def nav_context_list(request):
                 Q(
                     event__organizer_id__in=request.user.teams.filter(
                         all_events=True, can_view_vouchers=True
-                    ).values_list("organizer", flat=True)
+                    ).values_list('organizer', flat=True)
                 )
                 | Q(
                     event_id__in=request.user.teams.filter(
                         can_view_vouchers=True
-                    ).values_list("limit_events__id", flat=True)
+                    ).values_list('limit_events__id', flat=True)
                 )
             )
     else:
@@ -256,7 +256,7 @@ def nav_context_list(request):
         ]
         + [
             serialize_event(e)
-            for e in qs_events.select_related("organizer")[
+            for e in qs_events.select_related('organizer')[
                 offset : offset + (pagesize if query else 5)
             ]
         ]
@@ -282,15 +282,15 @@ def nav_context_list(request):
                     results.remove(organizer)
                 results.insert(1, organizer)
 
-    doc = {"results": results, "pagination": {"more": total >= (offset + pagesize)}}
+    doc = {'results': results, 'pagination': {'more': total >= (offset + pagesize)}}
     return JsonResponse(doc)
 
 
 @event_permission_required(None)
 def subevent_select2(request, **kwargs):
-    query = request.GET.get("query", "")
+    query = request.GET.get('query', '')
     try:
-        page = int(request.GET.get("page", "1"))
+        page = int(request.GET.get('page', '1'))
     except ValueError:
         page = 1
 
@@ -298,7 +298,7 @@ def subevent_select2(request, **kwargs):
     tz = request.event.timezone
 
     dt = None
-    for f in get_format("DATE_INPUT_FORMATS"):
+    for f in get_format('DATE_INPUT_FORMATS'):
         try:
             dt = datetime.strptime(query, f)
             break
@@ -314,36 +314,36 @@ def subevent_select2(request, **kwargs):
         )
         qf |= Q(date_from__gte=dt_start) & Q(date_from__lte=dt_end)
 
-    qs = request.event.subevents.filter(qf).order_by("-date_from", "name", "pk")
+    qs = request.event.subevents.filter(qf).order_by('-date_from', 'name', 'pk')
 
     total = qs.count()
     pagesize = 20
     offset = (page - 1) * pagesize
     doc = {
-        "results": [
+        'results': [
             {
-                "id": e.pk,
-                "name": str(e.name),
-                "date_range": e.get_date_range_display()
+                'id': e.pk,
+                'name': str(e.name),
+                'date_range': e.get_date_range_display()
                 + (
-                    " " + date_format(e.date_from.astimezone(tz), "TIME_FORMAT")
+                    ' ' + date_format(e.date_from.astimezone(tz), 'TIME_FORMAT')
                     if e.settings.show_times
-                    else ""
+                    else ''
                 ),
-                "text": str(e),
+                'text': str(e),
             }
             for e in qs[offset : offset + pagesize]
         ],
-        "pagination": {"more": total >= (offset + pagesize)},
+        'pagination': {'more': total >= (offset + pagesize)},
     }
     return JsonResponse(doc)
 
 
 @event_permission_required(None)
 def quotas_select2(request, **kwargs):
-    query = request.GET.get("query", "")
+    query = request.GET.get('query', '')
     try:
-        page = int(request.GET.get("page", "1"))
+        page = int(request.GET.get('page', '1'))
     except ValueError:
         page = 1
 
@@ -351,7 +351,7 @@ def quotas_select2(request, **kwargs):
     tz = request.event.timezone
 
     dt = None
-    for f in get_format("DATE_INPUT_FORMATS"):
+    for f in get_format('DATE_INPUT_FORMATS'):
         try:
             dt = datetime.strptime(query, f)
             break
@@ -367,54 +367,54 @@ def quotas_select2(request, **kwargs):
         )
         qf |= Q(subevent__date_from__gte=dt_start) & Q(subevent__date_from__lte=dt_end)
 
-    qs = request.event.quotas.filter(qf).order_by("-subevent__date_from", "name")
+    qs = request.event.quotas.filter(qf).order_by('-subevent__date_from', 'name')
 
     total = qs.count()
     pagesize = 20
     offset = (page - 1) * pagesize
     doc = {
-        "results": [
-            {"id": q.pk, "name": str(q.name), "text": q.name}
+        'results': [
+            {'id': q.pk, 'name': str(q.name), 'text': q.name}
             for q in qs[offset : offset + pagesize]
         ],
-        "pagination": {"more": total >= (offset + pagesize)},
+        'pagination': {'more': total >= (offset + pagesize)},
     }
     return JsonResponse(doc)
 
 
 @event_permission_required(None)
 def items_select2(request, **kwargs):
-    query = request.GET.get("query", "")
+    query = request.GET.get('query', '')
     try:
-        page = int(request.GET.get("page", "1"))
+        page = int(request.GET.get('page', '1'))
     except ValueError:
         page = 1
 
     qs = request.event.items.filter(name__icontains=i18ncomp(query)).order_by(
-        "position"
+        'position'
     )
 
     total = qs.count()
     pagesize = 20
     offset = (page - 1) * pagesize
     doc = {
-        "results": [
+        'results': [
             {
-                "id": e.pk,
-                "text": str(e),
+                'id': e.pk,
+                'text': str(e),
             }
             for e in qs[offset : offset + pagesize]
         ],
-        "pagination": {"more": total >= (offset + pagesize)},
+        'pagination': {'more': total >= (offset + pagesize)},
     }
     return JsonResponse(doc)
 
 
 @event_permission_required(None)
 def variations_select2(request, **kwargs):
-    query = request.GET.get("query", "")
+    query = request.GET.get('query', '')
     try:
-        page = int(request.GET.get("page", "1"))
+        page = int(request.GET.get('page', '1'))
     except ValueError:
         page = 1
 
@@ -424,59 +424,59 @@ def variations_select2(request, **kwargs):
 
     qs = (
         ItemVariation.objects.filter(q)
-        .order_by("item__position", "item__name", "position", "value")
-        .select_related("item")
+        .order_by('item__position', 'item__name', 'position', 'value')
+        .select_related('item')
     )
 
     total = qs.count()
     pagesize = 20
     offset = (page - 1) * pagesize
     doc = {
-        "results": [
+        'results': [
             {
-                "id": e.pk,
-                "text": str(e.item) + " – " + str(e),
+                'id': e.pk,
+                'text': str(e.item) + ' – ' + str(e),
             }
             for e in qs[offset : offset + pagesize]
         ],
-        "pagination": {"more": total >= (offset + pagesize)},
+        'pagination': {'more': total >= (offset + pagesize)},
     }
     return JsonResponse(doc)
 
 
 @event_permission_required(None)
 def category_select2(request, **kwargs):
-    query = request.GET.get("query", "")
+    query = request.GET.get('query', '')
     try:
-        page = int(request.GET.get("page", "1"))
+        page = int(request.GET.get('page', '1'))
     except ValueError:
         page = 1
 
     qs = request.event.categories.filter(name__icontains=i18ncomp(query)).order_by(
-        "name"
+        'name'
     )
 
     total = qs.count()
     pagesize = 20
     offset = (page - 1) * pagesize
     doc = {
-        "results": [
+        'results': [
             {
-                "id": e.pk,
-                "text": str(e),
+                'id': e.pk,
+                'text': str(e),
             }
             for e in qs[offset : offset + pagesize]
         ],
-        "pagination": {"more": total >= (offset + pagesize)},
+        'pagination': {'more': total >= (offset + pagesize)},
     }
     return JsonResponse(doc)
 
 
 @event_permission_required(None)
 def checkinlist_select2(request, **kwargs):
-    query = request.GET.get("query", "")
+    query = request.GET.get('query', '')
     try:
-        page = int(request.GET.get("page", "1"))
+        page = int(request.GET.get('page', '1'))
     except ValueError:
         page = 1
 
@@ -500,35 +500,35 @@ def checkinlist_select2(request, **kwargs):
             )
 
     qs = (
-        request.event.checkin_lists.select_related("subevent")
+        request.event.checkin_lists.select_related('subevent')
         .filter(qf)
-        .order_by("name")
+        .order_by('name')
     )
 
     total = qs.count()
     pagesize = 20
     offset = (page - 1) * pagesize
     doc = {
-        "results": [
+        'results': [
             {
-                "id": e.pk,
-                "text": str(e.name),
-                "event": str(e.subevent)
+                'id': e.pk,
+                'text': str(e.name),
+                'event': str(e.subevent)
                 if request.event.has_subevents and e.subevent
                 else None,
             }
             for e in qs[offset : offset + pagesize]
         ],
-        "pagination": {"more": total >= (offset + pagesize)},
+        'pagination': {'more': total >= (offset + pagesize)},
     }
     return JsonResponse(doc)
 
 
 @event_permission_required(None)
 def itemvarquota_select2(request, **kwargs):
-    query = request.GET.get("query", "")
+    query = request.GET.get('query', '')
     try:
-        page = int(request.GET.get("page", "1"))
+        page = int(request.GET.get('page', '1'))
     except ValueError:
         page = 1
 
@@ -536,7 +536,7 @@ def itemvarquota_select2(request, **kwargs):
 
     if not request.event.has_subevents:
         # We are very unlikely to need pagination
-        itemqs = request.event.items.prefetch_related("variations").filter(
+        itemqs = request.event.items.prefetch_related('variations').filter(
             name__icontains=i18ncomp(query)
         )
         quotaqs = request.event.quotas.filter(name__icontains=query)
@@ -567,21 +567,21 @@ def itemvarquota_select2(request, **kwargs):
                         subevent__date_from__lte=dt_end
                     )
 
-            itemqs = request.event.items.prefetch_related("variations").filter(
+            itemqs = request.event.items.prefetch_related('variations').filter(
                 Q(name__icontains=i18ncomp(query)) | Q(internal_name__icontains=query)
             )
-            quotaqs = request.event.quotas.filter(quotaf).select_related("subevent")
+            quotaqs = request.event.quotas.filter(quotaf).select_related('subevent')
             more = False
         else:
             if page == 1:
-                itemqs = request.event.items.prefetch_related("variations").filter(
+                itemqs = request.event.items.prefetch_related('variations').filter(
                     Q(name__icontains=i18ncomp(query))
                     | Q(internal_name__icontains=query)
                 )
             else:
                 itemqs = request.event.items.none()
             quotaqs = request.event.quotas.filter(name__icontains=query).select_related(
-                "subevent"
+                'subevent'
             )
             total = quotaqs.count()
             pagesize = 20
@@ -593,59 +593,59 @@ def itemvarquota_select2(request, **kwargs):
         variations = list(i.variations.all())
         if variations:
             choices.append(
-                (str(i.pk), _("{product} – Any variation").format(product=i), "")
+                (str(i.pk), _('{product} – Any variation').format(product=i), '')
             )
             for v in variations:
-                choices.append(("%d-%d" % (i.pk, v.pk), "%s – %s" % (i, v.value), ""))
+                choices.append(('%d-%d' % (i.pk, v.pk), '%s – %s' % (i, v.value), ''))
         else:
-            choices.append((str(i.pk), str(i), ""))
+            choices.append((str(i.pk), str(i), ''))
     for q in quotaqs:
         if request.event.has_subevents:
             choices.append(
                 (
-                    "q-%d" % q.pk,
+                    'q-%d' % q.pk,
                     _('Any product in quota "{quota}"').format(quota=q),
                     str(q.subevent),
                 )
             )
         else:
             choices.append(
-                ("q-%d" % q.pk, _('Any product in quota "{quota}"').format(quota=q), "")
+                ('q-%d' % q.pk, _('Any product in quota "{quota}"').format(quota=q), '')
             )
 
     doc = {
-        "results": [
+        'results': [
             {
-                "id": k,
-                "text": str(v),
-                "event": str(t),
+                'id': k,
+                'text': str(v),
+                'event': str(t),
             }
             for k, v, t in choices
         ],
-        "pagination": {"more": more},
+        'pagination': {'more': more},
     }
     return JsonResponse(doc)
 
 
 def organizer_select2(request):
-    term = request.GET.get("query", "")
+    term = request.GET.get('query', '')
     try:
-        page = int(request.GET.get("page", "1"))
+        page = int(request.GET.get('page', '1'))
     except ValueError:
         page = 1
     qs = Organizer.objects.all()
     if term:
         qs = qs.filter(Q(name__icontains=term) | Q(slug__icontains=term))
     if not request.user.has_active_staff_session(request.session.session_key):
-        if "can_create" in request.GET:
+        if 'can_create' in request.GET:
             qs = qs.filter(
                 pk__in=request.user.teams.filter(can_create_events=True).values_list(
-                    "organizer", flat=True
+                    'organizer', flat=True
                 )
             )
         else:
             qs = qs.filter(
-                pk__in=request.user.teams.values_list("organizer", flat=True)
+                pk__in=request.user.teams.values_list('organizer', flat=True)
             )
 
     total = qs.count()
@@ -653,10 +653,10 @@ def organizer_select2(request):
     offset = (page - 1) * pagesize
 
     doc = {
-        "results": [
-            {"id": o.pk, "text": str(o.name)} for o in qs[offset : offset + pagesize]
+        'results': [
+            {'id': o.pk, 'text': str(o.name)} for o in qs[offset : offset + pagesize]
         ],
-        "pagination": {"more": total >= (offset + pagesize)},
+        'pagination': {'more': total >= (offset + pagesize)},
     }
 
     return JsonResponse(doc)
@@ -666,9 +666,9 @@ def users_select2(request):
     if not request.user.has_active_staff_session(request.session.session_key):
         raise PermissionDenied()
 
-    term = request.GET.get("query", "")
+    term = request.GET.get('query', '')
     try:
-        page = int(request.GET.get("page", "1"))
+        page = int(request.GET.get('page', '1'))
     except ValueError:
         page = 1
     qs = User.objects.all()
@@ -680,19 +680,19 @@ def users_select2(request):
     offset = (page - 1) * pagesize
 
     doc = {
-        "results": [
-            {"id": o.pk, "text": str(o.email)} for o in qs[offset : offset + pagesize]
+        'results': [
+            {'id': o.pk, 'text': str(o.email)} for o in qs[offset : offset + pagesize]
         ],
-        "pagination": {"more": total >= (offset + pagesize)},
+        'pagination': {'more': total >= (offset + pagesize)},
     }
 
     return JsonResponse(doc)
 
 
 def meta_values(request):
-    q = request.GET.get("q")
-    propname = request.GET.get("property")
-    organizer = request.GET.get("organizer")
+    q = request.GET.get('q')
+    propname = request.GET.get('property')
+    organizer = request.GET.get('organizer')
 
     matches = EventMetaValue.objects.filter(value__icontains=q, property__name=propname)
     defaults = EventMetaProperty.objects.filter(name=propname, default__icontains=q)
@@ -711,7 +711,7 @@ def meta_values(request):
         if not all_access:
             matches = matches.filter(
                 event__id__in=request.user.teams.values_list(
-                    "limit_events__id", flat=True
+                    'limit_events__id', flat=True
                 )
             )
 
@@ -719,7 +719,7 @@ def meta_values(request):
         # We ignore superuser permissions here. This is intentional – we do not want to show super
         # users a form with all meta properties ever assigned.
         defaults = defaults.filter(
-            organizer_id__in=request.user.teams.values_list("organizer", flat=True),
+            organizer_id__in=request.user.teams.values_list('organizer', flat=True),
         )
 
         if not (
@@ -730,22 +730,22 @@ def meta_values(request):
                 Q(
                     event__organizer_id__in=request.user.teams.filter(
                         all_events=True
-                    ).values_list("organizer", flat=True)
+                    ).values_list('organizer', flat=True)
                 )
                 | Q(
                     event__id__in=request.user.teams.values_list(
-                        "limit_events__id", flat=True
+                        'limit_events__id', flat=True
                     )
                 )
             )
 
     return JsonResponse(
         {
-            "results": [
-                {"name": v, "id": v}
+            'results': [
+                {'name': v, 'id': v}
                 for v in sorted(
-                    set(defaults.values_list("default", flat=True)[:10])
-                    | set(matches.values_list("value", flat=True)[:10])
+                    set(defaults.values_list('default', flat=True)[:10])
+                    | set(matches.values_list('value', flat=True)[:10])
                 )
             ]
         }
@@ -753,8 +753,8 @@ def meta_values(request):
 
 
 def item_meta_values(request, organizer, event):
-    q = request.GET.get("q")
-    propname = request.GET.get("property")
+    q = request.GET.get('q')
+    propname = request.GET.get('property')
 
     matches = ItemMetaValue.objects.filter(value__icontains=q, property__name=propname)
     defaults = ItemMetaProperty.objects.filter(name=propname, default__icontains=q)
@@ -774,22 +774,22 @@ def item_meta_values(request, organizer, event):
     if not all_access:
         defaults = matches.filter(
             event__id__in=request.user.teams.filter(can_change_items=True).values_list(
-                "limit_events__id", flat=True
+                'limit_events__id', flat=True
             )
         )
         matches = matches.filter(
             item__event__id__in=request.user.teams.filter(
                 can_change_items=True
-            ).values_list("limit_events__id", flat=True)
+            ).values_list('limit_events__id', flat=True)
         )
 
     return JsonResponse(
         {
-            "results": [
-                {"name": v, "id": v}
+            'results': [
+                {'name': v, 'id': v}
                 for v in sorted(
-                    set(defaults.values_list("default", flat=True)[:10])
-                    | set(matches.values_list("value", flat=True)[:10])
+                    set(defaults.values_list('default', flat=True)[:10])
+                    | set(matches.values_list('value', flat=True)[:10])
                 )
             ]
         }

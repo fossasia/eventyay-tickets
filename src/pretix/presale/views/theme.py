@@ -16,10 +16,10 @@ def browserconfig_xml(request):
         </tile>
     </msapplication>
 </browserconfig>""".format(
-            static("pretixbase/img/icons/mstile-150x150.png"),
-            static("pretixbase/img/icons/mstile-310x310.png"),
+            static('pretixbase/img/icons/mstile-150x150.png'),
+            static('pretixbase/img/icons/mstile-310x310.png'),
         ),
-        content_type="text/xml",
+        content_type='text/xml',
     )
 
 
@@ -46,8 +46,8 @@ def webmanifest(request):
     "display": "standalone"
 }"""
         % (
-            static("pretixbase/img/icons/android-chrome-192x192.png"),
-            static("pretixbase/img/icons/android-chrome-512x512.png"),
+            static('pretixbase/img/icons/android-chrome-192x192.png'),
+            static('pretixbase/img/icons/android-chrome-512x512.png'),
         ),
-        content_type="text/json",
+        content_type='text/json',
     )

@@ -6,25 +6,25 @@ from pretix.api.models import OAuthApplication
 
 
 class Command(BaseCommand):
-    help = "Create an OAuth2 Application for the Talk SSO Client"
+    help = 'Create an OAuth2 Application for the Talk SSO Client'
 
     def handle(self, *args, **options):
         redirect_uris = input(
-            "Enter the redirect URI: "
+            'Enter the redirect URI: '
         )  # Get redirect URI from user input
 
         # Check if the application already exists based on redirect_uri
         if OAuthApplication.objects.filter(redirect_uris=redirect_uris).exists():
             self.stdout.write(
                 self.style.WARNING(
-                    "OAuth2 Application with this redirect URI already exists."
+                    'OAuth2 Application with this redirect URI already exists.'
                 )
             )
             return
 
         # Create the OAuth2 Application
         application = OAuthApplication(
-            name="Talk SSO Client",
+            name='Talk SSO Client',
             client_type=OAuthApplication.CLIENT_CONFIDENTIAL,
             authorization_grant_type=OAuthApplication.GRANT_AUTHORIZATION_CODE,
             redirect_uris=redirect_uris,
@@ -36,6 +36,6 @@ class Command(BaseCommand):
         )
         application.save()
 
-        self.stdout.write(self.style.SUCCESS("Successfully created OAuth2 Application"))
-        self.stdout.write(f"Client ID: {application.client_id}")
-        self.stdout.write(f"Client Secret: {application.client_secret}")
+        self.stdout.write(self.style.SUCCESS('Successfully created OAuth2 Application'))
+        self.stdout.write(f'Client ID: {application.client_id}')
+        self.stdout.write(f'Client Secret: {application.client_secret}')

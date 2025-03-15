@@ -10,12 +10,12 @@ class URLTestCase(TestCase):
     URLs will cause a TypeError in the metrics middleware.
     """
 
-    pattern_attrs = ["urlpatterns", "url_patterns"]
+    pattern_attrs = ['urlpatterns', 'url_patterns']
 
     def test_url_names(self):
         urlconf = import_module(settings.ROOT_URLCONF)
         nameless = self.find_nameless_urls(urlconf)
-        message = "URL regexes missing names: %s" % " ".join(
+        message = 'URL regexes missing names: %s' % ' '.join(
             [n.regex.pattern for n in nameless]
         )
         self.assertIs(len(nameless), 0, message)
@@ -26,7 +26,7 @@ class URLTestCase(TestCase):
         for u in patterns:
             # Ignore social urls from django-allauth
             # Since it does not support namespace
-            if "social" in str(u):
+            if 'social' in str(u):
                 continue
             elif self.has_patterns(u):
                 nameless.extend(self.find_nameless_urls(u))

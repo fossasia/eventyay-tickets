@@ -30,10 +30,10 @@ PERSON_NAME_SALUTATIONS = NAME_SALUTION.copy()
 PERSON_NAME_SCHEMES = NAME_SCHEMES.copy()
 COUNTRIES_WITH_STATE_IN_ADDRESS = COUNTRIES_WITH_STATE.copy()
 
-settings_hierarkey = Hierarkey(attribute_name="settings")
+settings_hierarkey = Hierarkey(attribute_name='settings')
 
 for k, v in DEFAULTS.items():
-    settings_hierarkey.add_default(k, v["default"], v["type"])
+    settings_hierarkey.add_default(k, v['default'], v['type'])
 
 
 def i18n_uns(v):
@@ -48,7 +48,7 @@ settings_hierarkey.add_type(
 )
 settings_hierarkey.add_type(
     LazyI18nStringList,
-    serialize=operator.methodcaller("serialize"),
+    serialize=operator.methodcaller('serialize'),
     unserialize=LazyI18nStringList.unserialize,
 )
 settings_hierarkey.add_type(
@@ -58,9 +58,9 @@ settings_hierarkey.add_type(
 )
 
 
-@settings_hierarkey.set_global(cache_namespace="global")
+@settings_hierarkey.set_global(cache_namespace='global')
 class GlobalSettingsObject(GlobalSettingsBase):
-    slug = "_global"
+    slug = '_global'
 
 
 class SettingsSandbox:
@@ -78,16 +78,16 @@ class SettingsSandbox:
         self._key = key
 
     def get_prefix(self):
-        return "%s_%s_" % (self._type, self._key)
+        return '%s_%s_' % (self._type, self._key)
 
     def _convert_key(self, key: str) -> str:
-        return "%s_%s_%s" % (self._type, self._key, key)
+        return '%s_%s_%s' % (self._type, self._key, key)
 
     def __setitem__(self, key: str, value: Any) -> None:
         self.set(key, value)
 
     def __setattr__(self, key: str, value: Any) -> None:
-        if key.startswith("_"):
+        if key.startswith('_'):
             return super().__setattr__(key, value)
         self.set(key, value)
 
@@ -116,64 +116,64 @@ def validate_event_settings(event, settings_dict):
     from pretix.base.models import Event
     from pretix.base.signals import validate_event_settings
 
-    default_locale = settings_dict.get("locale")
-    locales = settings_dict.get("locales", [])
+    default_locale = settings_dict.get('locale')
+    locales = settings_dict.get('locales', [])
     if default_locale and default_locale not in locales:
         raise ValidationError(
             {
-                "locale": _(
-                    "Your default locale must also be enabled for your event (see box above)."
+                'locale': _(
+                    'Your default locale must also be enabled for your event (see box above).'
                 )
             }
         )
-    if settings_dict.get("attendee_names_required") and not settings_dict.get(
-        "attendee_names_asked"
+    if settings_dict.get('attendee_names_required') and not settings_dict.get(
+        'attendee_names_asked'
     ):
         raise ValidationError(
             {
-                "attendee_names_required": _(
-                    "You cannot require specifying attendee names if you do not ask for them."
+                'attendee_names_required': _(
+                    'You cannot require specifying attendee names if you do not ask for them.'
                 )
             }
         )
-    if settings_dict.get("attendee_emails_required") and not settings_dict.get(
-        "attendee_emails_asked"
+    if settings_dict.get('attendee_emails_required') and not settings_dict.get(
+        'attendee_emails_asked'
     ):
         raise ValidationError(
             {
-                "attendee_emails_required": _(
-                    "You have to ask for attendee emails if you want to make them required."
+                'attendee_emails_required': _(
+                    'You have to ask for attendee emails if you want to make them required.'
                 )
             }
         )
-    if settings_dict.get("invoice_address_required") and not settings_dict.get(
-        "invoice_address_asked"
+    if settings_dict.get('invoice_address_required') and not settings_dict.get(
+        'invoice_address_asked'
     ):
         raise ValidationError(
             {
-                "invoice_address_required": _(
-                    "You have to ask for invoice addresses if you want to make them required."
+                'invoice_address_required': _(
+                    'You have to ask for invoice addresses if you want to make them required.'
                 )
             }
         )
-    if settings_dict.get("invoice_address_company_required") and not settings_dict.get(
-        "invoice_address_required"
+    if settings_dict.get('invoice_address_company_required') and not settings_dict.get(
+        'invoice_address_required'
     ):
         raise ValidationError(
             {
-                "invoice_address_company_required": _(
-                    "You have to require invoice addresses to require for company names."
+                'invoice_address_company_required': _(
+                    'You have to require invoice addresses to require for company names.'
                 )
             }
         )
 
-    payment_term_last = settings_dict.get("payment_term_last")
+    payment_term_last = settings_dict.get('payment_term_last')
     if payment_term_last and event.presale_end:
         if payment_term_last.date(event) < event.presale_end.date():
             raise ValidationError(
                 {
-                    "payment_term_last": _(
-                        "The last payment date cannot be before the end of presale."
+                    'payment_term_last': _(
+                        'The last payment date cannot be before the end of presale.'
                     )
                 }
             )
@@ -192,6 +192,6 @@ def validate_organizer_settings(organizer, settings_dict):
 
 
 def global_settings_object(holder):
-    if not hasattr(holder, "_global_settings_object"):
+    if not hasattr(holder, '_global_settings_object'):
         holder._global_settings_object = GlobalSettingsObject()
     return holder._global_settings_object

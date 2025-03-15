@@ -9,7 +9,7 @@ from pretix.base.i18n import language
 from pretix.base.models import Event, Organizer
 from pretix.base.timeline import timeline_for_event
 
-tz = pytz.timezone("Europe/Berlin")
+tz = pytz.timezone('Europe/Berlin')
 
 
 def one(iterable):
@@ -25,11 +25,11 @@ def one(iterable):
 
 @pytest.fixture
 def event():
-    o = Organizer.objects.create(name="Dummy", slug="dummy")
+    o = Organizer.objects.create(name='Dummy', slug='dummy')
     event = Event.objects.create(
         organizer=o,
-        name="Dummy",
-        slug="dummy",
+        name='Dummy',
+        slug='dummy',
         date_from=datetime(2017, 10, 22, 12, 0, 0, tzinfo=tz),
         date_to=datetime(2017, 10, 23, 23, 0, 0, tzinfo=tz),
     )
@@ -39,12 +39,12 @@ def event():
 
 @pytest.fixture
 def item(event):
-    return event.items.create(name="Ticket", default_price=Decimal("23.00"))
+    return event.items.create(name='Ticket', default_price=Decimal('23.00'))
 
 
 @pytest.mark.django_db
 def test_event_dates(event):
-    with language("en"):
+    with language('en'):
         tl = timeline_for_event(event)
         assert one(
             [
@@ -52,7 +52,7 @@ def test_event_dates(event):
                 for e in tl
                 if e.event == event
                 and e.datetime == event.date_from
-                and e.description == "Your event starts"
+                and e.description == 'Your event starts'
             ]
         )
         assert one(
@@ -61,6 +61,6 @@ def test_event_dates(event):
                 for e in tl
                 if e.event == event
                 and e.datetime == event.date_to
-                and e.description == "Your event ends"
+                and e.description == 'Your event ends'
             ]
         )

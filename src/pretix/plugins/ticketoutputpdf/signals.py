@@ -25,32 +25,32 @@ from pretix.plugins.ticketoutputpdf.models import (
 )
 
 
-@receiver(register_ticket_outputs, dispatch_uid="output_pdf")
+@receiver(register_ticket_outputs, dispatch_uid='output_pdf')
 def register_ticket_outputs(sender, **kwargs):
     from .ticketoutput import PdfTicketOutput
 
     return PdfTicketOutput
 
 
-@receiver(register_data_exporters, dispatch_uid="dataexport_pdf")
+@receiver(register_data_exporters, dispatch_uid='dataexport_pdf')
 def register_data(sender, **kwargs):
     from .exporters import AllTicketsPDF
 
     return AllTicketsPDF
 
 
-@receiver(register_multievent_data_exporters, dispatch_uid="dataexport_multievent_pdf")
+@receiver(register_multievent_data_exporters, dispatch_uid='dataexport_multievent_pdf')
 def register_multievent_data(sender, **kwargs):
     from .exporters import AllTicketsPDF
 
     return AllTicketsPDF
 
 
-@receiver(item_forms, dispatch_uid="pretix_ticketoutputpdf_item_forms")
+@receiver(item_forms, dispatch_uid='pretix_ticketoutputpdf_item_forms')
 def control_item_forms(sender, request, item, **kwargs):
     forms = []
     for k, v in sorted(
-        list(get_all_sales_channels().items()), key=lambda a: (int(a[0] != "web"), a[0])
+        list(get_all_sales_channels().items()), key=lambda a: (int(a[0] != 'web'), a[0])
     ):
         try:
             inst = TicketLayoutItem.objects.get(item=item, sales_channel=k)
@@ -61,14 +61,14 @@ def control_item_forms(sender, request, item, **kwargs):
                 instance=inst,
                 event=sender,
                 sales_channel=v,
-                data=(request.POST if request.method == "POST" else None),
-                prefix="ticketlayoutitem_{}".format(k),
+                data=(request.POST if request.method == 'POST' else None),
+                prefix='ticketlayoutitem_{}'.format(k),
             )
         )
     return forms
 
 
-@receiver(item_copy_data, dispatch_uid="pretix_ticketoutputpdf_item_copy")
+@receiver(item_copy_data, dispatch_uid='pretix_ticketoutputpdf_item_copy')
 def copy_item(sender, source, target, **kwargs):
     for tli in TicketLayoutItem.objects.filter(item=source):
         TicketLayoutItem.objects.create(
@@ -76,7 +76,7 @@ def copy_item(sender, source, target, **kwargs):
         )
 
 
-@receiver(signal=event_copy_data, dispatch_uid="pretix_ticketoutputpdf_copy_data")
+@receiver(signal=event_copy_data, dispatch_uid='pretix_ticketoutputpdf_copy_data')
 def pdf_event_copy_data_receiver(sender, other, item_map, question_map, **kwargs):
     if sender.ticket_layouts.exists():  # idempotency
         return
@@ -89,17 +89,17 @@ def pdf_event_copy_data_receiver(sender, other, item_map, question_map, **kwargs
 
         layout = json.loads(bl.layout)
         for o in layout:
-            if o["type"] == "textarea":
-                if o["content"].startswith("question_"):
-                    newq = question_map.get(int(o["content"][9:]))
+            if o['type'] == 'textarea':
+                if o['content'].startswith('question_'):
+                    newq = question_map.get(int(o['content'][9:]))
                     if newq:
-                        o["content"] = "question_{}".format(newq.pk)
+                        o['content'] = 'question_{}'.format(newq.pk)
         bl.layout = json.dumps(layout)
 
         bl.save()
 
         if bl.background and bl.background.name:
-            bl.background.save("background.pdf", bl.background)
+            bl.background.save('background.pdf', bl.background)
 
         layout_map[oldid] = bl
 
@@ -113,16 +113,16 @@ def pdf_event_copy_data_receiver(sender, other, item_map, question_map, **kwargs
 
 
 @receiver(
-    signal=logentry_display, dispatch_uid="pretix_ticketoutputpdf_logentry_display"
+    signal=logentry_display, dispatch_uid='pretix_ticketoutputpdf_logentry_display'
 )
 def pdf_logentry_display(sender, logentry, **kwargs):
-    if not logentry.action_type.startswith("pretix.plugins.ticketoutputpdf"):
+    if not logentry.action_type.startswith('pretix.plugins.ticketoutputpdf'):
         return
 
     plains = {
-        "pretix.plugins.ticketoutputpdf.layout.added": _("Ticket layout created."),
-        "pretix.plugins.ticketoutputpdf.layout.deleted": _("Ticket layout deleted."),
-        "pretix.plugins.ticketoutputpdf.layout.changed": _("Ticket layout changed."),
+        'pretix.plugins.ticketoutputpdf.layout.added': _('Ticket layout created.'),
+        'pretix.plugins.ticketoutputpdf.layout.deleted': _('Ticket layout deleted.'),
+        'pretix.plugins.ticketoutputpdf.layout.changed': _('Ticket layout changed.'),
     }
 
     if logentry.action_type in plains:
@@ -131,27 +131,27 @@ def pdf_logentry_display(sender, logentry, **kwargs):
 
 @receiver(
     signal=logentry_object_link,
-    dispatch_uid="pretix_ticketoutputpdf_logentry_object_link",
+    dispatch_uid='pretix_ticketoutputpdf_logentry_object_link',
 )
 def pdf_logentry_object_link(sender, logentry, **kwargs):
     if not logentry.action_type.startswith(
-        "pretix.plugins.ticketoutputpdf.layout"
+        'pretix.plugins.ticketoutputpdf.layout'
     ) or not isinstance(logentry.content_object, TicketLayout):
         return
 
-    a_text = _("Ticket layout {val}")
+    a_text = _('Ticket layout {val}')
     a_map = {
-        "href": reverse(
-            "plugins:ticketoutputpdf:edit",
+        'href': reverse(
+            'plugins:ticketoutputpdf:edit',
             kwargs={
-                "event": sender.slug,
-                "organizer": sender.organizer.slug,
-                "layout": logentry.content_object.id,
+                'event': sender.slug,
+                'organizer': sender.organizer.slug,
+                'layout': logentry.content_object.id,
             },
         ),
-        "val": escape(logentry.content_object.name),
+        'val': escape(logentry.content_object.name),
     }
-    a_map["val"] = '<a href="{href}">{val}</a>'.format_map(a_map)
+    a_map['val'] = '<a href="{href}">{val}</a>'.format_map(a_map)
     return a_text.format_map(a_map)
 
 

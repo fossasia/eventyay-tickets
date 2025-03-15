@@ -51,54 +51,54 @@ from pretix.presale.views.event import (
 from pretix.presale.views.robots import NoSearchIndexViewMixin
 
 try:
-    widget_data_cache = caches["redis"]
+    widget_data_cache = caches['redis']
 except:
-    widget_data_cache = caches["default"]
+    widget_data_cache = caches['default']
 
 
 class CartActionMixin:
     def get_next_url(self):
-        if "next" in self.request.GET and is_safe_url(
-            self.request.GET.get("next"), allowed_hosts=None
+        if 'next' in self.request.GET and is_safe_url(
+            self.request.GET.get('next'), allowed_hosts=None
         ):
-            u = self.request.GET.get("next")
+            u = self.request.GET.get('next')
         else:
             kwargs = {}
-            if "cart_namespace" in self.kwargs:
-                kwargs["cart_namespace"] = self.kwargs["cart_namespace"]
-            u = eventreverse(self.request.event, "presale:event.index", kwargs=kwargs)
-        if "?" in u:
-            u += "&require_cookie=true"
+            if 'cart_namespace' in self.kwargs:
+                kwargs['cart_namespace'] = self.kwargs['cart_namespace']
+            u = eventreverse(self.request.event, 'presale:event.index', kwargs=kwargs)
+        if '?' in u:
+            u += '&require_cookie=true'
         else:
-            u += "?require_cookie=true"
+            u += '?require_cookie=true'
         disclose_cart_id = (
-            "iframe" in self.request.GET
+            'iframe' in self.request.GET
             or settings.SESSION_COOKIE_NAME not in self.request.COOKIES
-        ) and self.kwargs.get("cart_namespace")
+        ) and self.kwargs.get('cart_namespace')
         if disclose_cart_id:
             cart_id = get_or_create_cart_id(self.request)
-            u += "&cart_id={}".format(cart_id)
+            u += '&cart_id={}'.format(cart_id)
         return u
 
     def get_success_url(self, value=None):
         return self.get_next_url()
 
     def get_error_url(self):
-        if "next_error" in self.request.GET and is_safe_url(
-            self.request.GET.get("next_error"), allowed_hosts=None
+        if 'next_error' in self.request.GET and is_safe_url(
+            self.request.GET.get('next_error'), allowed_hosts=None
         ):
-            u = self.request.GET.get("next_error")
-            if "?" in u:
-                u += "&require_cookie=true"
+            u = self.request.GET.get('next_error')
+            if '?' in u:
+                u += '&require_cookie=true'
             else:
-                u += "?require_cookie=true"
+                u += '?require_cookie=true'
             disclose_cart_id = (
-                "iframe" in self.request.GET
+                'iframe' in self.request.GET
                 or settings.SESSION_COOKIE_NAME not in self.request.COOKIES
-            ) and self.kwargs.get("cart_namespace")
+            ) and self.kwargs.get('cart_namespace')
             if disclose_cart_id:
                 cart_id = get_or_create_cart_id(self.request)
-                u += "&cart_id={}".format(cart_id)
+                u += '&cart_id={}'.format(cart_id)
             return u
         return self.get_next_url()
 
@@ -108,7 +108,7 @@ class CartActionMixin:
 
     @cached_property
     def invoice_address(self):
-        iapk = self.cart_session.get("invoice_address")
+        iapk = self.cart_session.get('invoice_address')
         if not iapk:
             return InvoiceAddress()
 
@@ -119,72 +119,72 @@ class CartActionMixin:
             return InvoiceAddress()
 
     def _item_from_post_value(self, key, value, voucher=None):
-        if value.strip() == "" or "_" not in key:
+        if value.strip() == '' or '_' not in key:
             return
 
         if (
-            not key.startswith("item_")
-            and not key.startswith("variation_")
-            and not key.startswith("seat_")
+            not key.startswith('item_')
+            and not key.startswith('variation_')
+            and not key.startswith('seat_')
         ):
             return
 
-        parts = key.split("_")
-        price = self.request.POST.get("price_" + "_".join(parts[1:]), "")
+        parts = key.split('_')
+        price = self.request.POST.get('price_' + '_'.join(parts[1:]), '')
         subevent = None
-        if "subevent" in self.request.POST:
+        if 'subevent' in self.request.POST:
             try:
-                subevent = int(self.request.POST.get("subevent"))
+                subevent = int(self.request.POST.get('subevent'))
             except ValueError:
                 pass
 
-        if key.startswith("seat_"):
+        if key.startswith('seat_'):
             try:
                 return {
-                    "item": int(parts[1]),
-                    "variation": int(parts[2]) if len(parts) > 2 else None,
-                    "count": 1,
-                    "seat": value,
-                    "price": price,
-                    "voucher": voucher,
-                    "subevent": subevent,
+                    'item': int(parts[1]),
+                    'variation': int(parts[2]) if len(parts) > 2 else None,
+                    'count': 1,
+                    'seat': value,
+                    'price': price,
+                    'voucher': voucher,
+                    'subevent': subevent,
                 }
             except ValueError:
-                raise CartError(_("Please enter numbers only."))
+                raise CartError(_('Please enter numbers only.'))
 
         try:
             amount = int(value)
         except ValueError:
-            raise CartError(_("Please enter numbers only."))
+            raise CartError(_('Please enter numbers only.'))
         if amount < 0:
-            raise CartError(_("Please enter positive numbers only."))
+            raise CartError(_('Please enter positive numbers only.'))
         elif amount == 0:
             return
 
-        if key.startswith("item_"):
+        if key.startswith('item_'):
             try:
                 return {
-                    "item": int(parts[1]),
-                    "variation": None,
-                    "count": amount,
-                    "price": price,
-                    "voucher": voucher,
-                    "subevent": subevent,
+                    'item': int(parts[1]),
+                    'variation': None,
+                    'count': amount,
+                    'price': price,
+                    'voucher': voucher,
+                    'subevent': subevent,
                 }
             except ValueError:
-                raise CartError(_("Please enter numbers only."))
-        elif key.startswith("variation_"):
+                raise CartError(_('Please enter numbers only.'))
+        elif key.startswith('variation_'):
             try:
                 return {
-                    "item": int(parts[1]),
-                    "variation": int(parts[2]),
-                    "count": amount,
-                    "price": price,
-                    "voucher": voucher,
-                    "subevent": subevent,
+                    'item': int(parts[1]),
+                    'variation': int(parts[2]),
+                    'count': amount,
+                    'price': price,
+                    'voucher': voucher,
+                    'subevent': subevent,
                 }
             except ValueError:
-                raise CartError(_("Please enter numbers only."))
+                raise CartError(_('Please enter numbers only.'))
 
     def _items_from_post_data(self):
         """
@@ -194,20 +194,20 @@ class CartActionMixin:
         # Compatibility patch that makes the frontend code a lot easier
         req_items = list(self.request.POST.lists())
         if (
-            "_voucher_item" in self.request.POST
-            and "_voucher_code" in self.request.POST
+            '_voucher_item' in self.request.POST
+            and '_voucher_code' in self.request.POST
         ):
-            req_items.append(("%s" % self.request.POST["_voucher_item"], ("1",)))
+            req_items.append(('%s' % self.request.POST['_voucher_item'], ('1',)))
             pass
 
         items = []
-        if "raw" in self.request.POST:
-            items += json.loads(self.request.POST.get("raw"))
+        if 'raw' in self.request.POST:
+            items += json.loads(self.request.POST.get('raw'))
         for key, values in req_items:
             for value in values:
                 try:
                     item = self._item_from_post_value(
-                        key, value, self.request.POST.get("_voucher_code")
+                        key, value, self.request.POST.get('_voucher_code')
                     )
                 except CartError as e:
                     messages.error(self.request, str(e))
@@ -216,13 +216,13 @@ class CartActionMixin:
                     items.append(item)
 
         if len(items) == 0:
-            messages.warning(self.request, _("You did not select any products."))
+            messages.warning(self.request, _('You did not select any products.'))
             return []
         return items
 
 
 @scopes_disabled()
-def generate_cart_id(request=None, prefix=""):
+def generate_cart_id(request=None, prefix=''):
     """
     Generates a random new cart ID that is not currently in use, with an optional pretix.
     """
@@ -231,7 +231,7 @@ def generate_cart_id(request=None, prefix=""):
         if request:
             if not request.session.session_key:
                 request.session.create()
-            new_id += "@" + request.session.session_key
+            new_id += '@' + request.session.session_key
         if not CartPosition.objects.filter(cart_id=new_id).exists():
             return new_id
 
@@ -245,22 +245,22 @@ def create_empty_cart_id(request, replace_current=True):
     This is currently only invoked after an order has been created to make sure that all forms during
     checkout will show empty again if the same browser starts buying tickets again.
     """
-    session_keyname = "current_cart_event_{}".format(request.event.pk)
-    prefix = ""
-    if request.resolver_match and request.resolver_match.kwargs.get("cart_namespace"):
-        session_keyname += "_" + request.resolver_match.kwargs.get("cart_namespace")
-        prefix = request.resolver_match.kwargs.get("cart_namespace")
+    session_keyname = 'current_cart_event_{}'.format(request.event.pk)
+    prefix = ''
+    if request.resolver_match and request.resolver_match.kwargs.get('cart_namespace'):
+        session_keyname += '_' + request.resolver_match.kwargs.get('cart_namespace')
+        prefix = request.resolver_match.kwargs.get('cart_namespace')
 
-    if "carts" not in request.session:
-        request.session["carts"] = {}
+    if 'carts' not in request.session:
+        request.session['carts'] = {}
 
     new_id = generate_cart_id(request, prefix=prefix)
-    request.session["carts"][new_id] = {}
+    request.session['carts'][new_id] = {}
 
     if replace_current:
         current_id = request.session.get(session_keyname)
-        if current_id and current_id in request.session.get("carts", {}):
-            del request.session["carts"][current_id]
+        if current_id and current_id in request.session.get('carts', {}):
+            del request.session['carts'][current_id]
             del request.session[session_keyname]
         request.session[session_keyname] = new_id
     return new_id
@@ -317,48 +317,48 @@ def get_or_create_cart_id(request, create=True):
 
     If ``create`` is ``False`` and no session currently exists, ``None`` will be returned.
     """
-    session_keyname = "current_cart_event_{}".format(request.event.pk)
-    prefix = ""
-    if request.resolver_match and request.resolver_match.kwargs.get("cart_namespace"):
-        session_keyname += "_" + request.resolver_match.kwargs.get("cart_namespace")
-        prefix = request.resolver_match.kwargs.get("cart_namespace")
+    session_keyname = 'current_cart_event_{}'.format(request.event.pk)
+    prefix = ''
+    if request.resolver_match and request.resolver_match.kwargs.get('cart_namespace'):
+        session_keyname += '_' + request.resolver_match.kwargs.get('cart_namespace')
+        prefix = request.resolver_match.kwargs.get('cart_namespace')
 
     current_id = orig_current_id = request.session.get(session_keyname)
-    if prefix and "take_cart_id" in request.GET:
+    if prefix and 'take_cart_id' in request.GET:
         pos = CartPosition.objects.filter(
-            event=request.event, cart_id=request.GET.get("take_cart_id")
+            event=request.event, cart_id=request.GET.get('take_cart_id')
         )
-        if request.method == "POST" or pos.exists() or "ajax" in request.GET:
-            current_id = request.GET.get("take_cart_id")
+        if request.method == 'POST' or pos.exists() or 'ajax' in request.GET:
+            current_id = request.GET.get('take_cart_id')
 
-    if current_id and current_id in request.session.get("carts", {}):
+    if current_id and current_id in request.session.get('carts', {}):
         if current_id != orig_current_id:
             request.session[session_keyname] = current_id
         return current_id
     else:
         cart_data = {}
-        if prefix and "take_cart_id" in request.GET and current_id:
+        if prefix and 'take_cart_id' in request.GET and current_id:
             new_id = current_id
             cached_widget_data = widget_data_cache.get(
-                "widget_data_{}".format(current_id)
+                'widget_data_{}'.format(current_id)
             )
             if cached_widget_data:
-                cart_data["widget_data"] = cached_widget_data
+                cart_data['widget_data'] = cached_widget_data
         else:
             if not create:
                 return None
             new_id = generate_cart_id(request, prefix=prefix)
 
-        if "widget_data" not in cart_data and "widget_data" in request.GET:
+        if 'widget_data' not in cart_data and 'widget_data' in request.GET:
             try:
-                cart_data["widget_data"] = json.loads(request.GET.get("widget_data"))
+                cart_data['widget_data'] = json.loads(request.GET.get('widget_data'))
             except ValueError:
                 pass
 
-        if "carts" not in request.session:
-            request.session["carts"] = {}
-        if new_id not in request.session["carts"]:
-            request.session["carts"][new_id] = cart_data
+        if 'carts' not in request.session:
+            request.session['carts'] = {}
+        if new_id not in request.session['carts']:
+            request.session['carts'][new_id] = cart_data
         request.session[session_keyname] = new_id
         return new_id
 
@@ -375,53 +375,53 @@ def cart_session(request):
     """
     request.session.modified = True
     cart_id = get_or_create_cart_id(request)
-    return request.session["carts"][cart_id]
+    return request.session['carts'][cart_id]
 
 
-@method_decorator(allow_frame_if_namespaced, "dispatch")
+@method_decorator(allow_frame_if_namespaced, 'dispatch')
 class CartApplyVoucher(EventViewMixin, CartActionMixin, AsyncAction, View):
     task = apply_voucher
-    known_errortypes = ["CartError"]
+    known_errortypes = ['CartError']
 
     def get_success_message(self, value):
-        return _("We applied the voucher to as many products in your cart as we could.")
+        return _('We applied the voucher to as many products in your cart as we could.')
 
     def post(self, request, *args, **kwargs):
-        if "voucher" in request.POST:
+        if 'voucher' in request.POST:
             return self.do(
                 self.request.event.id,
-                request.POST.get("voucher"),
+                request.POST.get('voucher'),
                 get_or_create_cart_id(self.request),
                 translation.get_language(),
                 request.sales_channel.identifier,
             )
         else:
-            if "ajax" in self.request.GET or "ajax" in self.request.POST:
-                return JsonResponse({"redirect": self.get_error_url()})
+            if 'ajax' in self.request.GET or 'ajax' in self.request.POST:
+                return JsonResponse({'redirect': self.get_error_url()})
             else:
                 return redirect(self.get_error_url())
 
 
-@method_decorator(allow_frame_if_namespaced, "dispatch")
+@method_decorator(allow_frame_if_namespaced, 'dispatch')
 class CartRemove(EventViewMixin, CartActionMixin, AsyncAction, View):
     task = remove_cart_position
-    known_errortypes = ["CartError"]
+    known_errortypes = ['CartError']
 
     def get_success_message(self, value):
         if CartPosition.objects.filter(
             cart_id=get_or_create_cart_id(self.request)
         ).exists():
-            return _("Your cart has been updated.")
+            return _('Your cart has been updated.')
         else:
             create_empty_cart_id(self.request)
-            return _("Your cart is now empty.")
+            return _('Your cart is now empty.')
 
     def post(self, request, *args, **kwargs):
-        if "id" in request.POST:
+        if 'id' in request.POST:
             try:
                 return self.do(
                     self.request.event.id,
-                    int(request.POST.get("id")),
+                    int(request.POST.get('id')),
                     get_or_create_cart_id(self.request),
                     translation.get_language(),
                     request.sales_channel.identifier,
@@ -429,20 +429,20 @@ class CartRemove(EventViewMixin, CartActionMixin, AsyncAction, View):
             except ValueError:
                 return redirect(self.get_error_url())
         else:
-            if "ajax" in self.request.GET or "ajax" in self.request.POST:
-                return JsonResponse({"redirect": self.get_error_url()})
+            if 'ajax' in self.request.GET or 'ajax' in self.request.POST:
+                return JsonResponse({'redirect': self.get_error_url()})
             else:
                 return redirect(self.get_error_url())
 
 
-@method_decorator(allow_frame_if_namespaced, "dispatch")
+@method_decorator(allow_frame_if_namespaced, 'dispatch')
 class CartClear(EventViewMixin, CartActionMixin, AsyncAction, View):
     task = clear_cart
-    known_errortypes = ["CartError"]
+    known_errortypes = ['CartError']
 
     def get_success_message(self, value):
         create_empty_cart_id(self.request)
-        return _("Your cart is now empty.")
+        return _('Your cart is now empty.')
 
     def post(self, request, *args, **kwargs):
         return self.do(
@@ -453,59 +453,59 @@ class CartClear(EventViewMixin, CartActionMixin, AsyncAction, View):
         )
 
 
-@method_decorator(allow_cors_if_namespaced, "dispatch")
-@method_decorator(allow_frame_if_namespaced, "dispatch")
-@method_decorator(iframe_entry_view_wrapper, "dispatch")
+@method_decorator(allow_cors_if_namespaced, 'dispatch')
+@method_decorator(allow_frame_if_namespaced, 'dispatch')
+@method_decorator(iframe_entry_view_wrapper, 'dispatch')
 class CartAdd(EventViewMixin, CartActionMixin, AsyncAction, View):
     task = add_items_to_cart
-    known_errortypes = ["CartError"]
+    known_errortypes = ['CartError']
 
     def get_success_message(self, value):
-        return _("The products have been successfully added to your cart.")
+        return _('The products have been successfully added to your cart.')
 
     def _ajax_response_data(self):
         cart_id = get_or_create_cart_id(self.request)
         return {
-            "cart_id": cart_id,
-            "has_cart": CartPosition.objects.filter(
+            'cart_id': cart_id,
+            'has_cart': CartPosition.objects.filter(
                 cart_id=cart_id, event=self.request.event
             ).exists(),
         }
 
     def get_check_url(self, task_id, ajax):
         u = super().get_check_url(task_id, ajax)
-        if "next" in self.request.GET:
-            u += "&next=" + quote(self.request.GET.get("next"))
-        if "next_error" in self.request.GET:
-            u += "&next_error=" + quote(self.request.GET.get("next_error"))
+        if 'next' in self.request.GET:
+            u += '&next=' + quote(self.request.GET.get('next'))
+        if 'next_error' in self.request.GET:
+            u += '&next_error=' + quote(self.request.GET.get('next_error'))
         if ajax:
             cart_id = get_or_create_cart_id(self.request)
-            u += "&take_cart_id=" + cart_id
+            u += '&take_cart_id=' + cart_id
         return u
 
     def post(self, request, *args, **kwargs):
         if request.sales_channel.identifier not in request.event.sales_channels:
             raise Http404(
-                _("Tickets for this event cannot be purchased on this sales channel.")
+                _('Tickets for this event cannot be purchased on this sales channel.')
             )
 
         cart_id = get_or_create_cart_id(self.request)
-        if "widget_data" in request.POST:
+        if 'widget_data' in request.POST:
             try:
-                widget_data = json.loads(request.POST.get("widget_data", "{}"))
+                widget_data = json.loads(request.POST.get('widget_data', '{}'))
                 if not isinstance(widget_data, dict):
                     widget_data = {}
             except ValueError:
                 widget_data = {}
             else:
                 widget_data_cache.set(
-                    "widget_data_{}".format(cart_id), widget_data, 600
+                    'widget_data_{}'.format(cart_id), widget_data, 600
                 )
                 cs = cart_session(request)
-                cs["widget_data"] = widget_data
+                cs['widget_data'] = widget_data
         else:
             cs = cart_session(request)
-            widget_data = cs.get("widget_data", {})
+            widget_data = cs.get('widget_data', {})
 
         items = self._items_from_post_data()
         if items:
@@ -519,28 +519,28 @@ class CartAdd(EventViewMixin, CartActionMixin, AsyncAction, View):
                 self.request.sales_channel.identifier,
             )
         else:
-            if "ajax" in self.request.GET or "ajax" in self.request.POST:
+            if 'ajax' in self.request.GET or 'ajax' in self.request.POST:
                 return JsonResponse(
                     {
-                        "redirect": self.get_error_url(),
-                        "success": False,
-                        "message": _(error_messages["empty"]),
+                        'redirect': self.get_error_url(),
+                        'success': False,
+                        'message': _(error_messages['empty']),
                     }
                 )
             else:
                 return redirect(self.get_error_url())
 
 
-@method_decorator(allow_frame_if_namespaced, "dispatch")
-@method_decorator(iframe_entry_view_wrapper, "dispatch")
+@method_decorator(allow_frame_if_namespaced, 'dispatch')
+@method_decorator(iframe_entry_view_wrapper, 'dispatch')
 class RedeemView(NoSearchIndexViewMixin, EventViewMixin, TemplateView):
-    template_name = "pretixpresale/event/voucher.html"
+    template_name = 'pretixpresale/event/voucher.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["voucher"] = self.voucher
-        context["max_times"] = self.voucher.max_usages - self.voucher.redeemed
+        context['voucher'] = self.voucher
+        context['max_times'] = self.voucher.max_usages - self.voucher.redeemed
 
         # Fetch all items
         items, display_add_to_cart = get_grouped_items(
@@ -552,20 +552,20 @@ class RedeemView(NoSearchIndexViewMixin, EventViewMixin, TemplateView):
 
         # Calculate how many options the user still has. If there is only one option, we can
         # check the box right away ;)
-        context["options"] = sum(
+        context['options'] = sum(
             [
                 (len(item.available_variations) if item.has_variations else 1)
                 for item in items
             ]
         )
 
-        context["allfree"] = all(
-            item.display_price.gross == Decimal("0.00")
+        context['allfree'] = all(
+            item.display_price.gross == Decimal('0.00')
             for item in items
             if not item.has_variations
         ) and all(
             all(
-                var.display_price.gross == Decimal("0.00")
+                var.display_price.gross == Decimal('0.00')
                 for var in item.available_variations
             )
             for item in items
@@ -573,58 +573,58 @@ class RedeemView(NoSearchIndexViewMixin, EventViewMixin, TemplateView):
         )
 
         # Regroup those by category
-        context["items_by_category"] = item_group_by_category(items)
+        context['items_by_category'] = item_group_by_category(items)
 
-        context["subevent"] = self.subevent
-        context["seating_available"] = (
+        context['subevent'] = self.subevent
+        context['seating_available'] = (
             self.request.event.settings.seating_choice
             and self.voucher.seating_available(self.subevent)
         )
 
-        context["new_tab"] = (
-            "require_cookie" in self.request.GET
+        context['new_tab'] = (
+            'require_cookie' in self.request.GET
             and settings.SESSION_COOKIE_NAME not in self.request.COOKIES
             # Cookies are not supported! Lets just make the form open in a new tab
         )
 
         if self.request.event.settings.redirect_to_checkout_directly:
-            context["cart_redirect"] = eventreverse(
+            context['cart_redirect'] = eventreverse(
                 self.request.event,
-                "presale:event.checkout.start",
-                kwargs={"cart_namespace": kwargs.get("cart_namespace") or ""},
+                'presale:event.checkout.start',
+                kwargs={'cart_namespace': kwargs.get('cart_namespace') or ''},
             )
         else:
-            context["cart_redirect"] = eventreverse(
+            context['cart_redirect'] = eventreverse(
                 self.request.event,
-                "presale:event.index",
-                kwargs={"cart_namespace": kwargs.get("cart_namespace") or ""},
+                'presale:event.index',
+                kwargs={'cart_namespace': kwargs.get('cart_namespace') or ''},
             )
-        if context["cart_redirect"].startswith("https:"):
-            context["cart_redirect"] = "/" + context["cart_redirect"].split("/", 3)[3]
+        if context['cart_redirect'].startswith('https:'):
+            context['cart_redirect'] = '/' + context['cart_redirect'].split('/', 3)[3]
         return context
 
     def dispatch(self, request, *args, **kwargs):
         from pretix.base.services.cart import error_messages
 
         err = None
-        v = request.GET.get("voucher")
+        v = request.GET.get('voucher')
 
         if v:
             v = v.strip()
             try:
                 self.voucher = Voucher.objects.get(code__iexact=v, event=request.event)
                 if self.voucher.redeemed >= self.voucher.max_usages:
-                    err = error_messages["voucher_redeemed"]
+                    err = error_messages['voucher_redeemed']
                 if (
                     self.voucher.valid_until is not None
                     and self.voucher.valid_until < now()
                 ):
-                    err = error_messages["voucher_expired"]
+                    err = error_messages['voucher_expired']
                 if (
                     self.voucher.item is not None
                     and self.voucher.item.is_available() is False
                 ):
-                    err = error_messages["voucher_item_not_available"]
+                    err = error_messages['voucher_item_not_available']
 
                 redeemed_in_carts = CartPosition.objects.filter(
                     Q(voucher=self.voucher)
@@ -641,45 +641,45 @@ class RedeemView(NoSearchIndexViewMixin, EventViewMixin, TemplateView):
                 )
                 if v_avail < 1 and not err:
                     err = (
-                        error_messages["voucher_redeemed_cart"]
+                        error_messages['voucher_redeemed_cart']
                         % self.request.event.settings.reservation_time
                     )
             except Voucher.DoesNotExist:
                 if self.request.event.organizer.accepted_gift_cards.filter(
-                    secret__iexact=request.GET.get("voucher")
+                    secret__iexact=request.GET.get('voucher')
                 ).exists():
-                    err = error_messages["gift_card"]
+                    err = error_messages['gift_card']
                 else:
-                    err = error_messages["voucher_invalid"]
+                    err = error_messages['voucher_invalid']
         else:
             return redirect(self.get_index_url())
 
         if request.event.presale_start and now() < request.event.presale_start:
-            err = error_messages["not_started"]
+            err = error_messages['not_started']
         if request.event.presale_end and now() > request.event.presale_end:
-            err = error_messages["ended"]
+            err = error_messages['ended']
 
         self.subevent = None
         if request.event.has_subevents:
-            if request.GET.get("subevent"):
+            if request.GET.get('subevent'):
                 self.subevent = get_object_or_404(
                     SubEvent,
                     event=request.event,
-                    pk=request.GET.get("subevent"),
+                    pk=request.GET.get('subevent'),
                     active=True,
                 )
 
-            if hasattr(self, "voucher") and self.voucher.subevent:
+            if hasattr(self, 'voucher') and self.voucher.subevent:
                 self.subevent = self.voucher.subevent
 
             if not err and not self.subevent:
                 return redirect(
                     eventreverse(
                         self.request.event,
-                        "presale:event.index",
-                        kwargs={"cart_namespace": kwargs.get("cart_namespace") or ""},
+                        'presale:event.index',
+                        kwargs={'cart_namespace': kwargs.get('cart_namespace') or ''},
                     )
-                    + "?voucher="
+                    + '?voucher='
                     + quote(self.voucher.code)
                 )
         else:
@@ -692,19 +692,19 @@ class RedeemView(NoSearchIndexViewMixin, EventViewMixin, TemplateView):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        if "iframe" in request.GET and "require_cookie" not in request.GET:
-            return redirect(request.get_full_path() + "&require_cookie=1")
+        if 'iframe' in request.GET and 'require_cookie' not in request.GET:
+            return redirect(request.get_full_path() + '&require_cookie=1')
 
-        if len(self.request.GET.get("widget_data", "{}")) > 3:
+        if len(self.request.GET.get('widget_data', '{}')) > 3:
             # We've been passed data from a widget, we need to create a cart session to store it.
             get_or_create_cart_id(request)
         return super().get(request, *args, **kwargs)
 
 
-@method_decorator(xframe_options_exempt, "dispatch")
+@method_decorator(xframe_options_exempt, 'dispatch')
 class AnswerDownload(EventViewMixin, View):
     def get(self, request, *args, **kwargs):
-        answid = kwargs.get("answer")
+        answid = kwargs.get('answer')
         answer = get_object_or_404(
             QuestionAnswer,
             cartposition__cart_id=get_or_create_cart_id(self.request),
@@ -714,9 +714,9 @@ class AnswerDownload(EventViewMixin, View):
             return Http404()
 
         ftype, _ = mimetypes.guess_type(answer.file.name)
-        resp = FileResponse(answer.file, content_type=ftype or "application/binary")
-        resp["Content-Disposition"] = 'attachment; filename="{}-cart-{}"'.format(
+        resp = FileResponse(answer.file, content_type=ftype or 'application/binary')
+        resp['Content-Disposition'] = 'attachment; filename="{}-cart-{}"'.format(
             self.request.event.slug.upper(),
-            os.path.basename(answer.file.name).split(".", 1)[1],
+            os.path.basename(answer.file.name).split('.', 1)[1],
         )
         return resp

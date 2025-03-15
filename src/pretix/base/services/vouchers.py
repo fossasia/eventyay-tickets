@@ -16,20 +16,20 @@ def vouchers_send(
     user: int,
     progress=None,
 ) -> None:
-    vouchers = list(Voucher.objects.filter(id__in=vouchers).order_by("id"))
+    vouchers = list(Voucher.objects.filter(id__in=vouchers).order_by('id'))
     user = User.objects.get(pk=user)
     for ir, r in enumerate(recipients):
         voucher_list = []
-        for i in range(r["number"]):
+        for i in range(r['number']):
             voucher_list.append(vouchers.pop())
         with language(event.settings.locale):
             email_context = get_email_context(
                 event=event,
-                name=r.get("name") or "",
+                name=r.get('name') or '',
                 voucher_list=[v.code for v in voucher_list],
             )
             mail(
-                r["email"],
+                r['email'],
                 subject,
                 LazyI18nString(message),
                 email_context,
@@ -38,28 +38,28 @@ def vouchers_send(
             )
             logs = []
             for v in voucher_list:
-                if r.get("tag") and r.get("tag") != v.tag:
-                    v.tag = r.get("tag")
+                if r.get('tag') and r.get('tag') != v.tag:
+                    v.tag = r.get('tag')
                 if v.comment:
-                    v.comment += "\n\n"
-                v.comment = gettext("The voucher has been sent to {recipient}.").format(
-                    recipient=r["email"]
+                    v.comment += '\n\n'
+                v.comment = gettext('The voucher has been sent to {recipient}.').format(
+                    recipient=r['email']
                 )
                 logs.append(
                     v.log_action(
-                        "pretix.voucher.sent",
+                        'pretix.voucher.sent',
                         user=user,
                         data={
-                            "recipient": r["email"],
-                            "name": r.get("name"),
-                            "subject": subject,
-                            "message": message,
+                            'recipient': r['email'],
+                            'name': r.get('name'),
+                            'subject': subject,
+                            'message': message,
                         },
                         save=False,
                     )
                 )
             Voucher.objects.bulk_update(
-                voucher_list, fields=["comment", "tag"], batch_size=500
+                voucher_list, fields=['comment', 'tag'], batch_size=500
             )
             LogEntry.objects.bulk_create(logs, batch_size=500)
 

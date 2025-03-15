@@ -7,65 +7,65 @@ from . import views
 
 urlpatterns = [
     url(
-        r"^control/organizer/(?P<organizer>[^/]+)/banktransfer/import/",
+        r'^control/organizer/(?P<organizer>[^/]+)/banktransfer/import/',
         views.OrganizerImportView.as_view(),
-        name="import",
+        name='import',
     ),
     url(
-        r"^control/organizer/(?P<organizer>[^/]+)/banktransfer/job/(?P<job>\d+)/",
+        r'^control/organizer/(?P<organizer>[^/]+)/banktransfer/job/(?P<job>\d+)/',
         views.OrganizerJobDetailView.as_view(),
-        name="import.job",
+        name='import.job',
     ),
     url(
-        r"^control/organizer/(?P<organizer>[^/]+)/banktransfer/action/",
+        r'^control/organizer/(?P<organizer>[^/]+)/banktransfer/action/',
         views.OrganizerActionView.as_view(),
-        name="import.action",
+        name='import.action',
     ),
     url(
-        r"^control/organizer/(?P<organizer>[^/]+)/banktransfer/refunds/",
+        r'^control/organizer/(?P<organizer>[^/]+)/banktransfer/refunds/',
         views.OrganizerRefundExportListView.as_view(),
-        name="refunds.list",
+        name='refunds.list',
     ),
     url(
-        r"^control/organizer/(?P<organizer>[^/]+)/banktransfer/export/(?P<id>\d+)/$",
+        r'^control/organizer/(?P<organizer>[^/]+)/banktransfer/export/(?P<id>\d+)/$',
         views.OrganizerDownloadRefundExportView.as_view(),
-        name="refunds.download",
+        name='refunds.download',
     ),
     url(
-        r"^control/organizer/(?P<organizer>[^/]+)/banktransfer/sepa-export/(?P<id>\d+)/$",
+        r'^control/organizer/(?P<organizer>[^/]+)/banktransfer/sepa-export/(?P<id>\d+)/$',
         views.OrganizerSepaXMLExportView.as_view(),
-        name="refunds.sepa",
+        name='refunds.sepa',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/banktransfer/import/",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/banktransfer/import/',
         views.EventImportView.as_view(),
-        name="import",
+        name='import',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/banktransfer/job/(?P<job>\d+)/",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/banktransfer/job/(?P<job>\d+)/',
         views.EventJobDetailView.as_view(),
-        name="import.job",
+        name='import.job',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/banktransfer/action/",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/banktransfer/action/',
         views.EventActionView.as_view(),
-        name="import.action",
+        name='import.action',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/banktransfer/refunds/",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/banktransfer/refunds/',
         views.EventRefundExportListView.as_view(),
-        name="refunds.list",
+        name='refunds.list',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/banktransfer/export/(?P<id>\d+)/$",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/banktransfer/export/(?P<id>\d+)/$',
         views.EventDownloadRefundExportView.as_view(),
-        name="refunds.download",
+        name='refunds.download',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/banktransfer/sepa-export/(?P<id>\d+)/$",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/banktransfer/sepa-export/(?P<id>\d+)/$',
         views.EventSepaXMLExportView.as_view(),
-        name="refunds.sepa",
+        name='refunds.sepa',
     ),
 ]
 
-orga_router.register("bankimportjobs", BankImportJobViewSet)
+orga_router.register('bankimportjobs', BankImportJobViewSet)

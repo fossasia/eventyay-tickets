@@ -15,10 +15,10 @@ from .template_flow_step import TemplateFlowStep
 
 class PaymentStep(CartMixin, TemplateFlowStep):
     priority = 200
-    identifier = "payment"
-    template_name = "pretixpresale/event/checkout_payment.html"
-    label = pgettext_lazy("checkoutflow", "Payment")
-    icon = "credit-card"
+    identifier = 'payment'
+    template_name = 'pretixpresale/event/checkout_payment.html'
+    label = pgettext_lazy('checkoutflow', 'Payment')
+    icon = 'credit-card'
 
     @cached_property
     def _total_order_value(self):
@@ -52,7 +52,7 @@ class PaymentStep(CartMixin, TemplateFlowStep):
             # Calculate fee and form
             fee = provider.calculate_fee(self._total_order_value)
 
-            if "total" in inspect.signature(provider.payment_form_render).parameters:
+            if 'total' in inspect.signature(provider.payment_form_render).parameters:
                 form = provider.payment_form_render(
                     self.request, self._total_order_value + fee
                 )
@@ -62,10 +62,10 @@ class PaymentStep(CartMixin, TemplateFlowStep):
             # Append provider info to list
             providers.append(
                 {
-                    "provider": provider,
-                    "fee": fee,
-                    "total": self._total_order_value + fee,
-                    "form": form,
+                    'provider': provider,
+                    'fee': fee,
+                    'total': self._total_order_value + fee,
+                    'form': form,
                 }
             )
 
@@ -73,12 +73,12 @@ class PaymentStep(CartMixin, TemplateFlowStep):
 
     def post(self, request):
         self.request = request
-        payment_identifier = request.POST.get("payment", "")
+        payment_identifier = request.POST.get('payment', '')
         for provider_form in self.provider_forms:
-            provider = provider_form["provider"]
+            provider = provider_form['provider']
 
             if provider.identifier == payment_identifier:
-                self.cart_session["payment"] = provider.identifier
+                self.cart_session['payment'] = provider.identifier
                 response = provider.checkout_prepare(request, self.get_cart())
 
                 if isinstance(response, str):
@@ -88,25 +88,25 @@ class PaymentStep(CartMixin, TemplateFlowStep):
                 else:
                     return self.render()
 
-        messages.error(self.request, _("Please select a payment method."))
+        messages.error(self.request, _('Please select a payment method.'))
         return self.render()
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["providers"] = self.provider_forms
-        ctx["show_fees"] = any(p["fee"] for p in self.provider_forms)
-        ctx["selected"] = self.request.POST.get(
-            "payment", self.cart_session.get("payment", "")
+        ctx['providers'] = self.provider_forms
+        ctx['show_fees'] = any(p['fee'] for p in self.provider_forms)
+        ctx['selected'] = self.request.POST.get(
+            'payment', self.cart_session.get('payment', '')
         )
         if len(self.provider_forms) == 1:
-            ctx["selected"] = self.provider_forms[0]["provider"].identifier
-        ctx["cart"] = self.get_cart()
+            ctx['selected'] = self.provider_forms[0]['provider'].identifier
+        ctx['cart'] = self.get_cart()
         return ctx
 
     @cached_property
     def payment_provider(self):
         return self.request.event.get_payment_providers().get(
-            self.cart_session["payment"]
+            self.cart_session['payment']
         )
 
     def _is_allowed(self, prov, request):
@@ -114,10 +114,10 @@ class PaymentStep(CartMixin, TemplateFlowStep):
 
     def is_completed(self, request, warn=False):
         self.request = request
-        if "payment" not in self.cart_session or not self.payment_provider:
+        if 'payment' not in self.cart_session or not self.payment_provider:
             if warn:
                 messages.error(
-                    request, _("The payment information you entered was incomplete.")
+                    request, _('The payment information you entered was incomplete.')
                 )
             return False
         if (
@@ -127,7 +127,7 @@ class PaymentStep(CartMixin, TemplateFlowStep):
         ):
             if warn:
                 messages.error(
-                    request, _("The payment information you entered was incomplete.")
+                    request, _('The payment information you entered was incomplete.')
                 )
             return False
         return True
@@ -137,17 +137,17 @@ class PaymentStep(CartMixin, TemplateFlowStep):
 
         for cartpos in get_cart(self.request):
             if cartpos.item.require_approval:
-                if "payment" in self.cart_session:
-                    del self.cart_session["payment"]
+                if 'payment' in self.cart_session:
+                    del self.cart_session['payment']
                 return False
 
         for p in self.request.event.get_payment_providers().values():
             if p.is_implicit(request) if callable(p.is_implicit) else p.is_implicit:
                 if self._is_allowed(p, request):
-                    self.cart_session["payment"] = p.identifier
+                    self.cart_session['payment'] = p.identifier
                     return False
-                elif self.cart_session.get("payment") == p.identifier:
+                elif self.cart_session.get('payment') == p.identifier:
                     # is_allowed might have changed, e.g. after add-on selection
-                    del self.cart_session["payment"]
+                    del self.cart_session['payment']
 
         return True

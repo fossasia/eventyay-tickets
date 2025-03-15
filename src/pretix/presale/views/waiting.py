@@ -18,15 +18,15 @@ from ..forms.waitinglist import WaitingListForm
 from . import allow_frame_if_namespaced
 
 
-@method_decorator(allow_frame_if_namespaced, "dispatch")
+@method_decorator(allow_frame_if_namespaced, 'dispatch')
 class WaitingView(EventViewMixin, FormView):
-    template_name = "pretixpresale/event/waitinglist.html"
+    template_name = 'pretixpresale/event/waitinglist.html'
     form_class = WaitingListForm
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["event"] = self.request.event
-        kwargs["instance"] = WaitingListEntry(
+        kwargs['event'] = self.request.event
+        kwargs['instance'] = WaitingListEntry(
             item=self.item_and_variation[0],
             variation=self.item_and_variation[1],
             event=self.request.event,
@@ -37,32 +37,32 @@ class WaitingView(EventViewMixin, FormView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["event"] = self.request.event
-        ctx["subevent"] = self.subevent
-        ctx["item"], ctx["variation"] = self.item_and_variation
+        ctx['event'] = self.request.event
+        ctx['subevent'] = self.subevent
+        ctx['item'], ctx['variation'] = self.item_and_variation
         return ctx
 
     def get(self, request, *args, **kwargs):
-        if request.GET.get("iframe", "") == "1" and "require_cookie" not in request.GET:
+        if request.GET.get('iframe', '') == '1' and 'require_cookie' not in request.GET:
             # Widget just opened. Let's to a stupid redirect to check if cookies are disabled
-            return redirect(request.get_full_path() + "&require_cookie=true")
+            return redirect(request.get_full_path() + '&require_cookie=true')
         elif (
-            "require_cookie" in request.GET
+            'require_cookie' in request.GET
             and settings.SESSION_COOKIE_NAME not in request.COOKIES
         ):
             # Cookies are in fact not supported. We can't even display the form, since we can't get CSRF right without
             # cookies.
             r = render(
                 request,
-                "pretixpresale/event/cookies.html",
+                'pretixpresale/event/cookies.html',
                 {
-                    "url": eventreverse(
+                    'url': eventreverse(
                         request.event,
-                        "presale:event.waitinglist",
-                        kwargs={"cart_namespace": kwargs.get("cart_namespace")},
+                        'presale:event.waitinglist',
+                        kwargs={'cart_namespace': kwargs.get('cart_namespace')},
                     )
-                    + "?"
-                    + url_replace(request, "require_cookie", "", "iframe", "")
+                    + '?'
+                    + url_replace(request, 'require_cookie', '', 'iframe', '')
                 },
             )
             r._csp_ignore = True
@@ -73,9 +73,9 @@ class WaitingView(EventViewMixin, FormView):
     @cached_property
     def item_and_variation(self):
         try:
-            item = self.request.event.items.get(pk=self.request.GET.get("item"))
-            if "var" in self.request.GET:
-                var = item.variations.get(pk=self.request.GET["var"])
+            item = self.request.event.items.get(pk=self.request.GET.get('item'))
+            if 'var' in self.request.GET:
+                var = item.variations.get(pk=self.request.GET['var'])
             elif item.has_variations:
                 return None
             else:
@@ -88,31 +88,31 @@ class WaitingView(EventViewMixin, FormView):
         self.request = request
 
         if not self.request.event.settings.waiting_list_enabled:
-            messages.error(request, _("Waiting lists are disabled for this event."))
+            messages.error(request, _('Waiting lists are disabled for this event.'))
             return redirect(self.get_index_url())
 
         if not self.item_and_variation:
             messages.error(
-                request, _("We could not identify the product you selected.")
+                request, _('We could not identify the product you selected.')
             )
             return redirect(self.get_index_url())
 
         if not self.item_and_variation[0].allow_waitinglist:
-            messages.error(request, _("The waiting list is disabled for this product."))
+            messages.error(request, _('The waiting list is disabled for this product.'))
             return redirect(self.get_index_url())
 
         self.subevent = None
         if request.event.has_subevents:
-            if "subevent" in request.GET:
+            if 'subevent' in request.GET:
                 self.subevent = get_object_or_404(
                     SubEvent,
                     event=request.event,
-                    pk=request.GET["subevent"],
+                    pk=request.GET['subevent'],
                     active=True,
                 )
             else:
                 messages.error(
-                    request, pgettext_lazy("subevent", "You need to select a date.")
+                    request, pgettext_lazy('subevent', 'You need to select a date.')
                 )
                 return redirect(self.get_index_url())
 
@@ -132,8 +132,8 @@ class WaitingView(EventViewMixin, FormView):
             messages.error(
                 self.request,
                 _(
-                    "You cannot add yourself to the waiting list as this product is currently "
-                    "available."
+                    'You cannot add yourself to the waiting list as this product is currently '
+                    'available.'
                 ),
             )
             return redirect(self.get_index_url())
@@ -143,7 +143,7 @@ class WaitingView(EventViewMixin, FormView):
             self.request,
             _(
                 "We've added you to the waiting list. You will receive "
-                "an email as soon as tickets get available again."
+                'an email as soon as tickets get available again.'
             ),
         )
         return super().form_valid(form)

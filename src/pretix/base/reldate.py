@@ -11,15 +11,15 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 BASE_CHOICES = (
-    ("date_from", _("Event start")),
-    ("date_to", _("Event end")),
-    ("date_admission", _("Event admission")),
-    ("presale_start", _("Presale start")),
-    ("presale_end", _("Presale end")),
+    ('date_from', _('Event start')),
+    ('date_to', _('Event end')),
+    ('date_admission', _('Event admission')),
+    ('presale_start', _('Presale start')),
+    ('presale_end', _('Presale end')),
 )
 
 RelativeDate = namedtuple(
-    "RelativeDate", ["days_before", "minutes_before", "time", "base_date_name"]
+    'RelativeDate', ['days_before', 'minutes_before', 'time', 'base_date_name']
 )
 
 
@@ -47,7 +47,7 @@ class RelativeDateWrapper:
         else:
             if self.data.minutes_before is not None:
                 raise ValueError(
-                    "A minute-based relative datetime can not be used as a date"
+                    'A minute-based relative datetime can not be used as a date'
                 )
 
             tz = pytz.timezone(event.settings.timezone)
@@ -106,20 +106,20 @@ class RelativeDateWrapper:
             return self.data.isoformat()
         else:
             if self.data.minutes_before is not None:
-                return "RELDATE/minutes/{}/{}/".format(  #
+                return 'RELDATE/minutes/{}/{}/'.format(  #
                     self.data.minutes_before, self.data.base_date_name
                 )
-            return "RELDATE/{}/{}/{}/".format(  #
+            return 'RELDATE/{}/{}/{}/'.format(  #
                 self.data.days_before,
-                self.data.time.strftime("%H:%M:%S") if self.data.time else "-",
+                self.data.time.strftime('%H:%M:%S') if self.data.time else '-',
                 self.data.base_date_name,
             )
 
     @classmethod
     def from_string(cls, input: str):
-        if input.startswith("RELDATE/"):
-            parts = input.split("/")
-            if parts[1] == "minutes":
+        if input.startswith('RELDATE/'):
+            parts = input.split('/')
+            if parts[1] == 'minutes':
                 data = RelativeDate(
                     days_before=0,
                     minutes_before=int(parts[2]),
@@ -127,10 +127,10 @@ class RelativeDateWrapper:
                     time=None,
                 )
             else:
-                if parts[2] == "-":
+                if parts[2] == '-':
                     time = None
                 else:
-                    timeparts = parts[2].split(":")
+                    timeparts = parts[2].split(':')
                     time = datetime.time(
                         hour=int(timeparts[0]),
                         minute=int(timeparts[1]),
@@ -152,7 +152,7 @@ class RelativeDateWrapper:
                     )
             if data.base_date_name not in [k[0] for k in BASE_CHOICES]:
                 raise ValueError(
-                    "{} is not a valid base date".format(data.base_date_name)
+                    '{} is not a valid base date'.format(data.base_date_name)
                 )
         else:
             data = parser.parse(input)
@@ -163,17 +163,17 @@ class RelativeDateWrapper:
 
 
 class RelativeDateTimeWidget(forms.MultiWidget):
-    template_name = "pretixbase/forms/widgets/reldatetime.html"
+    template_name = 'pretixbase/forms/widgets/reldatetime.html'
 
     def __init__(self, *args, **kwargs):
-        self.status_choices = kwargs.pop("status_choices")
+        self.status_choices = kwargs.pop('status_choices')
         widgets = (
             forms.RadioSelect(choices=self.status_choices),
-            forms.DateTimeInput(attrs={"class": "datetimepicker"}),
+            forms.DateTimeInput(attrs={'class': 'datetimepicker'}),
             forms.NumberInput(),
-            forms.Select(choices=kwargs.pop("base_choices")),
+            forms.Select(choices=kwargs.pop('base_choices')),
             forms.TimeInput(
-                attrs={"placeholder": _("Time"), "class": "timepickerfield"}
+                attrs={'placeholder': _('Time'), 'class': 'timepickerfield'}
             ),
             forms.NumberInput(),
         )
@@ -183,12 +183,12 @@ class RelativeDateTimeWidget(forms.MultiWidget):
         if isinstance(value, str):
             value = RelativeDateWrapper.from_string(value)
         if not value:
-            return ["unset", None, 1, "date_from", None, 0]
+            return ['unset', None, 1, 'date_from', None, 0]
         elif isinstance(value.data, (datetime.datetime, datetime.date)):
-            return ["absolute", value.data, 1, "date_from", None, 0]
+            return ['absolute', value.data, 1, 'date_from', None, 0]
         elif value.data.minutes_before is not None:
             return [
-                "relative_minutes",
+                'relative_minutes',
                 None,
                 None,
                 value.data.base_date_name,
@@ -196,7 +196,7 @@ class RelativeDateTimeWidget(forms.MultiWidget):
                 value.data.minutes_before,
             ]
         return [
-            "relative",
+            'relative',
             None,
             value.data.days_before,
             value.data.base_date_name,
@@ -206,24 +206,24 @@ class RelativeDateTimeWidget(forms.MultiWidget):
 
     def get_context(self, name, value, attrs):
         ctx = super().get_context(name, value, attrs)
-        ctx["required"] = self.status_choices[0][0] == "unset"
+        ctx['required'] = self.status_choices[0][0] == 'unset'
         return ctx
 
 
 class RelativeDateTimeField(forms.MultiValueField):
     def __init__(self, *args, **kwargs):
         status_choices = [
-            ("absolute", _("Fixed date:")),
-            ("relative", _("Relative date:")),
-            ("relative_minutes", _("Relative time:")),
+            ('absolute', _('Fixed date:')),
+            ('relative', _('Relative date:')),
+            ('relative_minutes', _('Relative time:')),
         ]
-        if kwargs.get("limit_choices"):
-            limit = kwargs.pop("limit_choices")
+        if kwargs.get('limit_choices'):
+            limit = kwargs.pop('limit_choices')
             choices = [(k, v) for k, v in BASE_CHOICES if k in limit]
         else:
             choices = BASE_CHOICES
-        if not kwargs.get("required", True):
-            status_choices.insert(0, ("unset", _("Not set")))
+        if not kwargs.get('required', True):
+            status_choices.insert(0, ('unset', _('Not set')))
         fields = (
             forms.ChoiceField(choices=status_choices, required=True),
             forms.DateTimeField(required=False),
@@ -234,12 +234,12 @@ class RelativeDateTimeField(forms.MultiValueField):
             ),
             forms.IntegerField(required=False),
         )
-        if "widget" not in kwargs:
-            kwargs["widget"] = RelativeDateTimeWidget(
+        if 'widget' not in kwargs:
+            kwargs['widget'] = RelativeDateTimeWidget(
                 status_choices=status_choices, base_choices=choices
             )
-        kwargs.pop("max_length", 0)
-        kwargs.pop("empty_value", 0)
+        kwargs.pop('max_length', 0)
+        kwargs.pop('empty_value', 0)
         super().__init__(fields=fields, require_all_fields=False, *args, **kwargs)
 
     def set_event(self, event):
@@ -250,11 +250,11 @@ class RelativeDateTimeField(forms.MultiValueField):
     def compress(self, data_list):
         if not data_list:
             return None
-        if data_list[0] == "absolute":
+        if data_list[0] == 'absolute':
             return RelativeDateWrapper(data_list[1])
-        elif data_list[0] == "unset":
+        elif data_list[0] == 'unset':
             return None
-        elif data_list[0] == "relative_minutes":
+        elif data_list[0] == 'relative_minutes':
             return RelativeDateWrapper(
                 RelativeDate(
                     days_before=0,
@@ -274,26 +274,26 @@ class RelativeDateTimeField(forms.MultiValueField):
             )
 
     def clean(self, value):
-        if value[0] == "absolute" and not value[1]:
-            raise ValidationError(self.error_messages["incomplete"])
-        elif value[0] == "relative" and (value[2] is None or not value[3]):
-            raise ValidationError(self.error_messages["incomplete"])
-        elif value[0] == "relative_minutes" and (value[5] is None or not value[3]):
-            raise ValidationError(self.error_messages["incomplete"])
+        if value[0] == 'absolute' and not value[1]:
+            raise ValidationError(self.error_messages['incomplete'])
+        elif value[0] == 'relative' and (value[2] is None or not value[3]):
+            raise ValidationError(self.error_messages['incomplete'])
+        elif value[0] == 'relative_minutes' and (value[5] is None or not value[3]):
+            raise ValidationError(self.error_messages['incomplete'])
 
         return super().clean(value)
 
 
 class RelativeDateWidget(RelativeDateTimeWidget):
-    template_name = "pretixbase/forms/widgets/reldate.html"
+    template_name = 'pretixbase/forms/widgets/reldate.html'
 
     def __init__(self, *args, **kwargs):
-        self.status_choices = kwargs.pop("status_choices")
+        self.status_choices = kwargs.pop('status_choices')
         widgets = (
             forms.RadioSelect(choices=self.status_choices),
-            forms.DateInput(attrs={"class": "datepickerfield"}),
+            forms.DateInput(attrs={'class': 'datepickerfield'}),
             forms.NumberInput(),
-            forms.Select(choices=kwargs.pop("base_choices")),
+            forms.Select(choices=kwargs.pop('base_choices')),
         )
         forms.MultiWidget.__init__(self, widgets=widgets, *args, **kwargs)
 
@@ -301,28 +301,28 @@ class RelativeDateWidget(RelativeDateTimeWidget):
         if isinstance(value, str):
             value = RelativeDateWrapper.from_string(value)
         if not value:
-            return ["unset", None, 1, "date_from"]
+            return ['unset', None, 1, 'date_from']
         elif isinstance(value.data, (datetime.datetime, datetime.date)):
-            return ["absolute", value.data, 1, "date_from"]
-        return ["relative", None, value.data.days_before, value.data.base_date_name]
+            return ['absolute', value.data, 1, 'date_from']
+        return ['relative', None, value.data.days_before, value.data.base_date_name]
 
 
 class RelativeDateField(RelativeDateTimeField):
     def __init__(self, *args, **kwargs):
         status_choices = [
-            ("absolute", _("Fixed date:")),
-            ("relative", _("Relative date:")),
+            ('absolute', _('Fixed date:')),
+            ('relative', _('Relative date:')),
         ]
-        if not kwargs.get("required", True):
-            status_choices.insert(0, ("unset", _("Not set")))
+        if not kwargs.get('required', True):
+            status_choices.insert(0, ('unset', _('Not set')))
         fields = (
             forms.ChoiceField(choices=status_choices, required=True),
             forms.DateField(required=False),
             forms.IntegerField(required=False),
             forms.ChoiceField(choices=BASE_CHOICES, required=False),
         )
-        if "widget" not in kwargs:
-            kwargs["widget"] = RelativeDateWidget(
+        if 'widget' not in kwargs:
+            kwargs['widget'] = RelativeDateWidget(
                 status_choices=status_choices, base_choices=BASE_CHOICES
             )
         forms.MultiValueField.__init__(
@@ -332,9 +332,9 @@ class RelativeDateField(RelativeDateTimeField):
     def compress(self, data_list):
         if not data_list:
             return None
-        if data_list[0] == "absolute":
+        if data_list[0] == 'absolute':
             return RelativeDateWrapper(data_list[1])
-        elif data_list[0] == "unset":
+        elif data_list[0] == 'unset':
             return None
         else:
             return RelativeDateWrapper(
@@ -347,10 +347,10 @@ class RelativeDateField(RelativeDateTimeField):
             )
 
     def clean(self, value):
-        if value[0] == "absolute" and not value[1]:
-            raise ValidationError(self.error_messages["incomplete"])
-        elif value[0] == "relative" and (value[2] is None or not value[3]):
-            raise ValidationError(self.error_messages["incomplete"])
+        if value[0] == 'absolute' and not value[1]:
+            raise ValidationError(self.error_messages['incomplete'])
+        elif value[0] == 'relative' and (value[2] is None or not value[3]):
+            raise ValidationError(self.error_messages['incomplete'])
 
         return super().clean(value)
 
@@ -359,8 +359,8 @@ class ModelRelativeDateTimeField(models.CharField):
     form_class = RelativeDateTimeField
 
     def __init__(self, *args, **kwargs):
-        self.event = kwargs.pop("event", None)
-        kwargs.setdefault("max_length", 255)
+        self.event = kwargs.pop('event', None)
+        kwargs.setdefault('max_length', 255)
         super().__init__(*args, **kwargs)
 
     def to_python(self, value):
@@ -381,7 +381,7 @@ class ModelRelativeDateTimeField(models.CharField):
         return RelativeDateWrapper.from_string(value)
 
     def formfield(self, **kwargs):
-        defaults = {"form_class": self.form_class}
+        defaults = {'form_class': self.form_class}
         defaults.update(kwargs)
         return super().formfield(**defaults)
 
@@ -394,10 +394,10 @@ class SerializerRelativeDateField(serializers.CharField):
             r = RelativeDateWrapper.from_string(data)
             if isinstance(r.data, RelativeDate):
                 if r.data.time is not None:
-                    raise ValidationError("Do not specify a time for a date field")
+                    raise ValidationError('Do not specify a time for a date field')
             return r
         except:
-            raise ValidationError("Invalid relative date")
+            raise ValidationError('Invalid relative date')
 
     def to_representation(self, value: RelativeDateWrapper):
         if value is None:
@@ -412,7 +412,7 @@ class SerializerRelativeDateTimeField(serializers.CharField):
         try:
             return RelativeDateWrapper.from_string(data)
         except:
-            raise ValidationError("Invalid relative date")
+            raise ValidationError('Invalid relative date')
 
     def to_representation(self, value: RelativeDateWrapper):
         if value is None:

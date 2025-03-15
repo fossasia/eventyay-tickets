@@ -21,9 +21,9 @@ class BaseI18nModelForm(i18nfield.forms.BaseI18nModelForm):
     # compatibility shim for django-i18nfield library
 
     def __init__(self, *args, **kwargs):
-        self.event = kwargs.pop("event", None)
+        self.event = kwargs.pop('event', None)
         if self.event:
-            kwargs["locales"] = self.event.settings.get("locales")
+            kwargs['locales'] = self.event.settings.get('locales')
         super().__init__(*args, **kwargs)
 
 
@@ -35,9 +35,9 @@ class I18nFormSet(i18nfield.forms.I18nModelFormSet):
     # compatibility shim for django-i18nfield library
 
     def __init__(self, *args, **kwargs):
-        self.event = kwargs.pop("event", None)
+        self.event = kwargs.pop('event', None)
         if self.event:
-            kwargs["locales"] = self.event.settings.get("locales")
+            kwargs['locales'] = self.event.settings.get('locales')
         super().__init__(*args, **kwargs)
 
 
@@ -45,13 +45,13 @@ class I18nInlineFormSet(i18nfield.forms.I18nInlineFormSet):
     # compatibility shim for django-i18nfield library
 
     def __init__(self, *args, **kwargs):
-        event = kwargs.pop("event", None)
+        event = kwargs.pop('event', None)
         if event:
-            kwargs["locales"] = event.settings.get("locales")
+            kwargs['locales'] = event.settings.get('locales')
         super().__init__(*args, **kwargs)
 
 
-SECRET_REDACTED = "*****"
+SECRET_REDACTED = '*****'
 
 
 class SettingsForm(i18nfield.forms.I18nFormMixin, HierarkeyForm):
@@ -60,22 +60,22 @@ class SettingsForm(i18nfield.forms.I18nFormMixin, HierarkeyForm):
     def __init__(self, *args, **kwargs):
         from pretix.base.settings import DEFAULTS
 
-        self.obj = kwargs.get("obj", None)
+        self.obj = kwargs.get('obj', None)
         self.locales = (
-            self.obj.settings.get("locales")
+            self.obj.settings.get('locales')
             if self.obj
-            else kwargs.pop("locales", None)
+            else kwargs.pop('locales', None)
         )
-        kwargs["attribute_name"] = "settings"
-        kwargs["locales"] = self.locales
-        kwargs["initial"] = self.obj.settings.freeze()
+        kwargs['attribute_name'] = 'settings'
+        kwargs['locales'] = self.locales
+        kwargs['initial'] = self.obj.settings.freeze()
         super().__init__(*args, **kwargs)
         for fname in self.auto_fields:
-            kwargs = DEFAULTS[fname].get("form_kwargs", {})
+            kwargs = DEFAULTS[fname].get('form_kwargs', {})
             if callable(kwargs):
                 kwargs = kwargs()
-            kwargs.setdefault("required", False)
-            field = DEFAULTS[fname]["form_class"](**kwargs)
+            kwargs.setdefault('required', False)
+            field = DEFAULTS[fname]['form_class'](**kwargs)
             if isinstance(field, i18nfield.forms.I18nFormField):
                 field.widget.enabled_locales = self.locales
             self.fields[fname] = field
@@ -97,17 +97,17 @@ class SettingsForm(i18nfield.forms.I18nFormMixin, HierarkeyForm):
 
         nonce = get_random_string(length=8)
         if isinstance(self.obj, Event):
-            fname = "%s/%s/%s.%s.%s" % (
+            fname = '%s/%s/%s.%s.%s' % (
                 self.obj.organizer.slug,
                 self.obj.slug,
                 name,
                 nonce,
-                name.split(".")[-1],
+                name.split('.')[-1],
             )
         else:
-            fname = "%s/%s.%s.%s" % (self.obj.slug, name, nonce, name.split(".")[-1])
+            fname = '%s/%s.%s.%s' % (self.obj.slug, name, nonce, name.split('.')[-1])
         # TODO: make sure pub is always correct
-        return "pub/" + fname
+        return 'pub/' + fname
 
 
 class PrefixForm(forms.Form):
@@ -116,7 +116,7 @@ class PrefixForm(forms.Form):
 
 class SafeSessionWizardView(SessionWizardView):
     def get_prefix(self, request, *args, **kwargs):
-        if hasattr(request, "_session_wizard_prefix"):
+        if hasattr(request, '_session_wizard_prefix'):
             return request._session_wizard_prefix
         prefix_form = PrefixForm(
             self.request.POST, prefix=super().get_prefix(request, *args, **kwargs)
@@ -124,14 +124,14 @@ class SafeSessionWizardView(SessionWizardView):
         if not prefix_form.is_valid():
             request._session_wizard_prefix = get_random_string(length=24)
         else:
-            request._session_wizard_prefix = prefix_form.cleaned_data["prefix"]
+            request._session_wizard_prefix = prefix_form.cleaned_data['prefix']
         return request._session_wizard_prefix
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form=form, **kwargs)
-        context["wizard"]["prefix_form"] = PrefixForm(
+        context['wizard']['prefix_form'] = PrefixForm(
             prefix=super().get_prefix(self.request),
-            initial={"prefix": self.get_prefix(self.request)},
+            initial={'prefix': self.get_prefix(self.request)},
         )
         return context
 
@@ -142,7 +142,7 @@ class SecretKeySettingsWidget(forms.TextInput):
             attrs = {}
         attrs.update(
             {
-                "autocomplete": "new-password"  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
+                'autocomplete': 'new-password'  # see https://bugs.chromium.org/p/chromium/issues/detail?id=370363#c7
             }
         )
         super().__init__(attrs)
@@ -169,7 +169,7 @@ class SecretKeySettingsField(forms.CharField):
 
 class I18nMarkdownTextarea(i18nfield.forms.I18nTextarea):
     def format_output(self, rendered_widgets) -> str:
-        markdown_note = _("You can use {name} in this field.").format(
+        markdown_note = _('You can use {name} in this field.').format(
             name='<a href="https://en.wikipedia.org/wiki/Markdown" target="_blank">Markdown</a>'
         )
         rendered_widgets.append(

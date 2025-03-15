@@ -5,12 +5,12 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-DELIMITER = "\x1f"
+DELIMITER = '\x1f'
 
 
 class MultiStringField(TextField):
     default_error_messages = {
-        "delimiter_found": _("No value can contain the delimiter character.")
+        'delimiter_found': _('No value can contain the delimiter character.')
     }
 
     def __init__(self, verbose_name=None, name=None, **kwargs):
@@ -32,11 +32,11 @@ class MultiStringField(TextField):
         if isinstance(value, (list, tuple)):
             return DELIMITER + DELIMITER.join(value) + DELIMITER
         elif value is None:
-            return ""
-        raise TypeError("Invalid data type passed.")
+            return ''
+        raise TypeError('Invalid data type passed.')
 
     def get_prep_lookup(self, lookup_type, value):  # NOQA
-        raise TypeError("Lookups on multi strings are currently not supported.")
+        raise TypeError('Lookups on multi strings are currently not supported.')
 
     def from_db_value(self, value, expression, connection):
         if value:
@@ -49,14 +49,14 @@ class MultiStringField(TextField):
         for l in value:
             if DELIMITER in l:
                 raise exceptions.ValidationError(
-                    self.error_messages["delimiter_found"],
-                    code="delimiter_found",
+                    self.error_messages['delimiter_found'],
+                    code='delimiter_found',
                 )
 
     def get_lookup(self, lookup_name):
-        if lookup_name == "contains":
+        if lookup_name == 'contains':
             return MultiStringContains
-        elif lookup_name == "icontains":
+        elif lookup_name == 'icontains':
             return MultiStringIContains
         raise NotImplementedError(
             "Lookup '{}' doesn't work with MultiStringField".format(lookup_name),
@@ -66,20 +66,20 @@ class MultiStringField(TextField):
 class MultiStringContains(builtin_lookups.Contains):
     def process_rhs(self, qn, connection):
         sql, params = super().process_rhs(qn, connection)
-        params[0] = "%" + DELIMITER + params[0][1:-1] + DELIMITER + "%"
+        params[0] = '%' + DELIMITER + params[0][1:-1] + DELIMITER + '%'
         return sql, params
 
 
 class MultiStringIContains(builtin_lookups.IContains):
     def process_rhs(self, qn, connection):
         sql, params = super().process_rhs(qn, connection)
-        params[0] = "%" + DELIMITER + params[0][1:-1] + DELIMITER + "%"
+        params[0] = '%' + DELIMITER + params[0][1:-1] + DELIMITER + '%'
         return sql, params
 
 
 class MultiStringSerializer(serializers.Field):
     def __init__(self, **kwargs):
-        self.allow_blank = kwargs.pop("allow_blank", False)
+        self.allow_blank = kwargs.pop('allow_blank', False)
         super().__init__(**kwargs)
 
     def to_representation(self, value):
@@ -89,7 +89,7 @@ class MultiStringSerializer(serializers.Field):
         if isinstance(data, list):
             return data
         else:
-            raise ValidationError("Invalid data type.")
+            raise ValidationError('Invalid data type.')
 
 
 serializers.ModelSerializer.serializer_field_mapping[MultiStringField] = (

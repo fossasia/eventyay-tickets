@@ -2,7 +2,7 @@ from django import forms
 
 
 class Select2Mixin:
-    template_name = "pretixcontrol/select2_widget.html"
+    template_name = 'pretixcontrol/select2_widget.html'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

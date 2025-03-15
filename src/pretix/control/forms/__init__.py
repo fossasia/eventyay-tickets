@@ -36,7 +36,7 @@ class TolerantFormsetModelForm(I18nModelForm):
         implementation, the ORDER field is being ignored.
         """
         for name, field in self.fields.items():
-            if name == "ORDER" or name == "id":
+            if name == 'ORDER' or name == 'id':
                 continue
             prefixed_name = self.add_prefix(name)
             data_value = field.widget.value_from_datadict(
@@ -77,7 +77,7 @@ def selector(values, prop):
 
 
 class ClearableBasenameFileInput(forms.ClearableFileInput):
-    template_name = "pretixbase/forms/widgets/thumbnailed_file_input.html"
+    template_name = 'pretixbase/forms/widgets/thumbnailed_file_input.html'
 
     class FakeFile(File):
         def __init__(self, file):
@@ -85,7 +85,7 @@ class ClearableBasenameFileInput(forms.ClearableFileInput):
 
         @property
         def name(self):
-            if hasattr(self.file, "display_name"):
+            if hasattr(self.file, 'display_name'):
                 return self.file.display_name
             return self.file.name
 
@@ -93,13 +93,13 @@ class ClearableBasenameFileInput(forms.ClearableFileInput):
         def is_img(self):
             return any(
                 self.file.name.lower().endswith(e)
-                for e in (".jpg", ".jpeg", ".png", ".gif")
+                for e in ('.jpg', '.jpeg', '.png', '.gif')
             )
 
         def __str__(self):
-            if hasattr(self.file, "display_name"):
+            if hasattr(self.file, 'display_name'):
                 return self.file.display_name
-            return os.path.basename(self.file.name).split(".", 1)[-1]
+            return os.path.basename(self.file.name).split('.', 1)[-1]
 
         @property
         def url(self):
@@ -107,13 +107,13 @@ class ClearableBasenameFileInput(forms.ClearableFileInput):
 
     def get_context(self, name, value, attrs):
         ctx = super().get_context(name, value, attrs)
-        ctx["widget"]["value"] = self.FakeFile(value)
-        ctx["widget"]["cachedfile"] = None
+        ctx['widget']['value'] = self.FakeFile(value)
+        ctx['widget']['cachedfile'] = None
         return ctx
 
 
 class CachedFileInput(forms.ClearableFileInput):
-    template_name = "pretixbase/forms/widgets/thumbnailed_file_input.html"
+    template_name = 'pretixbase/forms/widgets/thumbnailed_file_input.html'
 
     class FakeFile(File):
         def __init__(self, file):
@@ -127,7 +127,7 @@ class CachedFileInput(forms.ClearableFileInput):
         def is_img(self):
             return any(
                 self.file.filename.lower().endswith(e)
-                for e in (".jpg", ".jpeg", ".png", ".gif")
+                for e in ('.jpg', '.jpeg', '.png', '.gif')
             )
 
         def __str__(self):
@@ -135,16 +135,16 @@ class CachedFileInput(forms.ClearableFileInput):
 
         @property
         def url(self):
-            return reverse("cachedfile.download", kwargs={"id": self.file.id})
+            return reverse('cachedfile.download', kwargs={'id': self.file.id})
 
     def value_from_datadict(self, data, files, name):
         from ...base.models import CachedFile
 
         v = super().value_from_datadict(data, files, name)
         if v is None and data.get(
-            name + "-cachedfile"
+            name + '-cachedfile'
         ):  # An explicit "[x] clear" would be False, not None
-            return CachedFile.objects.filter(id=data[name + "-cachedfile"]).first()
+            return CachedFile.objects.filter(id=data[name + '-cachedfile']).first()
         return v
 
     def get_context(self, name, value, attrs):
@@ -154,26 +154,26 @@ class CachedFileInput(forms.ClearableFileInput):
             value = self.FakeFile(value)
 
         ctx = super().get_context(name, value, attrs)
-        ctx["widget"]["value"] = value
-        ctx["widget"]["cachedfile"] = (
+        ctx['widget']['value'] = value
+        ctx['widget']['cachedfile'] = (
             value.file if isinstance(value, self.FakeFile) else None
         )
-        ctx["widget"]["hidden_name"] = name + "-cachedfile"
+        ctx['widget']['hidden_name'] = name + '-cachedfile'
         return ctx
 
 
 class SizeFileField(forms.FileField):
     def __init__(self, *args, **kwargs):
-        self.max_size = kwargs.pop("max_size", None)
+        self.max_size = kwargs.pop('max_size', None)
         super().__init__(*args, **kwargs)
 
     @staticmethod
-    def _sizeof_fmt(num, suffix="B"):
-        for unit in ["", "K", "M", "G", "T", "P", "E", "Z"]:
+    def _sizeof_fmt(num, suffix='B'):
+        for unit in ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z']:
             if abs(num) < 1024.0:
-                return "%3.1f%s%s" % (num, unit, suffix)
+                return '%3.1f%s%s' % (num, unit, suffix)
             num /= 1024.0
-        return "%.1f%s%s" % (num, "Yi", suffix)
+        return '%.1f%s%s' % (num, 'Yi', suffix)
 
     def clean(self, *args, **kwargs):
         data = super().clean(*args, **kwargs)
@@ -183,7 +183,7 @@ class SizeFileField(forms.FileField):
             and data.size > self.max_size
         ):
             raise forms.ValidationError(
-                _("Please do not upload files larger than {size}!").format(
+                _('Please do not upload files larger than {size}!').format(
                     size=SizeFileField._sizeof_fmt(self.max_size)
                 )
             )
@@ -194,7 +194,7 @@ class ExtFileField(SizeFileField):
     widget = ClearableBasenameFileInput
 
     def __init__(self, *args, **kwargs):
-        ext_whitelist = kwargs.pop("ext_whitelist")
+        ext_whitelist = kwargs.pop('ext_whitelist')
         self.ext_whitelist = [i.lower() for i in ext_whitelist]
         super().__init__(*args, **kwargs)
 
@@ -205,7 +205,7 @@ class ExtFileField(SizeFileField):
             ext = os.path.splitext(filename)[1]
             ext = ext.lower()
             if ext not in self.ext_whitelist:
-                raise forms.ValidationError(_("Filetype not allowed!"))
+                raise forms.ValidationError(_('Filetype not allowed!'))
         return data
 
 
@@ -224,7 +224,7 @@ class CachedFileField(ExtFileField):
         from ...base.models import CachedFile
 
         if isinstance(data, File):
-            if hasattr(data, "_uploaded_to"):
+            if hasattr(data, '_uploaded_to'):
                 return data._uploaded_to
             cf = CachedFile.objects.create(
                 expires=now() + datetime.timedelta(days=1),
@@ -244,7 +244,7 @@ class CachedFileField(ExtFileField):
 
         data = super().clean(*args, **kwargs)
         if isinstance(data, File):
-            if hasattr(data, "_uploaded_to"):
+            if hasattr(data, '_uploaded_to'):
                 return data._uploaded_to
             cf = CachedFile.objects.create(
                 expires=now() + datetime.timedelta(days=1),
@@ -261,17 +261,17 @@ class CachedFileField(ExtFileField):
 
 
 class SlugWidget(forms.TextInput):
-    template_name = "pretixcontrol/slug_widget.html"
-    prefix = ""
+    template_name = 'pretixcontrol/slug_widget.html'
+    prefix = ''
 
     def get_context(self, name, value, attrs):
         ctx = super().get_context(name, value, attrs)
-        ctx["pre"] = self.prefix
+        ctx['pre'] = self.prefix
         return ctx
 
 
 class MultipleLanguagesWidget(forms.CheckboxSelectMultiple):
-    option_template_name = "pretixcontrol/multi_languages_widget.html"
+    option_template_name = 'pretixcontrol/multi_languages_widget.html'
 
     def sort(self):
         self.choices = sorted(
@@ -300,14 +300,14 @@ class MultipleLanguagesWidget(forms.CheckboxSelectMultiple):
         opt = super().create_option(
             name, value, label, selected, index, subindex, attrs
         )
-        opt["official"] = value in settings.LANGUAGES_OFFICIAL
-        opt["incubating"] = value in settings.LANGUAGES_INCUBATING
+        opt['official'] = value in settings.LANGUAGES_OFFICIAL
+        opt['incubating'] = value in settings.LANGUAGES_INCUBATING
         return opt
 
 
 class SingleLanguageWidget(forms.Select):
     def modify(self):
-        if hasattr(self, "_modified"):
+        if hasattr(self, '_modified'):
             return self.choices
         self.choices = sorted(
             self.choices,
@@ -328,9 +328,9 @@ class SingleLanguageWidget(forms.Select):
                     v
                     if k in settings.LANGUAGES_OFFICIAL
                     else (
-                        "{} (inofficial translation)".format(v)
+                        '{} (inofficial translation)'.format(v)
                         if k not in settings.LANGUAGES_INCUBATING
-                        else "{} (translation in progress)".format(v)
+                        else '{} (translation in progress)'.format(v)
                     ),
                 )
             )
@@ -354,7 +354,7 @@ class SplitDateTimeField(forms.SplitDateTimeField):
                 return None
             if data_list[1] in self.empty_values:
                 raise ValidationError(
-                    self.error_messages["invalid_date"], code="invalid_date"
+                    self.error_messages['invalid_date'], code='invalid_date'
                 )
             result = datetime.datetime.combine(*data_list)
             return from_current_timezone(result)
@@ -362,4 +362,4 @@ class SplitDateTimeField(forms.SplitDateTimeField):
 
 
 class FontSelect(forms.RadioSelect):
-    option_template_name = "pretixcontrol/font_option.html"
+    option_template_name = 'pretixcontrol/font_option.html'

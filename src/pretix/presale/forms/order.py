@@ -12,20 +12,20 @@ from pretix.base.templatetags.money import money_filter
 
 class OrderPositionChangeForm(forms.Form):
     itemvar = forms.ChoiceField(
-        label=_("Product"),
+        label=_('Product'),
         required=False,
     )
 
     def __init__(self, *args, **kwargs):
-        instance = kwargs.pop("instance")
-        invoice_address = kwargs.pop("invoice_address")
-        initial = kwargs.get("initial", {})
-        event = kwargs.pop("event")
-        kwargs["initial"] = initial
+        instance = kwargs.pop('instance')
+        invoice_address = kwargs.pop('invoice_address')
+        initial = kwargs.get('initial', {})
+        event = kwargs.pop('event')
+        kwargs['initial'] = initial
         if instance.variation_id:
-            initial["itemvar"] = f"{instance.item_id}-{instance.variation_id}"
+            initial['itemvar'] = f'{instance.item_id}-{instance.variation_id}'
         else:
-            initial["itemvar"] = f"{instance.item_id}"
+            initial['itemvar'] = f'{instance.item_id}'
 
         super().__init__(*args, **kwargs)
 
@@ -47,9 +47,9 @@ class OrderPositionChangeForm(forms.Form):
             qa.compute()
 
             for v in variations:
-                label = f"{i.name} – {v.value}"
+                label = f'{i.name} – {v.value}'
                 if instance.variation_id == v.id:
-                    choices.append((f"{i.pk}-{v.pk}", label))
+                    choices.append((f'{i.pk}-{v.pk}', label))
                     continue
 
                 if not v.active:
@@ -74,68 +74,68 @@ class OrderPositionChangeForm(forms.Form):
                     tax=instance.tax_value,
                     gross=instance.price,
                     net=instance.price - instance.tax_value,
-                    name=instance.tax_rule.name if instance.tax_rule else "",
+                    name=instance.tax_rule.name if instance.tax_rule else '',
                     rate=instance.tax_rate,
                 )
                 if (
                     new_price.gross < current_price.gross
-                    and event.settings.change_allow_user_price == "gte"
+                    and event.settings.change_allow_user_price == 'gte'
                 ):
                     continue
                 if (
                     new_price.gross <= current_price.gross
-                    and event.settings.change_allow_user_price == "gt"
+                    and event.settings.change_allow_user_price == 'gt'
                 ):
                     continue
                 if (
                     new_price.gross != current_price.gross
-                    and event.settings.change_allow_user_price == "eq"
+                    and event.settings.change_allow_user_price == 'eq'
                 ):
                     continue
 
                 if new_price.gross < current_price.gross:
                     if event.settings.display_net_prices:
-                        label += " (- {} {})".format(
+                        label += ' (- {} {})'.format(
                             money_filter(
                                 current_price.gross - new_price.gross, event.currency
                             ),
-                            _("plus taxes"),
+                            _('plus taxes'),
                         )
                     else:
-                        label += " (- {})".format(
+                        label += ' (- {})'.format(
                             money_filter(
                                 current_price.gross - new_price.gross, event.currency
                             )
                         )
                 elif current_price.gross < new_price.gross:
                     if event.settings.display_net_prices:
-                        label += " ({}{} {})".format(
-                            "+ " if current_price.gross != Decimal("0.00") else "",
+                        label += ' ({}{} {})'.format(
+                            '+ ' if current_price.gross != Decimal('0.00') else '',
                             money_filter(
                                 new_price.gross - current_price.gross, event.currency
                             ),
-                            _("plus taxes"),
+                            _('plus taxes'),
                         )
                     else:
-                        label += " ({}{})".format(
-                            "+ " if current_price.gross != Decimal("0.00") else "",
+                        label += ' ({}{})'.format(
+                            '+ ' if current_price.gross != Decimal('0.00') else '',
                             money_filter(
                                 new_price.gross - current_price.gross, event.currency
                             ),
                         )
 
-                choices.append((f"{i.pk}-{v.pk}", label))
+                choices.append((f'{i.pk}-{v.pk}', label))
 
             if not choices:
-                self.fields["itemvar"].widget.attrs["disabled"] = True
-                self.fields["itemvar"].help_text = _(
-                    "No other variation of this product is currently available for you."
+                self.fields['itemvar'].widget.attrs['disabled'] = True
+                self.fields['itemvar'].help_text = _(
+                    'No other variation of this product is currently available for you.'
                 )
         else:
-            choices.append((str(i.pk), "%s" % pname))
-            self.fields["itemvar"].widget.attrs["disabled"] = True
-            self.fields["itemvar"].help_text = _(
-                "No other variations of this product exist."
+            choices.append((str(i.pk), '%s' % pname))
+            self.fields['itemvar'].widget.attrs['disabled'] = True
+            self.fields['itemvar'].help_text = _(
+                'No other variations of this product exist.'
             )
 
-        self.fields["itemvar"].choices = choices
+        self.fields['itemvar'].choices = choices

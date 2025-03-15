@@ -11,7 +11,7 @@ def bg_name(instance, filename: str) -> str:
     secret = get_random_string(
         length=16, allowed_chars=string.ascii_letters + string.digits
     )
-    return "pub/{org}/{ev}/ticketoutputpdf/{id}-{secret}.pdf".format(
+    return 'pub/{org}/{ev}/ticketoutputpdf/{id}-{secret}.pdf'.format(
         org=instance.event.organizer.slug,
         ev=instance.event.slug,
         id=instance.pk,
@@ -21,13 +21,13 @@ def bg_name(instance, filename: str) -> str:
 
 class TicketLayout(LoggedModel):
     event = models.ForeignKey(
-        "pretixbase.Event", on_delete=models.CASCADE, related_name="ticket_layouts"
+        'pretixbase.Event', on_delete=models.CASCADE, related_name='ticket_layouts'
     )
     default = models.BooleanField(
-        verbose_name=_("Default"),
+        verbose_name=_('Default'),
         default=False,
     )
-    name = models.CharField(max_length=190, verbose_name=_("Name"))
+    name = models.CharField(max_length=190, verbose_name=_('Name'))
     layout = models.TextField(
         default="""[{
         "type":"textarea",
@@ -219,7 +219,7 @@ class TicketLayout(LoggedModel):
     )
 
     class Meta:
-        ordering = ("name",)
+        ordering = ('name',)
 
     def __str__(self):
         return self.name
@@ -227,17 +227,17 @@ class TicketLayout(LoggedModel):
 
 class TicketLayoutItem(models.Model):
     item = models.ForeignKey(
-        "pretixbase.Item",
+        'pretixbase.Item',
         null=True,
         blank=True,
-        related_name="ticketlayout_assignments",
+        related_name='ticketlayout_assignments',
         on_delete=models.CASCADE,
     )
     layout = models.ForeignKey(
-        "TicketLayout", on_delete=models.CASCADE, related_name="item_assignments"
+        'TicketLayout', on_delete=models.CASCADE, related_name='item_assignments'
     )
-    sales_channel = models.CharField(max_length=190, default="web")
+    sales_channel = models.CharField(max_length=190, default='web')
 
     class Meta:
-        unique_together = (("item", "layout", "sales_channel"),)
-        ordering = ("id",)
+        unique_together = (('item', 'layout', 'sales_channel'),)
+        ordering = ('id',)

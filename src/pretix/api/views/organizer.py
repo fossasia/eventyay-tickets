@@ -52,12 +52,12 @@ from pretix.presale.style import regenerate_organizer_css
 class OrganizerViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = OrganizerSerializer
     queryset = Organizer.objects.none()
-    lookup_field = "slug"
-    lookup_url_kwarg = "organizer"
-    lookup_value_regex = "[^/]+"
+    lookup_field = 'slug'
+    lookup_url_kwarg = 'organizer'
+    lookup_value_regex = '[^/]+'
     filter_backends = (filters.OrderingFilter,)
-    ordering = ("slug",)
-    ordering_fields = ("name", "slug")
+    ordering = ('slug',)
+    ordering_fields = ('name', 'slug')
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
@@ -67,15 +67,15 @@ class OrganizerViewSet(viewsets.ReadOnlyModelViewSet):
                 return Organizer.objects.all()
             elif isinstance(self.request.auth, OAuthAccessToken):
                 return Organizer.objects.filter(
-                    pk__in=self.request.user.teams.values_list("organizer", flat=True)
+                    pk__in=self.request.user.teams.values_list('organizer', flat=True)
                 ).filter(
-                    pk__in=self.request.auth.organizers.values_list("pk", flat=True)
+                    pk__in=self.request.auth.organizers.values_list('pk', flat=True)
                 )
             else:
                 return Organizer.objects.filter(
-                    pk__in=self.request.user.teams.values_list("organizer", flat=True)
+                    pk__in=self.request.user.teams.values_list('organizer', flat=True)
                 )
-        elif hasattr(self.request.auth, "organizer_id"):
+        elif hasattr(self.request.auth, 'organizer_id'):
             return Organizer.objects.filter(pk=self.request.auth.organizer_id)
         else:
             return Organizer.objects.filter(pk=self.request.auth.team.organizer_id)
@@ -84,25 +84,25 @@ class OrganizerViewSet(viewsets.ReadOnlyModelViewSet):
 class SeatingPlanViewSet(viewsets.ModelViewSet):
     serializer_class = SeatingPlanSerializer
     queryset = SeatingPlan.objects.none()
-    permission = "can_change_organizer_settings"
-    write_permission = "can_change_organizer_settings"
+    permission = 'can_change_organizer_settings'
+    write_permission = 'can_change_organizer_settings'
 
     def get_queryset(self):
-        return self.request.organizer.seating_plans.order_by("name")
+        return self.request.organizer.seating_plans.order_by('name')
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
-        ctx["organizer"] = self.request.organizer
+        ctx['organizer'] = self.request.organizer
         return ctx
 
     @transaction.atomic()
     def perform_create(self, serializer):
         inst = serializer.save(organizer=self.request.organizer)
         self.request.organizer.log_action(
-            "pretix.seatingplan.added",
+            'pretix.seatingplan.added',
             user=self.request.user,
             auth=self.request.auth,
-            data=merge_dicts(self.request.data, {"id": inst.pk}),
+            data=merge_dicts(self.request.data, {'id': inst.pk}),
         )
 
     @transaction.atomic()
@@ -112,14 +112,14 @@ class SeatingPlanViewSet(viewsets.ModelViewSet):
             or serializer.instance.subevents.exists()
         ):
             raise PermissionDenied(
-                "This plan can not be changed while it is in use for an event."
+                'This plan can not be changed while it is in use for an event.'
             )
         inst = serializer.save(organizer=self.request.organizer)
         self.request.organizer.log_action(
-            "pretix.seatingplan.changed",
+            'pretix.seatingplan.changed',
             user=self.request.user,
             auth=self.request.auth,
-            data=merge_dicts(self.request.data, {"id": serializer.instance.pk}),
+            data=merge_dicts(self.request.data, {'id': serializer.instance.pk}),
         )
         return inst
 
@@ -127,13 +127,13 @@ class SeatingPlanViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         if instance.events.exists() or instance.subevents.exists():
             raise PermissionDenied(
-                "This plan can not be deleted while it is in use for an event."
+                'This plan can not be deleted while it is in use for an event.'
             )
         instance.log_action(
-            "pretix.seatingplan.deleted",
+            'pretix.seatingplan.deleted',
             user=self.request.user,
             auth=self.request.auth,
-            data={"id": instance.pk},
+            data={'id': instance.pk},
         )
         instance.delete()
 
@@ -141,23 +141,23 @@ class SeatingPlanViewSet(viewsets.ModelViewSet):
 with scopes_disabled():
 
     class GiftCardFilter(FilterSet):
-        secret = django_filters.CharFilter(field_name="secret", lookup_expr="iexact")
+        secret = django_filters.CharFilter(field_name='secret', lookup_expr='iexact')
 
         class Meta:
             model = GiftCard
-            fields = ["secret", "testmode"]
+            fields = ['secret', 'testmode']
 
 
 class GiftCardViewSet(viewsets.ModelViewSet):
     serializer_class = GiftCardSerializer
     queryset = GiftCard.objects.none()
-    permission = "can_manage_gift_cards"
-    write_permission = "can_manage_gift_cards"
+    permission = 'can_manage_gift_cards'
+    write_permission = 'can_manage_gift_cards'
     filter_backends = (DjangoFilterBackend,)
     filterset_class = GiftCardFilter
 
     def get_queryset(self):
-        if self.request.GET.get("include_accepted") == "true":
+        if self.request.GET.get('include_accepted') == 'true':
             qs = self.request.organizer.accepted_gift_cards
         else:
             qs = self.request.organizer.issued_gift_cards.all()
@@ -165,30 +165,30 @@ class GiftCardViewSet(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
-        ctx["organizer"] = self.request.organizer
+        ctx['organizer'] = self.request.organizer
         return ctx
 
     @transaction.atomic()
     def perform_create(self, serializer):
-        value = serializer.validated_data.pop("value")
+        value = serializer.validated_data.pop('value')
         inst = serializer.save(issuer=self.request.organizer)
         inst.transactions.create(value=value)
         inst.log_action(
-            "pretix.giftcards.transaction.manual",
+            'pretix.giftcards.transaction.manual',
             user=self.request.user,
             auth=self.request.auth,
-            data=merge_dicts(self.request.data, {"id": inst.pk}),
+            data=merge_dicts(self.request.data, {'id': inst.pk}),
         )
 
     @transaction.atomic()
     def perform_update(self, serializer):
-        if "include_accepted" in self.request.GET:
+        if 'include_accepted' in self.request.GET:
             raise PermissionDenied(
-                "Accepted gift cards cannot be updated, use transact instead."
+                'Accepted gift cards cannot be updated, use transact instead.'
             )
         GiftCard.objects.select_for_update().get(pk=self.get_object().pk)
         old_value = serializer.instance.value
-        value = serializer.validated_data.pop("value")
+        value = serializer.validated_data.pop('value')
         inst = serializer.save(
             secret=serializer.instance.secret,
             currency=serializer.instance.currency,
@@ -197,92 +197,92 @@ class GiftCardViewSet(viewsets.ModelViewSet):
         diff = value - old_value
         inst.transactions.create(value=diff)
         inst.log_action(
-            "pretix.giftcards.transaction.manual",
+            'pretix.giftcards.transaction.manual',
             user=self.request.user,
             auth=self.request.auth,
-            data={"value": diff},
+            data={'value': diff},
         )
         return inst
 
-    @action(detail=True, methods=["POST"])
+    @action(detail=True, methods=['POST'])
     @transaction.atomic()
     def transact(self, request, **kwargs):
         gc = GiftCard.objects.select_for_update().get(pk=self.get_object().pk)
         value = serializers.DecimalField(
             max_digits=10, decimal_places=2
-        ).to_internal_value(request.data.get("value"))
+        ).to_internal_value(request.data.get('value'))
         text = serializers.CharField(
             allow_blank=True, allow_null=True
-        ).to_internal_value(request.data.get("text", ""))
-        if gc.value + value < Decimal("0.00"):
+        ).to_internal_value(request.data.get('text', ''))
+        if gc.value + value < Decimal('0.00'):
             return Response(
                 {
-                    "value": [
-                        "The gift card does not have sufficient credit for this operation."
+                    'value': [
+                        'The gift card does not have sufficient credit for this operation.'
                     ]
                 },
                 status=status.HTTP_409_CONFLICT,
             )
         gc.transactions.create(value=value, text=text)
         gc.log_action(
-            "pretix.giftcards.transaction.manual",
+            'pretix.giftcards.transaction.manual',
             user=self.request.user,
             auth=self.request.auth,
-            data={"value": value, "text": text},
+            data={'value': value, 'text': text},
         )
         return Response(GiftCardSerializer(gc).data, status=status.HTTP_200_OK)
 
     def perform_destroy(self, instance):
-        raise MethodNotAllowed("Gift cards cannot be deleted.")
+        raise MethodNotAllowed('Gift cards cannot be deleted.')
 
 
 class GiftCardTransactionViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = GiftCardTransactionSerializer
     queryset = GiftCardTransaction.objects.none()
-    permission = "can_manage_gift_cards"
-    write_permission = "can_manage_gift_cards"
+    permission = 'can_manage_gift_cards'
+    write_permission = 'can_manage_gift_cards'
 
     @cached_property
     def giftcard(self):
-        if self.request.GET.get("include_accepted") == "true":
+        if self.request.GET.get('include_accepted') == 'true':
             qs = self.request.organizer.accepted_gift_cards
         else:
             qs = self.request.organizer.issued_gift_cards.all()
-        return get_object_or_404(qs, pk=self.kwargs.get("giftcard"))
+        return get_object_or_404(qs, pk=self.kwargs.get('giftcard'))
 
     def get_queryset(self):
-        return self.giftcard.transactions.select_related("order", "order__event")
+        return self.giftcard.transactions.select_related('order', 'order__event')
 
 
 class TeamViewSet(viewsets.ModelViewSet):
     serializer_class = TeamSerializer
     queryset = Team.objects.none()
-    permission = "can_change_teams"
-    write_permission = "can_change_teams"
+    permission = 'can_change_teams'
+    write_permission = 'can_change_teams'
 
     def get_queryset(self):
-        return self.request.organizer.teams.order_by("pk")
+        return self.request.organizer.teams.order_by('pk')
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
-        ctx["organizer"] = self.request.organizer
+        ctx['organizer'] = self.request.organizer
         return ctx
 
     @transaction.atomic()
     def perform_create(self, serializer):
         inst = serializer.save(organizer=self.request.organizer)
         inst.log_action(
-            "pretix.team.created",
+            'pretix.team.created',
             user=self.request.user,
             auth=self.request.auth,
-            data=merge_dicts(self.request.data, {"id": inst.pk}),
+            data=merge_dicts(self.request.data, {'id': inst.pk}),
         )
 
     @transaction.atomic()
     def perform_update(self, serializer):
         inst = serializer.save()
         inst.log_action(
-            "pretix.team.changed",
+            'pretix.team.changed',
             user=self.request.user,
             auth=self.request.auth,
             data=self.request.data,
@@ -291,7 +291,7 @@ class TeamViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         instance.log_action(
-            "pretix.team.deleted", user=self.request.user, auth=self.request.auth
+            'pretix.team.deleted', user=self.request.user, auth=self.request.auth
         )
         instance.delete()
 
@@ -299,13 +299,13 @@ class TeamViewSet(viewsets.ModelViewSet):
 class TeamMemberViewSet(DestroyModelMixin, viewsets.ReadOnlyModelViewSet):
     serializer_class = TeamMemberSerializer
     queryset = User.objects.none()
-    permission = "can_change_teams"
-    write_permission = "can_change_teams"
+    permission = 'can_change_teams'
+    write_permission = 'can_change_teams'
 
     @cached_property
     def team(self):
         return get_object_or_404(
-            self.request.organizer.teams, pk=self.kwargs.get("team")
+            self.request.organizer.teams, pk=self.kwargs.get('team')
         )
 
     def get_queryset(self):
@@ -313,17 +313,17 @@ class TeamMemberViewSet(DestroyModelMixin, viewsets.ReadOnlyModelViewSet):
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
-        ctx["organizer"] = self.request.organizer
+        ctx['organizer'] = self.request.organizer
         return ctx
 
     @transaction.atomic()
     def perform_destroy(self, instance):
         self.team.members.remove(instance)
         self.team.log_action(
-            "pretix.team.member.removed",
+            'pretix.team.member.removed',
             user=self.request.user,
             auth=self.request.auth,
-            data={"email": instance.email, "user": instance.pk},
+            data={'email': instance.email, 'user': instance.pk},
         )
 
 
@@ -332,36 +332,36 @@ class TeamInviteViewSet(
 ):
     serializer_class = TeamInviteSerializer
     queryset = TeamInvite.objects.none()
-    permission = "can_change_teams"
-    write_permission = "can_change_teams"
+    permission = 'can_change_teams'
+    write_permission = 'can_change_teams'
 
     @cached_property
     def team(self):
         return get_object_or_404(
-            self.request.organizer.teams, pk=self.kwargs.get("team")
+            self.request.organizer.teams, pk=self.kwargs.get('team')
         )
 
     def get_queryset(self):
-        return self.team.invites.order_by("email")
+        return self.team.invites.order_by('email')
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
-        ctx["organizer"] = self.request.organizer
-        ctx["team"] = self.team
-        ctx["log_kwargs"] = {
-            "user": self.request.user,
-            "auth": self.request.auth,
+        ctx['organizer'] = self.request.organizer
+        ctx['team'] = self.team
+        ctx['log_kwargs'] = {
+            'user': self.request.user,
+            'auth': self.request.auth,
         }
         return ctx
 
     @transaction.atomic()
     def perform_destroy(self, instance):
         self.team.log_action(
-            "pretix.team.invite.deleted",
+            'pretix.team.invite.deleted',
             user=self.request.user,
             auth=self.request.auth,
             data={
-                "email": instance.email,
+                'email': instance.email,
             },
         )
         instance.delete()
@@ -376,25 +376,25 @@ class TeamAPITokenViewSet(
 ):
     serializer_class = TeamAPITokenSerializer
     queryset = TeamAPIToken.objects.none()
-    permission = "can_change_teams"
-    write_permission = "can_change_teams"
+    permission = 'can_change_teams'
+    write_permission = 'can_change_teams'
 
     @cached_property
     def team(self):
         return get_object_or_404(
-            self.request.organizer.teams, pk=self.kwargs.get("team")
+            self.request.organizer.teams, pk=self.kwargs.get('team')
         )
 
     def get_queryset(self):
-        return self.team.tokens.order_by("name")
+        return self.team.tokens.order_by('name')
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
-        ctx["organizer"] = self.request.organizer
-        ctx["team"] = self.team
-        ctx["log_kwargs"] = {
-            "user": self.request.user,
-            "auth": self.request.auth,
+        ctx['organizer'] = self.request.organizer
+        ctx['team'] = self.team
+        ctx['log_kwargs'] = {
+            'user': self.request.user,
+            'auth': self.request.auth,
         }
         return ctx
 
@@ -403,11 +403,11 @@ class TeamAPITokenViewSet(
         instance.active = False
         instance.save()
         self.team.log_action(
-            "pretix.team.token.deleted",
+            'pretix.team.token.deleted',
             user=self.request.user,
             auth=self.request.auth,
             data={
-                "name": instance.name,
+                'name': instance.name,
             },
         )
 
@@ -415,10 +415,10 @@ class TeamAPITokenViewSet(
     def perform_create(self, serializer):
         instance = serializer.save(team=self.team)
         self.team.log_action(
-            "pretix.team.token.created",
+            'pretix.team.token.created',
             auth=self.request.auth,
             user=self.request.user,
-            data={"name": instance.name, "id": instance.pk},
+            data={'name': instance.name, 'id': instance.pk},
         )
 
     def create(self, request, *args, **kwargs):
@@ -427,7 +427,7 @@ class TeamAPITokenViewSet(
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         d = serializer.data
-        d["token"] = serializer.instance.token
+        d['token'] = serializer.instance.token
         return Response(d, status=status.HTTP_201_CREATED, headers=headers)
 
     def destroy(self, request, *args, **kwargs):
@@ -447,33 +447,33 @@ class DeviceViewSet(
 ):
     serializer_class = DeviceSerializer
     queryset = Device.objects.none()
-    permission = "can_change_organizer_settings"
-    write_permission = "can_change_organizer_settings"
-    lookup_field = "device_id"
+    permission = 'can_change_organizer_settings'
+    write_permission = 'can_change_organizer_settings'
+    lookup_field = 'device_id'
 
     def get_queryset(self):
-        return self.request.organizer.devices.order_by("pk")
+        return self.request.organizer.devices.order_by('pk')
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
-        ctx["organizer"] = self.request.organizer
+        ctx['organizer'] = self.request.organizer
         return ctx
 
     @transaction.atomic()
     def perform_create(self, serializer):
         inst = serializer.save(organizer=self.request.organizer)
         inst.log_action(
-            "pretix.device.created",
+            'pretix.device.created',
             user=self.request.user,
             auth=self.request.auth,
-            data=merge_dicts(self.request.data, {"id": inst.pk}),
+            data=merge_dicts(self.request.data, {'id': inst.pk}),
         )
 
     @transaction.atomic()
     def perform_update(self, serializer):
         inst = serializer.save()
         inst.log_action(
-            "pretix.device.changed",
+            'pretix.device.changed',
             user=self.request.user,
             auth=self.request.auth,
             data=self.request.data,
@@ -482,21 +482,21 @@ class DeviceViewSet(
 
 
 class OrganizerSettingsView(views.APIView):
-    permission = "can_change_organizer_settings"
+    permission = 'can_change_organizer_settings'
 
     def get(self, request, *args, **kwargs):
         s = OrganizerSettingsSerializer(
             instance=request.organizer.settings,
             organizer=request.organizer,
-            context={"request": request},
+            context={'request': request},
         )
-        if "explain" in request.GET:
+        if 'explain' in request.GET:
             return Response(
                 {
                     fname: {
-                        "value": s.data[fname],
-                        "label": getattr(field, "_label", fname),
-                        "help_text": getattr(field, "_help_text", None),
+                        'value': s.data[fname],
+                        'label': getattr(field, '_label', fname),
+                        'help_text': getattr(field, '_help_text', None),
                     }
                     for fname, field in s.fields.items()
                 }
@@ -509,13 +509,13 @@ class OrganizerSettingsView(views.APIView):
             data=request.data,
             partial=True,
             organizer=request.organizer,
-            context={"request": request},
+            context={'request': request},
         )
         s.is_valid(raise_exception=True)
         with transaction.atomic():
             s.save()
             self.request.organizer.log_action(
-                "pretix.organizer.settings",
+                'pretix.organizer.settings',
                 user=self.request.user,
                 auth=self.request.auth,
                 data={k: v for k, v in s.validated_data.items()},
@@ -525,6 +525,6 @@ class OrganizerSettingsView(views.APIView):
         s = OrganizerSettingsSerializer(
             instance=request.organizer.settings,
             organizer=request.organizer,
-            context={"request": request},
+            context={'request': request},
         )
         return Response(s.data)

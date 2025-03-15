@@ -22,22 +22,22 @@ from pretix.plugins.banktransfer.models import BankImportJob, BankTransaction
 
 @pytest.fixture
 def env():
-    o = Organizer.objects.create(name="Dummy", slug="dummy")
+    o = Organizer.objects.create(name='Dummy', slug='dummy')
     event = Event.objects.create(
         organizer=o,
-        name="Dummy",
-        slug="dummy",
+        name='Dummy',
+        slug='dummy',
         date_from=now(),
-        plugins="pretix.plugins.banktransfer",
+        plugins='pretix.plugins.banktransfer',
     )
-    user = User.objects.create_user("dummy@dummy.dummy", "dummy")
+    user = User.objects.create_user('dummy@dummy.dummy', 'dummy')
     t = Team.objects.create(
         organizer=event.organizer, can_view_orders=True, can_change_orders=True
     )
     t.members.add(user)
     t.limit_events.add(event)
     o1 = Order.objects.create(
-        code="1Z3AS",
+        code='1Z3AS',
         event=event,
         status=Order.STATUS_PENDING,
         datetime=now(),
@@ -45,15 +45,15 @@ def env():
         total=23,
     )
     o2 = Order.objects.create(
-        code="6789Z",
+        code='6789Z',
         event=event,
         status=Order.STATUS_CANCELED,
         datetime=now(),
         expires=now() + timedelta(days=10),
         total=23,
     )
-    quota = Quota.objects.create(name="Test", size=2, event=event)
-    item1 = Item.objects.create(event=event, name="Ticket", default_price=23)
+    quota = Quota.objects.create(name='Test', size=2, event=event)
+    item1 = Item.objects.create(event=event, name='Ticket', default_price=23)
     quota.items.add(item1)
     OrderPosition.objects.create(order=o1, item=item1, variation=None, price=23)
     return event, user, o1, o2
@@ -65,26 +65,26 @@ def test_discard(env, client):
     trans = BankTransaction.objects.create(
         event=env[0],
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_ERROR,
         amount=0,
-        date="unknown",
+        date='unknown',
     )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            "/control/event/{}/{}/banktransfer/action/".format(
+            '/control/event/{}/{}/banktransfer/action/'.format(
                 env[0].organizer.slug, env[0].slug
             ),
             {
-                "action_{}".format(trans.pk): "discard",
+                'action_{}'.format(trans.pk): 'discard',
             },
-        ).content.decode("utf-8")
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "ok"
+    assert r['status'] == 'ok'
     trans.refresh_from_db()
     assert trans.state == BankTransaction.STATE_DISCARDED
-    assert trans.payer == ""
+    assert trans.payer == ''
 
 
 @pytest.mark.django_db
@@ -93,23 +93,23 @@ def test_assign_order(env, client):
     trans = BankTransaction.objects.create(
         event=env[0],
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_NOMATCH,
         amount=23,
-        date="unknown",
+        date='unknown',
     )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            "/control/event/{}/{}/banktransfer/action/".format(
+            '/control/event/{}/{}/banktransfer/action/'.format(
                 env[0].organizer.slug, env[0].slug
             ),
             {
-                "action_{}".format(trans.pk): "assign:{}".format(env[2].code),
+                'action_{}'.format(trans.pk): 'assign:{}'.format(env[2].code),
             },
-        ).content.decode("utf-8")
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "ok"
+    assert r['status'] == 'ok'
     trans.refresh_from_db()
     assert trans.state == BankTransaction.STATE_VALID
     env[2].refresh_from_db()
@@ -122,21 +122,21 @@ def test_assign_order_unknown(env, client):
     trans = BankTransaction.objects.create(
         event=env[0],
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_NOMATCH,
         amount=23,
-        date="unknown",
+        date='unknown',
     )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            "/control/event/{}/{}/banktransfer/action/".format(
+            '/control/event/{}/{}/banktransfer/action/'.format(
                 env[0].organizer.slug, env[0].slug
             ),
-            {"action_{}".format(trans.pk): "assign:FOO"},
-        ).content.decode("utf-8")
+            {'action_{}'.format(trans.pk): 'assign:FOO'},
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "error"
+    assert r['status'] == 'error'
     trans.refresh_from_db()
     assert trans.state == BankTransaction.STATE_NOMATCH
 
@@ -147,21 +147,21 @@ def test_assign_order_amount_incorrect(env, client):
     trans = BankTransaction.objects.create(
         event=env[0],
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_NOMATCH,
         amount=12,
-        date="unknown",
+        date='unknown',
     )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            "/control/event/{}/{}/banktransfer/action/".format(
+            '/control/event/{}/{}/banktransfer/action/'.format(
                 env[0].organizer.slug, env[0].slug
             ),
-            {"action_{}".format(trans.pk): "assign:{}".format(env[2].code)},
-        ).content.decode("utf-8")
+            {'action_{}'.format(trans.pk): 'assign:{}'.format(env[2].code)},
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "ok"
+    assert r['status'] == 'ok'
     trans.refresh_from_db()
     assert trans.state == BankTransaction.STATE_VALID
 
@@ -172,23 +172,23 @@ def test_comment(env, client):
     trans = BankTransaction.objects.create(
         event=env[0],
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_NOMATCH,
         amount=12,
-        date="unknown",
+        date='unknown',
     )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            "/control/event/{}/{}/banktransfer/action/".format(
+            '/control/event/{}/{}/banktransfer/action/'.format(
                 env[0].organizer.slug, env[0].slug
             ),
-            {"action_{}".format(trans.pk): "comment:This is my comment"},
-        ).content.decode("utf-8")
+            {'action_{}'.format(trans.pk): 'comment:This is my comment'},
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "ok"
+    assert r['status'] == 'ok'
     trans.refresh_from_db()
-    assert trans.comment == "This is my comment"
+    assert trans.comment == 'This is my comment'
     assert trans.state == BankTransaction.STATE_NOMATCH
 
 
@@ -198,26 +198,26 @@ def test_retry_success(env, client):
     trans = BankTransaction.objects.create(
         event=env[0],
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_DUPLICATE,
         amount=23,
-        date="unknown",
+        date='unknown',
         order=env[3],
     )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     env[3].status = Order.STATUS_PENDING
     env[3].save()
     r = json.loads(
         client.post(
-            "/control/event/{}/{}/banktransfer/action/".format(
+            '/control/event/{}/{}/banktransfer/action/'.format(
                 env[0].organizer.slug, env[0].slug
             ),
             {
-                "action_{}".format(trans.pk): "retry",
+                'action_{}'.format(trans.pk): 'retry',
             },
-        ).content.decode("utf-8")
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "ok"
+    assert r['status'] == 'ok'
     trans.refresh_from_db()
     assert trans.state == BankTransaction.STATE_VALID
     env[3].refresh_from_db()
@@ -230,24 +230,24 @@ def test_retry_canceled(env, client):
     trans = BankTransaction.objects.create(
         event=env[0],
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_ERROR,
         amount=23,
-        date="unknown",
+        date='unknown',
         order=env[3],
     )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            "/control/event/{}/{}/banktransfer/action/".format(
+            '/control/event/{}/{}/banktransfer/action/'.format(
                 env[0].organizer.slug, env[0].slug
             ),
             {
-                "action_{}".format(trans.pk): "retry",
+                'action_{}'.format(trans.pk): 'retry',
             },
-        ).content.decode("utf-8")
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "ok"
+    assert r['status'] == 'ok'
     trans.refresh_from_db()
     assert trans.state == BankTransaction.STATE_VALID
     env[3].refresh_from_db()
@@ -260,26 +260,26 @@ def test_retry_refunded(env, client):
     trans = BankTransaction.objects.create(
         event=env[0],
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_ERROR,
         amount=23,
-        date="unknown",
+        date='unknown',
         order=env[3],
     )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     env[3].status = Order.STATUS_CANCELED
     env[3].save()
     r = json.loads(
         client.post(
-            "/control/event/{}/{}/banktransfer/action/".format(
+            '/control/event/{}/{}/banktransfer/action/'.format(
                 env[0].organizer.slug, env[0].slug
             ),
             {
-                "action_{}".format(trans.pk): "retry",
+                'action_{}'.format(trans.pk): 'retry',
             },
-        ).content.decode("utf-8")
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "ok"
+    assert r['status'] == 'ok'
     trans.refresh_from_db()
     assert trans.state == BankTransaction.STATE_VALID
     env[3].refresh_from_db()
@@ -292,26 +292,26 @@ def test_retry_paid(env, client):
     trans = BankTransaction.objects.create(
         event=env[0],
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_ERROR,
         amount=23,
-        date="unknown",
+        date='unknown',
         order=env[3],
     )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     env[3].status = Order.STATUS_PAID
     env[3].save()
     r = json.loads(
         client.post(
-            "/control/event/{}/{}/banktransfer/action/".format(
+            '/control/event/{}/{}/banktransfer/action/'.format(
                 env[0].organizer.slug, env[0].slug
             ),
             {
-                "action_{}".format(trans.pk): "retry",
+                'action_{}'.format(trans.pk): 'retry',
             },
-        ).content.decode("utf-8")
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "ok"
+    assert r['status'] == 'ok'
     trans.refresh_from_db()
     assert trans.state == BankTransaction.STATE_VALID
     env[3].refresh_from_db()
@@ -324,21 +324,21 @@ def test_assign_order_organizer(env, client):
     trans = BankTransaction.objects.create(
         organizer=env[0].organizer,
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_NOMATCH,
         amount=23,
-        date="unknown",
+        date='unknown',
     )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            "/control/organizer/{}/banktransfer/action/".format(env[0].organizer.slug),
+            '/control/organizer/{}/banktransfer/action/'.format(env[0].organizer.slug),
             {
-                "action_{}".format(trans.pk): "assign:{}".format(env[2].code),
+                'action_{}'.format(trans.pk): 'assign:{}'.format(env[2].code),
             },
-        ).content.decode("utf-8")
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "ok"
+    assert r['status'] == 'ok'
     trans.refresh_from_db()
     assert trans.state == BankTransaction.STATE_VALID
     env[2].refresh_from_db()
@@ -351,23 +351,23 @@ def test_assign_order_organizer_full_code(env, client):
     trans = BankTransaction.objects.create(
         organizer=env[0].organizer,
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_NOMATCH,
         amount=23,
-        date="unknown",
+        date='unknown',
     )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            "/control/organizer/{}/banktransfer/action/".format(env[0].organizer.slug),
+            '/control/organizer/{}/banktransfer/action/'.format(env[0].organizer.slug),
             {
-                "action_{}".format(trans.pk): "assign:{}-{}".format(
+                'action_{}'.format(trans.pk): 'assign:{}-{}'.format(
                     env[0].slug.upper(), env[2].code
                 ),
             },
-        ).content.decode("utf-8")
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "ok"
+    assert r['status'] == 'ok'
     trans.refresh_from_db()
     assert trans.state == BankTransaction.STATE_VALID
     env[2].refresh_from_db()
@@ -380,19 +380,19 @@ def test_assign_order_organizer_no_permission(env, client):
     trans = BankTransaction.objects.create(
         organizer=env[0].organizer,
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_NOMATCH,
         amount=23,
-        date="unknown",
+        date='unknown',
     )
     team = env[1].teams.first()
     team.can_change_orders = False
     team.save()
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     r = client.post(
-        "/control/organizer/{}/banktransfer/action/".format(env[0].organizer.slug),
+        '/control/organizer/{}/banktransfer/action/'.format(env[0].organizer.slug),
         {
-            "action_{}".format(trans.pk): "assign:{}-{}".format(
+            'action_{}'.format(trans.pk): 'assign:{}-{}'.format(
                 env[0].slug.upper(), env[2].code
             ),
         },
@@ -406,25 +406,25 @@ def test_assign_order_organizer_no_permission_for_event(env, client):
     trans = BankTransaction.objects.create(
         organizer=env[0].organizer,
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_NOMATCH,
         amount=23,
-        date="unknown",
+        date='unknown',
     )
     team = env[1].teams.first()
     team.limit_events.clear()
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     r = json.loads(
         client.post(
-            "/control/organizer/{}/banktransfer/action/".format(env[0].organizer.slug),
+            '/control/organizer/{}/banktransfer/action/'.format(env[0].organizer.slug),
             {
-                "action_{}".format(trans.pk): "assign:{}-{}".format(
+                'action_{}'.format(trans.pk): 'assign:{}-{}'.format(
                     env[0].slug.upper(), env[2].code
                 ),
             },
-        ).content.decode("utf-8")
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "error"
+    assert r['status'] == 'error'
 
 
 @pytest.mark.django_db
@@ -433,26 +433,26 @@ def test_retry_refund(env, client):
     trans = BankTransaction.objects.create(
         event=env[0],
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_ERROR,
         amount=-23,
-        date="unknown",
+        date='unknown',
         order=env[3],
     )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     env[3].status = Order.STATUS_PAID
     env[3].save()
     r = json.loads(
         client.post(
-            "/control/event/{}/{}/banktransfer/action/".format(
+            '/control/event/{}/{}/banktransfer/action/'.format(
                 env[0].organizer.slug, env[0].slug
             ),
             {
-                "action_{}".format(trans.pk): "retry",
+                'action_{}'.format(trans.pk): 'retry',
             },
-        ).content.decode("utf-8")
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "error"
+    assert r['status'] == 'error'
     trans.refresh_from_db()
     assert trans.state == BankTransaction.STATE_ERROR
 
@@ -463,32 +463,32 @@ def test_retry_refund_external(env, client):
     trans = BankTransaction.objects.create(
         event=env[0],
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_ERROR,
         amount=-23,
-        date="unknown",
+        date='unknown',
         order=env[3],
     )
     with scopes_disabled():
         p = env[3].payments.create(
             amount=23,
-            provider="banktransfer",
+            provider='banktransfer',
             state=OrderPayment.PAYMENT_STATE_CONFIRMED,
         )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     env[3].status = Order.STATUS_PAID
     env[3].save()
     r = json.loads(
         client.post(
-            "/control/event/{}/{}/banktransfer/action/".format(
+            '/control/event/{}/{}/banktransfer/action/'.format(
                 env[0].organizer.slug, env[0].slug
             ),
             {
-                "action_{}".format(trans.pk): "retry",
+                'action_{}'.format(trans.pk): 'retry',
             },
-        ).content.decode("utf-8")
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "ok"
+    assert r['status'] == 'ok'
     trans.refresh_from_db()
     assert trans.state == BankTransaction.STATE_VALID
     env[3].refresh_from_db()
@@ -496,7 +496,7 @@ def test_retry_refund_external(env, client):
     with scopes_disabled():
         r = env[3].refunds.first()
     assert r
-    assert r.provider == "banktransfer"
+    assert r.provider == 'banktransfer'
     assert r.amount == 23
     assert r.payment == p
     assert r.state == OrderRefund.REFUND_STATE_EXTERNAL
@@ -508,41 +508,41 @@ def test_retry_refund_complete(env, client):
     trans = BankTransaction.objects.create(
         event=env[0],
         import_job=job,
-        payer="Foo",
+        payer='Foo',
         state=BankTransaction.STATE_ERROR,
         amount=-23,
-        date="unknown",
+        date='unknown',
         order=env[3],
     )
     with scopes_disabled():
         env[3].payments.create(
             amount=23,
-            provider="banktransfer",
+            provider='banktransfer',
             state=OrderPayment.PAYMENT_STATE_CONFIRMED,
         )
         ref = env[3].refunds.create(
-            amount=23, provider="manual", state=OrderRefund.REFUND_STATE_CREATED
+            amount=23, provider='manual', state=OrderRefund.REFUND_STATE_CREATED
         )
-    client.login(email="dummy@dummy.dummy", password="dummy")
+    client.login(email='dummy@dummy.dummy', password='dummy')
     env[3].status = Order.STATUS_CANCELED
     env[3].save()
     r = json.loads(
         client.post(
-            "/control/event/{}/{}/banktransfer/action/".format(
+            '/control/event/{}/{}/banktransfer/action/'.format(
                 env[0].organizer.slug, env[0].slug
             ),
             {
-                "action_{}".format(trans.pk): "retry",
+                'action_{}'.format(trans.pk): 'retry',
             },
-        ).content.decode("utf-8")
+        ).content.decode('utf-8')
     )
-    assert r["status"] == "ok"
+    assert r['status'] == 'ok'
     trans.refresh_from_db()
     assert trans.state == BankTransaction.STATE_VALID
     env[3].refresh_from_db()
     assert env[3].status == Order.STATUS_CANCELED
     ref.refresh_from_db()
-    assert ref.provider == "manual"
+    assert ref.provider == 'manual'
     assert ref.amount == 23
     assert ref.payment is None
     assert ref.state == OrderRefund.REFUND_STATE_DONE

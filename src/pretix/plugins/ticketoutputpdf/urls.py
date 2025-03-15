@@ -16,35 +16,35 @@ from pretix.plugins.ticketoutputpdf.views import (
 
 urlpatterns = [
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/$",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/$',
         LayoutListView.as_view(),
-        name="index",
+        name='index',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/add$",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/add$',
         LayoutCreate.as_view(),
-        name="add",
+        name='add',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/(?P<layout>\d+)/default$",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/(?P<layout>\d+)/default$',
         LayoutSetDefault.as_view(),
-        name="default",
+        name='default',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/default$",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/default$',
         LayoutGetDefault.as_view(),
-        name="getdefault",
+        name='getdefault',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/(?P<layout>\d+)/delete$",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/(?P<layout>\d+)/delete$',
         LayoutDelete.as_view(),
-        name="delete",
+        name='delete',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/(?P<layout>\d+)/editor",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/pdfoutput/(?P<layout>\d+)/editor',
         LayoutEditorView.as_view(),
-        name="edit",
+        name='edit',
     ),
 ]
-event_router.register("ticketlayouts", TicketLayoutViewSet)
-event_router.register("ticketlayoutitems", TicketLayoutItemViewSet)
+event_router.register('ticketlayouts', TicketLayoutViewSet)
+event_router.register('ticketlayoutitems', TicketLayoutItemViewSet)

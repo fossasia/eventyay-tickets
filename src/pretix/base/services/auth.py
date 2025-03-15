@@ -12,7 +12,7 @@ from ..signals import periodic_task
 
 @receiver(signal=periodic_task)
 def close_inactive_staff_sessions(sender, **kwargs):
-    StaffSession.objects.annotate(last_used=Max("logs__datetime")).filter(
+    StaffSession.objects.annotate(last_used=Max('logs__datetime')).filter(
         Q(
             last_used__lte=now()
             - timedelta(seconds=settings.PRETIX_SESSION_TIMEOUT_RELATIVE)

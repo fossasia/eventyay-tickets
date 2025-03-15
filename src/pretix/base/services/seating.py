@@ -19,14 +19,14 @@ class SeatProtected(LazyLocaleException):
 
 def validate_plan_change(event, subevent, plan):
     current_taken_seats = set(
-        event.seats.select_related("product")
-        .annotate(has_op=Count("orderposition"))
-        .annotate(has_v=Count("vouchers"))
+        event.seats.select_related('product')
+        .annotate(has_op=Count('orderposition'))
+        .annotate(has_v=Count('vouchers'))
         .filter(
             subevent=subevent,
         )
         .filter(Q(has_v=True) | Q(has_op=True))
-        .values_list("seat_guid", flat=True)
+        .values_list('seat_guid', flat=True)
         .order_by()
     )
     new_seats = {ss.guid for ss in plan.iter_all_seats()} if plan else set()
@@ -35,7 +35,7 @@ def validate_plan_change(event, subevent, plan):
         raise SeatProtected(
             _(
                 'You can not change the plan since seat "%s" is not present in the new plan and is '
-                "already sold."
+                'already sold.'
             ),
             leftovers[0],
         )
@@ -44,8 +44,8 @@ def validate_plan_change(event, subevent, plan):
 def generate_seats(event, subevent, plan, mapping, blocked_guids=None):
     current_seats = {}
     for s in (
-        event.seats.select_related("product")
-        .annotate(has_op=Count("orderposition"), has_v=Count("vouchers"))
+        event.seats.select_related('product')
+        .annotate(has_op=Count('orderposition'), has_v=Count('vouchers'))
         .filter(subevent=subevent)
         .order_by()
     ):
@@ -68,18 +68,18 @@ def generate_seats(event, subevent, plan, mapping, blocked_guids=None):
                 seat = current_seats.pop(ss.guid)
                 updated = any(
                     [
-                        update(seat, "product", p),
-                        update(seat, "row_name", ss.row),
-                        update(seat, "seat_number", ss.number),
-                        update(seat, "zone_name", ss.zone),
-                        update(seat, "sorting_rank", ss.sorting_rank),
-                        update(seat, "row_label", ss.row_label),
-                        update(seat, "seat_label", ss.seat_label),
-                        update(seat, "x", ss.x),
-                        update(seat, "y", ss.y),
+                        update(seat, 'product', p),
+                        update(seat, 'row_name', ss.row),
+                        update(seat, 'seat_number', ss.number),
+                        update(seat, 'zone_name', ss.zone),
+                        update(seat, 'sorting_rank', ss.sorting_rank),
+                        update(seat, 'row_label', ss.row_label),
+                        update(seat, 'seat_label', ss.seat_label),
+                        update(seat, 'x', ss.x),
+                        update(seat, 'y', ss.y),
                     ]
                     + (
-                        [update(seat, "blocked", ss.guid in blocked_guids)]
+                        [update(seat, 'blocked', ss.guid in blocked_guids)]
                         if blocked_guids
                         else []
                     )
@@ -110,7 +110,7 @@ def generate_seats(event, subevent, plan, mapping, blocked_guids=None):
             raise SeatProtected(
                 _(
                     'You can not change the plan since seat "%s" is not present in the new plan and is '
-                    "already sold.",
+                    'already sold.',
                     s.name,
                 )
             )
@@ -118,7 +118,7 @@ def generate_seats(event, subevent, plan, mapping, blocked_guids=None):
             raise SeatProtected(
                 _(
                     'You can not change the plan since seat "%s" is not present in the new plan and is '
-                    "already used in a voucher.",
+                    'already used in a voucher.',
                     s.name,
                 )
             )

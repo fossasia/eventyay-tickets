@@ -9,13 +9,13 @@ from .models import TicketLayout, TicketLayoutItem
 class ItemAssignmentSerializer(I18nAwareModelSerializer):
     class Meta:
         model = TicketLayoutItem
-        fields = ("id", "layout", "item", "sales_channel")
+        fields = ('id', 'layout', 'item', 'sales_channel')
 
 
 class NestedItemAssignmentSerializer(I18nAwareModelSerializer):
     class Meta:
         model = TicketLayoutItem
-        fields = ("item", "sales_channel")
+        fields = ('item', 'sales_channel')
 
 
 class TicketLayoutSerializer(I18nAwareModelSerializer):
@@ -24,13 +24,13 @@ class TicketLayoutSerializer(I18nAwareModelSerializer):
 
     class Meta:
         model = TicketLayout
-        fields = ("id", "name", "default", "layout", "background", "item_assignments")
+        fields = ('id', 'name', 'default', 'layout', 'background', 'item_assignments')
 
 
 class TicketLayoutViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = TicketLayoutSerializer
     queryset = TicketLayout.objects.none()
-    lookup_field = "id"
+    lookup_field = 'id'
 
     def get_queryset(self):
         return self.request.event.ticket_layouts.all()
@@ -39,7 +39,7 @@ class TicketLayoutViewSet(viewsets.ReadOnlyModelViewSet):
 class TicketLayoutItemViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ItemAssignmentSerializer
     queryset = TicketLayoutItem.objects.none()
-    lookup_field = "id"
+    lookup_field = 'id'
 
     def get_queryset(self):
         return TicketLayoutItem.objects.filter(item__event=self.request.event)

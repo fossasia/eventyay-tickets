@@ -62,8 +62,8 @@ class BaseQuestionsViewMixin:
                 cartpos=cartpos,
                 orderpos=orderpos,
                 all_optional=self.all_optional,
-                data=(self.request.POST if self.request.method == "POST" else None),
-                files=(self.request.FILES if self.request.method == "POST" else None),
+                data=(self.request.POST if self.request.method == 'POST' else None),
+                files=(self.request.FILES if self.request.method == 'POST' else None),
             )
             form.pos = cartpos or orderpos
             form.show_copy_answers_to_addon_button = form.pos.addon_to and (
@@ -84,31 +84,31 @@ class BaseQuestionsViewMixin:
             override_sets = self.get_question_override_sets(cr)
             for overrides in override_sets:
                 for question_name, question_field in form.fields.items():
-                    if hasattr(question_field, "question"):
+                    if hasattr(question_field, 'question'):
                         if question_field.question.identifier in overrides:
                             if (
-                                "initial"
+                                'initial'
                                 in overrides[question_field.question.identifier]
                             ):
                                 question_field.initial = overrides[
                                     question_field.question.identifier
-                                ]["initial"]
+                                ]['initial']
                             if (
-                                "disabled"
+                                'disabled'
                                 in overrides[question_field.question.identifier]
                             ):
                                 question_field.disabled = overrides[
                                     question_field.question.identifier
-                                ]["disabled"]
+                                ]['disabled']
                     else:
                         if question_name in overrides:
-                            if "initial" in overrides[question_name]:
+                            if 'initial' in overrides[question_name]:
                                 question_field.initial = overrides[question_name][
-                                    "initial"
+                                    'initial'
                                 ]
-                            if "disabled" in overrides[question_name]:
+                            if 'disabled' in overrides[question_name]:
                                 question_field.disabled = overrides[question_name][
-                                    "disabled"
+                                    'disabled'
                                 ]
 
             if len(form.fields) > 0:
@@ -141,29 +141,29 @@ class BaseQuestionsViewMixin:
                 # This form was correctly filled, so we store the data as
                 # answers to the questions / in the CartPosition object
                 for k, v in form.cleaned_data.items():
-                    if k == "attendee_name_parts":
+                    if k == 'attendee_name_parts':
                         form.pos.attendee_name_parts = v if v else None
-                    elif k == "attendee_email":
-                        form.pos.attendee_email = v if v != "" else None
-                    elif k == "company":
-                        form.pos.company = v if v != "" else None
-                    elif k == "street":
-                        form.pos.street = v if v != "" else None
-                    elif k == "zipcode":
-                        form.pos.zipcode = v if v != "" else None
-                    elif k == "city":
-                        form.pos.city = v if v != "" else None
-                    elif k == "country":
-                        form.pos.country = v if v != "" else None
-                    elif k == "state":
-                        form.pos.state = v if v != "" else None
-                    elif k.startswith("question_"):
+                    elif k == 'attendee_email':
+                        form.pos.attendee_email = v if v != '' else None
+                    elif k == 'company':
+                        form.pos.company = v if v != '' else None
+                    elif k == 'street':
+                        form.pos.street = v if v != '' else None
+                    elif k == 'zipcode':
+                        form.pos.zipcode = v if v != '' else None
+                    elif k == 'city':
+                        form.pos.city = v if v != '' else None
+                    elif k == 'country':
+                        form.pos.country = v if v != '' else None
+                    elif k == 'state':
+                        form.pos.state = v if v != '' else None
+                    elif k.startswith('question_'):
                         field = form.fields[k]
-                        if hasattr(field, "answer"):
+                        if hasattr(field, 'answer'):
                             # We already have a cached answer object, so we don't
                             # have to create a new one
                             if (
-                                v == ""
+                                v == ''
                                 or v is None
                                 or (isinstance(field, forms.FileField) and v is False)
                                 or (isinstance(v, QuerySet) and not v.exists())
@@ -174,7 +174,7 @@ class BaseQuestionsViewMixin:
                             else:
                                 self._save_to_answer(field, field.answer, v)
                                 field.answer.save()
-                        elif v != "" and v is not None:
+                        elif v != '' and v is not None:
                             answer = QuestionAnswer(
                                 cartposition=(
                                     form.pos
@@ -215,12 +215,12 @@ class BaseQuestionsViewMixin:
                                 answer.save()
 
                     else:
-                        meta_info.setdefault("question_form_data", {})
+                        meta_info.setdefault('question_form_data', {})
                         if v is None:
-                            if k in meta_info["question_form_data"]:
-                                del meta_info["question_form_data"][k]
+                            if k in meta_info['question_form_data']:
+                                del meta_info['question_form_data'][k]
                         else:
-                            meta_info["question_form_data"][k] = v
+                            meta_info['question_form_data'][k] = v
 
             form.pos.meta_info = json.dumps(meta_info)
             form.pos.save()
@@ -228,7 +228,7 @@ class BaseQuestionsViewMixin:
 
     def _save_to_answer(self, field, answer, value):
         if isinstance(field, forms.ModelMultipleChoiceField):
-            answstr = ", ".join([str(o) for o in value])
+            answstr = ', '.join([str(o) for o in value])
             if not answer.pk:
                 answer.save()
             else:
@@ -245,7 +245,7 @@ class BaseQuestionsViewMixin:
         elif isinstance(field, forms.FileField):
             if isinstance(value, UploadedFile):
                 answer.file.save(value.name, value)
-                answer.answer = "file://" + value.name
+                answer.answer = 'file://' + value.name
         else:
             answer.answer = value
 
@@ -266,30 +266,30 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
         if self.only_user_visible:
             qqs = qqs.filter(ask_during_checkin=False, hidden=False)
         return list(
-            self.order.positions.select_related("item", "variation").prefetch_related(
+            self.order.positions.select_related('item', 'variation').prefetch_related(
                 Prefetch(
-                    "answers",
-                    QuestionAnswer.objects.prefetch_related("options"),
-                    to_attr="answerlist",
+                    'answers',
+                    QuestionAnswer.objects.prefetch_related('options'),
+                    to_attr='answerlist',
                 ),
                 Prefetch(
-                    "item__questions",
+                    'item__questions',
                     qqs.prefetch_related(
                         Prefetch(
-                            "options",
+                            'options',
                             QuestionOption.objects.prefetch_related(
                                 Prefetch(
                                     # This prefetch statement is utter bullshit, but it actually prevents Django from doing
                                     # a lot of queries since ModelChoiceIterator stops trying to be clever once we have
                                     # a prefetch lookup on this query...
-                                    "question",
+                                    'question',
                                     Question.objects.none(),
-                                    to_attr="dummy",
+                                    to_attr='dummy',
                                 )
                             ),
                         )
-                    ).select_related("dependency_question"),
-                    to_attr="questions_to_ask",
+                    ).select_related('dependency_question'),
+                    to_attr='questions_to_ask',
                 ),
             )
         )
@@ -304,7 +304,7 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
     @cached_property
     def address_asked(self):
         return self.request.event.settings.invoice_address_asked and (
-            self.order.total != Decimal("0.00")
+            self.order.total != Decimal('0.00')
             or not self.request.event.settings.invoice_address_not_asked_free
         )
 
@@ -321,14 +321,14 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
         for override in override_sets:
             for k in override:
                 # We don't want initial values to be modified, they should come from the order directly
-                override[k].pop("initial", None)
+                override[k].pop('initial', None)
         return override_sets
 
     @cached_property
     def invoice_form(self):
         if not self.address_asked and self.request.event.settings.invoice_name_required:
             f = self.invoice_name_form_class(
-                data=self.request.POST if self.request.method == "POST" else None,
+                data=self.request.POST if self.request.method == 'POST' else None,
                 event=self.request.event,
                 instance=self.invoice_address,
                 validate_vat_id=False,
@@ -336,7 +336,7 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
             )
         elif self.address_asked:
             f = self.invoice_form_class(
-                data=self.request.POST if self.request.method == "POST" else None,
+                data=self.request.POST if self.request.method == 'POST' else None,
                 event=self.request.event,
                 instance=self.invoice_address,
                 validate_vat_id=False,
@@ -344,21 +344,21 @@ class OrderQuestionsViewMixin(BaseQuestionsViewMixin):
             )
         else:
             f = forms.Form(
-                data=self.request.POST if self.request.method == "POST" else None
+                data=self.request.POST if self.request.method == 'POST' else None
             )
 
         override_sets = self._contact_override_sets
         for overrides in override_sets:
             for fname, val in overrides.items():
-                if "disabled" in val and fname in f.fields:
-                    f.fields[fname].disabled = val["disabled"]
+                if 'disabled' in val and fname in f.fields:
+                    f.fields[fname].disabled = val['disabled']
 
         return f
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["order"] = self.order
-        ctx["formgroups"] = self.formdict.items()
-        ctx["invoice_form"] = self.invoice_form
-        ctx["invoice_address_asked"] = self.address_asked
+        ctx['order'] = self.order
+        ctx['formgroups'] = self.formdict.items()
+        ctx['invoice_form'] = self.invoice_form
+        ctx['invoice_address_asked'] = self.address_asked
         return ctx

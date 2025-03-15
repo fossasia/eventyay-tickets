@@ -15,29 +15,29 @@ class CheckinListSerializer(I18nAwareModelSerializer):
     class Meta:
         model = CheckinList
         fields = (
-            "id",
-            "name",
-            "all_products",
-            "limit_products",
-            "subevent",
-            "checkin_count",
-            "position_count",
-            "include_pending",
-            "auto_checkin_sales_channels",
-            "allow_multiple_entries",
-            "allow_entry_after_exit",
-            "rules",
-            "exit_all_at",
+            'id',
+            'name',
+            'all_products',
+            'limit_products',
+            'subevent',
+            'checkin_count',
+            'position_count',
+            'include_pending',
+            'auto_checkin_sales_channels',
+            'allow_multiple_entries',
+            'allow_entry_after_exit',
+            'rules',
+            'exit_all_at',
         )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if "subevent" in self.context["request"].query_params.getlist("expand"):
-            self.fields["subevent"] = SubEventSerializer(read_only=True)
+        if 'subevent' in self.context['request'].query_params.getlist('expand'):
+            self.fields['subevent'] = SubEventSerializer(read_only=True)
 
-        for exclude_field in self.context["request"].query_params.getlist("exclude"):
-            p = exclude_field.split(".")
+        for exclude_field in self.context['request'].query_params.getlist('exclude'):
+            p = exclude_field.split('.')
             if p[0] in self.fields:
                 if len(p) == 1:
                     del self.fields[p[0]]
@@ -46,7 +46,7 @@ class CheckinListSerializer(I18nAwareModelSerializer):
 
     def validate(self, data):
         data = super().validate(data)
-        event = self.context["event"]
+        event = self.context['event']
 
         full_data = (
             self.to_internal_value(self.to_representation(self.instance))
@@ -55,24 +55,24 @@ class CheckinListSerializer(I18nAwareModelSerializer):
         )
         full_data.update(data)
 
-        for item in full_data.get("limit_products"):
+        for item in full_data.get('limit_products'):
             if event != item.event:
                 raise ValidationError(
-                    _("One or more items do not belong to this event.")
+                    _('One or more items do not belong to this event.')
                 )
 
         if event.has_subevents:
-            if full_data.get("subevent") and event != full_data.get("subevent").event:
-                raise ValidationError(_("The subevent does not belong to this event."))
+            if full_data.get('subevent') and event != full_data.get('subevent').event:
+                raise ValidationError(_('The subevent does not belong to this event.'))
         else:
-            if full_data.get("subevent"):
-                raise ValidationError(_("The subevent does not belong to this event."))
+            if full_data.get('subevent'):
+                raise ValidationError(_('The subevent does not belong to this event.'))
 
-        for channel in full_data.get("auto_checkin_sales_channels") or []:
+        for channel in full_data.get('auto_checkin_sales_channels') or []:
             if channel not in get_all_sales_channels():
-                raise ValidationError(_("Unknown sales channel."))
+                raise ValidationError(_('Unknown sales channel.'))
 
-        CheckinList.validate_rules(data.get("rules"))
+        CheckinList.validate_rules(data.get('rules'))
 
         return data
 
@@ -83,7 +83,7 @@ class CheckinRedeemInputSerializer(serializers.Serializer):
     )
     secret = serializers.CharField(required=True, allow_null=False)
     force = serializers.BooleanField(default=False, required=False)
-    source_type = serializers.ChoiceField(choices=["barcode"], default="barcode")
+    source_type = serializers.ChoiceField(choices=['barcode'], default='barcode')
     type = serializers.ChoiceField(
         choices=Checkin.CHECKIN_TYPES, default=Checkin.TYPE_ENTRY
     )
@@ -95,18 +95,18 @@ class CheckinRedeemInputSerializer(serializers.Serializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["lists"].child_relation.queryset = CheckinList.objects.filter(
-            event__in=self.context["events"]
-        ).select_related("event")
+        self.fields['lists'].child_relation.queryset = CheckinList.objects.filter(
+            event__in=self.context['events']
+        ).select_related('event')
 
 
 class MiniCheckinListSerializer(I18nAwareModelSerializer):
-    event = serializers.SlugRelatedField(slug_field="slug", read_only=True)
+    event = serializers.SlugRelatedField(slug_field='slug', read_only=True)
     subevent = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = CheckinList
-        fields = ("id", "name", "event", "subevent", "include_pending")
+        fields = ('id', 'name', 'event', 'subevent', 'include_pending')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

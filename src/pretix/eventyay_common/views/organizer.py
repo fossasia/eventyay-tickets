@@ -23,8 +23,8 @@ logger = logging.getLogger(__name__)
 
 class OrganizerList(PaginationMixin, ListView):
     model = Organizer
-    context_object_name = "organizers"
-    template_name = "eventyay_common/organizers/index.html"
+    context_object_name = 'organizers'
+    template_name = 'eventyay_common/organizers/index.html'
 
     def get_queryset(self):
         qs = Organizer.objects.all()
@@ -34,13 +34,13 @@ class OrganizerList(PaginationMixin, ListView):
             self.request.session.session_key
         ):
             qs = qs.filter(
-                pk__in=self.request.user.teams.values_list("organizer", flat=True)
+                pk__in=self.request.user.teams.values_list('organizer', flat=True)
             )
         return qs
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["filter_form"] = self.filter_form
+        ctx['filter_form'] = self.filter_form
         return ctx
 
     @cached_property
@@ -51,8 +51,8 @@ class OrganizerList(PaginationMixin, ListView):
 class OrganizerCreate(CreateView):
     model = Organizer
     form_class = OrganizerForm
-    template_name = "eventyay_common/organizers/create.html"
-    context_object_name = "organizer"
+    template_name = 'eventyay_common/organizers/create.html'
+    context_object_name = 'organizer'
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.has_active_staff_session(self.request.session.session_key):
@@ -61,11 +61,11 @@ class OrganizerCreate(CreateView):
 
     @transaction.atomic
     def form_valid(self, form):
-        messages.success(self.request, _("New organizer is created."))
+        messages.success(self.request, _('New organizer is created.'))
         response = super().form_valid(form)
         team = Team.objects.create(
             organizer=form.instance,
-            name=_("Administrators"),
+            name=_('Administrators'),
             all_events=True,
             can_create_events=True,
             can_change_teams=True,
@@ -80,9 +80,9 @@ class OrganizerCreate(CreateView):
         )
         # Trigger webhook in talk to create organiser in talk component
         organizer_data = {
-            "name": self.object.name,
-            "slug": self.object.slug,
-            "action": "create",
+            'name': self.object.name,
+            'slug': self.object.slug,
+            'action': 'create',
         }
         send_organizer_webhook.delay(
             user_id=self.request.user.id, organizer=organizer_data
@@ -92,15 +92,15 @@ class OrganizerCreate(CreateView):
         return response
 
     def get_success_url(self) -> str:
-        return reverse("eventyay_common:organizers")
+        return reverse('eventyay_common:organizers')
 
 
 class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
     model = Organizer
     form_class = OrganizerUpdateForm
-    template_name = "eventyay_common/organizers/edit.html"
-    permission = "can_change_organizer_settings"
-    context_object_name = "organizer"
+    template_name = 'eventyay_common/organizers/edit.html'
+    permission = 'can_change_organizer_settings'
+    context_object_name = 'organizer'
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -114,8 +114,8 @@ class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["talk_edit_url"] = urljoin(
-            settings.TALK_HOSTNAME, f"orga/organiser/{self.object.slug}"
+        ctx['talk_edit_url'] = urljoin(
+            settings.TALK_HOSTNAME, f'orga/organiser/{self.object.slug}'
         )
         return ctx
 
@@ -123,9 +123,9 @@ class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
     def form_valid(self, form):
         response = super().form_valid(form)
         organizer_data = {
-            "name": self.object.name,
-            "slug": self.object.slug,
-            "action": "update",
+            'name': self.object.name,
+            'slug': self.object.slug,
+            'action': 'update',
         }
         send_organizer_webhook.delay(
             user_id=self.request.user.id, organizer=organizer_data
@@ -133,4 +133,4 @@ class OrganizerUpdate(UpdateView, OrganizerPermissionRequiredMixin):
         return response
 
     def get_success_url(self) -> str:
-        return reverse("eventyay_common:organizers")
+        return reverse('eventyay_common:organizers')

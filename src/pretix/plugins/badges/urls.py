@@ -19,46 +19,46 @@ from .views import (
 
 urlpatterns = [
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/$",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/$',
         LayoutListView.as_view(),
-        name="index",
+        name='index',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/print$",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/print$',
         OrderPrintDo.as_view(),
-        name="print",
+        name='print',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/add$",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/add$',
         LayoutCreate.as_view(),
-        name="add",
+        name='add',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/(?P<layout>\d+)/default$",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/(?P<layout>\d+)/default$',
         LayoutSetDefault.as_view(),
-        name="default",
+        name='default',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/(?P<layout>\d+)/delete$",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/(?P<layout>\d+)/delete$',
         LayoutDelete.as_view(),
-        name="delete",
+        name='delete',
     ),
     url(
-        r"^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/(?P<layout>\d+)/editor",
+        r'^control/event/(?P<organizer>[^/]+)/(?P<event>[^/]+)/badges/(?P<layout>\d+)/editor',
         LayoutEditorView.as_view(),
-        name="edit",
+        name='edit',
     ),
     url(
-        r"^api/v1/organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/orderpositions/(?P<position>\d+)/download/badge/$",
+        r'^api/v1/organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/orderpositions/(?P<position>\d+)/download/badge/$',
         BadgeDownloadView.as_view(),
-        name="api-badge-download",
+        name='api-badge-download',
     ),
     url(
-        r"^api/v1/organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/orderpositions/(?P<position>\d+)/preview/badge/$",
+        r'^api/v1/organizers/(?P<organizer>[^/]+)/events/(?P<event>[^/]+)/orderpositions/(?P<position>\d+)/preview/badge/$',
         BadgePreviewView.as_view(),
-        name="badge-preview",
+        name='badge-preview',
     ),
 ]
 
-event_router.register("badgelayouts", BadgeLayoutViewSet)
-event_router.register("badgeitems", BadgeItemViewSet)
+event_router.register('badgelayouts', BadgeLayoutViewSet)
+event_router.register('badgeitems', BadgeItemViewSet)

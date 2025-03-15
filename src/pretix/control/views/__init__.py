@@ -13,8 +13,8 @@ from django.views.generic import edit
 class EventBasedFormMixin:
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        if hasattr(self.request, "event"):
-            kwargs["event"] = self.request.event
+        if hasattr(self.request, 'event'):
+            kwargs['event'] = self.request.event
         return kwargs
 
 
@@ -42,7 +42,7 @@ class ChartContainingView:
     def get(self, request, *args, **kwargs):
         resp = super().get(request, *args, **kwargs)
         # required by raphael.js
-        resp["Content-Security-Policy"] = (
+        resp['Content-Security-Policy'] = (
             "script-src 'unsafe-eval'; style-src 'unsafe-inline'"
         )
         return resp
@@ -52,24 +52,24 @@ class PaginationMixin:
     DEFAULT_PAGINATION = 25
 
     def get_paginate_by(self, queryset):
-        skey = "stored_page_size_" + self.request.resolver_match.url_name
+        skey = 'stored_page_size_' + self.request.resolver_match.url_name
         default = (
             self.request.session.get(skey)
             or self.paginate_by
             or self.DEFAULT_PAGINATION
         )
-        if self.request.GET.get("page_size"):
+        if self.request.GET.get('page_size'):
             try:
-                size = min(250, int(self.request.GET.get("page_size")))
+                size = min(250, int(self.request.GET.get('page_size')))
                 self.request.session[skey] = size
-                return min(250, int(self.request.GET.get("page_size")))
+                return min(250, int(self.request.GET.get('page_size')))
             except ValueError:
                 return default
         return default
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["page_size"] = self.get_paginate_by(None)
+        ctx['page_size'] = self.get_paginate_by(None)
         return ctx
 
 
@@ -80,7 +80,7 @@ class LargeResultSetPage(collections.abc.Sequence):
         self.paginator = paginator
 
     def __repr__(self):
-        return "<Page %s>" % self.number
+        return '<Page %s>' % self.number
 
     def __len__(self):
         return len(self.object_list)
@@ -147,9 +147,9 @@ class LargeResultSetPaginator(object):
         try:
             number = int(number)
         except (TypeError, ValueError):
-            raise PageNotAnInteger(_("That page number is not an integer"))
+            raise PageNotAnInteger(_('That page number is not an integer'))
         if number < 1:
-            raise EmptyPage(_("That page number is less than 1"))
+            raise EmptyPage(_('That page number is less than 1'))
         return number
 
     def page(self, number):
@@ -174,18 +174,18 @@ class LargeResultSetPaginator(object):
         """
         Warn if self.object_list is unordered (typically a QuerySet).
         """
-        ordered = getattr(self.object_list, "ordered", None)
+        ordered = getattr(self.object_list, 'ordered', None)
         if ordered is not None and not ordered:
             obj_list_repr = (
-                "{} {}".format(
+                '{} {}'.format(
                     self.object_list.model, self.object_list.__class__.__name__
                 )
-                if hasattr(self.object_list, "model")
-                else "{!r}".format(self.object_list)
+                if hasattr(self.object_list, 'model')
+                else '{!r}'.format(self.object_list)
             )
             warnings.warn(
-                "Pagination may yield inconsistent results with an unordered "
-                "object_list: {}.".format(obj_list_repr),
+                'Pagination may yield inconsistent results with an unordered '
+                'object_list: {}.'.format(obj_list_repr),
                 UnorderedObjectListWarning,
                 stacklevel=3,
             )

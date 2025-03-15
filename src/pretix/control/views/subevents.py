@@ -64,7 +64,7 @@ from pretix.helpers.models import modelcopy
 class SubEventQueryMixin:
     @cached_property
     def request_data(self):
-        if self.request.method == "POST":
+        if self.request.method == 'POST':
             return self.request.POST
         return self.request.GET
 
@@ -73,43 +73,43 @@ class SubEventQueryMixin:
         if list:
             qs = qs.prefetch_related(
                 Prefetch(
-                    "quotas",
+                    'quotas',
                     queryset=self.request.event.quotas.annotate(
-                        s=Coalesce(F("size"), 0)
-                    ).order_by("-s"),
-                    to_attr="first_quotas",
+                        s=Coalesce(F('size'), 0)
+                    ).order_by('-s'),
+                    to_attr='first_quotas',
                 )
             )
         if self.filter_form.is_valid():
             qs = self.filter_form.filter_qs(qs)
 
-        if "subevent" in self.request_data and "__ALL" not in self.request_data:
-            qs = qs.filter(id__in=self.request_data.getlist("subevent"))
+        if 'subevent' in self.request_data and '__ALL' not in self.request_data:
+            qs = qs.filter(id__in=self.request_data.getlist('subevent'))
 
         return qs
 
     @cached_property
     def filter_form(self):
-        return SubEventFilterForm(data=self.request_data, prefix="filter")
+        return SubEventFilterForm(data=self.request_data, prefix='filter')
 
 
 class SubEventList(
     EventPermissionRequiredMixin, PaginationMixin, SubEventQueryMixin, ListView
 ):
     model = SubEvent
-    context_object_name = "subevents"
-    template_name = "pretixcontrol/subevents/index.html"
-    permission = "can_change_settings"
+    context_object_name = 'subevents'
+    template_name = 'pretixcontrol/subevents/index.html'
+    permission = 'can_change_settings'
 
     def get_queryset(self):
         return super().get_queryset(True)
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["filter_form"] = self.filter_form
+        ctx['filter_form'] = self.filter_form
 
         quotas = []
-        for s in ctx["subevents"]:
+        for s in ctx['subevents']:
             s.first_quotas = s.first_quotas[:4]
             quotas += list(s.first_quotas)
 
@@ -133,16 +133,16 @@ class SubEventList(
 
 class SubEventDelete(EventPermissionRequiredMixin, DeleteView):
     model = SubEvent
-    template_name = "pretixcontrol/subevents/delete.html"
-    permission = "can_change_settings"
-    context_object_name = "subevents"
+    template_name = 'pretixcontrol/subevents/delete.html'
+    permission = 'can_change_settings'
+    context_object_name = 'subevents'
 
     def get_object(self, queryset=None) -> SubEvent:
         try:
-            return self.request.event.subevents.get(id=self.kwargs["subevent"])
+            return self.request.event.subevents.get(id=self.kwargs['subevent'])
         except SubEvent.DoesNotExist:
             raise Http404(
-                pgettext_lazy("subevent", "The requested date does not exist.")
+                pgettext_lazy('subevent', 'The requested date does not exist.')
             )
 
     def get(self, request, *args, **kwargs):
@@ -150,8 +150,8 @@ class SubEventDelete(EventPermissionRequiredMixin, DeleteView):
             messages.error(
                 request,
                 pgettext_lazy(
-                    "subevent",
-                    "A date can not be deleted if orders already have been placed.",
+                    'subevent',
+                    'A date can not be deleted if orders already have been placed.',
                 ),
             )
             return HttpResponseRedirect(self.get_success_url())
@@ -166,28 +166,28 @@ class SubEventDelete(EventPermissionRequiredMixin, DeleteView):
             messages.error(
                 self.request,
                 pgettext_lazy(
-                    "subevent",
-                    "A date can not be deleted if orders already have been placed.",
+                    'subevent',
+                    'A date can not be deleted if orders already have been placed.',
                 ),
             )
             return HttpResponseRedirect(self.get_success_url())
         else:
-            self.object.log_action("pretix.subevent.deleted", user=self.request.user)
+            self.object.log_action('pretix.subevent.deleted', user=self.request.user)
             CartPosition.objects.filter(addon_to__subevent=self.object).delete()
             self.object.cartposition_set.all().delete()
             self.object.delete()
             messages.success(
                 self.request,
-                pgettext_lazy("subevent", "The selected date has been deleted."),
+                pgettext_lazy('subevent', 'The selected date has been deleted.'),
             )
         return HttpResponseRedirect(success_url)
 
     def get_success_url(self) -> str:
         return reverse(
-            "control:event.subevents",
+            'control:event.subevents',
             kwargs={
-                "organizer": self.request.event.organizer.slug,
-                "event": self.request.event.slug,
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
             },
         )
 
@@ -212,25 +212,25 @@ class SubEventEditorMixin(MetaDataEditorMixin):
         return forms
 
     def _make_meta_form(self, p, val_instances):
-        if not hasattr(self, "_default_meta"):
+        if not hasattr(self, '_default_meta'):
             self._default_meta = self.request.event.meta_data
 
         return self.meta_form(
-            prefix="prop-{}".format(p.pk),
+            prefix='prop-{}'.format(p.pk),
             property=p,
             disabled=(
                 p.protected
                 and not self.request.user.has_organizer_permission(
                     self.request.organizer,
-                    "can_change_organizer_settings",
+                    'can_change_organizer_settings',
                     request=self.request,
                 )
             ),
-            default=self._default_meta.get(p.name, ""),
+            default=self._default_meta.get(p.name, ''),
             instance=val_instances.get(
                 p.pk, self.meta_model(property=p, subevent=self.object)
             ),
-            data=(self.request.POST if self.request.method == "POST" else None),
+            data=(self.request.POST if self.request.method == 'POST' else None),
         )
 
     @cached_property
@@ -238,25 +238,25 @@ class SubEventEditorMixin(MetaDataEditorMixin):
         extra = 0
         kwargs = {}
 
-        if self.copy_from and self.request.method != "POST":
-            kwargs["initial"] = [
+        if self.copy_from and self.request.method != 'POST':
+            kwargs['initial'] = [
                 {
-                    "name": cl.name,
-                    "all_products": cl.all_products,
-                    "limit_products": cl.limit_products.all(),
-                    "include_pending": cl.include_pending,
+                    'name': cl.name,
+                    'all_products': cl.all_products,
+                    'limit_products': cl.limit_products.all(),
+                    'include_pending': cl.include_pending,
                 }
                 for cl in self.copy_from.checkinlist_set.prefetch_related(
-                    "limit_products"
+                    'limit_products'
                 )
             ]
-            extra = len(kwargs["initial"])
-        elif not self.object and self.request.method != "POST":
-            kwargs["initial"] = [
+            extra = len(kwargs['initial'])
+        elif not self.object and self.request.method != 'POST':
+            kwargs['initial'] = [
                 {
-                    "name": "",
-                    "all_products": True,
-                    "include_pending": False,
+                    'name': '',
+                    'all_products': True,
+                    'include_pending': False,
                 }
             ]
             extra = 0
@@ -271,12 +271,12 @@ class SubEventEditorMixin(MetaDataEditorMixin):
             extra=extra,
         )
         if self.object and self.object.pk:
-            kwargs["queryset"] = self.object.checkinlist_set.prefetch_related(
-                "limit_products"
+            kwargs['queryset'] = self.object.checkinlist_set.prefetch_related(
+                'limit_products'
             )
 
         return formsetclass(
-            self.request.POST if self.request.method == "POST" else None,
+            self.request.POST if self.request.method == 'POST' else None,
             instance=self.object,
             event=self.request.event,
             **kwargs,
@@ -287,18 +287,18 @@ class SubEventEditorMixin(MetaDataEditorMixin):
         extra = 0
         kwargs = {}
 
-        if self.copy_from and self.request.method != "POST":
-            kwargs["initial"] = [
+        if self.copy_from and self.request.method != 'POST':
+            kwargs['initial'] = [
                 {
-                    "size": q.size,
-                    "name": q.name,
-                    "release_after_exit": q.release_after_exit,
-                    "itemvars": [str(i.pk) for i in q.items.all()]
-                    + ["{}-{}".format(v.item_id, v.pk) for v in q.variations.all()],
+                    'size': q.size,
+                    'name': q.name,
+                    'release_after_exit': q.release_after_exit,
+                    'itemvars': [str(i.pk) for i in q.items.all()]
+                    + ['{}-{}'.format(v.item_id, v.pk) for v in q.variations.all()],
                 }
-                for q in self.copy_from.quotas.prefetch_related("items", "variations")
+                for q in self.copy_from.quotas.prefetch_related('items', 'variations')
             ]
-            extra = len(kwargs["initial"])
+            extra = len(kwargs['initial'])
 
         formsetclass = inlineformset_factory(
             SubEvent,
@@ -312,12 +312,12 @@ class SubEventEditorMixin(MetaDataEditorMixin):
             extra=extra,
         )
         if self.object and self.object.pk:
-            kwargs["queryset"] = self.object.quotas.prefetch_related(
-                "items", "variations"
+            kwargs['queryset'] = self.object.quotas.prefetch_related(
+                'items', 'variations'
             )
 
         return formsetclass(
-            self.request.POST if self.request.method == "POST" else None,
+            self.request.POST if self.request.method == 'POST' else None,
             instance=self.object,
             event=self.request.event,
             **kwargs,
@@ -330,7 +330,7 @@ class SubEventEditorMixin(MetaDataEditorMixin):
                     continue
                 form.instance.checkins.all().delete()
                 form.instance.log_action(
-                    action="pretix.event.checkinlist.deleted", user=self.request.user
+                    action='pretix.event.checkinlist.deleted', user=self.request.user
                 )
                 form.instance.delete()
                 form.instance.pk = None
@@ -339,9 +339,9 @@ class SubEventEditorMixin(MetaDataEditorMixin):
                 form.instance.event = obj.event
                 form.save()
                 change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
-                change_data["id"] = form.instance.pk
+                change_data['id'] = form.instance.pk
                 form.instance.log_action(
-                    "pretix.event.checkinlist.changed",
+                    'pretix.event.checkinlist.changed',
                     user=self.request.user,
                     data={k: form.cleaned_data.get(k) for k in form.changed_data},
                 )
@@ -355,9 +355,9 @@ class SubEventEditorMixin(MetaDataEditorMixin):
             form.instance.event = obj.event
             form.save()
             change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
-            change_data["id"] = form.instance.pk
+            change_data['id'] = form.instance.pk
             form.instance.log_action(
-                action="pretix.event.checkinlist.added",
+                action='pretix.event.checkinlist.added',
                 user=self.request.user,
                 data=change_data,
             )
@@ -368,12 +368,12 @@ class SubEventEditorMixin(MetaDataEditorMixin):
                 if not form.instance.pk:
                     continue
                 form.instance.log_action(
-                    action="pretix.event.quota.deleted", user=self.request.user
+                    action='pretix.event.quota.deleted', user=self.request.user
                 )
                 obj.log_action(
-                    "pretix.subevent.quota.deleted",
+                    'pretix.subevent.quota.deleted',
                     user=self.request.user,
-                    data={"id": form.instance.pk},
+                    data={'id': form.instance.pk},
                 )
                 form.instance.delete()
                 form.instance.pk = None
@@ -381,14 +381,14 @@ class SubEventEditorMixin(MetaDataEditorMixin):
                 form.instance.question = obj
                 form.save()
                 change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
-                change_data["id"] = form.instance.pk
+                change_data['id'] = form.instance.pk
                 obj.log_action(
-                    "pretix.subevent.quota.changed",
+                    'pretix.subevent.quota.changed',
                     user=self.request.user,
                     data={k: form.cleaned_data.get(k) for k in form.changed_data},
                 )
                 form.instance.log_action(
-                    "pretix.event.quota.changed",
+                    'pretix.event.quota.changed',
                     user=self.request.user,
                     data={k: form.cleaned_data.get(k) for k in form.changed_data},
                 )
@@ -402,33 +402,33 @@ class SubEventEditorMixin(MetaDataEditorMixin):
             form.instance.event = obj.event
             form.save()
             change_data = {k: form.cleaned_data.get(k) for k in form.changed_data}
-            change_data["id"] = form.instance.pk
+            change_data['id'] = form.instance.pk
             form.instance.log_action(
-                action="pretix.event.quota.added",
+                action='pretix.event.quota.added',
                 user=self.request.user,
                 data=change_data,
             )
             obj.log_action(
-                "pretix.subevent.quota.added", user=self.request.user, data=change_data
+                'pretix.subevent.quota.added', user=self.request.user, data=change_data
             )
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["formset"] = self.formset
-        ctx["cl_formset"] = self.cl_formset
-        ctx["itemvar_forms"] = self.itemvar_forms
-        ctx["meta_forms"] = self.meta_forms
-        ctx["plugin_forms"] = self.plugin_forms
+        ctx['formset'] = self.formset
+        ctx['cl_formset'] = self.cl_formset
+        ctx['itemvar_forms'] = self.itemvar_forms
+        ctx['meta_forms'] = self.meta_forms
+        ctx['plugin_forms'] = self.plugin_forms
         return ctx
 
     @cached_property
     def copy_from(self):
-        if self.request.GET.get("copy_from") and (
-            not getattr(self, "object", None) or not self.object.pk
+        if self.request.GET.get('copy_from') and (
+            not getattr(self, 'object', None) or not self.object.pk
         ):
             try:
                 return self.request.event.subevents.get(
-                    pk=self.request.GET.get("copy_from")
+                    pk=self.request.GET.get('copy_from')
                 )
             except SubEvent.DoesNotExist:
                 pass
@@ -455,7 +455,7 @@ class SubEventEditorMixin(MetaDataEditorMixin):
                 )
                 for sei in SubEventItem.objects.filter(
                     subevent=self.copy_from
-                ).select_related("item")
+                ).select_related('item')
             }
             se_var_instances = {
                 sei.variation_id: SubEventItemVariation(
@@ -463,12 +463,12 @@ class SubEventEditorMixin(MetaDataEditorMixin):
                 )
                 for sei in SubEventItemVariation.objects.filter(
                     subevent=self.copy_from
-                ).select_related("variation")
+                ).select_related('variation')
             }
 
         formlist = []
         for i in self.request.event.items.filter(active=True).prefetch_related(
-            "variations"
+            'variations'
         ):
             if i.has_variations:
                 for v in i.variations.all():
@@ -477,13 +477,13 @@ class SubEventEditorMixin(MetaDataEditorMixin):
                     )
                     formlist.append(
                         SubEventItemVariationForm(
-                            prefix="itemvar-{}".format(v.pk),
+                            prefix='itemvar-{}'.format(v.pk),
                             item=i,
                             variation=v,
                             instance=inst,
                             data=(
                                 self.request.POST
-                                if self.request.method == "POST"
+                                if self.request.method == 'POST'
                                 else None
                             ),
                         )
@@ -494,11 +494,11 @@ class SubEventEditorMixin(MetaDataEditorMixin):
                 )
                 formlist.append(
                     SubEventItemForm(
-                        prefix="item-{}".format(i.pk),
+                        prefix='item-{}'.format(i.pk),
                         item=i,
                         instance=inst,
                         data=(
-                            self.request.POST if self.request.method == "POST" else None
+                            self.request.POST if self.request.method == 'POST' else None
                         ),
                     )
                 )
@@ -517,9 +517,9 @@ class SubEventEditorMixin(MetaDataEditorMixin):
 
 class SubEventUpdate(EventPermissionRequiredMixin, SubEventEditorMixin, UpdateView):
     model = SubEvent
-    template_name = "pretixcontrol/subevents/detail.html"
-    permission = "can_change_settings"
-    context_object_name = "subevent"
+    template_name = 'pretixcontrol/subevents/detail.html'
+    permission = 'can_change_settings'
+    context_object_name = 'subevent'
     form_class = SubEventForm
 
     def post(self, request, *args, **kwargs):
@@ -529,16 +529,16 @@ class SubEventUpdate(EventPermissionRequiredMixin, SubEventEditorMixin, UpdateVi
             r = self.form_valid(form)
             return r
         messages.error(
-            self.request, _("We could not save your changes. See below for details.")
+            self.request, _('We could not save your changes. See below for details.')
         )
         return self.form_invalid(form)
 
     def get_object(self, queryset=None) -> SubEvent:
         try:
-            return self.request.event.subevents.get(id=self.kwargs["subevent"])
+            return self.request.event.subevents.get(id=self.kwargs['subevent'])
         except SubEvent.DoesNotExist:
             raise Http404(
-                pgettext_lazy("subevent", "The requested date does not exist.")
+                pgettext_lazy('subevent', 'The requested date does not exist.')
             )
 
     @transaction.atomic
@@ -551,7 +551,7 @@ class SubEventUpdate(EventPermissionRequiredMixin, SubEventEditorMixin, UpdateVi
             f.save()
             # TODO: LogEntry?
 
-        messages.success(self.request, _("Your changes have been saved."))
+        messages.success(self.request, _('Your changes have been saved.'))
         if form.has_changed() or any(f.has_changed() for f in self.plugin_forms):
             data = {k: form.cleaned_data.get(k) for k in form.changed_data}
             for f in self.plugin_forms:
@@ -566,38 +566,38 @@ class SubEventUpdate(EventPermissionRequiredMixin, SubEventEditorMixin, UpdateVi
                     }
                 )
             self.object.log_action(
-                "pretix.subevent.changed", user=self.request.user, data=data
+                'pretix.subevent.changed', user=self.request.user, data=data
             )
         for f in self.plugin_forms:
             f.subevent = self.object
             f.save()
-        tickets.invalidate_cache.apply_async(kwargs={"event": self.request.event.pk})
+        tickets.invalidate_cache.apply_async(kwargs={'event': self.request.event.pk})
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
         return reverse(
-            "control:event.subevents",
+            'control:event.subevents',
             kwargs={
-                "organizer": self.request.event.organizer.slug,
-                "event": self.request.event.slug,
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
             },
         ) + (
-            "?" + self.request.GET.get("returnto")
-            if "returnto" in self.request.GET
-            else ""
+            '?' + self.request.GET.get('returnto')
+            if 'returnto' in self.request.GET
+            else ''
         )
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["event"] = self.request.event
+        kwargs['event'] = self.request.event
         return kwargs
 
 
 class SubEventCreate(SubEventEditorMixin, EventPermissionRequiredMixin, CreateView):
     model = SubEvent
-    template_name = "pretixcontrol/subevents/detail.html"
-    permission = "can_change_settings"
-    context_object_name = "subevent"
+    template_name = 'pretixcontrol/subevents/detail.html'
+    permission = 'can_change_settings'
+    context_object_name = 'subevent'
     form_class = SubEventForm
 
     def post(self, request, *args, **kwargs):
@@ -609,34 +609,34 @@ class SubEventCreate(SubEventEditorMixin, EventPermissionRequiredMixin, CreateVi
 
     def get_success_url(self) -> str:
         return reverse(
-            "control:event.subevents",
+            'control:event.subevents',
             kwargs={
-                "organizer": self.request.event.organizer.slug,
-                "event": self.request.event.slug,
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
             },
         )
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["event"] = self.request.event
-        initial = kwargs.get("initial", {})
+        kwargs['event'] = self.request.event
+        initial = kwargs.get('initial', {})
         if self.copy_from:
             i = modelcopy(self.copy_from)
             i.pk = None
-            kwargs["instance"] = i
+            kwargs['instance'] = i
         else:
-            kwargs["instance"] = SubEvent(event=self.request.event)
-            initial["location"] = self.request.event.location
-            initial["geo_lat"] = self.request.event.geo_lat
-            initial["geo_lon"] = self.request.event.geo_lon
-        kwargs["initial"] = initial
+            kwargs['instance'] = SubEvent(event=self.request.event)
+            initial['location'] = self.request.event.location
+            initial['geo_lat'] = self.request.event.geo_lat
+            initial['geo_lon'] = self.request.event.geo_lon
+        kwargs['initial'] = initial
         return kwargs
 
     @transaction.atomic
     def form_valid(self, form):
         form.instance.event = self.request.event
         messages.success(
-            self.request, pgettext_lazy("subevent", "The new date has been created.")
+            self.request, pgettext_lazy('subevent', 'The new date has been created.')
         )
         ret = super().form_valid(form)
         self.object = form.instance
@@ -654,7 +654,7 @@ class SubEventCreate(SubEventEditorMixin, EventPermissionRequiredMixin, CreateVi
                 }
             )
         form.instance.log_action(
-            "pretix.subevent.added", data=dict(data), user=self.request.user
+            'pretix.subevent.added', data=dict(data), user=self.request.user
         )
 
         self.save_formset(form.instance)
@@ -692,85 +692,85 @@ class SubEventCreate(SubEventEditorMixin, EventPermissionRequiredMixin, CreateVi
 
 
 class SubEventBulkAction(SubEventQueryMixin, EventPermissionRequiredMixin, View):
-    permission = "can_change_settings"
+    permission = 'can_change_settings'
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
-        if request.POST.get("action") == "disable":
+        if request.POST.get('action') == 'disable':
             for obj in self.get_queryset():
                 obj.log_action(
-                    "pretix.subevent.changed",
+                    'pretix.subevent.changed',
                     user=self.request.user,
-                    data={"active": False},
+                    data={'active': False},
                 )
                 obj.active = False
-                obj.save(update_fields=["active"])
+                obj.save(update_fields=['active'])
             messages.success(
                 request,
-                pgettext_lazy("subevent", "The selected dates have been disabled."),
+                pgettext_lazy('subevent', 'The selected dates have been disabled.'),
             )
-        elif request.POST.get("action") == "enable":
+        elif request.POST.get('action') == 'enable':
             for obj in self.get_queryset():
                 obj.log_action(
-                    "pretix.subevent.changed",
+                    'pretix.subevent.changed',
                     user=self.request.user,
-                    data={"active": True},
+                    data={'active': True},
                 )
                 obj.active = True
-                obj.save(update_fields=["active"])
+                obj.save(update_fields=['active'])
             messages.success(
                 request,
-                pgettext_lazy("subevent", "The selected dates have been enabled."),
+                pgettext_lazy('subevent', 'The selected dates have been enabled.'),
             )
-        elif request.POST.get("action") == "delete":
+        elif request.POST.get('action') == 'delete':
             return render(
                 request,
-                "pretixcontrol/subevents/delete_bulk.html",
+                'pretixcontrol/subevents/delete_bulk.html',
                 {
-                    "allowed": self.get_queryset().filter(orderposition__isnull=True),
-                    "forbidden": self.get_queryset()
+                    'allowed': self.get_queryset().filter(orderposition__isnull=True),
+                    'forbidden': self.get_queryset()
                     .filter(orderposition__isnull=False)
                     .distinct(),
                 },
             )
-        elif request.POST.get("action") == "delete_confirm":
+        elif request.POST.get('action') == 'delete_confirm':
             for obj in self.get_queryset():
                 if obj.allow_delete():
                     CartPosition.objects.filter(addon_to__subevent=obj).delete()
                     obj.cartposition_set.all().delete()
-                    obj.log_action("pretix.subevent.deleted", user=self.request.user)
+                    obj.log_action('pretix.subevent.deleted', user=self.request.user)
                     obj.delete()
                 else:
                     obj.log_action(
-                        "pretix.subevent.changed",
+                        'pretix.subevent.changed',
                         user=self.request.user,
-                        data={"active": False},
+                        data={'active': False},
                     )
                     obj.active = False
-                    obj.save(update_fields=["active"])
+                    obj.save(update_fields=['active'])
             messages.success(
                 request,
                 pgettext_lazy(
-                    "subevent", "The selected dates have been deleted or disabled."
+                    'subevent', 'The selected dates have been deleted or disabled.'
                 ),
             )
         return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
         return reverse(
-            "control:event.subevents",
+            'control:event.subevents',
             kwargs={
-                "organizer": self.request.event.organizer.slug,
-                "event": self.request.event.slug,
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
             },
         )
 
 
 class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, CreateView):
     model = SubEvent
-    template_name = "pretixcontrol/subevents/bulk.html"
-    permission = "can_change_settings"
-    context_object_name = "subevent"
+    template_name = 'pretixcontrol/subevents/bulk.html'
+    permission = 'can_change_settings'
+    context_object_name = 'subevent'
     form_class = SubEventBulkForm
 
     def is_valid(self, form):
@@ -782,35 +782,35 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
 
     def get_success_url(self) -> str:
         return reverse(
-            "control:event.subevents",
+            'control:event.subevents',
             kwargs={
-                "organizer": self.request.event.organizer.slug,
-                "event": self.request.event.slug,
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
             },
         )
 
     @cached_property
     def rrule_formset(self):
         return RRuleFormSet(
-            data=self.request.POST if self.request.method == "POST" else None,
-            prefix="rruleformset",
+            data=self.request.POST if self.request.method == 'POST' else None,
+            prefix='rruleformset',
         )
 
     @cached_property
     def time_formset(self):
         return TimeFormSet(
-            data=self.request.POST if self.request.method == "POST" else None,
-            prefix="timeformset",
+            data=self.request.POST if self.request.method == 'POST' else None,
+            prefix='timeformset',
         )
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["rrule_formset"] = self.rrule_formset
-        ctx["time_formset"] = self.time_formset
+        ctx['rrule_formset'] = self.rrule_formset
+        ctx['time_formset'] = self.time_formset
 
-        tf = get_format("TIME_INPUT_FORMATS")[0]
-        ctx["time_begin_sample"] = time(9, 0, 0).strftime(tf)
-        ctx["time_end_sample"] = time(18, 0, 0).strftime(tf)
+        tf = get_format('TIME_INPUT_FORMATS')[0]
+        ctx['time_begin_sample'] = time(9, 0, 0).strftime(tf)
+        ctx['time_end_sample'] = time(18, 0, 0).strftime(tf)
         return ctx
 
     @cached_property
@@ -836,27 +836,27 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         initial = {
-            "active": True,
+            'active': True,
         }
-        kwargs["event"] = self.request.event
+        kwargs['event'] = self.request.event
         tz = self.request.event.timezone
         if self.copy_from:
             i = copy.copy(self.copy_from)
             i.pk = None
-            kwargs["instance"] = i
-            initial["time_from"] = i.date_from.astimezone(tz).time()
-            initial["time_to"] = i.date_to.astimezone(tz).time() if i.date_to else None
-            initial["time_admission"] = (
+            kwargs['instance'] = i
+            initial['time_from'] = i.date_from.astimezone(tz).time()
+            initial['time_to'] = i.date_to.astimezone(tz).time() if i.date_to else None
+            initial['time_admission'] = (
                 i.date_admission.astimezone(tz).time() if i.date_admission else None
             )
-            initial["rel_presale_start"] = (
+            initial['rel_presale_start'] = (
                 RelativeDateWrapper(
                     RelativeDate(
                         days_before=(
                             i.date_from.astimezone(tz).date()
                             - i.presale_start.astimezone(tz).date()
                         ).days,
-                        base_date_name="date_from",
+                        base_date_name='date_from',
                         time=i.presale_start.astimezone(tz).time(),
                         minutes_before=None,
                     )
@@ -864,14 +864,14 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
                 if i.presale_start
                 else None
             )
-            initial["rel_presale_end"] = (
+            initial['rel_presale_end'] = (
                 RelativeDateWrapper(
                     RelativeDate(
                         days_before=(
                             i.date_from.astimezone(tz).date()
                             - i.presale_end.astimezone(tz).date()
                         ).days,
-                        base_date_name="date_from",
+                        base_date_name='date_from',
                         time=i.presale_end.astimezone(tz).time(),
                         minutes_before=None,
                     )
@@ -880,18 +880,18 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
                 else None
             )
         else:
-            kwargs["instance"] = SubEvent(event=self.request.event)
-            initial["location"] = self.request.event.location
-            initial["geo_lat"] = self.request.event.geo_lat
-            initial["geo_lon"] = self.request.event.geo_lon
-        kwargs["initial"] = initial
+            kwargs['instance'] = SubEvent(event=self.request.event)
+            initial['location'] = self.request.event.location
+            initial['geo_lat'] = self.request.event.geo_lat
+            initial['geo_lon'] = self.request.event.geo_lon
+        kwargs['initial'] = initial
         return kwargs
 
     def get_times(self):
         times = []
         for f in self.time_formset:
             if f in self.time_formset.deleted_forms or not f.cleaned_data.get(
-                "time_from"
+                'time_from'
             ):
                 continue
             times.append(f.cleaned_data)
@@ -904,43 +904,43 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
                 continue
 
             rule_kwargs = {}
-            rule_kwargs["dtstart"] = f.cleaned_data["dtstart"]
-            rule_kwargs["interval"] = f.cleaned_data["interval"]
+            rule_kwargs['dtstart'] = f.cleaned_data['dtstart']
+            rule_kwargs['interval'] = f.cleaned_data['interval']
 
-            if f.cleaned_data["freq"] == "yearly":
+            if f.cleaned_data['freq'] == 'yearly':
                 freq = YEARLY
-                if f.cleaned_data["yearly_same"] == "off":
-                    rule_kwargs["bysetpos"] = int(f.cleaned_data["yearly_bysetpos"])
-                    rule_kwargs["byweekday"] = f.parse_weekdays(
-                        f.cleaned_data["yearly_byweekday"]
+                if f.cleaned_data['yearly_same'] == 'off':
+                    rule_kwargs['bysetpos'] = int(f.cleaned_data['yearly_bysetpos'])
+                    rule_kwargs['byweekday'] = f.parse_weekdays(
+                        f.cleaned_data['yearly_byweekday']
                     )
-                    rule_kwargs["bymonth"] = int(f.cleaned_data["yearly_bymonth"])
+                    rule_kwargs['bymonth'] = int(f.cleaned_data['yearly_bymonth'])
 
-            elif f.cleaned_data["freq"] == "monthly":
+            elif f.cleaned_data['freq'] == 'monthly':
                 freq = MONTHLY
 
-                if f.cleaned_data["monthly_same"] == "off":
-                    rule_kwargs["bysetpos"] = int(f.cleaned_data["monthly_bysetpos"])
-                    rule_kwargs["byweekday"] = f.parse_weekdays(
-                        f.cleaned_data["monthly_byweekday"]
+                if f.cleaned_data['monthly_same'] == 'off':
+                    rule_kwargs['bysetpos'] = int(f.cleaned_data['monthly_bysetpos'])
+                    rule_kwargs['byweekday'] = f.parse_weekdays(
+                        f.cleaned_data['monthly_byweekday']
                     )
-            elif f.cleaned_data["freq"] == "weekly":
+            elif f.cleaned_data['freq'] == 'weekly':
                 freq = WEEKLY
 
-                if f.cleaned_data["weekly_byweekday"]:
-                    rule_kwargs["byweekday"] = [
-                        f.parse_weekdays(a) for a in f.cleaned_data["weekly_byweekday"]
+                if f.cleaned_data['weekly_byweekday']:
+                    rule_kwargs['byweekday'] = [
+                        f.parse_weekdays(a) for a in f.cleaned_data['weekly_byweekday']
                     ]
 
-            elif f.cleaned_data["freq"] == "daily":
+            elif f.cleaned_data['freq'] == 'daily':
                 freq = DAILY
 
-            if f.cleaned_data["end"] == "count":
-                rule_kwargs["count"] = f.cleaned_data["count"]
+            if f.cleaned_data['end'] == 'count':
+                rule_kwargs['count'] = f.cleaned_data['count']
             else:
-                rule_kwargs["until"] = f.cleaned_data["until"]
+                rule_kwargs['until'] = f.cleaned_data['until']
 
-            if f.cleaned_data["exclude"]:
+            if f.cleaned_data['exclude']:
                 s.exrule(rrule(freq, **rule_kwargs))
             else:
                 s.rrule(rrule(freq, **rule_kwargs))
@@ -955,32 +955,32 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
             for t in self.get_times():
                 se = copy.copy(form.instance)
 
-                se.date_from = make_aware(datetime.combine(rdate, t["time_from"]), tz)
+                se.date_from = make_aware(datetime.combine(rdate, t['time_from']), tz)
 
-                if t.get("time_to"):
+                if t.get('time_to'):
                     se.date_to = (
-                        make_aware(datetime.combine(rdate, t["time_to"]), tz)
-                        if t.get("time_to") > t.get("time_from")
+                        make_aware(datetime.combine(rdate, t['time_to']), tz)
+                        if t.get('time_to') > t.get('time_from')
                         else make_aware(
-                            datetime.combine(rdate + timedelta(days=1), t["time_to"]),
+                            datetime.combine(rdate + timedelta(days=1), t['time_to']),
                             tz,
                         )
                     )
                 else:
                     se.date_to = None
                 se.date_admission = (
-                    make_aware(datetime.combine(rdate, t["time_admission"]), tz)
-                    if t.get("time_admission")
+                    make_aware(datetime.combine(rdate, t['time_admission']), tz)
+                    if t.get('time_admission')
                     else None
                 )
                 se.presale_start = (
-                    form.cleaned_data["rel_presale_start"].datetime(se)
-                    if form.cleaned_data.get("rel_presale_start")
+                    form.cleaned_data['rel_presale_start'].datetime(se)
+                    if form.cleaned_data.get('rel_presale_start')
                     else None
                 )
                 se.presale_end = (
-                    form.cleaned_data["rel_presale_end"].datetime(se)
-                    if form.cleaned_data.get("rel_presale_end")
+                    form.cleaned_data['rel_presale_end'].datetime(se)
+                    if form.cleaned_data.get('rel_presale_end')
                     else None
                 )
                 se.save(clear_cache=False)
@@ -1002,7 +1002,7 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
         for se in subevents:
             log_entries.append(
                 se.log_action(
-                    "pretix.subevent.added",
+                    'pretix.subevent.added',
                     data=data,
                     user=self.request.user,
                     save=False,
@@ -1011,7 +1011,7 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
 
         to_save = []
         for f in self.meta_forms:
-            if f.cleaned_data.get("value"):
+            if f.cleaned_data.get('value'):
                 for se in subevents:
                     i = copy.copy(f.instance)
                     i.pk = None
@@ -1050,8 +1050,8 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
                     list(
                         self.request.event.items.filter(
                             id__in=[
-                                i.split("-")[0]
-                                for i in f.cleaned_data.get("itemvars", [])
+                                i.split('-')[0]
+                                for i in f.cleaned_data.get('itemvars', [])
                             ]
                         )
                     )
@@ -1060,9 +1060,9 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
                     ItemVariation.objects.filter(
                         item__event=self.request.event,
                         id__in=[
-                            i.split("-")[1]
-                            for i in f.cleaned_data.get("itemvars", [])
-                            if "-" in i
+                            i.split('-')[1]
+                            for i in f.cleaned_data.get('itemvars', [])
+                            if '-' in i
                         ],
                     )
                 )
@@ -1075,10 +1075,10 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
                         Quota.variations.through(quota_id=i.pk, itemvariation_id=_i.pk)
                     )
 
-                change_data["id"] = i.pk
+                change_data['id'] = i.pk
                 log_entries.append(
                     i.log_action(
-                        action="pretix.event.quota.added",
+                        action='pretix.event.quota.added',
                         user=self.request.user,
                         data=change_data,
                         save=False,
@@ -1086,7 +1086,7 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
                 )
                 log_entries.append(
                     se.log_action(
-                        "pretix.subevent.quota.added",
+                        'pretix.subevent.quota.added',
                         user=self.request.user,
                         data=change_data,
                         save=False,
@@ -1105,17 +1105,17 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
                 i.subevent = se
                 i.event = se.event
                 i.save()
-                for _i in f.cleaned_data.get("limit_products", []):
+                for _i in f.cleaned_data.get('limit_products', []):
                     to_save_products.append(
                         CheckinList.limit_products.through(
                             checkinlist_id=i.pk, item_id=_i.pk
                         )
                     )
 
-                change_data["id"] = i.pk
+                change_data['id'] = i.pk
                 log_entries.append(
                     i.log_action(
-                        action="pretix.event.checkinlist.added",
+                        action='pretix.event.checkinlist.added',
                         user=self.request.user,
                         data=change_data,
                         save=False,
@@ -1129,7 +1129,7 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
                 f.subevent = se
                 f.save()
 
-        if connections["default"].features.can_return_rows_from_bulk_insert:
+        if connections['default'].features.can_return_rows_from_bulk_insert:
             LogEntry.objects.bulk_create(log_entries)
             LogEntry.bulk_postprocess(log_entries)
         else:
@@ -1140,16 +1140,16 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
         self.request.event.cache.clear()
         messages.success(
             self.request,
-            pgettext_lazy("subevent", "{} new dates have been created.").format(
+            pgettext_lazy('subevent', '{} new dates have been created.').format(
                 len(subevents)
             ),
         )
         return redirect(
             reverse(
-                "control:event.subevents",
+                'control:event.subevents',
                 kwargs={
-                    "organizer": self.request.event.organizer.slug,
-                    "event": self.request.event.slug,
+                    'organizer': self.request.event.organizer.slug,
+                    'event': self.request.event.slug,
                 },
             )
         )
@@ -1162,26 +1162,26 @@ class SubEventBulkCreate(SubEventEditorMixin, EventPermissionRequiredMixin, Crea
             return self.form_valid(form)
 
         messages.error(
-            self.request, _("We could not save your changes. See below for details.")
+            self.request, _('We could not save your changes. See below for details.')
         )
         return self.form_invalid(form)
 
 
 class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormView):
-    permission = "can_change_settings"
+    permission = 'can_change_settings'
     form_class = SubEventBulkEditForm
-    template_name = "pretixcontrol/subevents/bulk_edit.html"
-    context_object_name = "subevent"
+    template_name = 'pretixcontrol/subevents/bulk_edit.html'
+    context_object_name = 'subevent'
 
     def get_queryset(self):
         return super().get_queryset().prefetch_related(None).order_by()
 
     def get_success_url(self) -> str:
         return reverse(
-            "control:event.subevents",
+            'control:event.subevents',
             kwargs={
-                "organizer": self.request.event.organizer.slug,
-                "event": self.request.event.slug,
+                'organizer': self.request.event.organizer.slug,
+                'event': self.request.event.slug,
             },
         )
 
@@ -1198,35 +1198,35 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
         for sei in (
             SubEventItem.objects.filter(subevent__in=self.get_queryset())
             .order_by()
-            .values("item", "price", "disabled")
-            .annotate(c=Count("*"))
+            .values('item', 'price', 'disabled')
+            .annotate(c=Count('*'))
         ):
-            matches["item", sei["item"]].append(sei)
+            matches['item', sei['item']].append(sei)
         for sei in (
             SubEventItemVariation.objects.filter(subevent__in=self.get_queryset())
             .order_by()
-            .values("variation", "price", "disabled")
-            .annotate(c=Count("*"))
+            .values('variation', 'price', 'disabled')
+            .annotate(c=Count('*'))
         ):
-            matches["variation", sei["variation"]].append(sei)
+            matches['variation', sei['variation']].append(sei)
         total = self.cached_num
 
         formlist = []
         for i in self.request.event.items.filter(active=True).prefetch_related(
-            "variations"
+            'variations'
         ):
             if i.has_variations:
                 for v in i.variations.all():
-                    m = matches["variation", v.pk]
-                    if m and len(m) == 1 and m[0]["c"] == total:
+                    m = matches['variation', v.pk]
+                    if m and len(m) == 1 and m[0]['c'] == total:
                         inst = SubEventItemVariation(
-                            variation=v, disabled=m[0]["disabled"], price=m[0]["price"]
+                            variation=v, disabled=m[0]['disabled'], price=m[0]['price']
                         )
                     else:
                         inst = SubEventItemVariation(variation=v)
                     formlist.append(
                         SubEventItemVariationForm(
-                            prefix="itemvar-{}".format(v.pk),
+                            prefix='itemvar-{}'.format(v.pk),
                             item=i,
                             variation=v,
                             instance=inst,
@@ -1234,16 +1234,16 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                         )
                     )
             else:
-                m = matches["item", i.pk]
-                if m and len(m) == 1 and m[0]["c"] == total:
+                m = matches['item', i.pk]
+                if m and len(m) == 1 and m[0]['c'] == total:
                     inst = SubEventItem(
-                        item=i, disabled=m[0]["disabled"], price=m[0]["price"]
+                        item=i, disabled=m[0]['disabled'], price=m[0]['price']
                     )
                 else:
                     inst = SubEventItem(item=i)
                 formlist.append(
                     SubEventItemForm(
-                        prefix="item-{}".format(i.pk),
+                        prefix='item-{}'.format(i.pk),
                         item=i,
                         instance=inst,
                         data=(self.request.POST if self.is_submitted else None),
@@ -1257,26 +1257,26 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
         for smv in (
             SubEventMetaValue.objects.filter(subevent__in=self.get_queryset())
             .order_by()
-            .values("property", "value")
-            .annotate(c=Count("*"))
+            .values('property', 'value')
+            .annotate(c=Count('*'))
         ):
-            matches[smv["property"]].append(smv)
+            matches[smv['property']].append(smv)
         total = self.cached_num
 
         formlist = []
 
-        if not hasattr(self, "_default_meta"):
+        if not hasattr(self, '_default_meta'):
             self._default_meta = self.request.event.meta_data
 
         for p in self.request.organizer.meta_properties.all():
             inst = SubEventMetaValue(property=p)
-            if len(matches[p.id]) == 1 and matches[p.id][0]["c"] == total:
-                inst.value = matches[p.id][0]["value"]
+            if len(matches[p.id]) == 1 and matches[p.id][0]['c'] == total:
+                inst.value = matches[p.id][0]['value']
             formlist.append(
                 SubEventMetaValueForm(
-                    prefix="prop-{}".format(p.pk),
+                    prefix='prop-{}'.format(p.pk),
                     property=p,
-                    default=self._default_meta.get(p.name, ""),
+                    default=self._default_meta.get(p.name, ''),
                     instance=inst,
                     data=(self.request.POST if self.is_submitted else None),
                 )
@@ -1289,7 +1289,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
         kwargs = {}
 
         if self.sampled_quotas is not None:
-            kwargs["instance"] = self.get_queryset()[0]
+            kwargs['instance'] = self.get_queryset()[0]
 
         formsetclass = inlineformset_factory(
             SubEvent,
@@ -1314,7 +1314,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
         kwargs = {}
 
         if self.sampled_lists is not None:
-            kwargs["instance"] = self.get_queryset()[0]
+            kwargs['instance'] = self.get_queryset()[0]
         else:
             return None
 
@@ -1339,7 +1339,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
         if self.sampled_lists is None or not self.list_formset.has_changed():
             return
         qidx = 0
-        subevents = list(self.get_queryset().prefetch_related("checkinlist_set"))
+        subevents = list(self.get_queryset().prefetch_related('checkinlist_set'))
         to_save_products = []
         to_save_gates = []
         to_delete_list_ids = []
@@ -1356,7 +1356,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                     q = list(se.checkinlist_set.all())[qidx]
                     log_entries += [
                         q.log_action(
-                            action="pretix.event.checkinlist.deleted",
+                            action='pretix.event.checkinlist.deleted',
                             user=self.request.user,
                             save=False,
                         ),
@@ -1370,22 +1370,22 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                     q.subevent = se
                     q.event = self.request.event
                     q.save()
-                    for _i in f.cleaned_data.get("limit_products", []):
+                    for _i in f.cleaned_data.get('limit_products', []):
                         to_save_products.append(
                             CheckinList.limit_products.through(
                                 checkinlist_id=q.pk, item_id=_i.pk
                             )
                         )
-                    for _i in f.cleaned_data.get("gates", []):
+                    for _i in f.cleaned_data.get('gates', []):
                         to_save_gates.append(
                             CheckinList.gates.through(
                                 checkinlist_id=q.pk, gate_id=_i.pk
                             )
                         )
-                    change_data["id"] = q.pk
+                    change_data['id'] = q.pk
                     log_entries.append(
                         q.log_action(
-                            action="pretix.event.checkinlist.added",
+                            action='pretix.event.checkinlist.added',
                             user=self.request.user,
                             data=change_data,
                             save=False,
@@ -1397,22 +1397,22 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                     for se in subevents:
                         q = list(se.checkinlist_set.all())[qidx]
                         for fname in (
-                            "name",
-                            "all_products",
-                            "include_pending",
-                            "allow_entry_after_exit",
+                            'name',
+                            'all_products',
+                            'include_pending',
+                            'allow_entry_after_exit',
                         ):
                             setattr(q, fname, f.cleaned_data.get(fname))
                         q.save()
-                        if "limit_products" in f.changed_data:
+                        if 'limit_products' in f.changed_data:
                             q.limit_products.set(
-                                f.cleaned_data.get("limit_products", [])
+                                f.cleaned_data.get('limit_products', [])
                             )
-                        if "gates" in f.changed_data:
-                            q.gates.set(f.cleaned_data.get("limit_products", []))
+                        if 'gates' in f.changed_data:
+                            q.gates.set(f.cleaned_data.get('limit_products', []))
                         log_entries.append(
                             q.log_action(
-                                action="pretix.event.checkinlist.changed",
+                                action='pretix.event.checkinlist.changed',
                                 user=self.request.user,
                                 data=change_data,
                                 save=False,
@@ -1430,7 +1430,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
         if not self.quota_formset.has_changed():
             return
         qidx = 0
-        subevents = list(self.get_queryset().prefetch_related("quotas"))
+        subevents = list(self.get_queryset().prefetch_related('quotas'))
         to_save_items = []
         to_save_variations = []
         to_delete_quota_ids = []
@@ -1444,14 +1444,14 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                         to_delete_quota_ids.append(q.pk)
                         log_entries += [
                             q.log_action(
-                                action="pretix.event.quota.deleted",
+                                action='pretix.event.quota.deleted',
                                 user=self.request.user,
                                 save=False,
                             ),
                             se.log_action(
-                                "pretix.subevent.quota.deleted",
+                                'pretix.subevent.quota.deleted',
                                 user=self.request.user,
-                                data={"id": q.pk},
+                                data={'id': q.pk},
                                 save=False,
                             ),
                         ]
@@ -1471,7 +1471,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                 list(
                     self.request.event.items.filter(
                         id__in=[
-                            i.split("-")[0] for i in f.cleaned_data.get("itemvars", [])
+                            i.split('-')[0] for i in f.cleaned_data.get('itemvars', [])
                         ]
                     )
                 )
@@ -1480,9 +1480,9 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                 ItemVariation.objects.filter(
                     item__event=self.request.event,
                     id__in=[
-                        i.split("-")[1]
-                        for i in f.cleaned_data.get("itemvars", [])
-                        if "-" in i
+                        i.split('-')[1]
+                        for i in f.cleaned_data.get('itemvars', [])
+                        if '-' in i
                     ],
                 )
             )
@@ -1492,14 +1492,14 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                     q = list(se.quotas.all())[qidx]
                     log_entries += [
                         q.log_action(
-                            action="pretix.event.quota.deleted",
+                            action='pretix.event.quota.deleted',
                             user=self.request.user,
                             save=False,
                         ),
                         se.log_action(
-                            "pretix.subevent.quota.deleted",
+                            'pretix.subevent.quota.deleted',
                             user=self.request.user,
-                            data={"id": q.pk},
+                            data={'id': q.pk},
                             save=False,
                         ),
                     ]
@@ -1523,10 +1523,10 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                             )
                         )
 
-                    change_data["id"] = q.pk
+                    change_data['id'] = q.pk
                     log_entries.append(
                         q.log_action(
-                            action="pretix.event.quota.added",
+                            action='pretix.event.quota.added',
                             user=self.request.user,
                             data=change_data,
                             save=False,
@@ -1534,7 +1534,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                     )
                     log_entries.append(
                         se.log_action(
-                            "pretix.subevent.quota.added",
+                            'pretix.subevent.quota.added',
                             user=self.request.user,
                             data=change_data,
                             save=False,
@@ -1545,15 +1545,15 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                     change_data = {k: f.cleaned_data.get(k) for k in f.changed_data}
                     for se in subevents:
                         q = list(se.quotas.all())[qidx]
-                        for fname in ("size", "name", "release_after_exit"):
+                        for fname in ('size', 'name', 'release_after_exit'):
                             setattr(q, fname, f.cleaned_data.get(fname))
                         q.save(clear_cache=False)
-                        if "itemvars" in f.changed_data:
+                        if 'itemvars' in f.changed_data:
                             q.items.set(selected_items)
                             q.variations.set(selected_variations)
                         log_entries.append(
                             q.log_action(
-                                action="pretix.event.quota.added",
+                                action='pretix.event.quota.added',
                                 user=self.request.user,
                                 data=change_data,
                                 save=False,
@@ -1569,15 +1569,15 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["subevents"] = self.get_queryset()
-        ctx["filter_form"] = self.filter_form
-        ctx["sampled_quotas"] = self.sampled_quotas
-        ctx["sampled_lists"] = self.sampled_lists
-        ctx["formset"] = self.quota_formset
-        ctx["cl_formset"] = self.list_formset
-        ctx["itemvar_forms"] = self.itemvar_forms
-        ctx["bulk_selected"] = self.request.POST.getlist("_bulk")
-        ctx["meta_forms"] = self.meta_forms
+        ctx['subevents'] = self.get_queryset()
+        ctx['filter_form'] = self.filter_form
+        ctx['sampled_quotas'] = self.sampled_quotas
+        ctx['sampled_lists'] = self.sampled_lists
+        ctx['formset'] = self.quota_formset
+        ctx['cl_formset'] = self.list_formset
+        ctx['itemvar_forms'] = self.itemvar_forms
+        ctx['bulk_selected'] = self.request.POST.getlist('_bulk')
+        ctx['meta_forms'] = self.meta_forms
         return ctx
 
     @cached_property
@@ -1585,26 +1585,26 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
         all_quotas = (
             Quota.objects.filter(subevent__in=self.get_queryset())
             .annotate(
-                item_list=GroupConcat("items__id"),
-                var_list=GroupConcat("variations__id"),
+                item_list=GroupConcat('items__id'),
+                var_list=GroupConcat('variations__id'),
             )
             .values(
-                "item_list",
-                "var_list",
+                'item_list',
+                'var_list',
                 *(
                     f.name
                     for f in Quota._meta.fields
                     if f.name
                     not in (
-                        "id",
-                        "event",
-                        "items",
-                        "variations",
-                        "closed",
+                        'id',
+                        'event',
+                        'items',
+                        'variations',
+                        'closed',
                     )
                 ),
             )
-            .order_by("subevent_id")
+            .order_by('subevent_id')
         )
 
         if not all_quotas:
@@ -1612,7 +1612,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
 
         quotas_by_subevent = defaultdict(list)
         for q in all_quotas:
-            quotas_by_subevent[q.pop("subevent")].append(q)
+            quotas_by_subevent[q.pop('subevent')].append(q)
 
         prev = None
         for se in self.get_queryset():
@@ -1631,25 +1631,25 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
         all_lists = (
             CheckinList.objects.filter(subevent__in=self.get_queryset())
             .annotate(
-                item_list=GroupConcat("limit_products__id"),
-                gates_list=GroupConcat("gates__id"),
+                item_list=GroupConcat('limit_products__id'),
+                gates_list=GroupConcat('gates__id'),
             )
             .values(
-                "item_list",
-                "gates_list",
+                'item_list',
+                'gates_list',
                 *(
                     f.name
                     for f in CheckinList._meta.fields
                     if f.name
                     not in (
-                        "id",
-                        "event",
-                        "limit_products",
-                        "gates",
+                        'id',
+                        'event',
+                        'limit_products',
+                        'gates',
                     )
                 ),
             )
-            .order_by("subevent_id")
+            .order_by('subevent_id')
         )
 
         if not all_lists:
@@ -1657,7 +1657,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
 
         lists_by_subevent = defaultdict(list)
         for cl in all_lists:
-            lists_by_subevent[cl.pop("subevent")].append(cl)
+            lists_by_subevent[cl.pop('subevent')].append(cl)
 
         prev = None
         for se in self.get_queryset():
@@ -1676,7 +1676,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
         # Usually, django considers a form "bound" / "submitted" on every POST request. However, this view is always
         # called with POST method, even if just to pass the selection of objects to work on, so we want to modify
         # that behaviour
-        return "_bulk" in self.request.POST
+        return '_bulk' in self.request.POST
 
     def get_form_kwargs(self):
         initial = {}
@@ -1689,48 +1689,48 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                 # Before Django 3.2, it uses the current timezone, which is hopefully fine
                 # as well in all cases we are concerned about
                 # See also: https://code.djangoproject.com/ticket/31948
-                k + "_day": TruncDate(k)
+                k + '_day': TruncDate(k)
                 for k in (
-                    "date_from",
-                    "date_to",
-                    "date_admission",
-                    "presale_start",
-                    "presale_end",
+                    'date_from',
+                    'date_to',
+                    'date_admission',
+                    'presale_start',
+                    'presale_end',
                 )
             },
             **{
-                k + "_time": TruncTime(k)
+                k + '_time': TruncTime(k)
                 for k in (
-                    "date_from",
-                    "date_to",
-                    "date_admission",
-                    "presale_start",
-                    "presale_end",
+                    'date_from',
+                    'date_to',
+                    'date_admission',
+                    'presale_start',
+                    'presale_end',
                 )
             },
         )
 
         fields = {
-            "name",
-            "location",
-            "frontpage_text",
-            "geo_lat",
-            "geo_lon",
-            "is_public",
-            "active",
-            "date_from_day",
-            "date_from_time",
-            "date_to_day",
-            "date_to_time",
-            "date_admission_day",
-            "date_admission_time",
-            "presale_start_day",
-            "presale_start_time",
-            "presale_end_day",
-            "presale_end_time",
+            'name',
+            'location',
+            'frontpage_text',
+            'geo_lat',
+            'geo_lon',
+            'is_public',
+            'active',
+            'date_from_day',
+            'date_from_time',
+            'date_to_day',
+            'date_to_time',
+            'date_admission_day',
+            'date_admission_time',
+            'presale_start_day',
+            'presale_start_time',
+            'presale_end_day',
+            'presale_end_time',
         }
         for k in fields:
-            existing_values = list(qs.order_by(k).values(k).annotate(c=Count("*")))
+            existing_values = list(qs.order_by(k).values(k).annotate(c=Count('*')))
             if len(existing_values) == 1:
                 initial[k] = existing_values[0][k]
             elif len(existing_values) > 1:
@@ -1738,14 +1738,14 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                 initial[k] = None
 
         kwargs = super().get_form_kwargs()
-        kwargs["event"] = self.request.event
-        kwargs["prefix"] = "bulkedit"
-        kwargs["initial"] = initial
-        kwargs["queryset"] = self.get_queryset()
-        kwargs["mixed_values"] = mixed_values
+        kwargs['event'] = self.request.event
+        kwargs['prefix'] = 'bulkedit'
+        kwargs['initial'] = initial
+        kwargs['queryset'] = self.get_queryset()
+        kwargs['mixed_values'] = mixed_values
         if not self.is_submitted:
-            kwargs["data"] = None
-            kwargs["files"] = None
+            kwargs['data'] = None
+            kwargs['files'] = None
         return kwargs
 
     def post(self, request, *args, **kwargs):
@@ -1764,21 +1764,21 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
             if self.is_submitted:
                 messages.error(
                     self.request,
-                    _("We could not save your changes. See below for details."),
+                    _('We could not save your changes. See below for details.'),
                 )
             return self.form_invalid(form)
 
     def save_meta(self):
         for f in self.meta_forms:
-            if f.prefix + "value" not in self.request.POST.getlist("_bulk"):
+            if f.prefix + 'value' not in self.request.POST.getlist('_bulk'):
                 continue
 
-            if f.cleaned_data.get("value"):
+            if f.cleaned_data.get('value'):
                 for obj in self.get_queryset():
                     SubEventMetaValue.objects.update_or_create(
                         property=f.instance.property,
                         subevent=obj,
-                        defaults={"value": f.cleaned_data["value"]},
+                        defaults={'value': f.cleaned_data['value']},
                     )
             else:
                 SubEventMetaValue.objects.filter(
@@ -1788,16 +1788,16 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
     def save_itemvars(self):
         for f in self.itemvar_forms:
             u = {}
-            if f.prefix + "price" in self.request.POST.getlist("_bulk"):
-                u["price"] = f.cleaned_data.get("price")
-            if f.prefix + "disabled" in self.request.POST.getlist("_bulk"):
-                u["disabled"] = f.cleaned_data.get("disabled")
+            if f.prefix + 'price' in self.request.POST.getlist('_bulk'):
+                u['price'] = f.cleaned_data.get('price')
+            if f.prefix + 'disabled' in self.request.POST.getlist('_bulk'):
+                u['disabled'] = f.cleaned_data.get('disabled')
 
             if not u:
                 continue
 
             if isinstance(f, SubEventItemForm):
-                if u.get("price") is None and not u.get("disabled"):
+                if u.get('price') is None and not u.get('disabled'):
                     SubEventItem.objects.filter(
                         subevent__in=self.get_queryset(),
                         item=f.instance.item,
@@ -1808,7 +1808,7 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
                             subevent=obj, item=f.instance.item, defaults=u
                         )
             elif isinstance(f, SubEventItemVariationForm):
-                if u.get("price") is None and not u.get("disabled"):
+                if u.get('price') is None and not u.get('disabled'):
                     SubEventItemVariation.objects.filter(
                         subevent__in=self.get_queryset(),
                         variation=f.instance.variation,
@@ -1826,11 +1826,11 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
         # Main form
         form.save()
         data = {k: v for k, v in form.cleaned_data.items() if k in form.changed_data}
-        data["_raw_bulk_data"] = self.request.POST.dict()
+        data['_raw_bulk_data'] = self.request.POST.dict()
         for obj in self.get_queryset():
             log_entries.append(
                 obj.log_action(
-                    "pretix.subevent.changed",
+                    'pretix.subevent.changed',
                     data=data,
                     user=self.request.user,
                     save=False,
@@ -1838,15 +1838,15 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
             )
 
         # Formsets
-        if "__quotas" in self.request.POST.getlist("_bulk"):
+        if '__quotas' in self.request.POST.getlist('_bulk'):
             self.save_quota_formset(log_entries)
-        if "__checkinlists" in self.request.POST.getlist("_bulk"):
+        if '__checkinlists' in self.request.POST.getlist('_bulk'):
             self.save_list_formset(log_entries)
 
         self.save_itemvars()
         self.save_meta()
 
-        if connections["default"].features.can_return_rows_from_bulk_insert:
+        if connections['default'].features.can_return_rows_from_bulk_insert:
             LogEntry.objects.bulk_create(log_entries, batch_size=200)
             LogEntry.bulk_postprocess(log_entries)
         else:
@@ -1855,5 +1855,5 @@ class SubEventBulkEdit(SubEventQueryMixin, EventPermissionRequiredMixin, FormVie
             LogEntry.bulk_postprocess(log_entries)
 
         self.request.event.cache.clear()
-        messages.success(self.request, _("Your changes have been saved."))
+        messages.success(self.request, _('Your changes have been saved.'))
         return super().form_valid(form)

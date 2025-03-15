@@ -11,29 +11,29 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("pretixbase", "0001_initial"),
+        ('pretixbase', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="TicketLayout",
+            name='TicketLayout',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("default", models.BooleanField(default=False)),
-                ("name", models.CharField(max_length=190)),
+                ('default', models.BooleanField(default=False)),
+                ('name', models.CharField(max_length=190)),
                 (
-                    "layout",
+                    'layout',
                     models.TextField(
                         default='[{\n        "type":"textarea",\n        "left":"17.50",\n        "bottom":"274.60",\n        "fontsize":"16.0",\n        "color":[\n            0,\n            0,\n            0,\n            1\n        ],\n        "fontfamily":"Open Sans",\n        "bold":false,\n        "italic":false,\n        "width":"175.00",\n        "content":"event_name",\n        "text":"Sample event name",\n        "align":"left"\n    },\n    {\n        "type":"textarea",\n        "left":"17.50",\n        "bottom":"262.90",\n        "fontsize":"13.0",\n        "color":[\n            0,\n            0,\n            0,\n            1\n        ],\n        "fontfamily":"Open Sans",\n        "bold":false,\n        "italic":false,\n        "width":"110.00",\n        "content":"itemvar",\n        "text":"Sample product – sample variation",\n        "align":"left"\n    },\n    {\n        "type":"textarea",\n        "left":"17.50",\n        "bottom":"252.50",\n        "fontsize":"13.0",\n        "color":[\n            0,\n            0,\n            0,\n            1\n        ],\n        "fontfamily":"Open Sans",\n        "bold":false,\n        "italic":false,\n        "width":"110.00",\n        "content":"attendee_name",\n        "text":"John Doe",\n        "align":"left"\n    },\n    {\n        "type":"textarea",\n        "left":"17.50",\n        "bottom":"242.10",\n        "fontsize":"13.0",\n        "color":[\n            0,\n            0,\n            0,\n            1\n        ],\n        "fontfamily":"Open Sans",\n        "bold":false,\n        "italic":false,\n        "width":"110.00",\n        "content":"event_begin",\n        "text":"2016-05-31 20:00",\n        "align":"left"\n    },\n    {\n        "type":"textarea",\n        "left":"17.50",\n        "bottom":"231.70",\n        "fontsize":"13.0",\n        "color":[\n            0,\n            0,\n            0,\n            1\n        ],\n        "fontfamily":"Open Sans",\n        "bold":false,\n        "italic":false,\n        "width":"110.00",\n        "content":"seat",\n        "text":"Ground floor, Row 3, Seat 4",\n        "align":"left"\n    },\n    {\n        "type":"textarea",\n        "left":"17.50",\n        "bottom":"204.80",\n        "fontsize":"13.0",\n        "color":[\n            0,\n            0,\n            0,\n            1\n        ],\n        "fontfamily":"Open Sans",\n        "bold":false,\n        "italic":false,\n        "width":"110.00",\n        "content":"event_location",\n        "text":"Random City",\n        "align":"left"\n    },\n    {\n        "type":"textarea",\n        "left":"17.50",\n        "bottom":"194.50",\n        "fontsize":"13.0",\n        "color":[\n            0,\n            0,\n            0,\n            1\n        ],\n        "fontfamily":"Open Sans",\n        "bold":false,\n        "italic":false,\n        "width":"30.00",\n        "content":"order",\n        "text":"A1B2C",\n        "align":"left"\n    },\n    {\n        "type":"textarea",\n        "left":"52.50",\n        "bottom":"194.50",\n        "fontsize":"13.0",\n        "color":[\n            0,\n            0,\n            0,\n            1\n        ],\n        "fontfamily":"Open Sans",\n        "bold":false,\n        "italic":false,\n        "width":"45.00",\n        "content":"price",\n        "text":"123.45 EUR",\n        "align":"right"\n    },\n    {\n        "type":"textarea",\n        "left":"102.50",\n        "bottom":"194.50",\n        "fontsize":"13.0",\n        "color":[\n            0,\n            0,\n            0,\n            1\n        ],\n        "fontfamily":"Open Sans",\n        "bold":false,\n        "italic":false,\n        "width":"90.00",\n        "content":"secret",\n        "text":"tdmruoekvkpbv1o2mv8xccvqcikvr58u",\n        "align":"left"\n    },\n    {\n        "type":"barcodearea",\n        "left":"130.40",\n        "bottom":"204.50",\n        "size":"64.00"\n    },\n    {\n        "type":"poweredby",\n        "left":"88.72",\n        "bottom":"10.00",\n        "size":"20.00",\n        "content":"dark"\n    }]'
                     ),
                 ),
                 (
-                    "background",
+                    'background',
                     models.FileField(
                         max_length=255,
                         null=True,
@@ -41,50 +41,50 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "event",
+                    'event',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="ticket_layouts",
-                        to="pretixbase.event",
+                        related_name='ticket_layouts',
+                        to='pretixbase.event',
                     ),
                 ),
             ],
             options={
-                "ordering": ("name",),
+                'ordering': ('name',),
             },
             bases=(models.Model, pretix.base.models.base.LoggingMixin),
         ),
         migrations.CreateModel(
-            name="TicketLayoutItem",
+            name='TicketLayoutItem',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.AutoField(
                         auto_created=True, primary_key=True, serialize=False
                     ),
                 ),
-                ("sales_channel", models.CharField(default="web", max_length=190)),
+                ('sales_channel', models.CharField(default='web', max_length=190)),
                 (
-                    "item",
+                    'item',
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="ticketlayout_assignments",
-                        to="pretixbase.item",
+                        related_name='ticketlayout_assignments',
+                        to='pretixbase.item',
                     ),
                 ),
                 (
-                    "layout",
+                    'layout',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="item_assignments",
-                        to="ticketoutputpdf.ticketlayout",
+                        related_name='item_assignments',
+                        to='ticketoutputpdf.ticketlayout',
                     ),
                 ),
             ],
             options={
-                "ordering": ("id",),
-                "unique_together": {("item", "layout", "sales_channel")},
+                'ordering': ('id',),
+                'unique_together': {('item', 'layout', 'sales_channel')},
             },
         ),
     ]

@@ -20,8 +20,8 @@ from pretix.base.payment import BasePaymentProvider
 
 
 class BankTransfer(BasePaymentProvider):
-    identifier = "banktransfer"
-    verbose_name = _("Bank transfer")
+    identifier = 'banktransfer'
+    verbose_name = _('Bank transfer')
     abort_pending_allowed = True
 
     @staticmethod
@@ -29,98 +29,98 @@ class BankTransfer(BasePaymentProvider):
         return OrderedDict(
             [
                 (
-                    "ack",
+                    'ack',
                     forms.BooleanField(
                         label=_(
-                            "I have understood that people will pay the ticket price directly to my bank account and "
-                            "pretix cannot automatically know what payments arrived. Therefore, I will either mark "
-                            "payments as complete manually, or regularly import a digital bank statement in order to "
-                            "give pretix the required information."
+                            'I have understood that people will pay the ticket price directly to my bank account and '
+                            'pretix cannot automatically know what payments arrived. Therefore, I will either mark '
+                            'payments as complete manually, or regularly import a digital bank statement in order to '
+                            'give pretix the required information.'
                         ),
                         required=True,
                     ),
                 ),
                 (
-                    "bank_details_type",
+                    'bank_details_type',
                     forms.ChoiceField(
-                        label=_("Bank account type"),
+                        label=_('Bank account type'),
                         widget=forms.RadioSelect,
                         choices=(
-                            ("sepa", _("SEPA bank account")),
-                            ("other", _("Other bank account")),
+                            ('sepa', _('SEPA bank account')),
+                            ('other', _('Other bank account')),
                         ),
-                        initial="sepa",
+                        initial='sepa',
                     ),
                 ),
                 (
-                    "bank_details_sepa_name",
+                    'bank_details_sepa_name',
                     forms.CharField(
-                        label=_("Name of account holder"),
+                        label=_('Name of account holder'),
                         widget=forms.TextInput(
                             attrs={
-                                "data-display-dependency": "#id_payment_banktransfer_bank_details_type_0",
-                                "data-required-if": "#id_payment_banktransfer_bank_details_type_0",
+                                'data-display-dependency': '#id_payment_banktransfer_bank_details_type_0',
+                                'data-required-if': '#id_payment_banktransfer_bank_details_type_0',
                             }
                         ),
                         required=False,
                     ),
                 ),
                 (
-                    "bank_details_sepa_iban",
+                    'bank_details_sepa_iban',
                     IBANFormField(
-                        label=_("IBAN"),
+                        label=_('IBAN'),
                         required=False,
                         widget=forms.TextInput(
                             attrs={
-                                "data-display-dependency": "#id_payment_banktransfer_bank_details_type_0",
-                                "data-required-if": "#id_payment_banktransfer_bank_details_type_0",
+                                'data-display-dependency': '#id_payment_banktransfer_bank_details_type_0',
+                                'data-required-if': '#id_payment_banktransfer_bank_details_type_0',
                             }
                         ),
                     ),
                 ),
                 (
-                    "bank_details_sepa_bic",
+                    'bank_details_sepa_bic',
                     BICFormField(
-                        label=_("BIC"),
+                        label=_('BIC'),
                         widget=forms.TextInput(
                             attrs={
-                                "data-display-dependency": "#id_payment_banktransfer_bank_details_type_0",
-                                "data-required-if": "#id_payment_banktransfer_bank_details_type_0",
+                                'data-display-dependency': '#id_payment_banktransfer_bank_details_type_0',
+                                'data-required-if': '#id_payment_banktransfer_bank_details_type_0',
                             }
                         ),
                         required=False,
                     ),
                 ),
                 (
-                    "bank_details_sepa_bank",
+                    'bank_details_sepa_bank',
                     forms.CharField(
-                        label=_("Name of bank"),
+                        label=_('Name of bank'),
                         widget=forms.TextInput(
                             attrs={
-                                "data-display-dependency": "#id_payment_banktransfer_bank_details_type_0",
-                                "data-required-if": "#id_payment_banktransfer_bank_details_type_0",
+                                'data-display-dependency': '#id_payment_banktransfer_bank_details_type_0',
+                                'data-required-if': '#id_payment_banktransfer_bank_details_type_0',
                             }
                         ),
                         required=False,
                     ),
                 ),
                 (
-                    "bank_details",
+                    'bank_details',
                     I18nFormField(
-                        label=_("Bank account details"),
+                        label=_('Bank account details'),
                         widget=I18nTextarea,
                         help_text=_(
-                            "Include everything else that your customers might need to send you a bank transfer payment. "
-                            "If you have lots of international customers, they might need your full address and your "
+                            'Include everything else that your customers might need to send you a bank transfer payment. '
+                            'If you have lots of international customers, they might need your full address and your '
                             "bank's full address."
                         ),
                         widget_kwargs={
-                            "attrs": {
-                                "rows": "4",
-                                "placeholder": _(
-                                    "For SEPA accounts, you can leave this empty. Otherwise, please add everything that "
-                                    "your customers need to transfer the money, e.g. account numbers, routing numbers, "
-                                    "addresses, etc."
+                            'attrs': {
+                                'rows': '4',
+                                'placeholder': _(
+                                    'For SEPA accounts, you can leave this empty. Otherwise, please add everything that '
+                                    'your customers need to transfer the money, e.g. account numbers, routing numbers, '
+                                    'addresses, etc.'
                                 ),
                             }
                         },
@@ -128,68 +128,68 @@ class BankTransfer(BasePaymentProvider):
                     ),
                 ),
                 (
-                    "invoice_immediately",
+                    'invoice_immediately',
                     forms.BooleanField(
                         label=_(
-                            "Create an invoice for orders using bank transfer immediately if the event is otherwise "
-                            "configured to create invoices after payment is completed."
+                            'Create an invoice for orders using bank transfer immediately if the event is otherwise '
+                            'configured to create invoices after payment is completed.'
                         ),
                         required=False,
                     ),
                 ),
                 (
-                    "public_name",
+                    'public_name',
                     I18nFormField(
-                        label=_("Payment method name"),
+                        label=_('Payment method name'),
                         widget=I18nTextInput,
                         required=False,
                     ),
                 ),
                 (
-                    "omit_hyphen",
+                    'omit_hyphen',
                     forms.BooleanField(
-                        label=_("Do not include hyphens in the payment reference."),
-                        help_text=_("This is required in some countries."),
+                        label=_('Do not include hyphens in the payment reference.'),
+                        help_text=_('This is required in some countries.'),
                         required=False,
                     ),
                 ),
                 (
-                    "include_invoice_number",
+                    'include_invoice_number',
                     forms.BooleanField(
-                        label=_("Include invoice number in the payment reference."),
+                        label=_('Include invoice number in the payment reference.'),
                         required=False,
                     ),
                 ),
                 (
-                    "prefix",
+                    'prefix',
                     forms.CharField(
-                        label=_("Prefix for the payment reference"),
+                        label=_('Prefix for the payment reference'),
                         required=False,
                     ),
                 ),
                 (
-                    "pending_description",
+                    'pending_description',
                     I18nFormField(
-                        label=_("Additional text to show on pending orders"),
+                        label=_('Additional text to show on pending orders'),
                         help_text=_(
-                            "This text will be shown on the order confirmation page for pending orders in addition to "
-                            "the standard text."
+                            'This text will be shown on the order confirmation page for pending orders in addition to '
+                            'the standard text.'
                         ),
                         widget=I18nTextarea,
                         required=False,
                     ),
                 ),
                 (
-                    "refund_iban_blocklist",
+                    'refund_iban_blocklist',
                     forms.CharField(
-                        label=_("IBAN blocklist for refunds"),
+                        label=_('IBAN blocklist for refunds'),
                         required=False,
                         widget=forms.Textarea,
                         help_text=_(
-                            "Put one IBAN or IBAN prefix per line. The system will not attempt to send refunds to any "
+                            'Put one IBAN or IBAN prefix per line. The system will not attempt to send refunds to any '
                             'of these IBANs. Useful e.g. if you receive a lot of "forwarded payments" by a third-party payment '
                             'provider. You can also list country codes such as "GB" if you never want to send refunds to '
-                            "IBANs from a specific country."
+                            'IBANs from a specific country.'
                         ),
                     ),
                 ),
@@ -199,20 +199,20 @@ class BankTransfer(BasePaymentProvider):
     @property
     def public_name(self):
         return str(
-            self.settings.get("public_name", as_type=LazyI18nString)
+            self.settings.get('public_name', as_type=LazyI18nString)
             or self.verbose_name
         )
 
     @property
     def test_mode_message(self):
         return _(
-            "In test mode, you can just manually mark this order as paid in the backend after it has been "
-            "created."
+            'In test mode, you can just manually mark this order as paid in the backend after it has been '
+            'created.'
         )
 
     @property
     def requires_invoice_immediately(self):
-        return self.settings.get("invoice_immediately", False, as_type=bool)
+        return self.settings.get('invoice_immediately', False, as_type=bool)
 
     @property
     def settings_form_fields(self):
@@ -220,51 +220,51 @@ class BankTransfer(BasePaymentProvider):
             list(super().settings_form_fields.items())
             + list(BankTransfer.form_fields().items())
         )
-        d.move_to_end("bank_details", last=False)
-        d.move_to_end("bank_details_sepa_bank", last=False)
-        d.move_to_end("bank_details_sepa_bic", last=False)
-        d.move_to_end("bank_details_sepa_iban", last=False)
-        d.move_to_end("bank_details_sepa_name", last=False)
-        d.move_to_end("bank_details_type", last=False)
-        d.move_to_end("ack", last=False)
-        d.move_to_end("_enabled", last=False)
+        d.move_to_end('bank_details', last=False)
+        d.move_to_end('bank_details_sepa_bank', last=False)
+        d.move_to_end('bank_details_sepa_bic', last=False)
+        d.move_to_end('bank_details_sepa_iban', last=False)
+        d.move_to_end('bank_details_sepa_name', last=False)
+        d.move_to_end('bank_details_type', last=False)
+        d.move_to_end('ack', last=False)
+        d.move_to_end('_enabled', last=False)
         return d
 
     def settings_form_clean(self, cleaned_data):
-        if cleaned_data.get("payment_banktransfer_bank_details_type") == "sepa":
+        if cleaned_data.get('payment_banktransfer_bank_details_type') == 'sepa':
             for f in (
-                "bank_details_sepa_name",
-                "bank_details_sepa_bank",
-                "bank_details_sepa_bic",
-                "bank_details_sepa_iban",
+                'bank_details_sepa_name',
+                'bank_details_sepa_bank',
+                'bank_details_sepa_bic',
+                'bank_details_sepa_iban',
             ):
-                if not cleaned_data.get("payment_banktransfer_%s" % f):
+                if not cleaned_data.get('payment_banktransfer_%s' % f):
                     raise ValidationError(
                         {
-                            "payment_banktransfer_%s" % f: _(
-                                "Please fill out your bank account details."
+                            'payment_banktransfer_%s' % f: _(
+                                'Please fill out your bank account details.'
                             )
                         }
                     )
         else:
-            if not cleaned_data.get("payment_banktransfer_bank_details"):
+            if not cleaned_data.get('payment_banktransfer_bank_details'):
                 raise ValidationError(
                     {
-                        "payment_banktransfer_bank_details": _(
-                            "Please enter your bank account details."
+                        'payment_banktransfer_bank_details': _(
+                            'Please enter your bank account details.'
                         )
                     }
                 )
         return cleaned_data
 
     def payment_form_render(self, request, total=None, order=None) -> str:
-        template = get_template("pretixplugins/banktransfer/checkout_payment_form.html")
+        template = get_template('pretixplugins/banktransfer/checkout_payment_form.html')
         ctx = {
-            "request": request,
-            "event": self.event,
-            "settings": self.settings,
-            "code": self._code(order) if order else None,
-            "details": self.settings.get("bank_details", as_type=LazyI18nString),
+            'request': request,
+            'event': self.event,
+            'settings': self.settings,
+            'code': self._code(order) if order else None,
+            'details': self.settings.get('bank_details', as_type=LazyI18nString),
         }
         return template.render(ctx)
 
@@ -281,50 +281,50 @@ class BankTransfer(BasePaymentProvider):
         return self.payment_form_render(request, order=order)
 
     def order_pending_mail_render(self, order, payment) -> str:
-        template = get_template("pretixplugins/banktransfer/email/order_pending.txt")
+        template = get_template('pretixplugins/banktransfer/email/order_pending.txt')
         bankdetails = []
-        if self.settings.get("bank_details_type") == "sepa":
+        if self.settings.get('bank_details_type') == 'sepa':
             bankdetails += [
-                _("Account holder"),
-                ": ",
-                self.settings.get("bank_details_sepa_name"),
-                "\n",
-                _("IBAN"),
-                ": ",
-                self.settings.get("bank_details_sepa_iban"),
-                "\n",
-                _("BIC"),
-                ": ",
-                self.settings.get("bank_details_sepa_bic"),
-                "\n",
-                _("Bank"),
-                ": ",
-                self.settings.get("bank_details_sepa_bank"),
+                _('Account holder'),
+                ': ',
+                self.settings.get('bank_details_sepa_name'),
+                '\n',
+                _('IBAN'),
+                ': ',
+                self.settings.get('bank_details_sepa_iban'),
+                '\n',
+                _('BIC'),
+                ': ',
+                self.settings.get('bank_details_sepa_bic'),
+                '\n',
+                _('Bank'),
+                ': ',
+                self.settings.get('bank_details_sepa_bank'),
             ]
-        if bankdetails and self.settings.get("bank_details", as_type=LazyI18nString):
-            bankdetails.append("\n")
-        bankdetails.append(self.settings.get("bank_details", as_type=LazyI18nString))
+        if bankdetails and self.settings.get('bank_details', as_type=LazyI18nString):
+            bankdetails.append('\n')
+        bankdetails.append(self.settings.get('bank_details', as_type=LazyI18nString))
         ctx = {
-            "event": self.event,
-            "order": order,
-            "code": self._code(order),
-            "amount": payment.amount,
-            "details": textwrap.indent("".join(str(i) for i in bankdetails), "    "),
+            'event': self.event,
+            'order': order,
+            'code': self._code(order),
+            'amount': payment.amount,
+            'details': textwrap.indent(''.join(str(i) for i in bankdetails), '    '),
         }
         return template.render(ctx)
 
     def payment_pending_render(self, request: HttpRequest, payment: OrderPayment):
-        template = get_template("pretixplugins/banktransfer/pending.html")
+        template = get_template('pretixplugins/banktransfer/pending.html')
         ctx = {
-            "event": self.event,
-            "code": self._code(payment.order),
-            "order": payment.order,
-            "amount": payment.amount,
-            "settings": self.settings,
-            "pending_description": self.settings.get(
-                "pending_description", as_type=LazyI18nString
+            'event': self.event,
+            'code': self._code(payment.order),
+            'order': payment.order,
+            'amount': payment.amount,
+            'settings': self.settings,
+            'pending_description': self.settings.get(
+                'pending_description', as_type=LazyI18nString
             ),
-            "details": self.settings.get("bank_details", as_type=LazyI18nString),
+            'details': self.settings.get('bank_details', as_type=LazyI18nString),
         }
         return template.render(ctx)
 
@@ -333,36 +333,36 @@ class BankTransfer(BasePaymentProvider):
     ) -> str:
         warning = None
         if not self.payment_refund_supported(payment):
-            warning = _("Invalid IBAN/BIC")
+            warning = _('Invalid IBAN/BIC')
         return self._render_control_info(
             request, payment.order, payment.info_data, warning=warning
         )
 
     def _render_control_info(self, request, order, info_data, **extra_context):
-        template = get_template("pretixplugins/banktransfer/control.html")
+        template = get_template('pretixplugins/banktransfer/control.html')
         ctx = {
-            "request": request,
-            "event": self.event,
-            "code": self._code(order),
-            "payment_info": info_data,
-            "order": order,
+            'request': request,
+            'event': self.event,
+            'code': self._code(order),
+            'payment_info': info_data,
+            'order': order,
             **extra_context,
         }
         return template.render(ctx)
 
     def _code(self, order):
-        prefix = self.settings.get("prefix", default="")
+        prefix = self.settings.get('prefix', default='')
         li = order.invoices.last()
         invoice_number = (
             li.number
-            if self.settings.get("include_invoice_number", as_type=bool) and li
-            else ""
+            if self.settings.get('include_invoice_number', as_type=bool) and li
+            else ''
         )
 
-        code = " ".join((prefix, order.full_code, invoice_number)).strip(" ")
+        code = ' '.join((prefix, order.full_code, invoice_number)).strip(' ')
 
-        if self.settings.get("omit_hyphen", as_type=bool):
-            code = code.replace("-", "")
+        if self.settings.get('omit_hyphen', as_type=bool):
+            code = code.replace('-', '')
 
         return code
 
@@ -370,28 +370,28 @@ class BankTransfer(BasePaymentProvider):
         if not obj.info_data:
             return
         d = obj.info_data
-        d["reference"] = "█"
-        d["payer"] = "█"
-        d["_shredded"] = True
+        d['reference'] = '█'
+        d['payer'] = '█'
+        d['_shredded'] = True
         obj.info = json.dumps(d)
-        obj.save(update_fields=["info"])
+        obj.save(update_fields=['info'])
 
     @staticmethod
     def norm(s):
-        return s.strip().upper().replace(" ", "")
+        return s.strip().upper().replace(' ', '')
 
     def payment_refund_supported(self, payment: OrderPayment) -> bool:
-        if not all(payment.info_data.get(key) for key in ("payer", "iban")):
+        if not all(payment.info_data.get(key) for key in ('payer', 'iban')):
             return False
         try:
-            iban = self.norm(payment.info_data["iban"])
+            iban = self.norm(payment.info_data['iban'])
             IBANValidator()(iban)
         except ValidationError:
             return False
         else:
             return not any(
                 iban.startswith(b)
-                for b in (self.settings.refund_iban_blocklist or "").splitlines()
+                for b in (self.settings.refund_iban_blocklist or '').splitlines()
                 if b
             )
 
@@ -400,24 +400,24 @@ class BankTransfer(BasePaymentProvider):
 
     def payment_control_render_short(self, payment: OrderPayment) -> str:
         pi = payment.info_data or {}
-        r = pi.get("payer", "")
-        if pi.get("iban"):
+        r = pi.get('payer', '')
+        if pi.get('iban'):
             if r:
-                r += " / "
-            r += pi.get("iban")
-        if pi.get("bic"):
+                r += ' / '
+            r += pi.get('iban')
+        if pi.get('bic'):
             if r:
-                r += " / "
-            r += pi.get("bic")
+                r += ' / '
+            r += pi.get('bic')
         return r
 
     def payment_presale_render(self, payment: OrderPayment) -> str:
         pi = payment.info_data or {}
         if self.payment_refund_supported(payment):
             try:
-                iban = self.norm(pi["iban"])
-                return gettext("Bank account {iban}").format(
-                    iban=iban[0:2] + "****" + iban[-4:]
+                iban = self.norm(pi['iban'])
+                return gettext('Bank account {iban}').format(
+                    iban=iban[0:2] + '****' + iban[-4:]
                 )
             except:
                 pass
@@ -428,35 +428,35 @@ class BankTransfer(BasePaymentProvider):
         We just keep a created refund object. It will be marked as done using the control view
         for bank transfer refunds.
         """
-        if refund.info_data.get("iban"):
+        if refund.info_data.get('iban'):
             return  # we're already done here
 
         if refund.payment is None:
             raise ValueError(
-                _("Can only create a bank transfer refund from an existing payment.")
+                _('Can only create a bank transfer refund from an existing payment.')
             )
 
         refund.info_data = {
-            "payer": refund.payment.info_data["payer"],
-            "iban": self.norm(refund.payment.info_data["iban"]),
-            "bic": self.norm(refund.payment.info_data["bic"])
-            if refund.payment.info_data.get("bic")
+            'payer': refund.payment.info_data['payer'],
+            'iban': self.norm(refund.payment.info_data['iban']),
+            'bic': self.norm(refund.payment.info_data['bic'])
+            if refund.payment.info_data.get('bic')
             else None,
         }
-        refund.save(update_fields=["info"])
+        refund.save(update_fields=['info'])
 
     def refund_control_render(self, request: HttpRequest, refund: OrderRefund) -> str:
         return self._render_control_info(request, refund.order, refund.info_data)
 
     class NewRefundForm(forms.Form):
         payer = forms.CharField(
-            label=_("Account holder"),
+            label=_('Account holder'),
         )
         iban = IBANFormField(
-            label=_("IBAN"),
+            label=_('IBAN'),
         )
         bic = BICFormField(
-            label=_("BIC (optional)"),
+            label=_('BIC (optional)'),
             required=False,
         )
 
@@ -467,46 +467,46 @@ class BankTransfer(BasePaymentProvider):
                 f.widget.is_required = False
 
         def clean_payer(self):
-            val = self.cleaned_data.get("payer")
+            val = self.cleaned_data.get('payer')
             if not val:
-                raise ValidationError(_("This field is required."))
+                raise ValidationError(_('This field is required.'))
             return val
 
         def clean_iban(self):
-            val = self.cleaned_data.get("iban")
+            val = self.cleaned_data.get('iban')
             if not val:
-                raise ValidationError(_("This field is required."))
+                raise ValidationError(_('This field is required.'))
             return val
 
     def new_refund_control_form_render(self, request: HttpRequest, order: Order) -> str:
         f = self.NewRefundForm(
-            prefix="refund-banktransfer",
+            prefix='refund-banktransfer',
             data=request.POST
-            if request.method == "POST" and request.POST.get("refund-banktransfer-iban")
+            if request.method == 'POST' and request.POST.get('refund-banktransfer-iban')
             else None,
         )
         template = get_template(
-            "pretixplugins/banktransfer/new_refund_control_form.html"
+            'pretixplugins/banktransfer/new_refund_control_form.html'
         )
         ctx = {
-            "form": f,
+            'form': f,
         }
         return template.render(ctx)
 
     def new_refund_control_form_process(
         self, request: HttpRequest, amount: Decimal, order: Order
     ) -> OrderRefund:
-        f = self.NewRefundForm(prefix="refund-banktransfer", data=request.POST)
+        f = self.NewRefundForm(prefix='refund-banktransfer', data=request.POST)
         if not f.is_valid():
             raise ValidationError(
-                _("Your input was invalid, please see below for details.")
+                _('Your input was invalid, please see below for details.')
             )
         d = {
-            "payer": f.cleaned_data["payer"],
-            "iban": self.norm(f.cleaned_data["iban"]),
+            'payer': f.cleaned_data['payer'],
+            'iban': self.norm(f.cleaned_data['iban']),
         }
-        if f.cleaned_data.get("bic"):
-            d["bic"] = f.cleaned_data["bic"]
+        if f.cleaned_data.get('bic'):
+            d['bic'] = f.cleaned_data['bic']
         return OrderRefund(
             order=order,
             payment=None,

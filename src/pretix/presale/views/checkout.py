@@ -19,28 +19,28 @@ from pretix.presale.views import (
 )
 
 
-@method_decorator(allow_frame_if_namespaced, "dispatch")
-@method_decorator(iframe_entry_view_wrapper, "dispatch")
+@method_decorator(allow_frame_if_namespaced, 'dispatch')
+@method_decorator(iframe_entry_view_wrapper, 'dispatch')
 class CheckoutView(View):
     def get_index_url(self, request):
         kwargs = {}
-        if "cart_namespace" in self.kwargs:
-            kwargs["cart_namespace"] = self.kwargs["cart_namespace"]
+        if 'cart_namespace' in self.kwargs:
+            kwargs['cart_namespace'] = self.kwargs['cart_namespace']
         return (
-            eventreverse(self.request.event, "presale:event.index", kwargs=kwargs)
-            + "?require_cookie=true"
+            eventreverse(self.request.event, 'presale:event.index', kwargs=kwargs)
+            + '?require_cookie=true'
         )
 
     def dispatch(self, request, *args, **kwargs):
         self.request = request
 
-        if not cart_exists(request) and "async_id" not in request.GET:
-            messages.error(request, _("Your cart is empty"))
+        if not cart_exists(request) and 'async_id' not in request.GET:
+            messages.error(request, _('Your cart is empty'))
             return self.redirect(self.get_index_url(self.request))
 
         if not request.event.presale_is_running:
             messages.error(
-                request, _("The presale for this event is over or has not yet started.")
+                request, _('The presale for this event is over or has not yet started.')
             )
             return self.redirect(self.get_index_url(self.request))
 
@@ -63,11 +63,11 @@ class CheckoutView(View):
                     else self.get_index_url(request)
                 )
 
-            if "step" not in kwargs:
+            if 'step' not in kwargs:
                 return self.redirect(step.get_step_url(request))
-            is_selected = step.identifier == kwargs.get("step", "")
+            is_selected = step.identifier == kwargs.get('step', '')
             if (
-                "async_id" not in request.GET
+                'async_id' not in request.GET
                 and not is_selected
                 and not step.is_completed(request, warn=not is_selected)
             ):
@@ -87,10 +87,10 @@ class CheckoutView(View):
         raise Http404()
 
     def redirect(self, url):
-        if "cart_id" in self.request.GET:
+        if 'cart_id' in self.request.GET:
             url += (
-                ("&" if "?" in url else "?")
-                + "cart_id="
-                + quote(self.request.GET.get("cart_id"))
+                ('&' if '?' in url else '?')
+                + 'cart_id='
+                + quote(self.request.GET.get('cart_id'))
             )
         return redirect(url)

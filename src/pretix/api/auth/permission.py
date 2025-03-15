@@ -18,10 +18,10 @@ class EventPermission(BasePermission):
         ):
             return False
 
-        if request.method not in SAFE_METHODS and hasattr(view, "write_permission"):
-            required_permission = getattr(view, "write_permission")
-        elif hasattr(view, "permission"):
-            required_permission = getattr(view, "permission")
+        if request.method not in SAFE_METHODS and hasattr(view, 'write_permission'):
+            required_permission = getattr(view, 'write_permission')
+        elif hasattr(view, 'permission'):
+            required_permission = getattr(view, 'permission')
         else:
             required_permission = None
 
@@ -40,15 +40,15 @@ class EventPermission(BasePermission):
             else request.user
         )
         if (
-            "event" in request.resolver_match.kwargs
-            and "organizer" in request.resolver_match.kwargs
+            'event' in request.resolver_match.kwargs
+            and 'organizer' in request.resolver_match.kwargs
         ):
             request.event = (
                 Event.objects.filter(
-                    slug=request.resolver_match.kwargs["event"],
-                    organizer__slug=request.resolver_match.kwargs["organizer"],
+                    slug=request.resolver_match.kwargs['event'],
+                    organizer__slug=request.resolver_match.kwargs['organizer'],
                 )
-                .select_related("organizer")
+                .select_related('organizer')
                 .first()
             )
             if not request.event or not perm_holder.has_event_permission(
@@ -75,7 +75,7 @@ class EventPermission(BasePermission):
                 ):
                     return False
 
-        elif "organizer" in request.resolver_match.kwargs:
+        elif 'organizer' in request.resolver_match.kwargs:
             if not request.organizer or not perm_holder.has_organizer_permission(
                 request.organizer, request=request
             ):
@@ -101,16 +101,16 @@ class EventPermission(BasePermission):
 
         if isinstance(request.auth, OAuthAccessToken):
             if (
-                not request.auth.allow_scopes(["write"])
+                not request.auth.allow_scopes(['write'])
                 and request.method not in SAFE_METHODS
             ):
                 return False
             if (
-                not request.auth.allow_scopes(["read"])
+                not request.auth.allow_scopes(['read'])
                 and request.method in SAFE_METHODS
             ):
                 return False
-        if isinstance(request.auth, OAuthAccessToken) and hasattr(request, "organizer"):
+        if isinstance(request.auth, OAuthAccessToken) and hasattr(request, 'organizer'):
             if not request.auth.organizers.filter(pk=request.organizer.pk).exists():
                 return False
         return True
@@ -120,16 +120,16 @@ class EventCRUDPermission(EventPermission):
     def has_permission(self, request, view):
         if not super(EventCRUDPermission, self).has_permission(request, view):
             return False
-        elif view.action == "create" and "can_create_events" not in request.orgapermset:
+        elif view.action == 'create' and 'can_create_events' not in request.orgapermset:
             return False
         elif (
-            view.action == "destroy"
-            and "can_change_event_settings" not in request.eventpermset
+            view.action == 'destroy'
+            and 'can_change_event_settings' not in request.eventpermset
         ):
             return False
         elif (
-            view.action in ["update", "partial_update"]
-            and "can_change_event_settings" not in request.eventpermset
+            view.action in ['update', 'partial_update']
+            and 'can_change_event_settings' not in request.eventpermset
         ):
             return False
 
@@ -155,8 +155,8 @@ class ProfilePermission(BasePermission):
         if isinstance(request.auth, OAuthAccessToken):
             if (
                 not (
-                    request.auth.allow_scopes(["read"])
-                    or request.auth.allow_scopes(["profile"])
+                    request.auth.allow_scopes(['read'])
+                    or request.auth.allow_scopes(['profile'])
                 )
                 and request.method in SAFE_METHODS
             ):

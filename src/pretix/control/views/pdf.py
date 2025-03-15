@@ -35,9 +35,9 @@ logger = logging.getLogger(__name__)
 
 
 class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
-    template_name = "pretixcontrol/pdf/index.html"
-    permission = "can_change_settings"
-    accepted_formats = ("application/pdf",)
+    template_name = 'pretixcontrol/pdf/index.html'
+    permission = 'can_change_settings'
+    accepted_formats = ('application/pdf',)
     maxfilesize = 1024 * 1024 * 10
     minfilesize = 10
     title = None
@@ -48,14 +48,14 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
         return resp
 
     def process_upload(self):
-        f = self.request.FILES.get("background")
+        f = self.request.FILES.get('background')
         error = False
         if f.size > self.maxfilesize:
-            error = _("The uploaded PDF file is too large.")
+            error = _('The uploaded PDF file is too large.')
         if f.size < self.minfilesize:
-            error = _("The uploaded PDF file is too small.")
+            error = _('The uploaded PDF file is too small.')
         if mimetypes.guess_type(f.name)[0] not in self.accepted_formats:
-            error = _("Please only upload PDF files.")
+            error = _('Please only upload PDF files.')
         # if there was an error, add error message to response_data and return
         if error:
             return error, None
@@ -63,12 +63,12 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
 
     def _get_preview_position(self):
         item = self.request.event.items.create(
-            name=_("Sample product"),
+            name=_('Sample product'),
             default_price=42.23,
-            description=_("Sample product description"),
+            description=_('Sample product description'),
         )
         item2 = self.request.event.items.create(
-            name=_("Sample workshop"), default_price=23.40
+            name=_('Sample workshop'), default_price=23.40
         )
 
         from pretix.base.models import Order
@@ -76,15 +76,15 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
         order = self.request.event.orders.create(
             status=Order.STATUS_PENDING,
             datetime=now(),
-            email="sample@eventyay.com",
+            email='sample@eventyay.com',
             locale=self.request.event.settings.locale,
             expires=now(),
-            code="PREVIEW1234",
+            code='PREVIEW1234',
             total=119,
         )
 
         scheme = PERSON_NAME_SCHEMES[self.request.event.settings.name_scheme]
-        sample = {k: str(v) for k, v in scheme["sample"].items()}
+        sample = {k: str(v) for k, v in scheme['sample'].items()}
         p = order.positions.create(
             item=item, attendee_name_parts=sample, price=item.default_price
         )
@@ -96,7 +96,7 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
         )
 
         InvoiceAddress.objects.create(
-            order=order, name_parts=sample, company=_("Sample company")
+            order=order, name_parts=sample, company=_('Sample company')
         )
         return p
 
@@ -128,7 +128,7 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
 
     def save_layout(self):
         self.request.event.settings.set(
-            self.get_layout_settings_key(), self.request.POST.get("data")
+            self.get_layout_settings_key(), self.request.POST.get('data')
         )
 
     def save_background(self, f: CachedFile):
@@ -139,34 +139,34 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
             try:
                 default_storage.delete(fexisting.name)
             except OSError:  # pragma: no cover
-                logger.error("Deleting file %s failed." % fexisting.name)
+                logger.error('Deleting file %s failed.' % fexisting.name)
 
         # Create new file
         nonce = get_random_string(length=8)
-        fname = "pub/%s-%s/%s/%s.%s.%s" % (
-            "event",
-            "settings",
+        fname = 'pub/%s-%s/%s/%s.%s.%s' % (
+            'event',
+            'settings',
             self.request.event.pk,
             self.get_layout_settings_key(),
             nonce,
-            "pdf",
+            'pdf',
         )
         newname = default_storage.save(fname, f.file)
         self.request.event.settings.set(
-            self.get_background_settings_key(), "file://" + newname
+            self.get_background_settings_key(), 'file://' + newname
         )
 
     def post(self, request, *args, **kwargs):
-        if "emptybackground" in request.POST:
+        if 'emptybackground' in request.POST:
             p = PdfWriter()
             try:
                 p.add_blank_page(
-                    width=float(request.POST.get("width")) * mm,
-                    height=float(request.POST.get("height")) * mm,
+                    width=float(request.POST.get('width')) * mm,
+                    height=float(request.POST.get('height')) * mm,
                 )
             except ValueError:
                 return JsonResponse(
-                    {"status": "error", "error": "Invalid height/width given."}
+                    {'status': 'error', 'error': 'Invalid height/width given.'}
                 )
             buffer = BytesIO()
             p.write(buffer)
@@ -174,61 +174,61 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
             c = CachedFile(web_download=True)
             c.expires = now() + timedelta(days=7)
             c.date = now()
-            c.filename = "background_preview.pdf"
-            c.type = "application/pdf"
+            c.filename = 'background_preview.pdf'
+            c.type = 'application/pdf'
             c.save()
-            c.file.save("empty.pdf", ContentFile(buffer.read()))
+            c.file.save('empty.pdf', ContentFile(buffer.read()))
             c.refresh_from_db()
             return JsonResponse(
                 {
-                    "status": "ok",
-                    "id": c.id,
-                    "url": reverse(
-                        "control:pdf.background",
+                    'status': 'ok',
+                    'id': c.id,
+                    'url': reverse(
+                        'control:pdf.background',
                         kwargs={
-                            "event": request.event.slug,
-                            "organizer": request.organizer.slug,
-                            "filename": str(c.id),
+                            'event': request.event.slug,
+                            'organizer': request.organizer.slug,
+                            'filename': str(c.id),
                         },
                     ),
                 }
             )
 
-        if "background" in request.FILES:
+        if 'background' in request.FILES:
             error, fileobj = self.process_upload()
             if error:
-                return JsonResponse({"status": "error", "error": error})
+                return JsonResponse({'status': 'error', 'error': error})
             c = CachedFile(web_download=True)
             c.expires = now() + timedelta(days=7)
             c.date = now()
-            c.filename = "background_preview.pdf"
-            c.type = "application/pdf"
+            c.filename = 'background_preview.pdf'
+            c.type = 'application/pdf'
             c.file = fileobj
             c.save()
             c.refresh_from_db()
             return JsonResponse(
                 {
-                    "status": "ok",
-                    "id": c.id,
-                    "url": reverse(
-                        "control:pdf.background",
+                    'status': 'ok',
+                    'id': c.id,
+                    'url': reverse(
+                        'control:pdf.background',
                         kwargs={
-                            "event": request.event.slug,
-                            "organizer": request.organizer.slug,
-                            "filename": str(c.id),
+                            'event': request.event.slug,
+                            'organizer': request.organizer.slug,
+                            'filename': str(c.id),
                         },
                     ),
                 }
             )
 
         cf = None
-        if request.POST.get("background", "").strip():
+        if request.POST.get('background', '').strip():
             try:
-                cf = CachedFile.objects.get(id=request.POST.get("background"))
+                cf = CachedFile.objects.get(id=request.POST.get('background'))
             except CachedFile.DoesNotExist:
                 pass
 
-        if "preview" in request.POST:
+        if 'preview' in request.POST:
             with (
                 rolledback_transaction(),
                 language(request.event.settings.locale, request.event.settings.region),
@@ -237,24 +237,24 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
                 fname, mimet, data = self.generate(
                     p,
                     override_layout=(
-                        json.loads(self.request.POST.get("data"))
-                        if self.request.POST.get("data")
+                        json.loads(self.request.POST.get('data'))
+                        if self.request.POST.get('data')
                         else None
                     ),
                     override_background=cf.file if cf else None,
                 )
 
             resp = HttpResponse(data, content_type=mimet)
-            ftype = fname.split(".")[-1]
-            resp["Content-Disposition"] = (
+            ftype = fname.split('.')[-1]
+            resp['Content-Disposition'] = (
                 'attachment; filename="ticket-preview.{}"'.format(ftype)
             )
             return resp
-        elif "data" in request.POST:
+        elif 'data' in request.POST:
             if cf:
                 self.save_background(cf)
             self.save_layout()
-            return JsonResponse({"status": "ok"})
+            return JsonResponse({'status': 'ok'})
         return HttpResponseBadRequest()
 
     def get_variables(self):
@@ -265,33 +265,33 @@ class BaseEditorView(EventPermissionRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["fonts"] = get_fonts()
-        ctx["pdf"] = self.get_current_background()
-        ctx["variables"] = self.get_variables()
-        ctx["images"] = self.get_images()
-        ctx["layout"] = json.dumps(self.get_current_layout())
-        ctx["title"] = self.title
-        ctx["locales"] = [
+        ctx['fonts'] = get_fonts()
+        ctx['pdf'] = self.get_current_background()
+        ctx['variables'] = self.get_variables()
+        ctx['images'] = self.get_images()
+        ctx['layout'] = json.dumps(self.get_current_layout())
+        ctx['title'] = self.title
+        ctx['locales'] = [
             p for p in settings.LANGUAGES if p[0] in self.request.event.settings.locales
         ]
         return ctx
 
 
 class FontsCSSView(TemplateView):
-    content_type = "text/css"
-    template_name = "pretixcontrol/pdf/webfonts.css"
+    content_type = 'text/css'
+    template_name = 'pretixcontrol/pdf/webfonts.css'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["fonts"] = get_fonts()
+        ctx['fonts'] = get_fonts()
         return ctx
 
 
 class PdfView(TemplateView):
     def get(self, request, *args, **kwargs):
         cf = get_object_or_404(
-            CachedFile, id=kwargs.get("filename"), filename="background_preview.pdf"
+            CachedFile, id=kwargs.get('filename'), filename='background_preview.pdf'
         )
-        resp = FileResponse(cf.file, content_type="application/pdf")
-        resp["Content-Disposition"] = 'attachment; filename="{}"'.format(cf.filename)
+        resp = FileResponse(cf.file, content_type='application/pdf')
+        resp['Content-Disposition'] = 'attachment; filename="{}"'.format(cf.filename)
         return resp
