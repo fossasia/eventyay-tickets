@@ -106,3 +106,4 @@ screens/
 .bash_history
 .npm
 .python_history
+.ptpython_history
