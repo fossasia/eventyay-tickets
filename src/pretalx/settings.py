@@ -399,6 +399,14 @@ LANGUAGES_INFORMATION = {
         "official": False,
         "percentage": 80,
     },
+    "fa-ir": {
+        "name": _("Persian"),
+        "natural_name": "قارسی",
+        "official": False,
+        "percentage": 99,
+        "path": "fa_IR",
+        "public_code": "fa_IR",
+    },
     "fr": {
         "name": _("French"),
         "natural_name": "Français",
@@ -474,6 +482,7 @@ LANGUAGES_INFORMATION = {
 }
 LANGUAGES_RTL = {
     "ar",
+    "fa-ir",
 }
 
 for section in config.sections():
