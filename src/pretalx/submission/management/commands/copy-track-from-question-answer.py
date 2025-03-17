@@ -24,7 +24,7 @@ class Command(BaseCommand):
 
         with scope(event=event):
             # Find question with "track" in the label
-            track_question = Question.objects.get(question__icontains="track")
+            track_question = Question.all_objects.get(question__icontains="track")
         logger.info('Found question: %s', track_question)
         # Get available tracks
         with scope(event=event):
