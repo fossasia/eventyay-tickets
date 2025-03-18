@@ -1,6 +1,7 @@
 import pytest
 from django.utils.timezone import now
 from django_scopes import scopes_disabled
+from django.urls import reverse
 
 from pretix.base.models import Device
 
@@ -48,8 +49,9 @@ def test_device_list(token_client, organizer, event, device):
     res = dict(TEST_DEV_RES)
     res["created"] = device.created.isoformat().replace('+00:00', 'Z')
     res["initialized"] = device.initialized.isoformat().replace('+00:00', 'Z')
-
-    resp = token_client.get('/api/v1/organizers/{}/devices/'.format(organizer.slug))
+    
+    url = reverse('api-devices-list', kwargs={'organizer_slug': organizer.slug})
+    resp = token_client.get(url)
     assert resp.status_code == 200
     assert [res] == resp.data['results']
 
@@ -59,7 +61,9 @@ def test_device_detail(token_client, organizer, event, device):
     res = dict(TEST_DEV_RES)
     res["created"] = device.created.isoformat().replace('+00:00', 'Z')
     res["initialized"] = device.initialized.isoformat().replace('+00:00', 'Z')
-    resp = token_client.get('/api/v1/organizers/{}/devices/{}/'.format(organizer.slug, device.device_id))
+    
+    url = reverse('api-devices-detail', kwargs={'organizer_slug': organizer.slug, 'device_id': device.device_id})
+    resp = token_client.get(url)
     assert resp.status_code == 200
     assert res == resp.data
 
@@ -73,11 +77,8 @@ TEST_DEVICE_CREATE_PAYLOAD = {
 
 @pytest.mark.django_db
 def test_device_create(token_client, organizer, event):
-    resp = token_client.post(
-        '/api/v1/organizers/{}/devices/'.format(organizer.slug),
-        TEST_DEVICE_CREATE_PAYLOAD,
-        format='json'
-    )
+    url = reverse('api-devices-list', kwargs={'organizer_slug': organizer.slug})
+    resp = token_client.post(url, TEST_DEVICE_CREATE_PAYLOAD, format='json')
     assert resp.status_code == 201
     with scopes_disabled():
         d = Device.objects.get(device_id=resp.data['device_id'])
@@ -88,8 +89,9 @@ def test_device_create(token_client, organizer, event):
 
 @pytest.mark.django_db
 def test_device_update(token_client, organizer, event, device):
+    url = reverse('api-devices-detail', kwargs={'organizer_slug': organizer.slug, 'device_id': device.device_id})
     resp = token_client.patch(
-        '/api/v1/organizers/{}/devices/{}/'.format(organizer.slug, device.device_id),
+        url,
         {
             'name': 'bla',
             'hardware_brand': 'Foo'
@@ -104,9 +106,8 @@ def test_device_update(token_client, organizer, event, device):
 
 @pytest.mark.django_db
 def test_device_delete(token_client, organizer, event, device):
-    resp = token_client.delete(
-        '/api/v1/organizers/{}/devices/{}/'.format(organizer.slug, device.device_id),
-    )
+    url = reverse('api-devices-detail', kwargs={'organizer_slug': organizer.slug, 'device_id': device.device_id})
+    resp = token_client.delete(url)
     assert resp.status_code == 405
     with scopes_disabled():
         assert organizer.devices.count() == 1
