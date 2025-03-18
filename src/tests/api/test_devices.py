@@ -1,7 +1,7 @@
 import pytest
 from django.utils.timezone import now
 from django_scopes import scopes_disabled
-
+from django.urls import reverse
 from pretix.base.models import Device
 
 
