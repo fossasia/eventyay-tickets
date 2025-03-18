@@ -1,4 +1,12 @@
--e ../
+# Core project dependencies
+Django>=3.2  # or whatever version you use
+djangorestframework
+pytest
+pytest-django
+pytest-cov
+django-scopes
+
+# Sphinx for documentation
 sphinx==2.3.*
 sphinx-rtd-theme
 sphinxcontrib-httpdomain
@@ -6,5 +14,6 @@ sphinxcontrib-images
 sphinxcontrib-spelling==4.*
 sphinxemoji
 pygments-markdown-lexer
-# See https://github.com/rfk/pyenchant/pull/130
+
+# PyEnchant patched version
 git+https://github.com/raphaelm/pyenchant.git@patch-1#egg=pyenchant
