@@ -36,5 +36,5 @@ jobs:
           sed -i '/eventyay-paypal/d' pyproject.toml
           pip3 install -e ".[dev]" psycopg2-binary ruff
       - name: Run Ruff
-        run: ruff check --fix . && ruff format .
+        run: ruff check .
         working-directory: ./src
