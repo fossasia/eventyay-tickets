@@ -19,77 +19,10 @@ Contributing
 
 Please look through our issues and start contributing.
 
-Docker-based Setup (Temporary)
-------------------------------
-Currently, the non-Docker setup is broken. Until it is fixed, please use the Docker-based setup described below.
+Setting Up Eventyay-Tickets
+---------------------------
 
-Install Docker (if not installed)
----------------------------------
-- `Download Docker Desktop <https://www.docker.com/products/docker-desktop/>`_ and install it on your system.
-- Ensure Docker is running by checking the version:
-
-.. code-block:: sh
-
-   docker --version
-
-Clone and set up Eventyay-Docker
----------------------------------
-Eventyay-Tickets runs inside **Eventyay-Docker**, so you need to set that up as well:
-
-.. code-block:: sh
-
-   cd ..  # Go back to the parent directory
-   git clone https://github.com/fossasia/eventyay-docker.git
-   cd eventyay-docker
-
-Modify Hosts File (if needed)
------------------------------
-In some cases, you may need to modify the hosts file, but the development environment should work with `localhost`. This will be fixed in the future.
-
-If required, add the following lines to your **/etc/hosts** file (Linux/macOS) or `C:\Windows\System32\drivers\etc\hosts` (Windows):
-
-.. code-block:: 
-
-   127.0.0.1       app.eventyay.com
-   127.0.0.1       video.eventyay.com
-
-Start Docker containers
------------------------
-Run:
-
-.. code-block:: sh
-
-   docker compose -f docker-compose.yml up -d
-
-This explicitly specifies the compose file to ensure the correct services start.
-
-Access the Running Application
-------------------------------
-- **Tickets App**: `http://app.eventyay.com`
-- **Admin Panel**: `http://app.eventyay.com/control`
-
-Find and edit frontend files
-----------------------------
-- **HTML Templates**: Located in `presale/templates/pretixpresale/`
-- **CSS & JS Files**: Located in `presale/static/pretixpresale/`
-
-After making changes, restart the service with:
-
-.. code-block:: sh
-
-   docker compose restart ticket
-
-Create a Pull Request
-----------------------
-Once you're happy with your changes:
-
-.. code-block:: sh
-
-   git add .
-   git commit -m "Updated documentation for setting up Eventyay-Tickets"
-   git push origin YOUR_BRANCH_NAME
-
-Then, go to GitHub and create a **Pull Request**!
+Eventyay-Tickets requires a Docker-based setup. Please follow the detailed instructions in the `development setup guide <https://github.com/fossasia/eventyay-docker/blob/development/README.development.md>`_ in the eventyay-docker repository.
 
 License
 -------
@@ -102,4 +35,5 @@ This project is maintained by **FOSSASIA**. See the AUTHORS file for a list of a
 .. _installation guide: https://docs.eventyay.com/en/latest/admin/installation/index.html
 .. _eventyay.com: https://eventyay.com
 .. _blog: https://blog.eventyay.com
+
 
